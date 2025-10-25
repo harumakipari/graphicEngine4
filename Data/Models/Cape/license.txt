@@ -1,0 +1,11 @@
+Model Information:
+* title:	Moff Gideon Cape - The Mandalorian
+* source:	https://sketchfab.com/3d-models/moff-gideon-cape-the-mandalorian-320c029e234c4afdbd6008838bd64db3
+* author:	Oscar R (https://sketchfab.com/braidoner)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Moff Gideon Cape - The Mandalorian" (https://sketchfab.com/3d-models/moff-gideon-cape-the-mandalorian-320c029e234c4afdbd6008838bd64db3) by Oscar R (https://sketchfab.com/braidoner) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

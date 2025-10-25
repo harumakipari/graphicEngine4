@@ -1,0 +1,11 @@
+Model Information:
+* title:	Cloth in movement
+* source:	https://sketchfab.com/3d-models/cloth-in-movement-bffa3036f5e24cb28cc8f98532783928
+* author:	jlwande2 (https://sketchfab.com/jlwande2)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Cloth in movement" (https://sketchfab.com/3d-models/cloth-in-movement-bffa3036f5e24cb28cc8f98532783928) by jlwande2 (https://sketchfab.com/jlwande2) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

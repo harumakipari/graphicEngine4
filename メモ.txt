@@ -1,0 +1,13 @@
+https://qiita.com/doRA9876/items/0f2c79204f2412c0f7a3
+
+github
+https://github.com/InteractiveComputerGraphics/PositionBasedDynamics
+
+一次テイラー展開
+https://controlabo.com/taylor-series/
+
+実装参考Unity
+https://qiita.com/cy-tatsuya-sakai/items/a028f2a639083786a5a0
+
+積分　微分　違い
+https://math-otaku.com/calculus/
