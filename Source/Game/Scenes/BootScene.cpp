@@ -37,6 +37,10 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     spriteCBuffer = std::make_unique<ConstantBuffer<SpriteConstants>>(device);
     sceneCBuffer->data.time = 0;//開始時に０にしておく
 
+    lightManager = std::make_unique<LightManager>();
+    lightManager->Initialize(device);
+    lightManager->SetDirectionalLight(lightDirection, lightColor);
+
     // FOG 
     framebuffers[0] = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
     HRESULT hr= CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", pixelShaders[2].GetAddressOf());
@@ -128,9 +132,11 @@ void BootScene::Start()
 
 }
 
-void BootScene::Update(ID3D11DeviceContext* immediate_context, float deltaTime)
+void BootScene::Update(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
     using namespace DirectX;
+
+    lightManager->Update(deltaTime);
 
     softBodyEngine.Update(deltaTime);
 
@@ -424,7 +430,7 @@ bool BootScene::Uninitialize(ID3D11Device* device)
     return true;
 }
 
-void BootScene::Render(ID3D11DeviceContext* immediateContext, float delta_time)
+void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
     //サンプラーステートを設定
     RenderState::BindSamplerStates(immediateContext);
@@ -510,7 +516,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float delta_time)
     // SCREEN_SPACE_REFLECTION
     sceneConstants.reflectionIntensity = refrectionIntensity;
     // FOG
-    sceneConstants.time += delta_time;
+    sceneConstants.time += deltaTime;
 
     immediateContext->UpdateSubresource(constantBuffers[0].Get(), 0, 0, &sceneConstants, 0, 0);
     immediateContext->VSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
@@ -532,13 +538,13 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float delta_time)
     immediateContext->UpdateSubresource(constantBuffers[4].Get(), 0, 0, &lightConstants, 0, 0);
     immediateContext->PSSetConstantBuffers(11, 1, constantBuffers[4].GetAddressOf());    //3 は cascadedShadowMap に使用中
 
-    spriteConstants.elapsedTime += delta_time;
+    spriteConstants.elapsedTime += deltaTime;
     spriteConstants.enableGlitch = 0;
     immediateContext->UpdateSubresource(constantBuffers[3].Get(), 0, 0, &spriteConstants, 0, 0);
     immediateContext->PSSetConstantBuffers(10, 1, constantBuffers[3].GetAddressOf());
 #else
     lightCBuffer->data.lightDirection = lightDirection;
-    lightCBuffer->data.colorLight = colorLight;
+    lightCBuffer->data.colorLight = lightColor;
     lightCBuffer->data.iblIntensity = iblIntensity;
     lightCBuffer->data.directionalLightEnable = static_cast<int>(directionalLightEnable);
     lightCBuffer->data.pointLightEnable = static_cast<int>(pointLightEnable);
@@ -549,6 +555,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float delta_time)
         lightCBuffer->data.pointsLight[i].color = pointLightColor[i];
         lightCBuffer->data.pointsLight[i].range = pointLightRange[i];
     }
+
+
     //sceneConstants.lightDirection = lightDirection;
     //sceneConstants.colorLight = colorLight;
     //sceneConstants.iblIntensity = iblIntensity;
@@ -557,12 +565,12 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float delta_time)
     sceneCBuffer->data.enableBloom = enableBloom;
     sceneCBuffer->data.enableFog = enableFog;
     sceneCBuffer->data.enableCascadedShadowMaps = enableCascadedShadowMaps;
-    sceneCBuffer->data.enableSSR = enableSSR;
+    sceneCBuffer->data.enableSsr = enableSSR;
     // SCREEN_SPACE_REFLECTION
     sceneCBuffer->data.reflectionIntensity = refrectionIntensity;
     // FOG
-    sceneCBuffer->data.time += delta_time;
-    sceneCBuffer->data.deltaTime = delta_time;
+    sceneCBuffer->data.time += deltaTime;
+    sceneCBuffer->data.deltaTime = deltaTime;
 
     sceneCBuffer->Activate(immediateContext, 1); // slot1 にセット
 
@@ -588,9 +596,13 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float delta_time)
 
     //immediateContext->UpdateSubresource(constantBuffers[4].Get(), 0, 0, &lightConstants, 0, 0);
     //immediateContext->PSSetConstantBuffers(11, 1, constantBuffers[4].GetAddressOf());    //3 は cascadedShadowMap に使用中
-    lightCBuffer->Activate(immediateContext, 11);  // slot11 にセット
 
-    spriteCBuffer->data.elapsedTime += delta_time;
+
+    //lightCBuffer->Activate(immediateContext, 11);  // slot11 にセット
+
+    lightManager->Apply(immediateContext, 11);
+
+    spriteCBuffer->data.elapsedTime += deltaTime;
     spriteCBuffer->data.enableGlitch = 0;
 
     spriteCBuffer->Activate(immediateContext, 10);   // slot10 にセット
@@ -1109,29 +1121,26 @@ void BootScene::DrawGui()
             if (ImGui::CollapsingHeader("Light Settings", ImGuiTreeNodeFlags_DefaultOpen))
             {
                 ImGui::Checkbox("useDeferredRendering", &useDeferredRendering);
-                ImGui::Checkbox("directionalLightEnable", &directionalLightEnable);
-                ImGui::SliderFloat3("Light Direction", &lightDirection.x, -1.0f, 1.0f);
-                ImGui::SliderFloat3("Light Color", &colorLight.x, -1.0f, 1.0f);
-                ImGui::SliderFloat("IBL Intensity", &iblIntensity, 0.0f, 10.0f);
-                ImGui::SliderFloat("Light Intensity", &colorLight.w, 0.0f, 10.0f);
-                ImGui::Checkbox("pointLightEnable", &pointLightEnable);
-                ImGui::SliderInt("Point Light Count", &pointLightCount, 0, 8);
-                for (int i = 0; i < pointLightCount; i++)
-                {
-                    std::string header = "PointLight[" + std::to_string(i) + "]";
-                    if (ImGui::CollapsingHeader(header.c_str()))
-                    {
-                        ImGui::DragFloat3(("Position##" + std::to_string(i)).c_str(), &pointLightPosition[i].x, 0.1f);
-                        ImGui::ColorEdit3(("Color##" + std::to_string(i)).c_str(), &pointLightColor[i].x);
-                        ImGui::SliderFloat(("Range##" + std::to_string(i)).c_str(), &pointLightRange[i], 0.0f, 10.0f);
-                        ImGui::SliderFloat(("Intensity##" + std::to_string(i)).c_str(), &pointLightColor[i].w, 0.0f, 10.0f);
-                    }
-                }
+                lightManager->DrawGUI();
+                //ImGui::Checkbox("directionalLightEnable", &directionalLightEnable);
+                //ImGui::SliderFloat3("Light Direction", &lightDirection.x, -1.0f, 1.0f);
+                //ImGui::SliderFloat3("Light Color", &colorLight.x, -1.0f, 1.0f);
+                //ImGui::SliderFloat("IBL Intensity", &iblIntensity, 0.0f, 10.0f);
+                //ImGui::SliderFloat("Light Intensity", &colorLight.w, 0.0f, 10.0f);
+                //ImGui::Checkbox("pointLightEnable", &pointLightEnable);
+                //ImGui::SliderInt("Point Light Count", &pointLightCount, 0, 8);
+                //for (int i = 0; i < pointLightCount; i++)
+                //{
+                //    std::string header = "PointLight[" + std::to_string(i) + "]";
+                //    if (ImGui::CollapsingHeader(header.c_str()))
+                //    {
+                //        ImGui::DragFloat3(("Position##" + std::to_string(i)).c_str(), &pointLightPosition[i].x, 0.1f);
+                //        ImGui::ColorEdit3(("Color##" + std::to_string(i)).c_str(), &pointLightColor[i].x);
+                //        ImGui::SliderFloat(("Range##" + std::to_string(i)).c_str(), &pointLightRange[i], 0.0f, 10.0f);
+                //        ImGui::SliderFloat(("Intensity##" + std::to_string(i)).c_str(), &pointLightColor[i].w, 0.0f, 10.0f);
+                //    }
+                //}
 
-                //ImGui::DragFloat4("Point Light Position", &pointLightPosition.x, 0.1f);
-                //ImGui::ColorEdit3("Point Light Color", &pointLightColor.x);
-                //ImGui::SliderFloat("Point Light Range", &pointLightRange, 0.0f, 10.0f);
-                //ImGui::SliderFloat("Point Light Threshold", &pointLightColor.w, 0.0f, 10.0f);
             }
 
             // -------------------------

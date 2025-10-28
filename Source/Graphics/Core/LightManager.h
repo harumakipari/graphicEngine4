@@ -29,7 +29,7 @@ public:
 public:
     void Initialize(ID3D11Device* device);
     void Update(float deltaTime);
-    void Apply(ID3D11DeviceContext* context, int slot);
+    void Apply(ID3D11DeviceContext* context, int slot) const;
 
     void AddPointLight(const PointLight& light)
     {
@@ -88,7 +88,7 @@ private:
     bool pointLightEnable = true;
     int pointLightCount = 8;
 
-    LightConstants constants;
+    LightConstants constants = {};
     std::vector<PointLight> pointLights;
     std::unique_ptr<ConstantBuffer<LightConstants>> lightCBuffer;
 };

@@ -42,14 +42,13 @@ class BootScene : public Scene
         float time = 0.0f;
         // shader のフラグ
         int enableCascadedShadowMaps;
-        int enableSSR;
+        int enableSsr;
         int enableFog;
         int enableBloom;
         float deltaTime = 0.0f;
 
         float gravity = 9.8f;
         float pads[3];
-
     };
 
     struct PointLights
@@ -97,10 +96,6 @@ class BootScene : public Scene
     bool directionalLightEnable = true; // 平行光源の on / off
     bool pointLightEnable = true;
     int pointLightCount = 8;
-    struct SpotLights
-    {
-
-    };
 
     struct LightConstants
     {
@@ -176,7 +171,7 @@ class BootScene : public Scene
 
     //DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.64f, -0.4f, 0.0f };
     DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
-    DirectX::XMFLOAT4 colorLight{ 1.0f,1.0f,1.0f,4.1f };
+    DirectX::XMFLOAT4 lightColor{ 1.0f,1.0f,1.0f,4.1f };
     float iblIntensity = 2.0f;  //Image Basesd Lightingの強度
 
     std::unique_ptr<Sprite> splash;
@@ -225,9 +220,9 @@ public:
 
     void Start() override;
 
-    void Update(ID3D11DeviceContext* immediate_context, float delta_time) override;
+    void Update(ID3D11DeviceContext* immediateContext, float deltaTime) override;
 
-    void Render(ID3D11DeviceContext* immediate_context, float delta_time) override;
+    void Render(ID3D11DeviceContext* immediateContext, float deltaTime) override;
 
     bool Uninitialize(ID3D11Device* device) override;
 

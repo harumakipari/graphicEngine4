@@ -10,12 +10,14 @@
 
 void LightManager::Initialize(ID3D11Device* device)
 {
+    int a = 0;
+    _ASSERT_EXPR(device != nullptr, L"Device is null in LightManager::Initialize");
     lightCBuffer = std::make_unique<ConstantBuffer<LightConstants>>(device);
 }
 
 void LightManager::Update(float deltaTime)
 {
-    assert(pointLights.size() > 8);
+    assert(pointLights.size() <= 8);
     constants.iblIntensity = iblIntensity;
     constants.directionalLightEnable = directionalLightEnable;
     constants.pointLightCount = pointLightCount;
@@ -23,13 +25,18 @@ void LightManager::Update(float deltaTime)
     constants.lightDirection = lightDirection;
     constants.directionalLightEnable = static_cast<int>(directionalLightEnable);
     constants.pointLightEnable = static_cast<int>(pointLightEnable);
-    for (int i = 0; i < 8; i++)
+    // デフォルト初期化
+    for (auto& p : constants.pointsLight)
+    {
+        p = {};  // 全部初期化しておく
+    }
+    for (size_t i = 0; i < pointLights.size() && i < 8; i++)
     {
         constants.pointsLight[i] = pointLights[i];
     }
 }
 
-void LightManager::Apply(ID3D11DeviceContext* immediateContext, int slot)
+void LightManager::Apply(ID3D11DeviceContext* immediateContext, int slot) const
 {
     lightCBuffer->data = constants;
     lightCBuffer->Activate(immediateContext, slot);
