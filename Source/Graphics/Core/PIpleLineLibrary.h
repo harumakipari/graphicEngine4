@@ -8,30 +8,23 @@
 #include "Graphics/Core/Shader.h"
 #include "Engine/Utility/Win32Utils.h"
 
-class PipeLineState
-{
-private:
-
-};
-
-
-enum RenderPath
+enum RenderPath :uint8_t
 {
     Forward,
-    Defferd,
+    Deferred,
     Shadow,
 };
 
-enum MaterialAlphaMode
+enum MaterialAlphaMode :uint8_t
 {
     MaterialOpaque,
     MaterialMask,
     MaterialBlend,
 };
 
-enum ModelMode
+enum ModelMode :uint8_t
 {
-    SkeltalComponent,
+    SkeletalComponent,
     StaticComponent,
     InstanceComponent,
 };
@@ -67,7 +60,7 @@ inline std::string GetPipelineName(RenderPath renderPath, MaterialAlphaMode alph
 {
     switch (modelMode)
     {
-    case ModelMode::SkeltalComponent:
+    case ModelMode::SkeletalComponent:
         switch (renderPath)
         {
         case RenderPath::Forward:
@@ -86,7 +79,7 @@ inline std::string GetPipelineName(RenderPath renderPath, MaterialAlphaMode alph
                 break;
             }
             break;
-        case RenderPath::Defferd:
+        case RenderPath::Deferred:
             switch (alphaMode)
             {
             case MaterialOpaque:
@@ -129,7 +122,7 @@ inline std::string GetPipelineName(RenderPath renderPath, MaterialAlphaMode alph
                 break;
             }
             break;
-        case RenderPath::Defferd:
+        case RenderPath::Deferred:
             switch (alphaMode)
             {
             case MaterialOpaque:
@@ -252,8 +245,8 @@ public:
         }
     }
 
-    // SkeltalMesh のパイプラインの設定する関数
-    void InitSkeltalMesh(ID3D11Device* device)
+    // SkeletalMesh のパイプラインの設定する関数
+    void InitSkeletalMesh(ID3D11Device* device)
     {
         HRESULT hr = S_OK;
         PipeLineStateDesc desc;
@@ -271,7 +264,8 @@ public:
         desc.primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
         hr = CreateVsFromCSO(device, "./Shader/GltfModelVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-        desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_BACK;
+        //desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_BACK;
+        desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_NONE;
         desc.depthState = DEPTH_STATE::ZT_ON_ZW_ON;
 
         // SkeltalMesh forward Opaque 用

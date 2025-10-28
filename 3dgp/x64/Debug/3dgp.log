@@ -1,2 +1,8 @@
-﻿  LightManager.cpp
+﻿  World.cpp
+  Framework.cpp
+  ActionDerived.cpp
+  BootScene.cpp
+  MainScene.cpp
+  TutorialScene.cpp
+  SceneRenderer.cpp
   3dgp.vcxproj -> C:\Users\2240225\Desktop\graphicEngine4\x64\Debug\3dgp.exe

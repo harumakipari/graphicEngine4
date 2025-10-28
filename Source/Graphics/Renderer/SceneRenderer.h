@@ -15,7 +15,6 @@
 class SceneRenderer
 {
 public:
-
     SceneRenderer()
     {
         // 定数バッファ
@@ -26,7 +25,7 @@ public:
         // パイプラインステート
         pipeLineStateSet = std::make_unique<PipeLineStateSet>();
         pipeLineStateSet->InitStaticMesh(Graphics::GetDevice());
-        pipeLineStateSet->InitSkeltalMesh(Graphics::GetDevice());
+        pipeLineStateSet->InitSkeletalMesh(Graphics::GetDevice());
     }
 
     virtual ~SceneRenderer() = default;
@@ -50,9 +49,9 @@ public:
 
     void CastShadowWithStaticBatching(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes);
 
-    void Draw(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass);
+    void Draw(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass) const;
 
-    void DrawWithStaticBatching(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass);
+    void DrawWithStaticBatching(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass) const;
 
     void DrawCloth(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass);
 private:
@@ -79,7 +78,7 @@ private:
         int material{ -1 };
         int hasTangent{ 0 };
         int skin{ -1 };
-        float disolveFactor = 0.0f;
+        float dissolveFactor = 0.0f;
 
         float emission = 0.0f;
         float pads[3];
@@ -88,6 +87,6 @@ private:
 
 public:
     // 今のRenderPath
-    RenderPath currentRenderPath = RenderPath::Defferd;
+    RenderPath currentRenderPath = RenderPath::Deferred;
 };
 

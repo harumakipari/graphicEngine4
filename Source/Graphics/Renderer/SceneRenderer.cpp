@@ -219,7 +219,7 @@ void SceneRenderer::CastShadowRender(ID3D11DeviceContext* immediateContext)
 }
 
 
-void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass)
+void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass) const
 {
     // 各 MeshComponent の model を取り出す
     const InterleavedGltfModel* model = meshComponent->model.get();
@@ -262,7 +262,7 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                 primitiveCBuffer->data.skin = node.skin;
                 primitiveCBuffer->data.color = { model->cpuColor.x,model->cpuColor.y,model->cpuColor.z,model->alpha };
                 primitiveCBuffer->data.emission = model->emission;
-                primitiveCBuffer->data.disolveFactor = model->disolveFactor;
+                primitiveCBuffer->data.dissolveFactor = model->disolveFactor;
 
                 //座標系の変換を行う
                 const DirectX::XMFLOAT4X4 coordinateSystemTransforms[]
@@ -334,7 +334,7 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                 //{
                 //    immediateContext->PSSetShader(pipeline.pixelShader ? pipeline.pixelShader.Get() : pixelShader.Get(), nullptr, 0);
                 //}
-                RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+                //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
                 bool passed = false;
                 switch (pass)
@@ -434,7 +434,7 @@ void SceneRenderer::DrawCloth(ID3D11DeviceContext* immediateContext, const MeshC
 
 }
 
-void SceneRenderer::DrawWithStaticBatching(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass)
+void SceneRenderer::DrawWithStaticBatching(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass) const
 {
 #if 1
     _ASSERT_EXPR(meshComponent->model->mode == InterleavedGltfModel::Mode::StaticMesh, L"This function only works with static_batching data.");
@@ -649,7 +649,7 @@ void SceneRenderer::CastShadow(ID3D11DeviceContext* immediateContext, const Mesh
                 primitiveCBuffer->data.skin = node.skin;
                 primitiveCBuffer->data.color = { model->cpuColor.x,model->cpuColor.y,model->cpuColor.z,model->alpha };
                 primitiveCBuffer->data.emission = model->emission;
-                primitiveCBuffer->data.disolveFactor = model->disolveFactor;
+                primitiveCBuffer->data.dissolveFactor = model->disolveFactor;
 
                 //座標系の変換を行う
                 const DirectX::XMFLOAT4X4 coordinateSystemTransforms[]

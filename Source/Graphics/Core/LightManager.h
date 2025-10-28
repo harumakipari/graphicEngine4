@@ -12,13 +12,13 @@ public:
         DirectX::XMFLOAT4 position{ 0.0f,0.0f,0.0f,0.0f };
         DirectX::XMFLOAT4 color{ 1.0f,0.0f,0.0f,1.0f };
         float range = 0.5f;
-        float pads[3];
+        float pads[3] = {};
     };
 
     struct LightConstants
     {
-        DirectX::XMFLOAT4 lightDirection;
-        DirectX::XMFLOAT4 lightColor;
+        DirectX::XMFLOAT4 lightDirection = {};
+        DirectX::XMFLOAT4 lightColor = {};
         float iblIntensity = 1.0f;
         int directionalLightEnable = 1;// ïΩçsåıåπÇÃ on / off
         int pointLightEnable = 1;

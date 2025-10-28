@@ -161,7 +161,7 @@ class BootScene : public Scene
 
     // ConstantBuffer ÉNÉâÉXÇ≈ä«óù
     std::unique_ptr<ConstantBuffer<SceneConstants>>     sceneCBuffer;
-    std::unique_ptr <ConstantBuffer<LightConstants>>    lightCBuffer;
+    //std::unique_ptr <ConstantBuffer<LightConstants>>    lightCBuffer;
     std::unique_ptr <ConstantBuffer<ShaderConstants>>   shaderCBuffer;
     std::unique_ptr <ConstantBuffer<FogConstants>>      fogCBuffer;
     std::unique_ptr <ConstantBuffer<SpriteConstants>>   spriteCBuffer;
