@@ -210,7 +210,7 @@ void Profiler::DrawUI()
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(1, 0));
         ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[smallFontIndex]);
 
-        ImVec2 controlsAreaSize(ImGui::GetContentRegionAvailWidth(), controlsHeight);
+        ImVec2 controlsAreaSize(ImGui::GetContentRegionAvail().x, controlsHeight);
         ImVec2 controlsAreaMin(ImGui::GetCursorScreenPos());
         ImVec2 controlsAreaMax(controlsAreaMin.x + controlsAreaSize.x, controlsAreaMin.y + controlsAreaSize.y);
         ImGui::BeginChild("Controls", controlsAreaSize, showBorders);
@@ -307,7 +307,7 @@ void Profiler::DrawUI()
     //-------------------------------------------------------------------------
     // Frames Area
     //-------------------------------------------------------------------------
-    ImVec2 framesAreaSize(ImGui::GetContentRegionAvailWidth() - frameAreaSliderWidth - frameAreaSliderSpacing, frameAreaHeight);
+    ImVec2 framesAreaSize(ImGui::GetContentRegionAvail().x - frameAreaSliderWidth - frameAreaSliderSpacing, frameAreaHeight);
     ImGui::BeginChild("Frames", framesAreaSize, showBorders);
     ImVec2 framesAreaMin(ImGui::GetCursorScreenPos());
     ImVec2 framesAreaMax(framesAreaMin.x + framesAreaSize.x, framesAreaMin.y + framesAreaSize.y);
@@ -397,7 +397,7 @@ void Profiler::DrawUI()
     //-------------------------------------------------------------------------
     // Store interaction button
     //-------------------------------------------------------------------------
-    ImVec2 interactionAreaSize(ImGui::GetContentRegionAvailWidth() - threadTitleWidth, ImGui::GetWindowHeight() - ImGui::GetCursorPosY() - 20);
+    ImVec2 interactionAreaSize(ImGui::GetContentRegionAvail().x - threadTitleWidth, ImGui::GetWindowHeight() - ImGui::GetCursorPosY() - 20);
     ImVec2 interactionArea = ImGui::GetCursorScreenPos();
     ImVec2 interactionAreaMin(interactionArea.x + threadTitleWidth, interactionArea.y);
     ImVec2 interactionAreaMax(interactionAreaMin.x + interactionAreaSize.x, interactionAreaMin.y + interactionAreaSize.y);
@@ -407,7 +407,7 @@ void Profiler::DrawUI()
     // Timeline
     //-------------------------------------------------------------------------
     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + threadTitleWidth, ImGui::GetCursorPosY()));
-    ImVec2 timelineAreaSize(ImGui::GetContentRegionAvailWidth(), timelineHeight);
+    ImVec2 timelineAreaSize(ImGui::GetContentRegionAvail().x, timelineHeight);
     ImGui::BeginChild("Timeline", timelineAreaSize, showBorders, ImGuiWindowFlags_NoMove);
     ImVec2 timelineAreaMin(ImGui::GetCursorScreenPos());
     ImVec2 timelineAreaMax(timelineAreaMin.x + timelineAreaSize.x, timelineAreaMin.y + timelineAreaSize.y);
@@ -463,14 +463,14 @@ void Profiler::DrawUI()
         //---------------------------------------------------------------------
         backgroundMin.x += threadTitleWidth;
         backgroundMin.y += threadTitleWidth;
-        backgroundMax.x = backgroundMin.x + ImGui::GetContentRegionAvailWidth() - threadTitleWidth;
+        backgroundMax.x = backgroundMin.x + ImGui::GetContentRegionAvail().x - threadTitleWidth;
 
 
         //---------------------------------------------------------------------
         // Sections area
         //---------------------------------------------------------------------
         ImGui::SameLine();
-        ImVec2 sectionsAreaSize(ImGui::GetContentRegionAvailWidth(), threadHeight);
+        ImVec2 sectionsAreaSize(ImGui::GetContentRegionAvail().x, threadHeight);
         ImGui::BeginChild(ImGui::GetID("Sections"), sectionsAreaSize, showBorders, ImGuiWindowFlags_NoMove);
         ImVec2 sectionsAreaMin(ImGui::GetCursorScreenPos());
         ImVec2 sectionsAreaMax(sectionsAreaMin.x + sectionsAreaSize.x, sectionsAreaMin.y + sectionsAreaSize.y);
@@ -530,7 +530,7 @@ void Profiler::DrawUI()
     //-------------------------------------------------------------------------
     {
         ImGui::SetCursorScreenPos(interactionAreaMin);
-        ImGui::InvisibleButton("", interactionAreaSize);
+        ImGui::InvisibleButton("##InteractionArea", interactionAreaSize);
 
         //---------------------------------------------------------------------
         // Panning 
@@ -595,7 +595,7 @@ void Profiler::DrawUI()
     // Separator between thread title and sections
     //-------------------------------------------------------------------------
     ImGui::GetWindowDrawList()->AddLine(timelineAreaMin, ImVec2(timelineAreaMin.x, timelineAreaMin.y + ImGui::GetWindowHeight()), separatorColor, 1.0f);
-    ImGui::GetWindowDrawList()->AddLine(ImVec2(0, timelineAreaMin.y), ImVec2(timelineAreaMax.x + ImGui::GetContentRegionAvailWidth(), timelineAreaMin.y), separatorColor, 1.0f);
+    ImGui::GetWindowDrawList()->AddLine(ImVec2(0, timelineAreaMin.y), ImVec2(timelineAreaMax.x + ImGui::GetContentRegionAvail().x, timelineAreaMin.y), separatorColor, 1.0f);
 
     //-------------------------------------------------------------------------
     // Frames and timeline rendering

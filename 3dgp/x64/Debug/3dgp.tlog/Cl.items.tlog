@@ -6,6 +6,8 @@ C:\Users\2240225\Desktop\graphicEngine4\External\imgui\imgui_impl_win32.cpp;C:\U
 C:\Users\2240225\Desktop\graphicEngine4\External\imgui\imgui_ja_gryph_ranges.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\imgui_ja_gryph_ranges.obj
 C:\Users\2240225\Desktop\graphicEngine4\External\imgui\imgui_tables.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\imgui_tables.obj
 C:\Users\2240225\Desktop\graphicEngine4\External\imgui\imgui_widgets.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\imgui_widgets.obj
+C:\Users\2240225\Desktop\graphicEngine4\External\imgui\profiler.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\profiler.obj
+C:\Users\2240225\Desktop\graphicEngine4\External\imgui\timer.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\timer.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Components\Audio\AudioSourceComponent.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\AudioSourceComponent.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Components\Base\Component.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\Component.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Components\Base\SceneComponent.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\SceneComponent.obj

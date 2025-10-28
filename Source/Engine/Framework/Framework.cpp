@@ -44,8 +44,8 @@ bool Framework::Initialize()
 
 
     //プロファイラ初期化
-    //ProfileInitialize(&isPaused, Framework::SetPause, ImGuiControl::Profiler::DefaultMaxThreads);
-    //ProfileThreadName(0, "Main Thread");
+    ProfileInitialize(&isPaused, Framework::SetPause, ImGuiControl::Profiler::DefaultMaxThreads);
+    ProfileThreadName(0, "Main Thread");
 
     return true;
 }
@@ -61,18 +61,9 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
     // SCENE_TRANSITION
     bool skipRendering = Scene::_update(immediateContext, deltaTime * timeScale);
 
+
 #ifdef USE_IMGUI
-    //ImGui::Begin("ImGUI");
-
-    //Scene::_drawGUI();
-
-    /*ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-#if 0
-    ImGui::Text("Video memory usage %d MB", video_memory_usage());
-#endif
-    ImGui::Text("ALT+ENTER to change window mode");
-
-    ImGui::End();*/
+    ProfileNewFrame();
 #endif
 
     //gameManager->UpdateAll(elapsed_time);
@@ -122,7 +113,7 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
 
 #ifdef USE_IMGUI
     //ImGui::Begin("ImGUI");
-
+    ProfileDrawUI();
     Scene::_drawGUI();
 
     /*ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -151,7 +142,7 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
 bool Framework::Uninitialize()
 {
     //プロファイラ終了
-    //ProfileShutdown();
+    ProfileShutdown();
 
     ID3D11Device* device = Graphics::GetDevice();
 
