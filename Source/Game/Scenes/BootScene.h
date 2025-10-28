@@ -51,75 +51,19 @@ class BootScene : public Scene
         float pads[3];
     };
 
-    struct PointLights
-    {
-        DirectX::XMFLOAT4 position{ 0.0f,0.0f,0.0f,0.0f };
-        DirectX::XMFLOAT4 color{ 1.0f,0.0f,0.0f,1.0f };
-        float range = 0.5f;
-        float pads[3];
-    };
-    DirectX::XMFLOAT4 pointLightPosition[8] =
-    {
-        { -2.0f,  2.0f, 0.0f, 10.0f },
-        { -1.0f,  2.0f, 0.0f, 10.0f },
-        { 0.0f,  2.0f, 0.0f, 10.0f },
-        { 1.0f,  2.0f, 0.0f, 10.0f },
-        { 2.0f,  2.0f, 0.0f, 10.0f },
-        { 3.0f,  2.0f, 0.0f, 10.0f },
-        { 4.0f,  2.0f, 0.0f, 10.0f },
-        { 5.0f,  2.0f, 0.0f, 10.0f },
-    };
-
-    DirectX::XMFLOAT4 pointLightColor[8] =
-    {
-        { 1.0f, 0.0f, 0.0f, 10.0f },  // 赤
-        { 0.0f, 1.0f, 0.0f, 10.0f },  // 緑
-        { 0.0f, 0.0f, 1.0f, 10.0f },  // 青
-        { 1.0f, 1.0f, 0.0f, 10.0f },  // 黄
-        { 1.0f, 0.0f, 1.0f, 10.0f },  // マゼンタ
-        { 0.0f, 1.0f, 1.0f, 10.0f },  // シアン
-        { 1.0f, 0.5f, 0.0f, 10.0f },  // オレンジ
-        { 0.5f, 0.0f, 1.0f, 10.0f },  // 紫
-    };
-
-    float pointLightRange[8] =
-    {
-        3.0f,
-        3.0f,
-        3.0f,
-        3.0f,
-        3.0f,
-        3.0f,
-        3.0f,
-        3.0f,
-    };
     bool directionalLightEnable = true; // 平行光源の on / off
-    bool pointLightEnable = true;
-    int pointLightCount = 8;
-
-    struct LightConstants
-    {
-        DirectX::XMFLOAT4 lightDirection;
-        DirectX::XMFLOAT4 colorLight;
-        float iblIntensity;
-        int directionalLightEnable = 1; // 平行光源の on / off
-        int pointLightEnable = 1;
-        int pointLightCount = 1;
-        PointLights pointsLight[8];
-    };
-    //LightConstants lightConstants = {};
 
     struct ShaderConstants
     {
-        float extraction_threshold{ 0.8f };
-        float gaussian_sigma{ 1.0f };
-        float bloom_intensity{ 1.0f };
+        float extractionThreshold{ 0.8f };
+        float gaussianSigma{ 1.0f };
+        float bloomIntensity{ 1.0f };
         float exposure{ 1.0f };
 
         float shadowColor = 0.2f;
         float shadowDepthBias = 0.0005f;
         //float shadowDepthBias = 0.001f;
-        bool colorizeCascadedlayer = false;
+        bool colorizeCascadeLayer = false;
         float maxDistance = 15.0f;// SCREEN_SPACE_REFLECTION
 
         float resolution = 0.3f;// SCREEN_SPACE_REFLECTION
@@ -161,7 +105,6 @@ class BootScene : public Scene
 
     // ConstantBuffer クラスで管理
     std::unique_ptr<ConstantBuffer<SceneConstants>>     sceneCBuffer;
-    //std::unique_ptr <ConstantBuffer<LightConstants>>    lightCBuffer;
     std::unique_ptr <ConstantBuffer<ShaderConstants>>   shaderCBuffer;
     std::unique_ptr <ConstantBuffer<FogConstants>>      fogCBuffer;
     std::unique_ptr <ConstantBuffer<SpriteConstants>>   spriteCBuffer;
@@ -169,7 +112,6 @@ class BootScene : public Scene
     ActorColliderManager actorColliderManager;
 
 
-    //DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.64f, -0.4f, 0.0f };
     DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
     DirectX::XMFLOAT4 lightColor{ 1.0f,1.0f,1.0f,4.1f };
     float iblIntensity = 2.0f;  //Image Basesd Lightingの強度

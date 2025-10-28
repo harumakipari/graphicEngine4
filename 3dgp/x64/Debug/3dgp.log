@@ -1,8 +1,7 @@
-﻿  World.cpp
+﻿C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(217,5): warning X4000: use of potentially uninitialized variable (CalculatedCascadedShadowFactor)
+  
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.cso
   Framework.cpp
-  ActionDerived.cpp
   BootScene.cpp
-  MainScene.cpp
-  TutorialScene.cpp
-  SceneRenderer.cpp
   3dgp.vcxproj -> C:\Users\2240225\Desktop\graphicEngine4\x64\Debug\3dgp.exe

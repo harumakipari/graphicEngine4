@@ -28,6 +28,12 @@ public:
         pipeLineStateSet->InitSkeletalMesh(Graphics::GetDevice());
     }
 
+    //コピーコンストラクタとコピー代入演算子を禁止にする
+    SceneRenderer(const SceneRenderer&) = delete;
+    SceneRenderer& operator=(const SceneRenderer&) = delete;
+    SceneRenderer(SceneRenderer&&) noexcept = delete;
+    SceneRenderer& operator=(SceneRenderer&&) noexcept = delete;
+
     virtual ~SceneRenderer() = default;
 
     // View関連の定数バッファを更新する
@@ -37,11 +43,11 @@ public:
         viewBuffer->Activate(immediateContext, 8);
     }
 
-    void RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::vector<std::shared_ptr<Actor>> allActors*/);
+    void RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::vector<std::shared_ptr<Actor>> allActors*/) const;
 
-    void RenderMask(ID3D11DeviceContext* immediateContext);
+    void RenderMask(ID3D11DeviceContext* immediateContext) const;
 
-    void RenderBlend(ID3D11DeviceContext* immediateContext);
+    void RenderBlend(ID3D11DeviceContext* immediateContext) const;
 
     void CastShadowRender(ID3D11DeviceContext* immediateContext);
 

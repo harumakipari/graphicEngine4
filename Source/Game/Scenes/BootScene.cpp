@@ -29,17 +29,18 @@
 
 bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
-
     sceneCBuffer = std::make_unique<ConstantBuffer<SceneConstants>>(device);
     shaderCBuffer = std::make_unique<ConstantBuffer<ShaderConstants>>(device);
     fogCBuffer = std::make_unique<ConstantBuffer<FogConstants>>(device);
     spriteCBuffer = std::make_unique<ConstantBuffer<SpriteConstants>>(device);
     sceneCBuffer->data.time = 0;//開始時に０にしておく
 
-    lightManager = std::make_unique<LightManager>();
-    lightManager->Initialize(device);
-    lightManager->SetDirectionalLight(lightDirection, lightColor);
-
+    // ライト
+    {
+        lightManager = std::make_unique<LightManager>();
+        lightManager->Initialize(device);
+        lightManager->SetDirectionalLight(lightDirection, lightColor);
+    }
     // FOG 
     framebuffers[0] = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
     HRESULT hr= CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", pixelShaders[2].GetAddressOf());
@@ -391,7 +392,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     //titlePlayer->SwitchPS(useDeferredRendering);
     //title->SwitchPS(useDeferredRendering);
     if (!useDeferredRendering)
-    {
+    {// フォワードレンダリング
         // MULTIPLE_RENDER_TARGETS
         multipleRenderTargets->Clear(immediateContext);
         multipleRenderTargets->Acticate(immediateContext);
@@ -467,7 +468,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         //gameWorld_->CastShadowRender(immediateContext);
         cascadedShadowMaps->Deactive(immediateContext);
 
-#if 0
+#if 1
         // FOG
         {
             framebuffers[0]->Clear(immediateContext, 0, 0, 0, 0);
@@ -476,7 +477,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
             RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
             RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-            RenderState::BindRasterizerState(immediateContext, RASTER_STATE::SOLID_CULL_NONE);
+            RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
             ID3D11ShaderResourceView* shader_resource_views[]
             {
                 multipleRenderTargets->renderTargetShaderResourceViews[0],  //colorMap
@@ -521,7 +522,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         }
     }
     else
-    {
+    {// ディファードレンダリング
         gBufferRenderTarget->Clear(immediateContext);
         gBufferRenderTarget->Acticate(immediateContext);
 
@@ -635,7 +636,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         //gameWorld_->CastShadowRender(immediateContext);
         cascadedShadowMaps->Deactive(immediateContext);
 
-#if 0
+#if 1
         // FOG
         {
             framebuffers[0]->Clear(immediateContext, 0, 0, 0, 0);
@@ -644,7 +645,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
             RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
             RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-            RenderState::BindRasterizerState(immediateContext, RASTER_STATE::SOLID_CULL_NONE);
+            RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
             ID3D11ShaderResourceView* shader_resource_views[]
             {
                 multipleRenderTargets->renderTargetShaderResourceViews[0],  //colorMap
@@ -929,7 +930,7 @@ void BootScene::DrawGui()
                 ImGui::Checkbox("Fit To Cascade", &cascadedShadowMaps->fitToCascade);
                 ImGui::SliderFloat("Shadow Color", &shaderCBuffer->data.shadowColor, 0.0f, 1.0f);
                 ImGui::DragFloat("Depth Bias", &shaderCBuffer->data.shadowDepthBias, 0.00001f, 0.0f, 0.01f, "%.8f");
-                ImGui::Checkbox("Colorize Layer", &shaderCBuffer->data.colorizeCascadedlayer);
+                ImGui::Checkbox("Colorize Layer", &shaderCBuffer->data.colorizeCascadeLayer);
                 //ImGui::DragInt("Colorize Layer", &shaderCBuffer->data.colorizeCascadedlayer);
                 //ImGui::SliderFloat("Shadow Color", &shaderConstants.shadowColor, 0.0f, 1.0f);
                 //ImGui::DragFloat("Depth Bias", &shaderConstants.shadowDepthBias, 0.00001f, 0.0f, 0.01f, "%.8f");

@@ -85,8 +85,8 @@
 // positionTexture                   texture  float4          2d             t1      1 
 // normalTexture                     texture  float4          2d             t2      1 
 // depthTexture                      texture  float4          2d             t3      1 
-// bloomTexure                       texture  float4          2d             t4      1 
-// fogTexure                         texture  float4          2d             t5      1 
+// bloomTexture                      texture  float4          2d             t4      1 
+// fogTexture                        texture  float4          2d             t5      1 
 // cascadedShadowMaps                texture  float4     2darray             t6      1 
 // SCENE_CONSTANT_BUFFER             cbuffer      NA          NA            cb1      1 
 // CSM_CONSTANTS                     cbuffer      NA          NA            cb3      1 
@@ -9487,7 +9487,7 @@ if_nz r1.y
   endif 
 
 #line 388
-  itof r1.y, r10.x  // r1.y <- visiblity
+  itof r1.y, r10.x  // r1.y <- visibility
 
 #line 389
   itof r1.z, l(1)
@@ -9536,7 +9536,7 @@ if_nz r1.y
   itof r1.z, l(0)
   itof r1.w, l(1)
   max r1.y, r1.z, r1.y
-  min r1.y, r1.w, r1.y  // r1.y <- visiblity
+  min r1.y, r1.w, r1.y  // r1.y <- visibility
 
 #line 395
   nop 

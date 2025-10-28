@@ -15,8 +15,8 @@ Texture2D colorTexture : register(t0);
 Texture2D positionTexture : register(t1);
 Texture2D normalTexture : register(t2);
 Texture2D depthTexture : register(t3);
-Texture2D bloomTexure : register(t4);
-Texture2D fogTexure : register(t5);
+Texture2D bloomTexture : register(t4);
+Texture2D fogTexture : register(t5);
 Texture2DArray cascadedShadowMaps : register(t6);
 
 
@@ -385,16 +385,16 @@ float3 CalculatedSSRColor(VS_OUT pin)
 #endif
     }
 #endif
-    float visiblity = hit1;
-    visiblity *= (1 - max(dot(-normalize(positionFrom.xyz), reflection), 0));
-    visiblity *= (1 - clamp(depth / thickness, 0, 1));
-    visiblity *= positionTo.w;
-    visiblity *= (uv.x < 0 || uv.x > 1 || uv.y < 0 || uv.y > 1) ? 0 : 1;
-    visiblity = clamp(visiblity, 0, 1);
+    float visibility = hit1;
+    visibility *= (1 - max(dot(-normalize(positionFrom.xyz), reflection), 0));
+    visibility *= (1 - clamp(depth / thickness, 0, 1));
+    visibility *= positionTo.w;
+    visibility *= (uv.x < 0 || uv.x > 1 || uv.y < 0 || uv.y > 1) ? 0 : 1;
+    visibility = clamp(visibility, 0, 1);
     
     float fresnel = saturate(FSchlick(0.04, max(0, dot(reflection, normal.xyz))));
     float3 reflectionColor = colorTexture.Sample(linearBorderBlackSamplerState, uv.xy).rgb;
-    reflectionColor = fresnel * reflectionColor * visiblity * reflectionIntensity;
+    reflectionColor = fresnel * reflectionColor * visibility * reflectionIntensity;
     return reflectionColor;
 }
 
@@ -465,7 +465,7 @@ float3 CalculatedFogColor(VS_OUT pin)
                 float2 offset = float2(x, y) / depthMapDimensions;
                 float2 texcoord = pin.texcoord + offset;
                 
-                float sampledRadiance = fogTexure.Sample(linearBorderBlackSamplerState, texcoord).x;
+                float sampledRadiance = fogTexture.Sample(linearBorderBlackSamplerState, texcoord).x;
 
                 float distance = x * x + y * y;
                 const float sigma = 2.0 * radius * radius;
@@ -484,7 +484,7 @@ float3 CalculatedFogColor(VS_OUT pin)
     }
     else
     {
-        fogFacter = fogTexure.Sample(linearBorderBlackSamplerState, pin.texcoord).x;
+        fogFacter = fogTexture.Sample(linearBorderBlackSamplerState, pin.texcoord).x;
     }
 
     float3 fogColor_ = fogColor.rgb * fogColor.a * max(0, fogFacter);
@@ -591,7 +591,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     //BLOOM
     if (enableBloom)
     {
-        float4 bloom = bloomTexure.Sample(pointSamplerState, pin.texcoord);
+        float4 bloom = bloomTexture.Sample(pointSamplerState, pin.texcoord);
         color.rgb += bloom.rgb;
     }
     

@@ -26,7 +26,7 @@ UINT SizeofComponent(DXGI_FORMAT format)
 //    return true;
 //}
 
-void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::vector<std::shared_ptr<Actor>> allActors*/)
+void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::vector<std::shared_ptr<Actor>> allActors*/) const
 {
     Scene* currentScene = Scene::GetCurrentScene();  // 現在のシーン取得
     if (!currentScene) return;
@@ -81,7 +81,7 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::v
     }
 }
 
-void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext)
+void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext) const
 {
     Scene* currentScene = Scene::GetCurrentScene();  // 現在のシーン取得
     if (!currentScene) return;
@@ -126,7 +126,7 @@ void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext)
     }
 }
 
-void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext)
+void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext) const
 {
     Scene* currentScene = Scene::GetCurrentScene();  // 現在のシーン取得
     if (!currentScene) return;
