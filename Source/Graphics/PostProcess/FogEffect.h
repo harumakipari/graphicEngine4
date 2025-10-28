@@ -9,6 +9,26 @@
 class FogEffect:public PostEffectBase
 {
 public:
+    struct FogConstants
+    {
+        float fogColor[4] = { 1.000f,1.000f, 1.000f, 1.000f }; // w: fog intensuty
+
+        float fogDensity = 0.02f;
+        float fogHeightFalloff = 0.05f;
+        float groundLevel = 0.0f;
+        float fogCutoffDistance = 500.0f;
+
+        float mieScatteringFactor = 0.55f;    
+
+        int enableDither = 1;
+        int enableBlur = 1;
+
+        float timeScale = 0.35f;
+        float noiseScale = 0.2f;
+        float pads[3];
+    };
+
+public:
     FogEffect() = default;
     ~FogEffect() = default;
 

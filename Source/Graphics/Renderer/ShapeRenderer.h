@@ -20,7 +20,7 @@ public:
         return instance;
     }
 
-    void Initalize(ID3D11Device* device);
+    void Iniitalize(ID3D11Device* device);
 
     enum class Type
     {

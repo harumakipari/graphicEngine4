@@ -28,7 +28,6 @@
 #include "Graphics/PostProcess/BloomEffect.h"
 
 
-
 bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
     sceneCBuffer = std::make_unique<ConstantBuffer<SceneConstants>>(device);
@@ -66,7 +65,7 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     // GBUFFER
     gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
-    hr = CreatePsFromCSO(device, "./Shader/DefefferdPS.cso", pixelShaders[1].ReleaseAndGetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/DeferredPS.cso", pixelShaders[1].ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //ブルーム
@@ -613,7 +612,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             gBufferRenderTarget->renderTargetShaderResourceViews[4],   // emissiveMap
         };
         // メインフレームバッファとブルームエフェクトを組み合わせて描画
-        fullscreenQuadTransfer->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), pixelShaders[1]/*DefefferdPS*/.Get());
+        fullscreenQuadTransfer->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), pixelShaders[1]/*DeferredPS*/.Get());
         //actorRender.RenderBlend(immediateContext);
 
 
@@ -853,7 +852,7 @@ void BootScene::DrawGui()
                 //ImGui::SliderFloat("Height Falloff", &fogConstants.fogHeightFalloff, 0.001f, 1.0f, "%.4f");
                 //ImGui::SliderFloat("Cutoff Distance", &fogConstants.fogCutoffDistance, 0.0f, 1000.0f);
                 //ImGui::SliderFloat("Ground Level", &fogConstants.groundLevel, -100.0f, 100.0f);
-                //ImGui::SliderFloat("Mie Scattering", &fogConstants.mieScatteringCoef, 0.0f, 1.0f, "%.4f");
+                //ImGui::SliderFloat("Mie Scattering", &fogConstants.mieScatteringFactor, 0.0f, 1.0f, "%.4f");
                 //ImGui::SliderFloat("Time Scale", &fogConstants.timeScale, 0.0f, 1.0f, "%.4f");
                 //ImGui::SliderFloat("Noise Scale", &fogConstants.noiseScale, 0.0f, 0.5f, "%.4f");
                 ImGui::ColorEdit3("Fog Color", fogCBuffer->data.fogColor);
@@ -862,7 +861,7 @@ void BootScene::DrawGui()
                 ImGui::SliderFloat("Height Falloff", &fogCBuffer->data.fogHeightFalloff, 0.001f, 1.0f, "%.4f");
                 ImGui::SliderFloat("Cutoff Distance", &fogCBuffer->data.fogCutoffDistance, 0.0f, 1000.0f);
                 ImGui::SliderFloat("Ground Level", &fogCBuffer->data.groundLevel, -100.0f, 100.0f);
-                ImGui::SliderFloat("Mie Scattering", &fogCBuffer->data.mieScatteringCoef, 0.0f, 1.0f, "%.4f");
+                ImGui::SliderFloat("Mie Scattering", &fogCBuffer->data.mieScatteringFactor, 0.0f, 1.0f, "%.4f");
                 ImGui::SliderFloat("Time Scale", &fogCBuffer->data.timeScale, 0.0f, 1.0f, "%.4f");
                 ImGui::SliderFloat("Noise Scale", &fogCBuffer->data.noiseScale, 0.0f, 0.5f, "%.4f");
                 ImGui::TreePop();

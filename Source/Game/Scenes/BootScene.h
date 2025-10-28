@@ -86,7 +86,7 @@ class BootScene : public Scene
         float groundLevel = 0.0f;
         float fogCutoffDistance = 500.0f;
 
-        float mieScatteringCoef = 0.55f;
+        float mieScatteringFactor = 0.55f;
 
         int enableDither = 1;
         int enableBlur = 1;

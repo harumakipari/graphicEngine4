@@ -3,80 +3,7 @@
 #include "Graphics/Core/Shader.h"
 #include "Engine/Utility/Win32Utils.h"
 
-//ShapeRenderer::ShapeRenderer(ID3D11Device* device)
-//{
-//    HRESULT hr{ S_OK };
-//
-//    D3D11_BUFFER_DESC bufferDesc{};
-//    bufferDesc.ByteWidth = static_cast<UINT>(sizeof(DirectX::XMFLOAT3) * maxPoints);
-//    bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-//    bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-//    bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-//    bufferDesc.MiscFlags = 0;
-//    bufferDesc.StructureByteStride = 0;
-//    hr = device->CreateBuffer(&bufferDesc, NULL, vertexBuffer.ReleaseAndGetAddressOf());
-//    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-//
-//
-//    bufferDesc.ByteWidth = sizeof(DebugConstants);
-//    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-//    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-//    bufferDesc.CPUAccessFlags = 0;
-//    bufferDesc.MiscFlags = 0;
-//    bufferDesc.StructureByteStride = 0;
-//    hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffer[1].GetAddressOf());
-//
-//    D3D11_INPUT_ELEMENT_DESC inputElementDesc[]
-//    {
-//        {"POSITION",0,DXGI_FORMAT_R32G32B32_FLOAT,0,D3D11_APPEND_ALIGNED_ELEMENT,D3D11_INPUT_PER_VERTEX_DATA,0},
-//    };
-//    CreateVsFromCSO(device, "./Shader/LineSegmentVS.cso", vertexShader.GetAddressOf(), inputLayout.GetAddressOf(), inputElementDesc, ARRAYSIZE(inputElementDesc));
-//    CreatePsFromCSO(device, "./Shader/LineSegmentPS.cso", pixelShader.GetAddressOf());
-//
-//    sphere = std::make_unique<GltfModel>(device, ".\\resources\\geometricPrimitive\\sphere.glb");
-//    capsule = std::make_unique<GltfModel>(device, ".\\resources\\geometricPrimitive\\capsule.glb");
-//    topHalfSphere = std::make_unique<GltfModel>(device, ".\\resources\\geometricPrimitive\\topHalfSphere.glb");
-//    bottomHalfSphere = std::make_unique<GltfModel>(device, ".\\resources\\geometricPrimitive\\bottomHalfSphere.glb");
-//    cylinder = std::make_unique<GltfModel>(device, ".\\resources\\geometricPrimitive\\cylinder.glb");
-//    cube = std::make_unique<GltfModel>(device, ".\\resources\\geometricPrimitive\\cube.glb");
-//
-//    std::vector<GltfModelBase::Material>& sphereMaterials = sphere->materials;
-//    std::vector<GltfModelBase::Material>& capsuleMaterials = capsule->materials;
-//    std::vector<GltfModelBase::Material>& topHalfSphereMaterials = topHalfSphere->materials;
-//    std::vector<GltfModelBase::Material>& bottomHalfSphereMaterials = bottomHalfSphere->materials;
-//    std::vector<GltfModelBase::Material>& cylinderMaterials = cylinder->materials;
-//    std::vector<GltfModelBase::Material>& cubeMaterials = cube->materials;
-//
-//    //デバック用のPSに変更する
-//    for (GltfModelBase::Material& material : sphereMaterials)
-//    {//色だけを返すPS
-//        CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
-//    }
-//    for (GltfModelBase::Material& material : capsuleMaterials)
-//    {//色だけを返すPS
-//        CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
-//    }
-//    for (GltfModelBase::Material& material : topHalfSphereMaterials)
-//    {//色だけを返すPS
-//        CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
-//    }
-//    for (GltfModelBase::Material& material : bottomHalfSphereMaterials)
-//    {//色だけを返すPS
-//        CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
-//    }
-//    for (GltfModelBase::Material& material : cylinderMaterials)
-//    {//色だけを返すPS
-//        CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
-//    }
-//    for (GltfModelBase::Material& material : cubeMaterials)
-//    {//色だけを返すPS
-//        CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
-//    }
-//
-//    //capsule = std::make_unique<GltfModel>(device, ".\\resources\\geometricPrimitive\\capsule01.glb");   //原点が一番下
-//}
-
-void ShapeRenderer::Initalize(ID3D11Device* device)
+void ShapeRenderer::Iniitalize(ID3D11Device* device)
 {
     HRESULT hr{ S_OK };
 
@@ -103,8 +30,10 @@ void ShapeRenderer::Initalize(ID3D11Device* device)
     {
         {"POSITION",0,DXGI_FORMAT_R32G32B32_FLOAT,0,D3D11_APPEND_ALIGNED_ELEMENT,D3D11_INPUT_PER_VERTEX_DATA,0},
     };
-    CreateVsFromCSO(device, "./Shader/LineSegmentVS.cso", vertexShader.GetAddressOf(), inputLayout.GetAddressOf(), inputElementDesc, ARRAYSIZE(inputElementDesc));
-    CreatePsFromCSO(device, "./Shader/LineSegmentPS.cso", pixelShader.GetAddressOf());
+    hr = CreateVsFromCSO(device, "./Shader/LineSegmentVS.cso", vertexShader.GetAddressOf(), inputLayout.GetAddressOf(), inputElementDesc, ARRAYSIZE(inputElementDesc));
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr = CreatePsFromCSO(device, "./Shader/LineSegmentPS.cso", pixelShader.GetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     sphere = std::make_unique<GltfModel>(device, "./Data/Debug/Primitives/sphere.glb");
     capsule = std::make_unique<GltfModel>(device, "./Data/Debug/Primitives/capsule.glb");
@@ -123,27 +52,33 @@ void ShapeRenderer::Initalize(ID3D11Device* device)
     //デバック用のPSに変更する
     for (GltfModelBase::Material& material : sphereMaterials)
     {//色だけを返すPS
-        CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
+        hr = CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
     for (GltfModelBase::Material& material : capsuleMaterials)
     {//色だけを返すPS
-        CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
+        hr = CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
     for (GltfModelBase::Material& material : topHalfSphereMaterials)
     {//色だけを返すPS
-        CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
+        hr = CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
     for (GltfModelBase::Material& material : bottomHalfSphereMaterials)
     {//色だけを返すPS
-        CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
+        hr = CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
     for (GltfModelBase::Material& material : cylinderMaterials)
     {//色だけを返すPS
-        CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
+        hr = CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
     for (GltfModelBase::Material& material : cubeMaterials)
     {//色だけを返すPS
-        CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
+        hr = CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
 
 
@@ -157,18 +92,19 @@ void ShapeRenderer::DrawSphere(ID3D11DeviceContext* immediateContext, const Dire
     immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
     immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
 
-    const DirectX::XMFLOAT4X4 coordinate_system_transforms[]{
+    constexpr DirectX::XMFLOAT4X4 coordinateSystemTransforms[]
+    {
 { -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },	// 0:RHS Y-UP
 { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },		// 1:LHS Y-UP
 { -1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1 },	// 2:RHS Z-UP
 { 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1 },		// 3:LHS Z-UP
     };
 #if 1
-    const float scale_factor = 1.0f; // To change the units from centimeters to meters, set 'scale_factor' to 0.01.
+    constexpr float scaleFactor = 1.0f; // To change the units from centimeters to meters, set 'scale_factor' to 0.01.
 #else
     const float scale_factor = 0.01f; // To change the units from centimeters to meters, set 'scale_factor' to 0.01.
 #endif
-    DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinate_system_transforms[0]) * DirectX::XMMatrixScaling(scale_factor, scale_factor, scale_factor) };
+    DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[0]) * DirectX::XMMatrixScaling(scaleFactor, scaleFactor, scaleFactor) };
     //DirectX::XMMATRIX S{ DirectX::XMMatrixScaling(radius,(radius * 2 + height) * 0.25f,radius) };//半径 1 だから scale.x は 1
     DirectX::XMMATRIX S{ DirectX::XMMatrixScaling(radius,radius,radius) };
     DirectX::XMMATRIX R{ DirectX::XMMatrixRotationRollPitchYaw(0,0,0) };
@@ -236,7 +172,7 @@ void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext,
     float radius, float height,
     const DirectX::XMFLOAT4& color)
 {
-  DebugConstants data1{ color };
+    DebugConstants data1{ color };
     immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
     immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
     immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());

@@ -36,7 +36,7 @@ bool Framework::Initialize()
     }
 
     // ShapeRenderer‚ğ‰Šú‰»
-    ShapeRenderer::Instance().Initalize(device);
+    ShapeRenderer::Instance().Iniitalize(device);
 
     // SCENE_TRANSITION
     //Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
