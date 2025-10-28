@@ -16,7 +16,6 @@ enum class SRV_SLOT :uint8_t
     EMISSIVE,
 };
 
-
 class GBuffer
 {
 public:

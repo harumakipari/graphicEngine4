@@ -6,6 +6,13 @@
 
 #include "Engine/Utility/Win32Utils.h"
 
+enum class M_SRV_SLOT :uint8_t
+{
+    COLOR,
+    POSITION,
+    NORMAL,
+};
+
 class MultipleRenderTargets
 {
 public:

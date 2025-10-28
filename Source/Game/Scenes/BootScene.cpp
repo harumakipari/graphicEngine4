@@ -519,10 +519,10 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             ID3D11ShaderResourceView* shader_resource_views[]
             {
                 // MULTIPLE_RENDER_TARGETS
-                multipleRenderTargets->renderTargetShaderResourceViews[0],  //colorMap
+                multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)],  //colorMap
                 //framebuffers[1]->shaderResourceViews[0].Get(),
-                multipleRenderTargets->renderTargetShaderResourceViews[1],
-                multipleRenderTargets->renderTargetShaderResourceViews[2],
+                multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::POSITION)],
+                multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::NORMAL)],
                 multipleRenderTargets->depthStencilShaderResourceView,      //depthMap
                 //bloomer->shader_resource_view(),    //bloom
                 postEffectManager->GetFinalOutput(),
@@ -605,11 +605,11 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         ID3D11ShaderResourceView* shaderResourceViews[]
         {
             // MULTIPLE_RENDER_TARGETS
-            gBufferRenderTarget->renderTargetShaderResourceViews[0],  // normalMap
-            gBufferRenderTarget->renderTargetShaderResourceViews[1],   // msrMap
-            gBufferRenderTarget->renderTargetShaderResourceViews[2],   // colorMap
-            gBufferRenderTarget->renderTargetShaderResourceViews[3],   // positionMap
-            gBufferRenderTarget->renderTargetShaderResourceViews[4],   // emissiveMap
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],  // normalMap
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::PBR_VALUE)],   // msrMap
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],   // colorMap
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],   // emissiveMap
         };
         // メインフレームバッファとブルームエフェクトを組み合わせて描画
         fullscreenQuadTransfer->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), pixelShaders[1]/*DeferredPS*/.Get());
@@ -661,8 +661,10 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
             ID3D11ShaderResourceView* shader_resource_views[]
             {
-                multipleRenderTargets->renderTargetShaderResourceViews[0],  //colorMap
-                multipleRenderTargets->depthStencilShaderResourceView,      //depthMap
+                gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],  //colorMap
+                gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
+                //multipleRenderTargets->renderTargetShaderResourceViews[0],  //colorMap
+                //multipleRenderTargets->depthStencilShaderResourceView,      //depthMap
                 cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
             };
             fullscreenQuadTransfer->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), pixelShaders[2]/*VolumetricFogPS*/.Get());
@@ -689,8 +691,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             ID3D11ShaderResourceView* shader_resource_views[]
             {
                 // MULTIPLE_RENDER_TARGETS
-                multipleRenderTargets->renderTargetShaderResourceViews[0],  //colorMap
-                //gBufferRenderTarget->renderTargetShaderResourceViews[0],  //colorMap
+                //multipleRenderTargets->renderTargetShaderResourceViews[0],  //colorMap
+                gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],  //colorMap
                 //framebuffers[1]->shaderResourceViews[0].Get(),
     #if 0
                 multipleRenderTargets->renderTargetShaderResourceViews[1],  // positionMap

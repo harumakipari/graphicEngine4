@@ -28,7 +28,6 @@ public:
 	void DrawDebugUI()override;
 
 private:
-public:
 	//float bloom_extraction_threshold = 0.85f;
 	//float bloom_intensity = 0.016f;
 	float bloomExtractionThreshold = 0.777f;
