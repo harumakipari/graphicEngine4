@@ -1087,7 +1087,7 @@
     <FxCompile Include="Shader\GltfModelGameCharacter.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\GltfModelInstancedBaatchingCsmVS.hlsl">
+    <FxCompile Include="Shader\GltfModelInstancedBatchingCsmVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GltfModelInstancedBatchingVS.hlsl">
@@ -1201,7 +1201,7 @@
     <FxCompile Include="Shader\DefefferdPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\GltfModelDefferedPS.hlsl">
+    <FxCompile Include="Shader\GltfModelDeferredPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\ElasticBuildsVS.hlsl">

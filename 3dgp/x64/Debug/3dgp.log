@@ -1,41 +1,193 @@
-﻿  MainScene.cpp
-C:\Users\2240225\Desktop\graphicEngine4\Source\Components\Render\MeshComponent.h(119,32): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
-  (ソース ファイル 'Source/Game/Scenes/MainScene.cpp' をコンパイルしています)
+﻿  SceneComponent.cpp
+  CameraComponent.cpp
+  CollisionComponent.cpp
+  RigidBodyComponent.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Components/Base/SceneComponent.cpp' をコンパイルしています)
   
-C:\Users\2240225\Desktop\graphicEngine4\Source\Components\Render\MeshComponent.h(205,32): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
-  (ソース ファイル 'Source/Game/Scenes/MainScene.cpp' をコンパイルしています)
+  ShapeComponent.cpp
+  ControllerComponent.cpp
+  EffectComponent.cpp
+  EraseInAreaComponent.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Components/Controller/ControllerComponent.cpp' をコンパイルしています)
+  
+  ItemSpawnerComponent.cpp
+  LifeTimeComponent.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Components/Game/EraseInAreaComponent.cpp' をコンパイルしています)
+  
+  ShockWaveCollisionComponent.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Components/Game/EraseInAreaComponent.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Components/Game/ItemSpawnerComponent.cpp' をコンパイルしています)
+  
+  ActorManager.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Components/Game/ShockWaveCollisionComponent.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Components/Game/ShockWaveCollisionComponent.cpp' をコンパイルしています)
+  
+  World.cpp
+  Framework.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Core/ActorManager.cpp' をコンパイルしています)
+  
+  Scene.cpp
+  Beam.cpp
+  ActionDerived.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Engine/Framework/Framework.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Player\TitlePlayer.h(91,28): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Engine/Framework/Framework.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Player\TitlePlayer.h(95,28): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Engine/Framework/Framework.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Engine/Framework/Framework.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Engine/Scene/Scene.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Beam/Beam.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Enemy/ActionDerived.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Beam/Beam.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Enemy/ActionDerived.cpp' をコンパイルしています)
+  
+  BehaviorTree.cpp
+  JudgmentDerived.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Enemy/BehaviorTree.cpp' をコンパイルしています)
+  
+  NodeBase.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Enemy/BehaviorTree.cpp' をコンパイルしています)
+  
+  RiderEnemy.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Enemy/JudgmentDerived.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Enemy/JudgmentDerived.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Enemy/NodeBase.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Enemy/RiderEnemy.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Enemy/NodeBase.cpp' をコンパイルしています)
+  
+  PickUpItem.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Enemy/RiderEnemy.cpp' をコンパイルしています)
+  
+  Player.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Item/PickUpItem.cpp' をコンパイルしています)
+  
+  PlayerState.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Item/PickUpItem.cpp' をコンパイルしています)
+  
+  BossBuilding.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Player/Player.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Item\PickUpItem.cpp(13,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Item\PickUpItem.cpp(48,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Player/Player.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Player\Player.cpp(37,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Player\Player.cpp(68,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Player\Player.cpp(112,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Player/PlayerState.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Player/PlayerState.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Stage/BossBuilding.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Stage/BossBuilding.cpp' をコンパイルしています)
+  
+  Building.cpp
+  BuildingManager.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Stage/Building.cpp' をコンパイルしています)
+  
+  GameManager.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Actors/Stage/Building.cpp' をコンパイルしています)
+  
+  BootScene.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Managers/BuildingManager.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Managers/BuildingManager.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Managers/GameManager.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Managers/GameManager.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Scenes/BootScene.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Player\TitlePlayer.h(91,28): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Scenes/BootScene.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Player\TitlePlayer.h(95,28): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Scenes/BootScene.cpp' をコンパイルしています)
+  
+  LoadingScene.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Scenes/BootScene.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\Cloth.h(232,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Scenes/BootScene.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\Cloth.h(234,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Scenes/BootScene.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Scenes\BootScene.cpp(42,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Scenes\BootScene.cpp(55,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Scenes\BootScene.cpp(59,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  MainScene.cpp
+  TutorialScene.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Scenes/LoadingScene.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Scenes/LoadingScene.cpp' をコンパイルしています)
   
 C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
   (ソース ファイル 'Source/Game/Scenes/MainScene.cpp' をコンパイルしています)
   
-C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\Building.h(60,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
-  (ソース ファイル 'Source/Game/Scenes/MainScene.cpp' をコンパイルしています)
-  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Scenes\LoadingScene.cpp(67,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Scenes\LoadingScene.cpp(80,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Scenes\LoadingScene.cpp(112,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Scenes\LoadingScene.cpp(113,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  Graphics.cpp
 C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
-  (ソース ファイル 'Source/Game/Scenes/MainScene.cpp' をコンパイルしています)
-  
-C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\TitleStage.h(61,28): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
-  (ソース ファイル 'Source/Game/Scenes/MainScene.cpp' をコンパイルしています)
-  
-C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\TitleStage.h(62,28): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
-  (ソース ファイル 'Source/Game/Scenes/MainScene.cpp' をコンパイルしています)
-  
-C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\TitleStage.h(63,28): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
-  (ソース ファイル 'Source/Game/Scenes/MainScene.cpp' をコンパイルしています)
-  
-C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\TitleStage.h(64,28): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
-  (ソース ファイル 'Source/Game/Scenes/MainScene.cpp' をコンパイルしています)
-  
-C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\TitleStage.h(68,28): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
-  (ソース ファイル 'Source/Game/Scenes/MainScene.cpp' をコンパイルしています)
-  
-C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\TitleStage.h(69,28): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
-  (ソース ファイル 'Source/Game/Scenes/MainScene.cpp' をコンパイルしています)
-  
-C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\TitleStage.h(70,28): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
-  (ソース ファイル 'Source/Game/Scenes/MainScene.cpp' をコンパイルしています)
-  
-C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\TitleStage.h(71,28): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
   (ソース ファイル 'Source/Game/Scenes/MainScene.cpp' をコンパイルしています)
   
 C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Player\TitlePlayer.h(91,28): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
@@ -49,4 +201,46 @@ C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Scenes\MainScene.cpp(141,20)
 C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Scenes\MainScene.cpp(145,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
 C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Scenes\MainScene.cpp(161,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
 C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Scenes\MainScene.cpp(162,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Scenes/TutorialScene.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Game/Scenes/TutorialScene.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Scenes\TutorialScene.cpp(74,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Scenes\TutorialScene.cpp(87,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  EffectSystem.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Graphics/Core/Graphics.cpp' をコンパイルしています)
+  
+  SceneRenderer.cpp
+  InterleavedGltfModel.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Graphics/Effect/EffectSystem.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\BossBuilding.h(75,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Graphics/Effect/EffectSystem.cpp' をコンパイルしています)
+  
+  Physics.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\Effect\EffectSystem.cpp(68,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\Effect\EffectSystem.cpp(69,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\Effect\EffectSystem.cpp(70,20): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Graphics/Renderer/SceneRenderer.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\Cloth.h(232,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Graphics/Renderer/SceneRenderer.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Game\Actors\Stage\Cloth.h(234,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Graphics/Renderer/SceneRenderer.cpp' をコンパイルしています)
+  
+  PhysicsUtility.cpp
+  ObjectManager.cpp
+  UIFactory.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Widgets/ObjectManager.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.h(283,24): warning C4834: [[nodiscard]] 属性を持つ関数の戻り値を破棄しています
+  (ソース ファイル 'Source/Widgets/UIFactory.cpp' をコンパイルしています)
+  
   3dgp.vcxproj -> C:\Users\2240225\Desktop\graphicEngine4\x64\Debug\3dgp.exe

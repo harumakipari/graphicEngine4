@@ -197,7 +197,7 @@ public:
 
         // StaticMesh defferd Opaque 用
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelDefferedPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
@@ -215,7 +215,7 @@ public:
 
         // StaticMesh defferd Mask 用
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelDefferedPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
@@ -233,7 +233,7 @@ public:
 
         // StaticMesh defferd Blend 用
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelDefferedPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
@@ -285,7 +285,7 @@ public:
 
         // SkeltalMesh defferd Opaque 用
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelDefferedPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
@@ -303,7 +303,7 @@ public:
 
         // SkeltalMesh defferd Mask 用
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelDefferedPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
@@ -321,7 +321,7 @@ public:
 
         // SkeltalMesh defferd Blend 用
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelDefferedPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
@@ -332,7 +332,7 @@ public:
         {
             hr = CreateVsFromCSO(device, "./Shader/ElasticBuildsVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelDefferedPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
             desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_NONE;
@@ -366,7 +366,7 @@ public:
             desc.gemetryShader = nullptr;
             hr = CreateVsFromCSO(device, "./Shader/ClothVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelDefferedPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
             desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_NONE;

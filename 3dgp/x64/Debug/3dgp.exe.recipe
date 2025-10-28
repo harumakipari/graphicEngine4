@@ -124,7 +124,7 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelCsmVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelDefferedPS.cso</FullPath>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelDeferredPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelDissolvePS.cso</FullPath>
@@ -139,7 +139,7 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelGameCharacter.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelInstancedBaatchingCsmVS.cso</FullPath>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelInstancedBatchingCsmVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelInstancedBatchingVS.cso</FullPath>

@@ -38,7 +38,7 @@ public:
     std::optional<std::string> overridePipelineName;
     std::optional<std::string> overrideCascadeShadowPipelineName;
 public:
-    MeshComponent(const std::string& name, std::shared_ptr<Actor> owner) :SceneComponent(name, owner) {};
+    MeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner) {};
     std::shared_ptr<InterleavedGltfModel> model;
     // モデルのノード情報
     std::vector<InterleavedGltfModel::Node> modelNodes = {};
@@ -88,7 +88,7 @@ protected:
 class SkeltalMeshComponent :public MeshComponent
 {
 public:
-    SkeltalMeshComponent(const std::string& name, std::shared_ptr<Actor> owner) :MeshComponent(name, owner)
+    SkeltalMeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :MeshComponent(name, owner)
     {
     }
 
@@ -99,7 +99,7 @@ public:
         modelNodes = model->GetNodes();
     }
 
-    void AppendAnimations(const std::vector<std::string>& filenames)
+    void AppendAnimations(const std::vector<std::string>& filenames) const
     {
         model->AddAnimations(filenames);
     }
@@ -109,14 +109,15 @@ public:
 
     }
 
-    void SetMaterialPS(const std::string& psFilename, const std::string& materialName)
+    void SetMaterialPS(const std::string& psFilename, const std::string& materialName) const
     {
         ID3D11Device* device = Graphics::GetDevice();
         for (InterleavedGltfModel::Material& material : model->materials)
         {
             if (material.name == materialName)
             {
-                CreatePsFromCSO(device, psFilename.c_str(), material.replacedPixelShader.GetAddressOf());
+                HRESULT hr = CreatePsFromCSO(device, psFilename.c_str(), material.replacedPixelShader.GetAddressOf());
+                _ASSERT_EXPR(hr, hr_trace(hr));
             }
         }
     }
@@ -172,11 +173,11 @@ public:
     // モデルのノード情報
     std::vector<InterleavedGltfModel::Node> modelNodes = {};
 
-    BuildMeshComponent(const std::string& name, std::shared_ptr<Actor> owner) :SceneComponent(name, owner)
+    BuildMeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner)
     {
     }
 
-    virtual ~BuildMeshComponent() {}
+    ~BuildMeshComponent() override {}
 
     void SetModel(const std::string& filename, bool isSaveVerticesData = false)
     {
@@ -185,7 +186,7 @@ public:
         modelNodes = model->GetNodes();
     }
 
-    void AppendAnimations(const std::vector<std::string>& filenames)
+    void AppendAnimations(const std::vector<std::string>& filenames) const
     {
         model->AddAnimations(filenames);
     }
@@ -195,37 +196,38 @@ public:
 
     }
 
-    void SetMaterialPS(const std::string& psFilename, const std::string& materialName)
+    void SetMaterialPS(const std::string& psFilename, const std::string& materialName) const
     {
         ID3D11Device* device = Graphics::GetDevice();
         for (InterleavedGltfModel::Material& material : model->materials)
         {
             if (material.name == materialName)
             {
-                CreatePsFromCSO(device, psFilename.c_str(), material.replacedPixelShader.GetAddressOf());
+                HRESULT hr = CreatePsFromCSO(device, psFilename.c_str(), material.replacedPixelShader.GetAddressOf());
+                _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             }
         }
     }
 
-    void RenderOpaque(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const
+    void RenderOpaque(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& world) const
     {
         //model->Animate(animationClip, animationTime, model->nodes);
         model->Render(immediateContext, world, modelNodes, InterleavedGltfModel::RenderPass::Opaque, pipeLineState_);
     }
-    void RenderMask(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const
+    void RenderMask(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& world) const
     {
         //const DirectX::XMFLOAT4X4 world = CreateWorldMatrix();
         //model->Animate(animationClip, animationTime, model->nodes);
         model->Render(immediateContext, world, modelNodes, InterleavedGltfModel::RenderPass::Mask, pipeLineState_);
     }
-    void RenderBlend(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const
+    void RenderBlend(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& world) const
     {
         //const DirectX::XMFLOAT4X4 world = CreateWorldMatrix();
         //model->Animate(animationClip, animationTime, model->nodes);
         model->Render(immediateContext, world, modelNodes, InterleavedGltfModel::RenderPass::Blend, pipeLineState_);
     }
 
-    void CastShadow(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const
+    void CastShadow(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& world) const
     {
         //const DirectX::XMFLOAT4X4 world = CreateWorldMatrix();
         //model->Animate(animationClip, animationTime, model->nodes);
@@ -285,7 +287,7 @@ protected:
 class StaticMeshComponent :public MeshComponent
 {
 public:
-    StaticMeshComponent(const std::string& name, std::shared_ptr<Actor> owner) :MeshComponent(name, owner)
+    StaticMeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :MeshComponent(name, owner)
     {
     }
 
@@ -326,7 +328,7 @@ public:
 class InstancedStaticMeshComponent :public StaticMeshComponent
 {
 public:
-    InstancedStaticMeshComponent(const std::string& name, std::shared_ptr<Actor> owner) :StaticMeshComponent(name, owner)
+    InstancedStaticMeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :StaticMeshComponent(name, owner)
     {
     }
     //// モデルのノード情報

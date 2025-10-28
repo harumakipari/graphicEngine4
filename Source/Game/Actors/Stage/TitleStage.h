@@ -12,7 +12,7 @@ public:
     TitleStage(std::string actorName) :Actor(actorName) {}
     virtual ~TitleStage() = default;
 
-    std::shared_ptr<StaticMeshComponent> titleLogo; 
+    std::shared_ptr<StaticMeshComponent> titleLogo;
     std::shared_ptr<StaticMeshComponent> stage;
     std::shared_ptr<StaticMeshComponent> build;
     std::shared_ptr<StaticMeshComponent> trafficLight;
@@ -24,7 +24,7 @@ public:
         SetQuaternionRotation(transform.GetRotation());
         SetScale(transform.GetScale());
 
-        stage = this->NewSceneComponent<StaticMeshComponent>("stageComponent","empty");
+        stage = this->NewSceneComponent<StaticMeshComponent>("stageComponent", "empty");
         stage->SetModel("./Data/Models/Title/title_yuka_kabe.gltf");
         //stage->SetModel("./Data/Models/Stage/SpotLightStage/stydio_6.gltf");
         stage->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
@@ -33,7 +33,7 @@ public:
         titleLogo = this->NewSceneComponent<StaticMeshComponent>("logoComponent", "empty");
         titleLogo->SetModel("./Data/Models/Title/title_rogo.gltf");
         titleLogo->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
-        titleLogo->SetRelativeScaleDirect({ -1.0f,1.0f,-1.0f });        
+        titleLogo->SetRelativeScaleDirect({ -1.0f,1.0f,-1.0f });
         titleLogo->SetRelativeLocationDirect({ 0.0f,0.1f,-0.1f });      // yÀ•W 1.9f ‚Å”ÍˆÍŠO
         titleLogo->SetRelativeEulerRotationDirect({ 0.0f,-9.0f,0.0f });
         titleLogo->SetIsVisible(false);
@@ -49,7 +49,7 @@ public:
         trafficLight->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         trafficLight->model->emission = 1.0f;
         trafficLight->SetRelativeScaleDirect({ 2.0f,2.0f,2.0f });
-        trafficLight->SetRelativeLocationDirect({ 4.25f,0.09f,7.27f });     
+        trafficLight->SetRelativeLocationDirect({ 4.25f,0.09f,7.27f });
         trafficLight->SetRelativeEulerRotationDirect({ -12.4f,8.169f,53.431f });
         //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", trafficLight->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
     }
@@ -58,23 +58,31 @@ public:
     {
         if (useDeffered)
         {
-            CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDefferedPS.cso", stage->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-            CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDefferedPS.cso", titleLogo->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-            CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDefferedPS.cso", build->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-            CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDefferedPS.cso", trafficLight->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+            HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDeferredPS.cso", stage->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(hr, hr_trace(hr));
+            hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDeferredPS.cso", titleLogo->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(hr, hr_trace(hr));
+            hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDeferredPS.cso", build->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(hr, hr_trace(hr));
+            hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDeferredPS.cso", trafficLight->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(hr, hr_trace(hr));
         }
         else
         {
-            CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", stage->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-            CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", titleLogo->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-            CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", build->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-            CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", trafficLight->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+            HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", stage->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(hr, hr_trace(hr));
+            hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", titleLogo->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(hr, hr_trace(hr));
+            hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", build->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(hr, hr_trace(hr));
+            hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", trafficLight->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(hr, hr_trace(hr));
         }
     }
 
     void Update(float deltaTime)override
     {
-        if (isPushButton&&!isSetEasing)
+        if (isPushButton && !isSetEasing)
         {
             yEasing.Clear();
             yEasing.SetEasing(EaseType::OutQuart, 0.1f, 1.9f, 1.0f);
@@ -110,7 +118,7 @@ private:
     float easeY = 0.0f;
     bool isPushButton = false;
 
-    bool isSetEasing =false;
+    bool isSetEasing = false;
 
     bool OnPushBack = false;
 };

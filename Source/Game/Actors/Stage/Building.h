@@ -57,7 +57,8 @@ public:
         preSkeltalMeshComponent = this->NewSceneComponent<class BuildMeshComponent>("preSkeltalMeshComponent");
         preSkeltalMeshComponent->SetModel("./Data/Models/Building/build_materials.gltf", false);
         preSkeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
-        CreatePsFromCSO(Graphics::GetDevice(), "./Data/Shaders/BuildingPS.cso", preSkeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+        HRESULT hr= CreatePsFromCSO(Graphics::GetDevice(), "./Data/Shaders/BuildingPS.cso", preSkeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
         auto& model = preSkeltalMeshComponent->model;
         for (auto& material : model->materials)
         {// material ‚ğ‘S‚Ä BLEND ‚É•ÏX‚·‚é
