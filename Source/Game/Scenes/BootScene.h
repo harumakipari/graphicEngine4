@@ -19,7 +19,7 @@
 #include "Graphics/Shadow/CascadeShadowMap.h"
 #include "Graphics/PostProcess/MultipleRenderTargets.h"
 #include "Graphics/Effect/EffectSystem.h"
-#include "Graphics/Core/Light.h"
+#include "Graphics/Core/LightManager.h"
 #include "Graphics/Renderer/SceneRenderer.h"
 #include "Graphics/Core/ConstantBuffer.h"
 
@@ -173,12 +173,10 @@ class BootScene : public Scene
 
     ActorColliderManager actorColliderManager;
 
-    //Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffers[8];
 
     //DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.64f, -0.4f, 0.0f };
     DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
     DirectX::XMFLOAT4 colorLight{ 1.0f,1.0f,1.0f,4.1f };
-    //float iblIntensity = 1.0f;  //Image Basesd Lightingの強度
     float iblIntensity = 2.0f;  //Image Basesd Lightingの強度
 
     std::unique_ptr<Sprite> splash;
@@ -215,8 +213,6 @@ class BootScene : public Scene
 
     void SetUpActors();
 
-    // ライト
-    Light light;
 
     SIZE framebufferDimensions;
 
@@ -243,6 +239,9 @@ public:
     static inline Scene::Autoenrollment<BootScene> _autoenrollment;
 
 private:
+    std::unique_ptr<LightManager> lightManager;
+
+
     std::shared_ptr<TitlePlayer> titlePlayer;
     std::shared_ptr<Stage>  title;
     std::shared_ptr<CollisionMesh> stageCollisionMesh;

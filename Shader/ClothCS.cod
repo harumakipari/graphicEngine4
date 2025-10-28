@@ -105,7 +105,7 @@ dcl_thread_group 16, 1, 1
 // Initial variable locations:
 //   vThreadID.x <- id.x; vThreadID.y <- id.y; vThreadID.z <- id.z
 //
-#line 68 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ClothCS.hlsl"
+#line 68 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothCS.hlsl"
 ld_structured r0.x, vThreadID.x, l(0), t0.xxxx  // r0.x <- readVertex.position.x
 ld_structured r0.y, vThreadID.x, l(4), t0.xxxx  // r0.y <- readVertex.position.y
 ld_structured r0.z, vThreadID.x, l(8), t0.xxxx  // r0.z <- readVertex.position.z

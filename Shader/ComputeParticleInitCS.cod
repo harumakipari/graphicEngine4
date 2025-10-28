@@ -58,7 +58,7 @@ dcl_thread_group 1024, 1, 1
 // Initial variable locations:
 //   vThreadID.x <- dispatchThreadId.x; vThreadID.y <- dispatchThreadId.y; vThreadID.z <- dispatchThreadId.z
 //
-#line 11 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ComputeParticleInitCS.hlsl"
+#line 11 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticleInitCS.hlsl"
 mov r0.x, vThreadID.x  // r0.x <- index
 
 #line 14

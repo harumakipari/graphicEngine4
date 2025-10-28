@@ -250,6 +250,7 @@
     <ClCompile Include="Source\Game\SofyBody\SoftBody.cpp" />
     <ClCompile Include="Source\Graphics\Cloud\VolumetricCloudscapes.cpp" />
     <ClCompile Include="Source\Graphics\Core\Graphics.cpp" />
+    <ClCompile Include="Source\Graphics\Core\LightManager.cpp" />
     <ClCompile Include="Source\Graphics\Core\RenderState.cpp" />
     <ClCompile Include="Source\Graphics\Core\Shader.cpp" />
     <ClCompile Include="Source\Graphics\Effect\ComputeParticleSystem.cpp" />
@@ -385,10 +386,11 @@
     <ClInclude Include="Source\Graphics\Cloud\VolumetricCloudscapes.h" />
     <ClInclude Include="Source\Graphics\Core\ConstantBuffer.h" />
     <ClInclude Include="Source\Graphics\Core\Graphics.h" />
-    <ClInclude Include="Source\Graphics\Core\Light.h" />
+    <ClInclude Include="Source\Graphics\Core\LightManager.h" />
     <ClInclude Include="Source\Graphics\Core\PipelineState.h" />
     <ClInclude Include="Source\Graphics\Core\PipleLineLibrary.h" />
     <ClInclude Include="Source\Graphics\Core\RenderState.h" />
+    <ClInclude Include="Source\Graphics\Core\SceneCommonConstants.h" />
     <ClInclude Include="Source\Graphics\Core\Shader.h" />
     <ClInclude Include="Source\Graphics\Effect\ComputeParticleSystem.h" />
     <ClInclude Include="Source\Graphics\Effect\EffectSystem.h" />
@@ -400,6 +402,7 @@
     <ClInclude Include="Source\Graphics\PostProcess\FullScreenQuad.h" />
     <ClInclude Include="Source\Graphics\PostProcess\GBuffer.h" />
     <ClInclude Include="Source\Graphics\PostProcess\MultipleRenderTargets.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\PostProcessSystem.h" />
     <ClInclude Include="Source\Graphics\Renderer\SceneRenderer.h" />
     <ClInclude Include="Source\Graphics\Renderer\ShapeRenderer.h" />
     <ClInclude Include="Source\Graphics\Resource\GeometricPrimitive.h" />

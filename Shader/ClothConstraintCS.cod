@@ -103,7 +103,7 @@ dcl_thread_group 16, 1, 1
 // Initial variable locations:
 //   vThreadID.x <- id.x; vThreadID.y <- id.y; vThreadID.z <- id.z
 //
-#line 159 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ClothConstraintCS.hlsl"
+#line 159 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothConstraintCS.hlsl"
 uge r0.x, vThreadID.x, cb10[0].y
 if_nz r0.x
 

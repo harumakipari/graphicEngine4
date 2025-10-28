@@ -95,7 +95,7 @@ dcl_temps 9
 //   o1.x <- <main return value>.worldPosition.x; o1.y <- <main return value>.worldPosition.y; o1.z <- <main return value>.worldPosition.z; o1.w <- <main return value>.worldPosition.w; 
 //   o0.x <- <main return value>.position.x; o0.y <- <main return value>.position.y; o0.z <- <main return value>.position.z; o0.w <- <main return value>.position.w
 //
-#line 5 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\SkinnedMeshVS.hlsl"
+#line 5 "C:\Users\2240225\Desktop\graphicEngine4\Shader\SkinnedMeshVS.hlsl"
 itof r0.x, l(0)  // r0.x <- vin.normal.w
 
 #line 6

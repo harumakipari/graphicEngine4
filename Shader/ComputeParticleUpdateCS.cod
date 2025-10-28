@@ -111,10 +111,10 @@ dcl_thread_group 1024, 1, 1
 // Initial variable locations:
 //   vThreadID.x <- dispatchThreadId.x; vThreadID.y <- dispatchThreadId.y; vThreadID.z <- dispatchThreadId.z
 //
-#line 53 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ComputeParticle.hlsli"
+#line 53 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticle.hlsli"
 mov r0.x, l(8)  // r0.x <- IndirectArgumentsNumDeadParticle
 
-#line 13 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ComputeParticleUpdateCS.hlsl"
+#line 13 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticleUpdateCS.hlsl"
 mov r0.y, vThreadID.x  // r0.y <- headerIndex
 
 #line 15

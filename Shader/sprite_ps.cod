@@ -56,7 +56,7 @@ dcl_temps 4
 //   v2.x <- pin.texCoord.x; v2.y <- pin.texCoord.y; 
 //   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
 //
-#line 10 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\sprite_ps.hlsl"
+#line 10 "C:\Users\2240225\Desktop\graphicEngine4\Shader\sprite_ps.hlsl"
 sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v2.xyxx, t0.xyzw, s2  // r0.x <- color.x; r0.y <- color.y; r0.z <- color.z; r0.w <- color.w
 
 #line 11

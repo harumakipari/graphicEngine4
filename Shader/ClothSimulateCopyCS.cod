@@ -68,7 +68,7 @@ dcl_thread_group 16, 1, 1
 // Initial variable locations:
 //   vThreadID.x <- id.x; vThreadID.y <- id.y; vThreadID.z <- id.z
 //
-#line 77 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ClothSimulateCopyCS.hlsl"
+#line 77 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothSimulateCopyCS.hlsl"
 mov r0.x, l(0)  // r0.x <- i
 mov r0.y, r0.x  // r0.y <- i
 loop 

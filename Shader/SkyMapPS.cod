@@ -50,7 +50,7 @@ dcl_temps 3
 //   v1.x <- pin.texcoord.x; v1.y <- pin.texcoord.y; 
 //   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
 //
-#line 11 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\SkyMapPS.hlsl"
+#line 11 "C:\Users\2240225\Desktop\graphicEngine4\Shader\SkyMapPS.hlsl"
 mul r0.x, v1.x, l(2.000000)
 mov r0.y, l(-1.000000)
 add r0.x, r0.y, r0.x  // r0.x <- ndc.x

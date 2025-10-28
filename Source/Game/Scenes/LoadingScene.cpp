@@ -153,7 +153,7 @@ void LoadingScene::Update(ID3D11DeviceContext* immediate_context, float delta_ti
     //LoadingActorManager::Update(delta_time);
     //if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
     {
-        if (_has_finished_preloading() && !enemy->GetAnimationController()->IsPlayAnimation())
+        if (_has_finished_preloading()/* && !enemy->GetAnimationController()->IsPlayAnimation()*/)
         {// ‰ñ“]‚ªŽO‰ñ‚µ‚½‚ç
             _transition(preload_scene, {});
         }

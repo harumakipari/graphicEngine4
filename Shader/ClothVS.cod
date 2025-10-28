@@ -99,7 +99,7 @@ dcl_temps 9
 //   o1.x <- <main return value>.wPosition.x; o1.y <- <main return value>.wPosition.y; o1.z <- <main return value>.wPosition.z; o1.w <- <main return value>.wPosition.w; 
 //   o0.x <- <main return value>.position.x; o0.y <- <main return value>.position.y; o0.z <- <main return value>.position.z; o0.w <- <main return value>.position.w
 //
-#line 21 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ClothVS.hlsl"
+#line 21 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothVS.hlsl"
 ld_structured_indexable(structured_buffer, stride=112)(mixed,mixed,mixed,mixed) r0.x, v0.x, l(0), t0.xxxx  // r0.x <- vin.position.x
 ld_structured_indexable(structured_buffer, stride=112)(mixed,mixed,mixed,mixed) r0.y, v0.x, l(4), t0.xxxx  // r0.y <- vin.position.y
 ld_structured_indexable(structured_buffer, stride=112)(mixed,mixed,mixed,mixed) r0.z, v0.x, l(8), t0.xxxx  // r0.z <- vin.position.z

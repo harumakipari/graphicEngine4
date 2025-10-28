@@ -38,7 +38,7 @@ dcl_temps 1
 //   v1.x <- texcoord.x; v1.y <- texcoord.y; 
 //   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
 //
-#line 13 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\GaussianBlurDownSamplingPS.hlsl"
+#line 13 "C:\Users\2240225\Desktop\graphicEngine4\Shader\GaussianBlurDownSamplingPS.hlsl"
 ftoi r0.xy, l(0.000000, 0.000000, 0.000000, 0.000000)
 sample_aoffimmi_indexable(0,0,0)(texture2d)(float,float,float,float) o0.xyzw, v1.xyxx, t0.xyzw, s1
 ret 

@@ -2,7 +2,7 @@
 
 #ifdef USE_IMGUI
 #define IMGUI_ENABLE_DOCKING
-#include "../External/imgui/imgui.h"
+#include "imgui.h"
 #endif
 
 #include "Graphics/Core/Shader.h"
@@ -29,66 +29,13 @@
 
 bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
-    //HRESULT hr;
 
-#if 0 // 定数バッファ　
-    D3D11_BUFFER_DESC bufferDesc{};
-    bufferDesc.ByteWidth = sizeof(sceneConstants);
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = 0;
-    hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[0].ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    bufferDesc.ByteWidth = sizeof(shaderConstants);
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = 0;
-    hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[1].ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    bufferDesc.ByteWidth = sizeof(fogConstants);
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = 0;
-    hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[2].ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    //Glitch
-    bufferDesc.ByteWidth = sizeof(spriteConstants);
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = 0;
-    hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[3].ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    bufferDesc.ByteWidth = sizeof(LightConstants);
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = 0;
-    hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[4].ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    sceneConstants.time = 0;//開始時に０にしておく
-#else
     sceneCBuffer = std::make_unique<ConstantBuffer<SceneConstants>>(device);
     lightCBuffer = std::make_unique<ConstantBuffer<LightConstants>>(device);
     shaderCBuffer = std::make_unique<ConstantBuffer<ShaderConstants>>(device);
     fogCBuffer = std::make_unique<ConstantBuffer<FogConstants>>(device);
     spriteCBuffer = std::make_unique<ConstantBuffer<SpriteConstants>>(device);
-
     sceneCBuffer->data.time = 0;//開始時に０にしておく
-#endif // 0 // 定数バッファ　
 
     // FOG 
     framebuffers[0] = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
@@ -463,6 +410,8 @@ bool BootScene::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
 
 bool BootScene::Uninitialize(ID3D11Device* device)
 {
+    ClearActorManager();
+
     Physics::Instance().Finalize();
     //ActorManager::ClearAll();
     return true;

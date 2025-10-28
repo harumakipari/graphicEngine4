@@ -73,7 +73,7 @@ dcl_temps 6
 //   o1.x <- <main return value>.instanceId; 
 //   o0.x <- <main return value>.position.x; o0.y <- <main return value>.position.y; o0.z <- <main return value>.position.z; o0.w <- <main return value>.position.w
 //
-#line 34 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\GltfModelInstancedBaatchingCsmVS.hlsl"
+#line 34 "C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelInstancedBaatchingCsmVS.hlsl"
 itof r0.x, l(1)  // r0.x <- position.w
 
 #line 38

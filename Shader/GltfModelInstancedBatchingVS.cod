@@ -83,7 +83,7 @@ dcl_temps 11
 //   o1.x <- <main return value>.wPosition.x; o1.y <- <main return value>.wPosition.y; o1.z <- <main return value>.wPosition.z; o1.w <- <main return value>.wPosition.w; 
 //   o0.x <- <main return value>.position.x; o0.y <- <main return value>.position.y; o0.z <- <main return value>.position.z; o0.w <- <main return value>.position.w
 //
-#line 8 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\GltfModelInstancedBatchingVS.hlsl"
+#line 8 "C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelInstancedBatchingVS.hlsl"
 mov r0.x, v4.x  // r0.x <- worldTransform._m00
 mov r1.x, v4.y  // r1.x <- worldTransform._m01
 mov r2.x, v4.z  // r2.x <- worldTransform._m02

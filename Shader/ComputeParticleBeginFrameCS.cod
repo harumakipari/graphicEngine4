@@ -47,7 +47,7 @@ dcl_thread_group 1, 1, 1
 // Initial variable locations:
 //   vThreadID.x <- dispatchThreadId.x; vThreadID.y <- dispatchThreadId.y; vThreadID.z <- dispatchThreadId.z
 //
-#line 4 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ComputeParticle.hlsli"
+#line 4 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticle.hlsli"
 mov r0.x, l(1024)  // r0.x <- NumParticleThread
 
 #line 51
@@ -71,7 +71,7 @@ mov r1.z, l(36)  // r1.z <- IndirectArgumentsNumEmitParticleIndex
 #line 66
 mov r1.w, l(40)  // r1.w <- IndirectArgumentsNumEmitPixelParticleIndex
 
-#line 10 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ComputeParticleBeginFrameCS.hlsl"
+#line 10 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticleBeginFrameCS.hlsl"
 ld_raw_indexable(raw_buffer)(mixed,mixed,mixed,mixed) r2.x, r0.y, u2.xxxx
 mov r2.x, r2.x  // r2.x <- previousNumParticle
 

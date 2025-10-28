@@ -35,7 +35,7 @@
 #include "Physics/CollisionMesh.h"
 #include "Graphics/Effect/Particles.h"
 #include "Graphics/Cloud/VolumetricCloudscapes.h"
-#include "Graphics/Core/Light.h"
+#include "Graphics/Core/LightManager.h"
 #include "Graphics/PostProcess/GBuffer.h"
 
 #include "Graphics/Effect/EffectSystem.h"

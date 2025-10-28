@@ -52,7 +52,7 @@ dcl_temps 17
 //   v1.x <- pin.texcoord.x; v1.y <- pin.texcoord.y; 
 //   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
 //
-#line 217 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ShaderToyPS.hlsl"
+#line 217 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ShaderToyPS.hlsl"
 mov r0.xy, v0.xyxx  // r0.x <- fragCoord.x; r0.y <- fragCoord.y
 
 #line 219

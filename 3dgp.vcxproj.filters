@@ -462,6 +462,9 @@
     <ClCompile Include="Source\Game\SofyBody\SoftBody.cpp">
       <Filter>Sources\Game\SoftBody</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\Core\LightManager.cpp">
+      <Filter>Sources\Graphics\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -941,7 +944,7 @@
     <ClInclude Include="Source\Graphics\PostProcess\GBuffer.h">
       <Filter>Sources\Graphics\PostProcess</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Core\Light.h">
+    <ClInclude Include="Source\Graphics\Core\LightManager.h">
       <Filter>Sources\Graphics\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Resource\Model.h">
@@ -976,6 +979,12 @@
     </ClInclude>
     <ClInclude Include="Source\Game\SofyBody\MassPoint.h">
       <Filter>Sources\Game\SoftBody</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\PostProcess\PostProcessSystem.h">
+      <Filter>Sources\Graphics\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\Core\SceneCommonConstants.h">
+      <Filter>Sources\Graphics\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

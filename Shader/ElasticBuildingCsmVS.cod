@@ -100,7 +100,7 @@ dcl_temps 6
 //   o1.x <- <main return value>.instanceId; 
 //   o0.x <- <main return value>.position.x; o0.y <- <main return value>.position.y; o0.z <- <main return value>.position.z; o0.w <- <main return value>.position.w
 //
-#line 80 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ElasticBuildingCsmVS.hlsl"
+#line 80 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildingCsmVS.hlsl"
 mul r0.xyz, v0.xxxx, cb0[0].xyzx
 mul r1.xyz, v0.yyyy, cb0[1].xyzx
 add r0.xyz, r0.xyzx, r1.xyzx

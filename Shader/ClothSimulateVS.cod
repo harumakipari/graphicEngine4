@@ -99,7 +99,7 @@ dcl_temps 8
 //   o1.x <- <main return value>.wPosition.x; o1.y <- <main return value>.wPosition.y; o1.z <- <main return value>.wPosition.z; o1.w <- <main return value>.wPosition.w; 
 //   o0.x <- <main return value>.position.x; o0.y <- <main return value>.position.y; o0.z <- <main return value>.position.z; o0.w <- <main return value>.position.w
 //
-#line 39 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ClothSimulateVS.hlsl"
+#line 39 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothSimulateVS.hlsl"
 mov r0.x, v2.w  // r0.x <- sigma
 
 #line 41

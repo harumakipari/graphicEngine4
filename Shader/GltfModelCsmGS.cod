@@ -39,7 +39,7 @@ dcl_maxout 3
 //   v[2][0].x <- input[2].position.x; v[2][0].y <- input[2].position.y; v[2][0].z <- input[2].position.z; v[2][0].w <- input[2].position.w; 
 //   v[2][1].x <- input[2].instanceId
 //
-#line 21 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\GltfModelCsmGS.hlsl"
+#line 21 "C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelCsmGS.hlsl"
 mov r0.x, v[0][1].x  // r0.x <- element.renderTargetArrayIndex
 
 #line 23

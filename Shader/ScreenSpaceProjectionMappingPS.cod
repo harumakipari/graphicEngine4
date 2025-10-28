@@ -75,7 +75,7 @@ dcl_temps 8
 //   v1.x <- pin.texcoord.x; v1.y <- pin.texcoord.y; 
 //   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
 //
-#line 57 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ScreenSpaceProjectionMappingPS.hlsl"
+#line 57 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ScreenSpaceProjectionMappingPS.hlsl"
 sample_indexable(texture2d)(float,float,float,float) r0.z, v1.xyxx, t21.yzxw, s1
 mov r0.z, r0.z  // r0.z <- depth
 

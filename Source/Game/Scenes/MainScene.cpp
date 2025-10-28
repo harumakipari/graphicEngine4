@@ -1727,10 +1727,10 @@ void MainScene::SetUpActors()
     }
 #endif
     Transform playerTr(DirectX::XMFLOAT3{ 0.7f,0.8f,-9.5f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    player = GetActorManager()->CreateAndRegisterActorWithTransform<Player>("actor", playerTr);
+    player = actorManager->CreateAndRegisterActorWithTransform<Player>("actor", playerTr);
     //player = gameWorld_->SpawnActor<Player>("player");
     Transform enemyTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-180.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    enemies[0] = GetActorManager()->CreateAndRegisterActorWithTransform<RiderEnemy>("enemy", enemyTr);
+    enemies[0] = actorManager->CreateAndRegisterActorWithTransform<RiderEnemy>("enemy", enemyTr);
     //enemies[0] = gameWorld_->SpawnActor<RiderEnemy>("enemy");
 #if 0
     auto pickUpItem = ActorManager::CreateAndRegisterActor<PickUpItem>("pickUpItem");

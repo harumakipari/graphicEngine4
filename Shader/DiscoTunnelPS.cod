@@ -45,7 +45,7 @@ dcl_temps 7
 //   v0.x <- position.x; v0.y <- position.y; v0.z <- position.z; v0.w <- position.w; 
 //   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
 //
-#line 44 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\DiscoTunnelPS.hlsl"
+#line 44 "C:\Users\2240225\Desktop\graphicEngine4\Shader\DiscoTunnelPS.hlsl"
 mov r0.xy, v0.xyxx  // r0.x <- fragCoord.x; r0.y <- fragCoord.y
 
 #line 46

@@ -58,6 +58,11 @@ public:
     // ActorManager の取得
     const ActorManager* GetActorManager() const { return actorManager_.get(); }
     ActorManager* GetActorManager() { return actorManager_.get(); }
+
+    void ClearActorManager()
+    {
+        actorManager_->ClearAll();
+    }
     //std::unique_ptr<ActorManager>& GetActorManager() { return actorManager_; }
 private:
     // 純粋仮想関数：シーンの初期化

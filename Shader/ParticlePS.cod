@@ -41,7 +41,7 @@ dcl_temps 2
 //   v2.x <- pin.texcoord.x; v2.y <- pin.texcoord.y; 
 //   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
 //
-#line 12 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ParticlePS.hlsl"
+#line 12 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ParticlePS.hlsl"
 mov r0.xyzw, v1.xyzw  // r0.x <- color.x; r0.y <- color.y; r0.z <- color.z; r0.w <- color.w
 
 #line 18

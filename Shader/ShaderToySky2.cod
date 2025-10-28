@@ -53,7 +53,7 @@ dcl_indexableTemp x0[9], 4
 //   v1.x <- pin.texcoord.x; v1.y <- pin.texcoord.y; 
 //   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
 //
-#line 190 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ShaderToySky2.hlsl"
+#line 190 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ShaderToySky2.hlsl"
 mov r0.xy, v0.xyxx  // r0.x <- fragCoord.x; r0.y <- fragCoord.y
 
 #line 191

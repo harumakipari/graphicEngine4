@@ -119,7 +119,7 @@ dcl_maxout 4
 //   v[0][0].x <- input; 
 //   x0 <- corners; x1 <- texcoords
 //
-#line 16 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ParticleGS.hlsl"
+#line 16 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ParticleGS.hlsl"
 mov x0[0].xy, l(-1.000000,-1.000000,0,0)
 mov x0[1].xy, l(-1.000000,1.000000,0,0)
 mov x0[2].xy, l(1.000000,-1.000000,0,0)

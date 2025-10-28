@@ -185,10 +185,10 @@ dcl_temps 4
 //   v4.x <- pin.texcoord.x; v4.y <- pin.texcoord.y; 
 //   v5.x <- isFrontFace
 //
-#line 66 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\ComputeParticle.hlsli"
+#line 66 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticle.hlsli"
 mov r0.x, l(40)  // r0.x <- IndirectArgumentsNumEmitPixelParticleIndex
 
-#line 32 "C:\Users\2240225\Desktop\3Dsoftbody\Shader\GltfModelEmitParticlePS.hlsl"
+#line 32 "C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelEmitParticlePS.hlsl"
 mov r0.y, l(2.200000)  // r0.y <- GAMMA
 
 #line 34
