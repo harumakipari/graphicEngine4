@@ -53,7 +53,8 @@ public:
 
     ParticleSystem* CreateEmitter(int count) {
         std::unique_ptr<ParticleSystem> effect = std::make_unique<ParticleSystem>(Graphics::GetDevice(), count);
-        MakeDummyTexture(Graphics::GetDevice(), effect->particleTexture.GetAddressOf(), 0xFFFFFFFF, 16);
+        HRESULT hr= MakeDummyTexture(Graphics::GetDevice(), effect->particleTexture.GetAddressOf(), 0xFFFFFFFF, 16);
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
         return particles.emplace_back(std::move(effect)).get();
     }
 

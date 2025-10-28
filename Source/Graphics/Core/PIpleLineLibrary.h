@@ -245,7 +245,7 @@ public:
             desc.pixelShader = nullptr;
             hr = CreateVsFromCSO(device, "./Shader/GltfModelStaticBatchingCsmVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), NULL, NULL, 0);
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-            hr = CreateGsFromCSO(device, "./Shader/GltfModelCsmGS.cso", desc.gemetryShader.ReleaseAndGetAddressOf());
+            hr = CreateGsFromCSO(device, "./Shader/GltfModelCsmGS.cso", desc.geometryShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             desc.blendState = BLEND_STATE::NONE;
             AddPipeLineState("CascadeShadowMapStaticMesh", desc);
@@ -345,7 +345,7 @@ public:
             desc.pixelShader = nullptr;
             hr = CreateVsFromCSO(device, "./Shader/GltfModelCsmVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), NULL, NULL, 0);
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-            hr = CreateGsFromCSO(device, "./Shader/GltfModelCsmGS.cso", desc.gemetryShader.ReleaseAndGetAddressOf());
+            hr = CreateGsFromCSO(device, "./Shader/GltfModelCsmGS.cso", desc.geometryShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             AddPipeLineState("CascadeShadowMapSkeltalMesh", desc);
         }
@@ -355,7 +355,7 @@ public:
             desc.pixelShader = nullptr;
             hr = CreateVsFromCSO(device, "./Shader/ElasticBuildingCsmVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), NULL, NULL, 0);
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-            hr = CreateGsFromCSO(device, "./Shader/GltfModelCsmGS.cso", desc.gemetryShader.ReleaseAndGetAddressOf());
+            hr = CreateGsFromCSO(device, "./Shader/GltfModelCsmGS.cso", desc.geometryShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             AddPipeLineState("CascadeShadowMapElasticBuilding", desc);
         }
@@ -363,7 +363,7 @@ public:
         // cloth
         {
             desc.inputLayout = nullptr;
-            desc.gemetryShader = nullptr;
+            desc.geometryShader = nullptr;
             hr = CreateVsFromCSO(device, "./Shader/ClothVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
@@ -403,7 +403,7 @@ public:
         immediateContext->VSSetShader(sets_[name].vertexShader.Get(), nullptr, 0);
         immediateContext->PSSetShader(sets_[name].pixelShader.Get(), nullptr, 0);
         immediateContext->DSSetShader(sets_[name].domainShader.Get(), nullptr, 0);
-        immediateContext->GSSetShader(sets_[name].gemetryShader.Get(), nullptr, 0);
+        immediateContext->GSSetShader(sets_[name].geometryShader.Get(), nullptr, 0);
         immediateContext->HSSetShader(sets_[name].hullShader.Get(), nullptr, 0);
 
         RenderState::BindDepthStencilState(immediateContext, sets_[name].depthState);

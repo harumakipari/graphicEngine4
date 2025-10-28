@@ -54,8 +54,8 @@ void EffectSystem::Initialize()
     for (int i = 0; i < ARRAYSIZE(computeParticles); i++)
     {
         //テクスチャ読み込み
-        LoadTextureFromFile(Graphics::GetDevice(), filePath[i], shaderResourceViews[i].ReleaseAndGetAddressOf(), NULL);
-
+        HRESULT hr = LoadTextureFromFile(Graphics::GetDevice(), filePath[i], shaderResourceViews[i].ReleaseAndGetAddressOf(), NULL);
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
         //パーティクルシステム生成
         computeParticles[i] = std::make_unique<ComputeParticleSystem>(Graphics::GetDevice(),
             numParticles[i],
@@ -65,9 +65,12 @@ void EffectSystem::Initialize()
 
     //仮
     model = std::make_unique<GltfModel>(Graphics::GetDevice(), "./Data/Models/Items/HeldEnergyCore/heldEnergyCore.gltf");
-    CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmitParticlePS.cso", model->pixelShader.ReleaseAndGetAddressOf());
-    CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmitParticlePS.cso", meshParticlePixelShader.ReleaseAndGetAddressOf());
-    CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDissolvePS.cso", dissolvePixelShader.ReleaseAndGetAddressOf());
+    HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmitParticlePS.cso", model->pixelShader.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmitParticlePS.cso", meshParticlePixelShader.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDissolvePS.cso", dissolvePixelShader.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //パーティクルシステム
         //particles = std::make_unique<decltype(particles)::element_type>(Graphics::GetDevice(), 10000);
@@ -75,7 +78,8 @@ void EffectSystem::Initialize()
         //particles->particleSystemData.spriteSheetGrid = { 8,8 };
         //LoadTextureFromFile(device, L"./Data/Effect/Particles/Ramp02.png", colorTemperChart.GetAddressOf(), NULL); // blue
     //LoadTextureFromFile(Graphics::GetDevice(), L"./Data/Effect/Particles/ramp01.png", colorTemperChart.GetAddressOf(), NULL); // red 
-    LoadTextureFromFile(Graphics::GetDevice(), L"./Data/Effect/Textures/target.png", projectionTexture.GetAddressOf(), NULL);
+    hr = LoadTextureFromFile(Graphics::GetDevice(), L"./Data/Effect/Textures/target.png", projectionTexture.GetAddressOf(), NULL);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     //LoadTextureFromFile(Graphics::GetDevice(), L"./Data/Effect/Particles/noise1.png", maskTexture.GetAddressOf(), NULL); //noiseTexture
 
     //パーティクルプリセットパラメータセット

@@ -117,7 +117,8 @@ public:
             if (material.name == materialName)
             {
                 HRESULT hr = CreatePsFromCSO(device, psFilename.c_str(), material.replacedPixelShader.GetAddressOf());
-                _ASSERT_EXPR(hr, hr_trace(hr));
+                _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
             }
         }
     }

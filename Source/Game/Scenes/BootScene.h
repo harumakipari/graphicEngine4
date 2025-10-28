@@ -37,7 +37,7 @@ class BootScene : public Scene
 {
     struct SceneConstants
     {
-        bool enableSSAO;
+        bool enableSsao;
         float reflectionIntensity;
         float time = 0.0f;
         // shader ‚Ìƒtƒ‰ƒO

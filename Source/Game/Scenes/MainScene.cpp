@@ -2,7 +2,7 @@
 
 #ifdef USE_IMGUI
 #define IMGUI_ENABLE_DOCKING
-#include "../External/imgui/imgui.h"
+#include "imgui.h"
 #endif
 #include <random>
 
@@ -111,13 +111,17 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     // FOG 
     framebuffers[0] = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
-    CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", pixelShaders[2].GetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", pixelShaders[2].GetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
     D3D11_TEXTURE2D_DESC texture2dDesc;
 # if 0
     LoadTextureFromFile(device, L"./Data/Effect/Particles/noise.png", noise2d.GetAddressOf(), &texture2dDesc);
 #else
     //LoadTextureFromFile(device, L"./Data/Effect/Particles/noise1.png", noise2d.GetAddressOf(), &texture2dDesc);
-    LoadTextureFromFile(device, L"./Data/Effect/Textures/noise.png", noise2d.GetAddressOf(), &texture2dDesc);
+    hr=LoadTextureFromFile(device, L"./Data/Effect/Textures/noise.png", noise2d.GetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
 #endif
     sceneConstants.time = 0;//開始時に０にしておく
 #if 1
@@ -138,11 +142,13 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     // GBUFFER
     gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
-    CreatePsFromCSO(device, "./Shader/DefefferdPS.cso", pixelShaders[1].ReleaseAndGetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/DefefferdPS.cso", pixelShaders[1].ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //ブルーム
     bloomer = std::make_unique<Bloom>(device, static_cast<uint32_t>(width), height);
-    CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", pixelShaders[0].ReleaseAndGetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", pixelShaders[0].ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //CascadedShadpwMaps
     cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
@@ -158,14 +164,20 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     //// LoadSceneに持っていく用
     //CreatePsFromCSO(device, "./Shader/ShaderToyPS.cso", shaderToyPS.GetAddressOf());
-    CreatePsFromCSO(device, "./Shader/ShaderToySkyPS.cso", pixelShaders[3].GetAddressOf());
-    CreatePsFromCSO(device, "./Shader/ShaderToyPS.cso", pixelShaders[4].GetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/ShaderToySkyPS.cso", pixelShaders[3].GetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr = CreatePsFromCSO(device, "./Shader/ShaderToyPS.cso", pixelShaders[4].GetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //テクスチャをロード
-    LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_charlie.dds", shaderResourceViews[0].ReleaseAndGetAddressOf(), &texture2dDesc);
-    LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/diffuse_iem.dds", shaderResourceViews[1].ReleaseAndGetAddressOf(), &texture2dDesc);
-    LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/specular_pmrem.dds", shaderResourceViews[2].ReleaseAndGetAddressOf(), &texture2dDesc);
-    LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_ggx.dds", shaderResourceViews[3].ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_charlie.dds", shaderResourceViews[0].ReleaseAndGetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/diffuse_iem.dds", shaderResourceViews[1].ReleaseAndGetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/specular_pmrem.dds", shaderResourceViews[2].ReleaseAndGetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_ggx.dds", shaderResourceViews[3].ReleaseAndGetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
 
     Physics::Instance().Initialize();
@@ -199,7 +211,7 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     //sprite_batches[0] = std::make_unique<SpriteBatch>(device, L"./Data/Textures/Screens/GameScene/screenshot.jpg", 1);
 
     EventSystem::Initialize();//追加 UI
-    
+
     //死亡フラグ初期化
     isBossDeath = false;
     isPlayerDeath = false;
@@ -1049,9 +1061,9 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
 
         // デバック描画
 #if _DEBUG
-    actorColliderManager.DebugRender(immediateContext);
-    //PhysicsTest::Instance().DebugRender(immediateContext);
-    //GameManager::DebugRender(immediateContext);
+        actorColliderManager.DebugRender(immediateContext);
+        //PhysicsTest::Instance().DebugRender(immediateContext);
+        //GameManager::DebugRender(immediateContext);
 #endif
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 #if 1

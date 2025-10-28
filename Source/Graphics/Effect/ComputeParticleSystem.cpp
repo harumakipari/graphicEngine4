@@ -156,20 +156,30 @@ ComputeParticleSystem::ComputeParticleSystem(ID3D11Device* device, UINT particle
 	}
 
 	//コンピュートシェーダー読み込み
-	CreateCsFromCSO(device, "./Shader/ComputeParticleInitCS.cso", initShader.GetAddressOf());
-	CreateCsFromCSO(device, "./Shader/ComputeParticleEmitCS.cso", emitShader.GetAddressOf());
-	CreateCsFromCSO(device, "./Shader/ComputeParticleUpdateCS.cso", updateShader.GetAddressOf());
-	CreateCsFromCSO(device, "./Shader/ComputeParticleBeginFrameCS.cso", beginFrameShader.GetAddressOf());
-	CreateCsFromCSO(device, "./Shader/ComputeParticleEndFrameCS.cso", endFrameShader.GetAddressOf());
-	
-	CreateCsFromCSO(device, "./Shader/ComputeParticleBitonicSortB2CS.cso", sortB2Shader.GetAddressOf());
-	CreateCsFromCSO(device, "./Shader/ComputeParticleBitonicSortC2CS.cso", sortC2Shader.GetAddressOf());
+	hr=CreateCsFromCSO(device, "./Shader/ComputeParticleInitCS.cso", initShader.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	hr=CreateCsFromCSO(device, "./Shader/ComputeParticleEmitCS.cso", emitShader.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	hr=CreateCsFromCSO(device, "./Shader/ComputeParticleUpdateCS.cso", updateShader.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	hr=CreateCsFromCSO(device, "./Shader/ComputeParticleBeginFrameCS.cso", beginFrameShader.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	hr=CreateCsFromCSO(device, "./Shader/ComputeParticleEndFrameCS.cso", endFrameShader.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+	hr=CreateCsFromCSO(device, "./Shader/ComputeParticleBitonicSortB2CS.cso", sortB2Shader.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	hr=CreateCsFromCSO(device, "./Shader/ComputeParticleBitonicSortC2CS.cso", sortC2Shader.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
 	//描画用情報生成
 	this->shaderResourceView = shaderResourceView;
-	CreateVsFromCSO(device, "./Shader/ComputeParticleRenderVS.cso", vertexShader.GetAddressOf(), nullptr, nullptr, 0);
-	CreateGsFromCSO(device, "./Shader/ComputeParticleRenderGS.cso", geometryShader.GetAddressOf());
-	CreatePsFromCSO(device, "./Shader/ComputeParticleRenderPS.cso", pixelShader.GetAddressOf());
+	hr=CreateVsFromCSO(device, "./Shader/ComputeParticleRenderVS.cso", vertexShader.GetAddressOf(), nullptr, nullptr, 0);
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	hr=CreateGsFromCSO(device, "./Shader/ComputeParticleRenderGS.cso", geometryShader.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	hr=CreatePsFromCSO(device, "./Shader/ComputeParticleRenderPS.cso", pixelShader.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 }
 
 ComputeParticleSystem::~ComputeParticleSystem()

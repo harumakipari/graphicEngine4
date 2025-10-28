@@ -10,7 +10,8 @@ SkyMap::SkyMap(ID3D11Device* device, const wchar_t* filename, bool generateMips)
 
     // テクスチャをファイルから読み込む
     D3D11_TEXTURE2D_DESC texture2dDesc;
-    LoadTextureFromFile(device, filename, shaderResourceView.GetAddressOf(), &texture2dDesc);
+   hr= LoadTextureFromFile(device, filename, shaderResourceView.GetAddressOf(), &texture2dDesc);
+   _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     // テクスチャがキューブマップかどうか判定
     if (texture2dDesc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE)

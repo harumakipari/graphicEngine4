@@ -39,7 +39,8 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     // FOG 
     framebuffers[0] = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
-    CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", pixelShaders[2].GetAddressOf());
+    HRESULT hr= CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", pixelShaders[2].GetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //スカイマップ
     //skyMap = std::make_unique<decltype(skyMap)::element_type >(device, L"./Data/Environment/Sky/winter_evening_4k.DDS");
@@ -52,21 +53,27 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     // GBUFFER
     gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
-    CreatePsFromCSO(device, "./Shader/DefefferdPS.cso", pixelShaders[1].ReleaseAndGetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/DefefferdPS.cso", pixelShaders[1].ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //ブルーム
     bloomer = std::make_unique<Bloom>(device, static_cast<uint32_t>(width), height);
-    CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", pixelShaders[0].ReleaseAndGetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", pixelShaders[0].ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //CascadedShadpwMaps
     cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
 
     D3D11_TEXTURE2D_DESC texture2dDesc;
     //テクスチャをロード
-    LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_charlie.dds", shaderResourceViews[0].ReleaseAndGetAddressOf(), &texture2dDesc);
-    LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/diffuse_iem.dds", shaderResourceViews[1].ReleaseAndGetAddressOf(), &texture2dDesc);
-    LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/specular_pmrem.dds", shaderResourceViews[2].ReleaseAndGetAddressOf(), &texture2dDesc);
-    LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_sheen_e.dds", shaderResourceViews[3].ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr=LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_charlie.dds", shaderResourceViews[0].ReleaseAndGetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr=LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/diffuse_iem.dds", shaderResourceViews[1].ReleaseAndGetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr=LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/specular_pmrem.dds", shaderResourceViews[2].ReleaseAndGetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr=LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_sheen_e.dds", shaderResourceViews[3].ReleaseAndGetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //splash = std::make_unique<Sprite>(device, L"./Data/Textures/Screens/TitleScene/994759-1.jpg");
     Physics::Instance().Initialize();
@@ -546,7 +553,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float delta_time)
     //sceneConstants.colorLight = colorLight;
     //sceneConstants.iblIntensity = iblIntensity;
     // SCREEN_SPACE_AMBIENT_OCCLUSION
-    sceneCBuffer->data.enableSSAO = enableSSAO;
+    sceneCBuffer->data.enableSsao = enableSSAO;
     sceneCBuffer->data.enableBloom = enableBloom;
     sceneCBuffer->data.enableFog = enableFog;
     sceneCBuffer->data.enableCascadedShadowMaps = enableCascadedShadowMaps;

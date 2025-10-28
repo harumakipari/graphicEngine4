@@ -54,7 +54,8 @@ void VolumetricCloudscapes::CreateNoiseTexture(ID3D11Device* device)
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
         Microsoft::WRL::ComPtr<ID3D11ComputeShader> lowFreqPerlinWorleyCS;
-        CreateCsFromCSO(device, "./Shader/LowFreqPerlinWorleyCS.cso", lowFreqPerlinWorleyCS.GetAddressOf());
+        hr=CreateCsFromCSO(device, "./Shader/LowFreqPerlinWorleyCS.cso", lowFreqPerlinWorleyCS.GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
         immediateContext->CSSetUnorderedAccessViews(0, 1, lowFreqPerlinWorleyUnorderedAccessView.GetAddressOf(), NULL);
         immediateContext->CSSetShader(lowFreqPerlinWorleyCS.Get(), NULL, 0);
         UINT threadGroupCount = LOW_FREQ_PERLIN_WORLEY_DIMENSIONS / LOW_FREQ_PERLIN_WORLEY_NUMTHREADS;
@@ -108,7 +109,8 @@ void VolumetricCloudscapes::CreateNoiseTexture(ID3D11Device* device)
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
         Microsoft::WRL::ComPtr<ID3D11ComputeShader> highFreqWorleyCS;
-        CreateCsFromCSO(device, "./Shader/LowFreqPerlinWorleyCS.cso", highFreqWorleyCS.GetAddressOf());
+        hr=CreateCsFromCSO(device, "./Shader/LowFreqPerlinWorleyCS.cso", highFreqWorleyCS.GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
         immediateContext->CSSetUnorderedAccessViews(0, 1, highFreqWorleyUnorderdAccessView.GetAddressOf(), NULL);
         immediateContext->CSSetShader(highFreqWorleyCS.Get(), NULL, 0);
         UINT threadGroupCount = HIGH_FREQ_WORLEY_DIMENSIONS / HIGH_FREQ_WORLEY_NUMTHREADS;
@@ -161,14 +163,20 @@ VolumetricCloudscapes::VolumetricCloudscapes(ID3D11Device* device, const wchar_t
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
 
-    LoadTextureFromFile(device, filename, weatherShaderResourceView.GetAddressOf(), NULL);
-    LoadTextureFromFile(device, L"./Assets/Environment/VolumetricCloudscapes/curl_noise.png", curlNoiseShaderResourceView.GetAddressOf(), NULL);
+    hr=LoadTextureFromFile(device, filename, weatherShaderResourceView.GetAddressOf(), NULL);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr=LoadTextureFromFile(device, L"./Assets/Environment/VolumetricCloudscapes/curl_noise.png", curlNoiseShaderResourceView.GetAddressOf(), NULL);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 #if 0
-    LoadTextureFromFile(device, L"./Assets/Environment/VolumetricCloudscapes/gradient_stratus.png", gradientStratusShaderResouceView.GetAddressOf(), NULL);
-    LoadTextureFromFile(device, L"./Assets/Environment/VolumetricCloudscapes/gradient_cumulus.png", gradientCumulusShaderResouceView.GetAddressOf(), NULL);
-    LoadTextureFromFile(device, L"./Assets/Environment/VolumetricCloudscapes/gradient_cumulonimbus.png", gradientCumulonimbusShaderResouceView.GetAddressOf(), NULL);
+    hr=LoadTextureFromFile(device, L"./Assets/Environment/VolumetricCloudscapes/gradient_stratus.png", gradientStratusShaderResouceView.GetAddressOf(), NULL);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr=LoadTextureFromFile(device, L"./Assets/Environment/VolumetricCloudscapes/gradient_cumulus.png", gradientCumulusShaderResouceView.GetAddressOf(), NULL);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr=LoadTextureFromFile(device, L"./Assets/Environment/VolumetricCloudscapes/gradient_cumulonimbus.png", gradientCumulonimbusShaderResouceView.GetAddressOf(), NULL);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 #endif
-    CreatePsFromCSO(device, "./Shader/VolumetricCloudscapesPS.cso", volumetricCloudscapesPS.GetAddressOf());
+    hr=CreatePsFromCSO(device, "./Shader/VolumetricCloudscapesPS.cso", volumetricCloudscapesPS.GetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     fullscreenQuad = std::make_unique<decltype(fullscreenQuad)::element_type>(device);
 

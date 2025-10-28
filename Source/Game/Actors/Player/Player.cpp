@@ -34,7 +34,8 @@ void Player::Initialize(const Transform& transform)
     //skeltalMeshComponent->SetModel("./Data/Models/Characters/Enemy/boss_idle.gltf");
     //skeltalMeshComponent->SetMaterialPS("./Shader/GltfModelEmissionPS.cso", "L_emission2");
     //skeltalMeshComponent->SetMaterialPS("./Shader/GltfModelEmissionPS.cso", "L_boss_emission");
-    CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelGameCharacter.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+    HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelGameCharacter.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     SetPosition(transform.GetLocation());
     SetQuaternionRotation(transform.GetRotation());
@@ -65,7 +66,8 @@ void Player::Initialize(const Transform& transform)
     leftComponent->SetModel("./Data/Models/Characters/Player/PlayerSide/player_side_left.gltf");
     leftComponent->SetRelativeLocationDirect(leftFirstPos);
     //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", leftComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-    CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPlayerSidePS.cso", leftComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+    hr=CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPlayerSidePS.cso", leftComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     leftComponent->model->emission = 0.0f;
     leftComponent->model->cpuColor = { 1.0f,1.0f,1.0f };
     // “G‚ÌUŒ‚‚ª“–‚½‚é¶‘¤ 
@@ -109,7 +111,8 @@ void Player::Initialize(const Transform& transform)
     rightComponent = this->NewSceneComponent<class SkeltalMeshComponent>("rightComponent", "skeltalComponent");
     rightComponent->SetModel("./Data/Models/Characters/Player/PlayerSide/player_side_right.gltf");
     rightComponent->SetRelativeLocationDirect(rightFirstPos);
-    CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPlayerSidePS.cso", rightComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+    hr=CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPlayerSidePS.cso", rightComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     rightComponent->model->emission = 0.0f;
     leftComponent->model->cpuColor = { 1.0f,1.0f,1.0f };
     // “G‚ÌUŒ‚‚ª“–‚½‚é‰E‘¤ 
@@ -342,7 +345,7 @@ void Player::Initialize(const Transform& transform)
                         }
                         int damage = 5; // ƒ{ƒX‚Ìƒ_ƒ[ƒWƒQƒbƒg
                         //if (node->GetName() == "Dash"||node->GetName()==
-                        if(boss->GetEnableHit())
+                        if (boss->GetEnableHit())
                         {// ƒ{ƒX‚ª‰ñ“]‚Ì“Ëi‚ð‚µ‚Ä‚¢‚éŽž@
 #if 0
                             if (hitPair.first->name() == "playerDamageLeft")
@@ -374,13 +377,13 @@ void Player::Initialize(const Transform& transform)
                             if (hitPair.first->name() == "boxHitLeftComponent")
                             {// ¶‚É“–‚½‚Á‚½Žž
                                 hitLeftThisFrame = true;
-                                std::string a = "boss damage  "+hitPair.first->name() + "is Hit\n";
+                                std::string a = "boss damage  " + hitPair.first->name() + "is Hit\n";
                                 OutputDebugStringA(a.c_str());
                             }
                             else if (hitPair.first->name() == "boxHitRightComponent")
                             {// ‰E‚É“–‚½‚Á‚½Žž
                                 hitRightThisFrame = true;
-                                std::string a = "boss damage "+hitPair.first->name() + "is Hit\n";
+                                std::string a = "boss damage " + hitPair.first->name() + "is Hit\n";
                                 OutputDebugStringA(a.c_str());
                             }
                             //else if (hitPair.second->name() == "capsuleComponent")

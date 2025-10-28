@@ -60,11 +60,16 @@ ParticleSystem::ParticleSystem(ID3D11Device* device, int particleCount) :maxPart
     hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffer.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    CreateVsFromCSO(device, "./Shader/ParticleVS.cso", particleVertexShader.ReleaseAndGetAddressOf(), NULL, NULL, 0);
-    CreatePsFromCSO(device, "./Shader/ParticlePS.cso", particlePixelShader.ReleaseAndGetAddressOf());
-    CreateGsFromCSO(device, "./Shader/ParticleGS.cso", particleGeometricShader.ReleaseAndGetAddressOf());
-    CreateCsFromCSO(device, "./Shader/IntegrateParticleCS.cso", particleComputeShader.ReleaseAndGetAddressOf());
-    CreateCsFromCSO(device, "./Shader/InitializeParticleCS.cso", particleInitializerComputeShader.ReleaseAndGetAddressOf());
+    hr=CreateVsFromCSO(device, "./Shader/ParticleVS.cso", particleVertexShader.ReleaseAndGetAddressOf(), NULL, NULL, 0);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr=CreatePsFromCSO(device, "./Shader/ParticlePS.cso", particlePixelShader.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr=CreateGsFromCSO(device, "./Shader/ParticleGS.cso", particleGeometricShader.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr=CreateCsFromCSO(device, "./Shader/IntegrateParticleCS.cso", particleComputeShader.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr=CreateCsFromCSO(device, "./Shader/InitializeParticleCS.cso", particleInitializerComputeShader.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
 }
 

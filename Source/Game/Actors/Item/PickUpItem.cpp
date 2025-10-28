@@ -10,7 +10,8 @@ void PickUpItem::Initialize(const Transform& transform)
     skeltalMeshComponent->SetModel("./Data/Models/Items/PickUpEnergyCore/pick_up_item.gltf");
     //skeltalMeshComponent->model->isModelInMeters = false;
     //skeltalMeshComponent->SetIsVisible(false); // アイテム生成時に一フレーム描画されてしまうから
-    CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+    HRESULT hr= CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     skeltalMeshComponent->model->emission = 15.0f;
     skeltalMeshComponent->SetIsCastShadow(false);
 
@@ -41,16 +42,18 @@ void PickUpItem::Initialize(const Transform& transform)
 void PickUpItem::Initialize()
 {
     // 描画用コンポーネントを追加
-    skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+    skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeletalComponent");
     skeltalMeshComponent->SetModel("./Data/Models/Items/PickUpEnergyCore/pick_up_item.gltf");
     skeltalMeshComponent->SetIsVisible(false); // アイテム生成時に一フレーム描画されてしまうから
     skeltalMeshComponent->SetIsCastShadow(false);
-    CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+    HRESULT hr= CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
     skeltalMeshComponent->model->emission = 15.0f;
     SetPosition(tempPosition);    // こっちを使うよーーー
 
     // 当たり判定のコンポーネントを追加
-    sphereComponent = this->NewSceneComponent<class SphereComponent>("sphereComponent", "skeltalComponent");
+    sphereComponent = this->NewSceneComponent<class SphereComponent>("sphereComponent", "skeletalComponent");
     sphereComponent->SetRadius(0.4f);
     sphereComponent->SetMass(40.0f);
     sphereComponent->SetModelHeight(0.4f);

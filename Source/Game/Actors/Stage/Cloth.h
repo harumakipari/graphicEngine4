@@ -229,9 +229,11 @@ public:
         model = std::make_shared<InterleavedGltfModel>(device, filename, InterleavedGltfModel::Mode::SkeltalMesh, isSaveVerticesData);
         modelNodes = model->GetNodes();
         InitFromModel(this);
-        CreateCsFromCSO(device, "./Shader/ClothCS.cso", clothUpdateCS.ReleaseAndGetAddressOf());
+        HRESULT hr =CreateCsFromCSO(device, "./Shader/ClothCS.cso", clothUpdateCS.ReleaseAndGetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
         CreateAndUpdateClothMesh(device);
-        CreateCsFromCSO(device, "./Shader/ClothSimulateCopyCS.cso", clothConstraintCS.ReleaseAndGetAddressOf());
+        hr=CreateCsFromCSO(device, "./Shader/ClothSimulateCopyCS.cso", clothConstraintCS.ReleaseAndGetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
         CreateAndUpdateClothMesh(device);
     }
 

@@ -59,24 +59,24 @@ public:
         if (useDeffered)
         {
             HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDeferredPS.cso", stage->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(hr, hr_trace(hr));
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDeferredPS.cso", titleLogo->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(hr, hr_trace(hr));
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDeferredPS.cso", build->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(hr, hr_trace(hr));
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDeferredPS.cso", trafficLight->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(hr, hr_trace(hr));
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
         }
         else
         {
             HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", stage->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(hr, hr_trace(hr));
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", titleLogo->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(hr, hr_trace(hr));
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", build->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(hr, hr_trace(hr));
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", trafficLight->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(hr, hr_trace(hr));
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
         }
     }
 

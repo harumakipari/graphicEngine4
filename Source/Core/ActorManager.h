@@ -64,7 +64,7 @@ public:
         }
         std::shared_ptr<T> newActor = std::make_shared<T>(finalName);
         // Sceneを渡す
-        newActor->SetOwnerScene(ownerScene_);  
+        newActor->SetOwnerScene(ownerScene_);
         allActors_.push_back(newActor);
 #endif
         if (autoInitialize)
@@ -173,7 +173,7 @@ public:
     }
 
     // Actorのポインタを一括で生ポインタ形式で取得する（描画やシーン用などに）
-    void ConvineActor(std::vector<Actor*>& outActorPointers)
+    void ConvineActor(std::vector<Actor*>& outActorPointers) const
     {
         outActorPointers.clear();
         for (const std::shared_ptr<Actor>& actor : allActors_)
@@ -241,7 +241,7 @@ public:
             allActors_.end());
     }
 
-    void DrawImGuiAllActors()
+    void DrawImGuiAllActors() const
     {
 #ifdef USE_IMGUI
         // 画面サイズを取得
@@ -280,16 +280,17 @@ public:
     {
         ID3D11Device* device = Graphics::GetDevice();
         itemModel = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/Items/PickUpEnergyCore/pick_up_item.gltf", InterleavedGltfModel::Mode::InstancedStaticMesh);
-        CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+        HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
         itemModel->emission = 3.0f;
 
         viewBuffer = std::make_unique<ConstantBuffer<ViewConstants>>(device);
     }
 
-    virtual ~Renderer() {}
+    virtual ~Renderer() = default;
 
     // View関連の定数バッファを更新する
-    void UpdateViewConstants(ID3D11DeviceContext* immediateContext, ViewConstants data)
+    void UpdateViewConstants(ID3D11DeviceContext* immediateContext, const ViewConstants& data) const
     {
         viewBuffer->data = data;
         viewBuffer->Activate(immediateContext, 8);
@@ -302,7 +303,7 @@ public:
     void RenderMask(ID3D11DeviceContext* immediateContext);
 
     void RenderBlend(ID3D11DeviceContext* immediateContext);
-    
+
     void RenderInstanced(ID3D11DeviceContext* immediateContext);
 
     std::vector<DirectX::XMFLOAT4X4> instanceDatas;
@@ -535,9 +536,7 @@ class ActorColliderManager
 {
 public:
     ActorColliderManager()
-    {
-
-    }
+    = default;
 
     //コリジョンのレイヤー処理
     // モデルシェーダーの種類　ShaderID

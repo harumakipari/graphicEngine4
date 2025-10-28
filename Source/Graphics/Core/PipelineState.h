@@ -12,7 +12,7 @@ struct PipeLineStateDesc
     Microsoft::WRL::ComPtr <ID3D11VertexShader> vertexShader = nullptr;
     Microsoft::WRL::ComPtr <ID3D11HullShader> hullShader = nullptr;
     Microsoft::WRL::ComPtr<ID3D11DomainShader> domainShader = nullptr;
-    Microsoft::WRL::ComPtr<ID3D11GeometryShader> gemetryShader = nullptr;
+    Microsoft::WRL::ComPtr<ID3D11GeometryShader> geometryShader = nullptr;
     
     Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout = nullptr;
 

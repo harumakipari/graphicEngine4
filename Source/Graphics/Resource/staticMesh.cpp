@@ -151,16 +151,20 @@ StaticMesh::StaticMesh(ID3D11Device* device, const wchar_t* objFilename)
     {
         for (Material& material : materials)
         {
-            MakeDummyTexture(device, material.shaderResourceViews[0].GetAddressOf(), 0xFFFFFFFF, 16);
-            MakeDummyTexture(device, material.shaderResourceViews[1].GetAddressOf(), 0xFFFFFFFF, 16);
+            HRESULT hr=MakeDummyTexture(device, material.shaderResourceViews[0].GetAddressOf(), 0xFFFFFFFF, 16);
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+            hr=MakeDummyTexture(device, material.shaderResourceViews[1].GetAddressOf(), 0xFFFFFFFF, 16);
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
         }
     }
     else
     {
         for (Material& material : materials)
         {
-            LoadTextureFromFile(device, material.textureFileNames[0].c_str(), material.shaderResourceViews[0].GetAddressOf(), &texture2dDesc);
-            LoadTextureFromFile(device, material.textureFileNames[1].c_str(), material.shaderResourceViews[1].GetAddressOf(), &texture2dDesc);
+            HRESULT hr=LoadTextureFromFile(device, material.textureFileNames[0].c_str(), material.shaderResourceViews[0].GetAddressOf(), &texture2dDesc);
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+            hr=LoadTextureFromFile(device, material.textureFileNames[1].c_str(), material.shaderResourceViews[1].GetAddressOf(), &texture2dDesc);
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
         }
     }
     //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));

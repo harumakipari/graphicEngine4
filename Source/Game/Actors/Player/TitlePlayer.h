@@ -88,11 +88,12 @@ public:
     {
         if (useDeffered)
         {
-            CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDeferredPS.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+            //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDeferredPS.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+
         }
         else
         {
-            CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+            //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
         }
     }
 
