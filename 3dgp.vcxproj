@@ -261,6 +261,7 @@
     <ClCompile Include="Source\Graphics\PostProcess\Bloom.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\FrameBuffer.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\FullScreenQuad.cpp" />
+    <ClCompile Include="Source\Graphics\PostProcess\BloomEffect.cpp" />
     <ClCompile Include="Source\Graphics\Renderer\SceneRenderer.cpp" />
     <ClCompile Include="Source\Graphics\Renderer\ShapeRenderer.cpp" />
     <ClCompile Include="Source\Graphics\Resource\GeometricPrimitive.cpp" />
@@ -398,11 +399,13 @@
     <ClInclude Include="Source\Graphics\Effect\Particles.h" />
     <ClInclude Include="Source\Graphics\Environment\SkyMap.h" />
     <ClInclude Include="Source\Graphics\PostProcess\Bloom.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\BloomEffect.h" />
     <ClInclude Include="Source\Graphics\PostProcess\FrameBuffer.h" />
     <ClInclude Include="Source\Graphics\PostProcess\FullScreenQuad.h" />
     <ClInclude Include="Source\Graphics\PostProcess\GBuffer.h" />
     <ClInclude Include="Source\Graphics\PostProcess\MultipleRenderTargets.h" />
-    <ClInclude Include="Source\Graphics\PostProcess\PostProcessSystem.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\PostEffectBase.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\PostEffectManager.h" />
     <ClInclude Include="Source\Graphics\Renderer\SceneRenderer.h" />
     <ClInclude Include="Source\Graphics\Renderer\ShapeRenderer.h" />
     <ClInclude Include="Source\Graphics\Resource\GeometricPrimitive.h" />

@@ -186,6 +186,12 @@ public:
         return 0;
     }
 
+    static inline bool isPaused = false;// Profiler—p
+    static void SetPause(bool pause)
+    {
+        isPaused = pause;
+    }
+
 private:
     bool Initialize();
     bool Update(float elapsed_time/*Elapsed seconds from last frame*/);

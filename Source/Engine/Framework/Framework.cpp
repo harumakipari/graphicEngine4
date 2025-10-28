@@ -1,5 +1,7 @@
 #include "Framework.h"
 
+#include <profiler.h>
+
 #include "Graphics/Core/Shader.h"
 #include <dxgi1_3.h>
 #include <memory>
@@ -41,6 +43,10 @@ bool Framework::Initialize()
     Scene::_boot(device, "BootScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
 
 
+    //プロファイラ初期化
+    //ProfileInitialize(&isPaused, Framework::SetPause, ImGuiControl::Profiler::DefaultMaxThreads);
+    //ProfileThreadName(0, "Main Thread");
+
     return true;
 }
 
@@ -58,7 +64,7 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
 #ifdef USE_IMGUI
     //ImGui::Begin("ImGUI");
 
-    Scene::_drawGUI();
+    //Scene::_drawGUI();
 
     /*ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 #if 0
@@ -114,6 +120,21 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
         //gameManager->GenerateOutputAll();
     }
 
+#ifdef USE_IMGUI
+    //ImGui::Begin("ImGUI");
+
+    Scene::_drawGUI();
+
+    /*ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+#if 0
+    ImGui::Text("Video memory usage %d MB", video_memory_usage());
+#endif
+    ImGui::Text("ALT+ENTER to change window mode");
+
+    ImGui::End();*/
+#endif
+
+
 #if 0
 #ifdef USE_IMGUI
     ImGui::Render();
@@ -129,6 +150,9 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
 
 bool Framework::Uninitialize()
 {
+    //プロファイラ終了
+    //ProfileShutdown();
+
     ID3D11Device* device = Graphics::GetDevice();
 
     Audio::ClearAll();
