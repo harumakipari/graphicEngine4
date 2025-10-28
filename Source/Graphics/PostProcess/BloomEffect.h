@@ -10,7 +10,7 @@ class BloomEffect :public PostEffectBase
 {
 public:
     BloomEffect() = default;
-    ~BloomEffect();
+	~BloomEffect() = default;
 
     // ポストエフェクト生成（リソース作成） 
     void Initialize(ID3D11Device* device, uint32_t width, uint32_t height) override;
@@ -19,7 +19,10 @@ public:
     void Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* inputSrv)override;
 
     // 出力（次のエフェクトや最終合成に渡す用）
-    ID3D11ShaderResourceView* GetOutputSRV()const override;
+    ID3D11ShaderResourceView* GetOutputSRV()const override
+    {
+		return glowExtraction->shaderResourceViews[0].Get();
+    }
 
     // UI 調整 (ImGui)
     void DrawDebugUI()override {}
@@ -36,7 +39,7 @@ private:
 	std::unique_ptr<FrameBuffer> glowExtraction;
 
 	static constexpr size_t downsampledCount = 6;
-	std::unique_ptr<FrameBuffer> gaussian_blur[downsampledCount][2];
+	std::unique_ptr<FrameBuffer> gaussianBlur[downsampledCount][2];
 
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> glowExtractionPs;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> gaussianBlurDownsamplingPs;

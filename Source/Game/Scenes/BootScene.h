@@ -19,7 +19,10 @@
 #include "Graphics/Shadow/CascadeShadowMap.h"
 #include "Graphics/PostProcess/MultipleRenderTargets.h"
 #include "Graphics/Effect/EffectSystem.h"
+
 #include "Graphics/Core/LightManager.h"
+#include "Graphics/PostProcess/PostEffectManager.h"
+
 #include "Graphics/Renderer/SceneRenderer.h"
 #include "Graphics/Core/ConstantBuffer.h"
 
@@ -125,7 +128,7 @@ class BootScene : public Scene
     std::unique_ptr<FullScreenQuad> fullscreenQuadTransfer;
 
     //ÉuÉãÅ[ÉÄ
-    std::unique_ptr<Bloom> bloomer;
+    //std::unique_ptr<Bloom> bloomer;
 
     // CASCADED_SHADOW_MAPS
     std::unique_ptr<CascadedShadowMaps> cascadedShadowMaps;
@@ -177,7 +180,7 @@ public:
 
 private:
     std::unique_ptr<LightManager> lightManager;
-
+    std::unique_ptr<PostEffectManager> postEffectManager;
 
     std::shared_ptr<TitlePlayer> titlePlayer;
     std::shared_ptr<Stage>  title;

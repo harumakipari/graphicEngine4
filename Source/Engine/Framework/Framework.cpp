@@ -44,7 +44,7 @@ bool Framework::Initialize()
 
 
     //プロファイラ初期化
-    ProfileInitialize(&isPaused, Framework::SetPause, ImGuiControl::Profiler::DefaultMaxThreads);
+    ProfileInitialize(&isPaused, Framework::SetPause/*, ImGuiControl::Profiler::DefaultMaxThreads*/);
     ProfileThreadName(0, "Main Thread");
 
     return true;

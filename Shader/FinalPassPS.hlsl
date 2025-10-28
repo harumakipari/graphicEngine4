@@ -9,7 +9,7 @@ SamplerState linearBorderBlackSamplerState : register(s3);
 SamplerState linearBorderWhiteSamplerState : register(s4);
 SamplerState linearClampSamplerState : register(s5);
 
-SamplerComparisonState comparisonSamplerstate : register(s7);
+SamplerComparisonState comparisonSamplerState : register(s7);
 
 Texture2D colorTexture : register(t0);
 Texture2D positionTexture : register(t1);
@@ -193,7 +193,7 @@ float CalculatedCascadedShadowFactor(VS_OUT pin)
         positionLightSpace.x = positionLightSpace.x * +0.5 + 0.5;
         positionLightSpace.y = positionLightSpace.y * -0.5 + 0.5;
         
-        shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(comparisonSamplerstate, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
+        shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(comparisonSamplerState, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
         
         return shadowFactor;
         float3 layerColor = 1;

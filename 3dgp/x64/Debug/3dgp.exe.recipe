@@ -109,7 +109,7 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\geometricPrimitiveVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GlowExteractionPS.cso</FullPath>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GlowExtractionPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelBaseColorPS.cso</FullPath>

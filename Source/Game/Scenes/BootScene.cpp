@@ -25,6 +25,8 @@
 
 #include "Physics/Physics.h"
 
+#include "Graphics/PostProcess/BloomEffect.h"
+
 
 
 bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
@@ -41,9 +43,16 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         lightManager->Initialize(device);
         lightManager->SetDirectionalLight(lightDirection, lightColor);
     }
+
+    // ポストエフェクト
+    {
+        postEffectManager = std::make_unique<PostEffectManager>();
+        postEffectManager->AddEffect(std::make_unique<BloomEffect>());
+        postEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
+    }
     // FOG 
     framebuffers[0] = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
-    HRESULT hr= CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", pixelShaders[2].GetAddressOf());
+    HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", pixelShaders[2].GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //スカイマップ
@@ -61,7 +70,7 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //ブルーム
-    bloomer = std::make_unique<Bloom>(device, static_cast<uint32_t>(width), height);
+    //bloomer = std::make_unique<Bloom>(device, static_cast<uint32_t>(width), height);
     hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", pixelShaders[0].ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
@@ -70,13 +79,13 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     D3D11_TEXTURE2D_DESC texture2dDesc;
     //テクスチャをロード
-    hr=LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_charlie.dds", shaderResourceViews[0].ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_charlie.dds", shaderResourceViews[0].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr=LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/diffuse_iem.dds", shaderResourceViews[1].ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/diffuse_iem.dds", shaderResourceViews[1].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr=LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/specular_pmrem.dds", shaderResourceViews[2].ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/specular_pmrem.dds", shaderResourceViews[2].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr=LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_sheen_e.dds", shaderResourceViews[3].ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_sheen_e.dds", shaderResourceViews[3].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //splash = std::make_unique<Sprite>(device, L"./Data/Textures/Screens/TitleScene/994759-1.jpg");
@@ -207,12 +216,12 @@ void BootScene::SetUpActors()
 
     stageCollisionMesh = std::make_shared<CollisionMesh>(Graphics::GetDevice(), "./Data/Models/Stage/stage.gltf", true);
 
-//#if 1
-//    Transform sphereTr(DirectX::XMFLOAT3{ 0.0f,10.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-//    auto sphereTest = this->GetActorManager()->CreateAndRegisterActorWithTransform<SphereTest>("sphereTest", sphereTr);
-//
-//#endif // 0
-//
+    //#if 1
+    //    Transform sphereTr(DirectX::XMFLOAT3{ 0.0f,10.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    //    auto sphereTest = this->GetActorManager()->CreateAndRegisterActorWithTransform<SphereTest>("sphereTest", sphereTr);
+    //
+    //#endif // 0
+    //
     Transform planeTr(DirectX::XMFLOAT3{ 0.0f,15.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
     auto planeTest = this->GetActorManager()->CreateAndRegisterActorWithTransform<TestPBD>("TestPBD", planeTr);
 
@@ -243,7 +252,9 @@ bool BootScene::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
     //framebuffers[1] = std::make_unique<FrameBuffer>(device, framebufferDimensions.cx, framebufferDimensions.cy, true);
 
     //ブルーム
-    bloomer = std::make_unique<Bloom>(device, framebufferDimensions.cx, framebufferDimensions.cy);
+    //bloomer = std::make_unique<Bloom>(device, framebufferDimensions.cx, framebufferDimensions.cy);
+
+    postEffectManager->Initialize(device, framebufferDimensions.cx, framebufferDimensions.cy);
 
     return true;
 }
@@ -495,14 +506,16 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         // Draw shadow to scene framebuffer
         // FINAL_PASS
         {
-            bloomer->bloom_intensity = bloomIntensity;
-            bloomer->bloom_extraction_threshold = bloomThreshold;
+            //bloomer->bloom_intensity = bloomIntensity;
+            //bloomer->bloom_extraction_threshold = bloomThreshold;
             //ブルーム
             RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
             RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
             RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-            bloomer->make(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
+            //bloomer->make(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
             //bloomer->make(immediateContext, framebuffers[1]->shaderResourceViews[0].Get());
+
+            postEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
 
             ID3D11ShaderResourceView* shader_resource_views[]
             {
@@ -512,7 +525,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 multipleRenderTargets->renderTargetShaderResourceViews[1],
                 multipleRenderTargets->renderTargetShaderResourceViews[2],
                 multipleRenderTargets->depthStencilShaderResourceView,      //depthMap
-                bloomer->shader_resource_view(),    //bloom
+                //bloomer->shader_resource_view(),    //bloom
+                postEffectManager->GetFinalOutput(),
                 framebuffers[0]->shaderResourceViews[0].Get(),  //fog
                 cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
             };
@@ -670,9 +684,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
             RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
             RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-            //bloomer->make(immediateContext, gBufferRenderTarget->renderTargetShaderResourceViews[0]);
-            bloomer->make(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
-            //bloomer->make(immediateContext, framebuffers[1]->shaderResourceViews[0].Get());
+            //bloomer->make(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
+            postEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
 
             ID3D11ShaderResourceView* shader_resource_views[]
             {
@@ -689,7 +702,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     #endif // 0
                 //multipleRenderTargets->depthStencilShaderResourceView,      //depthMap
                 gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
-                bloomer->shader_resource_view(),    //bloom
+                //bloomer->shader_resource_view(),    //bloom
+                postEffectManager->GetFinalOutput(),
                 framebuffers[0]->shaderResourceViews[0].Get(),  //fog
                 cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
             };
@@ -820,8 +834,8 @@ void BootScene::DrawGui()
             }
             if (enableBloom && ImGui::TreeNode("Bloom Settings"))
             {
-                ImGui::SliderFloat("Threshold", &bloomer->bloom_extraction_threshold, 0.0f, 5.0f);
-                ImGui::SliderFloat("Intensity", &bloomer->bloom_intensity, 0.0f, 5.0f);
+                //ImGui::SliderFloat("Threshold", &bloomer->bloom_extraction_threshold, 0.0f, 5.0f);
+                //ImGui::SliderFloat("Intensity", &bloomer->bloom_intensity, 0.0f, 5.0f);
                 ImGui::TreePop();
             }
 

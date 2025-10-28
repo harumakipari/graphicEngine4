@@ -10,6 +10,7 @@
 Bloom::Bloom(ID3D11Device* device, uint32_t width, uint32_t height)
 {
 	bit_block_transfer = std::make_unique<FullScreenQuad>(device);
+	HRESULT hr{ S_OK };
 
 	glow_extraction = std::make_unique<FrameBuffer>(device, width, height, false);
 	for (size_t downsampled_index = 0; downsampled_index < downsampled_count; ++downsampled_index)
@@ -17,13 +18,17 @@ Bloom::Bloom(ID3D11Device* device, uint32_t width, uint32_t height)
 		gaussian_blur[downsampled_index][0] = std::make_unique<FrameBuffer>(device, width >> downsampled_index, height >> downsampled_index, false);
 		gaussian_blur[downsampled_index][1] = std::make_unique<FrameBuffer>(device, width >> downsampled_index, height >> downsampled_index, false);
 	}
-	CreatePsFromCSO(device, "./Shader/GlowExteractionPS.cso", glow_extraction_ps.GetAddressOf());
-	CreatePsFromCSO(device, "./Shader/GaussianBlurDownSamplingPS.cso", gaussian_blur_downsampling_ps.GetAddressOf());
-	CreatePsFromCSO(device, "./Shader/GaussianBlurHorizontalPS.cso", gaussian_blur_horizontal_ps.GetAddressOf());
-	CreatePsFromCSO(device, "./Shader/GaussianBlurVerticalPS.cso", gaussian_blur_vertical_ps.GetAddressOf());
-	CreatePsFromCSO(device, "./Shader/GaussianBlurUpsamplingPS.cso", gaussian_blur_upsampling_ps.GetAddressOf());
+	hr=CreatePsFromCSO(device, "./Shader/GlowExtractionPS.cso", glow_extraction_ps.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	hr=CreatePsFromCSO(device, "./Shader/GaussianBlurDownSamplingPS.cso", gaussian_blur_downsampling_ps.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	hr=CreatePsFromCSO(device, "./Shader/GaussianBlurHorizontalPS.cso", gaussian_blur_horizontal_ps.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	hr=CreatePsFromCSO(device, "./Shader/GaussianBlurVerticalPS.cso", gaussian_blur_vertical_ps.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	hr=CreatePsFromCSO(device, "./Shader/GaussianBlurUpsamplingPS.cso", gaussian_blur_upsampling_ps.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-	HRESULT hr{ S_OK };
 
 	D3D11_RASTERIZER_DESC rasterizer_desc{};
 	rasterizer_desc.FillMode = D3D11_FILL_SOLID;

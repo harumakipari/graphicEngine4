@@ -224,6 +224,7 @@
     <ClCompile Include="Source\Core\ActorManager.cpp" />
     <ClCompile Include="Source\Core\World.cpp" />
     <ClCompile Include="Source\Engine\Audio\Audio.cpp" />
+    <ClCompile Include="Source\Engine\Debug\Logger.cpp" />
     <ClCompile Include="Source\Engine\Framework\Framework.cpp" />
     <ClCompile Include="Source\Engine\Input\GamePad.cpp" />
     <ClCompile Include="Source\Engine\Input\InputSystem.cpp" />
@@ -333,6 +334,7 @@
     <ClInclude Include="Source\Engine\Camera\CameraConstants.h" />
     <ClInclude Include="Source\Engine\Camera\CameraManager.h" />
     <ClInclude Include="Source\Engine\Debug\Assert.h" />
+    <ClInclude Include="Source\Engine\Debug\Logger.h" />
     <ClInclude Include="Source\Engine\Framework\Framework.h" />
     <ClInclude Include="Source\Engine\Input\GamePad.h" />
     <ClInclude Include="Source\Engine\Input\InputSystem.h" />
@@ -404,6 +406,7 @@
     <ClInclude Include="Source\Graphics\Environment\SkyMap.h" />
     <ClInclude Include="Source\Graphics\PostProcess\Bloom.h" />
     <ClInclude Include="Source\Graphics\PostProcess\BloomEffect.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\FogEffect.h" />
     <ClInclude Include="Source\Graphics\PostProcess\FrameBuffer.h" />
     <ClInclude Include="Source\Graphics\PostProcess\FullScreenQuad.h" />
     <ClInclude Include="Source\Graphics\PostProcess\GBuffer.h" />
@@ -663,7 +666,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
-    <FxCompile Include="Shader\GlowExteractionPS.hlsl">
+    <FxCompile Include="Shader\GlowExtractionPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>

@@ -80,7 +80,7 @@
 // pointSamplerState                 sampler      NA          NA             s0      1 
 // linearBorderBlackSamplerState     sampler      NA          NA             s3      1 
 // linearBorderWhiteSamplerState     sampler      NA          NA             s4      1 
-// comparisonSamplerstate          sampler_c      NA          NA             s7      1 
+// comparisonSamplerState          sampler_c      NA          NA             s7      1 
 // colorTexture                      texture  float4          2d             t0      1 
 // positionTexture                   texture  float4          2d             t1      1 
 // normalTexture                     texture  float4          2d             t2      1 

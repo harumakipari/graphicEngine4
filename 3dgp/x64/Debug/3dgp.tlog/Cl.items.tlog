@@ -24,6 +24,7 @@ C:\Users\2240225\Desktop\graphicEngine4\Source\Components\Game\ShockWaveCollisio
 C:\Users\2240225\Desktop\graphicEngine4\Source\Core\ActorManager.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\ActorManager.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Core\World.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\World.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Engine\Audio\Audio.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\Audio.obj
+C:\Users\2240225\Desktop\graphicEngine4\Source\Engine\Debug\Logger.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\Logger.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Engine\Framework\Framework.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\Framework.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Engine\Input\GamePad.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\GamePad.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Engine\Input\InputSystem.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\InputSystem.obj
