@@ -33,7 +33,7 @@
 //       struct PbrMetallicRoughness
 //       {
 //           
-//           float4 basecolorFactor;    // Offset:   24
+//           float4 baseColorFactor;    // Offset:   24
 //           
 //           struct TextureInfo
 //           {
@@ -154,10 +154,10 @@ dcl_temps 9
 //   v3.x <- pin.wTangent.x; v3.y <- pin.wTangent.y; v3.z <- pin.wTangent.z; v3.w <- pin.wTangent.w; 
 //   v4.x <- pin.texcoord.x; v4.y <- pin.texcoord.y; 
 //   v5.x <- isFrontFace; 
-//   o4.x <- <main return value>.emmisive.x; o4.y <- <main return value>.emmisive.y; o4.z <- <main return value>.emmisive.z; o4.w <- <main return value>.emmisive.w; 
+//   o4.x <- <main return value>.emissive.x; o4.y <- <main return value>.emissive.y; o4.z <- <main return value>.emissive.z; o4.w <- <main return value>.emissive.w; 
 //   o3.x <- <main return value>.position.x; o3.y <- <main return value>.position.y; o3.z <- <main return value>.position.z; o3.w <- <main return value>.position.w; 
 //   o2.x <- <main return value>.color.x; o2.y <- <main return value>.color.y; o2.z <- <main return value>.color.z; o2.w <- <main return value>.color.w; 
-//   o1.x <- <main return value>.msr.x; o1.y <- <main return value>.msr.y; o1.z <- <main return value>.msr.z; o1.w <- <main return value>.msr.w; 
+//   o1.x <- <main return value>.material.x; o1.y <- <main return value>.material.y; o1.z <- <main return value>.material.z; o1.w <- <main return value>.material.w; 
 //   o0.x <- <main return value>.normal.x; o0.y <- <main return value>.normal.y; o0.z <- <main return value>.normal.z; o0.w <- <main return value>.normal.w
 //
 #line 19 "C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelDeferredPS.hlsl"
@@ -170,10 +170,10 @@ ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r
 ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.z, r0.y, l(8), t0.xxxx  // r1.z <- m.emissiveFactor.z
 ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r0.z, r0.y, l(12), t0.xxxx  // r0.z <- m.alphaMode
 ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r0.w, r0.y, l(16), t0.xxxx  // r0.w <- m.alphaCutoff
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r2.x, r0.y, l(24), t0.xxxx  // r2.x <- m.pbrMetallicRoughness.basecolorFactor.x
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r2.y, r0.y, l(28), t0.xxxx  // r2.y <- m.pbrMetallicRoughness.basecolorFactor.y
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r2.z, r0.y, l(32), t0.xxxx  // r2.z <- m.pbrMetallicRoughness.basecolorFactor.z
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r2.w, r0.y, l(36), t0.xxxx  // r2.w <- m.pbrMetallicRoughness.basecolorFactor.w
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r2.x, r0.y, l(24), t0.xxxx  // r2.x <- m.pbrMetallicRoughness.baseColorFactor.x
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r2.y, r0.y, l(28), t0.xxxx  // r2.y <- m.pbrMetallicRoughness.baseColorFactor.y
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r2.z, r0.y, l(32), t0.xxxx  // r2.z <- m.pbrMetallicRoughness.baseColorFactor.z
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r2.w, r0.y, l(36), t0.xxxx  // r2.w <- m.pbrMetallicRoughness.baseColorFactor.w
 ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r3.x, r0.y, l(40), t0.xxxx  // r3.x <- m.pbrMetallicRoughness.basecolorTexture.index
 ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r4.x, r0.y, l(48), t0.xxxx  // r4.x <- m.pbrMetallicRoughness.metallicFactor
 ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r4.z, r0.y, l(52), t0.xxxx  // r4.z <- m.pbrMetallicRoughness.roughnessFactor
@@ -185,7 +185,7 @@ ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r
 ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r0.y, r0.y, l(88), t0.xxxx  // r0.y <- m.emissiveTexture.index
 
 #line 22
-mov r2.xyzw, r2.xyzw  // r2.x <- basecolorFactor.x; r2.y <- basecolorFactor.y; r2.z <- basecolorFactor.z; r2.w <- basecolorFactor.w
+mov r2.xyzw, r2.xyzw  // r2.x <- baseColorFactor.x; r2.y <- baseColorFactor.y; r2.z <- baseColorFactor.z; r2.w <- baseColorFactor.w
 
 #line 23
 mov r3.x, r3.x  // r3.x <- basecolorTexture
@@ -400,13 +400,13 @@ itof r0.w, l(0)  // r0.w <- pout.normal.w
 mov r0.xyz, r0.xyzx  // r0.x <- pout.normal.x; r0.y <- pout.normal.y; r0.z <- pout.normal.z
 
 #line 107
-itof r1.w, l(0)  // r1.w <- pout.emmisive.w
-mov r1.xyz, r1.xyzx  // r1.x <- pout.emmisive.x; r1.y <- pout.emmisive.y; r1.z <- pout.emmisive.z
+itof r1.w, l(0)  // r1.w <- pout.emissive.w
+mov r1.xyz, r1.xyzx  // r1.x <- pout.emissive.x; r1.y <- pout.emissive.y; r1.z <- pout.emissive.z
 
 #line 108
-mov r4.xz, r4.xxzx  // r4.x <- pout.msr.x; r4.z <- pout.msr.z
-mov r4.y, r4.y  // r4.y <- pout.msr.y
-mov r4.w, r4.w  // r4.w <- pout.msr.w
+mov r4.xz, r4.xxzx  // r4.x <- pout.material.x; r4.z <- pout.material.z
+mov r4.y, r4.y  // r4.y <- pout.material.y
+mov r4.w, r4.w  // r4.w <- pout.material.w
 
 #line 110
 mov o0.xyzw, r0.xyzw

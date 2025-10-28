@@ -28,7 +28,7 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     const float GAMMA = 2.2;
     const MaterialConstants m = materials[material];
     
-    float4 basecolorFactor = m.pbrMetallicRoughness.basecolorFactor;
+    float4 basecolorFactor = m.pbrMetallicRoughness.baseColorFactor;
     const int basecolorTexture = m.pbrMetallicRoughness.basecolorTexture.index;
     
     if (basecolorTexture > -1)
@@ -43,7 +43,7 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     //{
         basecolorFactor.a = cpuColor.a;
     //}
-    //if (basecolorFactor.a < m.alphaCutoff)
+    //if (baseColorFactor.a < m.alphaCutoff)
     //{
     //    discard;
     //}
@@ -130,7 +130,7 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     }
 #endif
     
-    //return basecolorFactor;
+    //return baseColorFactor;
     
 #if 1   //ŠO‚Ì”wŒi‚ðˆÚ‚·
     diffuse += IblRadianceLambertian(N, V, roughnessFactor, cDiff, f0) * iblIntensity;
@@ -144,7 +144,7 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     specular = lerp(specular, specular * occlusionFactor, occlusionStrength);
     
     // MULTIPLE_RENDER_TARGETS
-    //pout.color = float4(diffuse + specular + emmisive, basecolorFactor.a) * basecolorFactor;
+    //pout.color = float4(diffuse + specular + emmisive, baseColorFactor.a) * baseColorFactor;
     pout.color = float4((diffuse + specular + emmisive) * basecolorFactor.rgb, basecolorFactor.a);
     //pout.color = float4(1.0f,1.0f,0.0f,1.0f);
     pout.position = mul(pin.wPosition, vview); // to viewSpace
@@ -153,5 +153,5 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     
     float3 Lo = diffuse + specular + emmisive;
     
-    //return float4(Lo , basecolorFactor.a);
+    //return float4(Lo , baseColorFactor.a);
 }

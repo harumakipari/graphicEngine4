@@ -38,6 +38,7 @@ public:
         skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
         //skeltalMeshComponent->SetModel("./Data/Models/Characters/Player/chara_animation.gltf");
         skeltalMeshComponent->SetModel("./Data/Models/Characters/GirlSoldier/Idle.gltf");
+        //skeltalMeshComponent->SetModel("./Data/Models/Characters/Test/MDL.gltf");
         //skeltalMeshComponent->SetModel("./Data/Models/Characters/Player/chara_idle.gltf");
         //skeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());

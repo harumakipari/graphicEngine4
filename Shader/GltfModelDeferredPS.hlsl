@@ -19,21 +19,21 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     const float GAMMA = 2.2;
     const MaterialConstants m = materials[material];
 
-    float4 basecolorFactor = m.pbrMetallicRoughness.basecolorFactor;
+    float4 baseColorFactor = m.pbrMetallicRoughness.baseColorFactor;
     const int basecolorTexture = m.pbrMetallicRoughness.basecolorTexture.index;
 
     if (basecolorTexture > -1)
     {
         float4 sampled = materialTextures[BASECOLOR_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(sampled.rgb, GAMMA);
-        basecolorFactor *= sampled;
+        baseColorFactor *= sampled;
     }
     
     if (m.alphaMode == 0 /*OPAQUE*/)
     {
-        basecolorFactor.a = 1.0;
+        baseColorFactor.a = 1.0;
     }
-    if (basecolorFactor.a < m.alphaCutoff)
+    if (baseColorFactor.a < m.alphaCutoff)
     {
         discard;
     }
@@ -67,10 +67,10 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     }
     const float occlusionStrength = m.occlusionTexture.strength;
 
-    const float3 f0 = lerp(0.04, basecolorFactor.rgb, metallicFactor);
+    const float3 f0 = lerp(0.04, baseColorFactor.rgb, metallicFactor);
     const float3 f90 = 1.0;
     const float alphaRoughness = roughnessFactor * roughnessFactor;
-    const float3 cDiff = lerp(basecolorFactor.rgb, 0.0, metallicFactor);
+    const float3 cDiff = lerp(baseColorFactor.rgb, 0.0, metallicFactor);
     
     const float3 P = pin.wPosition.xyz;
     const float3 V = normalize(vcameraPositon.xyz - pin.wPosition.xyz);
@@ -99,13 +99,13 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
     }
     
-    pout.color = basecolorFactor;
+    pout.color = baseColorFactor;
     //pout.position = mul(pin.wPosition, view); // to viewSpace
     //pout.normal = mul(float4(N.xyz, 0), view); //to viewSpace;
     pout.position = pin.wPosition; // to viewSpace
     pout.normal = float4(N.xyz, 0); //to viewSpace;
-    pout.emmisive = float4(emmisiveFactor, 0);
-    pout.msr = float4(metallicFactor, occlusionFactor, roughnessFactor, occlusionStrength);
+    pout.emissive = float4(emmisiveFactor, 0);
+    pout.material = float4(metallicFactor, occlusionFactor, roughnessFactor, occlusionStrength);
     
 	return pout;
 }

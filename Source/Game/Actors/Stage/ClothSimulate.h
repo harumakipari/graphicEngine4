@@ -419,7 +419,7 @@ public:
         void serialize(T& archive)
         {
             archive(
-                cereal::make_nvp("basecolorFactor", basecolorFactor),
+                cereal::make_nvp("baseColorFactor", basecolorFactor),
                 cereal::make_nvp("basecolorTexture", basecolorTexture),
                 cereal::make_nvp("metallicFactor", metallicFactor),
                 cereal::make_nvp("roughnessFactor", roughnessFactor),

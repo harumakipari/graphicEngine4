@@ -34,7 +34,7 @@ void main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     MaterialConstants m = materials[material];
     
     //ベースカラーを取得
-    float4 baseColor = m.pbrMetallicRoughness.basecolorFactor;
+    float4 baseColor = m.pbrMetallicRoughness.baseColorFactor;
     if (m.pbrMetallicRoughness.basecolorTexture.index > -1)
     {
         float4 sampled = materialTextures[BASECOLOR_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);

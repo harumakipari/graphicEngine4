@@ -59,7 +59,7 @@
 //       struct PbrMetallicRoughness
 //       {
 //           
-//           float4 basecolorFactor;    // Offset:   24
+//           float4 baseColorFactor;    // Offset:   24
 //           
 //           struct TextureInfo
 //           {
@@ -193,10 +193,10 @@ mov r0.y, l(2.200000)  // r0.y <- GAMMA
 
 #line 34
 mov r0.z, cb0[5].x
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.x, r0.z, l(24), t0.xxxx  // r1.x <- m.pbrMetallicRoughness.basecolorFactor.x
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.y, r0.z, l(28), t0.xxxx  // r1.y <- m.pbrMetallicRoughness.basecolorFactor.y
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.z, r0.z, l(32), t0.xxxx  // r1.z <- m.pbrMetallicRoughness.basecolorFactor.z
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.w, r0.z, l(36), t0.xxxx  // r1.w <- m.pbrMetallicRoughness.basecolorFactor.w
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.x, r0.z, l(24), t0.xxxx  // r1.x <- m.pbrMetallicRoughness.baseColorFactor.x
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.y, r0.z, l(28), t0.xxxx  // r1.y <- m.pbrMetallicRoughness.baseColorFactor.y
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.z, r0.z, l(32), t0.xxxx  // r1.z <- m.pbrMetallicRoughness.baseColorFactor.z
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.w, r0.z, l(36), t0.xxxx  // r1.w <- m.pbrMetallicRoughness.baseColorFactor.w
 ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r0.z, r0.z, l(40), t0.xxxx  // r0.z <- m.pbrMetallicRoughness.basecolorTexture.index
 
 #line 37

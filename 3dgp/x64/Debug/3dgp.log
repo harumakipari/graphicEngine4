@@ -1,2 +1,99 @@
-﻿  Framework.cpp
+﻿  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Data\Shaders\AccumulateHuskParticlePS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Data\Shaders\AccumulateHuskParticlePS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Data\Shaders\BuildingPS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Data\Shaders\BuildingPS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothSimulateVS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothSimulateVS.cso
+C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothVS.hlsl(41,5-32): warning X3206: implicit truncation of vector type
+  
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothVS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothVS.cso
+C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildingCsmVS.hlsl(70,5): warning X4000: use of potentially uninitialized variable (SafeNormalize)
+  
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildingCsmVS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildingCsmVS.cso
+C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildsVS.hlsl(44,5): warning X4000: use of potentially uninitialized variable (SafeNormalize)
+  
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildsVS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildsVS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelBaseColorPS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelBaseColorPS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelCharacterPS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelCharacterPS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelCsmGS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelCsmGS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelCsmVS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelCsmVS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelDeferredPS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelDeferredPS.cso
+C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelDissolvePS.hlsl(148,11-82): warning X3206: implicit truncation of vector type
+  
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelDissolvePS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelDissolvePS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelEmissionPS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelEmissionPS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelEmitParticlePS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelEmitParticlePS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelGameCharacter.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelGameCharacter.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelInstancedBatchingCsmVS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelInstancedBatchingCsmVS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelInstancedBatchingVS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelInstancedBatchingVS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelPlayerSidePS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelPlayerSidePS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelPS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelPS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelStaticBatchingCsmVS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelStaticBatchingCsmVS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelStaticBatchingVS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelStaticBatchingVS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelVS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelVS.cso
+C:\Users\2240225\Desktop\graphicEngine4\Shader\TestPS.hlsl(23,11-58): warning X3578: Output value 'main' is not completely initialized
+  
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\TestPS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\TestPS.cso
+  SceneComponent.cpp
+  CameraComponent.cpp
+  CollisionComponent.cpp
+  RigidBodyComponent.cpp
+  ShapeComponent.cpp
+  ControllerComponent.cpp
+  EffectComponent.cpp
+  EraseInAreaComponent.cpp
+  ItemSpawnerComponent.cpp
+  LifeTimeComponent.cpp
+  ShockWaveCollisionComponent.cpp
+  ActorManager.cpp
+  World.cpp
+  Framework.cpp
+  Scene.cpp
+  Beam.cpp
+  ActionDerived.cpp
+  BehaviorTree.cpp
+  JudgmentDerived.cpp
+  NodeBase.cpp
+  RiderEnemy.cpp
+  PickUpItem.cpp
+  Player.cpp
+  PlayerState.cpp
+  BossBuilding.cpp
+  Building.cpp
+  ClothSimulate.cpp
+  BuildingManager.cpp
+  GameManager.cpp
+  BootScene.cpp
+  LoadingScene.cpp
+  MainScene.cpp
+  TutorialScene.cpp
+  Graphics.cpp
+  EffectSystem.cpp
+  SceneRenderer.cpp
+  InterleavedGltfModel.cpp
+  Collision.cpp
+  Physics.cpp
+  PhysicsUtility.cpp
+  ObjectManager.cpp
+  UIFactory.cpp
   3dgp.vcxproj -> C:\Users\2240225\Desktop\graphicEngine4\x64\Debug\3dgp.exe

@@ -28,7 +28,7 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     const float GAMMA = 2.2;
     const MaterialConstants m = materials[material];
     
-    float4 basecolorFactor = m.pbrMetallicRoughness.basecolorFactor;
+    float4 basecolorFactor = m.pbrMetallicRoughness.baseColorFactor;
     const int basecolorTexture = m.pbrMetallicRoughness.basecolorTexture.index;
     
     if (basecolorTexture > -1)
@@ -163,7 +163,7 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     }
 #endif
     
-    //return basecolorFactor;
+    //return baseColorFactor;
 
 #if 1   //ŠO‚Ì”wŒi‚ðˆÚ‚·
     //totalDiffuse += IblRadianceLambertian(N, V, roughnessFactor, cDiff, f0) * iblIntensity;
@@ -189,5 +189,5 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     
     float3 Lo = diffuse + specular + emmisive;
     
-    //return float4(Lo , basecolorFactor.a);
+    //return float4(Lo , baseColorFactor.a);
 }

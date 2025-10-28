@@ -89,7 +89,7 @@ struct OcclusionTextureInfo
 
 struct PbrMetallicRoughness
 {
-    float4 basecolorFactor;
+    float4 baseColorFactor;
     TextureInfo basecolorTexture;
     float metallicFactor;
     float roughnessFactor;
@@ -130,9 +130,9 @@ struct PS_OUT
 
 struct GBUFFER_PS_OUT
 {
-    float4 normal : SV_TARGET0;
-    float4 msr : SV_TARGET1; // metallic occulusion roughness occlusionStrength
-    float4 color : SV_TARGET2;
-    float4 position : SV_TARGET3;   // 
-    float4 emmisive : SV_TARGET4;
+    float4 normal : SV_TARGET0;     // world normal  w:未使用
+    float4 material : SV_TARGET1;   // x:metallic y:occlusion z:roughness w:occlusionStrength
+    float4 color : SV_TARGET2;      
+    float4 position : SV_TARGET3;   // world position
+    float4 emissive : SV_TARGET4;   // w:未使用
 };

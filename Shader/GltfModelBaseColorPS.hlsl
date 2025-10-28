@@ -11,6 +11,6 @@ float4 main(VS_OUT pin) : SV_TARGET
     return color; //デバック用で色指定
     const MaterialConstants m = materials[material];
     
-    float4 basecolorFactor = m.pbrMetallicRoughness.basecolorFactor;
+    float4 basecolorFactor = m.pbrMetallicRoughness.baseColorFactor;
     return basecolorFactor;
 }
