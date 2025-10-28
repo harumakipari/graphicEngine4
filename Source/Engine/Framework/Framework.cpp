@@ -57,10 +57,12 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
 
     //オーディオ更新
     Audio::Update(deltaTime);
-
+    bool skipRendering;
     // SCENE_TRANSITION
-    bool skipRendering = Scene::_update(immediateContext, deltaTime * timeScale);
-
+    {
+        ProfileScopedSection_2(0, "SceneUpdate", ImGuiControl::Profiler::Blue);
+        skipRendering = Scene::_update(immediateContext, deltaTime * timeScale);
+    }
 
 #ifdef USE_IMGUI
     ProfileNewFrame();
@@ -72,12 +74,12 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
     //    Graphics& graphics = Graphics::Instance();
     //    graphics.StylizeWindow(hwnd, !graphics.fullscreenMode);
     //}
-
-    InputSystem::Update(deltaTime);
-
+    {
+        ProfileScopedSection_2(0, "InputUpdate", ImGuiControl::Profiler::Green);
+        InputSystem::Update(deltaTime);
+    }
 
     return skipRendering;
-
 
 }
 
@@ -107,14 +109,20 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
     // SCENE_TRANSITION
     if (!skipRendering)
     {
-        Scene::_render(immediateContext, elapsed_time);
+        {
+            ProfileScopedSection_2(0, "Render", ImGuiControl::Profiler::Red);
+            Scene::_render(immediateContext, elapsed_time);
+        }
         //gameManager->GenerateOutputAll();
     }
 
 #ifdef USE_IMGUI
     //ImGui::Begin("ImGUI");
-    ProfileDrawUI();
-    Scene::_drawGUI();
+    {
+        ProfileScopedSection_2(0, "ImGui", ImGuiControl::Profiler::Yellow);
+        ProfileDrawUI();
+        Scene::_drawGUI();
+    }
 
     /*ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 #if 0

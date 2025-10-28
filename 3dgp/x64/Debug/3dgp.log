@@ -1,2 +1,4 @@
 ﻿  profiler.cpp
+  Framework.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\Engine\Framework\Framework.cpp(47,5): warning C4002: 関数に似たマクロ呼び出し 'ProfileInitialize' の引数が多すぎます
   3dgp.vcxproj -> C:\Users\2240225\Desktop\graphicEngine4\x64\Debug\3dgp.exe
