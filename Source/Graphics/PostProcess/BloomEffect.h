@@ -25,7 +25,7 @@ public:
     }
 
     // UI Т▓Ро (ImGui)
-    void DrawDebugUI()override {}
+	void DrawDebugUI()override;
 
 private:
 public:

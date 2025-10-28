@@ -188,7 +188,7 @@ ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r
 mov r2.xyzw, r2.xyzw  // r2.x <- baseColorFactor.x; r2.y <- baseColorFactor.y; r2.z <- baseColorFactor.z; r2.w <- baseColorFactor.w
 
 #line 23
-mov r3.x, r3.x  // r3.x <- basecolorTexture
+mov r3.x, r3.x  // r3.x <- baseColorTexture
 
 #line 25
 ilt r3.x, l(-1), r3.x
@@ -228,7 +228,7 @@ if_nz r0.z
 endif 
 
 #line 41
-mov r1.xyz, r1.xyzx  // r1.x <- emmisiveFactor.x; r1.y <- emmisiveFactor.y; r1.z <- emmisiveFactor.z
+mov r1.xyz, r1.xyzx  // r1.x <- emissiveFactor.x; r1.y <- emissiveFactor.y; r1.z <- emissiveFactor.z
 
 #line 43
 mov r0.y, r0.y  // r0.y <- emissiveTexture

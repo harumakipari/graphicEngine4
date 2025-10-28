@@ -4,7 +4,7 @@
 #include <d3d11.h>
 #include <vector>
 // サンプラステート
-enum class SAMPLER_STATE
+enum class SAMPLER_STATE :uint8_t
 {
     POINT,
     LINEAR,
@@ -18,7 +18,7 @@ enum class SAMPLER_STATE
 };
 
 //デプスステート
-enum class DEPTH_STATE
+enum class DEPTH_STATE :uint8_t
 {
     ZT_ON_ZW_ON,    //深度テストあり　　深度書き込みあり
     ZT_ON_ZW_OFF,
@@ -29,7 +29,7 @@ enum class DEPTH_STATE
 };
 
 //ブレンディングステート
-enum class BLEND_STATE
+enum class BLEND_STATE :uint8_t
 {
     NONE,
     ALPHA,
@@ -41,7 +41,7 @@ enum class BLEND_STATE
 };
 
 //ラスタライザステート
-enum class RASTERRIZER_STATE
+enum class RASTERRIZER_STATE :uint8_t
 {
     SOLID_CULL_BACK,
     WIREFRAME_CULL_BACK,
@@ -72,25 +72,25 @@ public:
     static void SetSamplerState(ID3D11DeviceContext* immediateContext);
 
     // サンプラステート取得
-    static ID3D11SamplerState* GetSamplerState(SAMPLER_STATE state) 
+    static ID3D11SamplerState* GetSamplerState(SAMPLER_STATE state)
     {
         return samplerStates[static_cast<int>(state)].Get();
     }
 
     // デプスステート取得
-    static ID3D11DepthStencilState* GetDepthStencilState(DEPTH_STATE state) 
+    static ID3D11DepthStencilState* GetDepthStencilState(DEPTH_STATE state)
     {
         return depthStencilStates[static_cast<int>(state)].Get();
     }
 
     // ブレンドステート取得
-    static ID3D11BlendState* GetBlendState(BLEND_STATE state) 
+    static ID3D11BlendState* GetBlendState(BLEND_STATE state)
     {
         return blendStates[static_cast<int>(state)].Get();
     }
 
     // ラスタライザーステート取得
-    static ID3D11RasterizerState* GetRasterizerState(RASTERRIZER_STATE state) 
+    static ID3D11RasterizerState* GetRasterizerState(RASTERRIZER_STATE state)
     {
         return rasterizerState[static_cast<int>(state)].Get();
     }

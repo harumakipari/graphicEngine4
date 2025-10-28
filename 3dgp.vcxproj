@@ -262,6 +262,7 @@
     <ClCompile Include="Source\Graphics\Effect\Particles.cpp" />
     <ClCompile Include="Source\Graphics\Environment\SkyMap.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\Bloom.cpp" />
+    <ClCompile Include="Source\Graphics\PostProcess\FogEffect.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\FrameBuffer.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\FullScreenQuad.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\BloomEffect.cpp" />

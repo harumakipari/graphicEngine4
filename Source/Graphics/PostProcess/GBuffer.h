@@ -7,6 +7,16 @@
 //#include "MultipleRenderTargets.h"
 #include "Engine/Utility/Win32Utils.h"
 
+enum class SRV_SLOT :uint8_t
+{
+    NORMAL,     // world normal
+    PBR_VALUE,  // x:metallic y:occlusion z:roughness w:occlusionStrength
+    COLOR,
+    POSITION,    // world position
+    EMISSIVE,
+};
+
+
 class GBuffer
 {
 public:
@@ -17,7 +27,6 @@ public:
         for (UINT bufferIndex = 0; bufferIndex < GBufferCount; bufferIndex++)
         {
             Microsoft::WRL::ComPtr<ID3D11Texture2D> renderTargetBuffer;
-
             D3D11_TEXTURE2D_DESC texture2dDesc = {};
             texture2dDesc.Width = width;
             texture2dDesc.Height = height;

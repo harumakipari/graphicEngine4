@@ -20,9 +20,9 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     const MaterialConstants m = materials[material];
 
     float4 baseColorFactor = m.pbrMetallicRoughness.baseColorFactor;
-    const int basecolorTexture = m.pbrMetallicRoughness.basecolorTexture.index;
+    const int baseColorTexture = m.pbrMetallicRoughness.basecolorTexture.index;
 
-    if (basecolorTexture > -1)
+    if (baseColorTexture > -1)
     {
         float4 sampled = materialTextures[BASECOLOR_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(sampled.rgb, GAMMA);
@@ -38,14 +38,14 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         discard;
     }
     
-    float3 emmisiveFactor = m.emissiveFactor;
+    float3 emissiveFactor = m.emissiveFactor;
     
     const int emissiveTexture = m.emissiveTexture.index;
     if (emissiveTexture > -1)
     {
         float4 sampled = materialTextures[EMISSIVE_TEXTURE].Sample(samplerStates[2], pin.texcoord);
         sampled.rgb = pow(sampled.rgb, GAMMA);
-        emmisiveFactor *= sampled.rgb;
+        emissiveFactor *= sampled.rgb;
     }
     
     float roughnessFactor = m.pbrMetallicRoughness.roughnessFactor;
@@ -104,7 +104,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     //pout.normal = mul(float4(N.xyz, 0), view); //to viewSpace;
     pout.position = pin.wPosition; // to viewSpace
     pout.normal = float4(N.xyz, 0); //to viewSpace;
-    pout.emissive = float4(emmisiveFactor, 0);
+    pout.emissive = float4(emissiveFactor, 0);
     pout.material = float4(metallicFactor, occlusionFactor, roughnessFactor, occlusionStrength);
     
 	return pout;

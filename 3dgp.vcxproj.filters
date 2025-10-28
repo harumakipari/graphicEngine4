@@ -465,6 +465,21 @@
     <ClCompile Include="Source\Graphics\Core\LightManager.cpp">
       <Filter>Sources\Graphics\Core</Filter>
     </ClCompile>
+    <ClCompile Include="External\imgui\profiler.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\timer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Debug\Logger.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\PostProcess\BloomEffect.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\PostProcess\FogEffect.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -980,12 +995,16 @@
     <ClInclude Include="Source\Game\SofyBody\MassPoint.h">
       <Filter>Sources\Game\SoftBody</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\PostProcess\PostProcessSystem.h">
-      <Filter>Sources\Graphics\PostProcess</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Graphics\Core\SceneCommonConstants.h">
       <Filter>Sources\Graphics\Core</Filter>
     </ClInclude>
+    <ClInclude Include="External\imgui\profiler.h" />
+    <ClInclude Include="External\imgui\timer.h" />
+    <ClInclude Include="Source\Engine\Debug\Logger.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\BloomEffect.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\FogEffect.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\PostEffectBase.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\PostEffectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BlurPS.hlsl">
@@ -1058,9 +1077,6 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\geometricPrimitiveVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\GlowExteractionPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GltfModelBaseColorPS.hlsl">
@@ -1226,6 +1242,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\ClothConstraintCS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GlowExtractionPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

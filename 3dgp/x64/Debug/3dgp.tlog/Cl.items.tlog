@@ -62,6 +62,7 @@ C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\Effect\HuskParticle.cpp;
 C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\Effect\Particles.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\Particles.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\Environment\SkyMap.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\SkyMap.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\PostProcess\Bloom.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\Bloom.obj
+C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\PostProcess\FogEffect.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\FogEffect.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\PostProcess\FrameBuffer.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\FrameBuffer.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\PostProcess\FullScreenQuad.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\FullScreenQuad.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\PostProcess\BloomEffect.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Debug\BloomEffect.obj
