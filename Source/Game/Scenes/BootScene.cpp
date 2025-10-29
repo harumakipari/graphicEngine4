@@ -663,8 +663,6 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             {
                 gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],  //colorMap
                 gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
-                //multipleRenderTargets->renderTargetShaderResourceViews[0],  //colorMap
-                //multipleRenderTargets->depthStencilShaderResourceView,      //depthMap
                 cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
             };
             fullscreenQuadTransfer->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), pixelShaders[2]/*VolumetricFogPS*/.Get());
@@ -690,18 +688,9 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
             ID3D11ShaderResourceView* shader_resource_views[]
             {
-                // MULTIPLE_RENDER_TARGETS
-                //multipleRenderTargets->renderTargetShaderResourceViews[0],  //colorMap
                 gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],  //colorMap
-                //framebuffers[1]->shaderResourceViews[0].Get(),
-    #if 0
-                multipleRenderTargets->renderTargetShaderResourceViews[1],  // positionMap
-                multipleRenderTargets->renderTargetShaderResourceViews[2],  // normalMap
-    #else
-                gBufferRenderTarget->renderTargetShaderResourceViews[3],   // positionMap
-                gBufferRenderTarget->renderTargetShaderResourceViews[0],   // normalMap
-    #endif // 0
-                //multipleRenderTargets->depthStencilShaderResourceView,      //depthMap
+                gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
+                gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
                 gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
                 //bloomer->shader_resource_view(),    //bloom
                 postEffectManager->GetFinalOutput(),
@@ -710,7 +699,6 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             };
             // メインフレームバッファとブルームエフェクトを組み合わせて描画
             fullscreenQuadTransfer->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), pixelShaders[0]/*final pass*/.Get());
-
         }
     }
 #endif // 0
