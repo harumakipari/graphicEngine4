@@ -525,7 +525,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::NORMAL)],
                 multipleRenderTargets->depthStencilShaderResourceView,      //depthMap
                 //bloomer->shader_resource_view(),    //bloom
-                postEffectManager->GetFinalOutput(),
+                //postEffectManager->GetFinalOutput(),
+                postEffectManager->GetOutput("BloomEffect"),
                 framebuffers[0]->shaderResourceViews[0].Get(),  //fog
                 cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
             };
@@ -693,7 +694,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
                 gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
                 //bloomer->shader_resource_view(),    //bloom
-                postEffectManager->GetFinalOutput(),
+                //postEffectManager->GetFinalOutput(),
+                postEffectManager->GetOutput("BloomEffect"),
                 framebuffers[0]->shaderResourceViews[0].Get(),  //fog
                 cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
             };
@@ -708,7 +710,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-        //objectManager.Draw(immediateContext);
+        objectManager.Draw(immediateContext);
         //softBodyEngine.Render(immediateContext);
         //uiRoot.Draw(immediateContext);
     }

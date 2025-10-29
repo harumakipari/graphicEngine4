@@ -1,14 +1,16 @@
 #pragma once
 
 #include <d3d11.h>
-#include <vector>
 #include <memory>
+#include <string>
 
 #include "FrameBuffer.h"
 
 class PostEffectBase
 {
 public:
+    PostEffectBase(std::string className) :name(std::move(className)) {}
+
     virtual ~PostEffectBase() = default;
 
     // ポストエフェクト生成（リソース作成） 
@@ -20,11 +22,14 @@ public:
     // 出力（次のエフェクトや最終合成に渡す用）
     virtual ID3D11ShaderResourceView* GetOutputSRV()const = 0;
 
+    virtual const std::string& GetName() const { return name; }
+
     // UI 調整 (ImGui)
     virtual void DrawDebugUI() {}
 
 protected:
     std::unique_ptr<FrameBuffer> outputBuffer;  // 出力先
+    std::string name = "";
 };
 
 

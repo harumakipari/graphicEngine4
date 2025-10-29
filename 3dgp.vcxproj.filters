@@ -474,11 +474,11 @@
     <ClCompile Include="Source\Engine\Debug\Logger.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\PostProcess\BloomEffect.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Graphics\PostProcess\FogEffect.cpp">
       <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\PostProcess\BloomEffect.cpp">
+      <Filter>Sources\Graphics\PostProcess</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1001,10 +1001,12 @@
     <ClInclude Include="External\imgui\profiler.h" />
     <ClInclude Include="External\imgui\timer.h" />
     <ClInclude Include="Source\Engine\Debug\Logger.h" />
-    <ClInclude Include="Source\Graphics\PostProcess\BloomEffect.h" />
     <ClInclude Include="Source\Graphics\PostProcess\FogEffect.h" />
     <ClInclude Include="Source\Graphics\PostProcess\PostEffectBase.h" />
     <ClInclude Include="Source\Graphics\PostProcess\PostEffectManager.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\BloomEffect.h">
+      <Filter>Sources\Graphics\PostProcess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BlurPS.hlsl">
@@ -1214,9 +1216,6 @@
     <FxCompile Include="Shader\AccumulateHuskParticlePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\DefefferdPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\GltfModelDeferredPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -1245,6 +1244,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GlowExtractionPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\DeferredPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

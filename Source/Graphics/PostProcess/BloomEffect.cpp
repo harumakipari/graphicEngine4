@@ -69,6 +69,7 @@ void BloomEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t heig
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     bloomConstant = std::make_unique<ConstantBuffer<BloomConstants>>(device);
+
 }
 
 void BloomEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* inputSrv)
