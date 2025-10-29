@@ -26,7 +26,7 @@ public:
 
         float timeScale = 0.35f;
         float noiseScale = 0.2f;
-        float pads[3];
+        float pads[3] = {};
     };
 
 public:

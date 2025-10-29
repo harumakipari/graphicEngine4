@@ -26,6 +26,7 @@
 #include "Physics/Physics.h"
 
 #include "Graphics/PostProcess/BloomEffect.h"
+#include "Graphics/PostProcess/FogEffect.h"
 
 
 bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
@@ -49,6 +50,14 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         postEffectManager->AddEffect(std::make_unique<BloomEffect>());
         postEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
     }
+
+    // シーンエフェクト
+    {
+        sceneEffectManager = std::make_unique<SceneEffectManager>();
+        sceneEffectManager->AddEffect(std::make_unique<FogEffect>());
+        sceneEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
+    }
+
     // FOG 
     framebuffers[0] = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
     HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", pixelShaders[2].GetAddressOf());
@@ -479,6 +488,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         cascadedShadowMaps->Deactive(immediateContext);
 
 #if 1
+#else
+
         // FOG
         {
             framebuffers[0]->Clear(immediateContext, 0, 0, 0, 0);
@@ -501,9 +512,9 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
 #endif // 0
 
-        // CASCADED_SHADOW_MAPS
-        // Draw shadow to scene framebuffer
-        // FINAL_PASS
+            // CASCADED_SHADOW_MAPS
+            // Draw shadow to scene framebuffer
+            // FINAL_PASS
         {
             //bloomer->bloom_intensity = bloomIntensity;
             //bloomer->bloom_extraction_threshold = bloomThreshold;
@@ -514,7 +525,10 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             //bloomer->make(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
             //bloomer->make(immediateContext, framebuffers[1]->shaderResourceViews[0].Get());
 
+            sceneEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)], multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::NORMAL)],
+                multipleRenderTargets->depthStencilShaderResourceView, cascadedShadowMaps->depthMap().Get());
             postEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
+
 
             ID3D11ShaderResourceView* shader_resource_views[]
             {
@@ -527,7 +541,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 //bloomer->shader_resource_view(),    //bloom
                 //postEffectManager->GetFinalOutput(),
                 postEffectManager->GetOutput("BloomEffect"),
-                framebuffers[0]->shaderResourceViews[0].Get(),  //fog
+                //framebuffers[0]->shaderResourceViews[0].Get(),  //fog
+                sceneEffectManager->GetOutput("FogEffect"),
                 cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
             };
             // メインフレームバッファとブルームエフェクトを組み合わせて描画
@@ -650,7 +665,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         //gameWorld_->CastShadowRender(immediateContext);
         cascadedShadowMaps->Deactive(immediateContext);
 
-#if 1
+#if 0
         // FOG
         {
             framebuffers[0]->Clear(immediateContext, 0, 0, 0, 0);
@@ -687,6 +702,10 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             //bloomer->make(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
             postEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
 
+            sceneEffectManager->ApplyAll(immediateContext, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)], gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
+                gBufferRenderTarget->depthStencilShaderResourceView, cascadedShadowMaps->depthMap().Get());
+
+
             ID3D11ShaderResourceView* shader_resource_views[]
             {
                 gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],  //colorMap
@@ -696,7 +715,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 //bloomer->shader_resource_view(),    //bloom
                 //postEffectManager->GetFinalOutput(),
                 postEffectManager->GetOutput("BloomEffect"),
-                framebuffers[0]->shaderResourceViews[0].Get(),  //fog
+                //framebuffers[0]->shaderResourceViews[0].Get(),  //fog
+                sceneEffectManager->GetOutput("FogEffect"),
                 cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
             };
             // メインフレームバッファとブルームエフェクトを組み合わせて描画

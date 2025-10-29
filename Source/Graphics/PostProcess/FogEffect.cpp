@@ -14,7 +14,7 @@ void FogEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height
 
 void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal, ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* shadowMap)
 {
-    fogConstants->Activate(immediateContext, 4);
+    fogConstants->Activate(immediateContext, 8);
 
     fogBuffer->Clear(immediateContext, 0, 0, 0, 0);
     fogBuffer->Activate(immediateContext);

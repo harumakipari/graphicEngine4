@@ -30,6 +30,7 @@
 #include "Game/Actors/Stage/TitleStage.h"
 #include "Game/Actors/Stage/ClothSimulate.h"
 #include "Game/Actors/Camera/TitleCamera.h"
+#include "Graphics/PostProcess/SceneEffectManager.h"
 
 #include "UI/Widgets/Widget.h"
 #include "Physics/CollisionMesh.h"
@@ -181,7 +182,7 @@ public:
 private:
     std::unique_ptr<LightManager> lightManager;
     std::unique_ptr<PostEffectManager> postEffectManager;
-
+    std::unique_ptr<SceneEffectManager> sceneEffectManager;
     std::shared_ptr<TitlePlayer> titlePlayer;
     std::shared_ptr<Stage>  title;
     std::shared_ptr<CollisionMesh> stageCollisionMesh;
