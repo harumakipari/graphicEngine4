@@ -58,13 +58,13 @@ cbuffer PRIMITIVE_CONSTANT_BUFFER : register(b0)
 
 cbuffer VIEW_CONSTANTS_BUFFER : register(b8)
 {
-    row_major float4x4 vviewProjection;
-    float4 vcameraPositon;
-    row_major float4x4 vview;
-    row_major float4x4 vprojection;
-    row_major float4x4 vinverseProjection;
-    row_major float4x4 vinverseViewProjection;
-    row_major float4x4 vinvView;
+    row_major float4x4 viewProjection;
+    float4 cameraPositon;
+    row_major float4x4 view;
+    row_major float4x4 projection;
+    row_major float4x4 inverseProjection;
+    row_major float4x4 inverseViewProjection;
+    row_major float4x4 invView;
 }
 
 

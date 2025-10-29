@@ -20,7 +20,7 @@ public:
     void ApplyAll(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* colorSRV)
     {
         ID3D11ShaderResourceView* current = colorSRV;
-        for (auto& [name,effect] : effects)
+        for (auto& effect : effects | std::views::values)
         {
             effect->Apply(immediateContext, current);
             current = effect->GetOutputSRV();
@@ -40,6 +40,14 @@ public:
         if (it != effects.end())
             return it->second->GetOutputSRV();
         return nullptr;
+    }
+
+    void DrawGui()
+    {
+        for (auto& effect:effects|std::views::values)
+        {
+            effect->DrawDebugUI();
+        }
     }
 
     //ID3D11ShaderResourceView* GetFinalOutput() const { return lastOutput; }

@@ -47,7 +47,7 @@ public:
 
 
     // UI Т▓Ро (ImGui)
-    virtual void DrawDebugUI() {}
+    void DrawDebugUI()override;
 
 private:
     std::unique_ptr<ConstantBuffer<FogConstants>> fogConstants;
