@@ -22,13 +22,13 @@
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
-//   row_major float4x4 vviewProjection;// Offset:    0 Size:    64
-//   float4 vcameraPositon;             // Offset:   64 Size:    16 [unused]
-//   row_major float4x4 vview;          // Offset:   80 Size:    64 [unused]
-//   row_major float4x4 vprojection;    // Offset:  144 Size:    64 [unused]
-//   row_major float4x4 vinverseProjection;// Offset:  208 Size:    64 [unused]
-//   row_major float4x4 vinverseViewProjection;// Offset:  272 Size:    64 [unused]
-//   row_major float4x4 vinvView;       // Offset:  336 Size:    64 [unused]
+//   row_major float4x4 viewProjection; // Offset:    0 Size:    64
+//   float4 cameraPositon;              // Offset:   64 Size:    16 [unused]
+//   row_major float4x4 view;           // Offset:   80 Size:    64 [unused]
+//   row_major float4x4 projection;     // Offset:  144 Size:    64 [unused]
+//   row_major float4x4 inverseProjection;// Offset:  208 Size:    64 [unused]
+//   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64 [unused]
+//   row_major float4x4 invView;        // Offset:  336 Size:    64 [unused]
 //
 // }
 //
@@ -49,8 +49,8 @@
 // Name                                 Type  Format         Dim      HLSL Bind  Count
 // ------------------------------ ---------- ------- ----------- -------------- ------
 // PRIMITIVE_CONSTANT_BUFFER         cbuffer      NA          NA            cb0      1 
+// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
 // ELASTIC_CONSTANT_BUFFER           cbuffer      NA          NA            cb6      1 
-// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb8      1 
 //
 //
 //
@@ -81,7 +81,7 @@
 vs_5_0
 dcl_globalFlags refactoringAllowed | skipOptimization
 dcl_constantbuffer CB0[4], immediateIndexed
-dcl_constantbuffer CB8[4], immediateIndexed
+dcl_constantbuffer CB4[4], immediateIndexed
 dcl_constantbuffer CB6[4], immediateIndexed
 dcl_input v0.xyzw
 dcl_input v1.xyz
@@ -398,12 +398,12 @@ mov r1.xyz, r1.xyzx  // r1.x <- vout.wPosition.x; r1.y <- vout.wPosition.y; r1.z
 mov r1.w, l(1.000000)  // r1.w <- vout.wPosition.w
 
 #line 126
-mul r2.xyzw, r1.xxxx, cb8[0].xyzw
-mul r5.xyzw, r1.yyyy, cb8[1].xyzw
+mul r2.xyzw, r1.xxxx, cb4[0].xyzw
+mul r5.xyzw, r1.yyyy, cb4[1].xyzw
 add r2.xyzw, r2.xyzw, r5.xyzw
-mul r5.xyzw, r1.zzzz, cb8[2].xyzw
+mul r5.xyzw, r1.zzzz, cb4[2].xyzw
 add r2.xyzw, r2.xyzw, r5.xyzw
-mul r5.xyzw, r1.wwww, cb8[3].xyzw
+mul r5.xyzw, r1.wwww, cb4[3].xyzw
 add r2.xyzw, r2.xyzw, r5.xyzw  // r2.x <- vout.position.x; r2.y <- vout.position.y; r2.z <- vout.position.z; r2.w <- vout.position.w
 
 #line 128

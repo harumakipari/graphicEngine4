@@ -2,5 +2,5 @@
 
 float4 main( float4 position : POSITION ) : SV_POSITION
 {
-    return mul(position, vviewProjection);
+    return mul(position, viewProjection);
 }

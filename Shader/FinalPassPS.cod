@@ -62,13 +62,13 @@
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
-//   row_major float4x4 vviewProjection;// Offset:    0 Size:    64
-//   float4 vcameraPositon;             // Offset:   64 Size:    16
-//   row_major float4x4 vview;          // Offset:   80 Size:    64 [unused]
-//   row_major float4x4 vprojection;    // Offset:  144 Size:    64 [unused]
-//   row_major float4x4 vinverseProjection;// Offset:  208 Size:    64
-//   row_major float4x4 vinverseViewProjection;// Offset:  272 Size:    64
-//   row_major float4x4 vinvView;       // Offset:  336 Size:    64 [unused]
+//   row_major float4x4 viewProjection; // Offset:    0 Size:    64
+//   float4 cameraPositon;              // Offset:   64 Size:    16
+//   row_major float4x4 view;           // Offset:   80 Size:    64 [unused]
+//   row_major float4x4 projection;     // Offset:  144 Size:    64 [unused]
+//   row_major float4x4 inverseProjection;// Offset:  208 Size:    64
+//   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64
+//   row_major float4x4 invView;        // Offset:  336 Size:    64 [unused]
 //
 // }
 //
@@ -90,8 +90,8 @@
 // cascadedShadowMaps                texture  float4     2darray             t6      1 
 // SCENE_CONSTANT_BUFFER             cbuffer      NA          NA            cb1      1 
 // CSM_CONSTANTS                     cbuffer      NA          NA            cb3      1 
-// FOG_CONSTANTS_BUFFER              cbuffer      NA          NA            cb4      1 
-// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb8      1 
+// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
+// FOG_CONSTANTS_BUFFER              cbuffer      NA          NA            cb8      1 
 // SHADER_CONSTANT_BUFFER            cbuffer      NA          NA            cb9      1 
 //
 //
@@ -119,8 +119,8 @@ dcl_immediateConstantBuffer { { 1.000000, 0, 0, 0},
 dcl_constantbuffer CB1[2], immediateIndexed
 dcl_constantbuffer CB9[3], immediateIndexed
 dcl_constantbuffer CB3[17], dynamicIndexed
-dcl_constantbuffer CB4[3], immediateIndexed
-dcl_constantbuffer CB8[21], immediateIndexed
+dcl_constantbuffer CB8[3], immediateIndexed
+dcl_constantbuffer CB4[21], immediateIndexed
 dcl_sampler s0, mode_default
 dcl_sampler s3, mode_default
 dcl_sampler s4, mode_default
@@ -260,12 +260,12 @@ mov r1.x, r1.x  // r1.x <- positionNdc.z
 itof r1.w, l(1)  // r1.w <- positionNdc.w
 
 #line 516
-mul r2.xy, r1.yyyy, cb8[13].zwzz
-mul r1.yz, r1.zzzz, cb8[14].zzwz
+mul r2.xy, r1.yyyy, cb4[13].zwzz
+mul r1.yz, r1.zzzz, cb4[14].zzwz
 add r1.yz, r1.yyzy, r2.xxyx
-mul r2.xy, r1.xxxx, cb8[15].zwzz
+mul r2.xy, r1.xxxx, cb4[15].zwzz
 add r1.xy, r1.yzyy, r2.xyxx
-mul r1.zw, r1.wwww, cb8[16].zzzw
+mul r1.zw, r1.wwww, cb4[16].zzzw
 add r1.xy, r1.zwzz, r1.xyxx  // r1.x <- positionViewSpace.z; r1.y <- positionViewSpace.w
 
 #line 517
@@ -300,7 +300,7 @@ if_nz r1.y
   mov r4.x, r2.w  // r4.x <- positionTo.w
 
 #line 241
-  mov r5.xyz, -cb8[4].xyzx
+  mov r5.xyz, -cb4[4].xyzx
   add r5.xyz, r2.xyzx, r5.xyzx
   dp3 r2.w, r5.xyzx, r5.xyzx
   rsq r2.w, r2.w
@@ -347,12 +347,12 @@ if_nz r1.y
   endif 
 
 #line 254
-  mul r8.xyzw, r6.xxxx, cb8[0].xyzw
-  mul r9.xyzw, r6.yyyy, cb8[1].xyzw
+  mul r8.xyzw, r6.xxxx, cb4[0].xyzw
+  mul r9.xyzw, r6.yyyy, cb4[1].xyzw
   add r8.xyzw, r8.xyzw, r9.xyzw
-  mul r9.xyzw, r6.zzzz, cb8[2].xyzw
+  mul r9.xyzw, r6.zzzz, cb4[2].xyzw
   add r8.xyzw, r8.xyzw, r9.xyzw
-  mul r9.xyzw, r2.wwww, cb8[3].xyzw
+  mul r9.xyzw, r2.wwww, cb4[3].xyzw
   add r8.xyzw, r8.xyzw, r9.xyzw  // r8.x <- startFrag.x; r8.y <- startFrag.y; r8.z <- startFrag.z; r8.w <- startFrag.w
 
 #line 255
@@ -384,12 +384,12 @@ if_nz r1.y
   mul r6.xy, r6.xyxx, r8.xyxx  // r6.x <- startFrag.x; r6.y <- startFrag.y
 
 #line 260
-  mul r8.xyzw, r7.xxxx, cb8[0].xyzw
-  mul r9.xyzw, r7.yyyy, cb8[1].xyzw
+  mul r8.xyzw, r7.xxxx, cb4[0].xyzw
+  mul r9.xyzw, r7.yyyy, cb4[1].xyzw
   add r8.xyzw, r8.xyzw, r9.xyzw
-  mul r9.xyzw, r7.zzzz, cb8[2].xyzw
+  mul r9.xyzw, r7.zzzz, cb4[2].xyzw
   add r8.xyzw, r8.xyzw, r9.xyzw
-  mul r9.xyzw, r3.wwww, cb8[3].xyzw
+  mul r9.xyzw, r3.wwww, cb4[3].xyzw
   add r8.xyzw, r8.xyzw, r9.xyzw  // r8.x <- endFrag.x; r8.y <- endFrag.y; r8.z <- endFrag.z; r8.w <- endFrag.w
 
 #line 261
@@ -522,12 +522,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -649,12 +649,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -777,12 +777,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -905,12 +905,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -1033,12 +1033,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -1161,12 +1161,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -1289,12 +1289,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -1417,12 +1417,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -1545,12 +1545,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -1673,12 +1673,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -1801,12 +1801,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -1929,12 +1929,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -2057,12 +2057,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -2185,12 +2185,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -2313,12 +2313,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -2441,12 +2441,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -2569,12 +2569,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -2697,12 +2697,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -2825,12 +2825,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -2953,12 +2953,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -3081,12 +3081,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -3209,12 +3209,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -3337,12 +3337,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -3465,12 +3465,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -3593,12 +3593,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -3721,12 +3721,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -3849,12 +3849,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -3977,12 +3977,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -4105,12 +4105,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -4233,12 +4233,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -4361,12 +4361,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -4489,12 +4489,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -4617,12 +4617,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r1.z <- dimensions.x; r1.w <- dimensions.y; r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz  // r2.x <- position.x; r2.y <- position.y; r2.z <- position.z
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz  // r2.x <- position.x; r2.y <- position.y; r2.z <- position.z
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx  // r3.x <- normal.x; r3.y <- normal.y; r3.z <- normal.z
-      mul r12.zw, r4.wwww, cb8[2].zzzw  // r2.x <- positionFrom.x; r2.y <- positionFrom.y; r2.z <- positionFrom.z; r4.x <- positionTo.w
+      mul r12.zw, r4.wwww, cb4[2].zzzw  // r2.x <- positionFrom.x; r2.y <- positionFrom.y; r2.z <- positionFrom.z; r4.x <- positionTo.w
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -4745,12 +4745,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw  // r8.x <- uv.x; r8.y <- uv.y
+      mul r12.zw, r4.wwww, cb4[2].zzzw  // r8.x <- uv.x; r8.y <- uv.y
       add r12.xy, r12.zwzz, r12.xyxx  // r9.x <- deltaX
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r9.y <- deltaY; r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -4873,12 +4873,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -5001,12 +5001,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -5129,12 +5129,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -5257,12 +5257,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -5385,12 +5385,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -5513,12 +5513,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -5641,12 +5641,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -5769,12 +5769,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -5897,12 +5897,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -6025,12 +6025,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -6153,12 +6153,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -6281,12 +6281,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -6409,12 +6409,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -6537,12 +6537,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -6665,12 +6665,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -6793,12 +6793,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -6921,12 +6921,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -7049,12 +7049,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -7177,12 +7177,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -7305,12 +7305,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -7433,12 +7433,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -7561,12 +7561,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -7689,12 +7689,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -7817,12 +7817,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -7945,12 +7945,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -8073,12 +8073,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -8201,12 +8201,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -8329,12 +8329,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -8457,12 +8457,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r12.xy, r4.yyyy, cb8[0].zwzz
-      mul r12.zw, r4.zzzz, cb8[1].zzzw
+      mul r12.xy, r4.yyyy, cb4[0].zwzz
+      mul r12.zw, r4.zzzz, cb4[1].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, r4.wwww, cb8[2].zzzw
+      mul r12.zw, r4.wwww, cb4[2].zzzw
       add r12.xy, r12.zwzz, r12.xyxx
-      mul r12.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+      mul r12.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
       add r12.xy, r12.zwzz, r12.xyxx  // r12.x <- positionToClip.z; r12.y <- positionToClip.w
 
 #line 304
@@ -8585,12 +8585,12 @@ if_nz r1.y
       sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 303
-      mul r10.zw, r4.yyyy, cb8[0].zzzw
-      mul r11.xy, r4.zzzz, cb8[1].zwzz
+      mul r10.zw, r4.yyyy, cb4[0].zzzw
+      mul r11.xy, r4.zzzz, cb4[1].zwzz
       add r10.zw, r10.zzzw, r11.xxxy
-      mul r11.xy, r4.wwww, cb8[2].zwzz
+      mul r11.xy, r4.wwww, cb4[2].zwzz
       add r10.zw, r10.zzzw, r11.xxxy
-      mul r11.xy, cb8[3].zwzz, l(1.000000, 1.000000, 0.000000, 0.000000)
+      mul r11.xy, cb4[3].zwzz, l(1.000000, 1.000000, 0.000000, 0.000000)
       add r10.zw, r10.zzzw, r11.xxxy  // r10.z <- positionToClip.z; r10.w <- positionToClip.w
 
 #line 304
@@ -8687,12 +8687,12 @@ if_nz r1.y
     sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 351
-    mul r8.zw, r4.yyyy, cb8[0].zzzw
-    mul r9.xy, r4.zzzz, cb8[1].zwzz
+    mul r8.zw, r4.yyyy, cb4[0].zzzw
+    mul r9.xy, r4.zzzz, cb4[1].zwzz
     add r8.zw, r8.zzzw, r9.xxxy
-    mul r9.xy, r4.wwww, cb8[2].zwzz
+    mul r9.xy, r4.wwww, cb4[2].zwzz
     add r8.zw, r8.zzzw, r9.xxxy
-    mul r9.xy, cb8[3].zwzz, l(1.000000, 1.000000, 0.000000, 0.000000)  // v0.x <- pin.position.x; v0.y <- pin.position.y; v0.z <- pin.position.z; v0.w <- pin.position.w; v1.x <- pin.texcoord.x; v1.y <- pin.texcoord.y; o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w; x2 <- layerColors
+    mul r9.xy, cb4[3].zwzz, l(1.000000, 1.000000, 0.000000, 0.000000)  // v0.x <- pin.position.x; v0.y <- pin.position.y; v0.z <- pin.position.z; v0.w <- pin.position.w; v1.x <- pin.texcoord.x; v1.y <- pin.texcoord.y; o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w; x2 <- layerColors
     add r8.zw, r8.zzzw, r9.xxxy  // r8.z <- positionToClip.z; r8.w <- positionToClip.w
 
 #line 352
@@ -8772,12 +8772,12 @@ if_nz r1.y
     sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 351
-    mul r8.zw, r4.yyyy, cb8[0].zzzw
-    mul r9.xy, r4.zzzz, cb8[1].zwzz
+    mul r8.zw, r4.yyyy, cb4[0].zzzw
+    mul r9.xy, r4.zzzz, cb4[1].zwzz
     add r8.zw, r8.zzzw, r9.xxxy
-    mul r9.xy, r4.wwww, cb8[2].zwzz
+    mul r9.xy, r4.wwww, cb4[2].zwzz
     add r8.zw, r8.zzzw, r9.xxxy
-    mul r9.xy, cb8[3].zwzz, l(1.000000, 1.000000, 0.000000, 0.000000)
+    mul r9.xy, cb4[3].zwzz, l(1.000000, 1.000000, 0.000000, 0.000000)
     add r8.zw, r8.zzzw, r9.xxxy  // r8.z <- positionToClip.z; r8.w <- positionToClip.w
 
 #line 352
@@ -8861,12 +8861,12 @@ if_nz r1.y
     sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 351
-    mul r9.xy, r4.yyyy, cb8[0].zwzz
-    mul r9.zw, r4.zzzz, cb8[1].zzzw
+    mul r9.xy, r4.yyyy, cb4[0].zwzz
+    mul r9.zw, r4.zzzz, cb4[1].zzzw
     add r9.xy, r9.zwzz, r9.xyxx
-    mul r9.zw, r4.wwww, cb8[2].zzzw
+    mul r9.zw, r4.wwww, cb4[2].zzzw
     add r9.xy, r9.zwzz, r9.xyxx
-    mul r9.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+    mul r9.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
     add r9.xy, r9.zwzz, r9.xyxx  // r9.x <- positionToClip.z; r9.y <- positionToClip.w
 
 #line 352
@@ -8952,12 +8952,12 @@ if_nz r1.y
     sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 351
-    mul r9.xy, r4.yyyy, cb8[0].zwzz
-    mul r9.zw, r4.zzzz, cb8[1].zzzw
+    mul r9.xy, r4.yyyy, cb4[0].zwzz
+    mul r9.zw, r4.zzzz, cb4[1].zzzw
     add r9.xy, r9.zwzz, r9.xyxx
-    mul r9.zw, r4.wwww, cb8[2].zzzw
+    mul r9.zw, r4.wwww, cb4[2].zzzw
     add r9.xy, r9.zwzz, r9.xyxx
-    mul r9.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+    mul r9.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
     add r9.xy, r9.zwzz, r9.xyxx  // r9.x <- positionToClip.z; r9.y <- positionToClip.w
 
 #line 352
@@ -9036,12 +9036,12 @@ if_nz r1.y
     sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 351
-    mul r9.xy, r4.yyyy, cb8[0].zwzz
-    mul r9.zw, r4.zzzz, cb8[1].zzzw
+    mul r9.xy, r4.yyyy, cb4[0].zwzz
+    mul r9.zw, r4.zzzz, cb4[1].zzzw
     add r9.xy, r9.zwzz, r9.xyxx
-    mul r9.zw, r4.wwww, cb8[2].zzzw
+    mul r9.zw, r4.wwww, cb4[2].zzzw
     add r9.xy, r9.zwzz, r9.xyxx
-    mul r9.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+    mul r9.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
     add r9.xy, r9.zwzz, r9.xyxx  // r7.x <- endFrag.x; r7.y <- endFrag.y; r7.w <- endFrag.z; r9.x <- positionToClip.z; r9.y <- positionToClip.w
 
 #line 352
@@ -9120,12 +9120,12 @@ if_nz r1.y
     sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 351
-    mul r9.xy, r4.yyyy, cb8[0].zwzz  // r5.w <- search0
-    mul r9.zw, r4.zzzz, cb8[1].zzzw
+    mul r9.xy, r4.yyyy, cb4[0].zwzz  // r5.w <- search0
+    mul r9.zw, r4.zzzz, cb4[1].zzzw
     add r9.xy, r9.zwzz, r9.xyxx
-    mul r9.zw, r4.wwww, cb8[2].zzzw  // r10.x <- hit1
+    mul r9.zw, r4.wwww, cb4[2].zzzw  // r10.x <- hit1
     add r9.xy, r9.zwzz, r9.xyxx  // r10.y <- depth
-    mul r9.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+    mul r9.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
     add r9.xy, r9.zwzz, r9.xyxx  // r9.x <- positionToClip.z; r9.y <- positionToClip.w
 
 #line 352
@@ -9204,12 +9204,12 @@ if_nz r1.y
     sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 351
-    mul r9.xy, r4.yyyy, cb8[0].zwzz
-    mul r9.zw, r4.zzzz, cb8[1].zzzw
+    mul r9.xy, r4.yyyy, cb4[0].zwzz
+    mul r9.zw, r4.zzzz, cb4[1].zzzw
     add r9.xy, r9.zwzz, r9.xyxx
-    mul r9.zw, r4.wwww, cb8[2].zzzw
+    mul r9.zw, r4.wwww, cb4[2].zzzw
     add r9.xy, r9.zwzz, r9.xyxx
-    mul r9.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+    mul r9.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
     add r9.xy, r9.zwzz, r9.xyxx  // r9.x <- positionToClip.z; r9.y <- positionToClip.w
 
 #line 352
@@ -9288,12 +9288,12 @@ if_nz r1.y
     sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 351
-    mul r9.xy, r4.yyyy, cb8[0].zwzz
-    mul r9.zw, r4.zzzz, cb8[1].zzzw
+    mul r9.xy, r4.yyyy, cb4[0].zwzz
+    mul r9.zw, r4.zzzz, cb4[1].zzzw
     add r9.xy, r9.zwzz, r9.xyxx
-    mul r9.zw, r4.wwww, cb8[2].zzzw
+    mul r9.zw, r4.wwww, cb4[2].zzzw
     add r9.xy, r9.zwzz, r9.xyxx
-    mul r9.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+    mul r9.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
     add r9.xy, r9.zwzz, r9.xyxx  // r9.x <- positionToClip.z; r9.y <- positionToClip.w
 
 #line 352
@@ -9372,12 +9372,12 @@ if_nz r1.y
     sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 351
-    mul r9.xy, r4.yyyy, cb8[0].zwzz
-    mul r9.zw, r4.zzzz, cb8[1].zzzw
+    mul r9.xy, r4.yyyy, cb4[0].zwzz
+    mul r9.zw, r4.zzzz, cb4[1].zzzw
     add r9.xy, r9.zwzz, r9.xyxx
-    mul r9.zw, r4.wwww, cb8[2].zzzw
+    mul r9.zw, r4.wwww, cb4[2].zzzw
     add r9.xy, r9.zwzz, r9.xyxx
-    mul r9.zw, cb8[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
+    mul r9.zw, cb4[3].zzzw, l(0.000000, 0.000000, 1.000000, 1.000000)
     add r9.xy, r9.zwzz, r9.xyxx  // r9.x <- positionToClip.z; r9.y <- positionToClip.w
 
 #line 352
@@ -9449,12 +9449,12 @@ if_nz r1.y
     sample_indexable(texture2d)(float,float,float,float) r4.xyzw, r8.xyxx, t1.wxyz, s4  // r4.y <- positionTo.x; r4.z <- positionTo.y; r4.w <- positionTo.z
 
 #line 351
-    mul r1.yz, r4.yyyy, cb8[0].zzwz
-    mul r4.yz, r4.zzzz, cb8[1].zzwz
+    mul r1.yz, r4.yyyy, cb4[0].zzwz
+    mul r4.yz, r4.zzzz, cb4[1].zzwz
     add r1.yz, r1.yyzy, r4.yyzy
-    mul r4.yz, r4.wwww, cb8[2].zzwz
+    mul r4.yz, r4.wwww, cb4[2].zzwz
     add r1.yz, r1.yyzy, r4.yyzy
-    mul r4.yz, cb8[3].zzwz, l(0.000000, 1.000000, 1.000000, 0.000000)
+    mul r4.yz, cb4[3].zzwz, l(0.000000, 1.000000, 1.000000, 0.000000)
     add r1.yz, r1.yyzy, r4.yyzy  // r1.y <- positionToClip.z; r1.z <- positionToClip.w
 
 #line 352
@@ -9676,12 +9676,12 @@ loop
   add r7.xyz, r2.xyzx, r7.xyzx  // r7.x <- samplePosition.x; r7.y <- samplePosition.y; r7.z <- samplePosition.z
 
 #line 425
-  mul r8.xyz, r7.xxxx, cb8[0].xywx
-  mul r7.xyw, r7.yyyy, cb8[1].xyxw
+  mul r8.xyz, r7.xxxx, cb4[0].xywx
+  mul r7.xyw, r7.yyyy, cb4[1].xyxw
   add r7.xyw, r7.xyxw, r8.xyxz
-  mul r8.xyz, r7.zzzz, cb8[2].xywx
+  mul r8.xyz, r7.zzzz, cb4[2].xywx
   add r7.xyz, r7.xywx, r8.xyzx
-  mul r8.xyz, cb8[3].xywx, l(1.000000, 1.000000, 1.000000, 0.000000)
+  mul r8.xyz, cb4[3].xywx, l(1.000000, 1.000000, 1.000000, 0.000000)
   add r7.xyz, r7.xyzx, r8.xyzx  // r7.x <- intersection.x; r7.y <- intersection.y; r7.z <- intersection.w
 
 #line 426
@@ -9710,12 +9710,12 @@ loop
   mov r4.w, r4.w  // r4.w <- intersection.z
 
 #line 429
-  mul r8.xyzw, r7.xxxx, cb8[17].xyzw
-  mul r9.xyzw, r7.yyyy, cb8[18].xyzw
+  mul r8.xyzw, r7.xxxx, cb4[17].xyzw
+  mul r9.xyzw, r7.yyyy, cb4[18].xyzw
   add r8.xyzw, r8.xyzw, r9.xyzw
-  mul r9.xyzw, r4.wwww, cb8[19].xyzw
+  mul r9.xyzw, r4.wwww, cb4[19].xyzw
   add r8.xyzw, r8.xyzw, r9.xyzw
-  mul r7.xyzw, r7.zzzz, cb8[20].xyzw
+  mul r7.xyzw, r7.zzzz, cb4[20].xyzw
   add r7.xyzw, r7.xyzw, r8.xyzw  // r7.x <- intersection.x; r7.y <- intersection.y; r7.z <- intersection.z; r7.w <- intersection.w
 
 #line 430
@@ -9816,24 +9816,24 @@ mov r2.w, r2.w  // r2.w <- <CalculatedPositionNDC return value>.w
 mov r2.xyzw, r2.xyzw  // r2.x <- positionNdc.x; r2.y <- positionNdc.y; r2.z <- positionNdc.z; r2.w <- positionNdc.w
 
 #line 166
-mul r1.yz, r2.xxxx, cb8[13].zzwz
-mul r3.xy, r2.yyyy, cb8[14].zwzz
+mul r1.yz, r2.xxxx, cb4[13].zzwz
+mul r3.xy, r2.yyyy, cb4[14].zwzz
 add r1.yz, r1.yyzy, r3.xxyx
-mul r3.xy, r2.zzzz, cb8[15].zwzz
+mul r3.xy, r2.zzzz, cb4[15].zwzz
 add r1.yz, r1.yyzy, r3.xxyx
-mul r3.xy, r2.wwww, cb8[16].zwzz
+mul r3.xy, r2.wwww, cb4[16].zwzz
 add r1.yz, r1.yyzy, r3.xxyx  // r1.y <- positionViewSpace.z; r1.z <- positionViewSpace.w
 
 #line 167
 div r1.y, r1.y, r1.z
 
 #line 170
-mul r3.xyzw, r2.xxxx, cb8[17].xyzw
-mul r4.xyzw, r2.yyyy, cb8[18].xyzw
+mul r3.xyzw, r2.xxxx, cb4[17].xyzw
+mul r4.xyzw, r2.yyyy, cb4[18].xyzw
 add r3.xyzw, r3.xyzw, r4.xyzw
-mul r4.xyzw, r2.zzzz, cb8[19].xyzw
+mul r4.xyzw, r2.zzzz, cb4[19].xyzw
 add r3.xyzw, r3.xyzw, r4.xyzw
-mul r2.xyzw, r2.wwww, cb8[20].xyzw
+mul r2.xyzw, r2.wwww, cb4[20].xyzw
 add r2.xyzw, r2.xyzw, r3.xyzw  // r2.x <- positionWorldSpace.x; r2.y <- positionWorldSpace.y; r2.z <- positionWorldSpace.z; r2.w <- positionWorldSpace.w
 
 #line 171
@@ -10016,7 +10016,7 @@ if_nz r1.x
   resinfo_indexable(texture2d)(float,float,float,float)_uint r1.zw, r1.z, t3.zwxy  // r1.z <- depthMapDimensions.x; r1.w <- depthMapDimensions.y
 
 #line 454
-  ine r2.x, l(0, 0, 0, 0), cb4[2].z
+  ine r2.x, l(0, 0, 0, 0), cb8[2].z
   if_nz r2.x
 
 #line 456
@@ -10128,7 +10128,7 @@ if_nz r1.x
   endif 
 
 #line 490
-  mul r1.yzw, cb4[0].wwww, cb4[0].xxyz
+  mul r1.yzw, cb8[0].wwww, cb8[0].xxyz
   itof r2.x, l(0)
   max r1.x, r1.x, r2.x
   mul r1.xyz, r1.xxxx, r1.yzwy  // r1.x <- fogColor_.x; r1.y <- fogColor_.y; r1.z <- fogColor_.z

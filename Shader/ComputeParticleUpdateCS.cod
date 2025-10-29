@@ -7,13 +7,13 @@
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
-//   row_major float4x4 vviewProjection;// Offset:    0 Size:    64
-//   float4 vcameraPositon;             // Offset:   64 Size:    16 [unused]
-//   row_major float4x4 vview;          // Offset:   80 Size:    64 [unused]
-//   row_major float4x4 vprojection;    // Offset:  144 Size:    64 [unused]
-//   row_major float4x4 vinverseProjection;// Offset:  208 Size:    64 [unused]
-//   row_major float4x4 vinverseViewProjection;// Offset:  272 Size:    64 [unused]
-//   row_major float4x4 vinvView;       // Offset:  336 Size:    64 [unused]
+//   row_major float4x4 viewProjection; // Offset:    0 Size:    64
+//   float4 cameraPositon;              // Offset:   64 Size:    16 [unused]
+//   row_major float4x4 view;           // Offset:   80 Size:    64 [unused]
+//   row_major float4x4 projection;     // Offset:  144 Size:    64 [unused]
+//   row_major float4x4 inverseProjection;// Offset:  208 Size:    64 [unused]
+//   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64 [unused]
+//   row_major float4x4 invView;        // Offset:  336 Size:    64 [unused]
 //
 // }
 //
@@ -80,7 +80,7 @@
 // particleUnusedBuffer                  UAV  struct      append             u1      1 
 // indirectDataBuffer                    UAV    byte         r/w             u2      1 
 // particleHeaderBuffer                  UAV  struct         r/w             u3      1 
-// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb8      1 
+// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
 // COMPUTE_PARTICLE_COMMON_CONSTANT_BUFFER    cbuffer      NA          NA           cb10      1 
 //
 //
@@ -98,7 +98,7 @@
 // no Output
 cs_5_0
 dcl_globalFlags refactoringAllowed | skipOptimization
-dcl_constantbuffer CB8[4], immediateIndexed
+dcl_constantbuffer CB4[4], immediateIndexed
 dcl_constantbuffer CB10[1], immediateIndexed
 dcl_uav_structured u0, 144
 dcl_uav_structured u1, 4
@@ -459,12 +459,12 @@ endswitch   // r12.x <- data.velocity.x; r12.y <- data.velocity.y; r12.z <- data
 
 #line 116
 itof r0.x, l(1)
-mul r1.x, r13.x, cb8[0].w
-mul r3.x, r13.y, cb8[1].w
+mul r1.x, r13.x, cb4[0].w
+mul r3.x, r13.y, cb4[1].w
 add r1.x, r1.x, r3.x
-mul r3.x, r13.z, cb8[2].w
+mul r3.x, r13.z, cb4[2].w
 add r1.x, r1.x, r3.x
-mul r0.x, r0.x, cb8[3].w
+mul r0.x, r0.x, cb4[3].w
 add r0.x, r0.x, r1.x  // r0.x <- header.depth
 
 #line 119

@@ -378,7 +378,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
     //immediateContext->UpdateSubresource(constantBuffers[2].Get(), 0, 0, &fogConstants, 0, 0);
     //immediateContext->PSSetConstantBuffers(4, 1, constantBuffers[2].GetAddressOf());    
-    fogCBuffer->Activate(immediateContext, 4); // slot4 にセット
+    fogCBuffer->Activate(immediateContext, 8); // slot4 にセット
 
     //immediateContext->UpdateSubresource(constantBuffers[4].Get(), 0, 0, &lightConstants, 0, 0);
     //immediateContext->PSSetConstantBuffers(11, 1, constantBuffers[4].GetAddressOf());    //3 は cascadedShadowMap に使用中

@@ -7,13 +7,13 @@
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
-//   row_major float4x4 vviewProjection;// Offset:    0 Size:    64 [unused]
-//   float4 vcameraPositon;             // Offset:   64 Size:    16 [unused]
-//   row_major float4x4 vview;          // Offset:   80 Size:    64 [unused]
-//   row_major float4x4 vprojection;    // Offset:  144 Size:    64 [unused]
-//   row_major float4x4 vinverseProjection;// Offset:  208 Size:    64 [unused]
-//   row_major float4x4 vinverseViewProjection;// Offset:  272 Size:    64
-//   row_major float4x4 vinvView;       // Offset:  336 Size:    64 [unused]
+//   row_major float4x4 viewProjection; // Offset:    0 Size:    64 [unused]
+//   float4 cameraPositon;              // Offset:   64 Size:    16 [unused]
+//   row_major float4x4 view;           // Offset:   80 Size:    64 [unused]
+//   row_major float4x4 projection;     // Offset:  144 Size:    64 [unused]
+//   row_major float4x4 inverseProjection;// Offset:  208 Size:    64 [unused]
+//   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64
+//   row_major float4x4 invView;        // Offset:  336 Size:    64 [unused]
 //
 // }
 //
@@ -37,8 +37,8 @@
 // projectionMappingTexture[1]       texture  float4          2d            t16      1 
 // sceneTexture                      texture  float4          2d            t20      1 
 // depthTexture                      texture  float4          2d            t21      1 
+// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
 // PROJECTION_MAPPING_CONSTANT_BUFFER    cbuffer      NA          NA            cb5      1 
-// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb8      1 
 //
 //
 //
@@ -58,7 +58,7 @@
 //
 ps_5_0
 dcl_globalFlags refactoringAllowed | skipOptimization
-dcl_constantbuffer CB8[21], immediateIndexed
+dcl_constantbuffer CB4[21], immediateIndexed
 dcl_constantbuffer CB5[144], immediateIndexed
 dcl_sampler s1, mode_default
 dcl_sampler s3, mode_default
@@ -83,19 +83,19 @@ mov r0.z, r0.z  // r0.z <- depth
 nop 
 mov r1.xy, v1.xyxx
 mov r0.z, r0.z
-mov r2.x, cb8[17].x
-mov r3.x, cb8[17].y
-mov r4.x, cb8[17].z
-mov r5.x, cb8[17].w
-mov r2.y, cb8[18].x
-mov r3.y, cb8[18].y
-mov r4.y, cb8[18].z
-mov r5.y, cb8[18].w
-mov r2.z, cb8[19].x
-mov r3.z, cb8[19].y
-mov r4.z, cb8[19].z
-mov r5.z, cb8[19].w
-mov r6.xyzw, cb8[20].xyzw
+mov r2.x, cb4[17].x
+mov r3.x, cb4[17].y
+mov r4.x, cb4[17].z
+mov r5.x, cb4[17].w
+mov r2.y, cb4[18].x
+mov r3.y, cb4[18].y
+mov r4.y, cb4[18].z
+mov r5.y, cb4[18].w
+mov r2.z, cb4[19].x
+mov r3.z, cb4[19].y
+mov r4.z, cb4[19].z
+mov r5.z, cb4[19].w
+mov r6.xyzw, cb4[20].xyzw
 
 #line 18
 mul r1.xy, r1.xyxx, l(2.000000, 2.000000, 0.000000, 0.000000)

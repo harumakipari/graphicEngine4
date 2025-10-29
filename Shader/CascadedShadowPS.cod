@@ -32,13 +32,13 @@
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
-//   row_major float4x4 vviewProjection;// Offset:    0 Size:    64 [unused]
-//   float4 vcameraPositon;             // Offset:   64 Size:    16 [unused]
-//   row_major float4x4 vview;          // Offset:   80 Size:    64 [unused]
-//   row_major float4x4 vprojection;    // Offset:  144 Size:    64 [unused]
-//   row_major float4x4 vinverseProjection;// Offset:  208 Size:    64
-//   row_major float4x4 vinverseViewProjection;// Offset:  272 Size:    64
-//   row_major float4x4 vinvView;       // Offset:  336 Size:    64 [unused]
+//   row_major float4x4 viewProjection; // Offset:    0 Size:    64 [unused]
+//   float4 cameraPositon;              // Offset:   64 Size:    16 [unused]
+//   row_major float4x4 view;           // Offset:   80 Size:    64 [unused]
+//   row_major float4x4 projection;     // Offset:  144 Size:    64 [unused]
+//   row_major float4x4 inverseProjection;// Offset:  208 Size:    64
+//   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64
+//   row_major float4x4 invView;        // Offset:  336 Size:    64 [unused]
 //
 // }
 //
@@ -53,7 +53,7 @@
 // depthMap                          texture  float4          2d             t2      1 
 // cascadedShadowMaps                texture  float4     2darray             t3      1 
 // CSM_CONSTANTS                     cbuffer      NA          NA            cb3      1 
-// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb8      1 
+// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
 // SHADER_CONSTANT_BUFFER            cbuffer      NA          NA            cb9      1 
 //
 //
@@ -80,7 +80,7 @@ dcl_immediateConstantBuffer { { 1.000000, 0, 0, 0},
                               { 0, 0, 0, 1.000000} }
 dcl_constantbuffer CB9[2], immediateIndexed
 dcl_constantbuffer CB3[17], dynamicIndexed
-dcl_constantbuffer CB8[21], immediateIndexed
+dcl_constantbuffer CB4[21], immediateIndexed
 dcl_sampler s3, mode_default
 dcl_sampler s7, mode_comparison
 dcl_resource_texture2d (float,float,float,float) t0
@@ -130,24 +130,24 @@ mov r1.x, r1.x  // r1.x <- positionNdc.z
 itof r1.w, l(1)  // r1.w <- positionNdc.w
 
 #line 34
-mul r2.xy, r1.yyyy, cb8[13].zwzz
-mul r2.zw, r1.zzzz, cb8[14].zzzw
+mul r2.xy, r1.yyyy, cb4[13].zwzz
+mul r2.zw, r1.zzzz, cb4[14].zzzw
 add r2.xy, r2.zwzz, r2.xyxx
-mul r2.zw, r1.xxxx, cb8[15].zzzw
+mul r2.zw, r1.xxxx, cb4[15].zzzw
 add r2.xy, r2.zwzz, r2.xyxx
-mul r2.zw, r1.wwww, cb8[16].zzzw
+mul r2.zw, r1.wwww, cb4[16].zzzw
 add r2.xy, r2.zwzz, r2.xyxx  // r2.x <- positionViewSpace.z; r2.y <- positionViewSpace.w
 
 #line 35
 div r2.x, r2.x, r2.y
 
 #line 38
-mul r3.xyzw, r1.yyyy, cb8[17].xyzw
-mul r4.xyzw, r1.zzzz, cb8[18].xyzw
+mul r3.xyzw, r1.yyyy, cb4[17].xyzw
+mul r4.xyzw, r1.zzzz, cb4[18].xyzw
 add r3.xyzw, r3.xyzw, r4.xyzw
-mul r4.xyzw, r1.xxxx, cb8[19].xyzw
+mul r4.xyzw, r1.xxxx, cb4[19].xyzw
 add r3.xyzw, r3.xyzw, r4.xyzw
-mul r1.xyzw, r1.wwww, cb8[20].xyzw
+mul r1.xyzw, r1.wwww, cb4[20].xyzw
 add r1.xyzw, r1.xyzw, r3.xyzw  // r1.x <- positionWorldSpace.x; r1.y <- positionWorldSpace.y; r1.z <- positionWorldSpace.z; r1.w <- positionWorldSpace.w
 
 #line 39

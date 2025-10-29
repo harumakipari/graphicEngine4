@@ -22,13 +22,13 @@
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
-//   row_major float4x4 vviewProjection;// Offset:    0 Size:    64
-//   float4 vcameraPositon;             // Offset:   64 Size:    16 [unused]
-//   row_major float4x4 vview;          // Offset:   80 Size:    64 [unused]
-//   row_major float4x4 vprojection;    // Offset:  144 Size:    64 [unused]
-//   row_major float4x4 vinverseProjection;// Offset:  208 Size:    64 [unused]
-//   row_major float4x4 vinverseViewProjection;// Offset:  272 Size:    64 [unused]
-//   row_major float4x4 vinvView;       // Offset:  336 Size:    64 [unused]
+//   row_major float4x4 viewProjection; // Offset:    0 Size:    64
+//   float4 cameraPositon;              // Offset:   64 Size:    16 [unused]
+//   row_major float4x4 view;           // Offset:   80 Size:    64 [unused]
+//   row_major float4x4 projection;     // Offset:  144 Size:    64 [unused]
+//   row_major float4x4 inverseProjection;// Offset:  208 Size:    64 [unused]
+//   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64 [unused]
+//   row_major float4x4 invView;        // Offset:  336 Size:    64 [unused]
 //
 // }
 //
@@ -46,7 +46,7 @@
 // ------------------------------ ---------- ------- ----------- -------------- ------
 // PRIMITIVE_CONSTANT_BUFFER         cbuffer      NA          NA            cb0      1 
 // PRIMITIVE_JOINT_CONSTANTS         cbuffer      NA          NA            cb2      1 
-// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb8      1 
+// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
 //
 //
 //
@@ -77,7 +77,7 @@
 vs_5_0
 dcl_globalFlags refactoringAllowed | skipOptimization
 dcl_constantbuffer CB0[6], immediateIndexed
-dcl_constantbuffer CB8[4], immediateIndexed
+dcl_constantbuffer CB4[4], immediateIndexed
 dcl_constantbuffer CB2[2048], dynamicIndexed
 dcl_input v0.xyz
 dcl_input v1.xyz
@@ -336,33 +336,33 @@ endif
 itof r1.w, l(1)  // r1.w <- vin.position.w
 
 #line 26
-mul r2.xyzw, cb0[0].xxxx, cb8[0].xyzw
-mul r3.xyzw, cb0[0].yyyy, cb8[1].xyzw
+mul r2.xyzw, cb0[0].xxxx, cb4[0].xyzw
+mul r3.xyzw, cb0[0].yyyy, cb4[1].xyzw
 add r2.xyzw, r2.xyzw, r3.xyzw
-mul r3.xyzw, cb0[0].zzzz, cb8[2].xyzw
+mul r3.xyzw, cb0[0].zzzz, cb4[2].xyzw
 add r2.xyzw, r2.xyzw, r3.xyzw
-mul r3.xyzw, cb0[0].wwww, cb8[3].xyzw
+mul r3.xyzw, cb0[0].wwww, cb4[3].xyzw
 add r2.xyzw, r2.xyzw, r3.xyzw
-mul r3.xyzw, cb0[1].xxxx, cb8[0].xyzw
-mul r4.xyzw, cb0[1].yyyy, cb8[1].xyzw
+mul r3.xyzw, cb0[1].xxxx, cb4[0].xyzw
+mul r4.xyzw, cb0[1].yyyy, cb4[1].xyzw
 add r3.xyzw, r3.xyzw, r4.xyzw
-mul r4.xyzw, cb0[1].zzzz, cb8[2].xyzw
+mul r4.xyzw, cb0[1].zzzz, cb4[2].xyzw
 add r3.xyzw, r3.xyzw, r4.xyzw
-mul r4.xyzw, cb0[1].wwww, cb8[3].xyzw
+mul r4.xyzw, cb0[1].wwww, cb4[3].xyzw
 add r3.xyzw, r3.xyzw, r4.xyzw
-mul r4.xyzw, cb0[2].xxxx, cb8[0].xyzw
-mul r6.xyzw, cb0[2].yyyy, cb8[1].xyzw
+mul r4.xyzw, cb0[2].xxxx, cb4[0].xyzw
+mul r6.xyzw, cb0[2].yyyy, cb4[1].xyzw
 add r4.xyzw, r4.xyzw, r6.xyzw
-mul r6.xyzw, cb0[2].zzzz, cb8[2].xyzw
+mul r6.xyzw, cb0[2].zzzz, cb4[2].xyzw
 add r4.xyzw, r4.xyzw, r6.xyzw
-mul r6.xyzw, cb0[2].wwww, cb8[3].xyzw
+mul r6.xyzw, cb0[2].wwww, cb4[3].xyzw
 add r4.xyzw, r4.xyzw, r6.xyzw
-mul r6.xyzw, cb0[3].xxxx, cb8[0].xyzw
-mul r7.xyzw, cb0[3].yyyy, cb8[1].xyzw
+mul r6.xyzw, cb0[3].xxxx, cb4[0].xyzw
+mul r7.xyzw, cb0[3].yyyy, cb4[1].xyzw
 add r6.xyzw, r6.xyzw, r7.xyzw
-mul r7.xyzw, cb0[3].zzzz, cb8[2].xyzw
+mul r7.xyzw, cb0[3].zzzz, cb4[2].xyzw
 add r6.xyzw, r6.xyzw, r7.xyzw
-mul r7.xyzw, cb0[3].wwww, cb8[3].xyzw
+mul r7.xyzw, cb0[3].wwww, cb4[3].xyzw
 add r6.xyzw, r6.xyzw, r7.xyzw
 mul r2.xyzw, r0.yyyy, r2.xyzw
 mul r3.xyzw, r0.zzzz, r3.xyzw

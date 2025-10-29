@@ -12,7 +12,6 @@ public:
 private:
     Microsoft::WRL::ComPtr<ID3D11VertexShader> embeddedVertexShader;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> embeddedPixelShader;
-
 public:
     void Blit(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView** shaderResourceView,
         uint32_t startSlot, uint32_t numViews, ID3D11PixelShader* replacedPixelShader = nullptr);

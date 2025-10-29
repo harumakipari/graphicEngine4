@@ -1,10 +1,43 @@
-﻿  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothConstraintCS.cod
-  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothConstraintCS.cso
-C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildsVS.hlsl(44,5): warning X4000: use of potentially uninitialized variable (SafeNormalize)
+﻿C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricFogPS.hlsl(87,11-57): warning X3206: implicit truncation of vector type
+C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricFogPS.hlsl(114,9-31): warning X3206: implicit truncation of vector type
   
-  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildsVS.cod
-  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildsVS.cso
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricFogPS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricFogPS.cso
+  SceneComponent.cpp
+  ControllerComponent.cpp
+  EraseInAreaComponent.cpp
+  ItemSpawnerComponent.cpp
+  ShockWaveCollisionComponent.cpp
+  ActorManager.cpp
+  World.cpp
   Framework.cpp
+  Scene.cpp
+  Beam.cpp
+  ActionDerived.cpp
+  BehaviorTree.cpp
+  JudgmentDerived.cpp
+  NodeBase.cpp
+  RiderEnemy.cpp
+  PickUpItem.cpp
+  Player.cpp
+  PlayerState.cpp
+  BossBuilding.cpp
+  Building.cpp
+  BuildingManager.cpp
+  GameManager.cpp
   BootScene.cpp
+  LoadingScene.cpp
+  MainScene.cpp
+  TutorialScene.cpp
+  VolumetricCloudscapes.cpp
+  Graphics.cpp
+  EffectSystem.cpp
+  Bloom.cpp
+  BloomEffect.cpp
   FogEffect.cpp
+  FullScreenQuad.cpp
+  SceneRenderer.cpp
+  ShadowMap.cpp
+  ObjectManager.cpp
+  UIFactory.cpp
   3dgp.vcxproj -> C:\Users\2240225\Desktop\graphicEngine4\x64\Debug\3dgp.exe

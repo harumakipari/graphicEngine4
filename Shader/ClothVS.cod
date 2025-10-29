@@ -22,13 +22,13 @@
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
-//   row_major float4x4 vviewProjection;// Offset:    0 Size:    64
-//   float4 vcameraPositon;             // Offset:   64 Size:    16 [unused]
-//   row_major float4x4 vview;          // Offset:   80 Size:    64 [unused]
-//   row_major float4x4 vprojection;    // Offset:  144 Size:    64 [unused]
-//   row_major float4x4 vinverseProjection;// Offset:  208 Size:    64 [unused]
-//   row_major float4x4 vinverseViewProjection;// Offset:  272 Size:    64 [unused]
-//   row_major float4x4 vinvView;       // Offset:  336 Size:    64 [unused]
+//   row_major float4x4 viewProjection; // Offset:    0 Size:    64
+//   float4 cameraPositon;              // Offset:   64 Size:    16 [unused]
+//   row_major float4x4 view;           // Offset:   80 Size:    64 [unused]
+//   row_major float4x4 projection;     // Offset:  144 Size:    64 [unused]
+//   row_major float4x4 inverseProjection;// Offset:  208 Size:    64 [unused]
+//   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64 [unused]
+//   row_major float4x4 invView;        // Offset:  336 Size:    64 [unused]
 //
 // }
 //
@@ -57,7 +57,7 @@
 // ------------------------------ ---------- ------- ----------- -------------- ------
 // clothVertices                     texture  struct         r/o             t0      1 
 // PRIMITIVE_CONSTANT_BUFFER         cbuffer      NA          NA            cb0      1 
-// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb8      1 
+// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
 //
 //
 //
@@ -81,7 +81,7 @@
 vs_5_0
 dcl_globalFlags refactoringAllowed | skipOptimization
 dcl_constantbuffer CB0[4], immediateIndexed
-dcl_constantbuffer CB8[4], immediateIndexed
+dcl_constantbuffer CB4[4], immediateIndexed
 dcl_resource_structured t0, 112
 dcl_input_sgv v0.x, vertex_id
 dcl_output_siv o0.xyzw, position
@@ -119,33 +119,33 @@ ld_structured_indexable(structured_buffer, stride=112)(mixed,mixed,mixed,mixed) 
 mov r2.w, r2.w  // r2.w <- sigma
 
 #line 23
-mul r4.xyzw, cb0[0].xxxx, cb8[0].xyzw
-mul r5.xyzw, cb0[0].yyyy, cb8[1].xyzw
+mul r4.xyzw, cb0[0].xxxx, cb4[0].xyzw
+mul r5.xyzw, cb0[0].yyyy, cb4[1].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw
-mul r5.xyzw, cb0[0].zzzz, cb8[2].xyzw
+mul r5.xyzw, cb0[0].zzzz, cb4[2].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw
-mul r5.xyzw, cb0[0].wwww, cb8[3].xyzw
+mul r5.xyzw, cb0[0].wwww, cb4[3].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw
-mul r5.xyzw, cb0[1].xxxx, cb8[0].xyzw
-mul r6.xyzw, cb0[1].yyyy, cb8[1].xyzw
+mul r5.xyzw, cb0[1].xxxx, cb4[0].xyzw
+mul r6.xyzw, cb0[1].yyyy, cb4[1].xyzw
 add r5.xyzw, r5.xyzw, r6.xyzw
-mul r6.xyzw, cb0[1].zzzz, cb8[2].xyzw
+mul r6.xyzw, cb0[1].zzzz, cb4[2].xyzw
 add r5.xyzw, r5.xyzw, r6.xyzw
-mul r6.xyzw, cb0[1].wwww, cb8[3].xyzw
+mul r6.xyzw, cb0[1].wwww, cb4[3].xyzw
 add r5.xyzw, r5.xyzw, r6.xyzw
-mul r6.xyzw, cb0[2].xxxx, cb8[0].xyzw
-mul r7.xyzw, cb0[2].yyyy, cb8[1].xyzw
+mul r6.xyzw, cb0[2].xxxx, cb4[0].xyzw
+mul r7.xyzw, cb0[2].yyyy, cb4[1].xyzw
 add r6.xyzw, r6.xyzw, r7.xyzw
-mul r7.xyzw, cb0[2].zzzz, cb8[2].xyzw
+mul r7.xyzw, cb0[2].zzzz, cb4[2].xyzw
 add r6.xyzw, r6.xyzw, r7.xyzw
-mul r7.xyzw, cb0[2].wwww, cb8[3].xyzw
+mul r7.xyzw, cb0[2].wwww, cb4[3].xyzw
 add r6.xyzw, r6.xyzw, r7.xyzw
-mul r7.xyzw, cb0[3].xxxx, cb8[0].xyzw
-mul r8.xyzw, cb0[3].yyyy, cb8[1].xyzw
+mul r7.xyzw, cb0[3].xxxx, cb4[0].xyzw
+mul r8.xyzw, cb0[3].yyyy, cb4[1].xyzw
 add r7.xyzw, r7.xyzw, r8.xyzw
-mul r8.xyzw, cb0[3].zzzz, cb8[2].xyzw
+mul r8.xyzw, cb0[3].zzzz, cb4[2].xyzw
 add r7.xyzw, r7.xyzw, r8.xyzw
-mul r8.xyzw, cb0[3].wwww, cb8[3].xyzw
+mul r8.xyzw, cb0[3].wwww, cb4[3].xyzw
 add r7.xyzw, r7.xyzw, r8.xyzw
 mul r4.xyzw, r0.xxxx, r4.xyzw
 mul r5.xyzw, r0.yyyy, r5.xyzw

@@ -40,7 +40,7 @@ public:
     void UpdateViewConstants(ID3D11DeviceContext* immediateContext, const ViewConstants& data) const
     {
         viewBuffer->data = data;
-        viewBuffer->Activate(immediateContext, 8);
+        viewBuffer->Activate(immediateContext, 4);
     }
 
     void RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::vector<std::shared_ptr<Actor>> allActors*/) const;

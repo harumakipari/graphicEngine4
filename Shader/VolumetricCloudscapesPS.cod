@@ -42,13 +42,13 @@
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
-//   row_major float4x4 vviewProjection;// Offset:    0 Size:    64 [unused]
-//   float4 vcameraPositon;             // Offset:   64 Size:    16
-//   row_major float4x4 vview;          // Offset:   80 Size:    64 [unused]
-//   row_major float4x4 vprojection;    // Offset:  144 Size:    64 [unused]
-//   row_major float4x4 vinverseProjection;// Offset:  208 Size:    64 [unused]
-//   row_major float4x4 vinverseViewProjection;// Offset:  272 Size:    64
-//   row_major float4x4 vinvView;       // Offset:  336 Size:    64 [unused]
+//   row_major float4x4 viewProjection; // Offset:    0 Size:    64 [unused]
+//   float4 cameraPositon;              // Offset:   64 Size:    16
+//   row_major float4x4 view;           // Offset:   80 Size:    64 [unused]
+//   row_major float4x4 projection;     // Offset:  144 Size:    64 [unused]
+//   row_major float4x4 inverseProjection;// Offset:  208 Size:    64 [unused]
+//   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64
+//   row_major float4x4 invView;        // Offset:  336 Size:    64 [unused]
 //
 // }
 //
@@ -85,8 +85,8 @@
 // weatherTexture                    texture  float3          2d             t2      1 
 // curlNoiseTexture                  texture  float3          2d             t3      1 
 // SCENE_CONSTANT_BUFFER             cbuffer      NA          NA            cb1      1 
+// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
 // VOLUMETRIC_CLOUDSCAPES_CONSTANT_BUFFER    cbuffer      NA          NA            cb5      1 
-// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb8      1 
 // LIGHT_CONSTANT_BUFFER             cbuffer      NA          NA           cb11      1 
 //
 //
@@ -109,7 +109,7 @@ ps_5_0
 dcl_globalFlags refactoringAllowed | skipOptimization
 dcl_constantbuffer CB1[1], immediateIndexed
 dcl_constantbuffer CB5[5], immediateIndexed
-dcl_constantbuffer CB8[21], immediateIndexed
+dcl_constantbuffer CB4[21], immediateIndexed
 dcl_constantbuffer CB11[1], immediateIndexed
 dcl_sampler s6, mode_default
 dcl_resource_texture3d (float,float,float,float) t0
@@ -147,19 +147,19 @@ add r0.z, r0.z, l(1.000000)  // r0.z <- ndc.y
 mov r1.xy, l(0,1.000000,0,0)  // r1.x <- ndc.z; r1.y <- ndc.w
 
 #line 488
-mul r2.xyzw, r0.yyyy, cb8[17].xyzw
-mul r3.xyzw, r0.zzzz, cb8[18].xyzw
+mul r2.xyzw, r0.yyyy, cb4[17].xyzw
+mul r3.xyzw, r0.zzzz, cb4[18].xyzw
 add r2.xyzw, r2.xyzw, r3.xyzw
-mul r3.xyzw, r1.xxxx, cb8[19].xyzw
+mul r3.xyzw, r1.xxxx, cb4[19].xyzw
 add r2.xyzw, r2.xyzw, r3.xyzw
-mul r1.xyzw, r1.yyyy, cb8[20].xyzw
+mul r1.xyzw, r1.yyyy, cb4[20].xyzw
 add r1.xyzw, r1.xyzw, r2.xyzw  // r1.x <- pos.x; r1.y <- pos.y; r1.z <- pos.z; r1.w <- pos.w
 
 #line 489
 div r0.yzw, r1.xxyz, r1.wwww  // r0.y <- pos.x; r0.z <- pos.y; r0.w <- pos.z
 
 #line 491
-mov r1.xyz, -cb8[4].xyzx
+mov r1.xyz, -cb4[4].xyzx
 add r0.yzw, r0.yyzw, r1.xxyz
 dp3 r1.x, r0.yzwy, r0.yzwy
 rsq r1.x, r1.x
@@ -172,7 +172,7 @@ if_nz r1.x
 #line 509
   mov r1.xz, l(0,0,0,0)
   mov r1.y, cb5[2].y
-  add r1.xyz, r1.xyzx, cb8[4].xyzx  // r1.x <- eyePos.x; r1.y <- eyePos.y; r1.z <- eyePos.z
+  add r1.xyz, r1.xyzx, cb4[4].xyzx  // r1.x <- eyePos.x; r1.y <- eyePos.y; r1.z <- eyePos.z
 
 #line 510
   nop 
@@ -386,7 +386,7 @@ if_nz r1.x
   rsq r5.x, r5.x
   mul r4.yzw, r4.yyzw, r5.xxxx
   mul r4.xyz, r4.xxxx, r4.yzwy
-  mov r5.xyz, -cb8[4].xyzx
+  mov r5.xyz, -cb4[4].xyzx
   add r4.xyz, r4.xyzx, r5.xyzx
   dp3 r4.w, r4.xyzx, r4.xyzx
   rsq r4.w, r4.w
@@ -3972,7 +3972,7 @@ if_nz r1.x
   rsq r2.w, r2.w
   mul r2.xyz, r2.wwww, r2.xyzx
   mul r2.xyz, r0.xxxx, r2.xyzx
-  mov r3.xyz, -cb8[4].xyzx  // r0.y <- rayDir.x; r0.z <- rayDir.y; r0.w <- rayDir.z
+  mov r3.xyz, -cb4[4].xyzx  // r0.y <- rayDir.x; r0.z <- rayDir.y; r0.w <- rayDir.z
   add r2.xyz, r2.xyzx, r3.xyzx
   dp3 r0.x, r2.xyzx, r2.xyzx
   rsq r0.x, r0.x
@@ -4294,7 +4294,7 @@ else   // Prior locations: r1.w <- pos.w; r0.x <- timeOffset
   rsq r1.w, r1.w
   mul r2.xyz, r1.wwww, r2.xyzx
   mul r2.xyz, r0.xxxx, r2.xyzx
-  mov r3.xyz, -cb8[4].xyzx
+  mov r3.xyz, -cb4[4].xyzx
   add r2.xyz, r2.xyzx, r3.xyzx
   dp3 r0.x, r2.xyzx, r2.xyzx
   rsq r0.x, r0.x

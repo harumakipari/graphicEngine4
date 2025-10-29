@@ -29,7 +29,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     const float3 cDiff = lerp(color.rgb, 0.0, metallicFactor);
     const float3 P = position.xyz;
     //const float3 V = normalize(cameraPositon.xyz - position.xyz);
-    const float3 V = normalize(vcameraPositon.xyz - position.xyz);
+    const float3 V = normalize(cameraPositon.xyz - position.xyz);
     
     float3 diffuse = 0;
     float3 specular = 0;

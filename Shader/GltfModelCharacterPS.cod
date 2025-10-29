@@ -22,13 +22,13 @@
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
-//   row_major float4x4 vviewProjection;// Offset:    0 Size:    64 [unused]
-//   float4 vcameraPositon;             // Offset:   64 Size:    16
-//   row_major float4x4 vview;          // Offset:   80 Size:    64 [unused]
-//   row_major float4x4 vprojection;    // Offset:  144 Size:    64 [unused]
-//   row_major float4x4 vinverseProjection;// Offset:  208 Size:    64 [unused]
-//   row_major float4x4 vinverseViewProjection;// Offset:  272 Size:    64 [unused]
-//   row_major float4x4 vinvView;       // Offset:  336 Size:    64 [unused]
+//   row_major float4x4 viewProjection; // Offset:    0 Size:    64 [unused]
+//   float4 cameraPositon;              // Offset:   64 Size:    16
+//   row_major float4x4 view;           // Offset:   80 Size:    64 [unused]
+//   row_major float4x4 projection;     // Offset:  144 Size:    64 [unused]
+//   row_major float4x4 inverseProjection;// Offset:  208 Size:    64 [unused]
+//   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64 [unused]
+//   row_major float4x4 invView;        // Offset:  336 Size:    64 [unused]
 //
 // }
 //
@@ -137,7 +137,7 @@
 // specularPmrem                     texture  float4        cube            t34      1 
 // lutGgx                            texture  float4          2d            t35      1 
 // PRIMITIVE_CONSTANT_BUFFER         cbuffer      NA          NA            cb0      1 
-// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb8      1 
+// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
 // LIGHT_CONSTANT_BUFFER             cbuffer      NA          NA           cb11      1 
 //
 //
@@ -163,7 +163,7 @@
 ps_5_0
 dcl_globalFlags refactoringAllowed | skipOptimization
 dcl_constantbuffer CB0[6], immediateIndexed
-dcl_constantbuffer CB8[5], immediateIndexed
+dcl_constantbuffer CB4[5], immediateIndexed
 dcl_constantbuffer CB11[2], immediateIndexed
 dcl_sampler s1, mode_default
 dcl_sampler s2, mode_default
@@ -352,7 +352,7 @@ add r2.xyz, r2.xyzx, r3.xywx  // r2.x <- cDiff.x; r2.y <- cDiff.y; r2.z <- cDiff
 
 #line 82
 mov r3.xyw, -v1.xyxz
-add r3.xyw, r3.xyxw, cb8[4].xyxz
+add r3.xyw, r3.xyxw, cb4[4].xyxz
 dp3 r4.w, r3.xywx, r3.xywx
 rsq r4.w, r4.w
 mul r3.xyw, r3.xyxw, r4.wwww  // r3.x <- V.x; r3.y <- V.y; r3.w <- V.z

@@ -20,7 +20,7 @@ VS_OUT main(uint vertexId : SV_VertexID)
     VS_OUT vout;
     ClothVertex vin = clothVertices[vertexId];
     float sigma = vin.tangent.w;
-    vout.position = mul(vin.position, mul(world, vviewProjection));
+    vout.position = mul(vin.position, mul(world, viewProjection));
     
     //vout.position /= vout.position.w; // to ndc
     

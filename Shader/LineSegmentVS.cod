@@ -7,13 +7,13 @@
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
-//   row_major float4x4 vviewProjection;// Offset:    0 Size:    64
-//   float4 vcameraPositon;             // Offset:   64 Size:    16 [unused]
-//   row_major float4x4 vview;          // Offset:   80 Size:    64 [unused]
-//   row_major float4x4 vprojection;    // Offset:  144 Size:    64 [unused]
-//   row_major float4x4 vinverseProjection;// Offset:  208 Size:    64 [unused]
-//   row_major float4x4 vinverseViewProjection;// Offset:  272 Size:    64 [unused]
-//   row_major float4x4 vinvView;       // Offset:  336 Size:    64 [unused]
+//   row_major float4x4 viewProjection; // Offset:    0 Size:    64
+//   float4 cameraPositon;              // Offset:   64 Size:    16 [unused]
+//   row_major float4x4 view;           // Offset:   80 Size:    64 [unused]
+//   row_major float4x4 projection;     // Offset:  144 Size:    64 [unused]
+//   row_major float4x4 inverseProjection;// Offset:  208 Size:    64 [unused]
+//   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64 [unused]
+//   row_major float4x4 invView;        // Offset:  336 Size:    64 [unused]
 //
 // }
 //
@@ -22,7 +22,7 @@
 //
 // Name                                 Type  Format         Dim      HLSL Bind  Count
 // ------------------------------ ---------- ------- ----------- -------------- ------
-// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb8      1 
+// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
 //
 //
 //
@@ -41,7 +41,7 @@
 //
 vs_5_0
 dcl_globalFlags refactoringAllowed | skipOptimization
-dcl_constantbuffer CB8[4], immediateIndexed
+dcl_constantbuffer CB4[4], immediateIndexed
 dcl_input v0.xyzw
 dcl_output_siv o0.xyzw, position
 dcl_temps 2
@@ -51,12 +51,12 @@ dcl_temps 2
 //   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
 //
 #line 5 "C:\Users\2240225\Desktop\graphicEngine4\Shader\LineSegmentVS.hlsl"
-mul r0.xyzw, v0.xxxx, cb8[0].xyzw
-mul r1.xyzw, v0.yyyy, cb8[1].xyzw
+mul r0.xyzw, v0.xxxx, cb4[0].xyzw
+mul r1.xyzw, v0.yyyy, cb4[1].xyzw
 add r0.xyzw, r0.xyzw, r1.xyzw
-mul r1.xyzw, v0.zzzz, cb8[2].xyzw
+mul r1.xyzw, v0.zzzz, cb4[2].xyzw
 add r0.xyzw, r0.xyzw, r1.xyzw
-mul r1.xyzw, v0.wwww, cb8[3].xyzw
+mul r1.xyzw, v0.wwww, cb4[3].xyzw
 add o0.xyzw, r0.xyzw, r1.xyzw
 ret 
 // Approximately 8 instruction slots used

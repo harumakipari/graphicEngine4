@@ -7,13 +7,13 @@
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
-//   row_major float4x4 vviewProjection;// Offset:    0 Size:    64
-//   float4 vcameraPositon;             // Offset:   64 Size:    16 [unused]
-//   row_major float4x4 vview;          // Offset:   80 Size:    64 [unused]
-//   row_major float4x4 vprojection;    // Offset:  144 Size:    64 [unused]
-//   row_major float4x4 vinverseProjection;// Offset:  208 Size:    64 [unused]
-//   row_major float4x4 vinverseViewProjection;// Offset:  272 Size:    64 [unused]
-//   row_major float4x4 vinvView;       // Offset:  336 Size:    64
+//   row_major float4x4 viewProjection; // Offset:    0 Size:    64
+//   float4 cameraPositon;              // Offset:   64 Size:    16 [unused]
+//   row_major float4x4 view;           // Offset:   80 Size:    64 [unused]
+//   row_major float4x4 projection;     // Offset:  144 Size:    64 [unused]
+//   row_major float4x4 inverseProjection;// Offset:  208 Size:    64 [unused]
+//   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64 [unused]
+//   row_major float4x4 invView;        // Offset:  336 Size:    64
 //
 // }
 //
@@ -59,7 +59,7 @@
 // ------------------------------ ---------- ------- ----------- -------------- ------
 // particleDataBuffer                texture  struct         r/o             t0      1 
 // particleHeaderBuffer              texture  struct         r/o             t1      1 
-// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb8      1 
+// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
 //
 //
 //
@@ -80,7 +80,7 @@
 //
 gs_5_0
 dcl_globalFlags refactoringAllowed | skipOptimization
-dcl_constantbuffer CB8[24], immediateIndexed
+dcl_constantbuffer CB4[24], immediateIndexed
 dcl_resource_structured t0, 144
 dcl_resource_structured t1, 16
 dcl_input v[1][0].x
@@ -157,9 +157,9 @@ add r0.zw, r0.zzzw, r2.xxxy
 movc r1.xy, r0.yyyy, r1.xyxx, r0.zwzz  // r1.x <- size.x; r1.y <- size.y
 
 #line 109
-mov r2.xyzw, cb8[21].xyzw  // r2.x <- billbordMatrix._m00; r2.y <- billbordMatrix._m01; r2.z <- billbordMatrix._m02; r2.w <- billbordMatrix._m03
-mov r3.xyzw, cb8[22].xyzw  // r3.x <- billbordMatrix._m10; r3.y <- billbordMatrix._m11; r3.z <- billbordMatrix._m12; r3.w <- billbordMatrix._m13
-mov r4.xyzw, cb8[23].xyzw  // r4.x <- billbordMatrix._m20; r4.y <- billbordMatrix._m21; r4.z <- billbordMatrix._m22; r4.w <- billbordMatrix._m23
+mov r2.xyzw, cb4[21].xyzw  // r2.x <- billbordMatrix._m00; r2.y <- billbordMatrix._m01; r2.z <- billbordMatrix._m02; r2.w <- billbordMatrix._m03
+mov r3.xyzw, cb4[22].xyzw  // r3.x <- billbordMatrix._m10; r3.y <- billbordMatrix._m11; r3.z <- billbordMatrix._m12; r3.w <- billbordMatrix._m13
+mov r4.xyzw, cb4[23].xyzw  // r4.x <- billbordMatrix._m20; r4.y <- billbordMatrix._m21; r4.z <- billbordMatrix._m22; r4.w <- billbordMatrix._m23
 
 #line 110
 itof r5.xyz, l(0, 0, 0, 0)  // r5.x <- billbordMatrix._m30; r5.y <- billbordMatrix._m31; r5.z <- billbordMatrix._m32
@@ -473,33 +473,33 @@ dp4 r1.w, r6.xyzw, r5.xyzw  // r1.w <- worldMatrix._m32
 dp4 r3.x, r6.xyzw, r10.xyzw  // r3.x <- worldMatrix._m33
 
 #line 118
-mul r4.xyzw, r0.yyyy, cb8[0].xyzw
-mul r5.xyzw, r0.zzzz, cb8[1].xyzw
+mul r4.xyzw, r0.yyyy, cb4[0].xyzw
+mul r5.xyzw, r0.zzzz, cb4[1].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw
-mul r5.xyzw, r0.wwww, cb8[2].xyzw
+mul r5.xyzw, r0.wwww, cb4[2].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw
-mul r5.xyzw, r2.xxxx, cb8[3].xyzw
+mul r5.xyzw, r2.xxxx, cb4[3].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw
-mul r5.xyzw, r2.yyyy, cb8[0].xyzw
-mul r6.xyzw, r2.zzzz, cb8[1].xyzw
+mul r5.xyzw, r2.yyyy, cb4[0].xyzw
+mul r6.xyzw, r2.zzzz, cb4[1].xyzw
 add r5.xyzw, r5.xyzw, r6.xyzw
-mul r2.xyzw, r2.wwww, cb8[2].xyzw
+mul r2.xyzw, r2.wwww, cb4[2].xyzw
 add r2.xyzw, r2.xyzw, r5.xyzw
-mul r5.xyzw, r7.xxxx, cb8[3].xyzw
+mul r5.xyzw, r7.xxxx, cb4[3].xyzw
 add r2.xyzw, r2.xyzw, r5.xyzw
-mul r5.xyzw, r7.yyyy, cb8[0].xyzw
-mul r6.xyzw, r7.zzzz, cb8[1].xyzw
+mul r5.xyzw, r7.yyyy, cb4[0].xyzw
+mul r6.xyzw, r7.zzzz, cb4[1].xyzw
 add r5.xyzw, r5.xyzw, r6.xyzw
-mul r6.xyzw, r7.wwww, cb8[2].xyzw
+mul r6.xyzw, r7.wwww, cb4[2].xyzw
 add r5.xyzw, r5.xyzw, r6.xyzw
-mul r6.xyzw, r1.xxxx, cb8[3].xyzw
+mul r6.xyzw, r1.xxxx, cb4[3].xyzw
 add r5.xyzw, r5.xyzw, r6.xyzw
-mul r6.xyzw, r1.yyyy, cb8[0].xyzw
-mul r7.xyzw, r1.zzzz, cb8[1].xyzw
+mul r6.xyzw, r1.yyyy, cb4[0].xyzw
+mul r7.xyzw, r1.zzzz, cb4[1].xyzw
 add r6.xyzw, r6.xyzw, r7.xyzw
-mul r1.xyzw, r1.wwww, cb8[2].xyzw
+mul r1.xyzw, r1.wwww, cb4[2].xyzw
 add r1.xyzw, r1.xyzw, r6.xyzw
-mul r3.xyzw, r3.xxxx, cb8[3].xyzw
+mul r3.xyzw, r3.xxxx, cb4[3].xyzw
 add r1.xyzw, r1.xyzw, r3.xyzw
 mov r3.x, r4.x  // r3.x <- worldViewProjectionMatrix._m00
 mov r3.y, r2.x  // r3.y <- worldViewProjectionMatrix._m10

@@ -123,7 +123,7 @@ VS_OUT main(VS_IN vin)
 
     // áF èoóÕ
     vout.wPosition = float4(deformedPos, 1.0f);
-    vout.position = mul(vout.wPosition, vviewProjection);
+    vout.position = mul(vout.wPosition, viewProjection);
 
     vout.wNormal = float4(SafeNormalize(outNormal, float3(0, 1, 0)), 0.0f);
     vout.wTangent = float4(SafeNormalize(outTangent, float3(1, 0, 0)), sigma);
@@ -145,7 +145,7 @@ VS_OUT main(VS_IN vin)
     //float3 deformedPos = bezierPos + (worldPos.xyz - straightPos);
 
     
-    vout.position = mul(float4(bezierPos, 1), vviewProjection);
+    vout.position = mul(float4(bezierPos, 1), viewProjection);
     //vout.wPosition = float4(deformedPos, 1);
     vout.wPosition = float4(bezierPos, 1);
 
@@ -198,7 +198,7 @@ VS_OUT main(VS_IN vin)
 
     
     vin.position.w = 1;
-    vout.position = mul(newPos, mul(world, vviewProjection));
+    vout.position = mul(newPos, mul(world, viewProjection));
 
     vout.wPosition = mul(newPos, world);
     

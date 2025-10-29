@@ -48,13 +48,13 @@
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
-//   row_major float4x4 vviewProjection;// Offset:    0 Size:    64
-//   float4 vcameraPositon;             // Offset:   64 Size:    16
-//   row_major float4x4 vview;          // Offset:   80 Size:    64 [unused]
-//   row_major float4x4 vprojection;    // Offset:  144 Size:    64 [unused]
-//   row_major float4x4 vinverseProjection;// Offset:  208 Size:    64
-//   row_major float4x4 vinverseViewProjection;// Offset:  272 Size:    64
-//   row_major float4x4 vinvView;       // Offset:  336 Size:    64 [unused]
+//   row_major float4x4 viewProjection; // Offset:    0 Size:    64
+//   float4 cameraPositon;              // Offset:   64 Size:    16
+//   row_major float4x4 view;           // Offset:   80 Size:    64 [unused]
+//   row_major float4x4 projection;     // Offset:  144 Size:    64 [unused]
+//   row_major float4x4 inverseProjection;// Offset:  208 Size:    64
+//   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64
+//   row_major float4x4 invView;        // Offset:  336 Size:    64 [unused]
 //
 // }
 //
@@ -91,8 +91,8 @@
 // depthTexture                      texture  float4          2d             t1      1 
 // cascadedShadowMaps                texture  float4     2darray             t2      1 
 // CSM_CONSTANTS                     cbuffer      NA          NA            cb3      1 
-// FOG_CONSTANTS_BUFFER              cbuffer      NA          NA            cb4      1 
-// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb8      1 
+// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
+// FOG_CONSTANTS_BUFFER              cbuffer      NA          NA            cb8      1 
 // SHADER_CONSTANT_BUFFER            cbuffer      NA          NA            cb9      1 
 // LIGHT_CONSTANT_BUFFER             cbuffer      NA          NA           cb11      1 
 //
@@ -120,8 +120,8 @@ dcl_immediateConstantBuffer { { 1.000000, 0, 0, 0},
                               { 0, 0, 0, 1.000000} }
 dcl_constantbuffer CB9[2], immediateIndexed
 dcl_constantbuffer CB3[17], immediateIndexed
-dcl_constantbuffer CB4[3], immediateIndexed
-dcl_constantbuffer CB8[21], immediateIndexed
+dcl_constantbuffer CB8[3], immediateIndexed
+dcl_constantbuffer CB4[21], immediateIndexed
 dcl_constantbuffer CB11[1], immediateIndexed
 dcl_sampler s0, mode_default
 dcl_sampler s3, mode_default
@@ -149,19 +149,19 @@ add r0.y, r0.z, r0.y
 mov r0.z, -v1.y
 mul r0.z, r0.z, l(2.000000)
 add r0.z, r0.z, l(1.000000)
-mul r1.xyzw, r0.yyyy, cb8[17].xyzw
-mul r2.xyzw, r0.zzzz, cb8[18].xyzw
+mul r1.xyzw, r0.yyyy, cb4[17].xyzw
+mul r2.xyzw, r0.zzzz, cb4[18].xyzw
 add r1.xyzw, r1.xyzw, r2.xyzw
-mul r0.xyzw, r0.xxxx, cb8[19].xyzw
+mul r0.xyzw, r0.xxxx, cb4[19].xyzw
 add r0.xyzw, r0.xyzw, r1.xyzw
-mul r1.xyzw, cb8[20].xyzw, l(1.000000, 1.000000, 1.000000, 1.000000)
+mul r1.xyzw, cb4[20].xyzw, l(1.000000, 1.000000, 1.000000, 1.000000)
 add r0.xyzw, r0.xyzw, r1.xyzw  // r0.x <- position.x; r0.y <- position.y; r0.z <- position.z; r0.w <- position.w
 
 #line 128
 div r0.xyz, r0.xyzx, r0.wwww
 
 #line 130
-mov r1.xyz, cb8[4].xyzx  // r1.x <- rayStart.x; r1.y <- rayStart.y; r1.z <- rayStart.z
+mov r1.xyz, cb4[4].xyzx  // r1.x <- rayStart.x; r1.y <- rayStart.y; r1.z <- rayStart.z
 
 #line 131
 mov r1.yzw, -r1.xxyz
@@ -175,7 +175,7 @@ sqrt r0.w, r0.w  // r0.w <- rayLength
 div r0.xyz, r0.xyzx, r0.wwww
 
 #line 136
-mov r1.y, cb4[1].w  // r1.y <- maxRayLength
+mov r1.y, cb8[1].w  // r1.y <- maxRayLength
 
 #line 137
 min r0.w, r0.w, r1.y
@@ -192,7 +192,7 @@ mov r2.xy, v1.xyxx
 itof r1.w, l(0)  // r1.w <- ditherValue
 
 #line 70
-ine r2.z, l(0, 0, 0, 0), cb4[2].y
+ine r2.z, l(0, 0, 0, 0), cb8[2].y
 if_nz r2.z
 
 #line 79
@@ -286,12 +286,12 @@ loop
   itof r5.z, l(1)  // r5.z <- positionNdc.w
 
 #line 33
-  mul r5.xw, r5.xxxx, cb8[13].zzzw
-  mul r6.xy, r5.yyyy, cb8[14].zwzz
+  mul r5.xw, r5.xxxx, cb4[13].zzzw
+  mul r6.xy, r5.yyyy, cb4[14].zwzz
   add r5.xy, r5.xwxx, r6.xyxx
-  mul r6.xy, r4.wwww, cb8[15].zwzz
+  mul r6.xy, r4.wwww, cb4[15].zwzz
   add r5.xy, r5.xyxx, r6.xyxx
-  mul r5.zw, r5.zzzz, cb8[16].zzzw
+  mul r5.zw, r5.zzzz, cb4[16].zzzw
   add r5.xy, r5.zwzz, r5.xyxx  // r5.x <- positionViewSpace.z; r5.y <- positionViewSpace.w
 
 #line 34
@@ -335,12 +335,12 @@ loop
   endloop 
 
 #line 48
-  mul r6.xyzw, r4.xxxx, cb8[0].xyzw
-  mul r7.xyzw, r4.yyyy, cb8[1].xyzw
+  mul r6.xyzw, r4.xxxx, cb4[0].xyzw
+  mul r7.xyzw, r4.yyyy, cb4[1].xyzw
   add r6.xyzw, r6.xyzw, r7.xyzw
-  mul r4.xyzw, r4.zzzz, cb8[2].xyzw
+  mul r4.xyzw, r4.zzzz, cb4[2].xyzw
   add r4.xyzw, r4.xyzw, r6.xyzw
-  mul r6.xyzw, cb8[3].xyzw, l(1.000000, 1.000000, 1.000000, 1.000000)
+  mul r6.xyzw, cb4[3].xyzw, l(1.000000, 1.000000, 1.000000, 1.000000)
   add r4.xyzw, r4.xyzw, r6.xyzw  // r4.x <- p.x; r4.y <- p.y; r4.z <- p.z; r4.w <- p.w
 
 #line 49
@@ -365,7 +365,7 @@ loop
   mov r4.x, r4.x  // r4.x <- radiance
 
 #line 96
-  mov r4.y, cb4[1].x  // r4.y <- density
+  mov r4.y, cb8[1].x  // r4.y <- density
 
 #line 105
   nop 
@@ -373,10 +373,10 @@ loop
   mov r4.y, r4.y
 
 #line 59
-  mov r4.z, -cb4[1].z
+  mov r4.z, -cb8[1].z
   add r4.z, r3.x, r4.z
   mov r4.z, -r4.z
-  mul r4.z, r4.z, cb4[1].y
+  mul r4.z, r4.z, cb8[1].y
   mul r4.z, r4.z, l(1.442695)
   exp r4.z, r4.z
   mul r4.y, r4.z, r4.y
@@ -424,7 +424,7 @@ dp3 r0.x, r1.xyzx, r0.xyzx  // r0.x <- cosAngle
 #line 118
 nop 
 mov r0.x, r0.x
-mov r0.y, cb4[2].x
+mov r0.y, cb8[2].x
 
 #line 64
 itof r0.z, l(1)

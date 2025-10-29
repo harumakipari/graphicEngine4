@@ -39,13 +39,13 @@
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
-//   row_major float4x4 vviewProjection;// Offset:    0 Size:    64
-//   float4 vcameraPositon;             // Offset:   64 Size:    16 [unused]
-//   row_major float4x4 vview;          // Offset:   80 Size:    64 [unused]
-//   row_major float4x4 vprojection;    // Offset:  144 Size:    64 [unused]
-//   row_major float4x4 vinverseProjection;// Offset:  208 Size:    64 [unused]
-//   row_major float4x4 vinverseViewProjection;// Offset:  272 Size:    64 [unused]
-//   row_major float4x4 vinvView;       // Offset:  336 Size:    64 [unused]
+//   row_major float4x4 viewProjection; // Offset:    0 Size:    64
+//   float4 cameraPositon;              // Offset:   64 Size:    16 [unused]
+//   row_major float4x4 view;           // Offset:   80 Size:    64 [unused]
+//   row_major float4x4 projection;     // Offset:  144 Size:    64 [unused]
+//   row_major float4x4 inverseProjection;// Offset:  208 Size:    64 [unused]
+//   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64 [unused]
+//   row_major float4x4 invView;        // Offset:  336 Size:    64 [unused]
 //
 // }
 //
@@ -77,7 +77,7 @@
 // Name                                 Type  Format         Dim      HLSL Bind  Count
 // ------------------------------ ---------- ------- ----------- -------------- ------
 // particleBuffer                    texture  struct         r/o             t9      1 
-// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb8      1 
+// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
 // PARTICLE_SYSTEM_CONSTANTS         cbuffer      NA          NA            cb9      1 
 //
 //
@@ -100,7 +100,7 @@
 gs_5_0
 dcl_globalFlags refactoringAllowed | skipOptimization
 dcl_constantbuffer CB9[9], immediateIndexed
-dcl_constantbuffer CB8[4], immediateIndexed
+dcl_constantbuffer CB4[4], immediateIndexed
 dcl_resource_structured t9, 76
 dcl_input v[1][0].x
 dcl_temps 7
@@ -174,12 +174,12 @@ add r2.x, r2.x, r2.z  // r2.x <- size
 
 #line 55
 itof r3.z, l(1)
-mul r4.xyzw, r1.xxxx, cb8[0].xyzw
-mul r5.xyzw, r1.yyyy, cb8[1].xyzw
+mul r4.xyzw, r1.xxxx, cb4[0].xyzw
+mul r5.xyzw, r1.yyyy, cb4[1].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw
-mul r5.xyzw, r1.zzzz, cb8[2].xyzw
+mul r5.xyzw, r1.zzzz, cb4[2].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw
-mul r5.xyzw, r3.zzzz, cb8[3].xyzw
+mul r5.xyzw, r3.zzzz, cb4[3].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw  // r4.x <- element.position.x; r4.y <- element.position.y; r4.z <- element.position.z; r4.w <- element.position.w
 
 #line 60
@@ -239,12 +239,12 @@ emit_stream m0
 
 #line 55
 itof r3.z, l(1)
-mul r4.xyzw, r1.xxxx, cb8[0].xyzw
-mul r5.xyzw, r1.yyyy, cb8[1].xyzw
+mul r4.xyzw, r1.xxxx, cb4[0].xyzw
+mul r5.xyzw, r1.yyyy, cb4[1].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw
-mul r5.xyzw, r1.zzzz, cb8[2].xyzw
+mul r5.xyzw, r1.zzzz, cb4[2].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw
-mul r5.xyzw, r3.zzzz, cb8[3].xyzw
+mul r5.xyzw, r3.zzzz, cb4[3].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw  // r4.x <- element.position.x; r4.y <- element.position.y; r4.z <- element.position.z; r4.w <- element.position.w
 
 #line 60
@@ -304,12 +304,12 @@ emit_stream m0
 
 #line 55
 itof r2.z, l(1)
-mul r4.xyzw, r1.xxxx, cb8[0].xyzw
-mul r5.xyzw, r1.yyyy, cb8[1].xyzw
+mul r4.xyzw, r1.xxxx, cb4[0].xyzw
+mul r5.xyzw, r1.yyyy, cb4[1].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw
-mul r5.xyzw, r1.zzzz, cb8[2].xyzw
+mul r5.xyzw, r1.zzzz, cb4[2].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw
-mul r5.xyzw, r2.zzzz, cb8[3].xyzw
+mul r5.xyzw, r2.zzzz, cb4[3].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw  // r4.x <- element.position.x; r4.y <- element.position.y; r4.z <- element.position.z; r4.w <- element.position.w
 
 #line 60
@@ -369,12 +369,12 @@ emit_stream m0
 
 #line 55
 itof r2.z, l(1)
-mul r4.xyzw, r1.xxxx, cb8[0].xyzw
-mul r5.xyzw, r1.yyyy, cb8[1].xyzw
+mul r4.xyzw, r1.xxxx, cb4[0].xyzw
+mul r5.xyzw, r1.yyyy, cb4[1].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw
-mul r5.xyzw, r1.zzzz, cb8[2].xyzw
+mul r5.xyzw, r1.zzzz, cb4[2].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw
-mul r5.xyzw, r2.zzzz, cb8[3].xyzw
+mul r5.xyzw, r2.zzzz, cb4[3].xyzw
 add r4.xyzw, r4.xyzw, r5.xyzw  // r4.x <- element.position.x; r4.y <- element.position.y; r4.z <- element.position.z; r4.w <- element.position.w
 
 #line 60

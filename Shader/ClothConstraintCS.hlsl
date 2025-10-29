@@ -56,7 +56,7 @@ cbuffer PRIMITIVE_CONSTANT_BUFFER : register(b0)
 }
 
 
-cbuffer VIEW_CONSTANTS_BUFFER : register(b8)
+cbuffer VIEW_CONSTANTS_BUFFER : register(b4)
 {
     row_major float4x4 viewProjection;
     float4 cameraPositon;

@@ -22,13 +22,13 @@
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
-//   row_major float4x4 vviewProjection;// Offset:    0 Size:    64 [unused]
-//   float4 vcameraPositon;             // Offset:   64 Size:    16
-//   row_major float4x4 vview;          // Offset:   80 Size:    64
-//   row_major float4x4 vprojection;    // Offset:  144 Size:    64 [unused]
-//   row_major float4x4 vinverseProjection;// Offset:  208 Size:    64 [unused]
-//   row_major float4x4 vinverseViewProjection;// Offset:  272 Size:    64 [unused]
-//   row_major float4x4 vinvView;       // Offset:  336 Size:    64 [unused]
+//   row_major float4x4 viewProjection; // Offset:    0 Size:    64 [unused]
+//   float4 cameraPositon;              // Offset:   64 Size:    16
+//   row_major float4x4 view;           // Offset:   80 Size:    64
+//   row_major float4x4 projection;     // Offset:  144 Size:    64 [unused]
+//   row_major float4x4 inverseProjection;// Offset:  208 Size:    64 [unused]
+//   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64 [unused]
+//   row_major float4x4 invView;        // Offset:  336 Size:    64 [unused]
 //
 // }
 //
@@ -137,7 +137,7 @@
 // specularPmrem                     texture  float4        cube            t34      1 
 // lutGgx                            texture  float4          2d            t35      1 
 // PRIMITIVE_CONSTANT_BUFFER         cbuffer      NA          NA            cb0      1 
-// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb8      1 
+// VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
 // LIGHT_CONSTANT_BUFFER             cbuffer      NA          NA           cb11      1 
 //
 //
@@ -165,7 +165,7 @@
 ps_5_0
 dcl_globalFlags refactoringAllowed | skipOptimization
 dcl_constantbuffer CB0[6], immediateIndexed
-dcl_constantbuffer CB8[9], immediateIndexed
+dcl_constantbuffer CB4[9], immediateIndexed
 dcl_constantbuffer CB11[3], immediateIndexed
 dcl_sampler s1, mode_default
 dcl_sampler s2, mode_default
@@ -346,7 +346,7 @@ add r8.xyz, r2.xyzx, r8.xyzx  // r8.x <- cDiff.x; r8.y <- cDiff.y; r8.z <- cDiff
 
 #line 84
 mov r9.xyz, -v1.xyzx
-add r9.xyz, r9.xyzx, cb8[4].xyzx
+add r9.xyz, r9.xyzx, cb4[4].xyzx
 dp3 r0.z, r9.xyzx, r9.xyzx
 rsq r0.z, r0.z
 mul r9.xyz, r0.zzzz, r9.xyzx  // r9.x <- V.x; r9.y <- V.y; r9.z <- V.z
@@ -843,22 +843,22 @@ mul r5.xyz, r2.xyzx, r0.xyzx  // r5.x <- pout.color.x; r5.y <- pout.color.y; r5.
 mov r5.w, r5.w  // r5.w <- pout.color.w
 
 #line 150
-mul r0.xyzw, v1.xxxx, cb8[5].xyzw
-mul r1.xyzw, v1.yyyy, cb8[6].xyzw
+mul r0.xyzw, v1.xxxx, cb4[5].xyzw
+mul r1.xyzw, v1.yyyy, cb4[6].xyzw
 add r0.xyzw, r0.xyzw, r1.xyzw
-mul r1.xyzw, v1.zzzz, cb8[7].xyzw
+mul r1.xyzw, v1.zzzz, cb4[7].xyzw
 add r0.xyzw, r0.xyzw, r1.xyzw
-mul r1.xyzw, v1.wwww, cb8[8].xyzw
+mul r1.xyzw, v1.wwww, cb4[8].xyzw
 add r0.xyzw, r0.xyzw, r1.xyzw  // r0.x <- pout.position.x; r0.y <- pout.position.y; r0.z <- pout.position.z; r0.w <- pout.position.w
 
 #line 151
 itof r1.x, l(0)
-mul r2.xyzw, r10.xxxx, cb8[5].xyzw
-mul r3.xyzw, r10.yyyy, cb8[6].xyzw
+mul r2.xyzw, r10.xxxx, cb4[5].xyzw
+mul r3.xyzw, r10.yyyy, cb4[6].xyzw
 add r2.xyzw, r2.xyzw, r3.xyzw
-mul r3.xyzw, r10.zzzz, cb8[7].xyzw
+mul r3.xyzw, r10.zzzz, cb4[7].xyzw
 add r2.xyzw, r2.xyzw, r3.xyzw
-mul r1.xyzw, r1.xxxx, cb8[8].xyzw
+mul r1.xyzw, r1.xxxx, cb4[8].xyzw
 add r1.xyzw, r1.xyzw, r2.xyzw  // r1.x <- pout.normal.x; r1.y <- pout.normal.y; r1.z <- pout.normal.z; r1.w <- pout.normal.w
 
 #line 152
