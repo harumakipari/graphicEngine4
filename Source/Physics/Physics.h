@@ -87,8 +87,6 @@ public:
         defferfOps_.push_back(op);
     }
 
-    // sumilate å„Ç…é¿çs
-    void ExecuteDefferdOperations();
 
 protected:
     //--------------------------

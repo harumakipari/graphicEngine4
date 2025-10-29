@@ -104,41 +104,6 @@ void Physics::Finalize()
     PX_RELEASE(pxFoundation);
 }
 
-// sumilate 後に実行
-void Physics::ExecuteDefferdOperations()
-{
-    for (auto& op : defferfOps_)
-    {
-        switch (op.type_)
-        {
-        case DefferdPhysicsOperation::Type::DisableCollision:
-            op.target_->DisableCollision();
-            break;
-        case DefferdPhysicsOperation::Type::AddScene:
-            op.target_->AddToScene();
-            break;
-        case DefferdPhysicsOperation::Type::SetKinematicFalse:
-            op.target_->SetKinematic(false);
-            break;
-        case DefferdPhysicsOperation::Type::SetActive:
-            op.target_->SetActive(true);
-            break;
-        case DefferdPhysicsOperation::Type::DestroyComponent:
-            op.target_->GetActor()->ScheduleDestroyComponentByName(op.target_->name());
-            break;
-        case DefferdPhysicsOperation::Type::RemoveRigidActor:
-            if (op.actor_)
-            {
-                op.actor_->release(); // ここで安全に削除される
-            }
-            break;
-        default:
-            break;
-        }
-    }
-    defferfOps_.clear();
-}
-
 // 更新処理
 void Physics::Update(float elapsedTime)
 {

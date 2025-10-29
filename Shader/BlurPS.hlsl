@@ -10,22 +10,6 @@ struct VS_OUT
 SamplerState samplerStates[3] : register(s0);
 Texture2D textureMaps[4] : register(t0);
 
-
-//cbuffer SCENE_CONSTANT_BUFFER : register(b1)
-//{
-//    row_major float4x4 viewProjection;
-//    float4 lightDirection;
-//    float4 cameraPosition;
-//}
-
-//cbuffer SHADER_CONSTANT_BUFFER : register(b2)
-//{
-//    //‹P“x
-//    float luminanceThreshold;
-//    float gaussianSigma;
-//    float bloomIntenssity;
-//    float exposure;
-//}
 #include "Constants.hlsli"
 
 
