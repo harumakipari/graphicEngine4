@@ -2,11 +2,12 @@
 
 #include <memory>
 
-#include "PostEffectBase.h"
+#include "FrameBuffer.h"
+#include "SceneEffectBase.h"
 #include "FullScreenQuad.h"
 #include "Graphics/Core/ConstantBuffer.h"
 
-class FogEffect:public PostEffectBase
+class FogEffect :public SceneEffectBase
 {
 public:
     struct FogConstants
@@ -18,7 +19,7 @@ public:
         float groundLevel = 0.0f;
         float fogCutoffDistance = 500.0f;
 
-        float mieScatteringFactor = 0.55f;    
+        float mieScatteringFactor = 0.55f;
 
         int enableDither = 1;
         int enableBlur = 1;
@@ -29,27 +30,28 @@ public:
     };
 
 public:
-    FogEffect() = default;
+    FogEffect() :SceneEffectBase("FogEffect") {}
     ~FogEffect() = default;
 
     // ポストエフェクト生成（リソース作成） 
     void Initialize(ID3D11Device* device, uint32_t width, uint32_t height) override;
 
-    // 描画処理（入力：前フレームのレンダーターゲット）
-    void Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* inputSrv)override;
+    void Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal,
+        ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* shadowMap) override;
 
     // 出力（次のエフェクトや最終合成に渡す用）
     ID3D11ShaderResourceView* GetOutputSRV()const override
     {
-        return fogSRV.Get();
-        //return glowExtraction->shaderResourceViews[0].Get();
+        return fogBuffer->shaderResourceViews[0].Get();
     }
 
+
     // UI 調整 (ImGui)
-    void DrawDebugUI()override {}
+    virtual void DrawDebugUI() {}
 
 private:
+    std::unique_ptr<ConstantBuffer<FogConstants>> fogConstants;
+    std::unique_ptr<FrameBuffer> fogBuffer;
+    std::unique_ptr<FullScreenQuad> fullScreenQuad;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> fogPS;
-    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> fogSRV;
-    Microsoft::WRL::ComPtr<ID3D11RenderTargetView> fogRTV;
 };

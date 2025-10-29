@@ -1007,6 +1007,8 @@
     <ClInclude Include="Source\Graphics\PostProcess\BloomEffect.h">
       <Filter>Sources\Graphics\PostProcess</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\PostProcess\SceneEffectManager.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\SceneEffectBase.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BlurPS.hlsl">
