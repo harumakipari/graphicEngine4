@@ -191,7 +191,7 @@ private:
                 {
                     SpawnValidator::Register(shared_from_this());
 
-                    //item->GetComponent<SkeltalMeshComponent>()->SetIsVisible(true);
+                    //item->GetComponent<SkeletalMeshComponent>()->SetIsVisible(true);
                     item->skeltalMeshComponent->SetIsVisible(true);
                     area.currentItemCount++;
                     return; //成功したのでこの area のループをやめる
@@ -204,7 +204,7 @@ private:
                 if (SpawnValidator::IsAreaFree(sphere->GetAABB()))
                 {
                     //SpawnValidator::RegisterAABB(sphere->GetAABB());
-                    //item->GetComponent<SkeltalMeshComponent>()->SetIsVisible(true);
+                    //item->GetComponent<SkeletalMeshComponent>()->SetIsVisible(true);
                     item->skeltalMeshComponent->SetIsVisible(true);
                     area.currentItemCount++;
                     return; //成功したのでこの area のループをやめる

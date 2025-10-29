@@ -30,12 +30,12 @@ public:
         //PushState(std::make_shared<IdlingState>());
     }
     std::shared_ptr<SphereComponent> playerJointComponent = nullptr;
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
     std::shared_ptr<SphereComponent> socketNodeComponent;
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
-        skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         //skeltalMeshComponent->SetModel("./Data/Models/Characters/Player/chara_animation.gltf");
         skeltalMeshComponent->SetModel("./Data/Models/Characters/GirlSoldier/Idle.gltf");
         //skeltalMeshComponent->SetModel("./Data/Models/Characters/Test/MDL.gltf");

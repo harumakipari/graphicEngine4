@@ -15,10 +15,10 @@ public:
     //コピーコンストラクタとコピー代入演算子を禁止にする
     DefeatEnemy(const DefeatEnemy&) = delete;
     DefeatEnemy& operator=(const DefeatEnemy&) = delete;
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
     void Initialize(const Transform& transform)override
     {
-        skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         // モデル確認
         skeltalMeshComponent->SetModel("./Data/Models/Characters/Enemy/boss_defeat.gltf");
         skeltalMeshComponent->SetMaterialPS("./Shader/TestPS.cso", "L_emission2");

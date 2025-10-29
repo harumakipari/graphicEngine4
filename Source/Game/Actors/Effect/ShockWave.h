@@ -11,10 +11,10 @@ public:
     ShockWave(std::string modelName) :Actor(modelName)
     {
     }
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
     void Initialize(const Transform& transform)override
     {
-        skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Effect/Models/ring.gltf");
         skeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
 

@@ -11,10 +11,10 @@
 #include "Game/Actors/Stage/Objects/StageProp.h"
 using namespace DirectX;
 
-class ShockWaveModelComponent :public SkeltalMeshComponent
+class ShockWaveModelComponent :public SkeletalMeshComponent
 {
 public:
-    ShockWaveModelComponent(const std::string& name, std::shared_ptr<Actor> owner) : SkeltalMeshComponent(name, owner) {}
+    ShockWaveModelComponent(const std::string& name, std::shared_ptr<Actor> owner) : SkeletalMeshComponent(name, owner) {}
 
     void Initialize(float startRadius, float endRadius, float durationSeconds, float beamPower)
     {

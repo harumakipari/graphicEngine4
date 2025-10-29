@@ -31,12 +31,12 @@ public:
         DirectX::XMFLOAT3 pos = GetPosition();
         return { pos.x,0.0f,pos.z };
     }
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
     //std::shared_ptr<AudioSourceComponent> audioComponent;
     std::shared_ptr<AudioSourceComponent> targetAudioComponent;
     void Initialize(const Transform& transform)override
     {
-        skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Models/Stage/Bomb/bomb.gltf");
         skeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
 

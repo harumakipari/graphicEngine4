@@ -129,7 +129,6 @@ class BootScene : public Scene
     std::unique_ptr<FullScreenQuad> fullscreenQuadTransfer;
 
     //ƒuƒ‹[ƒ€
-    //std::unique_ptr<Bloom> bloomer;
 
     // CASCADED_SHADOW_MAPS
     std::unique_ptr<CascadedShadowMaps> cascadedShadowMaps;

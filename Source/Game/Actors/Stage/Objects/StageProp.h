@@ -110,7 +110,7 @@ public:
     void Initialize(const Transform& transform) override
     {
         // 描画用コンポーネントを追加
-        mesh_ = this->NewSceneComponent<class SkeltalMeshComponent>("model");
+        mesh_ = this->NewSceneComponent<class SkeletalMeshComponent>("model");
         mesh_->SetModel("./Data/Models/Stage/Props/vending_machine.gltf");
 
         SetPosition(transform.GetLocation());
@@ -155,7 +155,7 @@ public:
     void Initialize(const Transform& transform) override
     {
         // 描画用コンポーネントを追加
-        mesh_ = this->NewSceneComponent<class SkeltalMeshComponent>("model");
+        mesh_ = this->NewSceneComponent<class SkeletalMeshComponent>("model");
         mesh_->SetModel("./Data/Models/Stage/Props/traffic_light.gltf");
 
         SetPosition(transform.GetLocation());
@@ -203,7 +203,7 @@ public:
     void Initialize(const Transform& transform) override
     {
         // 描画用コンポーネントを追加
-        mesh_ = this->NewSceneComponent<class SkeltalMeshComponent>("model");
+        mesh_ = this->NewSceneComponent<class SkeletalMeshComponent>("model");
         mesh_->SetModel("./Data/Models/Stage/Props/outdoor_unit.gltf");
 
         SetPosition(transform.GetLocation());
@@ -248,7 +248,7 @@ public:
     void Initialize(const Transform& transform) override
     {
         // 描画用コンポーネントを追加
-        mesh_ = this->NewSceneComponent<class SkeltalMeshComponent>("model");
+        mesh_ = this->NewSceneComponent<class SkeletalMeshComponent>("model");
         mesh_->SetModel("./Data/Models/Stage/Props/phone_booth.gltf");
 
         SetPosition(transform.GetLocation());
@@ -293,7 +293,7 @@ public:
     void Initialize(const Transform& transform) override
     {
         // 描画用コンポーネントを追加
-        mesh_ = this->NewSceneComponent<class SkeltalMeshComponent>("model");
+        mesh_ = this->NewSceneComponent<class SkeletalMeshComponent>("model");
         mesh_->SetModel("./Data/Models/Stage/Props/trash_can.gltf");
 
         SetPosition(transform.GetLocation());

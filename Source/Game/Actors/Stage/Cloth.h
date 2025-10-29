@@ -36,11 +36,11 @@ public:
     SphereTest(const std::string& modelName) :Actor(modelName)
     {
     }
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
-        skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Debug/Primitives/sphere.glb", false);
 
         SetPosition(transform.GetLocation());
@@ -122,15 +122,15 @@ public:
     PlaneTest(const std::string& modelName) :Actor(modelName)
     {
     }
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent;
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent1;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent1;
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
-        skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Models/TestCloth/cloth1.gltf", false);
 
-        skeltalMeshComponent1 = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent1 = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent1->SetModel("./Data/Models/TestCloth/cloth1.gltf", false);
 
         SetPosition(transform.GetLocation());
@@ -619,11 +619,11 @@ public:
     Cloth(const std::string& modelName) :Actor(modelName)
     {
     }
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
-        skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         //skeltalMeshComponent->SetModel("./Data/Models/TestCloth/cloth1.gltf", true);
         skeltalMeshComponent->SetModel("./Data/Models/TestCloth/cloth1.gltf", true);
         skeltalMeshComponent->overridePipelineName = "cloth";

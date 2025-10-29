@@ -77,13 +77,13 @@ public:
         //PushState(std::make_shared<IdlingState>());
     }
     // 描画用コンポーネントを追加
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
     // 描画の基準点　左
-    std::shared_ptr<SkeltalMeshComponent> leftComponent;
+    std::shared_ptr<SkeletalMeshComponent> leftComponent;
     //std::shared_ptr<SceneComponent> leftComponent;
     std::shared_ptr<BoxComponent> boxLeftHitComponent;
     // 描画の基準点　右
-    std::shared_ptr<SkeltalMeshComponent> rightComponent;
+    std::shared_ptr<SkeletalMeshComponent> rightComponent;
     std::shared_ptr<BoxComponent> boxRightHitComponent;
 
     // ダメージ用の当たり判定

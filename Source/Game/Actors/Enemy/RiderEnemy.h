@@ -31,9 +31,9 @@ public:
     RiderEnemy(const RiderEnemy&) = delete;
     RiderEnemy& operator=(const RiderEnemy&) = delete;
 
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent;
-    std::shared_ptr<SkeltalMeshComponent> gearInMeshComponent;
-    std::shared_ptr<SkeltalMeshComponent> gearOutMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> gearInMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> gearOutMeshComponent;
     std::shared_ptr<SphereComponent> bossHandComponent;
     std::shared_ptr<MovementComponentOutInput> moveComponent;
     std::shared_ptr<AudioSourceComponent> rushAudioComponent;
@@ -45,7 +45,7 @@ public:
 public:
     void Initialize(const Transform& transform)override
     {
-        skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
 #if 0
         //skeltalMeshComponent->SetModel("..\\glTF-Sample-Models-main\\original\\EnemyTest\\Idle_Relaxed_B_HS.gltf");
         skeltalMeshComponent->SetModel("./Data/Models/Characters/Enemy/plantune.gltf");
@@ -172,11 +172,11 @@ public:
 
 
         // ギアのモデルコンポーネントを追加
-        gearInMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("gearInComponent", "skeltalComponent");
+        gearInMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("gearInComponent", "skeltalComponent");
         gearInMeshComponent->SetModel("./Data/Effect/Models/gear_effect_in.gltf");
         gearInMeshComponent->SetIsCastShadow(false);
         gearInMeshComponent->SetIsVisible(false);
-        gearOutMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("gearOutComponent", "skeltalComponent");
+        gearOutMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("gearOutComponent", "skeltalComponent");
         gearOutMeshComponent->SetModel("./Data/Effect/Models/gear_effect.gltf");
         gearOutMeshComponent->SetIsCastShadow(false);
         gearOutMeshComponent->SetIsVisible(false);

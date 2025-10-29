@@ -23,11 +23,11 @@ public:
     std::shared_ptr<EffectComponent> effectBeamComponent;
     std::shared_ptr<EffectComponent> effectSparkComponent;
     std::shared_ptr<SphereComponent> sphereComponent;
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
     void Initialize()override
     {
         // 描画用コンポーネントを追加
-        skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Models/Beam/beam.gltf");
         //skeltalMeshComponent->model->isModelInMeters = false;
         SetPosition(tempPosition);

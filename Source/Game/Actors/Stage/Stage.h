@@ -23,7 +23,7 @@ public:
         //staticMeshComponent->model->isModelInMeters = false;
         staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         SetEulerRotation(DirectX::XMFLOAT3(0.0f, 180.0f, 0.0f));
-        //std::shared_ptr<SkeltalMeshComponent> staticMeshComponent = this->NewComponent<class SkeltalMeshComponent>("staticMeshComponent");
+        //std::shared_ptr<SkeletalMeshComponent> staticMeshComponent = this->NewComponent<class SkeletalMeshComponent>("staticMeshComponent");
         //staticMeshComponent->SetModel("./Assets/Models/Stage/ExampleStage.gltf", true);
         staticMeshComponent->SetRelativeScaleDirect(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
         staticMeshComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));

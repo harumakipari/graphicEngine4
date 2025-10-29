@@ -10,10 +10,10 @@ public:
     ElasticBuilding(const std::string& modelName) :Actor(modelName)
     {
     }
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent;
-    std::shared_ptr<SkeltalMeshComponent> pointComponent;
-    std::shared_ptr<SkeltalMeshComponent> bezierComponent;
-    std::shared_ptr<SkeltalMeshComponent> buildComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> pointComponent;
+    std::shared_ptr<SkeletalMeshComponent> bezierComponent;
+    std::shared_ptr<SkeletalMeshComponent> buildComponent;
     std::shared_ptr<BoxComponent> boxComponent;
     DirectX::XMFLOAT3 p1;
     DirectX::XMFLOAT3 p2;
@@ -34,18 +34,18 @@ public:
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
-        skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Debug/Primitives/cube.glb");
         skeltalMeshComponent->SetIsVisible(false);
-        pointComponent = this->NewSceneComponent<class SkeltalMeshComponent>("pointComponent");
+        pointComponent = this->NewSceneComponent<class SkeletalMeshComponent>("pointComponent");
         pointComponent->SetModel("./Data/Debug/Primitives/sphere.glb");
         pointComponent->SetWorldLocationDirect({ 0.0f,5.0f,0.0f });
         pointComponent->SetIsVisible(false);
-        bezierComponent = this->NewSceneComponent<class SkeltalMeshComponent>("bezierComponent");
+        bezierComponent = this->NewSceneComponent<class SkeletalMeshComponent>("bezierComponent");
         bezierComponent->SetModel("./Data/Debug/Primitives/platQube.glb");
         bezierComponent->SetWorldScaleDirect({ 0.2f,0.2f,0.2f });
         bezierComponent->SetIsVisible(false);
-        buildComponent = this->NewSceneComponent<class SkeltalMeshComponent>("buildComponent");
+        buildComponent = this->NewSceneComponent<class SkeletalMeshComponent>("buildComponent");
         //buildComponent->SetModel("./Data/Models/Building/bomb_bill.gltf");
         buildComponent->SetModel("./Data/Models/Characters/GirlSoldier/Idle.gltf");
         //buildComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
@@ -218,7 +218,7 @@ public:
     SpringyBall(const std::string& modelName) :Actor(modelName)
     {
     }
-    std::shared_ptr<SkeltalMeshComponent> pointComponent;
+    std::shared_ptr<SkeletalMeshComponent> pointComponent;
 
     float momentum = -1.0f;  // 慣性バッファ
     float speed = 4.0f;     // ボールの硬さ
@@ -228,7 +228,7 @@ public:
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
-        pointComponent = this->NewSceneComponent<class SkeltalMeshComponent>("pointComponent");
+        pointComponent = this->NewSceneComponent<class SkeletalMeshComponent>("pointComponent");
         pointComponent->SetModel("./Data/Debug/Primitives/sphere.glb");
 
         SetPosition(transform.GetLocation());

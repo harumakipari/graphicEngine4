@@ -480,6 +480,9 @@
     <ClCompile Include="Source\Graphics\PostProcess\BloomEffect.cpp">
       <Filter>Sources\Graphics\PostProcess</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\PostProcess\SSAOEffect.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1009,6 +1012,7 @@
     </ClInclude>
     <ClInclude Include="Source\Graphics\PostProcess\SceneEffectManager.h" />
     <ClInclude Include="Source\Graphics\PostProcess\SceneEffectBase.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\SSAOEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BlurPS.hlsl">
@@ -1249,6 +1253,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\DeferredPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SSAOPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

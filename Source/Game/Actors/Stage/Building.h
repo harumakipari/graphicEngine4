@@ -50,7 +50,7 @@ public:
     std::shared_ptr<EffectComponent> effectShockWaveComponent;
     std::shared_ptr<ShockWaveModelComponent> shockWaveMeshComponent;
     std::shared_ptr<BoxComponent> boxComponent;
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
     void Initialize(const Transform& transform)override
     {
         // 最初に描画される壊れる前のモデル
@@ -79,7 +79,7 @@ public:
         riseEnd = { riseStart.x,0.0f,riseStart.z };
 
         // ビルのがれきに使用するモデル
-        skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent", "preSkeltalMeshComponent");
+        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent", "preSkeltalMeshComponent");
         skeltalMeshComponent->SetModel("./Data/Models/TestCollision/test_hahen1.gltf", true);
         skeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
         skeltalMeshComponent->SetRelativeLocationDirect(riseEnd);

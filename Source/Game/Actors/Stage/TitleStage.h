@@ -16,7 +16,7 @@ public:
     std::shared_ptr<StaticMeshComponent> stage;
     std::shared_ptr<StaticMeshComponent> build;
     std::shared_ptr<StaticMeshComponent> trafficLight;
-    //std::shared_ptr<SkeltalMeshComponent> trafficLight;
+    //std::shared_ptr<SkeletalMeshComponent> trafficLight;
     void Initialize(const Transform& transform)override
     {
         std::shared_ptr<SceneComponent> parent = this->NewSceneComponent<SceneComponent>("empty");
@@ -43,7 +43,7 @@ public:
         //build->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         //build->SetRelativeScaleDirect({ -1.0f,1.0f,-1.0f });
 
-        //trafficLight = this->NewSceneComponent<SkeltalMeshComponent>("trafficLight", "empty");
+        //trafficLight = this->NewSceneComponent<SkeletalMeshComponent>("trafficLight", "empty");
         trafficLight = this->NewSceneComponent<StaticMeshComponent>("trafficLight", "empty");
         trafficLight->SetModel("./Data/Models/Stage/Props/traffic_light.gltf");
         trafficLight->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;

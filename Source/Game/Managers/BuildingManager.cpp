@@ -34,7 +34,7 @@ void BuildingManager::SpawnItemArea(Area& area, int col, int row)
             {
                 SpawnValidator::Register(shared_from_this());
 
-                //item->GetComponent<SkeltalMeshComponent>()->SetIsVisible(true);
+                //item->GetComponent<SkeletalMeshComponent>()->SetIsVisible(true);
                 building->preSkeltalMeshComponent->SetIsVisible(true);
                 area.currentItemCount++;
                 return; //¬Œ÷‚µ‚½‚Ì‚Å‚±‚Ì area ‚Ìƒ‹[ƒv‚ğ‚â‚ß‚é

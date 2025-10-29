@@ -60,10 +60,10 @@ public:
     std::shared_ptr<ShockWaveModelComponent> shockWaveMeshComponent;
     std::shared_ptr<ShockWaveModelComponent> bombTimerMeshComponent;
     std::shared_ptr<BoxComponent> boxComponent;
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
     std::shared_ptr<AudioSourceComponent> explosionSoundComponent;
     std::shared_ptr<AudioSourceComponent> debriSoundComponent;
-    std::shared_ptr<SkeltalMeshComponent> bombTimerMeshComponentUnder;
+    std::shared_ptr<SkeletalMeshComponent> bombTimerMeshComponentUnder;
     void Initialize(const Transform& transform)override
     {
         auto t1 = std::chrono::high_resolution_clock::now();
@@ -92,7 +92,7 @@ public:
         riseEnd = { riseStart.x,0.0f,riseStart.z };
         //auto t3 = std::chrono::high_resolution_clock::now();
         // Š¢âI‚ÉŽg—p‚·‚éƒ‚ƒfƒ‹
-        skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent", "preSkeltalMeshComponent");
+        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent", "preSkeltalMeshComponent");
         skeltalMeshComponent->SetModel("./Data/Models/Building/bomb_bill_hahen3.gltf", true);
         skeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
         skeltalMeshComponent->SetRelativeLocationDirect(riseEnd);
@@ -165,7 +165,7 @@ public:
         // 
         auto t7 = std::chrono::high_resolution_clock::now();
 
-        bombTimerMeshComponentUnder = this->NewSceneComponent<class SkeltalMeshComponent>("bombTimerMeshComponentUnder", "preSkeltalMeshComponent");
+        bombTimerMeshComponentUnder = this->NewSceneComponent<class SkeletalMeshComponent>("bombTimerMeshComponentUnder", "preSkeltalMeshComponent");
         bombTimerMeshComponentUnder->SetModel("./Data/Effect/Models/bom_effect_out.gltf", true);
         bombTimerMeshComponentUnder->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
         bombTimerMeshComponentUnder->SetIsCastShadow(false);

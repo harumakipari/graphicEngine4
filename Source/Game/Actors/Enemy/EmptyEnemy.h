@@ -25,7 +25,7 @@ public:
 
     void Initialize(const Transform& transform)override
     {
-        std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+        std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         // ƒ‚ƒfƒ‹Šm”F
         skeltalMeshComponent->SetModel("./Data/Models/Characters/Enemy/boss_idle.gltf");
         skeltalMeshComponent->SetMaterialPS("./Shader/GltfModelEmissionPS.cso", "L_emission2");

@@ -45,7 +45,6 @@ public:
         return fogBuffer->shaderResourceViews[0].Get();
     }
 
-
     // UI Т▓Ро (ImGui)
     void DrawDebugUI()override;
 

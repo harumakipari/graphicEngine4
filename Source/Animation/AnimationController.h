@@ -14,7 +14,7 @@
 class AnimationController
 {
 public:
-    AnimationController(SkeltalMeshComponent* target) :target_(target)
+    AnimationController(SkeletalMeshComponent* target) :target_(target)
     {
         // アニメーションブレンドに使用するノード
         animationNodes[0] = target_->model->GetNodes();
@@ -145,7 +145,7 @@ public:
         requestStopLoop = true;
     }
 private:
-    SkeltalMeshComponent* target_ = nullptr;
+    SkeletalMeshComponent* target_ = nullptr;
 
     std::unordered_map<std::string, size_t> animationNameToIndex_;
 

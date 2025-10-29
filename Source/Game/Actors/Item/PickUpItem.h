@@ -30,7 +30,7 @@ public:
     {
         hitActors_.clear();
     }
-    std::shared_ptr<SkeltalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
     void Initialize(const Transform& transform)override;
 
     void Finalize()override;

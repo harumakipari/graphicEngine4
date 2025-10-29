@@ -85,10 +85,10 @@ protected:
     bool isCastShadow_ = true;
 };
 
-class SkeltalMeshComponent :public MeshComponent
+class SkeletalMeshComponent :public MeshComponent
 {
 public:
-    SkeltalMeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :MeshComponent(name, owner)
+    SkeletalMeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :MeshComponent(name, owner)
     {
     }
 

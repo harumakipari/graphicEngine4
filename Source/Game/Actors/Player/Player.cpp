@@ -24,7 +24,7 @@
 void Player::Initialize(const Transform& transform)
 {
     // 描画用コンポーネントを追加
-    skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+    skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
     //skeltalMeshComponent->SetModel("./Data/Models/Characters/Player/karichara.gltf");
 
     skeltalMeshComponent->SetModel("./Data/Models/Characters/Player/chara_animation.gltf");
@@ -62,7 +62,7 @@ void Player::Initialize(const Transform& transform)
 
 
     // プレイヤーの左の見た目
-    leftComponent = this->NewSceneComponent<class SkeltalMeshComponent>("leftComponent", "skeltalComponent");
+    leftComponent = this->NewSceneComponent<class SkeletalMeshComponent>("leftComponent", "skeltalComponent");
     leftComponent->SetModel("./Data/Models/Characters/Player/PlayerSide/player_side_left.gltf");
     leftComponent->SetRelativeLocationDirect(leftFirstPos);
     //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", leftComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
@@ -108,7 +108,7 @@ void Player::Initialize(const Transform& transform)
     //boxLeftHitComponent->SetIsVisibleDebugShape(false);
 
     // プレイヤーの右の見た目
-    rightComponent = this->NewSceneComponent<class SkeltalMeshComponent>("rightComponent", "skeltalComponent");
+    rightComponent = this->NewSceneComponent<class SkeletalMeshComponent>("rightComponent", "skeltalComponent");
     rightComponent->SetModel("./Data/Models/Characters/Player/PlayerSide/player_side_right.gltf");
     rightComponent->SetRelativeLocationDirect(rightFirstPos);
     hr=CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPlayerSidePS.cso", rightComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
@@ -500,7 +500,7 @@ void Player::Initialize(const Transform& transform)
     //inputComponent->BindAction("Jump", [&]()
     //    {
     //        ChangeState(std::make_shared<JumpStartState>());
-    //        dynamic_cast<SkeltalMeshComponent*>(GetComponentByName("skeltalComponent").get())->SetAnimationClip(3);
+    //        dynamic_cast<SkeletalMeshComponent*>(GetComponentByName("skeltalComponent").get())->SetAnimationClip(3);
     //    });
     //inputComponent->BindActionAndButton(GamePad::Button::y, "Jump", TriggerMode::none); //[v]
 

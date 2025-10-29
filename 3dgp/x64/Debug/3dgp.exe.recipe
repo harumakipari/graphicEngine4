@@ -229,6 +229,9 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\sprite_vs.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\SSAOPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\staticMeshPS.cso</FullPath>
     </ContentFile>
     <ContentFile>

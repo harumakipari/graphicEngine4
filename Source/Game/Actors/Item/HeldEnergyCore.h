@@ -22,7 +22,7 @@ public:
             _ASSERT("親のコンポーネントが設定されていません。");
         }
         // 描画用コンポーネントを追加
-        std::shared_ptr<SkeltalMeshComponent>skeltalMeshComponent = this->NewSceneComponentWithParent<class SkeltalMeshComponent>("skeltalComponent", rootComponent_ ? rootComponent_ : nullptr);
+        std::shared_ptr<SkeletalMeshComponent>skeltalMeshComponent = this->NewSceneComponentWithParent<class SkeletalMeshComponent>("skeltalComponent", rootComponent_ ? rootComponent_ : nullptr);
         skeltalMeshComponent->SetModel("./Data/Models/Items/HeldEnergyCore/heldEnergyCore.gltf");
         //skeltalMeshComponent->model->isModelInMeters = false;
         SetScale(DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f));

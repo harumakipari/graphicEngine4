@@ -6,7 +6,7 @@
 void PickUpItem::Initialize(const Transform& transform)
 {
     // 描画用コンポーネントを追加
-    skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeltalComponent");
+    skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
     skeltalMeshComponent->SetModel("./Data/Models/Items/PickUpEnergyCore/pick_up_item.gltf");
     //skeltalMeshComponent->model->isModelInMeters = false;
     //skeltalMeshComponent->SetIsVisible(false); // アイテム生成時に一フレーム描画されてしまうから
@@ -42,7 +42,7 @@ void PickUpItem::Initialize(const Transform& transform)
 void PickUpItem::Initialize()
 {
     // 描画用コンポーネントを追加
-    skeltalMeshComponent = this->NewSceneComponent<class SkeltalMeshComponent>("skeletalComponent");
+    skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeletalComponent");
     skeltalMeshComponent->SetModel("./Data/Models/Items/PickUpEnergyCore/pick_up_item.gltf");
     skeltalMeshComponent->SetIsVisible(false); // アイテム生成時に一フレーム描画されてしまうから
     skeltalMeshComponent->SetIsCastShadow(false);
