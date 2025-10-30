@@ -384,31 +384,6 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         //gameWorld_->CastShadowRender(immediateContext);
         cascadedShadowMaps->Deactive(immediateContext);
 
-#if 1
-#else
-
-        // FOG
-        {
-            framebuffers[0]->Clear(immediateContext, 0, 0, 0, 0);
-            framebuffers[0]->Activate(immediateContext);
-
-
-            RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
-            RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-            RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-            ID3D11ShaderResourceView* shader_resource_views[]
-            {
-                multipleRenderTargets->renderTargetShaderResourceViews[0],  //colorMap
-                multipleRenderTargets->depthStencilShaderResourceView,      //depthMap
-                cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
-            };
-            fullscreenQuadTransfer->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), pixelShaders[2]/*VolumetricFogPS*/.Get());
-
-            framebuffers[0]->Deactivate(immediateContext);
-        }
-
-#endif // 0
-
         // CASCADED_SHADOW_MAPS
         // Draw shadow to scene framebuffer
         // FINAL_PASS
@@ -431,14 +406,10 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             {
                 // MULTIPLE_RENDER_TARGETS
                 multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)],  //colorMap
-                //framebuffers[1]->shaderResourceViews[0].Get(),
                 multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::POSITION)],
                 multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::NORMAL)],
                 multipleRenderTargets->depthStencilShaderResourceView,      //depthMap
-                //bloomer->shader_resource_view(),    //bloom
-                //postEffectManager->GetFinalOutput(),
                 postEffectManager->GetOutput("BloomEffect"),
-                //framebuffers[0]->shaderResourceViews[0].Get(),  //fog
                 sceneEffectManager->GetOutput("FogEffect"),
                 sceneEffectManager->GetOutput("SSAOEffect"),    //SSAO
                 cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
@@ -464,19 +435,10 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
-        // MULTIPLE_RENDER_TARGETS
-        //RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
-        //RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-        //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-
         sceneRender.currentRenderPath = RenderPath::Deferred;
         sceneRender.RenderOpaque(immediateContext);
         sceneRender.RenderMask(immediateContext);
         sceneRender.RenderBlend(immediateContext);
-        auto cloth = GetActorManager()->GetActorByName("cloth");
-        if (cloth)
-        {
-        }
 
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
 
@@ -563,43 +525,15 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         //gameWorld_->CastShadowRender(immediateContext);
         cascadedShadowMaps->Deactive(immediateContext);
 
-#if 0
-        // FOG
-        {
-            framebuffers[0]->Clear(immediateContext, 0, 0, 0, 0);
-            framebuffers[0]->Activate(immediateContext);
 
-
-            RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
-            RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-            RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-            ID3D11ShaderResourceView* shader_resource_views[]
-            {
-                gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],  //colorMap
-                gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
-                cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
-            };
-            fullscreenQuadTransfer->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), pixelShaders[2]/*VolumetricFogPS*/.Get());
-
-            framebuffers[0]->Deactivate(immediateContext);
-        }
-
-#endif // 0
-
-#if 1
         // CASCADED_SHADOW_MAPS
         // Draw shadow to scene framebuffer
         // FINAL_PASS
         {
-            //bloomer->bloom_intensity = bloomIntensity;
-            //bloomer->bloom_extraction_threshold = bloomThreshold;
-            //ƒuƒ‹[ƒ€
             RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
             RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
             RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-            //bloomer->make(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
             postEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
-
             sceneEffectManager->ApplyAll(immediateContext, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)], gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
                 gBufferRenderTarget->depthStencilShaderResourceView, cascadedShadowMaps->depthMap().Get());
 
@@ -610,10 +544,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
                 gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
                 gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
-                //bloomer->shader_resource_view(),    //bloom
-                //postEffectManager->GetFinalOutput(),
                 postEffectManager->GetOutput("BloomEffect"),
-                //framebuffers[0]->shaderResourceViews[0].Get(),  //fog
                 sceneEffectManager->GetOutput("FogEffect"),
                 sceneEffectManager->GetOutput("SSAOEffect"),
                 cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
@@ -622,7 +553,6 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             fullscreenQuadTransfer->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), pixelShaders[0]/*final pass*/.Get());
         }
     }
-#endif // 0
 
     // UI•`‰æ
     {
@@ -757,15 +687,6 @@ void BootScene::DrawGui()
             }
             if (enableFog && ImGui::TreeNode("Fog Settings"))
             {
-                //ImGui::ColorEdit3("Fog Color", fogConstants.fogColor);
-                //ImGui::SliderFloat("Intensity", &(fogConstants.fogColor[3]), 0.0f, 10.0f);
-                //ImGui::SliderFloat("Density", &fogConstants.fogDensity, 0.0f, 0.05f, "%.6f");
-                //ImGui::SliderFloat("Height Falloff", &fogConstants.fogHeightFalloff, 0.001f, 1.0f, "%.4f");
-                //ImGui::SliderFloat("Cutoff Distance", &fogConstants.fogCutoffDistance, 0.0f, 1000.0f);
-                //ImGui::SliderFloat("Ground Level", &fogConstants.groundLevel, -100.0f, 100.0f);
-                //ImGui::SliderFloat("Mie Scattering", &fogConstants.mieScatteringFactor, 0.0f, 1.0f, "%.4f");
-                //ImGui::SliderFloat("Time Scale", &fogConstants.timeScale, 0.0f, 1.0f, "%.4f");
-                //ImGui::SliderFloat("Noise Scale", &fogConstants.noiseScale, 0.0f, 0.5f, "%.4f");
                 ImGui::ColorEdit3("Fog Color", fogCBuffer->data.fogColor);
                 ImGui::SliderFloat("Intensity", &(fogCBuffer->data.fogColor[3]), 0.0f, 10.0f);
                 ImGui::SliderFloat("Density", &fogCBuffer->data.fogDensity, 0.0f, 0.05f, "%.6f");
