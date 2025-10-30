@@ -1323,5 +1323,8 @@
     <None Include="Shader\Cloth.hlsli">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shader\Sampler.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

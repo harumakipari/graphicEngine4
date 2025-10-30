@@ -7,6 +7,15 @@
 class SSAOEffect:public SceneEffectBase
 {
 public:
+    struct SSAOConstantBuffer
+    {
+        float sigma=0.3f;
+        float power = 1.0f;
+        bool improvedNormalReconstructionFromDepth = 1;
+        bool bilateralBlur = true;
+    };
+
+public:
     SSAOEffect():SceneEffectBase("SSAOEffect"){}
 
     ~SSAOEffect() = default;

@@ -1,3 +1,48 @@
-﻿  Framework.cpp
+﻿C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricFogPS.hlsl(89,11-57): warning X3206: implicit truncation of vector type
+C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricFogPS.hlsl(116,9-31): warning X3206: implicit truncation of vector type
+  
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricFogPS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricFogPS.cso
+  SceneComponent.cpp
+  CameraComponent.cpp
+  CollisionComponent.cpp
+  RigidBodyComponent.cpp
+  ShapeComponent.cpp
+  ControllerComponent.cpp
+  EffectComponent.cpp
+  EraseInAreaComponent.cpp
+  ItemSpawnerComponent.cpp
+  LifeTimeComponent.cpp
+  ShockWaveCollisionComponent.cpp
+  ActorManager.cpp
+  World.cpp
+  Framework.cpp
+  Scene.cpp
+  Beam.cpp
+  ActionDerived.cpp
+  BehaviorTree.cpp
+  JudgmentDerived.cpp
+  NodeBase.cpp
+  RiderEnemy.cpp
+  PickUpItem.cpp
+  Player.cpp
+  PlayerState.cpp
+  BossBuilding.cpp
+  Building.cpp
+  BuildingManager.cpp
+  GameManager.cpp
   BootScene.cpp
+  LoadingScene.cpp
+  MainScene.cpp
+  TutorialScene.cpp
+  Graphics.cpp
+  EffectSystem.cpp
+  FogEffect.cpp
+  SSAOEffect.cpp
+  SceneRenderer.cpp
+  InterleavedGltfModel.cpp
+  Physics.cpp
+  PhysicsUtility.cpp
+  ObjectManager.cpp
+  UIFactory.cpp
   3dgp.vcxproj -> C:\Users\2240225\Desktop\graphicEngine4\x64\Debug\3dgp.exe

@@ -880,6 +880,7 @@
     <None Include="Shader\Particle.hlsli" />
     <None Include="Shader\PerlinWorleyNoise.hlsli" />
     <None Include="Shader\ProjectionMapping.hlsli" />
+    <None Include="Shader\Sampler.hlsli" />
     <None Include="Shader\ScreenSpaceProjectionMapping.hlsli" />
     <None Include="Shader\ShaderToy.hlsli" />
     <None Include="Shader\SkinnedMesh.hlsli" />

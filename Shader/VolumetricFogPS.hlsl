@@ -19,6 +19,8 @@ Texture2DArray cascadedShadowMaps : register(t2);
 // NOISE
 Texture3D noise3D : register(t10);
 
+
+
 float SunlightRadiance(float3 position, VS_OUT pin)
 {
     float depthNdc = depthTexture.Sample(linearBorderBlackSamplerState, pin.texcoord).x;

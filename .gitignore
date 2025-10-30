@@ -24,7 +24,7 @@
 *.lai
 *.la
 *.a
-*.lib
+*.lib/
 
 # Executables
 *.exe
@@ -32,7 +32,7 @@
 *.app
 .vs/
 imgui.ini
-x64/Debug/3dgp.exp
+3dgp/x64/Debug/3dgp.exp
 x64/
 *.cod
 *.cso
