@@ -3,20 +3,21 @@
 #include "FrameBuffer.h"
 #include "FullScreenQuad.h"
 #include "SceneEffectBase.h"
+#include "Graphics/Core/ConstantBuffer.h"
 
-class SSAOEffect:public SceneEffectBase
+class SSAOEffect :public SceneEffectBase
 {
 public:
     struct SSAOConstantBuffer
     {
-        float sigma=0.3f;
+        float sigma = 0.3f;
         float power = 1.0f;
         bool improvedNormalReconstructionFromDepth = 1;
         bool bilateralBlur = true;
     };
 
 public:
-    SSAOEffect():SceneEffectBase("SSAOEffect"){}
+    SSAOEffect() :SceneEffectBase("SSAOEffect") {}
 
     ~SSAOEffect() = default;
 
@@ -33,11 +34,12 @@ public:
     }
 
     // UI Т▓Ро (ImGui)
-    void DrawDebugUI()override{}
+    void DrawDebugUI()override {}
 
 private:
     std::unique_ptr<FrameBuffer> ssaoBuffer;
     std::unique_ptr<FullScreenQuad> fullScreenQuad;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> ssaoPS;
+    std::unique_ptr<ConstantBuffer<SSAOConstantBuffer>> ssaoCBuffer;
 
 };

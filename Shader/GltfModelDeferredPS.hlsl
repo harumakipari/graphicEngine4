@@ -22,11 +22,13 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     float4 baseColorFactor = m.pbrMetallicRoughness.baseColorFactor;
     const int baseColorTexture = m.pbrMetallicRoughness.basecolorTexture.index;
 
+    float4 baseColor = baseColorFactor;
+
     if (baseColorTexture > -1)
     {
         float4 sampled = materialTextures[BASECOLOR_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(sampled.rgb, GAMMA);
-        baseColorFactor *= sampled;
+        baseColor *= sampled;
     }
     
     if (m.alphaMode == 0 /*OPAQUE*/)
@@ -99,7 +101,8 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
     }
     
-    pout.color = baseColorFactor;
+    //pout.color = baseColorFactor;
+    pout.color = baseColor;
     //pout.position = mul(pin.wPosition, view); // to viewSpace
     //pout.normal = mul(float4(N.xyz, 0), view); //to viewSpace;
     pout.position = pin.wPosition; // to viewSpace

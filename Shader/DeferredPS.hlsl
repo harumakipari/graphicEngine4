@@ -5,10 +5,10 @@
 #include "Lights.hlsli"
 
 Texture2D normalMap : register(t0);
-Texture2D msrMap : register(t1);
+Texture2D materialMap : register(t1);
 Texture2D colorMap : register(t2);
 Texture2D positionMap : register(t3);
-Texture2D emmisiveMap : register(t4);
+Texture2D emissiveMap : register(t4);
 SamplerState linearBorderBlackSamplerState : register(s3);
 
 float4 main(VS_OUT pin) : SV_TARGET
@@ -17,11 +17,11 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 normal = normalMap.Sample(linearBorderBlackSamplerState, pin.texcoord).xyz;
     float3 position = positionMap.Sample(linearBorderBlackSamplerState, pin.texcoord).xyz;
     float4 finalColor = color;
-    float4 msr = msrMap.Sample(linearBorderBlackSamplerState, pin.texcoord);
+    float4 msr = materialMap.Sample(linearBorderBlackSamplerState, pin.texcoord);
     float metallicFactor = msr.x;
     float roughnessFactor = msr.z;
     
-    float3 emmisiveFactor = emmisiveMap.Sample(linearBorderBlackSamplerState, pin.texcoord).xyz;
+    float3 emmisiveFactor = emissiveMap.Sample(linearBorderBlackSamplerState, pin.texcoord).xyz;
     float3 N = normalMap.Sample(linearBorderBlackSamplerState, pin.texcoord).xyz;
     const float3 f0 = lerp(0.04, color.rgb, metallicFactor);
     const float3 f90 = 1.0;
@@ -103,7 +103,8 @@ float4 main(VS_OUT pin) : SV_TARGET
     specular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
     //diffuse = lerp(diffuse, diffuse * occlusionFactor, occlusionStrength);
     //specular = lerp(specular, specular * occlusionFactor, occlusionStrength);
-
+    float3 Lo = diffuse + specular + emmisive;
+    //return float4(Lo, 1.0f);
     //return float4(diffuse + specular + emmisive, basecolorFactor.a) * basecolorFactor;
     return float4(diffuse + specular + emmisive, 1.0) * color;
     

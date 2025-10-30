@@ -250,7 +250,6 @@
     <ClCompile Include="Source\Game\Scenes\MainScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\LoadingScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\TutorialScene.cpp" />
-    <ClCompile Include="Source\Game\SofyBody\SoftBody.cpp" />
     <ClCompile Include="Source\Graphics\Cloud\VolumetricCloudscapes.cpp" />
     <ClCompile Include="Source\Graphics\Core\Graphics.cpp" />
     <ClCompile Include="Source\Graphics\Core\LightManager.cpp" />
@@ -387,8 +386,6 @@
     <ClInclude Include="Source\Game\Scenes\MainScene.h" />
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
     <ClInclude Include="Source\Game\Scenes\TutorialScene.h" />
-    <ClInclude Include="Source\Game\SofyBody\MassPoint.h" />
-    <ClInclude Include="Source\Game\SofyBody\SoftBody.h" />
     <ClInclude Include="Source\Game\Utils\ShockWaveTargetRegistry.h" />
     <ClInclude Include="Source\Game\Utils\SpawnValidator.h" />
     <ClInclude Include="Source\Game\Utils\TiledMapLoader.h" />
@@ -436,6 +433,8 @@
     <ClInclude Include="Source\Graphics\Sprite\Sprite.h" />
     <ClInclude Include="Source\Graphics\Sprite\SpriteBatch.h" />
     <ClInclude Include="Source\Math\MathHelper.h" />
+    <ClInclude Include="Source\PBD\PBDParticleData.h" />
+    <ClInclude Include="Source\PBD\PBDSystem.h" />
     <ClInclude Include="Source\Physics\Collider.h" />
     <ClInclude Include="Source\Physics\Collision.h" />
     <ClInclude Include="Source\Physics\CollisionEvent.h" />
