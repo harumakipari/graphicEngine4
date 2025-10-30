@@ -52,7 +52,8 @@ class BootScene : public Scene
         float deltaTime = 0.0f;
 
         float gravity = 9.8f;
-        float pads[3];
+        int enableBlur = 0;
+        float pads[2] = {};
     };
 
     bool directionalLightEnable = true; // 平行光源の on / off
@@ -144,8 +145,6 @@ class BootScene : public Scene
 
     //スカイマップ
     std::unique_ptr<SkyMap> skyMap;
-
-    std::unique_ptr<FrameBuffer> framebuffers[8];
 
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceViews[8];
 

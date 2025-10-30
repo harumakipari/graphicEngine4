@@ -59,14 +59,9 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         sceneEffectManager->AddEffect(std::make_unique<SSAOEffect>());
         sceneEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
     }
-
-    // FOG 
-    framebuffers[0] = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
-    HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", pixelShaders[2].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    HRESULT hr = { S_OK };
 
     //スカイマップ
-    //skyMap = std::make_unique<decltype(skyMap)::element_type >(device, L"./Data/Environment/Sky/winter_evening_4k.DDS");
     skyMap = std::make_unique<decltype(skyMap)::element_type>(device, L"./Data/Environment/Sky/cloud/skybox.dds");
 
     fullscreenQuadTransfer = std::make_unique<FullScreenQuad>(device);
@@ -79,12 +74,10 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = CreatePsFromCSO(device, "./Shader/DeferredPS.cso", pixelShaders[1].ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    //ブルーム
-    //bloomer = std::make_unique<Bloom>(device, static_cast<uint32_t>(width), height);
     hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", pixelShaders[0].ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    //CascadedShadpwMaps
+    //CascadedShadowMaps
     cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
 
     D3D11_TEXTURE2D_DESC texture2dDesc;
@@ -98,7 +91,6 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_sheen_e.dds", shaderResourceViews[3].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    //splash = std::make_unique<Sprite>(device, L"./Data/Textures/Screens/TitleScene/994759-1.jpg");
     Physics::Instance().Initialize();
 
     //アクターをセット
@@ -159,8 +151,6 @@ void BootScene::Update(ID3D11DeviceContext* immediateContext, float deltaTime)
 
     softBodyEngine.Update(deltaTime);
 
-    {
-    }
     float mousePosX = static_cast<float>(InputSystem::GetMousePositionX());
     float mousePosY = static_cast<float>(InputSystem::GetMousePositionY());
 
@@ -186,17 +176,6 @@ void BootScene::Update(ID3D11DeviceContext* immediateContext, float deltaTime)
     }
 #endif // !_DEBUG
 
-    //if (InputSystem::GetInputState("Enter", InputStateMask::Trigger))
-    //{
-    //    const char* types[] = { "0", "1" };
-    //    Scene::_transition("LoadingScene", { std::make_pair("preload", "TutorialScene"), std::make_pair("type", types[rand() % 2]) });
-    //}
-
-#ifdef USE_IMGUI
-    ImGui::Begin("Title Scene");
-    ImGui::DragFloat3("cameraTarget", &cameraTarget.x, 0.2f);
-    ImGui::End();
-#endif
 }
 
 void BootScene::SetUpActors()
@@ -250,22 +229,15 @@ void BootScene::SetUpActors()
 bool BootScene::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
 {
     framebufferDimensions.cx = static_cast<LONG>(width);
-    framebufferDimensions.cy = height;
+    framebufferDimensions.cy = static_cast<LONG>(height);
 
     cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
 
     //MULTIPLE_RENDER_TARGETS
     multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, framebufferDimensions.cx, framebufferDimensions.cy, 3);
 
-    framebuffers[0] = std::make_unique<FrameBuffer>(device, framebufferDimensions.cx, framebufferDimensions.cy, true);
-    //framebuffers[1] = std::make_unique<FrameBuffer>(device, framebufferDimensions.cx / downsamplingFactor, framebufferDimensions.cy / downsamplingFactor);
-    //framebuffers[1] = std::make_unique<FrameBuffer>(device, framebufferDimensions.cx, framebufferDimensions.cy, true);
-
-    //ブルーム
-    //bloomer = std::make_unique<Bloom>(device, framebufferDimensions.cx, framebufferDimensions.cy);
-
     postEffectManager->Initialize(device, framebufferDimensions.cx, framebufferDimensions.cy);
-
+    sceneEffectManager->Initialize(device, framebufferDimensions.cx, framebufferDimensions.cy);
     return true;
 }
 
@@ -274,7 +246,6 @@ bool BootScene::Uninitialize(ID3D11Device* device)
     ClearActorManager();
 
     Physics::Instance().Finalize();
-    //ActorManager::ClearAll();
     return true;
 }
 
@@ -305,58 +276,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         actorRender.UpdateViewConstants(immediateContext, data);
         sceneRender.UpdateViewConstants(immediateContext, data);
     }
-#if 0 // 定数バッファ
-    lightConstants.lightDirection = lightDirection;
-    lightConstants.colorLight = colorLight;
-    lightConstants.iblIntensity = iblIntensity;
-    lightConstants.directionalLightEnable = static_cast<int>(directionalLightEnable);
-    lightConstants.pointLightEnable = static_cast<int>(pointLightEnable);
-    lightConstants.pointLightCount = pointLightCount;
-    for (int i = 0; i < pointLightCount; i++)
-    {
-        lightConstants.pointsLight[i].position = pointLightPosition[i];
-        lightConstants.pointsLight[i].color = pointLightColor[i];
-        lightConstants.pointsLight[i].range = pointLightRange[i];
-    }
-    //sceneConstants.lightDirection = lightDirection;
-    //sceneConstants.colorLight = colorLight;
-    //sceneConstants.iblIntensity = iblIntensity;
-    // SCREEN_SPACE_AMBIENT_OCCLUSION
-    sceneConstants.enableSSAO = enableSSAO;
-    sceneConstants.enableBloom = enableBloom;
-    sceneConstants.enableFog = enableFog;
-    sceneConstants.enableCascadedShadowMaps = enableCascadedShadowMaps;
-    sceneConstants.enableSSR = enableSSR;
-    // SCREEN_SPACE_REFLECTION
-    sceneConstants.reflectionIntensity = refrectionIntensity;
-    // FOG
-    sceneConstants.time += deltaTime;
 
-    immediateContext->UpdateSubresource(constantBuffers[0].Get(), 0, 0, &sceneConstants, 0, 0);
-    immediateContext->VSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
-    immediateContext->PSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
-    immediateContext->GSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
-    immediateContext->CSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
-
-    shaderConstants.maxDistance = maxDistance;
-    shaderConstants.resolution = resolution;
-    shaderConstants.steps = steps;
-    shaderConstants.thickness = thickness;
-
-    immediateContext->UpdateSubresource(constantBuffers[1].Get(), 0, 0, &shaderConstants, 0, 0);
-    immediateContext->PSSetConstantBuffers(2, 1, constantBuffers[1].GetAddressOf());
-
-    immediateContext->UpdateSubresource(constantBuffers[2].Get(), 0, 0, &fogConstants, 0, 0);
-    immediateContext->PSSetConstantBuffers(4, 1, constantBuffers[2].GetAddressOf());    //3 は cascadedShadowMap に使用中
-
-    immediateContext->UpdateSubresource(constantBuffers[4].Get(), 0, 0, &lightConstants, 0, 0);
-    immediateContext->PSSetConstantBuffers(11, 1, constantBuffers[4].GetAddressOf());    //3 は cascadedShadowMap に使用中
-
-    spriteConstants.elapsedTime += deltaTime;
-    spriteConstants.enableGlitch = 0;
-    immediateContext->UpdateSubresource(constantBuffers[3].Get(), 0, 0, &spriteConstants, 0, 0);
-    immediateContext->PSSetConstantBuffers(10, 1, constantBuffers[3].GetAddressOf());
-#else
     // SCREEN_SPACE_AMBIENT_OCCLUSION
     sceneCBuffer->data.enableSsao = enableSSAO;
     sceneCBuffer->data.enableBloom = enableBloom;
@@ -371,31 +291,14 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
     sceneCBuffer->Activate(immediateContext, 1); // slot1 にセット
 
-    //immediateContext->UpdateSubresource(constantBuffers[0].Get(), 0, 0, &sceneConstants, 0, 0);
-    //immediateContext->VSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
-    //immediateContext->PSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
-    //immediateContext->GSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
-    //immediateContext->CSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
-
     shaderCBuffer->data.maxDistance = 20;
     shaderCBuffer->data.resolution = resolution;
     shaderCBuffer->data.steps = steps;
     shaderCBuffer->data.thickness = thickness;
     shaderCBuffer->Activate(immediateContext, 9); // slot2 にセット
-    //immediateContext->UpdateSubresource(constantBuffers[1].Get(), 0, 0, &shaderConstants, 0, 0);
-    //immediateContext->PSSetConstantBuffers(2, 1, constantBuffers[1].GetAddressOf());
 
     // slot3 は cascadedShadowMap に使用中
-
-    //immediateContext->UpdateSubresource(constantBuffers[2].Get(), 0, 0, &fogConstants, 0, 0);
-    //immediateContext->PSSetConstantBuffers(4, 1, constantBuffers[2].GetAddressOf());    
     fogCBuffer->Activate(immediateContext, 8); // slot4 にセット
-
-    //immediateContext->UpdateSubresource(constantBuffers[4].Get(), 0, 0, &lightConstants, 0, 0);
-    //immediateContext->PSSetConstantBuffers(11, 1, constantBuffers[4].GetAddressOf());    //3 は cascadedShadowMap に使用中
-
-
-    //lightCBuffer->Activate(immediateContext, 11);  // slot11 にセット
 
     lightManager->Apply(immediateContext, 11);
 
@@ -403,15 +306,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     spriteCBuffer->data.enableGlitch = 0;
 
     spriteCBuffer->Activate(immediateContext, 10);   // slot10 にセット
-    //immediateContext->UpdateSubresource(constantBuffers[3].Get(), 0, 0, &spriteConstants, 0, 0);
-    //immediateContext->PSSetConstantBuffers(10, 1, constantBuffers[3].GetAddressOf());
 
-
-
-
-#endif // 0 // 定数バッファ
-    //titlePlayer->SwitchPS(useDeferredRendering);
-    //title->SwitchPS(useDeferredRendering);
     if (!useDeferredRendering)
     {// フォワードレンダリング
         // MULTIPLE_RENDER_TARGETS
@@ -514,9 +409,9 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
 #endif // 0
 
-            // CASCADED_SHADOW_MAPS
-            // Draw shadow to scene framebuffer
-            // FINAL_PASS
+        // CASCADED_SHADOW_MAPS
+        // Draw shadow to scene framebuffer
+        // FINAL_PASS
         {
             //bloomer->bloom_intensity = bloomIntensity;
             //bloomer->bloom_extraction_threshold = bloomThreshold;
