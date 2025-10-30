@@ -196,5 +196,5 @@ private:
     float bloomIntensity = 0.266f;
     float bloomThreshold = 3.525f;
 
-
+    std::unique_ptr<PBD::System> pbd;
 };

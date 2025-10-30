@@ -3,7 +3,7 @@
 #include "Graphics/Core/Shader.h"
 #include "Engine/Utility/Win32Utils.h"
 
-void ShapeRenderer::Iniitalize(ID3D11Device* device)
+void ShapeRenderer::Initialize(ID3D11Device* device)
 {
     HRESULT hr{ S_OK };
 
@@ -385,7 +385,7 @@ void ShapeRenderer::DrawBox(ID3D11DeviceContext* immediateContext, const DirectX
 //ê¸ï`âÊ
 void ShapeRenderer::DrawSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4& color, const std::vector<DirectX::XMFLOAT3>& points, Type type)
 {
-    _ASSERT_EXPR(points.size() <= maxPoints, L"Points are sizeover!!");
+    _ASSERT_EXPR(points.size() <= maxPoints, L"Points are size over!!");
 
     HRESULT hr{ S_OK };
     D3D11_MAPPED_SUBRESOURCE mappedSubresource{};

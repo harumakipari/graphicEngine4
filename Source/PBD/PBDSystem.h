@@ -42,6 +42,10 @@ namespace PBD
             UpdateVelocity(deltaTime);
         }
 
+        const std::vector<Particle>& GetParticles() const { return particles; }
+
+    private:
+
         // ‘¬“x‚ÉŠO—Í‚ð‰Á‚¦‚é
         void AddForceToVelocity(float deltaTime)
         {
@@ -105,7 +109,6 @@ namespace PBD
             
         }
 
-        const std::vector<Particle>& GetParticles() const { return particles; }
     private:
 
         void SolveFloorConstraint()
@@ -120,7 +123,7 @@ namespace PBD
             }
         }
         std::vector<Particle> particles;
-        XMFLOAT3 gravity = { 0.0f,-9.8f,0.0f };
+        XMFLOAT3 gravity = { 0.0f,-0.98f,0.0f };
         int solveIterations = 4; // 3 ~ 20
     };
 

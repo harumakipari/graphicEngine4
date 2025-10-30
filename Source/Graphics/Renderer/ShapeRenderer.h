@@ -10,7 +10,6 @@ class ShapeRenderer
 {
 private:
     ShapeRenderer() = default;
-    //ShapeRenderer(ID3D11Device* device);
     virtual ~ShapeRenderer() = default;
 
 public:
@@ -20,9 +19,9 @@ public:
         return instance;
     }
 
-    void Iniitalize(ID3D11Device* device);
+    void Initialize(ID3D11Device* device);
 
-    enum class Type
+    enum class Type :uint8_t
     {
         Line,
         Segment,
@@ -30,7 +29,7 @@ public:
     };
 
     // î†ï`âÊ
-    void DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position,const DirectX::XMFLOAT3& angle,const DirectX::XMFLOAT3& size,const DirectX::XMFLOAT4& color);
+    void DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
 
     //void DrawBox(
     //    const DirectX::XMFLOAT4X4& transform,
@@ -54,7 +53,7 @@ public:
 
     void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition, float radius, const DirectX::XMFLOAT4& color);
 
-    void DrawCapsule(ID3D11DeviceContext* immediateContext,const DirectX::XMFLOAT4X4& worldTransform,float radius,float height,const DirectX::XMFLOAT4& color);
+    void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& worldTransform, float radius, float height, const DirectX::XMFLOAT4& color);
 
     //ê¸ï`âÊ
     void DrawSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4& color, const std::vector<DirectX::XMFLOAT3>& points, Type type);

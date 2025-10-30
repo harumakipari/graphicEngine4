@@ -93,6 +93,14 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     Physics::Instance().Initialize();
 
+    // テストPBD
+    {
+        pbd = std::make_unique<PBD::System>();
+        pbd->AddParticle({ 0,50,0 }, 1.0f);
+    }
+
+    ShapeRenderer::Instance().Initialize(device);
+
     //アクターをセット
     SetUpActors();
     EventSystem::Initialize();//追加 UI
@@ -148,6 +156,15 @@ void BootScene::Update(ID3D11DeviceContext* immediateContext, float deltaTime)
     using namespace DirectX;
 
     lightManager->Update(deltaTime);
+
+    pbd->Update(deltaTime);
+
+    const auto& p = pbd->GetParticles()[0];
+#ifdef USE_IMGUI
+    ImGui::Begin("pbd");
+    ImGui::Text("pbdPos.y:%f", p.position.y);
+    ImGui::End();
+#endif
 
     float mousePosX = static_cast<float>(InputSystem::GetMousePositionX());
     float mousePosY = static_cast<float>(InputSystem::GetMousePositionY());
@@ -345,6 +362,11 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
         // デバック描画
 #if _DEBUG
+        const auto& p = pbd->GetParticles()[0];
+        static std::vector<XMFLOAT3> points;
+        points.emplace_back((p.position));
+        ShapeRenderer::Instance().DrawSegment(immediateContext, { 1,0,1,1 }, points, ShapeRenderer::Type::Point);
+
         actorColliderManager.DebugRender(immediateContext);
         //PhysicsTest::Instance().DebugRender(immediateContext);
         //GameManager::DebugRender(immediateContext);
