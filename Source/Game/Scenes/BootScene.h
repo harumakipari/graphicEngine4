@@ -7,14 +7,10 @@
 #include <memory>
 
 #include "Graphics/Sprite/Sprite.h"
-#include "Graphics/PostProcess/FrameBuffer.h"
 #include "Graphics/PostProcess/FullScreenQuad.h"
-#include "Graphics/PostProcess/Bloom.h"
 #include "Graphics/PostProcess/GBuffer.h"
 #include "Core/ActorManager.h"
 
-#include "Graphics/PostProcess/Bloom.h"
-#include "Graphics/Shadow/ShadowMap.h"
 #include "Graphics/Environment/SkyMap.h"
 #include "Graphics/Shadow/CascadeShadowMap.h"
 #include "Graphics/PostProcess/MultipleRenderTargets.h"
@@ -27,15 +23,11 @@
 #include "Graphics/Core/ConstantBuffer.h"
 
 #include "Game/Actors/Player/TitlePlayer.h"
-#include "Game/Actors/Stage/TitleStage.h"
-#include "Game/Actors/Stage/ClothSimulate.h"
 #include "Game/Actors/Camera/TitleCamera.h"
 #include "Graphics/PostProcess/SceneEffectManager.h"
 
 #include "UI/Widgets/Widget.h"
 #include "Physics/CollisionMesh.h"
-
-#include "Test/SoftBody2d.h"
 
 class BootScene : public Scene
 {
@@ -60,11 +52,6 @@ class BootScene : public Scene
 
     struct ShaderConstants
     {
-        float extractionThreshold{ 0.8f };
-        float gaussianSigma{ 1.0f };
-        float bloomIntensity{ 1.0f };
-        float exposure{ 1.0f };
-
         float shadowColor = 0.2f;
         float shadowDepthBias = 0.0005f;
         //float shadowDepthBias = 0.001f;
@@ -123,13 +110,13 @@ class BootScene : public Scene
 
     std::unique_ptr<Sprite> splash;
 
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShaders[8];
-    //std::unique_ptr<RenderState> renderState;
+    //Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShaders[8];
+
+    Microsoft::WRL::ComPtr<ID3D11PixelShader> finalPs;
+    Microsoft::WRL::ComPtr<ID3D11PixelShader> deferredPs;
 
     // フルスクリーンクアッドを使ったレンダーターゲットのブレンド・コピー処理
     std::unique_ptr<FullScreenQuad> fullscreenQuadTransfer;
-
-    //ブルーム
 
     // CASCADED_SHADOW_MAPS
     std::unique_ptr<CascadedShadowMaps> cascadedShadowMaps;
@@ -152,13 +139,10 @@ class BootScene : public Scene
 
     void SetUpActors();
 
-
-    SIZE framebufferDimensions;
+    SIZE framebufferDimensions = {};
 
     UIRoot uiRoot;
 
-    // ソフトボディ2Dテスト
-    Engine softBodyEngine;
 public:
     bool Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props) override;
 
@@ -201,8 +185,7 @@ private:
     bool enableBloom = false;
 
     // SCREEN_SPACE_REFLECTION
-    //float refrectionIntensity = 1.0f;
-    float refrectionIntensity = 0.1f;
+    float reflectionIntensity = 0.1f;
     float maxDistance = 15.0f;
     float resolution = 0.3f;
     int steps = 10;

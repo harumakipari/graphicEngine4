@@ -181,7 +181,7 @@ private:
     bool enableBloom = true;
 
     // SCREEN_SPACE_REFLECTION
-    //float refrectionIntensity = 1.0f;
+    //float reflectionIntensity = 1.0f;
     float refrectionIntensity = 0.1f;
     float maxDistance = 15.0f;
     float resolution = 0.3f;

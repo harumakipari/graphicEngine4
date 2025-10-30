@@ -1015,9 +1015,6 @@
     <ClInclude Include="Source\Graphics\PostProcess\SSAOEffect.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shader\BlurPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\BuildingPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>

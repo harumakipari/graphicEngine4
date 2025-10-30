@@ -16,11 +16,6 @@ cbuffer SCENE_CONSTANT_BUFFER : register(b1)
 
 cbuffer SHADER_CONSTANT_BUFFER : register(b9)
 {
-    //‹P“x
-    float luminanceThreshold;
-    float gaussianSigma;
-    float bloomIntenssity;
-    float exposure;
     // CASCADED_SHADOW_MAPS
     float shadowColor;
     float shadowDepthBias;

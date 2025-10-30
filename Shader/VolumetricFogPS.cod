@@ -7,17 +7,13 @@
 // cbuffer SHADER_CONSTANT_BUFFER
 // {
 //
-//   float luminanceThreshold;          // Offset:    0 Size:     4 [unused]
-//   float gaussianSigma;               // Offset:    4 Size:     4 [unused]
-//   float bloomIntenssity;             // Offset:    8 Size:     4 [unused]
-//   float exposure;                    // Offset:   12 Size:     4 [unused]
-//   float shadowColor;                 // Offset:   16 Size:     4 [unused]
-//   float shadowDepthBias;             // Offset:   20 Size:     4
-//   bool colorizeCascadedLayer;        // Offset:   24 Size:     4 [unused]
-//   float maxDistance;                 // Offset:   28 Size:     4 [unused]
-//   float resolution;                  // Offset:   32 Size:     4 [unused]
-//   int steps;                         // Offset:   36 Size:     4 [unused]
-//   float thickness;                   // Offset:   40 Size:     4 [unused]
+//   float shadowColor;                 // Offset:    0 Size:     4 [unused]
+//   float shadowDepthBias;             // Offset:    4 Size:     4
+//   bool colorizeCascadedLayer;        // Offset:    8 Size:     4 [unused]
+//   float maxDistance;                 // Offset:   12 Size:     4 [unused]
+//   float resolution;                  // Offset:   16 Size:     4 [unused]
+//   int steps;                         // Offset:   20 Size:     4 [unused]
+//   float thickness;                   // Offset:   24 Size:     4 [unused]
 //
 // }
 //
@@ -118,7 +114,7 @@ dcl_immediateConstantBuffer { { 1.000000, 0, 0, 0},
                               { 0, 1.000000, 0, 0},
                               { 0, 0, 1.000000, 0},
                               { 0, 0, 0, 1.000000} }
-dcl_constantbuffer CB9[2], immediateIndexed
+dcl_constantbuffer CB9[1], immediateIndexed
 dcl_constantbuffer CB3[17], immediateIndexed
 dcl_constantbuffer CB8[3], immediateIndexed
 dcl_constantbuffer CB4[21], immediateIndexed
@@ -357,7 +353,7 @@ loop
 
 #line 54
   itof r6.z, r5.z
-  mov r4.x, -cb9[1].y
+  mov r4.x, -cb9[0].y
   add r4.x, r4.x, r4.z
   sample_c_lz_indexable(texture2darray)(float,float,float,float) r4.x, r6.xyzx, t2.xxxx, s7, r4.x  // r4.x <- <SunlightRadiance return value>
 

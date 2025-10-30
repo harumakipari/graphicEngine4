@@ -71,10 +71,10 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     // GBUFFER
     gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
-    hr = CreatePsFromCSO(device, "./Shader/DeferredPS.cso", pixelShaders[1].ReleaseAndGetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/DeferredPS.cso", deferredPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", pixelShaders[0].ReleaseAndGetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //CascadedShadowMaps
@@ -148,8 +148,6 @@ void BootScene::Update(ID3D11DeviceContext* immediateContext, float deltaTime)
     using namespace DirectX;
 
     lightManager->Update(deltaTime);
-
-    softBodyEngine.Update(deltaTime);
 
     float mousePosX = static_cast<float>(InputSystem::GetMousePositionX());
     float mousePosY = static_cast<float>(InputSystem::GetMousePositionY());
@@ -284,7 +282,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     sceneCBuffer->data.enableCascadedShadowMaps = enableCascadedShadowMaps;
     sceneCBuffer->data.enableSsr = enableSSR;
     // SCREEN_SPACE_REFLECTION
-    sceneCBuffer->data.reflectionIntensity = refrectionIntensity;
+    sceneCBuffer->data.reflectionIntensity = reflectionIntensity;
     // FOG
     sceneCBuffer->data.time += deltaTime;
     sceneCBuffer->data.deltaTime = deltaTime;
@@ -388,14 +386,9 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         // Draw shadow to scene framebuffer
         // FINAL_PASS
         {
-            //bloomer->bloom_intensity = bloomIntensity;
-            //bloomer->bloom_extraction_threshold = bloomThreshold;
-            //ブルーム
             RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
             RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
             RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-            //bloomer->make(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
-            //bloomer->make(immediateContext, framebuffers[1]->shaderResourceViews[0].Get());
 
             sceneEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)], multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::NORMAL)],
                 multipleRenderTargets->depthStencilShaderResourceView, cascadedShadowMaps->depthMap().Get());
@@ -412,10 +405,10 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 postEffectManager->GetOutput("BloomEffect"),
                 sceneEffectManager->GetOutput("FogEffect"),
                 sceneEffectManager->GetOutput("SSAOEffect"),    //SSAO
-                cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
+                cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
             };
             // メインフレームバッファとブルームエフェクトを組み合わせて描画
-            fullscreenQuadTransfer->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), pixelShaders[0]/*final pass*/.Get());
+            fullscreenQuadTransfer->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());
 
         }
     }
@@ -488,7 +481,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],   // emissiveMap
         };
         // メインフレームバッファとブルームエフェクトを組み合わせて描画
-        fullscreenQuadTransfer->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), pixelShaders[1]/*DeferredPS*/.Get());
+        fullscreenQuadTransfer->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), deferredPs.Get());
         //actorRender.RenderBlend(immediateContext);
 
 
@@ -547,10 +540,10 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 postEffectManager->GetOutput("BloomEffect"),
                 sceneEffectManager->GetOutput("FogEffect"),
                 sceneEffectManager->GetOutput("SSAOEffect"),
-                cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
+                cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
             };
             // メインフレームバッファとブルームエフェクトを組み合わせて描画
-            fullscreenQuadTransfer->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), pixelShaders[0]/*final pass*/.Get());
+            fullscreenQuadTransfer->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());
         }
     }
 
@@ -658,7 +651,7 @@ void BootScene::DrawGui()
             if (ImGui::Checkbox("Enable SSR", &enableSSR)) {}
             if (enableSSR && ImGui::TreeNode("SSR Settings"))
             {
-                ImGui::SliderFloat("Reflection Intensity", &refrectionIntensity, 0.0f, 1.0f);
+                ImGui::SliderFloat("Reflection Intensity", &reflectionIntensity, 0.0f, 1.0f);
                 ImGui::SliderFloat("Max Distance", &maxDistance, 0.0f, 30.0f);
                 ImGui::SliderFloat("Resolution", &resolution, 0.0f, 1.0f);
                 ImGui::SliderInt("Steps", &steps, 0, 20);

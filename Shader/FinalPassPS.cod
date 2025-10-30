@@ -21,17 +21,13 @@
 // cbuffer SHADER_CONSTANT_BUFFER
 // {
 //
-//   float luminanceThreshold;          // Offset:    0 Size:     4 [unused]
-//   float gaussianSigma;               // Offset:    4 Size:     4 [unused]
-//   float bloomIntenssity;             // Offset:    8 Size:     4 [unused]
-//   float exposure;                    // Offset:   12 Size:     4 [unused]
-//   float shadowColor;                 // Offset:   16 Size:     4
-//   float shadowDepthBias;             // Offset:   20 Size:     4
-//   bool colorizeCascadedLayer;        // Offset:   24 Size:     4
-//   float maxDistance;                 // Offset:   28 Size:     4
-//   float resolution;                  // Offset:   32 Size:     4
-//   int steps;                         // Offset:   36 Size:     4 [unused]
-//   float thickness;                   // Offset:   40 Size:     4
+//   float shadowColor;                 // Offset:    0 Size:     4
+//   float shadowDepthBias;             // Offset:    4 Size:     4
+//   bool colorizeCascadedLayer;        // Offset:    8 Size:     4
+//   float maxDistance;                 // Offset:   12 Size:     4
+//   float resolution;                  // Offset:   16 Size:     4
+//   int steps;                         // Offset:   20 Size:     4 [unused]
+//   float thickness;                   // Offset:   24 Size:     4
 //
 // }
 //
@@ -119,7 +115,7 @@ dcl_immediateConstantBuffer { { 1.000000, 0, 0, 0},
                               { 0, 0, 1.000000, 0},
                               { 0, 0, 0, 1.000000} }
 dcl_constantbuffer CB1[2], immediateIndexed
-dcl_constantbuffer CB9[3], immediateIndexed
+dcl_constantbuffer CB9[2], immediateIndexed
 dcl_constantbuffer CB3[17], dynamicIndexed
 dcl_constantbuffer CB8[3], immediateIndexed
 dcl_constantbuffer CB4[21], immediateIndexed
@@ -240,7 +236,7 @@ if_nz r1.y
   itof r2.w, l(1)  // r2.w <- startWorld.w
 
 #line 246
-  mul r7.xyz, r5.xyzx, cb9[1].wwww
+  mul r7.xyz, r5.xyzx, cb9[0].wwww
   add r7.xyz, r2.xyzx, r7.xyzx  // r7.x <- endWorld.x; r7.y <- endWorld.y; r7.z <- endWorld.z
   itof r3.w, l(1)  // r3.w <- endWorld.w
 
@@ -373,7 +369,7 @@ if_nz r1.y
   add r3.w, r3.w, r5.w
   itof r5.w, l(0)
   itof r8.z, l(1)
-  max r5.w, r5.w, cb9[2].x
+  max r5.w, r5.w, cb9[1].x
   min r5.w, r8.z, r5.w
   mul r3.w, r3.w, r5.w  // r3.w <- delta
 
@@ -394,7 +390,7 @@ if_nz r1.y
   mov r10.x, l(0)  // r10.x <- hit1
 
 #line 285
-  mov r10.y, cb9[2].z  // r10.y <- depth
+  mov r10.y, cb9[1].z  // r10.y <- depth
 
 #line 288
   itof r10.z, l(64)
@@ -491,7 +487,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -618,7 +614,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -746,7 +742,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -874,7 +870,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -1002,7 +998,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -1130,7 +1126,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -1258,7 +1254,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -1386,7 +1382,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -1514,7 +1510,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -1642,7 +1638,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -1770,7 +1766,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -1898,7 +1894,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -2026,7 +2022,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -2154,7 +2150,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -2282,7 +2278,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -2410,7 +2406,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -2538,7 +2534,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -2666,7 +2662,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -2794,7 +2790,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -2922,7 +2918,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -3050,7 +3046,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -3178,7 +3174,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -3306,7 +3302,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -3434,7 +3430,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -3562,7 +3558,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -3690,7 +3686,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -3818,7 +3814,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -3946,7 +3942,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -4074,7 +4070,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -4202,7 +4198,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -4330,7 +4326,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -4458,7 +4454,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -4586,7 +4582,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -4714,7 +4710,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)  // r10.z <- i
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w  // r11.x <- frag.x; r11.y <- frag.y
 
@@ -4842,7 +4838,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -4970,7 +4966,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -5098,7 +5094,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -5226,7 +5222,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -5354,7 +5350,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -5482,7 +5478,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -5610,7 +5606,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -5738,7 +5734,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -5866,7 +5862,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -5994,7 +5990,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -6122,7 +6118,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -6250,7 +6246,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -6378,7 +6374,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -6506,7 +6502,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -6634,7 +6630,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -6762,7 +6758,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -6890,7 +6886,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -7018,7 +7014,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -7146,7 +7142,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -7274,7 +7270,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -7402,7 +7398,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -7530,7 +7526,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -7658,7 +7654,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -7786,7 +7782,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -7914,7 +7910,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -8042,7 +8038,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -8170,7 +8166,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -8298,7 +8294,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -8426,7 +8422,7 @@ if_nz r1.y
 #line 327
       itof r12.x, l(0)
       lt r12.x, r12.x, r11.w
-      lt r11.w, r11.w, cb9[2].z
+      lt r11.w, r11.w, cb9[1].z
       and r11.w, r11.w, r12.x
       if_nz r11.w
 
@@ -8554,7 +8550,7 @@ if_nz r1.y
 #line 327
       itof r3.w, l(0)
       lt r3.w, r3.w, r2.w
-      lt r2.w, r2.w, cb9[2].z
+      lt r2.w, r2.w, cb9[1].z
       and r2.w, r2.w, r3.w
       if_nz r2.w
 
@@ -8628,7 +8624,7 @@ if_nz r1.y
 #line 374
     itof r8.w, l(0)
     lt r8.w, r8.w, r8.z
-    lt r8.z, r8.z, cb9[2].z
+    lt r8.z, r8.z, cb9[1].z
     and r8.z, r8.z, r8.w
     if_nz r8.z
 
@@ -8713,7 +8709,7 @@ if_nz r1.y
 #line 374
     itof r8.w, l(0)
     lt r8.w, r8.w, r8.z
-    lt r8.z, r8.z, cb9[2].z
+    lt r8.z, r8.z, cb9[1].z
     and r8.z, r8.z, r8.w
     if_nz r8.z
 
@@ -8802,7 +8798,7 @@ if_nz r1.y
 #line 374
     itof r9.x, l(0)  // v0.x <- pin.position.x; v0.y <- pin.position.y; v0.z <- pin.position.z; v0.w <- pin.position.w; v1.x <- pin.texcoord.x; v1.y <- pin.texcoord.y; o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w; x0 <- layerColors
     lt r9.x, r9.x, r8.w  // r0.x <- color.x; r0.y <- color.y; r0.z <- color.z; r0.w <- color.w
-    lt r8.w, r8.w, cb9[2].z
+    lt r8.w, r8.w, cb9[1].z
     and r8.w, r8.w, r9.x  // r0.w <- alpha
     if_nz r8.w
 
@@ -8893,7 +8889,7 @@ if_nz r1.y
 #line 374
     itof r8.z, l(0)
     lt r8.z, r8.z, r3.w
-    lt r3.w, r3.w, cb9[2].z
+    lt r3.w, r3.w, cb9[1].z
     and r3.w, r3.w, r8.z
     if_nz r3.w
 
@@ -8977,7 +8973,7 @@ if_nz r1.y
 #line 374
     itof r8.z, l(0)
     lt r8.z, r8.z, r7.z
-    lt r7.z, r7.z, cb9[2].z
+    lt r7.z, r7.z, cb9[1].z
     and r7.z, r7.z, r8.z
     if_nz r7.z
 
@@ -9061,7 +9057,7 @@ if_nz r1.y
 #line 374
     itof r8.z, l(0)
     lt r8.z, r8.z, r7.z
-    lt r7.z, r7.z, cb9[2].z
+    lt r7.z, r7.z, cb9[1].z
     and r7.z, r7.z, r8.z
     if_nz r7.z
 
@@ -9145,7 +9141,7 @@ if_nz r1.y
 #line 374
     itof r8.z, l(0)
     lt r8.z, r8.z, r7.z
-    lt r7.z, r7.z, cb9[2].z
+    lt r7.z, r7.z, cb9[1].z
     and r7.z, r7.z, r8.z
     if_nz r7.z
 
@@ -9229,7 +9225,7 @@ if_nz r1.y
 #line 374
     itof r8.z, l(0)
     lt r8.z, r8.z, r7.z
-    lt r7.z, r7.z, cb9[2].z
+    lt r7.z, r7.z, cb9[1].z
     and r7.z, r7.z, r8.z
     if_nz r7.z
 
@@ -9313,7 +9309,7 @@ if_nz r1.y
 #line 374
     itof r8.z, l(0)
     lt r8.z, r8.z, r7.z
-    lt r7.z, r7.z, cb9[2].z
+    lt r7.z, r7.z, cb9[1].z
     and r7.z, r7.z, r8.z
     if_nz r7.z
 
@@ -9390,7 +9386,7 @@ if_nz r1.y
 #line 374
     itof r1.z, l(0)
     lt r1.z, r1.z, r1.y
-    lt r1.y, r1.y, cb9[2].z
+    lt r1.y, r1.y, cb9[1].z
     and r1.y, r1.y, r1.z
     if_nz r1.y
 
@@ -9421,7 +9417,7 @@ if_nz r1.y
 
 #line 390
   itof r1.z, l(1)
-  div r1.w, r10.y, cb9[2].z
+  div r1.w, r10.y, cb9[1].z
   itof r2.x, l(0)
   itof r2.y, l(1)
   max r1.w, r1.w, r2.x
@@ -9748,7 +9744,7 @@ if_nz r1.z
 
 #line 196
   itof r4.z, r3.x
-  mov r1.w, -cb9[1].y
+  mov r1.w, -cb9[0].y
   add r1.w, r1.w, r2.z
   sample_c_lz_indexable(texture2darray)(float,float,float,float) r1.y, r4.xyzx, t7.xxxx, s7, r1.w
 
@@ -9813,7 +9809,7 @@ if_nz r1.x
   itof r1.xyz, l(1, 1, 1, 0)  // r1.x <- layerColor.x; r1.y <- layerColor.y; r1.z <- layerColor.z
 
 #line 611
-  ine r2.y, l(0, 0, 0, 0), cb9[1].z
+  ine r2.y, l(0, 0, 0, 0), cb9[0].z
   if_nz r2.y
 
 #line 613
@@ -9833,10 +9829,10 @@ if_nz r1.x
   endif 
 
 #line 623
-  mov r2.x, -cb9[1].x
+  mov r2.x, -cb9[0].x
   add r2.x, r2.x, l(1.000000)
   mul r1.w, r1.w, r2.x
-  add r1.w, r1.w, cb9[1].x
+  add r1.w, r1.w, cb9[0].x
   mul r1.xyz, r1.xyzx, r1.wwww
   mul r0.xyz, r0.xyzx, r1.xyzx
 
