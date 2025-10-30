@@ -1,6 +1,6 @@
 #include "FullScreenQuad.hlsli"
 #include "Constants.hlsli"
-
+#include "Sampler.hlsli"
 
 SamplerState pointSamplerState : register(s0);
 SamplerState linearSamplerState : register(s1);
@@ -17,8 +17,8 @@ Texture2D normalTexture : register(t2);
 Texture2D depthTexture : register(t3);
 Texture2D bloomTexture : register(t4);
 Texture2D fogTexture : register(t5);
-Texture2DArray cascadedShadowMaps : register(t6);
-
+Texture2D ambientOcclusionTexture : register(t6);
+Texture2DArray cascadedShadowMaps : register(t7);
 
 float2 NdcToUv(float2 ndc)
 {
@@ -529,13 +529,64 @@ float4 main(VS_OUT pin) : SV_TARGET
     {
         color.rgb += CalculatedSSRColor(pin);
     }
-    
+	uint mip_level = 0, number_of_samples;
+    uint2 depthDimensions;
+    depthTexture.GetDimensions(mip_level, depthDimensions.x, depthDimensions.y, number_of_samples);
+    float depth = depthTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord);
+
+
     // SCREEN_SPACE_AMBIENT_OCCLUSION
+#if 0
     float occlusion = CalculatedSSAOColor(pin);
     if (enableSSAO)
     {
         color.rgb *= occlusion;
     }
+#else
+    float occlusion = 1.0;
+    //if (bilateralBlur)
+    {
+		// Bilateral Blur
+        const float radius = 4.0;
+        const float sigma = 2.0 * radius * radius;
+        const float sigma2 = 0.01;
+	
+        float curr_depth = depth;
+        float weight = 0.0;
+	
+        float accumulated_volumetric_fog_and_light = 0.0;
+        float accumulated_occlusion = 0;
+	
+        for (float i = -radius; i <= radius; i += 1.0)
+        {
+            for (float j = -radius; j <= radius; j += 1.0)
+            {
+                float dx = i / depthDimensions.x;
+                float dy = j / depthDimensions.y;
+                float2 uv = float2(pin.texcoord.x + dx, pin.texcoord.y + dy);
+			
+                float distance = i * i + j * j;
+                float domain_gaussian = exp(-distance / sigma);
+			
+                float sample_depth = depthTexture.SampleLevel(samplerStates[LINEAR_CLAMP], uv, 0);
+                distance = (curr_depth - sample_depth) * (curr_depth - sample_depth);
+                float range_gaussian = exp(-distance / sigma2);
+			
+				// Sample occlusion(ambient) factor
+                float sample_occlusion = ambientOcclusionTexture.SampleLevel(samplerStates[LINEAR_CLAMP], uv, 0);
+                accumulated_occlusion += sample_occlusion * domain_gaussian * range_gaussian;
+
+                weight += domain_gaussian * range_gaussian;
+            }
+        }
+        occlusion = accumulated_occlusion / weight;
+    }
+    //else
+    //{
+    //    occlusion = ambientOcclusionTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord);
+    //}
+    color.rgb *= occlusion;
+#endif
 
     // CASCADED_SHADOW_MAPS
     float shadowFactor = CalculatedCascadedShadowFactor(pin);

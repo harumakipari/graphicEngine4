@@ -29,11 +29,11 @@ public:
     // 出力（次のエフェクトや最終合成に渡す用）
     ID3D11ShaderResourceView* GetOutputSRV()const override
     {
-        //return fogBuffer->shaderResourceViews[0].Get();
+        return ssaoBuffer->shaderResourceViews[0].Get();
     }
 
     // UI 調整 (ImGui)
-    void DrawDebugUI()override;
+    void DrawDebugUI()override{}
 
 private:
     std::unique_ptr<FrameBuffer> ssaoBuffer;

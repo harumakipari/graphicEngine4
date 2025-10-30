@@ -117,7 +117,6 @@ float3 reconstruct_position(in float2 uv, in float z, in float4x4 inverse_projec
     return position_v.xyz / position_v.w;
 }
 
-
 float main(VS_OUT pin) : SV_TARGET
 {
     float3 position = 0;

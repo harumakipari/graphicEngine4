@@ -27,6 +27,7 @@
 
 #include "Graphics/PostProcess/BloomEffect.h"
 #include "Graphics/PostProcess/FogEffect.h"
+#include "Graphics/PostProcess/SSAOEffect.h"
 
 
 bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
@@ -55,6 +56,7 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     {
         sceneEffectManager = std::make_unique<SceneEffectManager>();
         sceneEffectManager->AddEffect(std::make_unique<FogEffect>());
+        sceneEffectManager->AddEffect(std::make_unique<SSAOEffect>());
         sceneEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
     }
 
@@ -543,6 +545,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 postEffectManager->GetOutput("BloomEffect"),
                 //framebuffers[0]->shaderResourceViews[0].Get(),  //fog
                 sceneEffectManager->GetOutput("FogEffect"),
+                sceneEffectManager->GetOutput("SSAOEffect"),    //SSAO
                 cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
             };
             // メインフレームバッファとブルームエフェクトを組み合わせて描画
@@ -717,6 +720,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 postEffectManager->GetOutput("BloomEffect"),
                 //framebuffers[0]->shaderResourceViews[0].Get(),  //fog
                 sceneEffectManager->GetOutput("FogEffect"),
+                sceneEffectManager->GetOutput("SSAOEffect"),
                 cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
             };
             // メインフレームバッファとブルームエフェクトを組み合わせて描画
