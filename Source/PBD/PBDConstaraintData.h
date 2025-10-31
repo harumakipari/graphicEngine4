@@ -45,7 +45,8 @@ namespace PBD
             XMFLOAT3 n = { dir.x / dist,dir.y / dist,dir.z / dist };
 
             // stiffnessを補正する　論文に書いてた、、
-            float kPrime = 1.0f - powf(1.0f - stiffness, 1.0f / iterationCount);
+            //float kPrime = 1.0f - powf(1.0f - stiffness, 1.0f / iterationCount);
+            float kPrime =stiffness;
 
 
             XMFLOAT3 deltaPA =

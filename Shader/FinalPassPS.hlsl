@@ -547,6 +547,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     //if (bilateralBlur)
     {
 		// Bilateral Blur
+#if 0
         const float radius = 4.0;
         const float sigma = 2.0 * radius * radius;
         const float sigma2 = 0.01;
@@ -580,6 +581,7 @@ float4 main(VS_OUT pin) : SV_TARGET
             }
         }
         occlusion = accumulated_occlusion / weight;
+#endif
     }
     //else
     //{
