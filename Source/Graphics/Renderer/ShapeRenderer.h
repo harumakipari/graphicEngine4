@@ -13,13 +13,13 @@ private:
     virtual ~ShapeRenderer() = default;
 
 public:
-    static ShapeRenderer& Instance()
-    {
-        static ShapeRenderer instance;
-        return instance;
-    }
+    //static ShapeRenderer& Instance()
+    //{
+    //    static ShapeRenderer instance;
+    //    return instance;
+    //}
 
-    void Initialize(ID3D11Device* device);
+    static void Initialize(ID3D11Device* device);
 
     enum class Type :uint8_t
     {
@@ -29,59 +29,54 @@ public:
     };
 
     // î†ï`âÊ
-    void DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
+    static void DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
 
-    //void DrawBox(
-    //    const DirectX::XMFLOAT4X4& transform,
-    //    const DirectX::XMFLOAT3& size,
-    //    const DirectX::XMFLOAT4& color) {
-    //}
 
-    void DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& transform, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
+    static void DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& transform, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
 
     // ãÖï`âÊ
-    void DrawSphere(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, const DirectX::XMFLOAT4& color);
+    static void DrawSphere(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, const DirectX::XMFLOAT4& color);
 
     // ÉJÉvÉZÉãï`âÊ
-    void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color);
+    static void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color);
 
-    void DrawCapsule(ID3D11DeviceContext* immediateContext,
+    static void DrawCapsule(ID3D11DeviceContext* immediateContext,
         const DirectX::XMFLOAT3& position,
         const DirectX::XMFLOAT4& rotation, // Å© ÉNÉHÅ[É^ÉjÉIÉìí«â¡
         float radius, float height,
         const DirectX::XMFLOAT4& color);
 
-    void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition, float radius, const DirectX::XMFLOAT4& color);
+    static void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition, float radius, const DirectX::XMFLOAT4& color);
 
-    void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& worldTransform, float radius, float height, const DirectX::XMFLOAT4& color);
+    static void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& worldTransform, float radius, float height, const DirectX::XMFLOAT4& color);
 
     //ê¸ï`âÊ
-    void DrawSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4& color, const std::vector<DirectX::XMFLOAT3>& points, Type type);
+    static  void DrawSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4& color, const std::vector<DirectX::XMFLOAT3>& points, Type type);
 
     //ê¸ï`âÊ êîéÏÇ¬Ç»Ç¨
-    void DrawSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition);
+    static void DrawSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition);
 private:
     struct DebugConstants
     {
         DirectX::XMFLOAT4 color;
     };
 
-    Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
+    static inline Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
 
-    Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
-    Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
+    static inline Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
+    static inline Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
+    static inline Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
 
-    Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer[2];
+    static inline Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer[2];
 
-    const size_t maxPoints = 500;
+    static inline const size_t maxPoints = 500;
 
-    std::unique_ptr<GltfModel> sphere = nullptr;
-    std::unique_ptr<GltfModel> topHalfSphere = nullptr;
-    std::unique_ptr<GltfModel> bottomHalfSphere = nullptr;
-    std::unique_ptr<GltfModel> cylinder = nullptr;
-    std::unique_ptr<GltfModel> capsule = nullptr;
-    std::unique_ptr<GltfModel> cube = nullptr;
+    static inline std::unique_ptr<GltfModel> sphere = nullptr;
+    static inline std::unique_ptr<GltfModel> topHalfSphere = nullptr;
+    static inline std::unique_ptr<GltfModel> bottomHalfSphere = nullptr;
+    static inline std::unique_ptr<GltfModel> cylinder = nullptr;
+    static inline std::unique_ptr<GltfModel> capsule = nullptr;
+    static inline std::unique_ptr<GltfModel> cube = nullptr;
 };
 
 

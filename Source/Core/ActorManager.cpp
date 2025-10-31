@@ -276,7 +276,6 @@ void Renderer::CastShadowRender(ID3D11DeviceContext* immediateContext)
 
 void ActorColliderManager::DebugRender(ID3D11DeviceContext* immediateContext)
 {
-    ShapeRenderer& shapeRenderer = ShapeRenderer::Instance();
     // 全アクターからShapeComponentを取得
     Scene* currentScene = Scene::GetCurrentScene();  // 現在のシーン取得
     if (!currentScene) return;
@@ -307,7 +306,7 @@ void ActorColliderManager::DebugRender(ID3D11DeviceContext* immediateContext)
             //DirectX::XMFLOAT3 size = shapeComponent->GetSizeFromAABB(shapeComponent->GetAABB());
             //shapeRenderer->DrawBox(immediateContext, shapeComponent->GetPosition(), shapeComponent->GetLocalAngle(), shapeComponent->GetSizeFromAABB(shapeComponent->GetAABB()), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
             //shapeRenderer->DrawBox(immediateContext, pos, angle, size, DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
-            shapeRenderer.DrawBox(immediateContext, shapeComponent->GetComponentLocation(), shapeComponent->GetComponentEulerRotation(), shapeComponent->GetSizeFromAABB(shapeComponent->GetAABB()), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
+            ShapeRenderer::DrawBox(immediateContext, shapeComponent->GetComponentLocation(), shapeComponent->GetComponentEulerRotation(), shapeComponent->GetSizeFromAABB(shapeComponent->GetAABB()), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
         }
         //auto shape = actor->GetComponentByName("capsuleComponent");
 
@@ -334,7 +333,7 @@ void ActorColliderManager::DebugRender(ID3D11DeviceContext* immediateContext)
                 // 位置
                 DirectX::XMFLOAT3 pos(trans.p.x, trans.p.y, trans.p.z);
 
-                shapeRenderer.DrawSphere(immediateContext, sphere->GetComponentLocation(), sphere->GetRadius(), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f));
+                ShapeRenderer::DrawSphere(immediateContext, sphere->GetComponentLocation(), sphere->GetRadius(), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f));
                 //shapeRenderer->DrawSphere(immediateContext, sphere->GetPosition(), sphere->GetRadius(), DirectX::XMFLOAT4(1.0f,0.0f,0.0f,1.0f));
                 //shapeRenderer->DrawSphere(immediateContext, pos, sphereGeo.radius, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f));
             }
@@ -354,7 +353,7 @@ void ActorColliderManager::DebugRender(ID3D11DeviceContext* immediateContext)
                 DirectX::XMFLOAT4 rot(trans.q.x, trans.q.y, trans.q.z, trans.q.w);
 
                 // デバッグ描画関数に回転を渡せるなら
-                shapeRenderer.DrawCapsule(immediateContext, pos/*, rot*/, capsuleGeo.radius, capsuleGeo.halfHeight * 2.0f, debugColor);
+                ShapeRenderer::DrawCapsule(immediateContext, pos/*, rot*/, capsuleGeo.radius, capsuleGeo.halfHeight * 2.0f, debugColor);
 #endif
             }
         }

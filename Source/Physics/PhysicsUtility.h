@@ -199,7 +199,7 @@ public:
 
     void DebugRender(ID3D11DeviceContext* immediateContext)
     {
-        ShapeRenderer::Instance().DrawSegment(immediateContext, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), points, ShapeRenderer::Type::Segment);
+        ShapeRenderer::DrawSegment(immediateContext, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), points, ShapeRenderer::Type::Segment);
 
     }
     DirectX::XMFLOAT3 end{};

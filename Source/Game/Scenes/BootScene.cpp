@@ -99,7 +99,6 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         pbd->AddParticle({ 0,50,0 }, 1.0f);
     }
 
-    ShapeRenderer::Instance().Initialize(device);
 
     //アクターをセット
     SetUpActors();
@@ -365,7 +364,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         const auto& p = pbd->GetParticles()[0];
         static std::vector<XMFLOAT3> points;
         points.emplace_back((p.position));
-        ShapeRenderer::Instance().DrawSegment(immediateContext, { 1,0,1,1 }, points, ShapeRenderer::Type::Point);
+        ShapeRenderer::DrawSegment(immediateContext, { 1,0,1,1 }, points, ShapeRenderer::Type::Point);
 
         actorColliderManager.DebugRender(immediateContext);
         //PhysicsTest::Instance().DebugRender(immediateContext);

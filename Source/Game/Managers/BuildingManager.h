@@ -252,7 +252,7 @@ public:
                 (area.min.y + area.max.y) * 0.5f
             };
 
-            ShapeRenderer::Instance().DrawBox(
+            ShapeRenderer::DrawBox(
                 immediateContext,
                 center,
                 { 0, 0, 0 }, // ‰ñ“]‚È‚µ
