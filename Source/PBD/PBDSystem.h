@@ -10,7 +10,7 @@ namespace PBD
     class System
     {
     public:
-        // ‚±‚êinitialize
+        // ‚±‚êVertex‚Ì3.1(2)initialize
         void AddParticle(const DirectX::XMFLOAT3& pos, float mass)
         {
             Particle p;
@@ -18,6 +18,13 @@ namespace PBD
             p.expectedPosition = pos;
             p.invMass = (mass > 0.0f) ? 1.0f / mass : 0.0f;
             particles.push_back(p);
+        }
+
+        void AddBendingConstraint(int i1, int i2, int i3, int i4, float stiffness)
+        {
+            BendingConstraint c(i1, i2, i3, i4, stiffness);
+            c.Initialize(particles); // ‰ŠúŠp“x‚ğŒvZ‚·‚é
+            bendingConstraints.push_back(c);
         }
 
         void Update(float deltaTime)
@@ -104,6 +111,11 @@ namespace PBD
             {
                 c.Solve(particles, solveIterationCount);
             }
+
+            for (auto& c:bendingConstraints)
+            {
+                c.Solve(particles, solveIterationCount);
+            }
         }
 
         // ‘¬“x‚ğŒvZ‚µ’¼‚·
@@ -140,9 +152,10 @@ namespace PBD
 
         std::vector<Particle> particles;
         std::vector<DistanceConstraint> distanceConstraints;
+        std::vector<BendingConstraint> bendingConstraints;
 
         XMFLOAT3 gravity = { 0.0f,-9.8f,0.0f };
-        int solveIterationCount = 5; // 3 ~ 20
+        int solveIterationCount = 10; // 3 ~ 20
     };
 
 }

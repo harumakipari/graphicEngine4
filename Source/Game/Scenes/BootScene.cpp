@@ -104,9 +104,16 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         pbd->AddParticle({ 0,5,0 }, 0.0f);  //0
         pbd->AddParticle({ 2,1,0 }, 1.0f);  //1
         pbd->AddParticle({ -2,1,0 }, 1.0f); //2
-        pbd->AddDistanceConstraints(0, 1, 0.05f);
-        pbd->AddDistanceConstraints(1, 2, 0.05f);
-        pbd->AddDistanceConstraints(0, 1, 0.05f);
+        pbd->AddParticle({ 0,1,2 }, 1.0f);  //3
+
+        pbd->AddDistanceConstraints(0, 1, 1.0f);
+        pbd->AddDistanceConstraints(1, 2, 1.0f);
+        pbd->AddDistanceConstraints(0, 1, 1.0f);
+        pbd->AddDistanceConstraints(0, 3, 1.0f);
+        pbd->AddDistanceConstraints(1, 3, 1.0f);
+
+        // 曲げ拘束（p1-p2 が共有辺の2三角形で構成）
+        pbd->AddBendingConstraint(0, 1, 2, 3, 1.0f);
 
 #endif // 1
     }
@@ -378,6 +385,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         ShapeRenderer::DrawLineSegment(immediateContext, p[0].position, p[1].position, { 1,0,1,1 });
         ShapeRenderer::DrawLineSegment(immediateContext, p[1].position, p[2].position, { 1,0,1,1 });
         ShapeRenderer::DrawLineSegment(immediateContext, p[0].position, p[2].position, { 1,0,1,1 });
+        ShapeRenderer::DrawLineSegment(immediateContext, p[0].position, p[3].position, { 0,1,1,1 });
+        ShapeRenderer::DrawLineSegment(immediateContext, p[1].position, p[3].position, { 0,1,1,1 });
 
         actorColliderManager.DebugRender(immediateContext);
         //PhysicsTest::Instance().DebugRender(immediateContext);

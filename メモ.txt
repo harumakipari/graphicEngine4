@@ -11,3 +11,18 @@ https://qiita.com/cy-tatsuya-sakai/items/a028f2a639083786a5a0
 
 積分　微分　違い
 https://math-otaku.com/calculus/
+
+逆三角関数
+https://mathwords.net/arcsinbibun
+
+cosの微分
+https://rikeinvest.com/math-3/cos/
+
+回転に対する物理量
+https://eman-physics.net/dynamics/angular.html
+
+空間ハッシュ
+https://blog.oimo.io/2021/06/17/spatial-hashing/
+
+逆関数の微分公式
+https://manabitimes.jp/math/1379
