@@ -55,14 +55,6 @@ namespace MathHelper
         return dist(gen);
     }
 
-    //inline bool AlmostEqualRelative(float a, float b,float maxRelDiff = FLT_EPSILON)
-    //{
-    //    float diff = std::fabs(a - b);
-    //    float absA = std::fabs(a), absB = std::fabs(b);
-    //    float largest = std::max<float>(absA, absB);
-    //    return diff <= largest * maxRelDiff;
-    //}
-
     enum class RotationSequence 
     {
         zyx, zxy, xyz, xzy, yxz, yzx 
@@ -196,6 +188,24 @@ namespace MathHelper
         // → 0xBF800000（= -1.0f）になる可能性がある
         // 結果として、v の各成分が負なら -1.0f、正なら +1.0f になる
         return DirectX::XMVectorOrInt(one, signBits);
+    }
+
+    // 三点から法線計算
+    inline DirectX::XMFLOAT3 ComputeTriangleNormal(const DirectX::XMFLOAT3& p1,const DirectX::XMFLOAT3& p2,const DirectX::XMFLOAT3&p3)
+    {
+        using namespace DirectX;
+        XMVECTOR a = XMLoadFloat3(&p1);
+        XMVECTOR b = XMLoadFloat3(&p2);
+        XMVECTOR c = XMLoadFloat3(&p3);
+
+        XMVECTOR ab = XMVectorSubtract(b, a);
+        XMVECTOR ac = XMVectorSubtract(c, a);
+
+        XMVECTOR n = XMVector3Normalize(XMVector3Cross(ab, ac));
+
+        XMFLOAT3 out;
+        XMStoreFloat3(&out, n);
+        return out;
     }
 }
 

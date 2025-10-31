@@ -96,13 +96,20 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     // テストPBD
     {
         pbd = std::make_unique<PBD::System>();
+#if 0
         pbd->AddParticle({ 0,10,0 }, 0.0f);
         pbd->AddParticle({ 0,3,0 }, 1.0f);
-
         pbd->AddDistanceConstraints(0, 1, 0.005f);
+#else
+        pbd->AddParticle({ 0,5,0 }, 0.0f);  //0
+        pbd->AddParticle({ 2,1,0 }, 1.0f);  //1
+        pbd->AddParticle({ -2,1,0 }, 1.0f); //2
+        pbd->AddDistanceConstraints(0, 1, 0.05f);
+        pbd->AddDistanceConstraints(1, 2, 0.05f);
+        pbd->AddDistanceConstraints(0, 1, 0.05f);
+
+#endif // 1
     }
-
-
 
     //アクターをセット
     SetUpActors();
@@ -369,6 +376,9 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         //ShapeRenderer::DrawSegment(immediateContext, { 1,0,1,1 }, points, ShapeRenderer::Type::Point);
         ShapeRenderer::DrawPoint(immediateContext, p[0].position, { 1,0,1,1 });
         ShapeRenderer::DrawLineSegment(immediateContext, p[0].position, p[1].position, { 1,0,1,1 });
+        ShapeRenderer::DrawLineSegment(immediateContext, p[1].position, p[2].position, { 1,0,1,1 });
+        ShapeRenderer::DrawLineSegment(immediateContext, p[0].position, p[2].position, { 1,0,1,1 });
+
         actorColliderManager.DebugRender(immediateContext);
         //PhysicsTest::Instance().DebugRender(immediateContext);
         //GameManager::DebugRender(immediateContext);

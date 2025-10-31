@@ -63,7 +63,6 @@ namespace PBD
                  (w2 / invSum) * C * n.z
             };
 
-
             pA.expectedPosition.x += deltaPA.x * kPrime;
             pA.expectedPosition.y += deltaPA.y * kPrime;
             pA.expectedPosition.z += deltaPA.z * kPrime;
@@ -71,7 +70,73 @@ namespace PBD
             pB.expectedPosition.x += deltaPB.x * kPrime;
             pB.expectedPosition.y += deltaPB.y * kPrime;
             pB.expectedPosition.z += deltaPB.z * kPrime;
+            char buf[256];
+            float deltaLen = sqrtf(deltaPA.x * deltaPA.x + deltaPA.y * deltaPA.y + deltaPA.z * deltaPA.z);
+            sprintf_s(buf, "C=%.6f k'=%f deltaLen=%.6f invSum=%f\n", C, kPrime, deltaLen, invSum);
+            OutputDebugStringA(buf);
+        }
+    };
+
+
+    struct BendingConstraint
+    {
+        int p1, p2, p3, p4;
+        float restAngle;
+        float stiffness;
+
+        // p1 p2 が同じ辺を共有する三角形
+        BendingConstraint(int _p1, int _p2, int _p3, int _p4, float _stiffness = 0.5f): p1(_p1), p2(_p2), p3(_p3), p4(_p4), stiffness(_stiffness)
+        {
+            restAngle = 0.0f;
         }
 
+        void Initialize(const std::vector<Particle>& particles)
+        {
+            using namespace DirectX;
+
+            // 初期角度 φ0 を求める
+            auto& pa = particles[p1];
+            auto& pb = particles[p2];
+            auto& pc = particles[p3];
+            auto& pd = particles[p4];
+
+            XMFLOAT3 n1 = MathHelper::ComputeTriangleNormal(pa.position, pb.position, pc.position);
+            XMFLOAT3 n2 = MathHelper::ComputeTriangleNormal(pa.position, pb.position, pd.position);
+
+            float dot = n1.x * n2.x + n1.y * n2.y + n1.z * n2.z;
+            dot = std::clamp(dot, -1.0f, 1.0f);
+
+            restAngle = acosf(dot); 
+        }
+
+        void Solve(std::vector<Particle>& particles) const 
+        {
+            using namespace DirectX;
+
+            auto& pa = particles[p1];
+            auto& pb = particles[p2];
+            auto& pc = particles[p3];
+            auto& pd = particles[p4];
+
+            // 各位置
+            XMFLOAT3 p1_ = pa.expectedPosition;
+            XMFLOAT3 p2_ = pb.expectedPosition;
+            XMFLOAT3 p3_ = pc.expectedPosition;
+            XMFLOAT3 p4_ = pd.expectedPosition;
+
+            // 今のpositionによる各法線  
+            XMFLOAT3 n1 = MathHelper::ComputeTriangleNormal(p1_, p2_, p3_);
+            XMFLOAT3 n2 = MathHelper::ComputeTriangleNormal(p1_, p2_, p4_);
+
+            float dot = n1.x * n2.x + n1.y * n2.y + n1.z * n2.z;
+            dot = std::clamp(dot, -1.0f, 1.0f);
+            float phi = acosf(dot);
+
+            // 拘束関数
+            float C = phi - restAngle;
+            if (fabsf(C) < 1e-6f)return;
+
+        }
     };
 }
+

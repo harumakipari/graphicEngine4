@@ -138,7 +138,6 @@ namespace PBD
             }
         }
 
-
         std::vector<Particle> particles;
         std::vector<DistanceConstraint> distanceConstraints;
 
