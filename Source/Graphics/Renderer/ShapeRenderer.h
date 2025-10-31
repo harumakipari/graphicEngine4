@@ -8,19 +8,7 @@
 
 class ShapeRenderer
 {
-private:
-    ShapeRenderer() = default;
-    virtual ~ShapeRenderer() = default;
-
 public:
-    //static ShapeRenderer& Instance()
-    //{
-    //    static ShapeRenderer instance;
-    //    return instance;
-    //}
-
-    static void Initialize(ID3D11Device* device);
-
     enum class Type :uint8_t
     {
         Line,
@@ -28,9 +16,14 @@ public:
         Point
     };
 
+public:
+    ShapeRenderer() = default;
+    virtual ~ShapeRenderer() = default;
+
+    static void Initialize(ID3D11Device* device);
+
     // î†ï`âÊ
     static void DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
-
 
     static void DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& transform, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
 
@@ -50,8 +43,15 @@ public:
 
     static void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& worldTransform, float radius, float height, const DirectX::XMFLOAT4& color);
 
-    //ê¸ï`âÊ
+    //ê¸ï`âÊÅ@îƒópê´
     static  void DrawSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4& color, const std::vector<DirectX::XMFLOAT3>& points, Type type);
+
+    // ì_ï`âÊ
+    static void DrawPoint(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT4& color);
+
+    // ê¸ï™ï`âÊ
+    static void DrawLineSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition, const DirectX::XMFLOAT4& color);
+
 
     //ê¸ï`âÊ êîéÏÇ¬Ç»Ç¨
     static void DrawSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition);
@@ -69,7 +69,7 @@ private:
 
     static inline Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer[2];
 
-    static inline const size_t maxPoints = 500;
+    static inline constexpr size_t maxPoints = 1500;
 
     static inline std::unique_ptr<GltfModel> sphere = nullptr;
     static inline std::unique_ptr<GltfModel> topHalfSphere = nullptr;

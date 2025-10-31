@@ -353,9 +353,6 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         sceneRender.RenderOpaque(immediateContext);
         sceneRender.RenderMask(immediateContext);
         sceneRender.RenderBlend(immediateContext);
-        //actorRender.RenderOpaque(immediateContext);
-        //actorRender.RenderMask(immediateContext);
-        //actorRender.RenderBlend(immediateContext);
 
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
 
@@ -363,9 +360,9 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 #if _DEBUG
         const auto& p = pbd->GetParticles()[0];
         static std::vector<XMFLOAT3> points;
-        points.emplace_back((p.position));
-        ShapeRenderer::DrawSegment(immediateContext, { 1,0,1,1 }, points, ShapeRenderer::Type::Point);
-
+        //points.emplace_back((p.position));
+        //ShapeRenderer::DrawSegment(immediateContext, { 1,0,1,1 }, points, ShapeRenderer::Type::Point);
+        ShapeRenderer::DrawPoint(immediateContext, p.position, { 1,0,1,1 });
         actorColliderManager.DebugRender(immediateContext);
         //PhysicsTest::Instance().DebugRender(immediateContext);
         //GameManager::DebugRender(immediateContext);
@@ -458,6 +455,13 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
         // デバック描画
 #if _DEBUG
+        const auto& p = pbd->GetParticles()[0];
+        static std::vector<XMFLOAT3> points;
+        points.emplace_back((p.position));
+        ShapeRenderer::DrawSegment(immediateContext, { 1,0,1,1 }, points, ShapeRenderer::Type::Point);
+        ShapeRenderer::DrawPoint(immediateContext, p.position, { 1,0,0,1 });
+
+
         actorColliderManager.DebugRender(immediateContext);
         //PhysicsTest::Instance().DebugRender(immediateContext);
         //GameManager::DebugRender(immediateContext);

@@ -471,6 +471,66 @@ void ShapeRenderer::DrawSegment(ID3D11DeviceContext* immediateContext, const Dir
     }
 }
 
+// “_•`‰æ
+void ShapeRenderer::DrawPoint(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT4& color)
+{
+    HRESULT hr{ S_OK };
+    D3D11_MAPPED_SUBRESOURCE mappedSubresource{};
+    hr = immediateContext->Map(vertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+    std::memcpy(mappedSubresource.pData, &position, sizeof(DirectX::XMFLOAT3));
+    immediateContext->Unmap(vertexBuffer.Get(), 0);
+
+    UINT stride{ sizeof(DirectX::XMFLOAT3) };
+    UINT offset{ 0 };
+    immediateContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
+
+    immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+    immediateContext->VSSetShader(vertexShader.Get(), NULL, 0);
+    immediateContext->PSSetShader(pixelShader.Get(), NULL, 0);
+    immediateContext->IASetInputLayout(inputLayout.Get());
+
+    DebugConstants data1{ color };
+    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
+    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+
+    immediateContext->Draw(1, 0);
+}
+
+// ü•ª•`‰æ
+void ShapeRenderer::DrawLineSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition, const DirectX::XMFLOAT4& color)
+{
+    DirectX::XMFLOAT3 points[2] = { startPosition, endPosition };
+
+    HRESULT hr{ S_OK };
+    D3D11_MAPPED_SUBRESOURCE mappedSubresource{};
+    hr = immediateContext->Map(vertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    std::memcpy(mappedSubresource.pData, points, sizeof(points));
+    immediateContext->Unmap(vertexBuffer.Get(), 0);
+
+    UINT stride{ sizeof(DirectX::XMFLOAT3) };
+    UINT offset{ 0 };
+    immediateContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
+
+    immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+    immediateContext->VSSetShader(vertexShader.Get(), NULL, 0);
+    immediateContext->PSSetShader(pixelShader.Get(), NULL, 0);
+    immediateContext->IASetInputLayout(inputLayout.Get());
+
+    DebugConstants data1{ color };
+    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
+    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+
+    immediateContext->Draw(2, 0);
+}
+
+
+
 LineSegment::LineSegment(ID3D11Device* device, size_t maxPoints) : max_points(maxPoints)
 {
 }
