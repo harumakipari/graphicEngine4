@@ -22,10 +22,13 @@ public:
 
     static void Initialize(ID3D11Device* device);
 
-    // 箱描画
+    // 箱描画  // 箱の底面が原点
     static void DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
 
     static void DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& transform, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
+
+    // 箱描画  // 箱の真ん中が原点
+    static void DrawBoxCenter(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
 
     // 球描画
     static void DrawSphere(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, const DirectX::XMFLOAT4& color);
@@ -76,7 +79,8 @@ private:
     static inline std::unique_ptr<GltfModel> bottomHalfSphere = nullptr;
     static inline std::unique_ptr<GltfModel> cylinder = nullptr;
     static inline std::unique_ptr<GltfModel> capsule = nullptr;
-    static inline std::unique_ptr<GltfModel> cube = nullptr;
+    static inline std::unique_ptr<GltfModel> cube = nullptr;        // 箱の底面が原点
+    static inline std::unique_ptr<GltfModel> cubeCenter = nullptr;  // 箱の真ん中が原点
 };
 
 

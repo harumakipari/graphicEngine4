@@ -343,6 +343,18 @@ void ActorColliderManager::DebugRender(ID3D11DeviceContext* immediateContext)
                 ShapeRenderer::DrawCapsule(immediateContext, pos/*, rot*/, capsuleGeo.radius, capsuleGeo.halfHeight * 2.0f, debugColor);
 #endif
             }
+            else if (auto box = dynamic_cast<BoxComponent*>(shapeComponent))
+            {// box
+                auto info = box->GetPhysicsShapeInfo();
+
+                DirectX::XMFLOAT3 angle = box->GetComponentEulerRotation();
+                const physx::PxBoxGeometry& boxGeo = info.geometry.box();
+                const physx::PxTransform& trans = info.transform;
+                // ˆÊ’u
+                DirectX::XMFLOAT3 pos(trans.p.x, trans.p.y, trans.p.z);
+                XMFLOAT3 size = { boxGeo.halfExtents.x * 2,boxGeo.halfExtents.y * 2,boxGeo.halfExtents.z * 2 };
+                ShapeRenderer::DrawBoxCenter(immediateContext, pos, angle, size, debugColor);
+            }
         }
     }
 }

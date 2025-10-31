@@ -41,6 +41,7 @@ void ShapeRenderer::Initialize(ID3D11Device* device)
     bottomHalfSphere = std::make_unique<GltfModel>(device, "./Data/Debug/Primitives/bottomHalfSphere.glb");
     cylinder = std::make_unique<GltfModel>(device, "./Data/Debug/Primitives/cylinder.glb");
     cube = std::make_unique<GltfModel>(device, "./Data/Debug/Primitives/cube.glb");
+    cubeCenter = std::make_unique<GltfModel>(device, "./Data/Debug/Primitives/boxCenter.glb");
 
     std::vector<GltfModelBase::Material>& sphereMaterials = sphere->materials;
     std::vector<GltfModelBase::Material>& capsuleMaterials = capsule->materials;
@@ -362,6 +363,37 @@ void ShapeRenderer::DrawBox(ID3D11DeviceContext* immediateContext, const DirectX
         DirectX::XMStoreFloat4x4(&world, C * S * R * T);
         //TODO:03 debugShape‚ÍRenderPass‚ðOpaque‚É‚µ‚Ä‚¢‚é
         cube->Render(immediateContext, world, RenderPass::Opaque);
+    }
+}
+
+// ” •`‰æ
+void ShapeRenderer::DrawBoxCenter(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color)
+{
+    DebugConstants data1{ color };
+    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
+    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+
+    const DirectX::XMFLOAT4X4 coordinate_system_transforms[]{
+{ -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },	// 0:RHS Y-UP
+{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },		// 1:LHS Y-UP
+{ -1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1 },	// 2:RHS Z-UP
+{ 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1 },		// 3:LHS Z-UP
+    };
+#if 1
+    const float scale_factor = 1.0f; // To change the units from centimeters to meters, set 'scale_factor' to 0.01.
+#else
+    const float scale_factor = 0.01f; // To change the units from centimeters to meters, set 'scale_factor' to 0.01.
+#endif
+    {//cube
+        DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinate_system_transforms[0]) * DirectX::XMMatrixScaling(scale_factor, scale_factor, scale_factor) };
+        DirectX::XMMATRIX S{ DirectX::XMMatrixScaling(size.x,size.y,size.z) };
+        DirectX::XMMATRIX R{ DirectX::XMMatrixRotationRollPitchYaw(angle.x,angle.y,angle.z) };
+        DirectX::XMMATRIX T{ DirectX::XMMatrixTranslation(position.x,position.y,position.z) };
+        DirectX::XMFLOAT4X4 world;
+        DirectX::XMStoreFloat4x4(&world, C * S * R * T);
+        //TODO:03 debugShape‚ÍRenderPass‚ðOpaque‚É‚µ‚Ä‚¢‚é
+        cubeCenter->Render(immediateContext, world, RenderPass::Opaque);
     }
 }
 

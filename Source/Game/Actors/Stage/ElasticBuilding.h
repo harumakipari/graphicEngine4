@@ -58,7 +58,7 @@ public:
         AABB box = buildComponent->model->GetAABB();
         DirectX::XMFLOAT3 size = { box.max.x - box.min.x,box.max.y - box.min.y,box.max.z - box.min.z };
         boxComponent = this->NewSceneComponent<class BoxComponent>("boxComponent", "skeltalComponent");
-        boxComponent->SetModelHeight(size.y);
+        //boxComponent->SetModelHeight(size.y);
         //boxComponent->SetLayer(CollisionLayer::WorldStatic);
         //boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
         boxComponent->SetHalfBoxExtent({ size.x * 0.5f,size.y * 0.5f,size.z * 0.5f });
