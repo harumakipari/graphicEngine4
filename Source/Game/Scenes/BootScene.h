@@ -129,7 +129,7 @@ class BootScene : public Scene
 
     // GBUFFER
     std::unique_ptr<GBuffer> gBufferRenderTarget;
-    bool useDeferredRendering = true;
+    bool useDeferredRendering = false;
 
     //スカイマップ
     std::unique_ptr<SkyMap> skyMap;

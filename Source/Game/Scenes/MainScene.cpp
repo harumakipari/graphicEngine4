@@ -1580,7 +1580,7 @@ void MainScene::DrawGui()
     //ImGui::BulletText("Alt + Enter  : fullscreen");
     //ImGui::BulletText("F8           : debugCamera");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::Text("Video memory usage %d MB", Graphics::video_memory_usage());
+    ImGui::Text("Video memory usage %d MB", Graphics::VideoMemoryUsage());
 #if 0
 #endif
 

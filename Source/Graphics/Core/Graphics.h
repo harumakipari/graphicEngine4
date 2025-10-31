@@ -21,14 +21,7 @@ private:
     Graphics() = default;
     ~Graphics() = default;
 public:
-	// インスタンス取得
-	//static Graphics& Instance()
-	//{
-	//	static Graphics instance;
-	//	return instance;
-	//}
-
-	static size_t video_memory_usage()
+	static size_t VideoMemoryUsage()
 	{
 		DXGI_QUERY_VIDEO_MEMORY_INFO video_memory_info;
 		adapter->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &video_memory_info);

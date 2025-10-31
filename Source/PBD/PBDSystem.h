@@ -2,8 +2,8 @@
 
 #include <vector>
 
+#include "PBDConstaraintData.h"
 #include "PBDParticleData.h"
-#include "Game/Actors/Enemy/ActionDerived.h"
 
 namespace PBD
 {
@@ -32,7 +32,7 @@ namespace PBD
 
             GenerateCollisionConstraints();
 
-            for (int i=0;i< solveIterations;++i)
+            for (int i = 0; i < solveIterationCount; ++i)
             {
                 ProjectConstraints();
             }
@@ -40,6 +40,19 @@ namespace PBD
             CalculateVelocities(deltaTime);
 
             UpdateVelocity(deltaTime);
+        }
+
+        void AddDistanceConstraints(int i1, int i2, float stiffness)
+        {
+            XMFLOAT3 diff =
+            {
+                particles[i1].position.x - particles[i2].position.x,
+                particles[i1].position.y - particles[i2].position.y,
+                particles[i1].position.z - particles[i2].position.z,
+            };
+
+            float restLength = sqrtf(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
+            distanceConstraints.emplace_back(i1, i2, restLength, stiffness);
         }
 
         const std::vector<Particle>& GetParticles() const { return particles; }
@@ -70,9 +83,9 @@ namespace PBD
         {
             for (auto& p : particles)
             {
-                p.expectedPosition.x += deltaTime * p.velocity.x;
-                p.expectedPosition.y += deltaTime * p.velocity.y;
-                p.expectedPosition.z += deltaTime * p.velocity.z;
+                p.expectedPosition.x = p.position.x + deltaTime * p.velocity.x;
+                p.expectedPosition.y = p.position.y + deltaTime * p.velocity.y;
+                p.expectedPosition.z = p.position.z + deltaTime * p.velocity.z;
 
                 p.ClearForce();
             }
@@ -87,7 +100,10 @@ namespace PBD
         // 拘束を反映する関数　・・これをsolverIteration分回す
         void ProjectConstraints()
         {
-
+            for (auto& c : distanceConstraints)
+            {
+                c.Solve(particles, solveIterationCount);
+            }
         }
 
         // 速度を計算し直す
@@ -97,7 +113,7 @@ namespace PBD
             {
                 p.velocity.x = (p.expectedPosition.x - p.position.x) / deltaTime;
                 p.velocity.y = (p.expectedPosition.y - p.position.y) / deltaTime;
-                p.velocity.z= (p.expectedPosition.z - p.position.z) / deltaTime;
+                p.velocity.z = (p.expectedPosition.z - p.position.z) / deltaTime;
 
                 p.position = p.expectedPosition;
             }
@@ -106,11 +122,10 @@ namespace PBD
         // friction restitution とかに応じて変更
         void UpdateVelocity(float deltaTime)
         {
-            
+
         }
 
     private:
-
         void SolveFloorConstraint()
         {
             float floorY = 0.0f;
@@ -122,9 +137,13 @@ namespace PBD
                 }
             }
         }
+
+
         std::vector<Particle> particles;
-        XMFLOAT3 gravity = { 0.0f,-0.98f,0.0f };
-        int solveIterations = 4; // 3 ~ 20
+        std::vector<DistanceConstraint> distanceConstraints;
+
+        XMFLOAT3 gravity = { 0.0f,-9.8f,0.0f };
+        int solveIterationCount = 5; // 3 ~ 20
     };
 
 }

@@ -1006,6 +1006,7 @@
     <ClInclude Include="Source\Graphics\PostProcess\SSAOEffect.h" />
     <ClInclude Include="Source\PBD\PBDParticleData.h" />
     <ClInclude Include="Source\PBD\PBDSystem.h" />
+    <ClInclude Include="Source\PBD\PBDConstaraintData.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">

@@ -96,8 +96,12 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     // テストPBD
     {
         pbd = std::make_unique<PBD::System>();
-        pbd->AddParticle({ 0,50,0 }, 1.0f);
+        pbd->AddParticle({ 0,10,0 }, 0.0f);
+        pbd->AddParticle({ 0,3,0 }, 1.0f);
+
+        pbd->AddDistanceConstraints(0, 1, 0.005f);
     }
+
 
 
     //アクターをセット
@@ -159,9 +163,11 @@ void BootScene::Update(ID3D11DeviceContext* immediateContext, float deltaTime)
     pbd->Update(deltaTime);
 
     const auto& p = pbd->GetParticles()[0];
+    const auto& p1 = pbd->GetParticles()[1];
 #ifdef USE_IMGUI
     ImGui::Begin("pbd");
-    ImGui::Text("pbdPos.y:%f", p.position.y);
+    ImGui::Text("pbdPos0.y:%f", p.position.y);
+    ImGui::Text("pbdPos1.y:%f", p1.position.y);
     ImGui::End();
 #endif
 
@@ -224,8 +230,8 @@ void BootScene::SetUpActors()
     //
     //#endif // 0
     //
-    Transform planeTr(DirectX::XMFLOAT3{ 0.0f,15.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
-    auto planeTest = this->GetActorManager()->CreateAndRegisterActorWithTransform<TestPBD>("TestPBD", planeTr);
+    //Transform planeTr(DirectX::XMFLOAT3{ 0.0f,15.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
+    //auto planeTest = this->GetActorManager()->CreateAndRegisterActorWithTransform<TestPBD>("TestPBD", planeTr);
 
 
     //auto debugCameraActor = ActorManager::CreateAndRegisterActor<Actor>("debugCam");
@@ -357,11 +363,12 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
         // デバック描画
 #if _DEBUG
-        const auto& p = pbd->GetParticles()[0];
+        const auto& p = pbd->GetParticles();
         //static std::vector<XMFLOAT3> points;
         //points.emplace_back((p.position));
         //ShapeRenderer::DrawSegment(immediateContext, { 1,0,1,1 }, points, ShapeRenderer::Type::Point);
-        ShapeRenderer::DrawPoint(immediateContext, p.position, { 1,0,1,1 });
+        ShapeRenderer::DrawPoint(immediateContext, p[0].position, { 1,0,1,1 });
+        ShapeRenderer::DrawLineSegment(immediateContext, p[0].position, p[1].position, { 1,0,1,1 });
         actorColliderManager.DebugRender(immediateContext);
         //PhysicsTest::Instance().DebugRender(immediateContext);
         //GameManager::DebugRender(immediateContext);
@@ -454,13 +461,12 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
         // デバック描画
 #if _DEBUG
-        const auto& p = pbd->GetParticles()[0];
-        static std::vector<XMFLOAT3> points;
+        const auto& p = pbd->GetParticles();
+        //static std::vector<XMFLOAT3> points;
         //points.emplace_back((p.position));
         //ShapeRenderer::DrawSegment(immediateContext, { 1,0,1,1 }, points, ShapeRenderer::Type::Point);
-        //ShapeRenderer::DrawPoint(immediateContext, p.position, { 1,0,0,1 });
-
-
+        ShapeRenderer::DrawPoint(immediateContext, p[0].position, { 1,0,1,1 });
+        ShapeRenderer::DrawLineSegment(immediateContext, p[0].position, p[1].position, { 1,0,1,1 });
         actorColliderManager.DebugRender(immediateContext);
         //PhysicsTest::Instance().DebugRender(immediateContext);
         //GameManager::DebugRender(immediateContext);

@@ -433,6 +433,7 @@
     <ClInclude Include="Source\Graphics\Sprite\Sprite.h" />
     <ClInclude Include="Source\Graphics\Sprite\SpriteBatch.h" />
     <ClInclude Include="Source\Math\MathHelper.h" />
+    <ClInclude Include="Source\PBD\PBDConstaraintData.h" />
     <ClInclude Include="Source\PBD\PBDParticleData.h" />
     <ClInclude Include="Source\PBD\PBDSystem.h" />
     <ClInclude Include="Source\Physics\Collider.h" />
