@@ -65,8 +65,8 @@ public:
         playerJointComponent = this->NewSceneComponent<SphereComponent>("playerJointComponent", "skeltalComponent");
         playerJointComponent->SetRadius(1.0f);
         DirectX::XMFLOAT3 playerHead = skeltalMeshComponent->model->GetJointLocalPosition("atama_FK", skeltalMeshComponent->model->GetNodes());
-
-        playerJointComponent->SetRelativeLocationDirect(playerHead);
+        //playerJointComponent->SetRelativeLocationDirect(playerHead);
+        playerJointComponent->Initialize();
 
         socketNodeComponent = this->NewSceneComponent<SphereComponent>("socketNode", "playerJointComponent");
         socketNodeComponent->SetRadius(1.0f);

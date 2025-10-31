@@ -197,9 +197,8 @@ void BootScene::SetUpActors()
     mainCameraActor = this->GetActorManager()->CreateAndRegisterActor<TitleCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
 
-    Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.4f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     titlePlayer = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitlePlayer>("actor", playerTr);
-
 
     Transform titleTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     //title = this->GetActorManager()->CreateAndRegisterActor<Stage>("title");
@@ -359,7 +358,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         // デバック描画
 #if _DEBUG
         const auto& p = pbd->GetParticles()[0];
-        static std::vector<XMFLOAT3> points;
+        //static std::vector<XMFLOAT3> points;
         //points.emplace_back((p.position));
         //ShapeRenderer::DrawSegment(immediateContext, { 1,0,1,1 }, points, ShapeRenderer::Type::Point);
         ShapeRenderer::DrawPoint(immediateContext, p.position, { 1,0,1,1 });
@@ -457,9 +456,9 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 #if _DEBUG
         const auto& p = pbd->GetParticles()[0];
         static std::vector<XMFLOAT3> points;
-        points.emplace_back((p.position));
-        ShapeRenderer::DrawSegment(immediateContext, { 1,0,1,1 }, points, ShapeRenderer::Type::Point);
-        ShapeRenderer::DrawPoint(immediateContext, p.position, { 1,0,0,1 });
+        //points.emplace_back((p.position));
+        //ShapeRenderer::DrawSegment(immediateContext, { 1,0,1,1 }, points, ShapeRenderer::Type::Point);
+        //ShapeRenderer::DrawPoint(immediateContext, p.position, { 1,0,0,1 });
 
 
         actorColliderManager.DebugRender(immediateContext);

@@ -64,6 +64,7 @@ public:
         boxComponent->SetHalfBoxExtent({ size.x * 0.5f,size.y * 0.5f,size.z * 0.5f });
         boxComponent->Initialize();
 
+
         p1 = transform.GetLocation();
         p3 = { GetPosition().x,GetPosition().y + buildHeight,GetPosition().z };
 

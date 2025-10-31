@@ -295,30 +295,17 @@ void ActorColliderManager::DebugRender(ID3D11DeviceContext* immediateContext)
         std::vector<ShapeComponent*> shapeComponents;
         actor->GetComponents<ShapeComponent>(shapeComponents);
 
+#if 0
         for (const auto& shapeComponent : shapeComponents)
         {
             if (!shapeComponent->IsVisibleDebugBox())
             {
                 continue;
             }
-            //DirectX::XMFLOAT3 pos = shapeComponent->GetComponentLocation();
-            //DirectX::XMFLOAT3 angle = shapeComponent->GetComponentEulerRotation();
-            //DirectX::XMFLOAT3 size = shapeComponent->GetSizeFromAABB(shapeComponent->GetAABB());
-            //shapeRenderer->DrawBox(immediateContext, shapeComponent->GetPosition(), shapeComponent->GetLocalAngle(), shapeComponent->GetSizeFromAABB(shapeComponent->GetAABB()), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
-            //shapeRenderer->DrawBox(immediateContext, pos, angle, size, DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
             ShapeRenderer::DrawBox(immediateContext, shapeComponent->GetComponentLocation(), shapeComponent->GetComponentEulerRotation(), shapeComponent->GetSizeFromAABB(shapeComponent->GetAABB()), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
         }
-        //auto shape = actor->GetComponentByName("capsuleComponent");
 
-        //DirectX::XMFLOAT3 pos = shape->GetComponentLocation();
-
-        //DirectX::XMFLOAT3 pos = actor->GetComponentByName("capsuleComponent")->GetComponentLocation();
-        //if (shape)
-        {
-            //DirectX::XMFLOAT3 pos = shape->GetComponentLocation();
-            //shapeRenderer->DrawBox(immediateContext, pos, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
-        }
-
+#endif // 0
         for (auto* shapeComponent : shapeComponents)
         {
             if (!shapeComponent->IsVisibleDebugShape())
@@ -333,9 +320,9 @@ void ActorColliderManager::DebugRender(ID3D11DeviceContext* immediateContext)
                 // ˆÊ’u
                 DirectX::XMFLOAT3 pos(trans.p.x, trans.p.y, trans.p.z);
 
-                ShapeRenderer::DrawSphere(immediateContext, sphere->GetComponentLocation(), sphere->GetRadius(), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f));
+                //ShapeRenderer::DrawSphere(immediateContext, sphere->GetComponentLocation(), sphere->GetRadius(), DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f));
                 //shapeRenderer->DrawSphere(immediateContext, sphere->GetPosition(), sphere->GetRadius(), DirectX::XMFLOAT4(1.0f,0.0f,0.0f,1.0f));
-                //shapeRenderer->DrawSphere(immediateContext, pos, sphereGeo.radius, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f));
+                ShapeRenderer::DrawSphere(immediateContext, pos, sphereGeo.radius, DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f));
             }
             else if (auto capsule = dynamic_cast<CapsuleComponent*>(shapeComponent))
             {
