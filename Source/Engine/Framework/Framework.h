@@ -116,7 +116,7 @@ public:
                 //UINT flags = (tearing_supported && !fullscreenMode && !vsync) ? DXGI_PRESENT_ALLOW_TEARING : 0;
                 //Graphics::GetSwapChain()->Present(sync_interval, flags);
                 UINT sync_interval{ 0 };
-                Graphics::GetSwapChain()->Present(sync_interval, 0);
+                Graphics::Present(sync_interval);
             }
         }
 

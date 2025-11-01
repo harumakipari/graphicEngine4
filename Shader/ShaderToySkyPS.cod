@@ -41,232 +41,89 @@
 // SV_TARGET                0   xyzw        0   TARGET   float   xyzw
 //
 ps_5_0
-dcl_globalFlags refactoringAllowed | skipOptimization
+dcl_globalFlags refactoringAllowed
 dcl_constantbuffer CB7[7], immediateIndexed
 dcl_input_ps_siv linear noperspective v0.xy, position
 dcl_output o0.xyzw
-dcl_temps 10
-//
-// Initial variable locations:
-//   v0.x <- pin.position.x; v0.y <- pin.position.y; v0.z <- pin.position.z; v0.w <- pin.position.w; 
-//   v1.x <- pin.texcoord.x; v1.y <- pin.texcoord.y; 
-//   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
-//
-#line 135 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ShaderToySkyPS.hlsl"
-mov r0.xy, v0.xyxx  // r0.x <- fragCoord.x; r0.y <- fragCoord.y
-
-#line 137
-nop 
-mov r0.xy, r0.xyxx
-
-#line 78
-div r0.xy, r0.xyxx, cb7[0].xyxx
-mov r0.zw, l(-0.000000,-0.000000,-0.500000,-0.500000)
-add r0.xy, r0.zwzz, r0.xyxx  // r0.x <- uv.x; r0.y <- uv.y
-
-#line 79
+dcl_temps 7
+div r0.xy, v0.xyxx, cb7[0].xyxx
+add r0.xy, r0.xyxx, l(-0.500000, -0.500000, 0.000000, 0.000000)
 div r0.w, cb7[0].y, cb7[0].x
-mul r0.z, r0.w, r0.y  // r0.z <- uv.y
-
-#line 80
-mul r0.xy, r0.xzxx, l(0.800000, 0.800000, 0.000000, 0.000000)  // r0.x <- dir.x; r0.y <- dir.y
-mov r0.z, l(1.000000)  // r0.z <- dir.z
-
-#line 81
-mul r0.w, cb7[6].x, l(0.010000)
-add r1.y, r0.w, l(0.250000)  // r1.y <- time
-
-#line 84
-div r0.w, cb7[1].x, cb7[0].x
-mul r0.w, r0.w, l(2.000000)
-add r0.w, r0.w, l(0.500000)  // r0.w <- a1
-
-#line 85
-div r1.w, cb7[1].y, cb7[0].y
-mul r1.w, r1.w, l(2.000000)
-add r1.w, r1.w, l(0.800000)  // r1.w <- a2
-
-#line 86
-sincos null, r2.x, r0.w  // r2.x <- rot1._m00
-sincos r2.y, null, r0.w  // r2.y <- rot1._m01
-sincos r3.x, null, r0.w
-mov r2.z, -r3.x  // r2.z <- rot1._m10
-sincos null, r2.w, r0.w  // r2.w <- rot1._m11
-
-#line 87
-sincos null, r3.x, r1.w  // r3.x <- rot2._m00
-sincos r3.y, null, r1.w  // r3.y <- rot2._m01
-sincos r0.w, null, r1.w
-mov r3.z, -r0.w  // r3.z <- rot2._m10
-sincos null, r3.w, r1.w  // r3.w <- rot2._m11
-
-#line 89
-dp2 r4.x, r2.xyxx, r0.xzxx  // r4.x <- dir.x
-dp2 r0.x, r2.zwzz, r0.xzxx  // r0.x <- dir.z
-
-#line 90
-mov r4.z, r0.y
-dp2 r5.x, r3.xyxx, r4.xzxx  // r5.x <- dir.x
-dp2 r5.y, r3.zwzz, r4.xzxx  // r5.y <- dir.y
-
-#line 93
-mov r0.yzw, l(0,1.000000,0.500000,0.500000)  // r0.y <- from.x; r0.z <- from.y; r0.w <- from.z
-
-#line 94
-mul r1.x, r1.y, l(2.000000)
-mov r1.z, l(-2.000000)
-add r0.yzw, r0.yyzw, r1.xxyz
-
-#line 95
-dp2 r1.x, r2.xyxx, r0.ywyy  // r1.x <- from.x
-dp2 r0.y, r2.zwzz, r0.ywyy  // r0.y <- from.z
-
-#line 96
-mov r1.z, r0.z
-dp2 r2.x, r3.xyxx, r1.xzxx  // r2.x <- from.x
-dp2 r2.y, r3.zwzz, r1.xzxx  // r2.y <- from.y
-
-#line 100
-mov r0.z, l(0.100000)  // r0.z <- s
-mov r0.w, l(1.000000)  // r0.w <- fade
-
-#line 101
-itof r1.xyz, l(0, 0, 0, 0)  // r1.x <- v.x; r1.y <- v.y; r1.z <- v.z
-
-#line 102
-mov r1.w, l(0)  // r1.w <- r
-mov r3.xyz, r1.xyzx  // r3.x <- v.x; r3.y <- v.y; r3.z <- v.z
-mov r4.x, r0.z  // r4.x <- s
-mov r2.w, r0.w  // r2.w <- fade
-mov r3.w, r1.w  // r3.w <- r
+mul r0.z, r0.w, r0.y
+mul r0.yz, r0.xxzx, l(0.000000, 0.800000, 0.800000, 0.000000)
+mad r1.xz, cb7[6].xxxx, l(0.010000, 0.000000, 0.010000, 0.000000), l(0.250000, 0.000000, 0.750000, 0.000000)
+div r2.xy, cb7[1].xyxx, cb7[0].xyxx
+mad r2.xy, r2.xyxx, l(2.000000, 2.000000, 0.000000, 0.000000), l(0.500000, 0.800000, 0.000000, 0.000000)
+sincos r3.xy, r4.xy, r2.xyxx
+sincos r2.xy, null, -r2.xyxx
+mov r2.z, r4.x
+mov r2.w, r3.x
+mov r0.w, l(1.000000)
+dp2 r0.x, r2.zwzz, r0.ywyy
+dp2 r5.z, r2.xzxx, r0.ywyy
+mov r3.x, r4.y
+dp2 r5.x, r3.xyxx, r0.xzxx
+mov r3.z, r2.y
+dp2 r5.y, r3.zxzz, r0.xzxx
+mad r0.x, r1.x, l(2.000000), l(1.000000)
+mov r0.z, l(-1.500000)
+dp2 r1.y, r2.zwzz, r0.xzxx
+dp2 r0.z, r2.xzxx, r0.xzxx
+dp2 r0.x, r3.xyxx, r1.yzyy
+dp2 r0.y, r3.zxzz, r1.yzyy
+mov r2.x, l(0.100000)
+mov r0.w, l(1.000000)
+mov r1.xyzw, l(0,0,0,0)
 loop 
-  ilt r4.w, r3.w, l(20)
-  breakc_z r4.w
-
-#line 104
-  mov r5.z, r0.x
-  mul r6.xyz, r4.xxxx, r5.xyzx
-  mul r6.xyz, r6.xyzx, l(0.500000, 0.500000, 0.500000, 0.000000)
-  mov r2.z, r0.y
-  add r6.xyz, r2.xyzx, r6.xyzx  // r6.x <- p.x; r6.y <- p.y; r6.z <- p.z
-
-#line 105
-  div r6.xyz, r6.xyzx, l(1.700000, 1.700000, 1.700000, 0.000000)
-  mov r7.xyz, -r6.xyzx
-  max r8.xyz, r6.xyzx, r7.xyzx
-  ge r6.xyz, r6.xyzx, r7.xyzx
-  frc r7.xyz, r8.xyzx
-  mov r8.xyz, -r7.xyzx
-  movc r6.xyz, r6.xyzx, r7.xyzx, r8.xyzx
-  mul r6.xyz, r6.xyzx, l(1.700000, 1.700000, 1.700000, 0.000000)
-  mov r6.xyz, -r6.xyzx
-  add r6.xyz, r6.xyzx, l(0.850000, 0.850000, 0.850000, 0.000000)
-  mov r7.xyz, -r6.xyzx
-  max r6.xyz, r6.xyzx, r7.xyzx  // r6.x <- p.x; r6.y <- p.y; r6.z <- p.z
-
-#line 107
-  mov r2.z, l(0)  // r2.z <- pa
-  mov r2.z, r2.z  // r2.z <- a
-
-#line 108
-  mov r4.w, l(0)  // r4.w <- i
-  mov r7.xyz, r6.xyzx  // r7.x <- p.x; r7.y <- p.y; r7.z <- p.z
-  mov r5.z, r2.z  // r5.z <- pa
-  mov r5.w, r2.z  // r5.w <- a
-  mov r6.w, r4.w  // r6.w <- i
+  ige r2.w, r1.w, l(20)
+  breakc_nz r2.w
+  mul r3.xyz, r5.xyzx, r2.xxxx
+  mad r3.xyz, r3.xyzx, l(0.500000, 0.500000, 0.500000, 0.000000), r0.xyzx
+  mul r3.xyz, r3.xyzx, l(0.588235, 0.588235, 0.588235, 0.000000)
+  ge r4.xyz, r3.xyzx, -r3.xyzx
+  frc r3.xyz, |r3.xyzx|
+  movc r3.xyz, r4.xyzx, r3.xyzx, -r3.xyzx
+  mad r3.xyz, -r3.xyzx, l(1.700000, 1.700000, 1.700000, 0.000000), l(0.850000, 0.850000, 0.850000, 0.000000)
+  mov r4.xyz, |r3.xyzx|
+  mov r2.w, l(0)
+  mov r3.w, l(0)
+  mov r4.w, l(0)
   loop 
-    ilt r7.w, r6.w, l(17)
-    breakc_z r7.w
-
-#line 110
-    mov r8.xyz, -r7.xyzx
-    max r8.xyz, r7.xyzx, r8.xyzx
-    dp3 r7.w, r7.xyzx, r7.xyzx
-    div r8.xyz, r8.xyzx, r7.wwww
-    mov r9.xyz, l(-0.530000,-0.530000,-0.530000,-0.000000)
-    add r7.xyz, r8.xyzx, r9.xyzx
-
-#line 111
-    dp3 r7.w, r7.xyzx, r7.xyzx
-    sqrt r7.w, r7.w
-    mov r8.x, -r5.z
-    add r7.w, r7.w, r8.x
-    mov r8.x, -r7.w
-    max r7.w, r7.w, r8.x
-    add r5.w, r5.w, r7.w
-
-#line 112
-    dp3 r7.w, r7.xyzx, r7.xyzx
-    sqrt r5.z, r7.w
-
-#line 113
-    iadd r6.w, r6.w, l(1)
+    ige r5.w, r4.w, l(17)
+    breakc_nz r5.w
+    dp3 r5.w, r4.xyzx, r4.xyzx
+    div r6.xyz, |r4.xyzx|, r5.wwww
+    add r4.xyz, r6.xyzx, l(-0.530000, -0.530000, -0.530000, 0.000000)
+    dp3 r5.w, r4.xyzx, r4.xyzx
+    sqrt r5.w, r5.w
+    add r6.x, -r2.w, r5.w
+    add r3.w, r3.w, |r6.x|
+    iadd r4.w, r4.w, l(1)
+    mov r2.w, r5.w
   endloop 
-
-#line 114
-  mul r2.z, r5.w, r5.w
-  mul r2.z, r2.z, l(0.001000)
-  mov r2.z, -r2.z
-  add r2.z, r2.z, l(0.300000)
-  max r2.z, r2.z, l(0.000000)  // r2.z <- dm
-
-#line 115
-  mul r4.w, r5.w, r5.w
-  mul r4.w, r4.w, r5.w  // r4.w <- a
-
-#line 116
-  ilt r5.z, l(6), r3.w
-  if_nz r5.z
-
-#line 117
-    mov r2.z, -r2.z
-    add r2.z, r2.z, l(1.000000)
-    mul r2.w, r2.z, r2.w
-  endif 
-
-#line 119
-  add r6.xyz, r2.wwww, r3.xyzx  // r6.x <- v.x; r6.y <- v.y; r6.z <- v.z
-
-#line 120
-  mul r4.y, r4.x, r4.x
-  mul r2.z, r4.x, r4.x
-  mul r2.z, r4.x, r2.z
-  mul r4.z, r4.x, r2.z
-  mul r4.yzw, r4.wwww, r4.xxyz
-  mul r4.yzw, r4.yyzw, l(0.000000, 0.001500, 0.001500, 0.001500)
-  mul r4.yzw, r2.wwww, r4.yyzw
-  add r3.xyz, r4.yzwy, r6.xyzx  // r3.x <- v.x; r3.y <- v.y; r3.z <- v.z
-
-#line 121
-  mul r2.w, r2.w, l(0.730000)
-
-#line 122
-  add r4.x, r4.x, l(0.100000)
-
-#line 123
-  iadd r3.w, r3.w, l(1)
+  mul r2.w, r3.w, r3.w
+  mad r3.x, -r2.w, l(0.001000), l(0.300000)
+  max r3.x, r3.x, l(0.000000)
+  mul r2.w, r2.w, r3.w
+  ilt r3.y, l(6), r1.w
+  add r3.x, -r3.x, l(1.000000)
+  mul r3.x, r0.w, r3.x
+  movc r3.x, r3.y, r3.x, r0.w
+  add r4.xyz, r1.xyzx, r3.xxxx
+  mul r2.y, r2.x, r2.x
+  mul r2.z, r2.y, r2.y
+  mul r2.yzw, r2.wwww, r2.xxyz
+  mul r2.yzw, r3.xxxx, r2.yyzw
+  mad r1.xyz, r2.yzwy, l(0.001500, 0.001500, 0.001500, 0.000000), r4.xyzx
+  mul r0.w, r3.x, l(0.730000)
+  add r2.x, r2.x, l(0.100000)
+  iadd r1.w, r1.w, l(1)
 endloop 
-
-#line 124
-dp3 r0.x, r3.xyzx, r3.xyzx
+dp3 r0.x, r1.xyzx, r1.xyzx
 sqrt r0.x, r0.x
-dp3 r0.w, r3.xyzx, r3.xyzx
-sqrt r0.y, r0.w
-dp3 r0.w, r3.xyzx, r3.xyzx
-sqrt r0.z, r0.w
-mov r1.xyz, -r0.xyzx
-add r1.xyz, r1.xyzx, r3.xyzx
-mul r1.xyz, r1.xyzx, l(0.850000, 0.850000, 0.850000, 0.000000)
-add r0.xyz, r0.xyzx, r1.xyzx  // r0.x <- v.x; r0.y <- v.y; r0.z <- v.z
-
-#line 128
-mul r0.xyz, r0.xyzx, l(0.000500, 0.000500, 0.000500, 0.000000)  // r0.x <- fragColor.x; r0.y <- fragColor.y; r0.z <- fragColor.z
-mov r0.w, l(1.000000)  // r0.w <- fragColor.w
-
-#line 137
-mov r0.xyzw, r0.xyzw  // r0.x <- fragColor.x; r0.y <- fragColor.y; r0.z <- fragColor.z; r0.w <- fragColor.w
-
-#line 138
-mov o0.xyzw, r0.xyzw
+add r0.yzw, -r0.xxxx, r1.xxyz
+mad r0.xyz, r0.yzwy, l(0.850000, 0.850000, 0.850000, 0.000000), r0.xxxx
+mul o0.xyz, r0.xyzx, l(0.000500, 0.000500, 0.000500, 0.000000)
+mov o0.w, l(1.000000)
 ret 
-// Approximately 138 instruction slots used
+// Approximately 80 instruction slots used

@@ -33,14 +33,9 @@
 // SV_TARGET                0   xyzw        0   TARGET   float   xyzw
 //
 ps_5_0
-dcl_globalFlags refactoringAllowed | skipOptimization
+dcl_globalFlags refactoringAllowed
 dcl_constantbuffer CB12[1], immediateIndexed
 dcl_output o0.xyzw
-//
-// Initial variable locations:
-//   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
-//
-#line 10 "C:\Users\2240225\Desktop\graphicEngine4\Shader\LineSegmentPS.hlsl"
 mov o0.xyzw, cb12[0].xyzw
 ret 
 // Approximately 2 instruction slots used

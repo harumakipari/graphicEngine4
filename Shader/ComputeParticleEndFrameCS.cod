@@ -22,39 +22,15 @@
 // -------------------- ----- ------ -------- -------- ------- ------
 // no Output
 cs_5_0
-dcl_globalFlags refactoringAllowed | skipOptimization
+dcl_globalFlags refactoringAllowed
 dcl_uav_raw u2
-dcl_temps 2
+dcl_temps 1
 dcl_thread_group 1, 1, 1
-
-#line 51 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticle.hlsli"
-mov r0.x, l(0)  // r0.x <- IndirectArgumentsNumCurrentParticle
-
-#line 53
-mov r0.y, l(8)  // r0.y <- IndirectArgumentsNumDeadParticle
-
-#line 67
-mov r0.z, l(44)  // r0.z <- IndirectArgumentsDrawIndirect
-
-#line 9 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticleEndFrameCS.hlsl"
-ld_raw_indexable(raw_buffer)(mixed,mixed,mixed,mixed) r0.w, r0.y, u2.xxxx  // r0.w <- destroyCounter
-
-#line 10
-store_raw u2.x, r0.y, l(0)
-
-#line 13
-ld_raw_indexable(raw_buffer)(mixed,mixed,mixed,mixed) r0.y, r0.x, u2.xxxx  // r0.y <- currentNumParticle
-
-#line 14
-ineg r1.x, r0.w
-iadd r1.x, r0.y, r1.x
-store_raw u2.x, r0.x, r1.x
-
-#line 17
-ineg r0.x, r0.w
-iadd r0.x, r0.x, r0.y
-store_raw u2.x, r0.z, r0.x
-
-#line 18
+store_raw u2.x, l(8), l(0)
+ld_raw_indexable(raw_buffer)(mixed,mixed,mixed,mixed) r0.x, l(0), u2.xxxx
+ld_raw_indexable(raw_buffer)(mixed,mixed,mixed,mixed) r0.y, l(8), u2.xxxx
+iadd r0.x, -r0.y, r0.x
+store_raw u2.x, l(0), r0.x
+store_raw u2.x, l(44), r0.x
 ret 
-// Approximately 13 instruction slots used
+// Approximately 7 instruction slots used

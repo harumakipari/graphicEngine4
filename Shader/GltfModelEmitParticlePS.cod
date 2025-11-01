@@ -164,7 +164,7 @@
 // -------------------- ----- ------ -------- -------- ------- ------
 // no Output
 ps_5_0
-dcl_globalFlags refactoringAllowed | skipOptimization
+dcl_globalFlags refactoringAllowed
 dcl_constantbuffer CB1[1], immediateIndexed
 dcl_constantbuffer CB10[2], immediateIndexed
 dcl_constantbuffer CB0[6], immediateIndexed
@@ -175,120 +175,32 @@ dcl_uav_structured u0, 128
 dcl_uav_raw u1
 dcl_input_ps linear v1.xyz
 dcl_input_ps linear v4.xy
-dcl_temps 4
-//
-// Initial variable locations:
-//   v0.x <- pin.position.x; v0.y <- pin.position.y; v0.z <- pin.position.z; v0.w <- pin.position.w; 
-//   v1.x <- pin.wPosition.x; v1.y <- pin.wPosition.y; v1.z <- pin.wPosition.z; v1.w <- pin.wPosition.w; 
-//   v2.x <- pin.wNormal.x; v2.y <- pin.wNormal.y; v2.z <- pin.wNormal.z; v2.w <- pin.wNormal.w; 
-//   v3.x <- pin.wTangent.x; v3.y <- pin.wTangent.y; v3.z <- pin.wTangent.z; v3.w <- pin.wTangent.w; 
-//   v4.x <- pin.texcoord.x; v4.y <- pin.texcoord.y; 
-//   v5.x <- isFrontFace
-//
-#line 66 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticle.hlsli"
-mov r0.x, l(40)  // r0.x <- IndirectArgumentsNumEmitPixelParticleIndex
-
-#line 32 "C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelEmitParticlePS.hlsl"
-mov r0.y, l(2.200000)  // r0.y <- GAMMA
-
-#line 34
-mov r0.z, cb0[5].x
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.x, r0.z, l(24), t0.xxxx  // r1.x <- m.pbrMetallicRoughness.baseColorFactor.x
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.y, r0.z, l(28), t0.xxxx  // r1.y <- m.pbrMetallicRoughness.baseColorFactor.y
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.z, r0.z, l(32), t0.xxxx  // r1.z <- m.pbrMetallicRoughness.baseColorFactor.z
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.w, r0.z, l(36), t0.xxxx  // r1.w <- m.pbrMetallicRoughness.baseColorFactor.w
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r0.z, r0.z, l(40), t0.xxxx  // r0.z <- m.pbrMetallicRoughness.basecolorTexture.index
-
-#line 37
-mov r1.xyzw, r1.xyzw  // r1.x <- baseColor.x; r1.y <- baseColor.y; r1.z <- baseColor.z; r1.w <- baseColor.w
-
-#line 38
-ilt r0.z, l(-1), r0.z
-if_nz r0.z
-
-#line 40
-  sample_indexable(texture2d)(float,float,float,float) r2.xyzw, v4.xyxx, t1.xyzw, s2  // r2.x <- sampled.x; r2.y <- sampled.y; r2.z <- sampled.z; r2.w <- sampled.w
-
-#line 41
-  log r3.xyz, r2.xyzx
-  mul r0.yzw, r0.yyyy, r3.xxyz
-  exp r2.xyz, r0.yzwy
-
-#line 42
-  mul r1.xyzw, r1.xyzw, r2.xyzw
-
-#line 43
+dcl_temps 3
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r0.xyzw, cb0[5].x, l(24), t0.xyzw
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.x, cb0[5].x, l(40), t0.xxxx
+ilt r1.x, l(-1), r1.x
+if_nz r1.x
+  sample_indexable(texture2d)(float,float,float,float) r1.xyzw, v4.xyxx, t1.xyzw, s2
+  log r2.xyz, r1.xyzx
+  mul r2.xyz, r2.xyzx, l(2.200000, 2.200000, 2.200000, 0.000000)
+  exp r1.xyz, r2.xyzx
+  mul r0.xyzw, r0.xyzw, r1.xyzw
 endif 
-
-#line 50
-imm_atomic_iadd r0.x, u1, r0.x, l(1)
-mov r0.x, r0.x  // r0.x <- particleIndex
-
-#line 51
-iadd r0.x, r0.x, cb10[1].x
-
-#line 52
-itof r0.y, l(12)
-store_structured u0.x, r0.x, l(0), r0.y
-
-#line 53
-nop 
-mov r0.y, cb1[0].z
-
-#line 21
-dp2 r0.y, r0.yyyy, l(12.989800, 78.233002, 0.000000, 0.000000)
-sincos r0.y, null, r0.y
-mul r0.y, r0.y, l(43758.546875)
-frc r0.y, r0.y  // r0.y <- <rand return value>
-
-#line 53
-mul r0.y, r0.y, l(2.000000)
-add r0.y, r0.y, l(1.000000)
-store_structured u0.x, r0.x, l(4), r0.y
-
-#line 55
-store_structured u0.x, r0.x, l(16), v1.x
-store_structured u0.x, r0.x, l(20), v1.y
-store_structured u0.x, r0.x, l(24), v1.z
-
-#line 56
-itof r0.y, l(1)
-store_structured u0.x, r0.x, l(28), r0.y
-
-#line 57
-itof r2.xyzw, l(0, 0, 0, 1)
-store_structured u0.x, r0.x, l(32), r2.x
-store_structured u0.x, r0.x, l(36), r2.y
-store_structured u0.x, r0.x, l(40), r2.z
-store_structured u0.x, r0.x, l(44), r2.w
-
-#line 58
-store_structured u0.x, r0.x, l(48), l(0.100000)
-store_structured u0.x, r0.x, l(52), l(0.100000)
-store_structured u0.x, r0.x, l(56), l(0.100000)
-
-#line 60
-itof r2.xyzw, l(0, 0, 0, 0)
-store_structured u0.x, r0.x, l(64), r2.x
-store_structured u0.x, r0.x, l(68), r2.y
-store_structured u0.x, r0.x, l(72), r2.z
-store_structured u0.x, r0.x, l(76), r2.w
-
-#line 62
-itof r0.yzw, l(0, 0, 0, 0)
-store_structured u0.x, r0.x, l(80), r0.y
-store_structured u0.x, r0.x, l(88), r0.z
-store_structured u0.x, r0.x, l(92), r0.w
-
-#line 63
-store_structured u0.x, r0.x, l(84), l(0.100000)
-
-#line 65
-store_structured u0.x, r0.x, l(96), r1.x
-store_structured u0.x, r0.x, l(100), r1.y
-store_structured u0.x, r0.x, l(104), r1.z
-store_structured u0.x, r0.x, l(108), r1.w
-
-#line 67
+imm_atomic_iadd r1.x, u1, l(40), l(1)
+iadd r1.x, r1.x, cb10[1].x
+dp2 r1.y, cb1[0].zzzz, l(12.989800, 78.233002, 0.000000, 0.000000)
+sincos r1.y, null, r1.y
+mul r1.y, r1.y, l(43758.546875)
+frc r1.y, r1.y
+mad r2.y, r1.y, l(2.000000), l(1.000000)
+mov r2.xw, l(12.000000,0,0,1.000000)
+store_structured u0.xy, r1.x, l(0), r2.xyxx
+mov r2.xyz, v1.xyzx
+store_structured u0.xyzw, r1.x, l(16), r2.xyzw
+store_structured u0.xyzw, r1.x, l(32), l(0,0,0,1.000000)
+store_structured u0.xyz, r1.x, l(48), l(0.100000,0.100000,0.100000,0)
+store_structured u0.xyzw, r1.x, l(64), l(0,0,0,0)
+store_structured u0.xyzw, r1.x, l(80), l(0,0.100000,0,0)
+store_structured u0.xyzw, r1.x, l(96), r0.xyzw
 ret 
-// Approximately 59 instruction slots used
+// Approximately 27 instruction slots used

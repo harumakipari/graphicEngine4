@@ -12,17 +12,36 @@ https://qiita.com/cy-tatsuya-sakai/items/a028f2a639083786a5a0
 積分　微分　違い
 https://math-otaku.com/calculus/
 
+角運動量
+https://physics-school.com/angular-momentum/
+
+回転に対する物理量
+https://eman-physics.net/dynamics/angular.html
+
+慣性テンソル、慣性モーメントの違い
+https://www.sky-engin.jp/blog/inertia-matrix/
+
+スカラー三重積
+https://www.bing.com/videos/riverview/relatedvideo?q=%e3%82%b9%e3%82%ab%e3%83%a9%e3%83%bc%e4%b8%89%e9%87%8d%e7%a9%8d&&mid=6F36569FD807C0342BF06F36569FD807C0342BF0&FORM=VAMGZC&ajaxhist=0&ajaxserp=0
+
 逆三角関数
 https://mathwords.net/arcsinbibun
 
 cosの微分
 https://rikeinvest.com/math-3/cos/
 
-回転に対する物理量
-https://eman-physics.net/dynamics/angular.html
 
 空間ハッシュ
 https://blog.oimo.io/2021/06/17/spatial-hashing/
 
 逆関数の微分公式
 https://manabitimes.jp/math/1379
+
+内積の微分
+https://diracphysics.com/portfolio/physicalmath/S3/pdiffvec.html
+
+転置行列
+https://risalc.info/src/transpose-matrix-properties.html
+
+回転の運動方程式
+https://linx.hatenadiary.jp/entry/rotating_frame_EOM

@@ -29,11 +29,9 @@ namespace PBD
 
         void Update(float deltaTime)
         {
-            OutputDebugStringA("");
-
             AddForceToVelocity(deltaTime);
 
-            DampVelocities(deltaTime);
+            DampVelocities(deltaTime, damping);
 
             ExpectedPosition(deltaTime);
 
@@ -64,6 +62,29 @@ namespace PBD
 
         const std::vector<Particle>& GetParticles() const { return particles; }
 
+
+        void DebugRender(ID3D11DeviceContext* immediateContext)
+        {
+            const auto& p = GetParticles();
+
+            // 粒子を描く
+            for (const auto& particle : p)
+                ShapeRenderer::DrawPoint(immediateContext, particle.position, { 1,0,1,1 });
+
+            // 拘束を描く
+            for (const auto& c : distanceConstraints)
+            {
+                ShapeRenderer::DrawLineSegment(immediateContext,p[c.i0].position, p[c.i1].position, { 1,1,0,1 });
+            }
+
+            for (const auto& b : bendingConstraints)
+            {
+                ShapeRenderer::DrawLineSegment(immediateContext, p[b.p1].position, p[b.p2].position, { 0,1,1,1 });
+                ShapeRenderer::DrawLineSegment(immediateContext, p[b.p1].position, p[b.p3].position, { 0,1,1,1 });
+                ShapeRenderer::DrawLineSegment(immediateContext, p[b.p1].position, p[b.p4].position, { 0,1,1,1 });
+                ShapeRenderer::DrawLineSegment(immediateContext, p[b.p2].position, p[b.p3].position, { 0,1,1,1 });
+            }
+        }
     private:
 
         // 速度に外力を加える
@@ -81,9 +102,97 @@ namespace PBD
             }
         }
 
-        void DampVelocities(float deltaTime)
+        //位置予測する前に速度を減衰させる 3.5Damping
+        void DampVelocities(float deltaTime, float damping)
         {
+            using namespace DirectX;
+
+            if (particles.empty()) return;
+
+            float totalMass = 0.0f;
+            XMVECTOR xcm = XMVectorZero();
+            XMVECTOR vcm = XMVectorZero();
+
+            // (1) 重心位置を求める
+            // (2) 重心速度の計算
+            for (auto& p : particles)
+            {
+                if (p.invMass == 0.0f) continue;
+
+                float m = 1.0f / p.invMass;
+                totalMass += m;
+                XMVECTOR pos = XMLoadFloat3(&p.position);
+                XMVECTOR vel = XMLoadFloat3(&p.velocity);
+                xcm = XMVectorAdd(xcm, XMVectorScale(pos, m));
+                vcm = XMVectorAdd(vcm, XMVectorScale(vel, m));
+            }
+
+            xcm = XMVectorScale(xcm, 1.0f / totalMass);
+            vcm = XMVectorScale(vcm, 1.0f / totalMass);
+
+            // (3)　L　全体の角運動量　　L = cross(r,p) 位置ベクトル、運動ベクトル
+            XMVECTOR L = XMVectorZero();
+
+            // (4) 慣性テンソルを求める　x,y,zどの軸に対しても回転のしにくさを表したいとき
+            XMFLOAT3X3 I = {}; // 慣性テンソル
+            float I_[3][3] = { 0 };
+
+            for (auto& p : particles)
+            {
+                if (p.invMass == 0.0f) continue;
+
+                float m = 1.0f / p.invMass;
+                XMVECTOR xi = XMLoadFloat3(&p.position);
+                XMVECTOR vi = XMLoadFloat3(&p.velocity);
+                XMVECTOR ri = XMVectorSubtract(xi, xcm);//ri 点がどれくらい重心と離れているか、
+
+                L = L + XMVector3Cross(ri, XMVectorScale(vi, m)); // 全体の角運動量
+
+                // 慣性テンソル
+                XMFLOAT3 r;
+                XMStoreFloat3(&r, ri);
+                float r2 = r.x * r.x + r.y * r.y + r.z * r.z;
+
+                I_[0][0] += m * (r2 - r.x * r.x);
+                I_[1][1] += m * (r2 - r.y * r.y);
+                I_[2][2] += m * (r2 - r.z * r.z);
+                I_[0][1] -= m * (r.x * r.y);
+                I_[0][2] -= m * (r.x * r.z);
+                I_[1][0] -= m * (r.y * r.x);
+                I_[1][2] -= m * (r.y * r.z);
+                I_[2][0] -= m * (r.z * r.x);
+                I_[2][1] -= m * (r.z * r.y);
+
+            }
+
+            // (5) 角速度　L=Iwより　w=I^-1*L
+            XMMATRIX I_mat = XMLoadFloat3x3(reinterpret_cast<XMFLOAT3X3*>(I_));
+            XMVECTOR det;
+            XMMATRIX I_inv = XMMatrixInverse(&det, I_mat); // I^-1 逆行列
+            if (fabsf(XMVectorGetX(det)) < 1e-6f) return; // 不正な行列回避
+
+            XMVECTOR w = XMVector3TransformNormal(L, I_inv);
+
+
+            // (6) ~ (9)
+            for (auto& p : particles)
+            {
+                if (p.IsStatic())
+                {
+                    continue;
+                }
+
+                XMVECTOR xi = XMLoadFloat3(&p.position);
+                XMVECTOR vi = XMLoadFloat3(&p.velocity);
+                XMVECTOR ri = XMVectorSubtract(xi, xcm);//ri 点がどれくらい重心と離れているか
+
+                XMVECTOR deltaVi = vcm + XMVector3Cross(w, ri) - vi; //(7)
+                vi = XMVectorAdd(vi, XMVectorScale(deltaVi, damping));
+                XMStoreFloat3(&p.velocity, vi); // (8)
+            }
         }
+
+
 
         // 明示的オイラー積分で新しい位置を見積もる
         void ExpectedPosition(float deltaTime)
@@ -112,7 +221,7 @@ namespace PBD
                 c.Solve(particles, solveIterationCount);
             }
 
-            for (auto& c:bendingConstraints)
+            for (auto& c : bendingConstraints)
             {
                 c.Solve(particles, solveIterationCount);
             }
@@ -156,6 +265,8 @@ namespace PBD
 
         XMFLOAT3 gravity = { 0.0f,-9.8f,0.0f };
         int solveIterationCount = 10; // 3 ~ 20
+        //float damping = 0.05f;
+        float damping = 0.0f;
     };
 
 }

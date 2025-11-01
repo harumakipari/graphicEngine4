@@ -7,18 +7,18 @@ namespace PBD
 {
     struct DistanceConstraint
     {
-        int p1;
-        int p2;
+        int i0;
+        int i1;
 
         float restLength;
         float stiffness;    // 0.0f~1.0f 1.0fÇÃÇŸÇ§Ç™çSë©Ç™å≈Ç¢
 
-        DistanceConstraint(int i1, int i2, float length, float k = 1.0f) : p1(i1), p2(i2), restLength(length), stiffness(k) {}
+        DistanceConstraint(int i1, int i2, float length, float k = 1.0f) : i0(i1), i1(i2), restLength(length), stiffness(k) {}
 
         void Solve(std::vector<Particle>& particles, int iterationCount) const
         {
-            auto& pA = particles[p1];
-            auto& pB = particles[p2];
+            auto& pA = particles[i0];
+            auto& pB = particles[i1];
 
             if (pA.IsStatic() && pB.IsStatic()) return;
 
@@ -73,7 +73,7 @@ namespace PBD
             char buf[256];
             float deltaLen = sqrtf(deltaPA.x * deltaPA.x + deltaPA.y * deltaPA.y + deltaPA.z * deltaPA.z);
             sprintf_s(buf, "C=%.6f k'=%f deltaLen=%.6f invSum=%f\n", C, kPrime, deltaLen, invSum);
-            OutputDebugStringA(buf);
+            //OutputDebugStringA(buf);
         }
     };
 

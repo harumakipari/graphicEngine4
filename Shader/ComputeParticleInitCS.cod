@@ -48,31 +48,14 @@
 // -------------------- ----- ------ -------- -------- ------- ------
 // no Output
 cs_5_0
-dcl_globalFlags refactoringAllowed | skipOptimization
+dcl_globalFlags refactoringAllowed
 dcl_uav_structured u1, 4
 dcl_uav_structured u3, 16
 dcl_input vThreadID.x
-dcl_temps 2
+dcl_temps 1
 dcl_thread_group 1024, 1, 1
-//
-// Initial variable locations:
-//   vThreadID.x <- dispatchThreadId.x; vThreadID.y <- dispatchThreadId.y; vThreadID.z <- dispatchThreadId.z
-//
-#line 11 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticleInitCS.hlsl"
-mov r0.x, vThreadID.x  // r0.x <- index
-
-#line 14
-mov r0.y, l(0)
-store_structured u3.x, r0.x, l(0), r0.y
-
-#line 15
-mov r0.y, l(0)
-store_structured u3.x, r0.x, l(4), r0.y
-
-#line 18
-imm_atomic_alloc r1.x, u1
-store_structured u1.x, r1.x, l(0), r0.x
-
-#line 19
+store_structured u3.xy, vThreadID.x, l(0), l(0,0,0,0)
+imm_atomic_alloc r0.x, u1
+store_structured u1.x, r0.x, l(0), vThreadID.x
 ret 
-// Approximately 8 instruction slots used
+// Approximately 4 instruction slots used

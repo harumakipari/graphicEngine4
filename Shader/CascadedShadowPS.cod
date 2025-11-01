@@ -69,11 +69,12 @@
 // SV_TARGET                0   xyzw        0   TARGET   float   xyzw
 //
 ps_5_0
-dcl_globalFlags refactoringAllowed | skipOptimization
+dcl_globalFlags refactoringAllowed
 dcl_immediateConstantBuffer { { 1.000000, 0, 0, 0},
                               { 0, 1.000000, 0, 0},
                               { 0, 0, 1.000000, 0},
-                              { 0, 0, 0, 1.000000} }
+                              { 0, 0, 0, 1.000000},
+                              { 0, 1.000000, 1.000000, 0} }
 dcl_constantbuffer CB9[1], immediateIndexed
 dcl_constantbuffer CB3[17], dynamicIndexed
 dcl_constantbuffer CB4[21], immediateIndexed
@@ -84,192 +85,62 @@ dcl_resource_texture2d (float,float,float,float) t2
 dcl_resource_texture2darray (float,float,float,float) t3
 dcl_input_ps linear v1.xy
 dcl_output o0.xyzw
-dcl_temps 6
-dcl_indexableTemp x0[4], 4
-//
-// Initial variable locations:
-//   v0.x <- pin.position.x; v0.y <- pin.position.y; v0.z <- pin.position.z; v0.w <- pin.position.w; 
-//   v1.x <- pin.texcoord.x; v1.y <- pin.texcoord.y; 
-//   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w; 
-//   x0 <- layerColors
-//
-#line 20 "C:\Users\2240225\Desktop\graphicEngine4\Shader\CascadedShadowPS.hlsl"
-sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v1.xyxx, t0.xyzw, s3  // r0.x <- sampledColor.x; r0.y <- sampledColor.y; r0.z <- sampledColor.z; r0.w <- sampledColor.w
-
-#line 21
-mov r0.xyz, r0.xyzx  // r0.x <- color.x; r0.y <- color.y; r0.z <- color.z
-
-#line 22
-mov r0.w, r0.w  // r0.w <- alpha
-
-#line 24
+dcl_temps 4
+sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v1.xyxx, t0.xyzw, s3
 sample_indexable(texture2d)(float,float,float,float) r1.x, v1.xyxx, t2.xyzw, s3
-mov r1.x, r1.x  // r1.x <- depthNdc
-
-#line 28
-itof r1.y, l(2)
-mul r1.y, r1.y, v1.x
-itof r1.z, l(1)
-mov r1.z, -r1.z
-add r1.y, r1.z, r1.y  // r1.y <- positionNdc.x
-
-#line 29
-itof r1.z, l(-2)
-mul r1.z, r1.z, v1.y
-itof r1.w, l(1)
-add r1.z, r1.w, r1.z  // r1.z <- positionNdc.y
-
-#line 30
-mov r1.x, r1.x  // r1.x <- positionNdc.z
-
-#line 31
-itof r1.w, l(1)  // r1.w <- positionNdc.w
-
-#line 34
-mul r2.xy, r1.yyyy, cb4[13].zwzz
-mul r2.zw, r1.zzzz, cb4[14].zzzw
-add r2.xy, r2.zwzz, r2.xyxx
-mul r2.zw, r1.xxxx, cb4[15].zzzw
-add r2.xy, r2.zwzz, r2.xyxx
-mul r2.zw, r1.wwww, cb4[16].zzzw
-add r2.xy, r2.zwzz, r2.xyxx  // r2.x <- positionViewSpace.z; r2.y <- positionViewSpace.w
-
-#line 35
-div r2.x, r2.x, r2.y
-
-#line 38
-mul r3.xyzw, r1.yyyy, cb4[17].xyzw
-mul r4.xyzw, r1.zzzz, cb4[18].xyzw
-add r3.xyzw, r3.xyzw, r4.xyzw
-mul r4.xyzw, r1.xxxx, cb4[19].xyzw
-add r3.xyzw, r3.xyzw, r4.xyzw
-mul r1.xyzw, r1.wwww, cb4[20].xyzw
-add r1.xyzw, r1.xyzw, r3.xyzw  // r1.x <- positionWorldSpace.x; r1.y <- positionWorldSpace.y; r1.z <- positionWorldSpace.z; r1.w <- positionWorldSpace.w
-
-#line 39
-div r1.xyzw, r1.xyzw, r1.wwww
-
-#line 45
-mov r2.x, r2.x  // r2.x <- depthViewSpace
-
-#line 46
-mov r2.y, l(-1)  // r2.y <- cascadeIndex
-
-#line 47
-mov r2.z, l(0)  // r2.z <- layer
-mov r3.x, r2.y  // r3.x <- cascadeIndex
-mov r3.y, r2.z  // r3.y <- layer
+mad r1.y, v1.x, l(2.000000), l(-1.000000)
+mad r1.z, v1.y, l(-2.000000), l(1.000000)
+mul r2.xy, r1.zzzz, cb4[14].zwzz
+mad r2.xy, r1.yyyy, cb4[13].zwzz, r2.xyxx
+mad r2.xy, r1.xxxx, cb4[15].zwzz, r2.xyxx
+add r2.xy, r2.xyxx, cb4[16].zwzz
+div r1.w, r2.x, r2.y
+mov r2.xy, l(-1,0,0,0)
 loop 
-  mov r2.w, l(4)
-  ult r2.w, r3.y, r2.w
-  breakc_z r2.w
-
-#line 49
-  dp4 r2.w, cb3[16].xyzw, icb[r3.y + 0].xyzw  // r2.w <- distance
-
-#line 50
-  lt r2.w, r2.x, r2.w
-  if_nz r2.w
-
-#line 52
-    mov r3.x, r3.y
-
-#line 53
+  uge r2.z, r2.y, l(4)
+  breakc_nz r2.z
+  dp4 r2.z, cb3[16].xyzw, icb[r2.y + 0].xyzw
+  lt r2.z, r1.w, r2.z
+  if_nz r2.z
+    mov r2.x, r2.y
     break 
-
-#line 54
   endif 
-
-#line 47
-  iadd r3.y, r3.y, l(1)
-
-#line 55
+  iadd r2.y, r2.y, l(1)
+  mov r2.x, l(-1)
 endloop 
-
-#line 57
-ilt r2.x, l(-1), r3.x
-if_nz r2.x
-
-#line 60
-  imul null, r2.x, r3.x, l(4)
-  mul r4.xyzw, r1.xxxx, cb3[r2.x + 0].xyzw
-  mul r5.xyzw, r1.yyyy, cb3[r2.x + 1].xyzw
-  add r4.xyzw, r4.xyzw, r5.xyzw
-  mul r5.xyzw, r1.zzzz, cb3[r2.x + 2].xyzw
-  add r4.xyzw, r4.xyzw, r5.xyzw
-  mul r1.xyzw, r1.wwww, cb3[r2.x + 3].xyzw
-  add r1.xyzw, r1.xyzw, r4.xyzw  // r1.x <- positionLightSpace.x; r1.y <- positionLightSpace.y; r1.z <- positionLightSpace.z; r1.w <- positionLightSpace.w
-
-#line 61
+ilt r1.w, l(-1), r2.x
+if_nz r1.w
+  mul r3.xyzw, r1.zzzz, cb4[18].xyzw
+  mad r3.xyzw, r1.yyyy, cb4[17].xyzw, r3.xyzw
+  mad r1.xyzw, r1.xxxx, cb4[19].xyzw, r3.xyzw
+  add r1.xyzw, r1.xyzw, cb4[20].xyzw
+  div r1.xyzw, r1.xyzw, r1.wwww
+  ishl r2.y, r2.x, l(2)
+  mul r3.xyzw, r1.yyyy, cb3[r2.y + 1].xyzw
+  mad r3.xyzw, r1.xxxx, cb3[r2.y + 0].xyzw, r3.xyzw
+  mad r3.xyzw, r1.zzzz, cb3[r2.y + 2].xyzw, r3.xyzw
+  mad r1.xyzw, r1.wwww, cb3[r2.y + 3].xyzw, r3.xyzw
   div r1.xyz, r1.xyzx, r1.wwww
-
-#line 63
-  mul r1.x, r1.x, l(0.500000)
-  add r2.x, r1.x, l(0.500000)  // r2.x <- positionLightSpace.x
-
-#line 64
-  mul r1.x, r1.y, l(-0.500000)
-  add r2.y, r1.x, l(0.500000)  // r2.y <- positionLightSpace.y
-
-#line 66
-  itof r2.z, r3.x
-  mov r1.x, -cb9[0].y
-  add r1.x, r1.x, r1.z
-  sample_c_lz_indexable(texture2darray)(float,float,float,float) r1.x, r2.xyzx, t3.xxxx, s7, r1.x  // r1.x <- shadowFactor
-
-#line 68
-  itof r1.yzw, l(0, 1, 1, 1)  // r1.y <- layerColor.x; r1.z <- layerColor.y; r1.w <- layerColor.z
-
-#line 70
-  ine r2.x, l(0, 0, 0, 0), cb9[0].z
-  if_nz r2.x
-
-#line 72
-    itof r2.xyz, l(1, 0, 0, 0)
-    itof r3.yzw, l(0, 0, 1, 0)
-    itof r4.xyz, l(0, 0, 1, 0)
-    itof r5.xyz, l(1, 1, 0, 0)
-    mov x0[0].xyz, r2.xyzx
-    mov x0[1].xyz, r3.yzwy
-    mov x0[2].xyz, r4.xyzx
-    mov x0[3].xyz, r5.xyzx
-
-#line 79
-    mov r1.yzw, x0[r3.x + 0].xxyz
-
-#line 80
+  mad r3.xy, r1.xyxx, l(0.500000, -0.500000, 0.000000, 0.000000), l(0.500000, 0.500000, 0.000000, 0.000000)
+  itof r3.z, r2.x
+  add r1.x, r1.z, -cb9[0].y
+  sample_c_lz_indexable(texture2darray)(float,float,float,float) r1.x, r3.xyzx, t3.xxxx, s7, r1.x
+  if_nz cb9[0].z
+    mov r1.yzw, icb[r2.x + 1].yyzw
+  else 
+    mov r1.yzw, l(0,1.000000,1.000000,1.000000)
   endif 
-
-#line 82
-  mov r2.x, -cb9[0].x
-  add r2.x, r2.x, l(1.000000)
-  mul r1.x, r1.x, r2.x
-  add r1.x, r1.x, cb9[0].x
+  add r2.x, -cb9[0].x, l(1.000000)
+  mad r1.x, r1.x, r2.x, cb9[0].x
   mul r1.xyz, r1.yzwy, r1.xxxx
   mul r0.xyz, r0.xyzx, r1.xyzx
-
-#line 83
 endif 
-
-#line 89
-mov r1.x, l(1.200000)  // r1.x <- exposure
-
-#line 90
-itof r1.yzw, l(0, 1, 1, 1)
-mov r0.xyz, -r0.xyzx
-mul r0.xyz, r1.xxxx, r0.xyzx
-mul r0.xyz, r0.xyzx, l(1.442695, 1.442695, 1.442695, 0.000000)
+mul r0.xyz, r0.xyzx, l(-1.731234, -1.731234, -1.731234, 0.000000)
 exp r0.xyz, r0.xyzx
-mov r0.xyz, -r0.xyzx
-add r0.xyz, r0.xyzx, r1.yzwy  // r0.x <- color.x; r0.y <- color.y; r0.z <- color.z
-
-#line 96
+add r0.xyz, -r0.xyzx, l(1.000000, 1.000000, 1.000000, 0.000000)
 log r0.xyz, r0.xyzx
 mul r0.xyz, r0.xyzx, l(0.454545, 0.454545, 0.454545, 0.000000)
-exp r0.xyz, r0.xyzx  // r0.x <- color.x; r0.y <- color.y; r0.z <- color.z
-
-#line 99
-mov o0.xyz, r0.xyzx
+exp o0.xyz, r0.xyzx
 mov o0.w, r0.w
 ret 
-// Approximately 102 instruction slots used
+// Approximately 57 instruction slots used
