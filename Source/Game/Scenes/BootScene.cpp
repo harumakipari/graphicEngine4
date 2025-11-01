@@ -136,9 +136,10 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
 
         // グリッド上のインデックスを取得する関数
-        auto idx = [&](int x, int y) {
+        auto idx = [&](int x, int y)
+        {
             return y * width + x;
-            };
+        };
 
         // 上辺パーティクルを固定
         for (int x = 0; x < width; ++x)
@@ -147,7 +148,7 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
             pbd->GetParticles()[topIdx].invMass = 0.0f;
         }
 
-        float stiffness = 0.005f;
+        float stiffness = 0.5f;
 
         // 距離拘束（横・縦・斜め）
         for (int y = 0; y < height; ++y)
@@ -160,29 +161,42 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
                 if (y + 1 < height)
                     pbd->AddDistanceConstraints(idx(x, y), idx(x, y + 1), stiffness);
 
-                // 斜め（クロス）
-                //if (x + 1 < width && y + 1 < height)
-                //    pbd->AddDistanceConstraints(idx(x, y), idx(x + 1, y + 1), stiffness);
-                //if (x - 1 >= 0 && y + 1 < height)
-                //    pbd->AddDistanceConstraints(idx(x, y), idx(x - 1, y + 1), stiffness);
+                // 斜め（クロス） これバラバラになる
+#if 0
+                if (x + 1 < width && y + 1 < height)
+                    pbd->AddDistanceConstraints(idx(x, y), idx(x + 1, y + 1), stiffness);
+                if (x - 1 >= 0 && y + 1 < height)
+                    pbd->AddDistanceConstraints(idx(x, y), idx(x - 1, y + 1), stiffness);
+
+#endif // 0
             }
         }
         // 三角形面構築（Figure 4対応：隣接面間にBending）
-        for (int y = 0; y < height - 1; ++y)
+        for (int y = 0; y < height - 2; ++y)
         {
-            for (int x = 0; x < width - 1; ++x)
+            for (int x = 0; x < width - 2; ++x)
             {
                 int p0 = idx(x, y);
                 int p1 = idx(x + 1, y);
                 int p2 = idx(x, y + 1);
                 int p3 = idx(x + 1, y + 1);
+                int p4 = idx(x + 2, y);
+                int p5 = idx(x + 2, y + 1);
+                int p6 = idx(x, y + 2);
+                int p7 = idx(x + 1, y + 2);
+                int p8 = idx(x + 2, y + 2);
 
-                // 三角形2枚（左上・右下）
-                //pbd->AddTriangle(p0, p1, p2);
-                //pbd->AddTriangle(p2, p1, p3);
-
-                // 曲げ拘束（共有辺 p1-p2）
+                // 水平方向の曲げ拘束
                 pbd->AddBendingConstraint(p0, p1, p2, p3, stiffness);
+                pbd->AddBendingConstraint(p1, p4, p3, p5, stiffness);
+
+                // 垂直方向の曲げ拘束
+                pbd->AddBendingConstraint(p0, p2, p1, p3, stiffness);
+                pbd->AddBendingConstraint(p2, p6, p3, p7, stiffness);
+
+                // 斜めも必要なら追加
+                pbd->AddBendingConstraint(p1, p3, p2, p4, stiffness);
+                pbd->AddBendingConstraint(p2, p3, p6, p7, stiffness);
             }
         }
 #endif
@@ -683,6 +697,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
 void BootScene::DrawGui()
 {
+    pbd->DrawGui();
+
 #ifdef USE_IMGUI
     ImGuiStyle& style = ImGui::GetStyle();
     style.Colors[ImGuiCol_Text] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);

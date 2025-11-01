@@ -15,7 +15,7 @@ namespace PBD
 
         DistanceConstraint(int i1, int i2, float length, float k = 1.0f) : i0(i1), i1(i2), restLength(length), stiffness(k) {}
 
-        void Solve(std::vector<Particle>& particles, int iterationCount) const
+        void Solve(std::vector<Particle>& particles, int iterationCount,float disStiffness) const
         {
             auto& pA = particles[i0];
             auto& pB = particles[i1];
@@ -46,7 +46,8 @@ namespace PBD
 
             // stiffnessを補正する　論文に書いてた、、
             //float kPrime = 1.0f - powf(1.0f - stiffness, 1.0f / iterationCount);
-            float kPrime = stiffness;
+            float kPrime = 1.0f - powf(1.0f - disStiffness, 1.0f / iterationCount);
+            //float kPrime = stiffness;
 
 
             XMFLOAT3 deltaPA =
@@ -109,7 +110,7 @@ namespace PBD
             restAngle = acosf(dot);
         }
 
-        void Solve(std::vector<Particle>& particles, int iterationCount) const
+        void Solve(std::vector<Particle>& particles, int iterationCount, float bendStiffness) const
         {
             using namespace DirectX;
 
@@ -217,15 +218,15 @@ namespace PBD
             dp4 = clampMove(dp4, maxMove);
 
 #endif // 0
-            float k = stiffness;
+            //float k = stiffness;
             // stiffnessを補正する　論文に書いてた、、
-            //float kPrime = 1.0f - powf(1.0f - stiffness, 1.0f / iterationCount);
+            float kPrime = 1.0f - powf(1.0f - stiffness, 1.0f / iterationCount);
 
             // apply
-            p1v = XMVectorAdd(p1v, dp1 * k);    // expectedpos+ deltaP1
-            p2v = XMVectorAdd(p2v, dp2 * k);
-            p3v = XMVectorAdd(p3v, dp3 * k);
-            p4v = XMVectorAdd(p4v, dp4 * k);
+            p1v = XMVectorAdd(p1v, dp1 * kPrime);    // expectedpos+ deltaP1
+            p2v = XMVectorAdd(p2v, dp2 * kPrime);
+            p3v = XMVectorAdd(p3v, dp3 * kPrime);
+            p4v = XMVectorAdd(p4v, dp4 * kPrime);
 
             XMStoreFloat3(&pa.expectedPosition, p1v);
             XMStoreFloat3(&pb.expectedPosition, p2v);

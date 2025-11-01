@@ -7,6 +7,17 @@
 
 namespace PBD
 {
+    // どこかにグローバルで置く
+    struct PBDParams
+    {
+        int iterationCount = 5;
+        float distanceStiffness = 1.0f;
+        float bendingStiffness = 0.5f;
+        float damping = 0.98f;
+        XMFLOAT3 externalForce = { 0.0f, -9.8f, 0.0f }; // 重力
+    };
+
+
     class System
     {
     public:
@@ -31,13 +42,13 @@ namespace PBD
         {
             AddForceToVelocity(deltaTime);
 
-            DampVelocities(deltaTime, damping);
+            DampVelocities(deltaTime, gPbdParams.damping);
 
             ExpectedPosition(deltaTime);
 
             GenerateCollisionConstraints();
 
-            for (int i = 0; i < solveIterationCount; ++i)
+            for (int i = 0; i < gPbdParams.iterationCount; ++i)
             {
                 ProjectConstraints();
             }
@@ -61,7 +72,7 @@ namespace PBD
         }
 
         const std::vector<Particle>& GetParticles() const { return particles; }
-        std::vector<Particle>& GetParticles()  { return particles; }
+        std::vector<Particle>& GetParticles() { return particles; }
 
 
         void DebugRender(ID3D11DeviceContext* immediateContext)
@@ -75,7 +86,7 @@ namespace PBD
             // 拘束を描く
             for (const auto& c : distanceConstraints)
             {
-                ShapeRenderer::DrawLineSegment(immediateContext,p[c.i0].position, p[c.i1].position, { 1,1,0,1 });
+                ShapeRenderer::DrawLineSegment(immediateContext, p[c.i0].position, p[c.i1].position, { 1,1,0,1 });
             }
 
             for (const auto& b : bendingConstraints)
@@ -86,12 +97,25 @@ namespace PBD
                 ShapeRenderer::DrawLineSegment(immediateContext, p[b.p2].position, p[b.p3].position, { 0,1,1,1 });
             }
         }
+
+        void DrawGui()
+        {
+#ifdef USE_IMGUI
+            ImGui::Begin("pbd parameter");
+            ImGui::SliderInt("Iterations", &gPbdParams.iterationCount, 1, 20);
+            ImGui::SliderFloat("Distance Stiffness", &gPbdParams.distanceStiffness, 0.0f, 1.0f);
+            ImGui::SliderFloat("Bending Stiffness", &gPbdParams.bendingStiffness, 0.0f, 1.0f);
+            ImGui::SliderFloat("Damping", &gPbdParams.damping, 0.0f, 1.0f);
+            ImGui::DragFloat3("External Force", &gPbdParams.externalForce.x, 0.001f);
+            ImGui::End();
+#endif
+        }
     private:
 
         // 速度に外力を加える
         void AddForceToVelocity(float deltaTime)
         {
-            XMFLOAT3 force = gravity;
+            XMFLOAT3 force = gPbdParams.externalForce;
             for (auto& p : particles)
             {
                 if (p.IsStatic()) continue;
@@ -219,12 +243,12 @@ namespace PBD
         {
             for (auto& c : distanceConstraints)
             {
-                c.Solve(particles, solveIterationCount);
+                c.Solve(particles, gPbdParams.iterationCount, gPbdParams.distanceStiffness);
             }
 
             for (auto& c : bendingConstraints)
             {
-                c.Solve(particles, solveIterationCount);
+                c.Solve(particles, gPbdParams.iterationCount, gPbdParams.bendingStiffness);
             }
         }
 
@@ -264,10 +288,10 @@ namespace PBD
         std::vector<DistanceConstraint> distanceConstraints;
         std::vector<BendingConstraint> bendingConstraints;
 
-        XMFLOAT3 gravity = { 0.0f,-9.8f,0.0f };
-        int solveIterationCount = 10; // 3 ~ 20
+        PBDParams gPbdParams;
+        //XMFLOAT3 gravity = { 0.0f,-9.8f,0.0f };
+        //int solveIterationCount = 3; // 3 ~ 20
         //float damping = 0.05f;
-        float damping = 0.0f;
     };
 
 }
