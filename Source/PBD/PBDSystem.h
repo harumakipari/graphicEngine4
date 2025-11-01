@@ -61,6 +61,7 @@ namespace PBD
         }
 
         const std::vector<Particle>& GetParticles() const { return particles; }
+        std::vector<Particle>& GetParticles()  { return particles; }
 
 
         void DebugRender(ID3D11DeviceContext* immediateContext)
