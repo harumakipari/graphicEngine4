@@ -343,20 +343,23 @@ namespace PBD
                 if (p.IsStatic()) continue;
 
                 XMVECTOR pos = XMLoadFloat3(&p.expectedPosition);
-                float dist = XMVectorGetX(XMVector3Dot(pos, n)) + planeOffset;
+                float dist = XMVectorGetX(XMVector3Dot(pos, n)) - planeOffset;
 
                 if (dist < 0.0f)
                 {
                     // 平面を下回っていたら押し戻す
                     pos -= n * dist;
-
-                    // 位置修正を反映
                     XMStoreFloat3(&p.expectedPosition, pos);
 
-                    // 簡易反発（必要なら）
+                    // 反発を適用（少し強調）
                     XMVECTOR v = XMLoadFloat3(&p.velocity);
-                    v -= n * (1.0f + restitution) * XMVector3Dot(v, n);
-                    XMStoreFloat3(&p.velocity, v);
+                    float vn = XMVectorGetX(XMVector3Dot(v, n));
+
+                    if (vn < 0.0f) // 内向き成分のみ反射
+                    {
+                        v -= (1.0f + restitution) * vn * n;
+                        XMStoreFloat3(&p.velocity, v);
+                    }
                 }
             }
         }

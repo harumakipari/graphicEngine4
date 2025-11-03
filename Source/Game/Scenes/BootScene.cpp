@@ -133,7 +133,8 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         {
             for (int x = 0; x < width; ++x)
             {
-                XMFLOAT3 pos = { x * spacing, 10.0f, y * spacing }; // 上空に配置
+                //XMFLOAT3 pos = { x * spacing, y * spacing, 0.0f }; // 上空に配置
+                XMFLOAT3 pos = { x * spacing, 15.0f, y * spacing }; // 上空に配置
                 pbd->AddParticle(pos, 1.0f);
             }
         }
@@ -184,8 +185,18 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
                 pbd->AddBendingConstraint(p0, p2, p1, p3, stiffness);
             }
         }
+
+
+        // 上向き法線 (0,1,0)、地面は y=4 にあるように
+        XMFLOAT3 normal = { 0.0f, 1.0f, 0.0f };
+        float offset = 4.0f; // 平面方程式 n・x + d = 0 → y + d = 0 → y=0
+        float restitution = 0.8f; // 少し弾ませる
+        pbd->AddCollisionPlane(normal, offset, restitution);
+
+
 #else
-        // 立方体
+#if 0
+        // 立方体 2 * 2
         float spacing = 1.0f;
         int N = 2; // 各軸の粒子数
         for (int z = 0; z < N; ++z)
@@ -194,7 +205,7 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
             {
                 for (int x = 0; x < N; ++x)
                 {
-                    XMFLOAT3 pos = { x * spacing, y * spacing, z * spacing }; // 上空に配置
+                    XMFLOAT3 pos = { x * spacing, y * spacing + 10.0f, z * spacing }; // 上空に配置
                     pbd->AddParticle(pos, 1.0f);
                 }
             }
@@ -203,15 +214,15 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         auto idx = [&](int x, int y, int z) { return x + N * (y + N * z); };
 
 
-        // 上辺パーティクルを固定
-        for (int z = 0; z < N; ++z)
-        {
-            for (int x = 0; x < N; ++x)
-            {
-                int topIdx = idx(x, 0, z); // y=0 が上辺
-                pbd->GetParticles()[topIdx].invMass = 0.0f;
-            }
-        }
+        //// 上辺パーティクルを固定
+        //for (int z = 0; z < N; ++z)
+        //{
+        //    for (int x = 0; x < N; ++x)
+        //    {
+        //        int topIdx = idx(x, 1, z); // y=0 が上辺
+        //        pbd->GetParticles()[topIdx].invMass = 0.0f;
+        //    }
+        //}
 
         for (int z = 0; z < N; ++z)
         {
@@ -259,8 +270,111 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         };
 
         // Volume constraint追加
-        pbd->AddVolumeConstraint(cubeVerts, cubeTris, 1.0f); 
+        pbd->AddVolumeConstraint(cubeVerts, cubeTris, 1.0f);
 
+
+        // 上向き法線 (0,1,0)、地面は y=4 にあるように
+        XMFLOAT3 normal = { 0.0f, 1.0f, 0.0f };
+        float offset = 4.0f; // 平面方程式 n・x + d = 0 → y + d = 0 → y=0
+        float restitution = 0.8f; // 少し弾ませる
+        pbd->AddCollisionPlane(normal, offset, restitution);
+
+        //pbd->EnableSelfCollision(0.5f); // spacingの半分程度で設定
+#else
+        int N = 4;                  // 各軸4粒子 → 64粒子
+        float spacing = 0.5f;       // 粒子間隔
+
+        // 1. 粒子生成（上空に配置）
+        for (int z = 0; z < N; ++z)
+        {
+            for (int y = 0; y < N; ++y)
+            {
+                for (int x = 0; x < N; ++x)
+                {
+                    XMFLOAT3 pos = { x * spacing, y * spacing + 10.0f, z * spacing };
+                    pbd->AddParticle(pos, 1.0f);
+                }
+            }
+        }
+
+        // 2. インデックス関数
+        auto idx = [&](int x, int y, int z) { return x + N * (y + N * z); };
+
+        // 3. 距離拘束の追加
+        for (int z = 0; z < N; ++z)
+        {
+            for (int y = 0; y < N; ++y)
+            {
+                for (int x = 0; x < N; ++x)
+                {
+                    int i = idx(x, y, z);
+
+                    // +X方向
+                    if (x + 1 < N)
+                        pbd->AddDistanceConstraints(i, idx(x + 1, y, z), stiffness);
+
+                    // +Y方向
+                    if (y + 1 < N)
+                        pbd->AddDistanceConstraints(i, idx(x, y + 1, z), stiffness);
+
+                    // +Z方向
+                    if (z + 1 < N)
+                        pbd->AddDistanceConstraints(i, idx(x, y, z + 1), stiffness);
+
+                    // 斜め（オプション）
+                    if (x + 1 < N && y + 1 < N)
+                        pbd->AddDistanceConstraints(i, idx(x + 1, y + 1, z), stiffness);
+                    if (x + 1 < N && z + 1 < N)
+                        pbd->AddDistanceConstraints(i, idx(x + 1, y, z + 1), stiffness);
+                    if (y + 1 < N && z + 1 < N)
+                        pbd->AddDistanceConstraints(i, idx(x, y + 1, z + 1), stiffness);
+                }
+            }
+        }
+
+        // 4. 体積拘束用の三角形を生成（各小立方体12三角形）
+        std::vector<int> cubeVerts;
+        for (int i = 0; i < N * N * N; ++i)
+            cubeVerts.push_back(i);
+
+        std::vector<PBD::Triangle> cubeTris;
+        for (int z = 0; z < N - 1; ++z)
+        {
+            for (int y = 0; y < N - 1; ++y)
+            {
+                for (int x = 0; x < N - 1; ++x)
+                {
+                    int v0 = idx(x, y, z);
+                    int v1 = idx(x + 1, y, z);
+                    int v2 = idx(x, y + 1, z);
+                    int v3 = idx(x + 1, y + 1, z);
+                    int v4 = idx(x, y, z + 1);
+                    int v5 = idx(x + 1, y, z + 1);
+                    int v6 = idx(x, y + 1, z + 1);
+                    int v7 = idx(x + 1, y + 1, z + 1);
+
+                    cubeTris.push_back({ v0,v1,v2 }); cubeTris.push_back({ v1,v3,v2 });
+                    cubeTris.push_back({ v4,v6,v5 }); cubeTris.push_back({ v5,v6,v7 });
+                    cubeTris.push_back({ v0,v2,v4 }); cubeTris.push_back({ v4,v2,v6 });
+                    cubeTris.push_back({ v1,v5,v3 }); cubeTris.push_back({ v5,v7,v3 });
+                    cubeTris.push_back({ v0,v4,v1 }); cubeTris.push_back({ v1,v4,v5 });
+                    cubeTris.push_back({ v2,v3,v6 }); cubeTris.push_back({ v3,v7,v6 });
+                }
+            }
+        }
+
+        // 体積拘束追加
+        pbd->AddVolumeConstraint(cubeVerts, cubeTris, 1.0f);
+
+        // 5. 床衝突
+        XMFLOAT3 normal = { 0.0f, 1.0f, 0.0f };
+        float offset = 4.0f;         // y=4 の高さ
+        float restitution = 0.8f;    // 弾性
+        pbd->AddCollisionPlane(normal, offset, restitution);
+
+        // 6. 自己衝突
+        pbd->EnableSelfCollision(spacing * 0.5f); // 粒子間距離の半分
+#endif // 0
 #endif
 #endif
 #endif // 1

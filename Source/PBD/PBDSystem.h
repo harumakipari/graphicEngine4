@@ -260,6 +260,12 @@ namespace PBD
         // 拘束を反映する関数　・・これをsolverIteration分回す
         void ProjectConstraints()
         {
+
+            // 1) 保存
+            std::vector<XMFLOAT3> preExpected(particles.size());
+            for (size_t i = 0; i < particles.size(); ++i)
+                preExpected[i] = particles[i].expectedPosition;
+
             for (auto& c : distanceConstraints)
             {
                 c.Solve(particles, gPbdParams.iterationCount, gPbdParams.distanceStiffness);
@@ -274,6 +280,9 @@ namespace PBD
             {
                 v.Solve(particles, gPbdParams.volumeStiffness);
             }
+
+            // 3) 内部拘束でできた総移動を打ち消して線形/角運動量を保存
+            ConserveMomentumAfterInternalProjection(particles, preExpected);
 
             // 地面・平面衝突
             for (auto& c : collisionConstraints)
@@ -328,6 +337,148 @@ namespace PBD
         //XMFLOAT3 gravity = { 0.0f,-9.8f,0.0f };
         //int solveIterationCount = 3; // 3 ~ 20
         //float damping = 0.05f;
+
+
+// ヘルパー関数：内部拘束投影後に線形・角運動量を保存する（改良版）
+        void ConserveMomentumAfterInternalProjection(std::vector<PBD::Particle>& particles, const std::vector<DirectX::XMFLOAT3>& preExpected)
+        {
+            using namespace DirectX;
+
+            const size_t N = particles.size();
+            if (N == 0) return;
+
+            // --- 1) 線形運動量（質量加重の合計移動） を計算 ---
+            XMVECTOR deltaSum = XMVectorZero();
+            double totalMass_d = 0.0;
+            for (size_t i = 0; i < N; ++i)
+            {
+                float invM = particles[i].invMass;
+                if (invM == 0.0f) continue; // static は無視
+                double m = 1.0 / invM;
+                totalMass_d += m;
+
+                XMVECTOR posBefore = XMLoadFloat3(&preExpected[i]);
+                XMVECTOR posAfter = XMLoadFloat3(&particles[i].expectedPosition);
+                XMVECTOR d = XMVectorSubtract(posAfter, posBefore);
+                deltaSum = XMVectorAdd(deltaSum, XMVectorScale(d, (float)m));
+            }
+
+            if (totalMass_d <= 0.0) return;
+            XMVECTOR corrTrans = XMVectorScale(deltaSum, (float)(1.0 / totalMass_d)); // 質量加重平均移動
+
+            // --- 2) 投影前の重心（回転中心）を計算（preExpected を使う）---
+            XMVECTOR com = XMVectorZero();
+            for (size_t i = 0; i < N; ++i)
+            {
+                float invM = particles[i].invMass;
+                if (invM == 0.0f) continue;
+                double m = 1.0 / invM;
+                XMVECTOR posBefore = XMLoadFloat3(&preExpected[i]);
+                com = XMVectorAdd(com, XMVectorScale(posBefore, (float)m));
+            }
+            com = XMVectorScale(com, (float)(1.0 / totalMass_d));
+
+            // --- 3) RHS (角運動量項) と慣性テンソル I を構築 ---
+            XMVECTOR rhs = XMVectorZero(); // sum m * (ri x delta')
+            double I_[3][3] = { 0.0 };
+
+            struct Temp { XMVECTOR ri; XMVECTOR deltaPrime; double m; };
+            std::vector<Temp> tmp;
+            tmp.reserve(N);
+
+            for (size_t i = 0; i < N; ++i)
+            {
+                float invM = particles[i].invMass;
+                if (invM == 0.0f)
+                {
+                    tmp.push_back({ XMVectorZero(), XMVectorZero(), 0.0 });
+                    continue;
+                }
+                double m = 1.0 / invM;
+
+                XMVECTOR posBefore = XMLoadFloat3(&preExpected[i]);
+                XMVECTOR posAfter = XMLoadFloat3(&particles[i].expectedPosition);
+                XMVECTOR d = XMVectorSubtract(posAfter, posBefore);
+
+                // delta' = delta - corrTrans  (mass-weighted translation removed)
+                XMVECTOR deltaPrime = XMVectorSubtract(d, corrTrans);
+
+                XMVECTOR ri = XMVectorSubtract(posBefore, com);
+
+                XMVECTOR cross_ri_dp = XMVector3Cross(ri, deltaPrime);
+                rhs = XMVectorAdd(rhs, XMVectorScale(cross_ri_dp, (float)m));
+
+                // 慣性テンソル成分 accumulate (double 精度)
+                XMFLOAT3 rf; XMStoreFloat3(&rf, ri);
+                double rx = rf.x, ry = rf.y, rz = rf.z;
+                double r2 = rx * rx + ry * ry + rz * rz;
+
+                I_[0][0] += m * (r2 - rx * rx);
+                I_[1][1] += m * (r2 - ry * ry);
+                I_[2][2] += m * (r2 - rz * rz);
+                I_[0][1] -= m * (rx * ry);
+                I_[0][2] -= m * (rx * rz);
+                I_[1][0] -= m * (ry * rx);
+                I_[1][2] -= m * (ry * rz);
+                I_[2][0] -= m * (rz * rx);
+                I_[2][1] -= m * (rz * ry);
+
+                tmp.push_back({ ri, deltaPrime, m });
+            }
+
+            // --- 4) I * omega = rhs を解く ---
+            // build XMMATRIX from double I_ (cast to float)
+            XMFLOAT3X3 I_mat_f;
+            I_mat_f._11 = (float)I_[0][0]; I_mat_f._12 = (float)I_[0][1]; I_mat_f._13 = (float)I_[0][2];
+            I_mat_f._21 = (float)I_[1][0]; I_mat_f._22 = (float)I_[1][1]; I_mat_f._23 = (float)I_[1][2];
+            I_mat_f._31 = (float)I_[2][0]; I_mat_f._32 = (float)I_[2][1]; I_mat_f._33 = (float)I_[2][2];
+
+            XMMATRIX I_mat = XMLoadFloat3x3(&I_mat_f);
+            XMVECTOR det;
+            XMMATRIX I_inv = XMMatrixInverse(&det, I_mat);
+
+            const float detVal = XMVectorGetX(det);
+            const float DET_EPS = 1e-7f;
+            if (fabsf(detVal) < DET_EPS)
+            {
+                // singular -> 角運動量補正をスキップするが、線形補正は行う
+                for (size_t i = 0; i < N; ++i)
+                {
+                    if (particles[i].invMass == 0.0f) continue;
+                    XMVECTOR posBefore = XMLoadFloat3(&preExpected[i]);
+                    XMVECTOR posAfter = XMLoadFloat3(&particles[i].expectedPosition);
+                    XMVECTOR d = XMVectorSubtract(posAfter, posBefore);
+                    XMVECTOR newPos = XMVectorAdd(posBefore, XMVectorSubtract(d, corrTrans));
+                    XMStoreFloat3(&particles[i].expectedPosition, newPos);
+                }
+                return;
+            }
+
+            // omega = I^-1 * rhs
+            XMVECTOR omega = XMVector3TransformNormal(rhs, I_inv);
+
+            // --- 5) omega が極端に大きくならないように clamp（安定化） ---
+            const float MAX_OMEGA = 50.0f; // 適宜調整
+            float omegaLen = XMVectorGetX(XMVector3Length(omega));
+            if (omegaLen > MAX_OMEGA)
+                omega = XMVectorScale(omega, MAX_OMEGA / omegaLen);
+
+            // --- 6) 最終補正： delta'' = delta' - (omega × ri) ; expected = preExpected + delta'' ---
+            for (size_t i = 0; i < N; ++i)
+            {
+                if (particles[i].invMass == 0.0f) continue;
+                XMVECTOR ri = tmp[i].ri;
+                XMVECTOR deltaPrime = tmp[i].deltaPrime;
+                XMVECTOR omegaCrossRi = XMVector3Cross(omega, ri);
+
+                XMVECTOR correctedDelta = XMVectorSubtract(deltaPrime, omegaCrossRi);
+                XMVECTOR posBefore = XMLoadFloat3(&preExpected[i]);
+                XMVECTOR newPos = XMVectorAdd(posBefore, correctedDelta);
+
+                XMStoreFloat3(&particles[i].expectedPosition, newPos);
+            }
+        }
+
     };
 
 }
