@@ -235,13 +235,31 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
                     if (x + 1 < N && y + 1 < N)
                         pbd->AddDistanceConstraints(i, idx(x + 1, y + 1, z), stiffness);
-                    if (x + 1 < N && z + 1 < N) 
+                    if (x + 1 < N && z + 1 < N)
                         pbd->AddDistanceConstraints(i, idx(x + 1, y, z + 1), stiffness);
-                    if (y + 1 < N && z + 1 < N) 
+                    if (y + 1 < N && z + 1 < N)
                         pbd->AddDistanceConstraints(i, idx(x, y + 1, z + 1), stiffness);
                 }
             }
         }
+
+        // 頂点インデックス
+        std::vector<int> cubeVerts;
+        for (int i = 0; i < N * N * N; ++i)
+            cubeVerts.push_back(i);
+
+        // メッシュ三角形
+        std::vector<PBD::Triangle> cubeTris = {
+            {0,1,2}, {1,3,2}, // +Y面
+            {4,6,5}, {5,6,7}, // -Y面
+            {0,2,4}, {4,2,6}, // +X面
+            {1,5,3}, {5,7,3}, // -X面
+            {0,4,1}, {1,4,5}, // +Z面
+            {2,3,6}, {3,7,6}  // -Z面
+        };
+
+        // Volume constraint追加
+        pbd->AddVolumeConstraint(cubeVerts, cubeTris, 1.0f); 
 
 #endif
 #endif

@@ -13,6 +13,7 @@ namespace PBD
         int iterationCount = 5;
         float distanceStiffness = 1.0f;
         float bendingStiffness = 0.5f;
+        float volumeStiffness = 1.0f;
         float damping = 0.98f;
         XMFLOAT3 externalForce = { 0.0f, -9.8f, 0.0f }; // 重力
     };
@@ -71,6 +72,23 @@ namespace PBD
             distanceConstraints.emplace_back(i1, i2, restLength, stiffness);
         }
 
+        void AddVolumeConstraint(const std::vector<int>& vertexIndices, const std::vector<Triangle>& tris, float pressure)
+        {
+            VolumeConstraint c(vertexIndices, tris, particles, pressure);
+            volumeConstraints.push_back(c);
+        }
+
+        void AddCollisionPlane(const XMFLOAT3& normal, float offset, float restitution = 0.0f)
+        {
+            collisionConstraints.emplace_back(normal, offset, restitution);
+        }
+
+        void EnableSelfCollision(float radius)
+        {
+            selfCollision = SelfCollisionConstraint(radius);
+            enableSelfCollision = true;
+        }
+
         const std::vector<Particle>& GetParticles() const { return particles; }
         std::vector<Particle>& GetParticles() { return particles; }
 
@@ -105,6 +123,7 @@ namespace PBD
             ImGui::SliderInt("Iterations", &gPbdParams.iterationCount, 1, 20);
             ImGui::SliderFloat("Distance Stiffness", &gPbdParams.distanceStiffness, 0.0f, 1.0f);
             ImGui::SliderFloat("Bending Stiffness", &gPbdParams.bendingStiffness, 0.0f, 1.0f);
+            ImGui::SliderFloat("Volume Stiffness", &gPbdParams.volumeStiffness, 0.0f, 5.0f);
             ImGui::SliderFloat("Damping", &gPbdParams.damping, 0.0f, 1.0f);
             ImGui::DragFloat3("External Force", &gPbdParams.externalForce.x, 0.001f);
             ImGui::End();
@@ -250,6 +269,19 @@ namespace PBD
             {
                 c.Solve(particles, gPbdParams.iterationCount, gPbdParams.bendingStiffness);
             }
+
+            for (auto& v : volumeConstraints)
+            {
+                v.Solve(particles, gPbdParams.volumeStiffness);
+            }
+
+            // 地面・平面衝突
+            for (auto& c : collisionConstraints)
+                c.Solve(particles);
+
+            // 自己衝突
+            if (enableSelfCollision)
+                selfCollision.Solve(particles);
         }
 
         // 速度を計算し直す
@@ -287,7 +319,11 @@ namespace PBD
         std::vector<Particle> particles;
         std::vector<DistanceConstraint> distanceConstraints;
         std::vector<BendingConstraint> bendingConstraints;
+        std::vector<VolumeConstraint> volumeConstraints;
+        std::vector<CollisionConstraint> collisionConstraints;
 
+        SelfCollisionConstraint selfCollision;
+        bool enableSelfCollision = false;
         PBDParams gPbdParams;
         //XMFLOAT3 gravity = { 0.0f,-9.8f,0.0f };
         //int solveIterationCount = 3; // 3 ~ 20

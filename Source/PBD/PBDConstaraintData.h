@@ -15,7 +15,7 @@ namespace PBD
 
         DistanceConstraint(int i1, int i2, float length, float k = 1.0f) : i0(i1), i1(i2), restLength(length), stiffness(k) {}
 
-        void Solve(std::vector<Particle>& particles, int iterationCount,float disStiffness) const
+        void Solve(std::vector<Particle>& particles, int iterationCount, float disStiffness) const
         {
             auto& pA = particles[i0];
             auto& pB = particles[i1];
@@ -238,14 +238,191 @@ namespace PBD
     // 体積拘束
     struct VolumeConstraint
     {
-        std::vector<XMFLOAT3*> positions;
+        std::vector<int> vertexIndices;
         std::vector<Triangle> triangles;
-        float restVolume;   // 初期体積
+        float restVolume = 0.0f;    // 初期体積
+        float pressure = 1.0f;
 
+        VolumeConstraint() = default;
+        VolumeConstraint(const std::vector<int>& vertices, const std::vector<Triangle>& tris, const std::vector<Particle>& particles, float pressure)
+            : vertexIndices(vertices), triangles(tris), pressure(pressure)
+        {
+            restVolume = ComputeVolume(particles);
+        }
 
+        float ComputeVolume(const std::vector<Particle>& particles) const
+        {
+            float volume = 0.0f;
+            for (auto& tri : triangles)
+            {
+                XMVECTOR p1 = XMLoadFloat3(&particles[tri.i1].expectedPosition);
+                XMVECTOR p2 = XMLoadFloat3(&particles[tri.i2].expectedPosition);
+                XMVECTOR p3 = XMLoadFloat3(&particles[tri.i3].expectedPosition);
+                volume += XMVectorGetX(XMVector3Dot(XMVector3Cross(p1, p2), p3));
+            }
+            return volume / 6.0f;
+        }
 
+        void Solve(std::vector<Particle>& particles, float stiffness)
+        {
+            const int N = (int)particles.size();
+
+            // 現在の体積
+            float currentVolume = ComputeVolume(particles);
+            // (14) 拘束値
+            float C = currentVolume - pressure * restVolume;
+
+            // 各頂点の勾配  (15)
+            std::vector<XMFLOAT3> grad(N, { 0,0,0 });
+            for (auto& tri : triangles)
+            {
+                XMVECTOR p1 = XMLoadFloat3(&particles[tri.i1].expectedPosition);
+                XMVECTOR p2 = XMLoadFloat3(&particles[tri.i2].expectedPosition);
+                XMVECTOR p3 = XMLoadFloat3(&particles[tri.i3].expectedPosition);
+
+                XMVECTOR g1 = XMVector3Cross(p2, p3);
+                XMVECTOR g2 = XMVector3Cross(p3, p1);
+                XMVECTOR g3 = XMVector3Cross(p1, p2);
+
+                XMStoreFloat3(&grad[tri.i1], XMLoadFloat3(&grad[tri.i1]) + g1);
+                XMStoreFloat3(&grad[tri.i2], XMLoadFloat3(&grad[tri.i2]) + g2);
+                XMStoreFloat3(&grad[tri.i3], XMLoadFloat3(&grad[tri.i3]) + g3);
+            }
+
+            // (8) の　s の分母
+            float denom = 0.0f;
+            for (int i = 0; i < N; ++i)
+            {
+                float w = particles[i].invMass;
+                if (w == 0.0f) continue;
+                XMVECTOR g = XMLoadFloat3(&grad[i]);
+                float len2 = XMVectorGetX(XMVector3LengthSq(g));
+                denom += w * len2;
+            }
+            if (fabs(denom) < 1e-8f) return;
+            // (8)
+            float s = C / denom;
+
+            // 頂点位置修正
+            // (9)
+            for (int i = 0; i < N; ++i)
+            {
+                float w = particles[i].invMass;
+                if (w == 0.0f) continue;
+                XMVECTOR g = XMLoadFloat3(&grad[i]);
+                XMVECTOR delta = -stiffness * s * w * g;    // (9)
+                XMVECTOR pos = XMLoadFloat3(&particles[i].expectedPosition);
+                XMStoreFloat3(&particles[i].expectedPosition, pos + delta);
+            }
+            ImGui::Begin("imgui");
+            ImGui::Text("Rest volume: %.4f", restVolume);
+            ImGui::Text("Current volume: %.4f", currentVolume);
+            ImGui::Text("C (constraint value): %.4f", C);
+            ImGui::End();
+        }
+    };
+
+    struct CollisionConstraint
+    {
+        XMFLOAT3 planeNormal;   // 平面法線
+        float planeOffset;      // 平面方程式 n・x + d = 0 の d に相当
+        float restitution;      // 反発係数（0～1）
+
+        CollisionConstraint(const XMFLOAT3& normal, float offset, float restitution = 0.0f)
+            : planeNormal(normal), planeOffset(offset), restitution(restitution)
+        {
+        }
+
+        void Solve(std::vector<Particle>& particles)
+        {
+            using namespace DirectX;
+            XMVECTOR n = XMLoadFloat3(&planeNormal);
+
+            for (auto& p : particles)
+            {
+                if (p.IsStatic()) continue;
+
+                XMVECTOR pos = XMLoadFloat3(&p.expectedPosition);
+                float dist = XMVectorGetX(XMVector3Dot(pos, n)) + planeOffset;
+
+                if (dist < 0.0f)
+                {
+                    // 平面を下回っていたら押し戻す
+                    pos -= n * dist;
+
+                    // 位置修正を反映
+                    XMStoreFloat3(&p.expectedPosition, pos);
+
+                    // 簡易反発（必要なら）
+                    XMVECTOR v = XMLoadFloat3(&p.velocity);
+                    v -= n * (1.0f + restitution) * XMVector3Dot(v, n);
+                    XMStoreFloat3(&p.velocity, v);
+                }
+            }
+        }
     };
 
 
+    struct SelfCollisionConstraint
+    {
+        float radius; // 各粒子の半径（近接判定に使用）
+
+        SelfCollisionConstraint(float r = 0.05f)
+            : radius(r)
+        {
+        }
+
+        void Solve(std::vector<Particle>& particles)
+        {
+            using namespace DirectX;
+
+            for (size_t i = 0; i < particles.size(); ++i)
+            {
+                for (size_t j = i + 1; j < particles.size(); ++j)
+                {
+                    auto& p1 = particles[i];
+                    auto& p2 = particles[j];
+                    if (p1.IsStatic() && p2.IsStatic()) continue;
+
+                    XMVECTOR x1 = XMLoadFloat3(&p1.expectedPosition);
+                    XMVECTOR x2 = XMLoadFloat3(&p2.expectedPosition);
+                    XMVECTOR diff = x1 - x2;
+                    float len = XMVectorGetX(XMVector3Length(diff));
+
+                    if (len < 1e-6f) continue;
+
+                    float penetration = (radius * 2.0f) - len;
+                    if (penetration > 0.0f)
+                    {
+                        XMVECTOR dir = diff / len;
+                        float w1 = p1.invMass;
+                        float w2 = p2.invMass;
+                        float wSum = w1 + w2;
+                        if (wSum == 0.0f) continue;
+
+                        float ratio1 = w1 / wSum;
+                        float ratio2 = w2 / wSum;
+
+                        // 押し出し量
+                        XMVECTOR correction = dir * (penetration * 0.5f);
+
+                        if (!p1.IsStatic())
+                        {
+                            XMVECTOR newPos1 = x1 + correction * ratio1;
+                            XMStoreFloat3(&p1.expectedPosition, newPos1);
+                        }
+
+                        if (!p2.IsStatic())
+                        {
+                            XMVECTOR newPos2 = x2 - correction * ratio2;
+                            XMStoreFloat3(&p2.expectedPosition, newPos2);
+                        }
+                    }
+                }
+            }
+        }
+    };
 }
+
+
 
