@@ -34,5 +34,10 @@ namespace PBD
         bool IsStatic() const { return invMass == 0.0f; }
     };
 
+    struct Triangle
+    {
+        int i1, i2, i3;
+    };
+
 
 }

@@ -234,5 +234,18 @@ namespace PBD
             XMStoreFloat3(&pd.expectedPosition, p4v);
         }
     };
+
+    // ‘ÌÏS‘©
+    struct VolumeConstraint
+    {
+        std::vector<XMFLOAT3*> positions;
+        std::vector<Triangle> triangles;
+        float restVolume;   // ‰Šú‘ÌÏ
+
+
+
+    };
+
+
 }
 

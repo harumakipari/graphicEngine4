@@ -1,5 +1,7 @@
 https://qiita.com/doRA9876/items/0f2c79204f2412c0f7a3
 
+https://matthias-research.github.io/pages/publications/posBasedDyn.pdf
+
 github
 https://github.com/InteractiveComputerGraphics/PositionBasedDynamics
 
@@ -45,3 +47,6 @@ https://risalc.info/src/transpose-matrix-properties.html
 
 回転の運動方程式
 https://linx.hatenadiary.jp/entry/rotating_frame_EOM
+
+PBDについて
+https://www.issoh.co.jp/tech/details/8276/#Position_Based_Dynamics_PBD

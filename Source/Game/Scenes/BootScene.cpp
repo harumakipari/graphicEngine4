@@ -96,9 +96,11 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     // テストPBD
     {
         pbd = std::make_unique<PBD::System>();
+        float stiffness = 0.5f;
+
 #if 0
         // 二点の確認
-        
+
         pbd->AddParticle({ 0,10,0 }, 0.0f);
         pbd->AddParticle({ 0,3,0 }, 1.0f);
         pbd->AddDistanceConstraints(0, 1, 0.005f);
@@ -119,7 +121,9 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
         // 曲げ拘束（p1-p2 が共有辺の2三角形で構成）
         pbd->AddBendingConstraint(0, 1, 2, 3, 0.5f);
-#else// グリッドの布
+#else
+#if 0
+        // グリッドの布
         const int width = 3;
         const int height = 3;
         const float spacing = 1.0f;
@@ -137,9 +141,9 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
         // グリッド上のインデックスを取得する関数
         auto idx = [&](int x, int y)
-        {
-            return y * width + x;
-        };
+            {
+                return y * width + x;
+            };
 
         // 上辺パーティクルを固定
         for (int x = 0; x < width; ++x)
@@ -148,7 +152,6 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
             pbd->GetParticles()[topIdx].invMass = 0.0f;
         }
 
-        float stiffness = 0.5f;
 
         // 距離拘束（横・縦・斜め）
         for (int y = 0; y < height; ++y)
@@ -172,33 +175,75 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
             }
         }
         // 三角形面構築（Figure 4対応：隣接面間にBending）
-        for (int y = 0; y < height - 2; ++y)
+        for (int y = 0; y < height - 1; ++y)
         {
-            for (int x = 0; x < width - 2; ++x)
+            for (int x = 0; x < width - 1; ++x)
             {
-                int p0 = idx(x, y);
-                int p1 = idx(x + 1, y);
-                int p2 = idx(x, y + 1);
-                int p3 = idx(x + 1, y + 1);
-                int p4 = idx(x + 2, y);
-                int p5 = idx(x + 2, y + 1);
-                int p6 = idx(x, y + 2);
-                int p7 = idx(x + 1, y + 2);
-                int p8 = idx(x + 2, y + 2);
-
-                // 水平方向の曲げ拘束
+                int p0 = idx(x, y); int p1 = idx(x + 1, y); int p2 = idx(x, y + 1); int p3 = idx(x + 1, y + 1); // 三角形2枚（左上・右下） //
                 pbd->AddBendingConstraint(p0, p1, p2, p3, stiffness);
-                pbd->AddBendingConstraint(p1, p4, p3, p5, stiffness);
-
-                // 垂直方向の曲げ拘束
                 pbd->AddBendingConstraint(p0, p2, p1, p3, stiffness);
-                pbd->AddBendingConstraint(p2, p6, p3, p7, stiffness);
-
-                // 斜めも必要なら追加
-                pbd->AddBendingConstraint(p1, p3, p2, p4, stiffness);
-                pbd->AddBendingConstraint(p2, p3, p6, p7, stiffness);
             }
         }
+#else
+        // 立方体
+        float spacing = 1.0f;
+        int N = 2; // 各軸の粒子数
+        for (int z = 0; z < N; ++z)
+        {
+            for (int y = 0; y < N; ++y)
+            {
+                for (int x = 0; x < N; ++x)
+                {
+                    XMFLOAT3 pos = { x * spacing, y * spacing, z * spacing }; // 上空に配置
+                    pbd->AddParticle(pos, 1.0f);
+                }
+            }
+        }
+
+        auto idx = [&](int x, int y, int z) { return x + N * (y + N * z); };
+
+
+        // 上辺パーティクルを固定
+        for (int z = 0; z < N; ++z)
+        {
+            for (int x = 0; x < N; ++x)
+            {
+                int topIdx = idx(x, 0, z); // y=0 が上辺
+                pbd->GetParticles()[topIdx].invMass = 0.0f;
+            }
+        }
+
+        for (int z = 0; z < N; ++z)
+        {
+            for (int y = 0; y < N; ++y)
+            {
+                for (int x = 0; x < N; ++x)
+                {
+                    int i = idx(x, y, z);
+
+                    // +X方向
+                    if (x + 1 < N)
+                        pbd->AddDistanceConstraints(i, idx(x + 1, y, z), stiffness);
+
+                    // +Y方向
+                    if (y + 1 < N)
+                        pbd->AddDistanceConstraints(i, idx(x, y + 1, z), stiffness);
+
+                    // +Z方向
+                    if (z + 1 < N)
+                        pbd->AddDistanceConstraints(i, idx(x, y, z + 1), stiffness);
+
+                    if (x + 1 < N && y + 1 < N)
+                        pbd->AddDistanceConstraints(i, idx(x + 1, y + 1, z), stiffness);
+                    if (x + 1 < N && z + 1 < N) 
+                        pbd->AddDistanceConstraints(i, idx(x + 1, y, z + 1), stiffness);
+                    if (y + 1 < N && z + 1 < N) 
+                        pbd->AddDistanceConstraints(i, idx(x, y + 1, z + 1), stiffness);
+                }
+            }
+        }
+
+#endif
 #endif
 #endif // 1
     }
