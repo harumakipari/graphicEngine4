@@ -248,6 +248,7 @@ namespace PBD
             : vertexIndices(vertices), triangles(tris), pressure(pressure)
         {
             restVolume = ComputeVolume(particles);
+            int a = 0;
         }
 
         float ComputeVolume(const std::vector<Particle>& particles) const
@@ -260,10 +261,10 @@ namespace PBD
                 XMVECTOR p3 = XMLoadFloat3(&particles[tri.i3].expectedPosition);
                 volume += XMVectorGetX(XMVector3Dot(XMVector3Cross(p1, p2), p3));
             }
-            return volume / 6.0f;
+            return fabs(volume / 6.0f);
         }
 
-        void Solve(std::vector<Particle>& particles, float stiffness)
+        void Solve(std::vector<Particle>& particles, float stiffness) const
         {
             const int N = (int)particles.size();
 
@@ -318,6 +319,7 @@ namespace PBD
             ImGui::Text("Rest volume: %.4f", restVolume);
             ImGui::Text("Current volume: %.4f", currentVolume);
             ImGui::Text("C (constraint value): %.4f", C);
+            ImGui::Text("Ratio: %.2f %%", (currentVolume / restVolume) * 100.0f);
             ImGui::End();
         }
     };

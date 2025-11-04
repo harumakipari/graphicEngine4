@@ -368,12 +368,12 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
         // 5. °Õ“Ë
         XMFLOAT3 normal = { 0.0f, 1.0f, 0.0f };
-        float offset = 4.0f;         // y=4 ‚Ì‚‚³
+        float offset = 2.0f;         // y=4 ‚Ì‚‚³
         float restitution = 0.8f;    // ’e«
         pbd->AddCollisionPlane(normal, offset, restitution);
 
         // 6. Ž©ŒÈÕ“Ë
-        pbd->EnableSelfCollision(spacing * 0.5f); // —±ŽqŠÔ‹——£‚Ì”¼•ª
+        pbd->EnableSelfCollision(spacing * 0.2f); // —±ŽqŠÔ‹——£‚Ì”¼•ª
 #endif // 0
 #endif
 #endif
