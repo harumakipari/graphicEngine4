@@ -14,7 +14,8 @@ namespace PBD
         float distanceStiffness = 1.0f;
         float bendingStiffness = 0.5f;
         float volumeStiffness = 1.0f;
-        float damping = 0.98f;
+        //float damping = 0.98f;
+        float damping = 1.0f;
         XMFLOAT3 externalForce = { 0.0f, -9.8f, 0.0f }; // 重力
     };
 
@@ -30,6 +31,7 @@ namespace PBD
             p.expectedPosition = pos;
             p.invMass = (mass > 0.0f) ? 1.0f / mass : 0.0f;
             particles.push_back(p);
+            restPositions.push_back(pos);
         }
 
         void AddBendingConstraint(int i1, int i2, int i3, int i4, float stiffness)
@@ -47,6 +49,8 @@ namespace PBD
 
             ExpectedPosition(deltaTime);
 
+            //ShapeMatching(0.1f);
+
             GenerateCollisionConstraints();
 
             for (int i = 0; i < gPbdParams.iterationCount; ++i)
@@ -56,7 +60,7 @@ namespace PBD
 
             CalculateVelocities(deltaTime);
 
-            UpdateVelocity(deltaTime);
+            UpdateVelocity(deltaTime, collisionConstraints);
         }
 
         void AddDistanceConstraints(int i1, int i2, float stiffness)
@@ -131,6 +135,89 @@ namespace PBD
         }
     private:
 
+        void ShapeMatching(float stiffness)
+        {
+            using namespace DirectX;
+
+            if (particles.empty()) return;
+
+            // --- (1) 重心を求める ---
+            XMVECTOR xcm = XMVectorZero(); // 現在
+            XMVECTOR qcm = XMVectorZero(); // 初期
+            float totalMass = 0.0f;
+
+            for (size_t i = 0; i < particles.size(); ++i)
+            {
+                float invM = particles[i].invMass;
+                if (invM == 0.0f) continue;
+                float m = 1.0f / invM;
+                totalMass += m;
+
+                XMVECTOR xi = XMLoadFloat3(&particles[i].expectedPosition);
+                XMVECTOR qi = XMLoadFloat3(&restPositions[i]);
+                xcm += xi * m;
+                qcm += qi * m;
+            }
+
+            xcm /= totalMass;
+            qcm /= totalMass;
+
+            // --- (2) A_pq 行列を求める ---
+            XMFLOAT3X3 Apq = {}; // 3x3 行列
+            for (size_t i = 0; i < particles.size(); ++i)
+            {
+                float invM = particles[i].invMass;
+                if (invM == 0.0f) continue;
+                float m = 1.0f / invM;
+
+                XMVECTOR xi = XMLoadFloat3(&particles[i].expectedPosition);
+                XMVECTOR qi = XMLoadFloat3(&restPositions[i]);
+
+                XMVECTOR ri = xi - xcm;
+                XMVECTOR qiRel = qi - qcm;
+
+                XMFLOAT3 r, q;
+                XMStoreFloat3(&r, ri);
+                XMStoreFloat3(&q, qiRel);
+
+                // outer product r * q^T
+                Apq._11 += m * r.x * q.x; Apq._12 += m * r.x * q.y; Apq._13 += m * r.x * q.z;
+                Apq._21 += m * r.y * q.x; Apq._22 += m * r.y * q.y; Apq._23 += m * r.y * q.z;
+                Apq._31 += m * r.z * q.x; Apq._32 += m * r.z * q.y; Apq._33 += m * r.z * q.z;
+            }
+
+            // --- (3) 回転行列 R を求める（極分解 / SVD）
+            XMMATRIX R = XMMatrixIdentity();
+
+            // ここでは簡易的に正交化（Gram-Schmidt法）を使用
+            {
+                XMVECTOR col0 = XMVectorSet(Apq._11, Apq._21, Apq._31, 0.0f);
+                XMVECTOR col1 = XMVectorSet(Apq._12, Apq._22, Apq._32, 0.0f);
+                XMVECTOR col2 = XMVectorSet(Apq._13, Apq._23, Apq._33, 0.0f);
+
+                col0 = XMVector3Normalize(col0);
+                col1 = XMVector3Normalize(col1 - XMVector3Dot(col0, col1) * col0);
+                col2 = XMVector3Cross(col0, col1);
+
+                R = XMMATRIX(col0, col1, col2, XMVectorSet(0, 0, 0, 1));
+            }
+
+            // --- (4) 新しい目標位置 ---
+            for (size_t i = 0; i < particles.size(); ++i)
+            {
+                if (particles[i].invMass == 0.0f) continue;
+
+                XMVECTOR qi = XMLoadFloat3(&restPositions[i]);
+                XMVECTOR qiRel = qi - qcm;
+                XMVECTOR goal = XMVector3TransformNormal(qiRel, R) + xcm;
+
+                XMVECTOR xi = XMLoadFloat3(&particles[i].expectedPosition);
+                XMVECTOR corrected = XMVectorLerp(xi, goal, stiffness);
+                XMStoreFloat3(&particles[i].expectedPosition, corrected);
+            }
+        }
+
+
         // 速度に外力を加える
         void AddForceToVelocity(float deltaTime)
         {
@@ -149,6 +236,7 @@ namespace PBD
         //位置予測する前に速度を減衰させる 3.5Damping
         void DampVelocities(float deltaTime, float damping)
         {
+#if 1
             using namespace DirectX;
 
             if (particles.empty()) return;
@@ -234,6 +322,80 @@ namespace PBD
                 vi = XMVectorAdd(vi, XMVectorScale(deltaVi, damping));
                 XMStoreFloat3(&p.velocity, vi); // (8)
             }
+
+#else
+            using namespace DirectX;
+            if (particles.empty()) return;
+
+            float totalMass = 0.0f;
+            XMVECTOR xcm = XMVectorZero();
+            XMVECTOR vcm = XMVectorZero();
+
+            for (auto& p : particles)
+            {
+                if (p.invMass == 0.0f) continue;
+                float m = 1.0f / p.invMass;
+                totalMass += m;
+                XMVECTOR pos = XMLoadFloat3(&p.position);
+                XMVECTOR vel = XMLoadFloat3(&p.velocity);
+                xcm = XMVectorAdd(xcm, XMVectorScale(pos, m));
+                vcm = XMVectorAdd(vcm, XMVectorScale(vel, m));
+            }
+
+            xcm = XMVectorScale(xcm, 1.0f / totalMass);
+            vcm = XMVectorScale(vcm, 1.0f / totalMass);
+
+            XMVECTOR L = XMVectorZero();
+            float I_[3][3] = {};
+
+            for (auto& p : particles)
+            {
+                if (p.invMass == 0.0f) continue;
+                float m = 1.0f / p.invMass;
+                XMVECTOR xi = XMLoadFloat3(&p.position);
+                XMVECTOR vi = XMLoadFloat3(&p.velocity);
+                XMVECTOR ri = XMVectorSubtract(xi, xcm);
+
+                L = XMVectorAdd(L, XMVector3Cross(ri, XMVectorScale(vi, m)));
+
+                XMFLOAT3 r; XMStoreFloat3(&r, ri);
+                float r2 = r.x * r.x + r.y * r.y + r.z * r.z;
+                I_[0][0] += m * (r2 - r.x * r.x);
+                I_[1][1] += m * (r2 - r.y * r.y);
+                I_[2][2] += m * (r2 - r.z * r.z);
+                I_[0][1] -= m * (r.x * r.y);
+                I_[0][2] -= m * (r.x * r.z);
+                I_[1][0] -= m * (r.y * r.x);
+                I_[1][2] -= m * (r.y * r.z);
+                I_[2][0] -= m * (r.z * r.x);
+                I_[2][1] -= m * (r.z * r.y);
+            }
+
+            XMMATRIX I_mat = XMMatrixIdentity();
+            for (int r = 0; r < 3; ++r)
+                for (int c = 0; c < 3; ++c)
+                    I_mat.r[r].m128_f32[c] = I_[r][c];
+
+            XMVECTOR det;
+            XMMATRIX I_inv = XMMatrixInverse(&det, I_mat);
+            if (fabsf(XMVectorGetX(det)) < 1e-6f) return;
+
+            XMVECTOR w = XMVector3TransformNormal(L, XMMatrixTranspose(I_inv));
+
+            for (auto& p : particles)
+            {
+                if (p.IsStatic()) continue;
+                XMVECTOR xi = XMLoadFloat3(&p.position);
+                XMVECTOR vi = XMLoadFloat3(&p.velocity);
+                XMVECTOR ri = XMVectorSubtract(xi, xcm);
+
+                XMVECTOR deltaVi = vcm + XMVector3Cross(w, ri) - vi;
+                vi = XMVectorAdd(vi, XMVectorScale(deltaVi, damping));
+                XMStoreFloat3(&p.velocity, vi);
+            }
+
+#endif // 0
+
         }
 
 
@@ -282,7 +444,7 @@ namespace PBD
             }
 
             // 3) 内部拘束でできた総移動を打ち消して線形/角運動量を保存
-            ConserveMomentumAfterInternalProjection(particles, preExpected);
+            //ConserveMomentumAfterInternalProjection(particles, preExpected);
 
             // 地面・平面衝突
             for (auto& c : collisionConstraints)
@@ -307,10 +469,47 @@ namespace PBD
         }
 
         // friction restitution とかに応じて変更
-        void UpdateVelocity(float deltaTime)
+        void UpdateVelocity(float deltaTime, const std::vector<CollisionConstraint>& constraints, float friction = 0.5f)
         {
+            using namespace DirectX;
 
+            for (auto& p : particles)
+            {
+                if (p.IsStatic()) continue;
+
+                XMVECTOR v = XMLoadFloat3(&p.velocity);
+                XMVECTOR pos = XMLoadFloat3(&p.position);
+
+                // 衝突ごとに速度を修正
+                for (const auto& c : constraints)
+                {
+                    XMVECTOR n = XMLoadFloat3(&c.planeNormal);
+                    float d = c.planeOffset;
+
+                    float dist = XMVectorGetX(XMVector3Dot(pos, n)) - d;
+
+                    if (dist < 0.0f)
+                    {
+                        // 法線方向の速度成分
+                        float vn = XMVectorGetX(XMVector3Dot(v, n));
+
+                        if (vn < 0.0f)
+                        {
+                            // 反発
+                            v -= (1.0f + c.restitution) * vn * n;
+
+                            // 接線成分の摩擦
+                            XMVECTOR vt = v - XMVector3Dot(v, n) * n;
+                            vt = XMVectorScale(vt, 1.0f - friction); // 摩擦係数で減衰
+                            v = XMVector3Dot(v, n) * n + vt;        // 法線+接線
+                        }
+                    }
+                }
+
+                XMStoreFloat3(&p.velocity, v);
+            }
         }
+
 
     private:
         void SolveFloorConstraint()
@@ -331,6 +530,8 @@ namespace PBD
         std::vector<VolumeConstraint> volumeConstraints;
         std::vector<CollisionConstraint> collisionConstraints;
 
+
+        std::vector<XMFLOAT3> restPositions; // 初期の相対位置
         SelfCollisionConstraint selfCollision;
         bool enableSelfCollision = false;
         PBDParams gPbdParams;
