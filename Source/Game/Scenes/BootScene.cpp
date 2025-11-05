@@ -373,7 +373,7 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         pbd->AddCollisionPlane(normal, offset, restitution);
 
         // 6. Ž©ŒÈÕ“Ë
-        pbd->EnableSelfCollision(spacing * 0.2f); // —±ŽqŠÔ‹——£‚Ì”¼•ª
+        pbd->EnableSelfCollision(spacing * 0.4f); // —±ŽqŠÔ‹——£‚Ì”¼•ª
 #endif // 0
 #endif
 #endif
@@ -437,6 +437,7 @@ void BootScene::Update(ID3D11DeviceContext* immediateContext, float deltaTime)
     lightManager->Update(deltaTime);
 
     pbd->Update(deltaTime);
+    //pbd->Update(1 / 60.0f);
 
     const auto& p = pbd->GetParticles()[0];
     const auto& p1 = pbd->GetParticles()[1];
