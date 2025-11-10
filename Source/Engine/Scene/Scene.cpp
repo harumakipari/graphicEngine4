@@ -25,13 +25,13 @@ bool Scene::_update(ID3D11DeviceContext* immediateContext, float deltaTime)
         // 現在のシーンを「終了処理中」に変更
         _current_scene->State(SCENE_STATE::uninitializing);
 
-        // 現在のシーンの後処理
-        _current_scene->Uninitialize(device.Get());
         // actorManager の破棄処理
         if (_current_scene->actorManager_)
         {
             _current_scene->actorManager_->ClearAll();
         }
+        // 現在のシーンの後処理
+        _current_scene->Uninitialize(device.Get());
         // 現在のシーンを「終了済み」に変更
         _current_scene->State(SCENE_STATE::uninitialized);
 

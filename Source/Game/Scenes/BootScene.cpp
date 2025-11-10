@@ -34,7 +34,6 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 {
     sceneCBuffer = std::make_unique<ConstantBuffer<SceneConstants>>(device);
     shaderCBuffer = std::make_unique<ConstantBuffer<ShaderConstants>>(device);
-    //fogCBuffer = std::make_unique<ConstantBuffer<FogConstants>>(device);
     spriteCBuffer = std::make_unique<ConstantBuffer<SpriteConstants>>(device);
     sceneCBuffer->data.time = 0;//ŠJŽnŽž‚É‚O‚É‚µ‚Ä‚¨‚­
 
@@ -529,7 +528,6 @@ bool BootScene::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
 
     cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
 
-    //MULTIPLE_RENDER_TARGETS
     multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, framebufferDimensions.cx, framebufferDimensions.cy, 3);
 
     postEffectManager->Initialize(device, framebufferDimensions.cx, framebufferDimensions.cy);
@@ -539,8 +537,7 @@ bool BootScene::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
 
 bool BootScene::Uninitialize(ID3D11Device* device)
 {
-    ClearActorManager();
-
+    //ClearActorManager();
     Physics::Instance().Finalize();
     return true;
 }
@@ -553,7 +550,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
-    //IBL
+    // IBL
     immediateContext->PSSetShaderResources(32, 1, shaderResourceViews[0].GetAddressOf());
     immediateContext->PSSetShaderResources(33, 1, shaderResourceViews[1].GetAddressOf());
     immediateContext->PSSetShaderResources(34, 1, shaderResourceViews[2].GetAddressOf());
@@ -877,6 +874,8 @@ void BootScene::DrawGui()
     pbd->DrawGui();
 
     sceneEffectManager->DrawGui();
+
+    postEffectManager->DrawGui();
 
 #ifdef USE_IMGUI
     ImGuiStyle& style = ImGui::GetStyle();
