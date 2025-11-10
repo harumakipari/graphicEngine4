@@ -67,25 +67,25 @@ class BootScene : public Scene
     //ShaderConstants shaderConstants;
 
     // FOG
-    struct FogConstants
-    {
-        float fogColor[4] = { 1.000f,1.000f, 1.000f, 1.000f }; // w: fog intensuty
+    //struct FogConstants
+    //{
+    //    float fogColor[4] = { 1.000f,1.000f, 1.000f, 1.000f }; // w: fog intensuty
 
-        float fogDensity = 0.02f;
-        float fogHeightFalloff = 0.05f;
-        float groundLevel = 0.0f;
-        float fogCutoffDistance = 500.0f;
+    //    float fogDensity = 0.02f;
+    //    float fogHeightFalloff = 0.05f;
+    //    float groundLevel = 0.0f;
+    //    float fogCutoffDistance = 500.0f;
 
-        float mieScatteringFactor = 0.55f;
+    //    float mieScatteringFactor = 0.55f;
 
-        int enableDither = 1;
-        int enableBlur = 1;
+    //    int enableDither = 1;
+    //    int enableBlur = 1;
 
-        float timeScale = 0.35f;
-        float noiseScale = 0.2f;
-        float pads[3];
-    };
-    //FogConstants fogConstants;
+    //    float timeScale = 0.35f;
+    //    float noiseScale = 0.2f;
+    //    float pads[3];
+    //};
+    //FogConstants fogCBuffer;
 
     //Glitch
     struct SpriteConstants
@@ -99,7 +99,7 @@ class BootScene : public Scene
     // ConstantBuffer ÉNÉâÉXÇ≈ä«óù
     std::unique_ptr<ConstantBuffer<SceneConstants>>     sceneCBuffer;
     std::unique_ptr <ConstantBuffer<ShaderConstants>>   shaderCBuffer;
-    std::unique_ptr <ConstantBuffer<FogConstants>>      fogCBuffer;
+    //std::unique_ptr <ConstantBuffer<FogConstants>>      fogCBuffer;
     std::unique_ptr <ConstantBuffer<SpriteConstants>>   spriteCBuffer;
 
     ActorColliderManager actorColliderManager;
@@ -175,7 +175,6 @@ private:
 
     DirectX::XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
 
-    Renderer actorRender;
     SceneRenderer sceneRender;
 
     // SCREEN_SPACE_AMBIENT_OCCLUSION

@@ -16,7 +16,7 @@ namespace PBD
         float volumeStiffness = 1.0f;
         float damping = 0.58f;
         float friction = 0.1f;
-        XMFLOAT3 externalForce = { 0.0f, -1.8f, 0.0f }; // 重力
+        XMFLOAT3 externalForce = { 1.0f, 0.0f, 0.0f }; // 重力
     };
 
 
@@ -45,7 +45,7 @@ namespace PBD
         {
             AddForceToVelocity(deltaTime);
 
-            DampVelocities(deltaTime, gPbdParams.damping);
+            DampVelocities( gPbdParams.damping);
 
             ExpectedPosition(deltaTime);
 
@@ -60,9 +60,9 @@ namespace PBD
 
             CalculateVelocities(deltaTime);
 
-            DampRigidModesPostSolve(deltaTime);
+            DampRigidModesPostSolve();
 
-            UpdateVelocity(deltaTime, collisionConstraints);
+            UpdateVelocity(collisionConstraints);
         }
 
         void AddDistanceConstraints(int i1, int i2, float stiffness)
@@ -236,7 +236,7 @@ namespace PBD
         }
 
         //位置予測する前に速度を減衰させる 3.5Damping
-        void DampVelocities(float deltaTime, float damping)
+        void DampVelocities(float damping)
         {
             using namespace DirectX;
 
@@ -384,7 +384,7 @@ namespace PBD
             }
         }
 
-        void DampRigidModesPostSolve(float deltaTime, float rigidDamping = 0.5f)
+        void DampRigidModesPostSolve( float rigidDamping = 0.5f)
         {
             using namespace DirectX;
             const size_t N = particles.size();
@@ -475,7 +475,7 @@ namespace PBD
 
 
         // friction restitution とかに応じて変更
-        void UpdateVelocity(float deltaTime, const std::vector<CollisionConstraint>& constraints, float friction = 0.5f)
+        void UpdateVelocity( const std::vector<CollisionConstraint>& constraints, float friction = 0.5f)
         {
             using namespace DirectX;
 

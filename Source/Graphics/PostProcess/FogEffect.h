@@ -49,7 +49,7 @@ public:
     void DrawDebugUI()override;
 
 private:
-    std::unique_ptr<ConstantBuffer<FogConstants>> fogConstants;
+    std::unique_ptr<ConstantBuffer<FogConstants>> fogCBuffer;
     std::unique_ptr<FrameBuffer> fogBuffer;
     std::unique_ptr<FullScreenQuad> fullScreenQuad;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> fogPS;

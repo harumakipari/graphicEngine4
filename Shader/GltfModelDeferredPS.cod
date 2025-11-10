@@ -125,7 +125,7 @@
 // SV_TARGET                4   xyzw        4   TARGET   float   xyzw
 //
 ps_5_0
-dcl_globalFlags refactoringAllowed
+dcl_globalFlags refactoringAllowed | skipOptimization
 dcl_constantbuffer CB0[6], immediateIndexed
 dcl_sampler s1, mode_default
 dcl_sampler s2, mode_default
@@ -145,92 +145,280 @@ dcl_output o1.xyzw
 dcl_output o2.xyzw
 dcl_output o3.xyzw
 dcl_output o4.xyzw
-dcl_temps 7
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r0.xyzw, cb0[5].x, l(0), t0.xyzw
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.x, cb0[5].x, l(16), t0.xxxx
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r2.xyzw, cb0[5].x, l(24), t0.xyzw
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.y, cb0[5].x, l(40), t0.xxxx
-ilt r1.y, l(-1), r1.y
-if_nz r1.y
-  sample_indexable(texture2d)(float,float,float,float) r3.xyzw, v4.xyxx, t1.xyzw, s2
-  log r1.yzw, r3.xxyz
-  mul r1.yzw, r1.yyzw, l(0.000000, 2.200000, 2.200000, 2.200000)
-  exp r3.xyz, r1.yzwy
-  mul o2.xyzw, r2.xyzw, r3.xyzw
+dcl_temps 9
+//
+// Initial variable locations:
+//   v0.x <- pin.position.x; v0.y <- pin.position.y; v0.z <- pin.position.z; v0.w <- pin.position.w; 
+//   v1.x <- pin.wPosition.x; v1.y <- pin.wPosition.y; v1.z <- pin.wPosition.z; v1.w <- pin.wPosition.w; 
+//   v2.x <- pin.wNormal.x; v2.y <- pin.wNormal.y; v2.z <- pin.wNormal.z; v2.w <- pin.wNormal.w; 
+//   v3.x <- pin.wTangent.x; v3.y <- pin.wTangent.y; v3.z <- pin.wTangent.z; v3.w <- pin.wTangent.w; 
+//   v4.x <- pin.texcoord.x; v4.y <- pin.texcoord.y; 
+//   v5.x <- isFrontFace; 
+//   o4.x <- <main return value>.emissive.x; o4.y <- <main return value>.emissive.y; o4.z <- <main return value>.emissive.z; o4.w <- <main return value>.emissive.w; 
+//   o3.x <- <main return value>.position.x; o3.y <- <main return value>.position.y; o3.z <- <main return value>.position.z; o3.w <- <main return value>.position.w; 
+//   o2.x <- <main return value>.color.x; o2.y <- <main return value>.color.y; o2.z <- <main return value>.color.z; o2.w <- <main return value>.color.w; 
+//   o1.x <- <main return value>.material.x; o1.y <- <main return value>.material.y; o1.z <- <main return value>.material.z; o1.w <- <main return value>.material.w; 
+//   o0.x <- <main return value>.normal.x; o0.y <- <main return value>.normal.y; o0.z <- <main return value>.normal.z; o0.w <- <main return value>.normal.w
+//
+#line 19 "C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelDeferredPS.hlsl"
+mov r0.x, l(2.200000)  // r0.x <- GAMMA
+
+#line 20
+mov r0.y, cb0[5].x
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.x, r0.y, l(0), t0.xxxx  // r1.x <- m.emissiveFactor.x
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.y, r0.y, l(4), t0.xxxx  // r1.y <- m.emissiveFactor.y
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.z, r0.y, l(8), t0.xxxx  // r1.z <- m.emissiveFactor.z
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r0.z, r0.y, l(12), t0.xxxx  // r0.z <- m.alphaMode
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r0.w, r0.y, l(16), t0.xxxx  // r0.w <- m.alphaCutoff
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r2.y, r0.y, l(24), t0.xxxx  // r2.y <- m.pbrMetallicRoughness.baseColorFactor.x
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r2.z, r0.y, l(28), t0.xxxx  // r2.z <- m.pbrMetallicRoughness.baseColorFactor.y
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r2.w, r0.y, l(32), t0.xxxx  // r2.w <- m.pbrMetallicRoughness.baseColorFactor.z
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r2.x, r0.y, l(36), t0.xxxx  // r2.x <- m.pbrMetallicRoughness.baseColorFactor.w
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r3.x, r0.y, l(40), t0.xxxx  // r3.x <- m.pbrMetallicRoughness.basecolorTexture.index
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r4.x, r0.y, l(48), t0.xxxx  // r4.x <- m.pbrMetallicRoughness.metallicFactor
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r4.z, r0.y, l(52), t0.xxxx  // r4.z <- m.pbrMetallicRoughness.roughnessFactor
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r3.y, r0.y, l(56), t0.xxxx  // r3.y <- m.pbrMetallicRoughness.metallicRoughnessTexture.index
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r3.z, r0.y, l(64), t0.xxxx  // r3.z <- m.normalTexture.index
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r5.x, r0.y, l(72), t0.xxxx  // r5.x <- m.normalTexture.scale
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r3.w, r0.y, l(76), t0.xxxx  // r3.w <- m.occlusionTexture.index
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r4.w, r0.y, l(84), t0.xxxx  // r4.w <- m.occlusionTexture.strength
+ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r0.y, r0.y, l(88), t0.xxxx  // r0.y <- m.emissiveTexture.index
+
+#line 22
+mov r2.xyzw, r2.xyzw  // r2.x <- baseColorFactor.w; r2.y <- baseColorFactor.x; r2.z <- baseColorFactor.y; r2.w <- baseColorFactor.z
+
+#line 23
+mov r3.x, r3.x  // r3.x <- baseColorTexture
+
+#line 25
+mov r2.xyzw, r2.xyzw  // r2.x <- baseColor.w; r2.y <- baseColor.x; r2.z <- baseColor.y; r2.w <- baseColor.z
+
+#line 27
+ilt r3.x, l(-1), r3.x
+if_nz r3.x
+
+#line 29
+  sample_indexable(texture2d)(float,float,float,float) r6.xyzw, v4.xyxx, t1.xyzw, s2  // r6.x <- sampled.x; r6.y <- sampled.y; r6.z <- sampled.z; r6.w <- sampled.w
+
+#line 30
+  log r7.xyz, r6.xyzx
+  mul r7.xyz, r0.xxxx, r7.xyzx
+  exp r6.xyz, r7.xyzx
+
+#line 31
+  mul r6.xyzw, r2.yzwx, r6.xyzw  // r6.x <- baseColor.x; r6.y <- baseColor.y; r6.z <- baseColor.z; r6.w <- baseColor.w
+
+#line 32
+else   // Prior locations: r2.x <- baseColor.w; r2.y <- baseColor.x; r2.z <- baseColor.y; r2.w <- baseColor.z
+  mov r6.xyzw, r2.yzwx  // r6.x <- baseColor.x; r6.y <- baseColor.y; r6.z <- baseColor.z; r6.w <- baseColor.w
+endif 
+
+#line 34
+if_z r0.z
+
+#line 36
+  mov r2.x, l(1.000000)  // r2.x <- baseColorFactor.w
+
+#line 37
 else 
-  mov o2.xyzw, r2.xyzw
+  mov r2.x, r2.x  // r2.x <- m.pbrMetallicRoughness.baseColorFactor.w; r2.x <- baseColorFactor.w
 endif 
-movc r0.w, r0.w, r2.w, l(1.000000)
-lt r0.w, r0.w, r1.x
-discard_nz r0.w
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r1.xyz, cb0[5].x, l(48), t0.xyzx
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r0.w, cb0[5].x, l(64), t0.xxxx
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r2.xy, cb0[5].x, l(72), t0.xyxx
-ld_structured_indexable(structured_buffer, stride=96)(mixed,mixed,mixed,mixed) r3.xw, cb0[5].x, l(84), t0.yxxx
-ilt r1.w, l(-1), r3.x
-if_nz r1.w
-  sample_indexable(texture2d)(float,float,float,float) r4.xyz, v4.xyxx, t4.xyzw, s2
-  log r4.xyz, r4.xyzx
-  mul r4.xyz, r4.xyzx, l(2.200000, 2.200000, 2.200000, 0.000000)
-  exp r4.xyz, r4.xyzx
-  mul r0.xyz, r0.xyzx, r4.xyzx
+
+#line 38
+lt r0.z, r2.x, r0.w
+if_nz r0.z
+
+#line 40
+  discard_nz l(-1)
+
+#line 41
 endif 
-ilt r1.z, l(-1), r1.z
-if_nz r1.z
-  sample_indexable(texture2d)(float,float,float,float) r1.zw, v4.xyxx, t2.xwyz, s1
-  mul r3.xy, r1.zwzz, r1.yxyy
-else 
-  mov r3.xy, r1.yxyy
+
+#line 43
+mov r1.xyz, r1.xyzx  // r1.x <- emissiveFactor.x; r1.y <- emissiveFactor.y; r1.z <- emissiveFactor.z
+
+#line 45
+mov r0.y, r0.y  // r0.y <- emissiveTexture
+
+#line 46
+ilt r0.y, l(-1), r0.y
+if_nz r0.y
+
+#line 48
+  sample_indexable(texture2d)(float,float,float,float) r0.yzw, v4.xyxx, t4.wxyz, s2
+  mov r0.yzw, r0.yyzw  // r0.y <- sampled.x; r0.z <- sampled.y; r0.w <- sampled.z
+
+#line 49
+  log r0.yzw, r0.yyzw
+  mul r0.xyz, r0.yzwy, r0.xxxx
+  exp r0.xyz, r0.xyzx  // r0.x <- sampled.x; r0.y <- sampled.y; r0.z <- sampled.z
+
+#line 50
+  mul r1.xyz, r0.xyzx, r1.xyzx
+
+#line 51
 endif 
-ilt r1.x, l(-1), r2.y
-if_nz r1.x
-  sample_indexable(texture2d)(float,float,float,float) r3.z, v4.xyxx, t5.yzxw, s1
-else 
-  mov r3.z, l(1.000000)
+
+#line 53
+mov r4.z, r4.z  // r4.z <- roughnessFactor
+
+#line 54
+mov r4.x, r4.x  // r4.x <- metallicFactor
+
+#line 55
+mov r3.y, r3.y  // r3.y <- metallicRoughnessTexture
+
+#line 56
+ilt r0.x, l(-1), r3.y
+if_nz r0.x
+
+#line 58
+  sample_indexable(texture2d)(float,float,float,float) r0.xy, v4.xyxx, t2.yzxw, s1  // r0.x <- sampled.y; r0.y <- sampled.z
+
+#line 59
+  mul r4.z, r0.x, r4.z
+
+#line 60
+  mul r4.x, r0.y, r4.x
+
+#line 61
 endif 
-dp3 r1.x, v2.xyzx, v2.xyzx
-rsq r1.x, r1.x
-mul r1.xyz, r1.xxxx, v2.zxyz
-movc r4.xyz, v5.xxxx, r1.yzxy, -r1.yzxy
-ilt r0.w, l(-1), r0.w
-if_nz r0.w
-  dp3 r0.w, v3.xyzx, v3.xyzx
-  rsq r0.w, r0.w
-  mul r5.xyz, r0.wwww, v3.xyzx
-  movc r5.xyz, cb0[5].yyyy, r5.xyzx, l(1.000000,0,0,0)
-  movc r0.w, cb0[5].y, v3.w, l(1.000000)
-  dp3 r1.w, r1.yzxy, r5.xyzx
-  mad r5.xyz, -r1.yzxy, r1.wwww, r5.xyzx
-  dp3 r1.w, r5.xyzx, r5.xyzx
-  rsq r1.w, r1.w
-  mul r5.xyz, r1.wwww, r5.xyzx
-  mul r6.xyz, r1.xyzx, r5.yzxy
-  mad r1.xyz, r1.zxyz, r5.zxyz, -r6.xyzx
-  mul r1.xyz, r0.wwww, r1.xyzx
-  dp3 r0.w, r1.xyzx, r1.xyzx
-  rsq r0.w, r0.w
-  mul r1.xyz, r0.wwww, r1.xyzx
-  movc r5.xyz, v5.xxxx, r5.xyzx, -r5.xyzx
-  movc r1.xyz, v5.xxxx, r1.xyzx, -r1.xyzx
-  sample_indexable(texture2d)(float,float,float,float) r6.xyz, v4.xyxx, t3.xyzw, s1
-  mad r6.xyz, r6.xyzx, l(2.000000, 2.000000, 2.000000, 0.000000), l(-1.000000, -1.000000, -1.000000, 0.000000)
-  mov r2.z, l(1.000000)
-  mul r2.xyz, r2.xxzx, r6.xyzx
-  dp3 r0.w, r2.xyzx, r2.xyzx
-  rsq r0.w, r0.w
-  mul r2.xyz, r0.wwww, r2.xyzx
-  mul r1.xyz, r1.xyzx, r2.yyyy
-  mad r1.xyz, r2.xxxx, r5.xyzx, r1.xyzx
-  mad r1.xyz, r2.zzzz, r4.xyzx, r1.xyzx
-  dp3 r0.w, r1.xyzx, r1.xyzx
-  rsq r0.w, r0.w
-  mul r4.xyz, r0.wwww, r1.xyzx
+
+#line 63
+mov r4.y, l(1.000000)  // r4.y <- occlusionFactor
+
+#line 64
+mov r3.w, r3.w  // r3.w <- occlusionTexture
+
+#line 65
+ilt r0.x, l(-1), r3.w
+if_nz r0.x
+
+#line 67
+  sample_indexable(texture2d)(float,float,float,float) r0.x, v4.xyxx, t5.xyzw, s1  // r0.x <- sampled.x
+
+#line 68
+  mul r4.y, r0.x, r4.y
+
+#line 69
 endif 
-mov o0.xyz, r4.xyzx
-mov o0.w, l(0)
-mov o1.xyzw, r3.yzxw
-mov o3.xyzw, v1.xyzw
-mov o4.xyz, r0.xyzx
-mov o4.w, l(0)
+
+#line 70
+mov r4.w, r4.w  // r4.w <- occlusionStrength
+
+#line 80
+dp3 r0.x, v2.xyzx, v2.xyzx
+rsq r0.x, r0.x
+mul r0.xyz, r0.xxxx, v2.xyzx  // r0.x <- N.x; r0.y <- N.y; r0.z <- N.z
+
+#line 81
+ine r2.x, l(0, 0, 0, 0), cb0[5].y
+dp3 r2.y, v3.xyzx, v3.xyzx
+rsq r2.y, r2.y
+mul r2.yzw, r2.yyyy, v3.xxyz
+itof r3.xyw, l(1, 0, 0, 0)
+movc r2.xyz, r2.xxxx, r2.yzwy, r3.xywx  // r2.x <- T.x; r2.y <- T.y; r2.z <- T.z
+
+#line 82
+ine r2.w, l(0, 0, 0, 0), cb0[5].y
+movc r2.w, r2.w, v3.w, l(1.000000)  // r2.w <- sigma
+
+#line 83
+dp3 r3.x, r0.xyzx, r2.xyzx
+mul r3.xyw, r0.xyxz, r3.xxxx
+mov r3.xyw, -r3.xyxw
+add r2.xyz, r2.xyzx, r3.xywx
+dp3 r3.x, r2.xyzx, r2.xyzx
+rsq r3.x, r3.x
+mul r2.xyz, r2.xyzx, r3.xxxx  // r2.x <- T.x; r2.y <- T.y; r2.z <- T.z
+
+#line 84
+mul r3.xyw, r0.yzyx, r2.zxzy
+mul r7.xyz, r0.zxyz, r2.yzxy
+mov r7.xyz, -r7.xyzx
+add r3.xyw, r3.xyxw, r7.xyxz
+mul r3.xyw, r2.wwww, r3.xyxw
+dp3 r2.w, r3.xywx, r3.xywx
+rsq r2.w, r2.w
+mul r3.xyw, r2.wwww, r3.xyxw  // r3.x <- B.x; r3.y <- B.y; r3.w <- B.z
+
+#line 87
+if_z v5.x
+
+#line 89
+  mov r2.xyz, -r2.xyzx
+
+#line 90
+  mov r3.xyw, -r3.xyxw
+
+#line 91
+  mov r0.xyz, -r0.xyzx
+
+#line 92
+endif 
+
+#line 94
+mov r3.z, r3.z  // r3.z <- normalTexture
+
+#line 95
+ilt r2.w, l(-1), r3.z
+if_nz r2.w
+
+#line 97
+  sample_indexable(texture2d)(float,float,float,float) r7.xyz, v4.xyxx, t3.xyzw, s1  // r7.x <- sampled.x; r7.y <- sampled.y; r7.z <- sampled.z
+
+#line 98
+  mov r7.xyz, r7.xyzx  // r7.x <- normalFactor.x; r7.y <- normalFactor.y; r7.z <- normalFactor.z
+
+#line 99
+  mul r7.xyz, r7.xyzx, l(2.000000, 2.000000, 2.000000, 0.000000)
+  mov r8.xyz, l(-1.000000,-1.000000,-1.000000,-0.000000)
+  add r7.xyz, r7.xyzx, r8.xyzx  // r7.x <- normalFactor.x; r7.y <- normalFactor.y; r7.z <- normalFactor.z
+
+#line 100
+  mov r5.z, l(1.000000)
+  mul r5.xyz, r5.xxzx, r7.xyzx
+  dp3 r2.w, r5.xyzx, r5.xyzx
+  rsq r2.w, r2.w
+  mul r5.xyz, r2.wwww, r5.xyzx  // r5.x <- normalFactor.x; r5.y <- normalFactor.y; r5.z <- normalFactor.z
+
+#line 101
+  mul r2.xyz, r2.xyzx, r5.xxxx
+  mul r3.xyz, r3.xywx, r5.yyyy
+  add r2.xyz, r2.xyzx, r3.xyzx
+  mul r3.xyz, r0.xyzx, r5.zzzz
+  add r2.xyz, r2.xyzx, r3.xyzx
+  dp3 r2.w, r2.xyzx, r2.xyzx
+  rsq r2.w, r2.w
+  mul r0.xyz, r2.wwww, r2.xyzx
+
+#line 102
+endif 
+
+#line 105
+mov r6.xyzw, r6.xyzw  // r6.x <- pout.color.x; r6.y <- pout.color.y; r6.z <- pout.color.z; r6.w <- pout.color.w
+
+#line 108
+mov r2.xyzw, v1.xyzw  // r2.x <- pout.position.x; r2.y <- pout.position.y; r2.z <- pout.position.z; r2.w <- pout.position.w
+
+#line 109
+itof r0.w, l(0)  // r0.w <- pout.normal.w
+mov r0.xyz, r0.xyzx  // r0.x <- pout.normal.x; r0.y <- pout.normal.y; r0.z <- pout.normal.z
+
+#line 110
+itof r1.w, l(0)  // r1.w <- pout.emissive.w
+mov r1.xyz, r1.xyzx  // r1.x <- pout.emissive.x; r1.y <- pout.emissive.y; r1.z <- pout.emissive.z
+
+#line 111
+mov r4.xz, r4.xxzx  // r4.x <- pout.material.x; r4.z <- pout.material.z
+mov r4.y, r4.y  // r4.y <- pout.material.y
+mov r4.w, r4.w  // r4.w <- pout.material.w
+
+#line 113
+mov o0.xyzw, r0.xyzw
+mov o1.xyzw, r4.xyzw
+mov o2.xyzw, r6.xyzw
+mov o3.xyzw, r2.xyzw
+mov o4.xyzw, r1.xyzw
 ret 
-// Approximately 87 instruction slots used
+// Approximately 138 instruction slots used

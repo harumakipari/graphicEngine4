@@ -40,6 +40,14 @@ public:
 
     ID3D11ShaderResourceView* GetFinalOutput() const { return lastOutput; }
 
+    void DrawGui()
+    {
+        for (auto& effect : effects | std::views::values)
+        {
+            effect->DrawDebugUI();
+        }
+    }
+
 private:
     std::unordered_map<std::string, std::unique_ptr<SceneEffectBase>> effects;
     ID3D11ShaderResourceView* lastOutput = nullptr;

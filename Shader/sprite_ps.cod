@@ -40,7 +40,7 @@
 // SV_TARGET                0   xyzw        0   TARGET   float   xyzw
 //
 ps_5_0
-dcl_globalFlags refactoringAllowed
+dcl_globalFlags refactoringAllowed | skipOptimization
 dcl_constantbuffer CB10[1], immediateIndexed
 dcl_sampler s0, mode_default
 dcl_sampler s2, mode_default
@@ -48,40 +48,115 @@ dcl_resource_texture2d (float,float,float,float) t0
 dcl_input_ps linear v1.xyzw
 dcl_input_ps linear v2.xy
 dcl_output o0.xyzw
-dcl_temps 3
-sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v2.xyxx, t0.xyzw, s2
-if_nz cb10[0].y
-  mul r1.xy, v2.xyxx, l(10.000000, 10.000000, 0.000000, 0.000000)
-  mul r1.z, cb10[0].x, l(4.000000)
-  round_ni r1.xyz, r1.xyzx
-  add r1.xy, r1.zzzz, r1.xyxx
-  dp2 r1.x, r1.xyxx, l(12.989800, 78.233002, 0.000000, 0.000000)
-  sincos r1.x, null, r1.x
-  mul r1.x, r1.x, l(43758.546875)
-  frc r1.x, r1.x
-  mad r1.xy, r1.xxxx, l(30.000000, 10.000000, 0.000000, 0.000000), l(1.000000, 1.000000, 0.000000, 0.000000)
-  mul r1.xy, r1.xyxx, v2.xyxx
-  round_ni r1.xy, r1.xyxx
-  add r1.zw, cb10[0].xxxx, l(0.000000, 0.000000, 12.989800, 78.233002)
-  dp2 r1.x, r1.xyxx, r1.zwzz
-  sincos r1.x, null, r1.x
-  mul r1.x, r1.x, l(43758.542969)
-  frc r1.x, r1.x
-  add r1.x, r1.x, l(-0.500000)
-  mad r1.x, r1.x, l(0.100000), v2.x
-  mov r1.y, v2.y
-  add r2.xyzw, r1.xyxy, l(0.005000, 0.000000, -0.005000, -0.000000)
-  sample_indexable(texture2d)(float,float,float,float) r0.x, r2.xyxx, t0.xyzw, s0
-  sample_indexable(texture2d)(float,float,float,float) r0.y, r1.xyxx, t0.xyzw, s0
-  sample_indexable(texture2d)(float,float,float,float) r0.z, r2.zwzz, t0.xyzw, s0
+dcl_temps 4
+//
+// Initial variable locations:
+//   v0.x <- pin.position.x; v0.y <- pin.position.y; v0.z <- pin.position.z; v0.w <- pin.position.w; 
+//   v1.x <- pin.color.x; v1.y <- pin.color.y; v1.z <- pin.color.z; v1.w <- pin.color.w; 
+//   v2.x <- pin.texCoord.x; v2.y <- pin.texCoord.y; 
+//   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
+//
+#line 10 "C:\Users\2240225\Desktop\graphicEngine4\Shader\sprite_ps.hlsl"
+sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v2.xyxx, t0.xyzw, s2  // r0.x <- color.x; r0.y <- color.y; r0.z <- color.z; r0.w <- color.w
+
+#line 11
+mov r0.w, r0.w  // r0.w <- alpha
+
+#line 14
+ine r1.x, l(0, 0, 0, 0), cb10[0].y
+if_nz r1.x
+
+#line 16
+  mov r1.yz, v2.xxyx  // r1.y <- glitchUV.x; r1.z <- glitchUV.y
+
+#line 26
+  mul r2.xy, v2.xyxx, l(10.000000, 10.000000, 0.000000, 0.000000)
+  round_ni r2.xy, r2.xyxx  // r2.x <- grid.x; r2.y <- grid.y
+
+#line 27
+  mul r2.z, cb10[0].x, l(4.000000)
+  round_ni r2.z, r2.z  // r2.z <- timeSeed
+
+#line 28
+  add r2.xy, r2.zzzz, r2.xyxx
+  dp2 r2.x, r2.xyxx, l(12.989800, 78.233002, 0.000000, 0.000000)
+  sincos r2.x, null, r2.x
+  mul r2.x, r2.x, l(43758.546875)
+  frc r2.x, r2.x  // r2.x <- rand
+
+#line 30
+  mul r2.y, cb10[0].x, l(1.000000)  // r2.y <- t
+
+#line 31
+  itof r2.z, l(30)
+  mul r2.z, r2.x, r2.z
+  itof r2.w, l(1)
+  add r3.x, r2.w, r2.z
+  itof r2.z, l(10)
+  mul r2.x, r2.x, r2.z
+  itof r2.z, l(1)
+  add r3.y, r2.z, r2.x
+  mul r2.xz, r3.xxyx, v2.xxyx
+  round_ni r2.xz, r2.xxzx  // r2.x <- block.x; r2.z <- block.y
+
+#line 32
+  add r3.x, r2.y, l(12.989800)
+  add r3.y, r2.y, l(78.233002)
+  dp2 r2.x, r2.xzxx, r3.xyxx
+  sincos r2.x, null, r2.x
+  mul r2.x, r2.x, l(43758.542969)
+  frc r2.x, r2.x  // r2.x <- noise.x
+
+#line 33
+  mov r2.y, l(-0.500000)
+  add r2.x, r2.y, r2.x
+  mul r2.x, r2.x, l(0.100000)
+  add r1.x, r1.y, r2.x  // r1.x <- glitchUV.x
+
+#line 36
+  itof r2.y, l(0)  // r2.y <- offset.y
+  mov r2.x, l(0.005000)  // r2.x <- offset.x
+
+#line 38
+  add r2.zw, r1.xxxz, r2.xxxy
+  sample_indexable(texture2d)(float,float,float,float) r0.x, r2.zwzz, t0.xyzw, s0  // r0.x <- r
+
+#line 39
+  mov r1.w, v2.y
+  sample_indexable(texture2d)(float,float,float,float) r0.y, r1.xwxx, t0.xyzw, s0  // r0.y <- g
+
+#line 40
+  mov r1.yw, -r2.xxxy
+  add r1.xy, r1.ywyy, r1.xzxx
+  sample_indexable(texture2d)(float,float,float,float) r0.z, r1.xyxx, t0.xyzw, s0  // r0.z <- b
+
+#line 41
+  mov r0.x, r0.x  // r0.x <- color.x
+  mov r0.y, r0.y  // r0.y <- color.y
+  mov r0.z, r0.z  // r0.z <- color.z
+
+#line 43
 endif 
-log r1.xyz, r0.xyzx
-mul r1.xyz, r1.xyzx, l(2.200000, 2.200000, 2.200000, 0.000000)
+
+#line 46
+mov r1.x, l(2.200000)  // r1.x <- GAMMA
+
+#line 47
+log r1.yzw, r0.xxyz
+mul r1.xyz, r1.yzwy, r1.xxxx
 exp r0.xyz, r1.xyzx
-mul r1.xyzw, r0.xyzw, v1.xyzw
-mad r0.x, r0.w, v1.w, l(-0.010000)
-lt r0.x, r0.x, l(0.000000)
-discard_nz r0.x
-mov o0.xyzw, r1.xyzw
+
+#line 49
+mul r0.xyzw, r0.xyzw, v1.xyzw
+
+#line 50
+mov r1.x, l(-0.010000)
+add r1.x, r0.w, r1.x
+lt r1.x, r1.x, l(0.000000)
+and r1.x, r1.x, l(-1)
+discard_nz r1.x
+
+#line 51
+mov o0.xyzw, r0.xyzw
 ret 
-// Approximately 35 instruction slots used
+// Approximately 60 instruction slots used

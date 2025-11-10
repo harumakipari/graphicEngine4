@@ -17,6 +17,7 @@ class SceneRenderer
 public:
     SceneRenderer()
     {
+        ID3D11Device* device = Graphics::GetDevice();
         // 定数バッファ
         viewBuffer = std::make_unique<ConstantBuffer<ViewConstants>>(Graphics::GetDevice());
         primitiveJointCBuffer = std::make_unique<ConstantBuffer<PrimitiveJointConstants>>(Graphics::GetDevice());

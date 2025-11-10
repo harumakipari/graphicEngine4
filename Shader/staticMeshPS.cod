@@ -44,7 +44,7 @@
 // SV_TARGET                0   xyzw        0   TARGET   float   xyzw
 //
 ps_5_0
-dcl_globalFlags refactoringAllowed
+dcl_globalFlags refactoringAllowed | skipOptimization
 dcl_constantbuffer CB1[5], immediateIndexed
 dcl_sampler s1, mode_default
 dcl_sampler s2, mode_default
@@ -53,35 +53,80 @@ dcl_resource_texture2d (float,float,float,float) t1
 dcl_input_ps linear v2.xy
 dcl_input_ps linear v4.xyz
 dcl_output o0.xyzw
-dcl_temps 4
-dp3 r0.x, v4.xyzx, v4.xyzx
-rsq r0.x, r0.x
-mul r0.xyz, r0.xxxx, v4.xyzx
-mul r1.xyz, r0.zxyz, l(0.000000, 0.000000, 1.000100, 0.000000)
-mad r1.xyz, r0.yzxy, l(0.000000, 1.000100, 0.000000, 0.000000), -r1.xyzx
-dp2 r0.w, r1.yzyy, r1.yzyy
+dcl_temps 6
+//
+// Initial variable locations:
+//   v0.x <- pin.position.x; v0.y <- pin.position.y; v0.z <- pin.position.z; v0.w <- pin.position.w; 
+//   v1.x <- pin.color.x; v1.y <- pin.color.y; v1.z <- pin.color.z; v1.w <- pin.color.w; 
+//   v2.x <- pin.texcoord.x; v2.y <- pin.texcoord.y; 
+//   v3.x <- pin.worldPosition.x; v3.y <- pin.worldPosition.y; v3.z <- pin.worldPosition.z; v3.w <- pin.worldPosition.w; 
+//   v4.x <- pin.worldNormal.x; v4.y <- pin.worldNormal.y; v4.z <- pin.worldNormal.z; v4.w <- pin.worldNormal.w; 
+//   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
+//
+#line 12 "C:\Users\2240225\Desktop\graphicEngine4\Shader\staticMeshPS.hlsl"
+sample_indexable(texture2d)(float,float,float,float) r0.xyz, v2.xyxx, t0.xyzw, s2
+mov r0.xyz, r0.xyzx  // r0.x <- color.x; r0.y <- color.y; r0.z <- color.z
+
+#line 16
+dp3 r0.w, v4.xyzx, v4.xyzx
 rsq r0.w, r0.w
-mul r1.xyz, r0.wwww, r1.xyzx
-mul r2.xyz, r0.yzxy, r1.zxyz
-mad r2.xyz, r1.yzxy, r0.zxyz, -r2.xyzx
+mul r1.xyz, r0.wwww, v4.xyzx  // r1.x <- N.x; r1.y <- N.y; r1.z <- N.z
+
+#line 19
+itof r2.xy, l(0, 0, 0, 0)  // r2.x <- T.y; r2.y <- T.z
+mov r2.z, l(1.000100)  // r2.z <- T.x
+
+#line 20
+mul r3.xyz, r1.yzxy, r2.yzxy
+mul r2.xyz, r1.zxyz, r2.xyzx
+mov r2.xyz, -r2.xyzx
+add r2.xyz, r2.xyzx, r3.xyzx
 dp3 r0.w, r2.xyzx, r2.xyzx
 rsq r0.w, r0.w
-mul r2.xyz, r0.wwww, r2.xyzx
-sample_indexable(texture2d)(float,float,float,float) r3.xyz, v2.xyxx, t1.xyzw, s1
-mad r3.xyz, r3.xyzx, l(2.000000, 2.000000, 2.000000, 0.000000), l(-1.000000, -1.000000, -1.000000, 0.000000)
-mul r2.xyz, r2.xyzx, r3.xxxx
+mul r2.xyz, r0.wwww, r2.xyzx  // r2.x <- B.x; r2.y <- B.y; r2.z <- B.z
+
+#line 21
+mul r3.xyz, r1.zxyz, r2.yzxy
+mul r4.xyz, r1.yzxy, r2.zxyz
+mov r4.xyz, -r4.xyzx
+add r3.xyz, r3.xyzx, r4.xyzx
+dp3 r0.w, r3.xyzx, r3.xyzx
+rsq r0.w, r0.w
+mul r3.xyz, r0.wwww, r3.xyzx  // r3.x <- T.x; r3.y <- T.y; r3.z <- T.z
+
+#line 23
+sample_indexable(texture2d)(float,float,float,float) r4.xyz, v2.xyxx, t1.xyzw, s1
+mov r4.xyz, r4.xyzx  // r4.x <- normal.x; r4.y <- normal.y; r4.z <- normal.z
+
+#line 26
+mul r4.xyz, r4.xyzx, l(2.000000, 2.000000, 2.000000, 0.000000)
+mov r5.xyz, l(-1.000000,-1.000000,-1.000000,-0.000000)
+add r4.xyz, r4.xyzx, r5.xyzx
+
+#line 28
+mul r3.xyz, r3.xyzx, r4.xxxx
+dp3 r0.w, r3.xyzx, r3.xyzx
+rsq r0.w, r0.w
+mul r3.xyz, r0.wwww, r3.xyzx
+mul r2.xyz, r2.xyzx, r4.yyyy
+add r2.xyz, r2.xyzx, r3.xyzx
+mul r1.xyz, r1.xyzx, r4.zzzz
+add r1.xyz, r1.xyzx, r2.xyzx  // r1.x <- N.x; r1.y <- N.y; r1.z <- N.z
+
+#line 31
+mov r2.xyz, -cb1[4].xyzx
 dp3 r0.w, r2.xyzx, r2.xyzx
 rsq r0.w, r0.w
-mul r1.xyz, r1.xyzx, r3.yyyy
-mad r1.xyz, r2.xyzx, r0.wwww, r1.xyzx
-mad r0.xyz, r3.zzzz, r0.xyzx, r1.xyzx
-dp3 r0.w, -cb1[4].xyzx, -cb1[4].xyzx
-rsq r0.w, r0.w
-mul r1.xyz, r0.wwww, -cb1[4].xyzx
-dp3 r0.x, r0.xyzx, r1.xyzx
-max r0.x, r0.x, l(0.000000)
-sample_indexable(texture2d)(float,float,float,float) r0.yzw, v2.xyxx, t0.wxyz, s2
-mul o0.xyz, r0.xxxx, r0.yzwy
-mov o0.w, l(1.000000)
+mul r2.xyz, r0.wwww, r2.xyzx  // r2.x <- L.x; r2.y <- L.y; r2.z <- L.z
+
+#line 32
+itof r0.w, l(0)
+dp3 r1.x, r1.xyzx, r2.xyzx
+max r0.w, r0.w, r1.x
+mul r0.xyz, r0.wwww, r0.xyzx  // r0.x <- diffuse.x; r0.y <- diffuse.y; r0.z <- diffuse.z
+
+#line 33
+itof o0.w, l(1)
+mov o0.xyz, r0.xyzx
 ret 
-// Approximately 30 instruction slots used
+// Approximately 45 instruction slots used

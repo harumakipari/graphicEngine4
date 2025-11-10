@@ -1,11 +1,12 @@
 #include "FogEffect.h"
 
+#include "imgui.h"
 #include "Graphics/Core/RenderState.h"
 #include "Graphics/Core/Shader.h"
 
 void FogEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height)
 {
-    fogConstants = std::make_unique<ConstantBuffer<FogConstants>>(device);
+    fogCBuffer = std::make_unique<ConstantBuffer<FogConstants>>(device);
     fullScreenQuad = std::make_unique<FullScreenQuad>(device);
     fogBuffer = std::make_unique<FrameBuffer>(device, width, height, true);
     HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", fogPS.GetAddressOf());
@@ -14,7 +15,7 @@ void FogEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height
 
 void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal, ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* shadowMap)
 {
-    fogConstants->Activate(immediateContext, 8);
+    fogCBuffer->Activate(immediateContext, 8);
 
     fogBuffer->Clear(immediateContext, 0, 0, 0, 0);
     fogBuffer->Activate(immediateContext);
@@ -35,5 +36,17 @@ void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourc
 
 void FogEffect::DrawDebugUI()
 {
-    
+#ifdef USE_IMGUI
+    ImGui::Begin("Fog");
+    ImGui::ColorEdit3("Fog Color", fogCBuffer->data.fogColor);
+    ImGui::SliderFloat("Intensity", &(fogCBuffer->data.fogColor[3]), 0.0f, 10.0f);
+    ImGui::SliderFloat("Density", &fogCBuffer->data.fogDensity, 0.0f, 0.05f, "%.6f");
+    ImGui::SliderFloat("Height Falloff", &fogCBuffer->data.fogHeightFalloff, 0.001f, 1.0f, "%.4f");
+    ImGui::SliderFloat("Cutoff Distance", &fogCBuffer->data.fogCutoffDistance, 0.0f, 1000.0f);
+    ImGui::SliderFloat("Ground Level", &fogCBuffer->data.groundLevel, -100.0f, 100.0f);
+    ImGui::SliderFloat("Mie Scattering", &fogCBuffer->data.mieScatteringFactor, 0.0f, 1.0f, "%.4f");
+    ImGui::SliderFloat("Time Scale", &fogCBuffer->data.timeScale, 0.0f, 1.0f, "%.4f");
+    ImGui::SliderFloat("Noise Scale", &fogCBuffer->data.noiseScale, 0.0f, 0.5f, "%.4f");
+    ImGui::End();
+#endif
 }

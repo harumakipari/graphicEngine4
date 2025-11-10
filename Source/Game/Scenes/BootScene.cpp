@@ -34,7 +34,7 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 {
     sceneCBuffer = std::make_unique<ConstantBuffer<SceneConstants>>(device);
     shaderCBuffer = std::make_unique<ConstantBuffer<ShaderConstants>>(device);
-    fogCBuffer = std::make_unique<ConstantBuffer<FogConstants>>(device);
+    //fogCBuffer = std::make_unique<ConstantBuffer<FogConstants>>(device);
     spriteCBuffer = std::make_unique<ConstantBuffer<SpriteConstants>>(device);
     sceneCBuffer->data.time = 0;//開始時に０にしておく
 
@@ -122,7 +122,7 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         // 曲げ拘束（p1-p2 が共有辺の2三角形で構成）
         pbd->AddBendingConstraint(0, 1, 2, 3, 0.5f);
 #else
-#if 0
+#if 1
         // グリッドの布
         const int width = 3;
         const int height = 3;
@@ -569,7 +569,6 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     if (camera)
     {
         ViewConstants data = camera->GetViewConstants();
-        actorRender.UpdateViewConstants(immediateContext, data);
         sceneRender.UpdateViewConstants(immediateContext, data);
     }
 
@@ -594,7 +593,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     shaderCBuffer->Activate(immediateContext, 9); // slot2 にセット
 
     // slot3 は cascadedShadowMap に使用中
-    fogCBuffer->Activate(immediateContext, 8); // slot4 にセット
+    //fogCBuffer->Activate(immediateContext, 8); // slot4 にセット
 
     lightManager->Apply(immediateContext, 11);
 
@@ -877,6 +876,8 @@ void BootScene::DrawGui()
 {
     pbd->DrawGui();
 
+    sceneEffectManager->DrawGui();
+
 #ifdef USE_IMGUI
     ImGuiStyle& style = ImGui::GetStyle();
     style.Colors[ImGuiCol_Text] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -997,15 +998,15 @@ void BootScene::DrawGui()
             }
             if (enableFog && ImGui::TreeNode("Fog Settings"))
             {
-                ImGui::ColorEdit3("Fog Color", fogCBuffer->data.fogColor);
-                ImGui::SliderFloat("Intensity", &(fogCBuffer->data.fogColor[3]), 0.0f, 10.0f);
-                ImGui::SliderFloat("Density", &fogCBuffer->data.fogDensity, 0.0f, 0.05f, "%.6f");
-                ImGui::SliderFloat("Height Falloff", &fogCBuffer->data.fogHeightFalloff, 0.001f, 1.0f, "%.4f");
-                ImGui::SliderFloat("Cutoff Distance", &fogCBuffer->data.fogCutoffDistance, 0.0f, 1000.0f);
-                ImGui::SliderFloat("Ground Level", &fogCBuffer->data.groundLevel, -100.0f, 100.0f);
-                ImGui::SliderFloat("Mie Scattering", &fogCBuffer->data.mieScatteringFactor, 0.0f, 1.0f, "%.4f");
-                ImGui::SliderFloat("Time Scale", &fogCBuffer->data.timeScale, 0.0f, 1.0f, "%.4f");
-                ImGui::SliderFloat("Noise Scale", &fogCBuffer->data.noiseScale, 0.0f, 0.5f, "%.4f");
+                //ImGui::ColorEdit3("Fog Color", fogCBuffer->data.fogColor);
+                //ImGui::SliderFloat("Intensity", &(fogCBuffer->data.fogColor[3]), 0.0f, 10.0f);
+                //ImGui::SliderFloat("Density", &fogCBuffer->data.fogDensity, 0.0f, 0.05f, "%.6f");
+                //ImGui::SliderFloat("Height Falloff", &fogCBuffer->data.fogHeightFalloff, 0.001f, 1.0f, "%.4f");
+                //ImGui::SliderFloat("Cutoff Distance", &fogCBuffer->data.fogCutoffDistance, 0.0f, 1000.0f);
+                //ImGui::SliderFloat("Ground Level", &fogCBuffer->data.groundLevel, -100.0f, 100.0f);
+                //ImGui::SliderFloat("Mie Scattering", &fogCBuffer->data.mieScatteringFactor, 0.0f, 1.0f, "%.4f");
+                //ImGui::SliderFloat("Time Scale", &fogCBuffer->data.timeScale, 0.0f, 1.0f, "%.4f");
+                //ImGui::SliderFloat("Noise Scale", &fogCBuffer->data.noiseScale, 0.0f, 0.5f, "%.4f");
                 ImGui::TreePop();
             }
 

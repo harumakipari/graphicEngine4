@@ -16,8 +16,13 @@
 // SV_TARGET                0   xyzw        0   TARGET   float   xyzw
 //
 ps_5_0
-dcl_globalFlags refactoringAllowed
+dcl_globalFlags refactoringAllowed | skipOptimization
 dcl_output o0.xyzw
+//
+// Initial variable locations:
+//   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
+//
+#line 3 "C:\Users\2240225\Desktop\graphicEngine4\Shader\UniverseWithIn.hlsl"
 mov o0.xyzw, l(1.000000,1.000000,1.000000,1.000000)
 ret 
 // Approximately 2 instruction slots used

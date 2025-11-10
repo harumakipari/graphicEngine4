@@ -82,5 +82,5 @@ private:
     // 現在存在しているすべてのアクター
     std::vector<std::shared_ptr<Actor>> allActors_;
     // レンダラー
-    SceneRenderer renderer;
+    //SceneRenderer renderer;
 };
