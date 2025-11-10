@@ -81,7 +81,7 @@ public:
 
     // アクターを名前付きで作成・登録する（同名アクターが存在する場合は"_1","_2"とつけてユニークな名前にする） 二つ目の引数は初期化をautoでするかどうかを決定する
     template <class T>
-    std::shared_ptr<T> CreateAndRegisterActorWithTransform(const std::string& actorName, const Transform& transform = {})
+    std::shared_ptr<T> CreateAndRegisterActorWithTransform(const std::string& actorName, const Transform& transform = {DirectX::XMFLOAT3 {0,0,0},DirectX::XMFLOAT4{1,1,1,0},DirectX::XMFLOAT3{1,1,1} })
     {
 #if 0 // 同名の時に警告する
         auto findByName = [&actorName](const std::shared_ptr<Actor>& actor)
@@ -539,7 +539,7 @@ class ActorColliderManager
 {
 public:
     ActorColliderManager()
-    = default;
+        = default;
 
     void DebugRender(ID3D11DeviceContext* immediateContext);
 

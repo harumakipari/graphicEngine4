@@ -34,7 +34,6 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 {
     sceneCBuffer = std::make_unique<ConstantBuffer<SceneConstants>>(device);
     shaderCBuffer = std::make_unique<ConstantBuffer<ShaderConstants>>(device);
-    spriteCBuffer = std::make_unique<ConstantBuffer<SpriteConstants>>(device);
     sceneCBuffer->data.time = 0;//開始時に０にしておく
 
     // ライト
@@ -594,10 +593,6 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
     lightManager->Apply(immediateContext, 11);
 
-    spriteCBuffer->data.elapsedTime += deltaTime;
-    spriteCBuffer->data.enableGlitch = 0;
-
-    spriteCBuffer->Activate(immediateContext, 10);   // slot10 にセット
 
     if (!useDeferredRendering)
     {// フォワードレンダリング

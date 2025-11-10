@@ -64,19 +64,10 @@ class BootScene : public Scene
         float thickness = 0.5f;// SCREEN_SPACE_REFLECTION
         float pad;
     };
-    //Glitch
-    struct SpriteConstants
-    {
-        float elapsedTime = 0.0f;
-        UINT enableGlitch = true;
-        float pads[2];
-    };
-    //SpriteConstants spriteConstants;
 
     // ConstantBuffer ÉNÉâÉXÇ≈ä«óù
     std::unique_ptr<ConstantBuffer<SceneConstants>>     sceneCBuffer;
     std::unique_ptr <ConstantBuffer<ShaderConstants>>   shaderCBuffer;
-    std::unique_ptr <ConstantBuffer<SpriteConstants>>   spriteCBuffer;
 
     ActorColliderManager actorColliderManager;
 

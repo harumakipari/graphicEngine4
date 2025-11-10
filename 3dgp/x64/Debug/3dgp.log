@@ -1,11 +1,16 @@
-﻿  EraseInAreaComponent.cpp
+﻿  SceneComponent.cpp
+  ControllerComponent.cpp
+  EraseInAreaComponent.cpp
+  ItemSpawnerComponent.cpp
   ShockWaveCollisionComponent.cpp
+  ActorManager.cpp
   Framework.cpp
+  Scene.cpp
   Beam.cpp
+  ActionDerived.cpp
 C:\Users\2240225\Desktop\graphicEngine4\Source\PBD\PBDSystem.h(400,30): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
   (ソース ファイル 'Source/Engine/Framework/Framework.cpp' をコンパイルしています)
   
-  ActionDerived.cpp
   BehaviorTree.cpp
   JudgmentDerived.cpp
   NodeBase.cpp
@@ -18,8 +23,15 @@ C:\Users\2240225\Desktop\graphicEngine4\Source\PBD\PBDSystem.h(400,30): warning 
   BuildingManager.cpp
   GameManager.cpp
   BootScene.cpp
-  EffectSystem.cpp
+  LoadingScene.cpp
+  MainScene.cpp
 C:\Users\2240225\Desktop\graphicEngine4\Source\PBD\PBDSystem.h(400,30): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
   (ソース ファイル 'Source/Game/Scenes/BootScene.cpp' をコンパイルしています)
   
+  TutorialScene.cpp
+  Graphics.cpp
+  EffectSystem.cpp
+  SceneRenderer.cpp
+  ObjectManager.cpp
+  UIFactory.cpp
   3dgp.vcxproj -> C:\Users\2240225\Desktop\graphicEngine4\x64\Debug\3dgp.exe
