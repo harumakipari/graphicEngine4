@@ -15,7 +15,7 @@ public:
         //position.y = -3.0f;
     }
 
-    void Initialize()override
+    void Initialize(const Transform& transform)override
     {
         std::shared_ptr<StaticMeshComponent> staticMeshComponent = this->NewSceneComponent<class StaticMeshComponent>("staticMeshComponent");
         staticMeshComponent->SetModel("./Data/Models/Stage/ExampleStage.gltf", true);

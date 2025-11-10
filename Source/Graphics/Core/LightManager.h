@@ -44,6 +44,9 @@ public:
 
     void DrawGUI();
 
+    const DirectX::XMFLOAT4& GetLightDirection() const { return lightDirection; }
+
+
 private:
     DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
     DirectX::XMFLOAT4 lightColor{ 1.0f,1.0f,1.0f,4.1f };

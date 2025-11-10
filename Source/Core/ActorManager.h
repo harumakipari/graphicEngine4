@@ -31,6 +31,7 @@ public:
     std::vector<std::shared_ptr<Actor>> allActors_;
 
     // アクターを名前付きで作成・登録する（同名アクターが存在する場合は"_1","_2"とつけてユニークな名前にする） 二つ目の引数は初期化をautoでするかどうかを決定する
+#if 0
     template <class T>
     std::shared_ptr<T> CreateAndRegisterActor(const std::string& actorName, bool autoInitialize = true)
     {
@@ -74,6 +75,8 @@ public:
         }
         return newActor;
     }
+#endif // 0
+
 
 
     // アクターを名前付きで作成・登録する（同名アクターが存在する場合は"_1","_2"とつけてユニークな名前にする） 二つ目の引数は初期化をautoでするかどうかを決定する
@@ -538,15 +541,9 @@ public:
     ActorColliderManager()
     = default;
 
-    //コリジョンのレイヤー処理
-    // モデルシェーダーの種類　ShaderID
-
-    static inline std::vector<std::pair<Actor*, ShapeComponent*>> allShapes;
-
     void DebugRender(ID3D11DeviceContext* immediateContext);
 
     //デバックを描画
-    //std::unique_ptr<ShapeRenderer> shapeRenderer = nullptr;
     //デバックの色を作る
     DirectX::XMFLOAT4 debugColor = { 1.0f,1.0f,0.0f,1.0f };
 };

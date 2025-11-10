@@ -43,7 +43,7 @@ public:
 
     std::string& GetName() { return actorName; }
 
-    virtual void Initialize() {};
+    //virtual void Initialize() {};
 
     virtual void Initialize(const Transform& transform) {}
 

@@ -329,12 +329,12 @@ void MainScene::Update(ID3D11DeviceContext* immediateContext, float elapsedTime)
         fadeHandler.SetCompletedFunction([&]() {
             fadeHandler.SetEasing(EaseType::OutExp, 1.0f, 0.0f, 0.25f);
             GetActorManager()->ClearAll();
-            stage = GetActorManager()->CreateAndRegisterActor<Stage>("stage");
+            stage = GetActorManager()->CreateAndRegisterActorWithTransform<Stage>("stage");
             Transform transform(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,180.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
             //Transform transform(DirectX::XMFLOAT3{ -1.2f,0.1f,-0.9f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
             auto defeatEnemy = GetActorManager()->CreateAndRegisterActorWithTransform<DefeatEnemy>("defeatEnemy", transform);
 
-            auto defeatCamera = GetActorManager()->CreateAndRegisterActor<DefeatEnemyCamera>("defeatEnemyCamera");
+            auto defeatCamera = GetActorManager()->CreateAndRegisterActorWithTransform<DefeatEnemyCamera>("defeatEnemyCamera");
             auto mainCameraComponent = defeatCamera->GetComponent<CameraComponent>();
             //XMFLOAT3 target = defeatEnemy->GetPosition();
             //target.y = 2.0f;
@@ -385,9 +385,9 @@ void MainScene::Update(ID3D11DeviceContext* immediateContext, float elapsedTime)
 
             //ƒvƒŒƒCƒ„[Ž€–Sˆ—
             GetActorManager()->ClearAll();
-            stage = GetActorManager()->CreateAndRegisterActor<Stage>("stage");
+            stage = GetActorManager()->CreateAndRegisterActorWithTransform<Stage>("stage");
 
-            auto resultCamera = GetActorManager()->CreateAndRegisterActor<TitleCamera>("resultCamera");
+            auto resultCamera = GetActorManager()->CreateAndRegisterActorWithTransform<TitleCamera>("resultCamera");
             auto mainCameraComponent = resultCamera->GetComponent<CameraComponent>();
             CameraManager::SetGameCamera(resultCamera.get());
             //CameraManager::SetGameCamera(mainCameraComponent);
@@ -988,7 +988,7 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
     {
         // MULTIPLE_RENDER_TARGETS
         multipleRenderTargets->Clear(immediateContext);
-        multipleRenderTargets->Acticate(immediateContext);
+        multipleRenderTargets->Activate(immediateContext);
 
         // SKY_MAP
         //RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
@@ -1723,7 +1723,7 @@ void MainScene::SetUpActors()
 
     //gameWorld_->SpawnActor<Stage>("stage");
     auto actorManager = GetActorManager();
-    stage = actorManager->CreateAndRegisterActor<Stage>("stage");
+    stage = actorManager->CreateAndRegisterActorWithTransform<Stage>("stage");
 #if 0
     auto& stage_ = actors.emplace_back(stage);
     stage_->GetModelComponent().InitializeModel(models["stage"]);
@@ -1752,7 +1752,7 @@ void MainScene::SetUpActors()
     //Transform bombTr1(DirectX::XMFLOAT3{ -1.0f,10.0f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.1f,1.1f,1.1f });
     //auto bomb1 = ActorManager::CreateAndRegisterActorWithTransform<Bomb>("bomb", bombTr1);
 
-    auto mainCameraActor = GetActorManager()->CreateAndRegisterActor<MainCamera>("mainCameraActor");
+    auto mainCameraActor = GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
     //auto mainCameraActor = gameWorld_->SpawnActor<Actor>("mainCameraActor");
     //auto springArmComponent = mainCameraActor->NewComponent<class SpringArmComponent>("springArm");
@@ -1764,7 +1764,7 @@ void MainScene::SetUpActors()
     //CameraManager::SetGameCamera(mainCameraComponent);
     CameraManager::SetGameCamera(mainCameraActor.get());
 
-    auto debugCameraActor = GetActorManager()->CreateAndRegisterActor<DebugCamera>("debugCam");
+    auto debugCameraActor = GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     //auto debugCameraActor = ActorManager::CreateAndRegisterActor<Actor>("debugCam");
     //auto debugCamera = debugCameraActor->NewSceneComponent<DebugCameraComponent>("debugCamera");
     CameraManager::SetDebugCamera(debugCameraActor);

@@ -142,7 +142,7 @@ public:
         }
         immediateContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH, depth, 0);
     }
-    void Acticate(ID3D11DeviceContext* immediateContext)
+    void Activate(ID3D11DeviceContext* immediateContext, ID3D11DepthStencilView* adopted_depth_stencil_view = nullptr)
     {
         viewportCount = D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE;
         immediateContext->RSGetViewports(&viewportCount, catchedViewports);

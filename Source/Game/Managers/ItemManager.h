@@ -180,9 +180,11 @@ private:
             }
 
             // ActorManager はポインタなので-> でアクセス
-            auto item = currentScene->GetActorManager()->CreateAndRegisterActor<PickUpItem>("item", false);            item->SetTempPosition(spawnPos);
-            item->Initialize();
-            item->PostInitialize();
+            Transform transform{ spawnPos,{0,0,0,1},{1,1,1} };
+            auto item = currentScene->GetActorManager()->CreateAndRegisterActorWithTransform<PickUpItem>("item", transform);
+            item->SetTempPosition(spawnPos);
+            //item->Initialize();
+            //item->PostInitialize();
 #if 0
             auto box = item->GetSceneComponentByName("boxComponent");
             if (auto box = std::dynamic_pointer_cast<BoxComponet>(shape))

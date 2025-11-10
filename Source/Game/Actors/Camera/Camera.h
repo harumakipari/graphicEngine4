@@ -30,7 +30,7 @@ public:
 
     virtual ~Camera() = default;
 
-    virtual void Initialize()override
+    virtual void Initialize(const Transform& transform)override
     {
         mainCameraComponent = this->NewSceneComponent<class CameraComponent>("mainCamera");
         mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(45), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
@@ -65,7 +65,7 @@ public:
     DebugCamera(std::string actorName) :Camera(actorName) {}
 
     virtual ~DebugCamera() = default;
-    void Initialize()override
+    void Initialize(const Transform& transform)override
     {
         debugCameraComponent = this->NewSceneComponent<class DebugCameraComponent>("debugCamera");
     }
@@ -100,9 +100,9 @@ public:
 
     virtual ~MainCamera() = default;
     std::shared_ptr<SphereComponent> sphereComponent;
-    void Initialize()override
+    void Initialize(const Transform& transform)override
     {
-        Camera::Initialize();
+        Camera::Initialize(transform);
         // 当たり判定のコンポーネントを追加
         //sphereComponent = this->NewSceneComponent<class SphereComponent>("sphereComponent", "springArm");
         sphereComponent = this->NewSceneComponent<class SphereComponent>("sphereComponent", mainCameraComponent->name());

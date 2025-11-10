@@ -19,7 +19,7 @@ public:
     //std::shared_ptr<CameraComponent> mainCameraComponent;
 
 
-    void Initialize()override
+    void Initialize(const Transform& transform)override
     {
         mainCameraComponent = this->NewSceneComponent<class CameraComponent>("mainCamera");
         mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(35), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);

@@ -476,7 +476,7 @@ void BootScene::Update(ID3D11DeviceContext* immediateContext, float deltaTime)
 
 void BootScene::SetUpActors()
 {
-    mainCameraActor = this->GetActorManager()->CreateAndRegisterActor<TitleCamera>("mainCameraActor");
+    mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
 
     Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -492,7 +492,7 @@ void BootScene::SetUpActors()
     //Transform ballTr(DirectX::XMFLOAT3{ 0.0f,5.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     //auto springyBall = this->GetActorManager()->CreateAndRegisterActorWithTransform<SpringyBall>("springyBall", ballTr);
 
-    auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActor<DebugCamera>("debugCam");
+    auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
     //CameraManager::SetGameCamera(mainCameraActor.get());
@@ -603,7 +603,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {// フォワードレンダリング
         // MULTIPLE_RENDER_TARGETS
         multipleRenderTargets->Clear(immediateContext);
-        multipleRenderTargets->Acticate(immediateContext);
+        multipleRenderTargets->Activate(immediateContext);
 
         // SKY_MAP
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
@@ -612,7 +612,6 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
-        RenderState::BindSamplerStates(immediateContext);
         RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
@@ -667,11 +666,6 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             ViewConstants data = camera->GetViewConstants();
             cameraView = data.view;
             cameraProjection = data.projection;
-#if 0
-            cameraView = camera->GetView();
-            cameraProjection = camera->GetProjection();
-
-#endif // 0
         }
         // CASCADED_SHADOW_MAPS
         // Make cascaded shadow maps
@@ -735,7 +729,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         sceneRender.currentRenderPath = RenderPath::Deferred;
         sceneRender.RenderOpaque(immediateContext);
         sceneRender.RenderMask(immediateContext);
-        sceneRender.RenderBlend(immediateContext);
+        //sceneRender.RenderBlend(immediateContext);
 
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
 
@@ -762,9 +756,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         // MULTIPLE_RENDER_TARGETS
 #if 1
         multipleRenderTargets->Clear(immediateContext);
-        multipleRenderTargets->Acticate(immediateContext);
+        multipleRenderTargets->Activate(immediateContext);
 #endif
-        RenderState::BindSamplerStates(immediateContext);
         RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);

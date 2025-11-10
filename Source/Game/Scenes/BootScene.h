@@ -97,8 +97,7 @@ class BootScene : public Scene
 
     // CASCADED_SHADOW_MAPS
     std::unique_ptr<CascadedShadowMaps> cascadedShadowMaps;
-    //float criticalDepthValue = 0.0f; // If this value is 0, the camera's far panel distance is used.
-    float criticalDepthValue = 62.0f; // If this value is 0, the camera's far panel distance is used.
+    float criticalDepthValue = 62.0f; 
 
     // MULTIPLE_RENDER_TARGETS
     std::unique_ptr<MultipleRenderTargets> multipleRenderTargets;
@@ -148,8 +147,6 @@ private:
     std::shared_ptr<TitleCamera> mainCameraActor;
     // ImGuiで使用する
     std::shared_ptr<Actor> selectedActor_;  // 選択中のアクターを保持
-
-    DirectX::XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
 
     SceneRenderer sceneRender;
 

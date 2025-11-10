@@ -14,7 +14,7 @@ public:
 
     virtual ~HeldEnergyCore() = default;
 
-    void Initialize()override
+    void Initialize(const Transform& transform)override
     {
         // e‚ğŠO‚©‚çæ‚Éİ’è‚µ‚Ä‚¨‚­
         if (!rootComponent_)

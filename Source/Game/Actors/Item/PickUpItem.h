@@ -35,7 +35,7 @@ public:
 
     void Finalize()override;
 
-    void Initialize()override;
+    void Initialize();
 
     std::shared_ptr<SphereComponent> sphereComponent;
     Type GetType() const { return itemType; }

@@ -962,7 +962,8 @@ void Player::FireBeam()
             vel.x, vel.y, vel.z);
         OutputDebugStringA(buf);
         // Beam ‚ð¶¬‚·‚é
-        auto beam = GetOwnerScene()->GetActorManager()->CreateAndRegisterActor<Beam>("beam", false);
+        Transform trans={ pos ,{0,0,0,1},{1,1,1}};
+        auto beam = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<Beam>("beam", trans);
         beam->SetItemPower(beamItemPower);
         float maxPower = static_cast<float>(rightItemMax + leftItemMax);
         beam->SetItemMaxPower(maxPower);
@@ -970,8 +971,8 @@ void Player::FireBeam()
         float itemPower = beamItemPower * 10.0f;
         beam->SetTempPosition(pos);
         beam->SetTempMass(itemPower);
-        beam->Initialize();
-        beam->PostInitialize();
+        //beam->Initialize();
+        //beam->PostInitialize();
         beam->SetDirection(dir);
         //auto sphere = std::dynamic_pointer_cast<SphereComponent>(beam->GetSceneComponentByName("sphereComponent"));
         //sphere->SetKinematic(false);

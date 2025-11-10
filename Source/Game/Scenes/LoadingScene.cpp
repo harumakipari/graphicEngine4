@@ -137,7 +137,7 @@ void LoadingScene::Start()
 
 void LoadingScene::SetUpActors()
 {
-    mainCameraActor = this->GetActorManager()->CreateAndRegisterActor<TitleCamera>("mainLoadingCameraActor");
+    mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleCamera>("mainLoadingCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
     mainCameraActor->SetPosition({ -4.1f,1.9f,-4.3f });
     CameraManager::SetGameCamera(mainCameraActor.get());
@@ -308,7 +308,7 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float delta_tim
 
     // MULTIPLE_RENDER_TARGETS
     multipleRenderTargets->Clear(immediateContext);
-    multipleRenderTargets->Acticate(immediateContext);
+    multipleRenderTargets->Activate(immediateContext);
 
     // SKY_MAP
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
@@ -317,7 +317,6 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float delta_tim
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
-    RenderState::BindSamplerStates(immediateContext);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);

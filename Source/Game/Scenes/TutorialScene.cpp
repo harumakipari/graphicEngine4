@@ -432,17 +432,17 @@ void TutorialScene::Update(ID3D11DeviceContext* immediate_context, float deltaTi
 
 void TutorialScene::SetUpActors()
 {
-    stage = GetActorManager()->CreateAndRegisterActor<Stage>("stage");
+    stage = GetActorManager()->CreateAndRegisterActorWithTransform<Stage>("stage");
 
     Transform playerTr(DirectX::XMFLOAT3{ 0.7f,0.8f,-9.5f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     player = GetActorManager()->CreateAndRegisterActorWithTransform<Player>("actor", playerTr);
 
-    auto mainCameraActor = GetActorManager()->CreateAndRegisterActor<MainCamera>("mainCameraActor");
+    auto mainCameraActor = GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
 
     CameraManager::SetGameCamera(mainCameraActor.get());
 
-    auto debugCameraActor = GetActorManager()->CreateAndRegisterActor<DebugCamera>("debugCam");
+    auto debugCameraActor = GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     //auto debugCameraActor = ActorManager::CreateAndRegisterActor<Actor>("debugCam");
     //auto debugCamera = debugCameraActor->NewSceneComponent<DebugCameraComponent>("debugCamera");
     CameraManager::SetDebugCamera(debugCameraActor);
@@ -538,7 +538,7 @@ void TutorialScene::Render(ID3D11DeviceContext* immediateContext, float delta_ti
 
     // MULTIPLE_RENDER_TARGETS
     multipleRenderTargets->Clear(immediateContext);
-    multipleRenderTargets->Acticate(immediateContext);
+    multipleRenderTargets->Activate(immediateContext);
 
     // SKY_MAP
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
@@ -547,7 +547,6 @@ void TutorialScene::Render(ID3D11DeviceContext* immediateContext, float delta_ti
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
-    RenderState::BindSamplerStates(immediateContext);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);

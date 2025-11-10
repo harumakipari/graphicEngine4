@@ -24,15 +24,16 @@ public:
     std::shared_ptr<EffectComponent> effectSparkComponent;
     std::shared_ptr<SphereComponent> sphereComponent;
     std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
-    void Initialize()override
+    void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
         skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Models/Beam/beam.gltf");
         //skeltalMeshComponent->model->isModelInMeters = false;
-        SetPosition(tempPosition);
+        SetPosition(transform.GetLocation());
         //skeltalMeshComponent->SetIsVisible(false);
-        float t = std::clamp(itemPower / itemMaxPower, 0.0f, 1.0f);
+        //float t = std::clamp(itemPower / itemMaxPower, 0.0f, 1.0f);
+        float t = 1.0f;
         float s = std::lerp(1.0f, 3.5f, t);
         SetScale(DirectX::XMFLOAT3(s, s, s));
         // 当たり判定球を追加
@@ -40,7 +41,7 @@ public:
         //float r = std::lerp(0.35f, 1.225f, t);
         float r = std::lerp(0.55f, 1.225f, t);
         sphereComponent->SetRadius(r * 0.5f);
-        sphereComponent->SetMass(tempMass);
+        sphereComponent->SetMass(1.0);
         sphereComponent->SetLayer(CollisionLayer::Projectile);
         sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
         sphereComponent->SetResponseToLayer(CollisionLayer::WorldProps, CollisionComponent::CollisionResponse::Trigger);

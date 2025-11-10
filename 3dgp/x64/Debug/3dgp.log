@@ -1,4 +1,24 @@
-﻿  BootScene.cpp
+﻿  EraseInAreaComponent.cpp
+  ShockWaveCollisionComponent.cpp
+  Framework.cpp
+  Beam.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\PBD\PBDSystem.h(400,30): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
+  (ソース ファイル 'Source/Engine/Framework/Framework.cpp' をコンパイルしています)
+  
+  ActionDerived.cpp
+  BehaviorTree.cpp
+  JudgmentDerived.cpp
+  NodeBase.cpp
+  RiderEnemy.cpp
+  PickUpItem.cpp
+  Player.cpp
+  PlayerState.cpp
+  BossBuilding.cpp
+  Building.cpp
+  BuildingManager.cpp
+  GameManager.cpp
+  BootScene.cpp
+  EffectSystem.cpp
 C:\Users\2240225\Desktop\graphicEngine4\Source\PBD\PBDSystem.h(400,30): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
   (ソース ファイル 'Source/Game/Scenes/BootScene.cpp' をコンパイルしています)
   
