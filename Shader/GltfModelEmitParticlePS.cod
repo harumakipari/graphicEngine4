@@ -8,13 +8,12 @@
 // {
 //
 //   bool enableSSAO;                   // Offset:    0 Size:     4 [unused]
-//   float reflectionIntensity;         // Offset:    4 Size:     4 [unused]
-//   float time;                        // Offset:    8 Size:     4
-//   bool enableCascadedShadowMaps;     // Offset:   12 Size:     4 [unused]
-//   bool enableSSR;                    // Offset:   16 Size:     4 [unused]
-//   bool enableFog;                    // Offset:   20 Size:     4 [unused]
-//   bool enableBloom;                  // Offset:   24 Size:     4 [unused]
-//   float elapsedTime;                 // Offset:   28 Size:     4 [unused]
+//   float time;                        // Offset:    4 Size:     4
+//   bool enableCascadedShadowMaps;     // Offset:    8 Size:     4 [unused]
+//   bool enableSSR;                    // Offset:   12 Size:     4 [unused]
+//   bool enableFog;                    // Offset:   16 Size:     4 [unused]
+//   bool enableBloom;                  // Offset:   20 Size:     4 [unused]
+//   float elapsedTime;                 // Offset:   24 Size:     4 [unused]
 //
 // }
 //
@@ -233,7 +232,7 @@ store_structured u0.x, r0.x, l(0), r0.y
 
 #line 53
 nop 
-mov r0.y, cb1[0].z
+mov r0.y, cb1[0].y
 
 #line 21
 dp2 r0.y, r0.yyyy, l(12.989800, 78.233002, 0.000000, 0.000000)

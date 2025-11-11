@@ -36,7 +36,7 @@ class BootScene : public Scene
     struct SceneConstants
     {
         bool enableSsao;
-        float reflectionIntensity;
+        //float reflectionIntensity;
         float time = 0.0f;
         // shader ‚Ìƒtƒ‰ƒO
         int enableCascadedShadowMaps;
@@ -57,11 +57,11 @@ class BootScene : public Scene
         float shadowColor = 0.2f;
         float shadowDepthBias = 0.0005f;
         bool colorizeCascadeLayer = false;
-        float maxDistance = 15.0f;// SCREEN_SPACE_REFLECTION
+        //float maxDistance = 15.0f;// SCREEN_SPACE_REFLECTION
 
-        float resolution = 0.3f;// SCREEN_SPACE_REFLECTION
-        int steps = 10;// SCREEN_SPACE_REFLECTION
-        float thickness = 0.5f;// SCREEN_SPACE_REFLECTION
+        //float resolution = 0.3f;// SCREEN_SPACE_REFLECTION
+        //int steps = 10;// SCREEN_SPACE_REFLECTION
+        //float thickness = 0.5f;// SCREEN_SPACE_REFLECTION
         float pad;
     };
 

@@ -10,10 +10,6 @@
 //   float shadowColor;                 // Offset:    0 Size:     4 [unused]
 //   float shadowDepthBias;             // Offset:    4 Size:     4
 //   bool colorizeCascadedLayer;        // Offset:    8 Size:     4 [unused]
-//   float maxDistance;                 // Offset:   12 Size:     4 [unused]
-//   float resolution;                  // Offset:   16 Size:     4 [unused]
-//   int steps;                         // Offset:   20 Size:     4 [unused]
-//   float thickness;                   // Offset:   24 Size:     4 [unused]
 //
 // }
 //

@@ -577,17 +577,17 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     sceneCBuffer->data.enableCascadedShadowMaps = enableCascadedShadowMaps;
     sceneCBuffer->data.enableSsr = enableSSR;
     // SCREEN_SPACE_REFLECTION
-    sceneCBuffer->data.reflectionIntensity = reflectionIntensity;
+    //sceneCBuffer->data.reflectionIntensity = reflectionIntensity;
     // FOG
     sceneCBuffer->data.time += deltaTime;
     sceneCBuffer->data.deltaTime = deltaTime;
 
     sceneCBuffer->Activate(immediateContext, 1); // slot1 にセット
 
-    shaderCBuffer->data.maxDistance = 20;
-    shaderCBuffer->data.resolution = resolution;
-    shaderCBuffer->data.steps = steps;
-    shaderCBuffer->data.thickness = thickness;
+    //shaderCBuffer->data.maxDistance = 20;
+    //shaderCBuffer->data.resolution = resolution;
+    //shaderCBuffer->data.steps = steps;
+    //shaderCBuffer->data.thickness = thickness;
     shaderCBuffer->Activate(immediateContext, 9); // slot2 にセット
 
     // slot3 は cascadedShadowMap に使用中

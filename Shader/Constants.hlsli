@@ -3,7 +3,7 @@
 cbuffer SCENE_CONSTANT_BUFFER : register(b1)
 {
     bool enableSSAO;
-    float reflectionIntensity;
+    //float reflectionIntensity;
     float time;
     // shader ‚Ìƒtƒ‰ƒO
     bool enableCascadedShadowMaps;
@@ -21,10 +21,10 @@ cbuffer SHADER_CONSTANT_BUFFER : register(b9)
     float shadowDepthBias;
     bool colorizeCascadedLayer;
     // SCREEN_SPACE_REFLECTION
-    float maxDistance;
-    float resolution;
-    int steps;
-    float thickness;
+    //float maxDistance;
+    //float resolution;
+    //int steps;
+    //float thickness;
     
 }
 // CASCADED_SHADOW_MAPS

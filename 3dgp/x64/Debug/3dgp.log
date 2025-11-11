@@ -43,11 +43,11 @@ C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildsVS.hlsl(44,5): warni
   
   compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildsVS.cod
   compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildsVS.cso
-C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(543,9-88): warning X3206: implicit truncation of vector type
-C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(549,11-80): warning X3206: implicit truncation of vector type
-C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(585,23-97): warning X3206: implicit truncation of vector type
-C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(590,23-112): warning X3206: implicit truncation of vector type
-C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(600,9-93): warning X3206: implicit truncation of vector type
+C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(545,9-88): warning X3206: implicit truncation of vector type
+C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(551,11-80): warning X3206: implicit truncation of vector type
+C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(587,23-97): warning X3206: implicit truncation of vector type
+C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(592,23-112): warning X3206: implicit truncation of vector type
+C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(602,9-93): warning X3206: implicit truncation of vector type
 C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(227,5): warning X4000: use of potentially uninitialized variable (CalculatedCascadedShadowFactor)
   
   compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.cod
@@ -139,4 +139,14 @@ C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricFogPS.hlsl(114,9-31): w
   
   compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricFogPS.cod
   compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricFogPS.cso
+  Framework.cpp
+  BootScene.cpp
+  MainScene.cpp
+  SceneRenderer.cpp
+C:\Users\2240225\Desktop\graphicEngine4\Source\PBD\PBDSystem.h(400,30): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
+  (ソース ファイル 'Source/Game/Scenes/BootScene.cpp' をコンパイルしています)
+  
+C:\Users\2240225\Desktop\graphicEngine4\Source\PBD\PBDSystem.h(400,30): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
+  (ソース ファイル 'Source/Engine/Framework/Framework.cpp' をコンパイルしています)
+  
   3dgp.vcxproj -> C:\Users\2240225\Desktop\graphicEngine4\x64\Debug\3dgp.exe
