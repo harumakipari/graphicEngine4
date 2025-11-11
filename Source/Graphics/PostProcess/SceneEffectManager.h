@@ -42,12 +42,20 @@ public:
 
     void DrawGui()
     {
-        for (auto& effect : effects | std::views::values)
-        {
-            effect->DrawDebugUI();
-        }
-    }
+#ifdef USE_IMGUI
+        ImGui::Begin("Scene Effects");
 
+        for (auto& [name, effect] : effects)
+        {
+            if (ImGui::TreeNode(name.c_str()))
+            {
+                effect->DrawDebugUI();
+                ImGui::TreePop();
+            }
+        }
+        ImGui::End(); 
+#endif
+    }
 private:
     std::unordered_map<std::string, std::unique_ptr<SceneEffectBase>> effects;
     ID3D11ShaderResourceView* lastOutput = nullptr;

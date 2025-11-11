@@ -44,16 +44,22 @@ public:
 
     void DrawGui()
     {
-        for (auto& effect:effects|std::views::values)
+#ifdef USE_IMGUI
+        ImGui::Begin("Post Effects");
+
+        for (auto& [name, effect] : effects)
         {
-            effect->DrawDebugUI();
+            if (ImGui::TreeNode(name.c_str()))
+            {
+                effect->DrawDebugUI();
+                ImGui::TreePop();
+            }
         }
+        ImGui::End();
+#endif
     }
 
-    //ID3D11ShaderResourceView* GetFinalOutput() const { return lastOutput; }
-
 private:
-    //std::vector<std::unique_ptr<PostEffectBase>> effects;
     std::unordered_map<std::string, std::unique_ptr<PostEffectBase>> effects;
     ID3D11ShaderResourceView* lastOutput = nullptr;
 };

@@ -181,9 +181,9 @@ void BloomEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResou
 void BloomEffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
-    ImGui::Begin("Bloom");
+    //ImGui::Begin("Bloom");
     ImGui::SliderFloat("Threshold", &bloomExtractionThreshold, 0.0f, 5.0f);
     ImGui::SliderFloat("Intensity", &bloomIntensity, 0.0f, 5.0f);
-    ImGui::End();
+    //ImGui::End();
 #endif
 }

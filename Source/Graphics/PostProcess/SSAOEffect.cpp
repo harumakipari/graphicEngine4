@@ -41,12 +41,10 @@ void SSAOEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResour
 void SSAOEffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
-    ImGui::Begin("ssao");
     ImGui::Checkbox("improvedNormalReconstructionFromDepth", &improvedNormalReconstructionFromDepth);
     ImGui::Checkbox("bilateralBlur", &bilateralBlur);
     ImGui::SliderFloat("sigma", &sigma, 0.0f, +1.0f);
     ImGui::SliderFloat("power", &power, 0.0f, +1.0f);
-    ImGui::End();
 #endif
 }
 

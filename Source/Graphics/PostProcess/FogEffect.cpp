@@ -37,7 +37,6 @@ void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourc
 void FogEffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
-    ImGui::Begin("Fog");
     ImGui::ColorEdit3("Fog Color", fogCBuffer->data.fogColor);
     ImGui::SliderFloat("Intensity", &(fogCBuffer->data.fogColor[3]), 0.0f, 10.0f);
     ImGui::SliderFloat("Density", &fogCBuffer->data.fogDensity, 0.0f, 0.05f, "%.6f");
@@ -47,6 +46,5 @@ void FogEffect::DrawDebugUI()
     ImGui::SliderFloat("Mie Scattering", &fogCBuffer->data.mieScatteringFactor, 0.0f, 1.0f, "%.4f");
     ImGui::SliderFloat("Time Scale", &fogCBuffer->data.timeScale, 0.0f, 1.0f, "%.4f");
     ImGui::SliderFloat("Noise Scale", &fogCBuffer->data.noiseScale, 0.0f, 0.5f, "%.4f");
-    ImGui::End();
 #endif
 }
