@@ -50,7 +50,7 @@ void main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     indirectDataBuffer.InterlockedAdd(IndirectArgumentsNumEmitPixelParticleIndex, 1, particleIndex);
     particleIndex += totalEmitCount;
     emitParticleBuffer[particleIndex].parameter.x = 12;
-    emitParticleBuffer[particleIndex].parameter.y = rand(time) * 2.0f + 1.0f;
+    emitParticleBuffer[particleIndex].parameter.y = rand(elapsedTime) * 2.0f + 1.0f;
     
     emitParticleBuffer[particleIndex].position.xyz = pin.wPosition.xyz;
     emitParticleBuffer[particleIndex].position.w = 1;

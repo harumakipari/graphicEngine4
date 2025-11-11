@@ -97,7 +97,7 @@ float DitheredRayMarch(float2 screenPos, float3 rayStart, float3 rayDir, float r
         
    #if 0 
         const float3 noiseVelocity = normalize(float3(1, 0, 0));
-        float3 noiseSamplePosition = frac(currentPosition * noiseScale + noiseVelocity * time * timeScale);
+        float3 noiseSamplePosition = frac(currentPosition * noiseScale + noiseVelocity * elapsedTime * timeScale);
         float noise = 0.5 * noise3D.Sample(linearSamplerState, noiseSamplePosition);
         density *= noise;
    #endif

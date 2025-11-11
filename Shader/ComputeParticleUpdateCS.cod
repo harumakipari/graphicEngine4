@@ -4,6 +4,18 @@
 //
 // Buffer Definitions: 
 //
+// cbuffer COMPUTE_PARTICLE_COMMON_CONSTANT_BUFFER
+// {
+//
+//   float deltaTime;                   // Offset:    0 Size:     4
+//   uint2 textureSplitCount;           // Offset:    4 Size:     8
+//   uint systemNumParticles;           // Offset:   12 Size:     4 [unused]
+//   uint totalEmitCount;               // Offset:   16 Size:     4 [unused]
+//   uint maxEmitParticles;             // Offset:   20 Size:     4 [unused]
+//   uint2 commonDummy;                 // Offset:   24 Size:     8 [unused]
+//
+// }
+//
 // cbuffer VIEW_CONSTANTS_BUFFER
 // {
 //
@@ -14,18 +26,6 @@
 //   row_major float4x4 inverseProjection;// Offset:  208 Size:    64 [unused]
 //   row_major float4x4 inverseViewProjection;// Offset:  272 Size:    64 [unused]
 //   row_major float4x4 invView;        // Offset:  336 Size:    64 [unused]
-//
-// }
-//
-// cbuffer COMPUTE_PARTICLE_COMMON_CONSTANT_BUFFER
-// {
-//
-//   float deltaTime;                   // Offset:    0 Size:     4
-//   uint2 textureSplitCount;           // Offset:    4 Size:     8
-//   uint systemNumParticles;           // Offset:   12 Size:     4 [unused]
-//   uint totalEmitCount;               // Offset:   16 Size:     4 [unused]
-//   uint maxEmitParticles;             // Offset:   20 Size:     4 [unused]
-//   uint2 commonDummy;                 // Offset:   24 Size:     8 [unused]
 //
 // }
 //
@@ -98,8 +98,8 @@
 // no Output
 cs_5_0
 dcl_globalFlags refactoringAllowed | skipOptimization
-dcl_constantbuffer CB4[4], immediateIndexed
 dcl_constantbuffer CB10[1], immediateIndexed
+dcl_constantbuffer CB4[4], immediateIndexed
 dcl_uav_structured u0, 144
 dcl_uav_structured u1, 4
 dcl_uav_raw u2
@@ -114,10 +114,10 @@ dcl_thread_group 1024, 1, 1
 #line 53 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticle.hlsli"
 mov r0.x, l(8)  // r0.x <- IndirectArgumentsNumDeadParticle
 
-#line 13 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticleUpdateCS.hlsl"
+#line 14 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticleUpdateCS.hlsl"
 mov r0.y, vThreadID.x  // r0.y <- headerIndex
 
-#line 15
+#line 16
 ld_structured_indexable(structured_buffer, stride=16)(mixed,mixed,mixed,mixed) r0.z, r0.y, l(0), u3.xxxx  // r0.z <- header.alive
 ld_structured_indexable(structured_buffer, stride=16)(mixed,mixed,mixed,mixed) r0.w, r0.y, l(4), u3.xxxx
 ld_structured_indexable(structured_buffer, stride=16)(mixed,mixed,mixed,mixed) r1.x, r0.y, l(8), u3.xxxx
@@ -126,17 +126,17 @@ mov r0.w, r0.w  // r0.w <- header.particleIndex
 mov r1.x, r1.x  // r1.x <- header.depth
 mov r1.y, r1.y  // r1.y <- header.dummy
 
-#line 17
+#line 18
 mov r0.w, r0.w  // r0.w <- dataIndex
 
-#line 20
+#line 21
 if_z r0.z
 
-#line 21
+#line 22
   ret 
 endif 
 
-#line 23
+#line 24
 ld_structured_indexable(structured_buffer, stride=144)(mixed,mixed,mixed,mixed) r1.z, r0.w, l(0), u0.xxxx
 ld_structured_indexable(structured_buffer, stride=144)(mixed,mixed,mixed,mixed) r1.w, r0.w, l(4), u0.xxxx
 ld_structured_indexable(structured_buffer, stride=144)(mixed,mixed,mixed,mixed) r2.x, r0.w, l(8), u0.xxxx
@@ -210,29 +210,29 @@ mov r11.y, r11.y  // r11.y <- data.customData.y
 mov r11.z, r11.z  // r11.z <- data.customData.z
 mov r9.y, r9.y  // r9.y <- data.customData.w
 
-#line 26
+#line 27
 mov r9.z, -cb10[0].x
 add r1.w, r1.w, r9.z
 
-#line 27
+#line 28
 itof r9.z, l(0)
 lt r9.z, r1.w, r9.z
 if_nz r9.z
 
-#line 30
+#line 31
   mov r9.z, l(0)  // r9.z <- header.alive
 
-#line 31
+#line 32
   imm_atomic_alloc r12.x, u1
   store_structured u1.x, r12.x, l(0), r0.w
 
-#line 34
+#line 35
   store_structured u3.x, r0.y, l(0), r9.z
   store_structured u3.x, r0.y, l(4), r0.w
   store_structured u3.x, r0.y, l(8), r1.x
   store_structured u3.x, r0.y, l(12), r1.y
 
-#line 35
+#line 36
   store_structured u0.x, r0.w, l(0), r1.z
   store_structured u0.x, r0.w, l(4), r1.w
   store_structured u0.x, r0.w, l(8), r2.x
@@ -270,54 +270,54 @@ if_nz r9.z
   store_structured u0.x, r0.w, l(136), r11.z
   store_structured u0.x, r0.w, l(140), r9.y
 
-#line 38
+#line 39
   atomic_iadd u2, r0.x, l(1)
 
-#line 39
+#line 40
   ret 
 
-#line 40
+#line 41
 endif   // r0.z <- header.alive
 
-#line 45
+#line 46
 add r0.x, r1.z, l(0.500000)
 ftoi r0.x, r0.x
 switch r0.x
 
-#line 47
+#line 48
   case l(1)
 
-#line 50
+#line 51
   mul r14.xyz, r7.xyzx, cb10[0].xxxx
   add r12.xyz, r14.xyzx, r6.xyzx  // r12.x <- data.velocity.x; r12.y <- data.velocity.y; r12.z <- data.velocity.z
 
-#line 53
+#line 54
   mov r14.xyz, -r3.xyzx
   add r14.xyz, r14.xyzx, r11.xyzx
   dp3 r0.x, r14.xyzx, r14.xyzx
   rsq r0.x, r0.x
   mul r14.xyz, r0.xxxx, r14.xyzx  // r14.x <- vec.x; r14.y <- vec.y; r14.z <- vec.z
 
-#line 56
+#line 57
   mul r14.xyz, r12.xyzx, r14.xyzx
   mul r14.xyz, r14.xyzx, cb10[0].xxxx
   add r13.xyz, r3.xyzx, r14.xyzx  // r13.x <- data.position.x; r13.y <- data.position.y; r13.z <- data.position.z
 
-#line 60
+#line 61
   mov r0.x, -r1.w
   add r0.x, r0.x, r2.x
   add r0.x, r0.x, l(0.500000)
   ftou r0.x, r0.x  // r0.x <- type
 
-#line 61
+#line 62
   utof r1.x, cb10[0].y
   div r10.y, l(1.000000), r1.x  // r10.y <- w
 
-#line 62
+#line 63
   utof r1.x, cb10[0].z
   div r10.z, l(1.000000), r1.x  // r10.z <- h
 
-#line 63
+#line 64
   udiv null, r1.x, r0.x, cb10[0].y
   utof r1.x, r1.x
   mul r8.x, r10.y, r1.x  // r8.x <- uv.x
@@ -325,48 +325,48 @@ switch r0.x
   utof r0.x, r0.x
   mul r8.y, r10.z, r0.x  // r8.y <- uv.y
 
-#line 64
+#line 65
   mov r8.xy, r8.xyxx  // r8.x <- data.texcoord.x; r8.y <- data.texcoord.y
 
-#line 65
+#line 66
   mov r10.y, r10.y  // r10.y <- data.texcoord.z
   mov r10.z, r10.z  // r10.z <- data.texcoord.w
 
-#line 66
+#line 67
   mov r12.w, r8.x
   mov r12.xyzw, r12.xyzw  // r12.w <- data.texcoord.x
   mov r10.x, r8.y
   mov r10.xyzw, r10.xyzw  // r10.x <- data.texcoord.y
   break   // r3.x <- data.position.x; r3.y <- data.position.y; r3.z <- data.position.z; r6.x <- data.velocity.x; r6.y <- data.velocity.y; r6.z <- data.velocity.z; r6.w <- data.texcoord.x; r7.w <- data.texcoord.y; r8.x <- data.texcoord.z; r8.y <- data.texcoord.w
 
-#line 68
+#line 69
   case l(12)
 
-#line 71
+#line 72
   mul r14.xyz, r7.xyzx, cb10[0].xxxx
   add r12.xyz, r14.xyzx, r6.xyzx  // r12.x <- data.velocity.x; r12.y <- data.velocity.y; r12.z <- data.velocity.z
 
-#line 74
+#line 75
   mul r14.xyz, r12.xyzx, cb10[0].xxxx
   itof r15.xyz, l(5, 5, 5, 0)
   mul r14.xyz, r14.xyzx, r15.xyzx
   add r13.xyz, r14.xyzx, r3.xyzx  // r13.x <- data.position.x; r13.y <- data.position.y; r13.z <- data.position.z
 
-#line 77
+#line 78
   mov r0.x, -r1.w
   add r0.x, r0.x, r2.x
   add r0.x, r0.x, l(0.500000)
   ftou r0.x, r0.x  // r0.x <- type
 
-#line 78
+#line 79
   utof r1.x, cb10[0].y
   div r10.y, l(1.000000), r1.x  // r10.y <- w
 
-#line 79
+#line 80
   utof r1.x, cb10[0].z
   div r10.z, l(1.000000), r1.x  // r10.z <- h
 
-#line 80
+#line 81
   udiv null, r1.x, r0.x, cb10[0].y
   utof r1.x, r1.x
   mul r8.x, r10.y, r1.x  // r8.x <- uv.x
@@ -374,44 +374,44 @@ switch r0.x
   utof r0.x, r0.x
   mul r8.y, r10.z, r0.x  // r8.y <- uv.y
 
-#line 81
+#line 82
   mov r8.xy, r8.xyxx  // r8.x <- data.texcoord.x; r8.y <- data.texcoord.y
 
-#line 82
+#line 83
   mov r10.y, r10.y  // r10.y <- data.texcoord.z
   mov r10.z, r10.z  // r10.z <- data.texcoord.w
 
-#line 85
+#line 86
   max r0.x, r1.w, l(0.000000)
   min r10.w, r0.x, l(1.000000)
 
-#line 86
+#line 87
   mov r12.w, r8.x
   mov r12.xyzw, r12.xyzw  // r12.w <- data.texcoord.x
   mov r10.x, r8.y
   mov r10.xyzw, r10.xyzw  // r10.x <- data.texcoord.y
   break   // r3.x <- data.position.x; r3.y <- data.position.y; r3.z <- data.position.z; r6.x <- data.velocity.x; r6.y <- data.velocity.y; r6.z <- data.velocity.z; r6.w <- data.texcoord.x; r7.w <- data.texcoord.y; r8.x <- data.texcoord.z; r8.y <- data.texcoord.w
 
-#line 88
+#line 89
   default 
 
-#line 91
+#line 92
   mul r14.xyz, r7.xyzx, cb10[0].xxxx
   add r12.xyz, r14.xyzx, r6.xyzx  // r12.x <- data.velocity.x; r12.y <- data.velocity.y; r12.z <- data.velocity.z
 
-#line 94
+#line 95
   mul r6.xyz, r12.xyzx, cb10[0].xxxx
   add r13.xyz, r6.xyzx, r3.xyzx  // r13.x <- data.position.x; r13.y <- data.position.y; r13.z <- data.position.z
 
-#line 99
+#line 100
   mov r0.x, -r1.w
   add r0.x, r0.x, r2.x
   div r0.x, r0.x, r2.x  // r0.x <- lifeRatio
 
-#line 100
+#line 101
   imul null, r1.x, cb10[0].z, cb10[0].y  // r1.x <- frameCount
 
-#line 101
+#line 102
   utof r3.x, r1.x
   mul r0.x, r0.x, r3.x
   ftou r0.x, r0.x
@@ -420,15 +420,15 @@ switch r0.x
   iadd r1.x, r1.x, r3.x
   umin r0.x, r0.x, r1.x  // r0.x <- type
 
-#line 103
+#line 104
   utof r1.x, cb10[0].y
   div r10.y, l(1.000000), r1.x  // r10.y <- w
 
-#line 104
+#line 105
   utof r1.x, cb10[0].z
   div r10.z, l(1.000000), r1.x  // r10.z <- h
 
-#line 105
+#line 106
   udiv null, r1.x, r0.x, cb10[0].y
   utof r1.x, r1.x
   mul r3.x, r10.y, r1.x  // r3.x <- uv.x
@@ -436,28 +436,28 @@ switch r0.x
   utof r0.x, r0.x
   mul r3.y, r10.z, r0.x  // r3.y <- uv.y
 
-#line 106
+#line 107
   mov r3.xy, r3.xyxx  // r3.x <- data.texcoord.x; r3.y <- data.texcoord.y
 
-#line 107
+#line 108
   mov r10.y, r10.y  // r10.y <- data.texcoord.z
   mov r10.z, r10.z  // r10.z <- data.texcoord.w
 
-#line 110
+#line 111
   max r0.x, r1.w, l(0.000000)
   min r10.w, r0.x, l(1.000000)
 
-#line 111
+#line 112
   mov r12.w, r3.x
   mov r12.xyzw, r12.xyzw  // r12.w <- data.texcoord.x
   mov r10.x, r3.y
   mov r10.xyzw, r10.xyzw  // r10.x <- data.texcoord.y
   break   // r1.x <- header.depth; r3.x <- data.position.x; r3.y <- data.position.y; r3.z <- data.position.z; r6.x <- data.velocity.x; r6.y <- data.velocity.y; r6.z <- data.velocity.z; r6.w <- data.texcoord.x; r7.w <- data.texcoord.y; r8.x <- data.texcoord.z; r8.y <- data.texcoord.w
 
-#line 113
+#line 114
 endswitch   // r12.x <- data.velocity.x; r12.y <- data.velocity.y; r12.z <- data.velocity.z; r13.x <- data.position.x; r13.y <- data.position.y; r13.z <- data.position.z; r10.y <- data.texcoord.z; r10.z <- data.texcoord.w; r12.w <- data.texcoord.x; r10.x <- data.texcoord.y
 
-#line 116
+#line 117
 itof r0.x, l(1)
 mul r1.x, r13.x, cb4[0].w
 mul r3.x, r13.y, cb4[1].w
@@ -467,13 +467,13 @@ add r1.x, r1.x, r3.x
 mul r0.x, r0.x, cb4[3].w
 add r0.x, r0.x, r1.x  // r0.x <- header.depth
 
-#line 119
+#line 120
 store_structured u3.x, r0.y, l(0), r0.z
 store_structured u3.x, r0.y, l(4), r0.w
 store_structured u3.x, r0.y, l(8), r0.x
 store_structured u3.x, r0.y, l(12), r1.y
 
-#line 120
+#line 121
 store_structured u0.x, r0.w, l(0), r1.z
 store_structured u0.x, r0.w, l(4), r1.w
 store_structured u0.x, r0.w, l(8), r2.x
@@ -511,6 +511,6 @@ store_structured u0.x, r0.w, l(132), r11.y
 store_structured u0.x, r0.w, l(136), r11.z
 store_structured u0.x, r0.w, l(140), r9.y
 
-#line 121
+#line 122
 ret 
 // Approximately 289 instruction slots used

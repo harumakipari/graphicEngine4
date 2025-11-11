@@ -37,6 +37,7 @@ class BootScene : public Scene
     {
         float elapsedTime = 0.0f;
         float deltaTime = 0.0f;
+        float gravity = -9.8f;
     };
 
     struct ShaderConstant
@@ -57,27 +58,46 @@ class BootScene : public Scene
 
     struct SceneConstants
     {
-        bool enableSsao;
-        //float reflectionIntensity;
-        float time = 0.0f;
-        // shader のフラグ
-        int enableCascadedShadowMaps;
-        int enableSsr;
-        int enableFog;
-        int enableBloom;
+        float elapsedTime = 0.0f;
         float deltaTime = 0.0f;
+        float gravity = -9.8f;
 
-        float gravity = 9.8f;
-        int enableBlur = 0;
-        float pads[2] = {};
+
+        //bool enableSsao;
+        ////float reflectionIntensity;
+        //float time = 0.0f;
+        //// shader のフラグ
+        //int enableCascadedShadowMaps;
+        //int enableSsr;
+        //int enableFog;
+        //int enableBloom;
+        //float deltaTime = 0.0f;
+
+        //float gravity = 9.8f;
+        //int enableBlur = 0;
+        //float pads[2] = {};
     };
 
     struct ShaderConstants
     {
+        int  enableSsao;
+        int  enableCascadedShadowMaps;
+        int  enableSsr;
+        int  enableFog;
+
+        int  enableBloom;
+        int  enableBlur;
+        int  directionalLightEnable = true; // 平行光源の on / off
+        int  colorizeCascadedLayer = false;
+
         float shadowColor = 0.2f;
         float shadowDepthBias = 0.0005f;
-        bool colorizeCascadeLayer = false;
-        float pad;
+
+
+        //float shadowColor = 0.2f;
+        //float shadowDepthBias = 0.0005f;
+        //bool colorizeCascadeLayer = false;
+        //float pad;
     };
 
     // ConstantBuffer クラスで管理
@@ -159,14 +179,6 @@ private:
     bool enableSSR = true;
     bool enableFog = false;
     bool enableBloom = false;
-
-    // SCREEN_SPACE_REFLECTION
-    float reflectionIntensity = 0.1f;
-    float maxDistance = 15.0f;
-    float resolution = 0.3f;
-    int steps = 10;
-    float thickness = 0.5f;
-
 
     std::unique_ptr<PBD::System> pbd;
 };

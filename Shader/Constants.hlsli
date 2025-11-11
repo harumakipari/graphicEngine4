@@ -1,31 +1,27 @@
 #ifndef CONSTANTS_INCLUDE
 #define CONSTANTS_INCLUDE
+
 cbuffer SCENE_CONSTANT_BUFFER : register(b1)
 {
-    bool enableSSAO;
-    //float reflectionIntensity;
-    float time;
-    // shader ÇÃÉtÉâÉO
-    bool enableCascadedShadowMaps;
-    
-    bool enableSSR;
-    bool enableFog;
-    bool enableBloom;
     float elapsedTime;
+    float deltaTimesss;
+    float gravitysss;
 }
 
 cbuffer SHADER_CONSTANT_BUFFER : register(b9)
 {
-    // CASCADED_SHADOW_MAPS
-    float shadowColor;
-    float shadowDepthBias;
-    bool colorizeCascadedLayer;
-    // SCREEN_SPACE_REFLECTION
-    //float maxDistance;
-    //float resolution;
-    //int steps;
-    //float thickness;
-    
+    bool enableSSAO;
+    bool enableCascadedShadowMaps;
+    bool enableSSR;
+    bool enableFog;
+
+    bool enableBloom;
+    bool enableBlurss;
+    bool directionalLightEnablesss = true; // ïΩçsåıåπÇÃ on / off
+    bool colorizeCascadedLayer = false;
+
+    float shadowColor = 0.2f;
+    float shadowDepthBias = 0.0005f;
 }
 // CASCADED_SHADOW_MAPS
 cbuffer CSM_CONSTANTS : register(b3)

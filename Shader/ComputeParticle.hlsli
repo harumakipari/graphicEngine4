@@ -1,4 +1,4 @@
-#include "Constants.hlsli"
+//#include "Constants.hlsli"
 
 //パーティクルスレッド数
 static const int NumParticleThread = 1024;

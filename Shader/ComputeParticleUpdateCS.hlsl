@@ -1,4 +1,5 @@
 #include "ComputeParticle.hlsli"
+#include "Constants.hlsli"
 
 RWStructuredBuffer<ParticleData> particleDataBuffer : register(u0); //パーティクル管理バッファ
 AppendStructuredBuffer<uint> particleUnusedBuffer : register(u1); //パーティクル番号管理バッファ（末尾への追加専用）

@@ -7,13 +7,9 @@
 // cbuffer SCENE_CONSTANT_BUFFER
 // {
 //
-//   bool enableSSAO;                   // Offset:    0 Size:     4 [unused]
-//   float time;                        // Offset:    4 Size:     4
-//   bool enableCascadedShadowMaps;     // Offset:    8 Size:     4 [unused]
-//   bool enableSSR;                    // Offset:   12 Size:     4 [unused]
-//   bool enableFog;                    // Offset:   16 Size:     4 [unused]
-//   bool enableBloom;                  // Offset:   20 Size:     4 [unused]
-//   float elapsedTime;                 // Offset:   24 Size:     4 [unused]
+//   float elapsedTime;                 // Offset:    0 Size:     4
+//   float deltaTimesss;                // Offset:    4 Size:     4 [unused]
+//   float gravitysss;                  // Offset:    8 Size:     4 [unused]
 //
 // }
 //
@@ -704,7 +700,7 @@ if_nz r1.x
       mov r8.xy, r8.xyxx
 
 #line 51
-      add r9.z, r0.x, cb1[0].y
+      add r9.z, r0.x, cb1[0].x
       mul r9.z, r9.z, l(0.001000)
       mov r10.xy, -cb5[0].xyxx
       dp2 r9.w, r10.xyxx, r10.xyxx
@@ -761,7 +757,7 @@ if_nz r1.x
       mov r10.w, r10.w  // r10.w <- heightFraction
 
 #line 255
-      add r11.w, r0.x, cb1[0].y
+      add r11.w, r0.x, cb1[0].x
       mul r11.w, r11.w, l(20.000000)
       mov r12.xy, -cb5[0].xyxx
       dp2 r12.z, r12.xyxx, r12.xyxx
@@ -944,7 +940,7 @@ if_nz r1.x
         if_nz r9.w
 
 #line 290
-          add r9.w, r0.x, cb1[0].y
+          add r9.w, r0.x, cb1[0].x
           mov r12.xy, -cb5[0].xyxx
           dp2 r10.y, r12.xyxx, r12.xyxx
           rsq r10.y, r10.y
@@ -955,7 +951,7 @@ if_nz r1.x
           add r11.xz, r11.xxzx, r12.xxyx
 
 #line 291
-          add r9.w, r0.x, cb1[0].y
+          add r9.w, r0.x, cb1[0].x
           mul r9.w, r9.w, l(40.000000)
           mov r9.w, -r9.w
           add r11.y, r9.w, r11.y
@@ -1104,7 +1100,7 @@ if_nz r1.x
           mov r11.xy, r11.xyxx
 
 #line 51
-          add r12.z, r0.x, cb1[0].y
+          add r12.z, r0.x, cb1[0].x
           mul r12.z, r12.z, l(0.001000)
           mov r13.xy, -cb5[0].xyxx
           dp2 r12.w, r13.xyxx, r13.xyxx
@@ -1161,7 +1157,7 @@ if_nz r1.x
           mov r13.z, r13.z  // r13.z <- heightFraction
 
 #line 255
-          add r13.w, r0.x, cb1[0].y
+          add r13.w, r0.x, cb1[0].x
           mul r13.w, r13.w, l(20.000000)
           mov r14.xy, -cb5[0].xyxx
           dp2 r14.z, r14.xyxx, r14.xyxx
@@ -1344,7 +1340,7 @@ if_nz r1.x
             if_nz r12.w
 
 #line 290
-              add r12.w, r0.x, cb1[0].y
+              add r12.w, r0.x, cb1[0].x
               mov r13.yw, -cb5[0].xxxy
               dp2 r14.w, r13.ywyy, r13.ywyy
               rsq r14.w, r14.w
@@ -1355,7 +1351,7 @@ if_nz r1.x
               add r14.xz, r13.yywy, r14.xxzx
 
 #line 291
-              add r12.w, r0.x, cb1[0].y
+              add r12.w, r0.x, cb1[0].x
               mul r12.w, r12.w, l(40.000000)
               mov r12.w, -r12.w
               add r14.y, r12.w, r14.y  // r14.y <- samplePoint.y
@@ -1462,7 +1458,7 @@ if_nz r1.x
           mov r11.xy, r11.xyxx  // r11.x <- samplePoint.x; r11.y <- samplePoint.y
 
 #line 51
-          add r12.z, r0.x, cb1[0].y
+          add r12.z, r0.x, cb1[0].x
           mul r12.z, r12.z, l(0.001000)
           mov r13.xy, -cb5[0].xyxx
           dp2 r12.w, r13.xyxx, r13.xyxx
@@ -1519,7 +1515,7 @@ if_nz r1.x
           mov r13.z, r13.z  // r13.z <- heightFraction
 
 #line 255
-          add r13.w, r0.x, cb1[0].y
+          add r13.w, r0.x, cb1[0].x
           mul r13.w, r13.w, l(20.000000)
           mov r14.xy, -cb5[0].xyxx
           dp2 r14.z, r14.xyxx, r14.xyxx
@@ -1702,7 +1698,7 @@ if_nz r1.x
             if_nz r12.w
 
 #line 290
-              add r12.w, r0.x, cb1[0].y
+              add r12.w, r0.x, cb1[0].x
               mov r13.yw, -cb5[0].xxxy
               dp2 r14.w, r13.ywyy, r13.ywyy
               rsq r14.w, r14.w
@@ -1713,7 +1709,7 @@ if_nz r1.x
               add r14.xz, r13.yywy, r14.xxzx
 
 #line 291
-              add r12.w, r0.x, cb1[0].y
+              add r12.w, r0.x, cb1[0].x
               mul r12.w, r12.w, l(40.000000)
               mov r12.w, -r12.w
               add r14.y, r12.w, r14.y  // r14.y <- samplePoint.y
@@ -1820,7 +1816,7 @@ if_nz r1.x
           mov r11.xy, r11.xyxx  // r11.x <- samplePoint.x; r11.y <- samplePoint.y
 
 #line 51
-          add r12.z, r0.x, cb1[0].y
+          add r12.z, r0.x, cb1[0].x
           mul r12.z, r12.z, l(0.001000)
           mov r13.xy, -cb5[0].xyxx
           dp2 r12.w, r13.xyxx, r13.xyxx
@@ -1877,7 +1873,7 @@ if_nz r1.x
           mov r13.z, r13.z  // r13.z <- heightFraction
 
 #line 255
-          add r13.w, r0.x, cb1[0].y
+          add r13.w, r0.x, cb1[0].x
           mul r13.w, r13.w, l(20.000000)
           mov r14.xy, -cb5[0].xyxx
           dp2 r14.z, r14.xyxx, r14.xyxx
@@ -2060,7 +2056,7 @@ if_nz r1.x
             if_nz r12.w
 
 #line 290
-              add r12.w, r0.x, cb1[0].y
+              add r12.w, r0.x, cb1[0].x
               mov r13.yw, -cb5[0].xxxy
               dp2 r14.w, r13.ywyy, r13.ywyy
               rsq r14.w, r14.w
@@ -2071,7 +2067,7 @@ if_nz r1.x
               add r14.xz, r13.yywy, r14.xxzx
 
 #line 291
-              add r12.w, r0.x, cb1[0].y
+              add r12.w, r0.x, cb1[0].x
               mul r12.w, r12.w, l(40.000000)
               mov r12.w, -r12.w
               add r14.y, r12.w, r14.y  // r14.y <- samplePoint.y
@@ -2178,7 +2174,7 @@ if_nz r1.x
           mov r11.xy, r11.xyxx  // r11.x <- samplePoint.x; r11.y <- samplePoint.y
 
 #line 51
-          add r12.z, r0.x, cb1[0].y
+          add r12.z, r0.x, cb1[0].x
           mul r12.z, r12.z, l(0.001000)
           mov r13.xy, -cb5[0].xyxx
           dp2 r12.w, r13.xyxx, r13.xyxx
@@ -2235,7 +2231,7 @@ if_nz r1.x
           mov r13.z, r13.z  // r13.z <- heightFraction
 
 #line 255
-          add r13.w, r0.x, cb1[0].y
+          add r13.w, r0.x, cb1[0].x
           mul r13.w, r13.w, l(20.000000)
           mov r14.xy, -cb5[0].xyxx
           dp2 r14.z, r14.xyxx, r14.xyxx
@@ -2418,7 +2414,7 @@ if_nz r1.x
             if_nz r12.w
 
 #line 290
-              add r12.w, r0.x, cb1[0].y
+              add r12.w, r0.x, cb1[0].x
               mov r13.yw, -cb5[0].xxxy
               dp2 r14.w, r13.ywyy, r13.ywyy
               rsq r14.w, r14.w
@@ -2429,7 +2425,7 @@ if_nz r1.x
               add r14.xz, r13.yywy, r14.xxzx
 
 #line 291
-              add r12.w, r0.x, cb1[0].y
+              add r12.w, r0.x, cb1[0].x
               mul r12.w, r12.w, l(40.000000)
               mov r12.w, -r12.w
               add r14.y, r12.w, r14.y  // r14.y <- samplePoint.y
@@ -2536,7 +2532,7 @@ if_nz r1.x
           mov r11.xy, r11.xyxx  // r11.x <- samplePoint.x; r11.y <- samplePoint.y
 
 #line 51
-          add r12.z, r0.x, cb1[0].y
+          add r12.z, r0.x, cb1[0].x
           mul r12.z, r12.z, l(0.001000)
           mov r13.xy, -cb5[0].xyxx
           dp2 r12.w, r13.xyxx, r13.xyxx
@@ -2593,7 +2589,7 @@ if_nz r1.x
           mov r13.z, r13.z  // r13.z <- heightFraction
 
 #line 255
-          add r13.w, r0.x, cb1[0].y
+          add r13.w, r0.x, cb1[0].x
           mul r13.w, r13.w, l(20.000000)
           mov r14.xy, -cb5[0].xyxx
           dp2 r14.z, r14.xyxx, r14.xyxx
@@ -2776,7 +2772,7 @@ if_nz r1.x
             if_nz r12.w
 
 #line 290
-              add r12.w, r0.x, cb1[0].y
+              add r12.w, r0.x, cb1[0].x
               mov r13.yw, -cb5[0].xxxy
               dp2 r14.w, r13.ywyy, r13.ywyy
               rsq r14.w, r14.w
@@ -2787,7 +2783,7 @@ if_nz r1.x
               add r14.xz, r13.yywy, r14.xxzx
 
 #line 291
-              add r12.w, r0.x, cb1[0].y
+              add r12.w, r0.x, cb1[0].x
               mul r12.w, r12.w, l(40.000000)
               mov r12.w, -r12.w
               add r14.y, r12.w, r14.y  // r14.y <- samplePoint.y
@@ -2894,7 +2890,7 @@ if_nz r1.x
           mov r10.xy, r10.xyxx  // r10.x <- samplePoint.x; r10.y <- samplePoint.y
 
 #line 51
-          add r11.x, r0.x, cb1[0].y
+          add r11.x, r0.x, cb1[0].x
           mul r11.x, r11.x, l(0.001000)
           mov r11.yz, -cb5[0].xxyx
           dp2 r11.w, r11.yzyy, r11.yzyy
@@ -2950,7 +2946,7 @@ if_nz r1.x
           mov r12.y, r12.y  // r12.y <- heightFraction
 
 #line 255
-          add r12.z, r0.x, cb1[0].y
+          add r12.z, r0.x, cb1[0].x
           mul r12.z, r12.z, l(20.000000)
           mov r13.xy, -cb5[0].xyxx
           dp2 r12.w, r13.xyxx, r13.xyxx
@@ -3133,7 +3129,7 @@ if_nz r1.x
             if_nz r11.y
 
 #line 290
-              add r11.y, r0.x, cb1[0].y
+              add r11.y, r0.x, cb1[0].x
               mov r12.zw, -cb5[0].xxxy
               dp2 r11.w, r12.zwzz, r12.zwzz
               rsq r11.w, r11.w
@@ -3144,7 +3140,7 @@ if_nz r1.x
               add r10.xy, r10.xyxx, r11.ywyy
 
 #line 291
-              add r11.y, r0.x, cb1[0].y
+              add r11.y, r0.x, cb1[0].x
               mul r11.y, r11.y, l(40.000000)
               mov r11.y, -r11.y
               add r10.w, r10.w, r11.y
@@ -3279,7 +3275,7 @@ if_nz r1.x
           mov r10.xy, r10.xyxx
 
 #line 51
-          add r11.y, r0.x, cb1[0].y
+          add r11.y, r0.x, cb1[0].x
           mul r11.y, r11.y, l(0.001000)
           mov r11.zw, -cb5[0].xxxy
           dp2 r12.x, r11.zwzz, r11.zwzz
@@ -3335,7 +3331,7 @@ if_nz r1.x
           mov r12.y, r12.y  // r12.y <- heightFraction
 
 #line 255
-          add r12.z, r0.x, cb1[0].y
+          add r12.z, r0.x, cb1[0].x
           mul r12.z, r12.z, l(20.000000)
           mov r13.xy, -cb5[0].xyxx
           dp2 r12.w, r13.xyxx, r13.xyxx
@@ -3518,7 +3514,7 @@ if_nz r1.x
             if_nz r11.z
 
 #line 290
-              add r11.z, r0.x, cb1[0].y
+              add r11.z, r0.x, cb1[0].x
               mov r12.xz, -cb5[0].xxyx
               dp2 r12.w, r12.xzxx, r12.xzxx
               rsq r12.w, r12.w
@@ -3529,7 +3525,7 @@ if_nz r1.x
               add r10.xy, r10.xyxx, r12.xzxx
 
 #line 291
-              add r11.z, r0.x, cb1[0].y
+              add r11.z, r0.x, cb1[0].x
               mul r11.z, r11.z, l(40.000000)
               mov r11.z, -r11.z
               add r10.w, r10.w, r11.z
@@ -3689,7 +3685,7 @@ if_nz r1.x
       mov r8.xy, r8.xyxx
 
 #line 51
-      add r9.z, r0.x, cb1[0].y
+      add r9.z, r0.x, cb1[0].x
       mul r9.z, r9.z, l(0.001000)
       mov r10.xy, -cb5[0].xyxx
       dp2 r9.w, r10.xyxx, r10.xyxx
@@ -3745,7 +3741,7 @@ if_nz r1.x
       mov r11.x, r11.x  // r11.x <- heightFraction
 
 #line 255
-      add r11.y, r0.x, cb1[0].y
+      add r11.y, r0.x, cb1[0].x
       mul r11.y, r11.y, l(20.000000)
       mov r11.zw, -cb5[0].xxxy
       dp2 r12.x, r11.zwzz, r11.zwzz

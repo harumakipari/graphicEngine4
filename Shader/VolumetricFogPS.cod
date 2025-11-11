@@ -7,9 +7,20 @@
 // cbuffer SHADER_CONSTANT_BUFFER
 // {
 //
-//   float shadowColor;                 // Offset:    0 Size:     4 [unused]
-//   float shadowDepthBias;             // Offset:    4 Size:     4
-//   bool colorizeCascadedLayer;        // Offset:    8 Size:     4 [unused]
+//   bool enableSSAO;                   // Offset:    0 Size:     4 [unused]
+//   bool enableCascadedShadowMaps;     // Offset:    4 Size:     4 [unused]
+//   bool enableSSR;                    // Offset:    8 Size:     4 [unused]
+//   bool enableFog;                    // Offset:   12 Size:     4 [unused]
+//   bool enableBloom;                  // Offset:   16 Size:     4 [unused]
+//   bool enableBlurss;                 // Offset:   20 Size:     4 [unused]
+//   bool directionalLightEnablesss;    // Offset:   24 Size:     4 [unused]
+//      = 0xffffffff 
+//   bool colorizeCascadedLayer;        // Offset:   28 Size:     4 [unused]
+//      = 0x00000000 
+//   float shadowColor;                 // Offset:   32 Size:     4 [unused]
+//      = 0x3e4ccccd 
+//   float shadowDepthBias;             // Offset:   36 Size:     4
+//      = 0x3a03126f 
 //
 // }
 //
@@ -110,7 +121,7 @@ dcl_immediateConstantBuffer { { 1.000000, 0, 0, 0},
                               { 0, 1.000000, 0, 0},
                               { 0, 0, 1.000000, 0},
                               { 0, 0, 0, 1.000000} }
-dcl_constantbuffer CB9[1], immediateIndexed
+dcl_constantbuffer CB9[3], immediateIndexed
 dcl_constantbuffer CB3[17], immediateIndexed
 dcl_constantbuffer CB8[3], immediateIndexed
 dcl_constantbuffer CB4[21], immediateIndexed
@@ -349,7 +360,7 @@ loop
 
 #line 54
   itof r6.z, r5.z
-  mov r4.x, -cb9[0].y
+  mov r4.x, -cb9[2].y
   add r4.x, r4.x, r4.z
   sample_c_lz_indexable(texture2darray)(float,float,float,float) r4.x, r6.xyzx, t2.xxxx, s7, r4.x  // r4.x <- <SunlightRadiance return value>
 

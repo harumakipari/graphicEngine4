@@ -35,7 +35,7 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 {
     sceneCBuffer = std::make_unique<ConstantBuffer<SceneConstants>>(device);
     shaderCBuffer = std::make_unique<ConstantBuffer<ShaderConstants>>(device);
-    sceneCBuffer->data.time = 0;//開始時に０にしておく
+    sceneCBuffer->data.elapsedTime = 0;//開始時に０にしておく
 
     // ライト
     {
@@ -571,15 +571,15 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     }
 
     // SCREEN_SPACE_AMBIENT_OCCLUSION
-    sceneCBuffer->data.enableSsao = enableSSAO;
-    sceneCBuffer->data.enableBloom = enableBloom;
-    sceneCBuffer->data.enableFog = enableFog;
-    sceneCBuffer->data.enableCascadedShadowMaps = enableCascadedShadowMaps;
-    sceneCBuffer->data.enableSsr = enableSSR;
+    shaderCBuffer->data.enableSsao = enableSSAO;
+    shaderCBuffer->data.enableBloom = enableBloom;
+    shaderCBuffer->data.enableFog = enableFog;
+    shaderCBuffer->data.enableCascadedShadowMaps = enableCascadedShadowMaps;
+    shaderCBuffer->data.enableSsr = enableSSR;
     // SCREEN_SPACE_REFLECTION
     //sceneCBuffer->data.reflectionIntensity = reflectionIntensity;
     // FOG
-    sceneCBuffer->data.time += deltaTime;
+    sceneCBuffer->data.elapsedTime += deltaTime;
     sceneCBuffer->data.deltaTime = deltaTime;
 
     sceneCBuffer->Activate(immediateContext, 1); // slot1 にセット
@@ -620,7 +620,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_BACK);
 
         // MULTIPLE_RENDER_TARGETS
-        //RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
+        RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
         //RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
         //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
         sceneRender.currentRenderPath = RenderPath::Forward;
@@ -784,6 +784,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         // メインフレームバッファとブルームエフェクトを組み合わせて描画
         fullscreenQuadTransfer->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), deferredPs.Get());
 
+        RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
 
         sceneRender.currentRenderPath = RenderPath::Forward;
         sceneRender.RenderBlend(immediateContext);
@@ -961,11 +962,11 @@ void BootScene::DrawGui()
             if (ImGui::Checkbox("Enable SSR", &enableSSR)) {}
             if (enableSSR && ImGui::TreeNode("SSR Settings"))
             {
-                ImGui::SliderFloat("Reflection Intensity", &reflectionIntensity, 0.0f, 1.0f);
-                ImGui::SliderFloat("Max Distance", &maxDistance, 0.0f, 30.0f);
-                ImGui::SliderFloat("Resolution", &resolution, 0.0f, 1.0f);
-                ImGui::SliderInt("Steps", &steps, 0, 20);
-                ImGui::SliderFloat("Thickness", &thickness, 0.0f, 1.0f);
+                //ImGui::SliderFloat("Reflection Intensity", &reflectionIntensity, 0.0f, 1.0f);
+                //ImGui::SliderFloat("Max Distance", &maxDistance, 0.0f, 30.0f);
+                //ImGui::SliderFloat("Resolution", &resolution, 0.0f, 1.0f);
+                //ImGui::SliderInt("Steps", &steps, 0, 20);
+                //ImGui::SliderFloat("Thickness", &thickness, 0.0f, 1.0f);
                 ImGui::TreePop();
             }
 
@@ -1046,25 +1047,6 @@ void BootScene::DrawGui()
             {
                 ImGui::Checkbox("useDeferredRendering", &useDeferredRendering);
                 lightManager->DrawGUI();
-                //ImGui::Checkbox("directionalLightEnable", &directionalLightEnable);
-                //ImGui::SliderFloat3("Light Direction", &lightDirection.x, -1.0f, 1.0f);
-                //ImGui::SliderFloat3("Light Color", &colorLight.x, -1.0f, 1.0f);
-                //ImGui::SliderFloat("IBL Intensity", &iblIntensity, 0.0f, 10.0f);
-                //ImGui::SliderFloat("Light Intensity", &colorLight.w, 0.0f, 10.0f);
-                //ImGui::Checkbox("pointLightEnable", &pointLightEnable);
-                //ImGui::SliderInt("Point Light Count", &pointLightCount, 0, 8);
-                //for (int i = 0; i < pointLightCount; i++)
-                //{
-                //    std::string header = "PointLight[" + std::to_string(i) + "]";
-                //    if (ImGui::CollapsingHeader(header.c_str()))
-                //    {
-                //        ImGui::DragFloat3(("Position##" + std::to_string(i)).c_str(), &pointLightPosition[i].x, 0.1f);
-                //        ImGui::ColorEdit3(("Color##" + std::to_string(i)).c_str(), &pointLightColor[i].x);
-                //        ImGui::SliderFloat(("Range##" + std::to_string(i)).c_str(), &pointLightRange[i], 0.0f, 10.0f);
-                //        ImGui::SliderFloat(("Intensity##" + std::to_string(i)).c_str(), &pointLightColor[i].w, 0.0f, 10.0f);
-                //    }
-                //}
-
             }
 
             // -------------------------
@@ -1078,7 +1060,13 @@ void BootScene::DrawGui()
                 ImGui::Checkbox("Fit To Cascade", &cascadedShadowMaps->fitToCascade);
                 ImGui::SliderFloat("Shadow Color", &shaderCBuffer->data.shadowColor, 0.0f, 1.0f);
                 ImGui::DragFloat("Depth Bias", &shaderCBuffer->data.shadowDepthBias, 0.00001f, 0.0f, 0.01f, "%.8f");
-                ImGui::Checkbox("Colorize Layer", &shaderCBuffer->data.colorizeCascadeLayer);
+                bool colorize = shaderCBuffer->data.colorizeCascadedLayer != 0;
+                if (ImGui::Checkbox("Colorize Layer", &colorize))
+                {
+                    shaderCBuffer->data.colorizeCascadedLayer = colorize ? 1 : 0;
+                }
+
+                //ImGui::Checkbox("Colorize Layer", &shaderCBuffer->data.colorizeCascadedLayer);
                 //ImGui::DragInt("Colorize Layer", &shaderCBuffer->data.colorizeCascadedlayer);
                 //ImGui::SliderFloat("Shadow Color", &shaderConstants.shadowColor, 0.0f, 1.0f);
                 //ImGui::DragFloat("Depth Bias", &shaderConstants.shadowDepthBias, 0.00001f, 0.0f, 0.01f, "%.8f");

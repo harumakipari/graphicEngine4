@@ -673,12 +673,12 @@ float4 main(VS_OUT pin) : SV_TARGET
 #if 0
     float2 glitchUV = pin.texcoord;
     float2 grid = floor(pin.texcoord * 10.0);
-    float timeSeed = floor(time * 4.0); // 0.25秒ごとに変化
+    float timeSeed = floor(elapsedTime * 4.0); // 0.25秒ごとに変化
     
     
     float rand = frac(sin(dot(grid + timeSeed, float2(12.9898, 78.233))) * 43758.5453);
     
-    float t = time * 1.0; // 高速変化させたいならスケーリング
+    float t = elapsedTime * 1.0; // 高速変化させたいならスケーリング
     float2 block = floor(pin.texcoord * float2(30 * rand + 1, 10 * rand + 1));
     float2 noise = frac(sin(dot(block, float2(12.9898 + t, 78.233 + t))) * 43758.5433);
     glitchUV += (noise - 0.5) * 0.1;
@@ -698,11 +698,11 @@ float4 main(VS_OUT pin) : SV_TARGET
 #if 0
     float2 glitchUV = pin.texcoord;
     //乱数（時間によって少しずつ変わる）
-    float noiseSeed = rand(floor(glitchUV * 40.0) + time * 5.0);
+    float noiseSeed = rand(floor(glitchUV * 40.0) + elapsedTime * 5.0);
     //ノイズをかけるかどうか
     if (noiseSeed < 0.001f)
     {
-        float noiseAmount = rand(glitchUV * 100.0 + time) * 0.05;
+        float noiseAmount = rand(glitchUV * 100.0 + elapsedTime) * 0.05;
         
         glitchUV.x += noiseAmount;
         color = colorTexture.Sample(pointSamplerState, glitchUV);

@@ -29,17 +29,8 @@ RWStructuredBuffer<ClothVertex> clothVerticesUAV : register(u0);
 
 cbuffer SCENE_CONSTANT_BUFFER : register(b1)
 {
-    bool enableSSAO;
-    float reflectionIntensity;
-    float time;
-    // shader ‚Ìƒtƒ‰ƒO
-    bool enableCascadedShadowMaps;
-    
-    bool enableSSR;
-    bool enableFog;
-    bool enableBloom;
+    float elapsedTime;
     float deltaTime;
-    
     float gravity;
 }
 

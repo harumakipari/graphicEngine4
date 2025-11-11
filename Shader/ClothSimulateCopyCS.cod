@@ -68,7 +68,7 @@ dcl_thread_group 16, 1, 1
 // Initial variable locations:
 //   vThreadID.x <- id.x; vThreadID.y <- id.y; vThreadID.z <- id.z
 //
-#line 77 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothSimulateCopyCS.hlsl"
+#line 68 "C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothSimulateCopyCS.hlsl"
 mov r0.x, l(0)  // r0.x <- i
 mov r0.y, r0.x  // r0.y <- i
 loop 
@@ -76,28 +76,28 @@ loop
   ult r0.z, r0.y, r0.z
   breakc_z r0.z
 
-#line 79
+#line 70
   mov r0.z, l(4)
   imul null, r0.z, r0.z, vThreadID.x
   iadd r0.z, r0.y, r0.z
   ld_structured r1.x, r0.z, l(0), t1.xxxx  // r1.x <- edge.id
 
-#line 80
+#line 71
   ine r0.z, r1.x, l(-1)
   if_nz r0.z
 
-#line 85
+#line 76
     nop 
     nop 
 
-#line 89
+#line 80
   endif 
 
-#line 90
+#line 81
   iadd r0.y, r0.y, l(1)
 endloop 
 
-#line 102
+#line 93
 ld_structured r0.x, vThreadID.x, l(0), u0.xxxx
 ld_structured r1.x, vThreadID.x, l(4), u0.xxxx
 ld_structured r2.x, vThreadID.x, l(8), u0.xxxx
@@ -107,6 +107,6 @@ store_structured u0.x, vThreadID.x, l(4), r1.x
 store_structured u0.x, vThreadID.x, l(8), r2.x
 store_structured u0.x, vThreadID.x, l(12), r3.x
 
-#line 103
+#line 94
 ret 
 // Approximately 26 instruction slots used

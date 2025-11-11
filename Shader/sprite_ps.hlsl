@@ -16,9 +16,9 @@ float4 main(VS_OUT pin) : SV_TARGET
         float2 glitchUV = pin.texCoord;
     
         ////横にUVずらし（スキャンライン風）
-        //float glitchAmount = sin(elapsedTime * 30.0 + pin.texCoord.y * 120.0) * 0.005;
+        //float glitchAmount = sin(deltaTime * 30.0 + pin.texCoord.y * 120.0) * 0.005;
         ////時々大きくブレる
-        //float block = step(frac(pin.texCoord.y * 10.0 + elapsedTime * 4.0), 0.1);
+        //float block = step(frac(pin.texCoord.y * 10.0 + deltaTime * 4.0), 0.1);
         //glitchAmount += block * 0.05;
         ////横ブレ
         //glitchUV.y += glitchAmount;

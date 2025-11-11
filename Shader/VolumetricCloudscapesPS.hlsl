@@ -48,7 +48,7 @@ float3 SampleHighFrequencyNoises(float3 samplePoint, float mipLevel)
 
 float3 SampleWeatherData(float2 samplePoint)
 {
-    float2 offset = ((time + timeOffset) * 0.001) * normalize(-windDirection) * windSpeed;
+    float2 offset = ((elapsedTime + timeOffset) * 0.001) * normalize(-windDirection) * windSpeed;
 #if 1
     float horizonDistance = sqrt(cloudAltitudesMinMax.x + cloudAltitudesMinMax.x - earthRadius * earthRadius) * horizonDistanceScale;
     return weatherTexture.Sample(linearMirrorSamplerState, float2(samplePoint.x + horizonDistance, horizonDistance - samplePoint.y) / (2.0 * horizonDistance) + offset);
@@ -252,7 +252,7 @@ float SampleCloudDensity(float3 samplePoint, float3 weatherData, float mipLevel,
     float heightFraction = GetHeightFractionForPoint(length(samplePoint));
 	
 #ifdef ENABLE_CLOUD_ANIMATION
-    samplePoint.xz += (time + timeOffset) * 20.0 * normalize(-windDirection) * windSpeed * 0.6;
+    samplePoint.xz += (elapsedTime + timeOffset) * 20.0 * normalize(-windDirection) * windSpeed * 0.6;
 #endif
 	
 	
@@ -287,8 +287,8 @@ float SampleCloudDensity(float3 samplePoint, float3 weatherData, float mipLevel,
 #ifdef ENABLE_CLOUD_ANIMATION
         if (windSpeed != 0.0)
         {
-            samplePoint.xz -= (time + timeOffset) * normalize(-windDirection) * 40.0;
-            samplePoint.y -= (time + timeOffset) * 40.0;
+            samplePoint.xz -= (elapsedTime + timeOffset) * normalize(-windDirection) * 40.0;
+            samplePoint.y -= (elapsedTime + timeOffset) * 40.0;
         }
 #endif
 		

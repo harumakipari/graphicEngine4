@@ -7,9 +7,20 @@
 // cbuffer SHADER_CONSTANT_BUFFER
 // {
 //
-//   float shadowColor;                 // Offset:    0 Size:     4
-//   float shadowDepthBias;             // Offset:    4 Size:     4
-//   bool colorizeCascadedLayer;        // Offset:    8 Size:     4
+//   bool enableSSAO;                   // Offset:    0 Size:     4 [unused]
+//   bool enableCascadedShadowMaps;     // Offset:    4 Size:     4 [unused]
+//   bool enableSSR;                    // Offset:    8 Size:     4 [unused]
+//   bool enableFog;                    // Offset:   12 Size:     4 [unused]
+//   bool enableBloom;                  // Offset:   16 Size:     4 [unused]
+//   bool enableBlurss;                 // Offset:   20 Size:     4 [unused]
+//   bool directionalLightEnablesss;    // Offset:   24 Size:     4 [unused]
+//      = 0xffffffff 
+//   bool colorizeCascadedLayer;        // Offset:   28 Size:     4
+//      = 0x00000000 
+//   float shadowColor;                 // Offset:   32 Size:     4
+//      = 0x3e4ccccd 
+//   float shadowDepthBias;             // Offset:   36 Size:     4
+//      = 0x3a03126f 
 //
 // }
 //
@@ -70,7 +81,7 @@ dcl_immediateConstantBuffer { { 1.000000, 0, 0, 0},
                               { 0, 1.000000, 0, 0},
                               { 0, 0, 1.000000, 0},
                               { 0, 0, 0, 1.000000} }
-dcl_constantbuffer CB9[1], immediateIndexed
+dcl_constantbuffer CB9[3], immediateIndexed
 dcl_constantbuffer CB3[17], dynamicIndexed
 dcl_constantbuffer CB4[21], immediateIndexed
 dcl_sampler s3, mode_default
@@ -209,7 +220,7 @@ if_nz r2.x
 
 #line 66
   itof r2.z, r3.x
-  mov r1.x, -cb9[0].y
+  mov r1.x, -cb9[2].y
   add r1.x, r1.x, r1.z
   sample_c_lz_indexable(texture2darray)(float,float,float,float) r1.x, r2.xyzx, t3.xxxx, s7, r1.x  // r1.x <- shadowFactor
 
@@ -217,7 +228,7 @@ if_nz r2.x
   itof r1.yzw, l(0, 1, 1, 1)  // r1.y <- layerColor.x; r1.z <- layerColor.y; r1.w <- layerColor.z
 
 #line 70
-  ine r2.x, l(0, 0, 0, 0), cb9[0].z
+  ine r2.x, l(0, 0, 0, 0), cb9[1].w
   if_nz r2.x
 
 #line 72
@@ -237,10 +248,10 @@ if_nz r2.x
   endif 
 
 #line 82
-  mov r2.x, -cb9[0].x
+  mov r2.x, -cb9[2].x
   add r2.x, r2.x, l(1.000000)
   mul r1.x, r1.x, r2.x
-  add r1.x, r1.x, cb9[0].x
+  add r1.x, r1.x, cb9[2].x
   mul r1.xyz, r1.yzwy, r1.xxxx
   mul r0.xyz, r0.xyzx, r1.xyzx
 

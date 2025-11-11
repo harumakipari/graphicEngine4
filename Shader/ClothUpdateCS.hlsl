@@ -55,23 +55,10 @@ RWStructuredBuffer<ClothVertex> outVertices : register(u0);
 
 cbuffer SCENE_CONSTANT_BUFFER : register(b1)
 {
-    bool enableSSAO;
-    float reflectionIntensity;
-    float time;
-    // shader ‚Ìƒtƒ‰ƒO
-    bool enableCascadedShadowMaps;
-    
-    bool enableSSR;
-    bool enableFog;
-    bool enableBloom;
+    float elapsedTime;
     float deltaTime;
-    
     float gravity;
-    float3 aaa;
-    
-    //row_major float4x4 clothInvWorld;
 }
-
 cbuffer VIEW_CONSTANTS_BUFFER : register(b4)
 {
     row_major float4x4 viewProjection;

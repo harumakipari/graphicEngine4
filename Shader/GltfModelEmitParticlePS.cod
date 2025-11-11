@@ -4,19 +4,6 @@
 //
 // Buffer Definitions: 
 //
-// cbuffer SCENE_CONSTANT_BUFFER
-// {
-//
-//   bool enableSSAO;                   // Offset:    0 Size:     4 [unused]
-//   float time;                        // Offset:    4 Size:     4
-//   bool enableCascadedShadowMaps;     // Offset:    8 Size:     4 [unused]
-//   bool enableSSR;                    // Offset:   12 Size:     4 [unused]
-//   bool enableFog;                    // Offset:   16 Size:     4 [unused]
-//   bool enableBloom;                  // Offset:   20 Size:     4 [unused]
-//   float elapsedTime;                 // Offset:   24 Size:     4 [unused]
-//
-// }
-//
 // cbuffer COMPUTE_PARTICLE_COMMON_CONSTANT_BUFFER
 // {
 //
@@ -41,6 +28,15 @@
 //   float emission;                    // Offset:   96 Size:     4 [unused]
 //   float3 pads;                       // Offset:  100 Size:    12 [unused]
 //   row_major float4x4 invWorld;       // Offset:  112 Size:    64 [unused]
+//
+// }
+//
+// cbuffer SCENE_CONSTANT_BUFFER
+// {
+//
+//   float elapsedTime;                 // Offset:    0 Size:     4
+//   float deltaTimesss;                // Offset:    4 Size:     4 [unused]
+//   float gravitysss;                  // Offset:    8 Size:     4 [unused]
 //
 // }
 //
@@ -164,9 +160,9 @@
 // no Output
 ps_5_0
 dcl_globalFlags refactoringAllowed | skipOptimization
-dcl_constantbuffer CB1[1], immediateIndexed
 dcl_constantbuffer CB10[2], immediateIndexed
 dcl_constantbuffer CB0[6], immediateIndexed
+dcl_constantbuffer CB1[1], immediateIndexed
 dcl_sampler s2, mode_default
 dcl_resource_structured t0, 96
 dcl_resource_texture2d (float,float,float,float) t1
@@ -232,7 +228,7 @@ store_structured u0.x, r0.x, l(0), r0.y
 
 #line 53
 nop 
-mov r0.y, cb1[0].y
+mov r0.y, cb1[0].x
 
 #line 21
 dp2 r0.y, r0.yyyy, l(12.989800, 78.233002, 0.000000, 0.000000)

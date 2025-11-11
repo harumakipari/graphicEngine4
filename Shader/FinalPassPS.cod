@@ -4,25 +4,23 @@
 //
 // Buffer Definitions: 
 //
-// cbuffer SCENE_CONSTANT_BUFFER
-// {
-//
-//   bool enableSSAO;                   // Offset:    0 Size:     4 [unused]
-//   float time;                        // Offset:    4 Size:     4 [unused]
-//   bool enableCascadedShadowMaps;     // Offset:    8 Size:     4 [unused]
-//   bool enableSSR;                    // Offset:   12 Size:     4
-//   bool enableFog;                    // Offset:   16 Size:     4
-//   bool enableBloom;                  // Offset:   20 Size:     4
-//   float elapsedTime;                 // Offset:   24 Size:     4 [unused]
-//
-// }
-//
 // cbuffer SHADER_CONSTANT_BUFFER
 // {
 //
-//   float shadowColor;                 // Offset:    0 Size:     4
-//   float shadowDepthBias;             // Offset:    4 Size:     4
-//   bool colorizeCascadedLayer;        // Offset:    8 Size:     4
+//   bool enableSSAO;                   // Offset:    0 Size:     4 [unused]
+//   bool enableCascadedShadowMaps;     // Offset:    4 Size:     4 [unused]
+//   bool enableSSR;                    // Offset:    8 Size:     4
+//   bool enableFog;                    // Offset:   12 Size:     4
+//   bool enableBloom;                  // Offset:   16 Size:     4
+//   bool enableBlurss;                 // Offset:   20 Size:     4 [unused]
+//   bool directionalLightEnablesss;    // Offset:   24 Size:     4 [unused]
+//      = 0xffffffff 
+//   bool colorizeCascadedLayer;        // Offset:   28 Size:     4
+//      = 0x00000000 
+//   float shadowColor;                 // Offset:   32 Size:     4
+//      = 0x3e4ccccd 
+//   float shadowDepthBias;             // Offset:   36 Size:     4
+//      = 0x3a03126f 
 //
 // }
 //
@@ -89,7 +87,6 @@
 // ambientOcclusionTexture           texture  float4          2d             t6      1 
 // reflectionTexture                 texture  float4          2d             t7      1 
 // cascadedShadowMaps                texture  float4     2darray             t8      1 
-// SCENE_CONSTANT_BUFFER             cbuffer      NA          NA            cb1      1 
 // CSM_CONSTANTS                     cbuffer      NA          NA            cb3      1 
 // VIEW_CONSTANTS_BUFFER             cbuffer      NA          NA            cb4      1 
 // SSAO_CONSTANTS_BUFFER             cbuffer      NA          NA            cb5      1 
@@ -118,8 +115,7 @@ dcl_immediateConstantBuffer { { 1.000000, 0, 0, 0},
                               { 0, 1.000000, 0, 0},
                               { 0, 0, 1.000000, 0},
                               { 0, 0, 0, 1.000000} }
-dcl_constantbuffer CB1[2], immediateIndexed
-dcl_constantbuffer CB9[1], immediateIndexed
+dcl_constantbuffer CB9[3], immediateIndexed
 dcl_constantbuffer CB3[17], dynamicIndexed
 dcl_constantbuffer CB8[3], immediateIndexed
 dcl_constantbuffer CB4[21], immediateIndexed
@@ -188,7 +184,7 @@ add r1.xy, r1.zwzz, r1.xyxx  // r1.x <- positionViewSpace.z; r1.y <- positionVie
 div r1.x, r1.x, r1.y
 
 #line 540
-ine r1.y, l(0, 0, 0, 0), cb1[0].w
+ine r1.y, l(0, 0, 0, 0), cb9[0].z
 if_nz r1.y
 
 #line 545
@@ -459,7 +455,7 @@ if_nz r1.z
 
 #line 206
   itof r4.z, r3.x
-  mov r1.w, -cb9[0].y
+  mov r1.w, -cb9[2].y
   add r1.w, r1.w, r2.z
   sample_c_lz_indexable(texture2darray)(float,float,float,float) r1.y, r4.xyzx, t8.xxxx, s7, r1.w
 
@@ -524,7 +520,7 @@ if_nz r1.x
   itof r1.xyz, l(1, 1, 1, 0)  // r1.x <- layerColor.x; r1.y <- layerColor.y; r1.z <- layerColor.z
 
 #line 627
-  ine r2.y, l(0, 0, 0, 0), cb9[0].z
+  ine r2.y, l(0, 0, 0, 0), cb9[1].w
   if_nz r2.y
 
 #line 629
@@ -544,10 +540,10 @@ if_nz r1.x
   endif 
 
 #line 639
-  mov r2.x, -cb9[0].x
+  mov r2.x, -cb9[2].x
   add r2.x, r2.x, l(1.000000)
   mul r1.w, r1.w, r2.x
-  add r1.w, r1.w, cb9[0].x
+  add r1.w, r1.w, cb9[2].x
   mul r1.xyz, r1.xyzx, r1.wwww
   mul r0.xyz, r0.xyzx, r1.xyzx
 
@@ -555,7 +551,7 @@ if_nz r1.x
 endif 
 
 #line 649
-ine r1.x, l(0, 0, 0, 0), cb1[1].x
+ine r1.x, l(0, 0, 0, 0), cb9[0].w
 if_nz r1.x
 
 #line 651
@@ -696,7 +692,7 @@ if_nz r1.x
 endif 
 
 #line 659
-ine r1.x, l(0, 0, 0, 0), cb1[1].y
+ine r1.x, l(0, 0, 0, 0), cb9[1].x
 if_nz r1.x
 
 #line 661
