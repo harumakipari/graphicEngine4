@@ -18,7 +18,8 @@ Texture2D depthTexture : register(t3);
 Texture2D bloomTexture : register(t4);
 Texture2D fogTexture : register(t5);
 Texture2D ambientOcclusionTexture : register(t6);
-Texture2DArray cascadedShadowMaps : register(t7);
+Texture2D reflectionTexture : register(t7);
+Texture2DArray cascadedShadowMaps : register(t8);
 
 cbuffer SSAO_CONSTANTS_BUFFER : register(b5)
 {
@@ -536,7 +537,11 @@ float4 main(VS_OUT pin) : SV_TARGET
     // SCREEN_SPACE_REFLECTION
     if (enableSSR)
     {
+#if 0
         color.rgb += CalculatedSSRColor(pin);
+#else
+        color.rgb += reflectionTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord);
+#endif
     }
 	uint mip_level = 0, number_of_samples;
     uint2 depthDimensions;

@@ -1,6 +1,6 @@
 #include "Sampler.hlsli"
 #include "FullScreenQuad.hlsli"
-#include "Constants.hlsli"
+//#include "Constants.hlsli"
 
 float2 NdcToUv(float2 ndc)
 {
@@ -18,6 +18,25 @@ inline float FSchlick(float f0, float cos)
 Texture2D positionTexture : register(t0);
 Texture2D normalTexture : register(t1);
 Texture2D colorTexture : register(t2);
+
+cbuffer SSR_CONSTANTS_BUFFER : register(b5)
+{
+    float reflectionIntensity;
+    float maxDistance;
+    float resolution;
+    int steps;
+    float thickness;
+}
+cbuffer VIEW_CONSTANTS_BUFFER : register(b4)
+{
+    row_major float4x4 viewProjection;
+    float4 cameraPositon;
+    row_major float4x4 view;
+    row_major float4x4 projection;
+    row_major float4x4 inverseProjection;
+    row_major float4x4 inverseViewProjection;
+    row_major float4x4 invView;
+}
 
 
 float3 main(VS_OUT pin) : SV_TARGET

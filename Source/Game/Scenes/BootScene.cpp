@@ -28,6 +28,7 @@
 #include "Graphics/PostProcess/BloomEffect.h"
 #include "Graphics/PostProcess/FogEffect.h"
 #include "Graphics/PostProcess/SSAOEffect.h"
+#include "Graphics/PostProcess/SSREffect.h"
 
 
 bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
@@ -55,6 +56,7 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         sceneEffectManager = std::make_unique<SceneEffectManager>();
         sceneEffectManager->AddEffect(std::make_unique<FogEffect>());
         sceneEffectManager->AddEffect(std::make_unique<SSAOEffect>());
+        sceneEffectManager->AddEffect(std::make_unique<SSREffect>());
         sceneEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
     }
     HRESULT hr = { S_OK };
@@ -120,7 +122,7 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         // 曲げ拘束（p1-p2 が共有辺の2三角形で構成）
         pbd->AddBendingConstraint(0, 1, 2, 3, 0.5f);
 #else
-#if 1
+#if 0
         // グリッドの布
         const int width = 3;
         const int height = 3;
@@ -698,6 +700,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 postEffectManager->GetOutput("BloomEffect"),
                 sceneEffectManager->GetOutput("FogEffect"),
                 sceneEffectManager->GetOutput("SSAOEffect"),    //SSAO
+                sceneEffectManager->GetOutput("SSREffect"),
                 cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
             };
             // メインフレームバッファとブルームエフェクトを組み合わせて描画
@@ -780,9 +783,10 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         };
         // メインフレームバッファとブルームエフェクトを組み合わせて描画
         fullscreenQuadTransfer->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), deferredPs.Get());
-        //actorRender.RenderBlend(immediateContext);
 
 
+        sceneRender.currentRenderPath = RenderPath::Forward;
+        sceneRender.RenderBlend(immediateContext);
 
 
 #if 1
@@ -839,7 +843,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 postEffectManager->GetOutput("BloomEffect"),
                 sceneEffectManager->GetOutput("FogEffect"),
                 sceneEffectManager->GetOutput("SSAOEffect"),
-                //sceneEffectManager->GetOutput("SSREffect"),
+                sceneEffectManager->GetOutput("SSREffect"),
                 cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
             };
             // メインフレームバッファとブルームエフェクトを組み合わせて描画

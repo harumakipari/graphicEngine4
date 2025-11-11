@@ -16,7 +16,7 @@ namespace PBD
         float volumeStiffness = 1.0f;
         float damping = 0.58f;
         float friction = 0.1f;
-        XMFLOAT3 externalForce = { 1.0f, 0.0f, 0.0f }; // èdóÕ
+        XMFLOAT3 externalForce = { 0.0f, -1.0f, 0.0f }; // èdóÕ
     };
 
 
