@@ -266,6 +266,7 @@
     <ClCompile Include="Source\Graphics\PostProcess\FullScreenQuad.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\BloomEffect.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\SSAOEffect.cpp" />
+    <ClCompile Include="Source\Graphics\PostProcess\SSREffect.cpp" />
     <ClCompile Include="Source\Graphics\Renderer\SceneRenderer.cpp" />
     <ClCompile Include="Source\Graphics\Renderer\ShapeRenderer.cpp" />
     <ClCompile Include="Source\Graphics\Resource\GeometricPrimitive.cpp" />
@@ -827,6 +828,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\SSAOPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\SSRPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>

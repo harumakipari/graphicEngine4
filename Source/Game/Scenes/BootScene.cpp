@@ -684,7 +684,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
 
             sceneEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)], multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::NORMAL)],
-                multipleRenderTargets->depthStencilShaderResourceView, cascadedShadowMaps->depthMap().Get());
+                multipleRenderTargets->depthStencilShaderResourceView, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::POSITION)], cascadedShadowMaps->depthMap().Get());
             postEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
 
 
@@ -826,7 +826,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
             postEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)]);
             sceneEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)], gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
-                gBufferRenderTarget->depthStencilShaderResourceView, cascadedShadowMaps->depthMap().Get());
+                gBufferRenderTarget->depthStencilShaderResourceView, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)], cascadedShadowMaps->depthMap().Get());
 
 
             ID3D11ShaderResourceView* shader_resource_views[]
@@ -839,6 +839,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 postEffectManager->GetOutput("BloomEffect"),
                 sceneEffectManager->GetOutput("FogEffect"),
                 sceneEffectManager->GetOutput("SSAOEffect"),
+                //sceneEffectManager->GetOutput("SSREffect"),
                 cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
             };
             // メインフレームバッファとブルームエフェクトを組み合わせて描画

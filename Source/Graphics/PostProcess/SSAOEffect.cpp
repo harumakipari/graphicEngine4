@@ -15,7 +15,7 @@ void SSAOEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t heigh
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 }
 
-void SSAOEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal, ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* shadowMap)
+void SSAOEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal, ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* shadowMap)
 {
     ssaoCBuffer->data.sigma = sigma;
     ssaoCBuffer->data.power = power;

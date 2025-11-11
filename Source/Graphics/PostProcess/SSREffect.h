@@ -10,10 +10,11 @@ class SSREffect :public SceneEffectBase
 public:
     struct SSRConstantBuffer
     {
-        float sigma = 0.3f;
-        float power = 1.0f;
-        bool improvedNormalReconstructionFromDepth = 1;
-        bool bilateralBlur = true;
+        float reflectionIntensity = 0.3f;
+        float maxDistance = 1.0f;
+        float resolution = 0.3f;
+        int steps = 10;
+        float thickness = 0.5f;
     };
 
 public:
@@ -25,21 +26,26 @@ public:
     void Initialize(ID3D11Device* device, uint32_t width, uint32_t height) override;
 
     void Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal,
-        ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* shadowMap) override;
+        ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* shadowMap) override;
 
     // 出力（次のエフェクトや最終合成に渡す用）
     ID3D11ShaderResourceView* GetOutputSRV()const override
     {
-        return ssaoBuffer->shaderResourceViews[0].Get();
+        return ssrBuffer->shaderResourceViews[0].Get();
     }
 
     // UI 調整 (ImGui)
-    void DrawDebugUI()override {}
+    void DrawDebugUI()override;
 
 private:
-    std::unique_ptr<FrameBuffer> ssaoBuffer;
+    std::unique_ptr<FrameBuffer> ssrBuffer;
     std::unique_ptr<FullScreenQuad> fullScreenQuad;
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> ssaoPS;
-    std::unique_ptr<ConstantBuffer<SSRConstantBuffer>> ssaoCBuffer;
+    Microsoft::WRL::ComPtr<ID3D11PixelShader> ssrPS;
+    std::unique_ptr<ConstantBuffer<SSRConstantBuffer>> ssrCBuffer;
 
+    float reflectionIntensity = 0.1f;
+    float maxDistance = 15.0f;
+    float resolution = 0.3f;
+    int steps = 10;
+    float thickness = 0.5f;
 };
