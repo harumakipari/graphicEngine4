@@ -29,6 +29,8 @@ Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fu
 
 bool Framework::Initialize()
 {
+
+
     ////デバイス・デバイスコンテクスト・スワップチェーンの作成
     ID3D11Device* device = Graphics::GetDevice();
     if (!device) {

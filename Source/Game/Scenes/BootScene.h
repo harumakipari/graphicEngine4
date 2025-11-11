@@ -33,6 +33,28 @@
 
 class BootScene : public Scene
 {
+    struct FrameConstant
+    {
+        float elapsedTime = 0.0f;
+        float deltaTime = 0.0f;
+    };
+
+    struct ShaderConstant
+    {
+        bool enableSsao;
+        bool enableCascadedShadowMaps;
+        bool enableSsr;
+        bool enableFog;
+
+        bool enableBloom;
+        bool enableBlur;
+        bool directionalLightEnable = true; // ïΩçsåıåπÇÃ on / off
+        bool colorizeCascadeLayer = false;
+
+        float shadowColor = 0.2f;
+        float shadowDepthBias = 0.0005f;
+    };
+
     struct SceneConstants
     {
         bool enableSsao;
@@ -50,18 +72,11 @@ class BootScene : public Scene
         float pads[2] = {};
     };
 
-    bool directionalLightEnable = true; // ïΩçsåıåπÇÃ on / off
-
     struct ShaderConstants
     {
         float shadowColor = 0.2f;
         float shadowDepthBias = 0.0005f;
         bool colorizeCascadeLayer = false;
-        //float maxDistance = 15.0f;// SCREEN_SPACE_REFLECTION
-
-        //float resolution = 0.3f;// SCREEN_SPACE_REFLECTION
-        //int steps = 10;// SCREEN_SPACE_REFLECTION
-        //float thickness = 0.5f;// SCREEN_SPACE_REFLECTION
         float pad;
     };
 

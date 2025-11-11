@@ -43,8 +43,13 @@ extern ImWchar glyphRangesJapanese[];
 #include "Graphics/Sprite/SpriteBatch.h"
 #include "Graphics/Resource/GeometricPrimitive.h"
 
+#ifndef _DEBUG
+CONST LONG SCREEN_WIDTH{ 1920 };
+CONST LONG SCREEN_HEIGHT{ 1080 };
+#else
 CONST LONG SCREEN_WIDTH{ 1280 };
 CONST LONG SCREEN_HEIGHT{ 720 };
+#endif
 CONST LPCWSTR APPLICATION_NAME{ L"X3DGP" };
 
 class Framework
@@ -58,7 +63,7 @@ public:
     CONST HWND hwnd;
 
 
-    Framework(HWND hwnd,BOOL fullscreen);
+    Framework(HWND hwnd, BOOL fullscreen);
     ~Framework();
 
     Framework(const Framework&) = delete;
@@ -104,7 +109,7 @@ public:
 #endif
 
                 bool skipRendering = Update(tictoc.time_interval());
-                
+
                 Render(tictoc.time_interval(), skipRendering);
                 //Render(tictoc.time_interval());
 
@@ -176,7 +181,7 @@ public:
 #if 1
             RECT client_rect{};
             GetClientRect(hwnd, &client_rect);
-            Graphics::OnSizeChanged(hwnd,static_cast<UINT64>(client_rect.right - client_rect.left), client_rect.bottom - client_rect.top);
+            Graphics::OnSizeChanged(hwnd, static_cast<UINT64>(client_rect.right - client_rect.left), client_rect.bottom - client_rect.top);
 #endif
             break;
         }

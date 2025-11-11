@@ -24,7 +24,7 @@ struct ShaderConstant
 };
 
 
-struct SceneRenderContext
+class SceneRenderContext
 {
     
 };

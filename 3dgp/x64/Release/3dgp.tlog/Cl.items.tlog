@@ -66,6 +66,7 @@ C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\PostProcess\FrameBuffer.
 C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\PostProcess\FullScreenQuad.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Release\FullScreenQuad.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\PostProcess\BloomEffect.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Release\BloomEffect.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\PostProcess\SSAOEffect.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Release\SSAOEffect.obj
+C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\PostProcess\SSREffect.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Release\SSREffect.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\Renderer\SceneRenderer.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Release\SceneRenderer.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\Renderer\ShapeRenderer.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Release\ShapeRenderer.obj
 C:\Users\2240225\Desktop\graphicEngine4\Source\Graphics\Resource\GeometricPrimitive.cpp;C:\Users\2240225\Desktop\graphicEngine4\3dgp\x64\Release\GeometricPrimitive.obj
