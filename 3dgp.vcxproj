@@ -396,7 +396,7 @@
     <ClInclude Include="Source\Graphics\Core\PipelineState.h" />
     <ClInclude Include="Source\Graphics\Core\PipleLineLibrary.h" />
     <ClInclude Include="Source\Graphics\Core\RenderState.h" />
-    <ClInclude Include="Source\Graphics\Core\SceneCommonConstants.h" />
+    <ClInclude Include="Source\Graphics\Core\SceneRenderContext.h" />
     <ClInclude Include="Source\Graphics\Core\Shader.h" />
     <ClInclude Include="Source\Graphics\Effect\ComputeParticleSystem.h" />
     <ClInclude Include="Source\Graphics\Effect\EffectSystem.h" />
@@ -415,6 +415,7 @@
     <ClInclude Include="Source\Graphics\PostProcess\SceneEffectBase.h" />
     <ClInclude Include="Source\Graphics\PostProcess\SceneEffectManager.h" />
     <ClInclude Include="Source\Graphics\PostProcess\SSAOEffect.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\SSREffect.h" />
     <ClInclude Include="Source\Graphics\Renderer\SceneRenderer.h" />
     <ClInclude Include="Source\Graphics\Renderer\ShapeRenderer.h" />
     <ClInclude Include="Source\Graphics\Resource\GeometricPrimitive.h" />

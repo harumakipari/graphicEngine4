@@ -76,9 +76,6 @@ class BootScene : public Scene
     DirectX::XMFLOAT4 lightColor{ 1.0f,1.0f,1.0f,4.1f };
     float iblIntensity = 2.0f;  //Image Basesd Lightingの強度
 
-    std::unique_ptr<Sprite> splash;
-
-    //Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShaders[8];
 
     Microsoft::WRL::ComPtr<ID3D11PixelShader> finalPs;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> deferredPs;
@@ -100,7 +97,7 @@ class BootScene : public Scene
     //スカイマップ
     std::unique_ptr<SkyMap> skyMap;
 
-    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceViews[8];
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> environmentTextures[8];
 
     std::unique_ptr<FullScreenQuad> frameBufferBlit;
 

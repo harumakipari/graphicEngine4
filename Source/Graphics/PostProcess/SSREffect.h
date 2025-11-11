@@ -5,10 +5,10 @@
 #include "SceneEffectBase.h"
 #include "Graphics/Core/ConstantBuffer.h"
 
-class SSAOEffect :public SceneEffectBase
+class SSREffect :public SceneEffectBase
 {
 public:
-    struct SSAOConstantBuffer
+    struct SSRConstantBuffer
     {
         float sigma = 0.3f;
         float power = 1.0f;
@@ -17,9 +17,9 @@ public:
     };
 
 public:
-    SSAOEffect() :SceneEffectBase("SSAOEffect") {}
+    SSREffect() :SceneEffectBase("SSREffect") {}
 
-    ~SSAOEffect() = default;
+    ~SSREffect() = default;
 
     // ポストエフェクト生成（リソース作成） 
     void Initialize(ID3D11Device* device, uint32_t width, uint32_t height) override;
@@ -34,17 +34,12 @@ public:
     }
 
     // UI 調整 (ImGui)
-    void DrawDebugUI()override;
+    void DrawDebugUI()override {}
 
 private:
     std::unique_ptr<FrameBuffer> ssaoBuffer;
     std::unique_ptr<FullScreenQuad> fullScreenQuad;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> ssaoPS;
-    std::unique_ptr<ConstantBuffer<SSAOConstantBuffer>> ssaoCBuffer;
-
-    float sigma = 0.3f;
-    float power = 1.0f;
-    bool improvedNormalReconstructionFromDepth = 1;
-    bool bilateralBlur = true;
+    std::unique_ptr<ConstantBuffer<SSRConstantBuffer>> ssaoCBuffer;
 
 };

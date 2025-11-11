@@ -80,13 +80,13 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     D3D11_TEXTURE2D_DESC texture2dDesc;
     //テクスチャをロード
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_charlie.dds", shaderResourceViews[0].ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_charlie.dds", environmentTextures[0].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/diffuse_iem.dds", shaderResourceViews[1].ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/diffuse_iem.dds", environmentTextures[1].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/specular_pmrem.dds", shaderResourceViews[2].ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/specular_pmrem.dds", environmentTextures[2].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_sheen_e.dds", shaderResourceViews[3].ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_sheen_e.dds", environmentTextures[3].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     Physics::Instance().Initialize();
@@ -550,10 +550,10 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
     // IBL
-    immediateContext->PSSetShaderResources(32, 1, shaderResourceViews[0].GetAddressOf());
-    immediateContext->PSSetShaderResources(33, 1, shaderResourceViews[1].GetAddressOf());
-    immediateContext->PSSetShaderResources(34, 1, shaderResourceViews[2].GetAddressOf());
-    immediateContext->PSSetShaderResources(35, 1, shaderResourceViews[3].GetAddressOf());
+    immediateContext->PSSetShaderResources(32, 1, environmentTextures[0].GetAddressOf());
+    immediateContext->PSSetShaderResources(33, 1, environmentTextures[1].GetAddressOf());
+    immediateContext->PSSetShaderResources(34, 1, environmentTextures[2].GetAddressOf());
+    immediateContext->PSSetShaderResources(35, 1, environmentTextures[3].GetAddressOf());
 
     D3D11_VIEWPORT viewport;
     UINT num_viewports{ 1 };
@@ -824,8 +824,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
             RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
             RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-            postEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
-            sceneEffectManager->ApplyAll(immediateContext, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)], gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
+            postEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)]);
+            sceneEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)], gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
                 gBufferRenderTarget->depthStencilShaderResourceView, cascadedShadowMaps->depthMap().Get());
 
 

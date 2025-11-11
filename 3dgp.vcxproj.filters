@@ -989,7 +989,7 @@
     <ClInclude Include="Source\Game\Actors\Stage\ClothSimulate.h">
       <Filter>Sources\Game\Actors\Stage</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Core\SceneCommonConstants.h">
+    <ClInclude Include="Source\Graphics\Core\SceneRenderContext.h">
       <Filter>Sources\Graphics\Core</Filter>
     </ClInclude>
     <ClInclude Include="External\imgui\profiler.h" />
@@ -1007,6 +1007,7 @@
     <ClInclude Include="Source\PBD\PBDParticleData.h" />
     <ClInclude Include="Source\PBD\PBDSystem.h" />
     <ClInclude Include="Source\PBD\PBDConstaraintData.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\SSREffect.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">

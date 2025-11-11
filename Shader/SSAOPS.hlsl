@@ -12,12 +12,12 @@ float2 ndc_to_uv(float2 ndc)
     return uv;
 }
 
-cbuffer SSAO_CONSTANTS_BUFFER : register(b8)
+cbuffer SSAO_CONSTANTS_BUFFER : register(b5)
 {
-    float sigma = 0.3f;
-    float power = 1.0f;
-    bool improvedNormalReconstructionFromDepth = 1;
-    bool bilateralBlur = true;
+    float sigma;
+    float power;
+    bool improvedNormalReconstructionFromDepth;
+    bool bilateralBlur;
 }
 
 static const float3 kernel_points[64] =

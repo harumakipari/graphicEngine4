@@ -1,37 +1,9 @@
-﻿  SceneComponent.cpp
-  ControllerComponent.cpp
-  EraseInAreaComponent.cpp
-  ItemSpawnerComponent.cpp
-  ShockWaveCollisionComponent.cpp
-  ActorManager.cpp
-  Framework.cpp
-  Scene.cpp
-  Beam.cpp
-  ActionDerived.cpp
-C:\Users\2240225\Desktop\graphicEngine4\Source\PBD\PBDSystem.h(400,30): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
-  (ソース ファイル 'Source/Engine/Framework/Framework.cpp' をコンパイルしています)
+﻿C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(544,11-80): warning X3206: implicit truncation of vector type
+C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(580,23-97): warning X3206: implicit truncation of vector type
+C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(585,23-112): warning X3206: implicit truncation of vector type
+C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(595,9-93): warning X3206: implicit truncation of vector type
+C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.hlsl(226,5): warning X4000: use of potentially uninitialized variable (CalculatedCascadedShadowFactor)
   
-  BehaviorTree.cpp
-  JudgmentDerived.cpp
-  NodeBase.cpp
-  RiderEnemy.cpp
-  PickUpItem.cpp
-  Player.cpp
-  PlayerState.cpp
-  BossBuilding.cpp
-  Building.cpp
-  BuildingManager.cpp
-  GameManager.cpp
-  BootScene.cpp
-  LoadingScene.cpp
-  MainScene.cpp
-C:\Users\2240225\Desktop\graphicEngine4\Source\PBD\PBDSystem.h(400,30): warning C4244: '+=': 'double' から 'float' への変換です。データが失われる可能性があります。
-  (ソース ファイル 'Source/Game/Scenes/BootScene.cpp' をコンパイルしています)
-  
-  TutorialScene.cpp
-  Graphics.cpp
-  EffectSystem.cpp
-  SceneRenderer.cpp
-  ObjectManager.cpp
-  UIFactory.cpp
+  compilation code save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.cod
+  compilation object save succeeded; see C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.cso
   3dgp.vcxproj -> C:\Users\2240225\Desktop\graphicEngine4\x64\Debug\3dgp.exe
