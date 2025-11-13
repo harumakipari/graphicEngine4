@@ -25,8 +25,8 @@ public:
         SetScale(transform.GetScale());
 
         stage = this->NewSceneComponent<StaticMeshComponent>("stageComponent", "empty");
-        stage->SetModel("./Data/Models/Title/title_yuka_kabe.gltf");
-        //stage->SetModel("./Data/Models/Objects/bmw_m4_dtm.glb");
+        //stage->SetModel("./Data/Models/Title/title_yuka_kabe.gltf");
+        stage->SetModel("./Data/Models/Objects/bmw_m4_dtm.glb");
         //stage->SetModel("./Data/Models/Stage/SpotLightStage/stydio_6.gltf");
         stage->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         stage->SetRelativeScaleDirect({ -1.0f,1.0f,-1.0f });
