@@ -174,7 +174,7 @@ public:
     size_t type = 1;
     bool Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props) override;
 
-    void Update(ID3D11DeviceContext* immediate_context, float delta_time) override;
+    void Update(float delta_time) override;
 
     float time = 0;
     void Start() override;

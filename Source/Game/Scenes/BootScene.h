@@ -33,49 +33,11 @@
 
 class BootScene : public Scene
 {
-    struct FrameConstant
+    struct FrameConstants
     {
         float elapsedTime = 0.0f;
         float deltaTime = 0.0f;
         float gravity = -9.8f;
-    };
-
-    struct ShaderConstant
-    {
-        bool enableSsao;
-        bool enableCascadedShadowMaps;
-        bool enableSsr;
-        bool enableFog;
-
-        bool enableBloom;
-        bool enableBlur;
-        bool directionalLightEnable = true; // 平行光源の on / off
-        bool colorizeCascadeLayer = false;
-
-        float shadowColor = 0.2f;
-        float shadowDepthBias = 0.0005f;
-    };
-
-    struct SceneConstants
-    {
-        float elapsedTime = 0.0f;
-        float deltaTime = 0.0f;
-        float gravity = -9.8f;
-
-
-        //bool enableSsao;
-        ////float reflectionIntensity;
-        //float time = 0.0f;
-        //// shader のフラグ
-        //int enableCascadedShadowMaps;
-        //int enableSsr;
-        //int enableFog;
-        //int enableBloom;
-        //float deltaTime = 0.0f;
-
-        //float gravity = 9.8f;
-        //int enableBlur = 0;
-        //float pads[2] = {};
     };
 
     struct ShaderConstants
@@ -92,25 +54,16 @@ class BootScene : public Scene
 
         float shadowColor = 0.2f;
         float shadowDepthBias = 0.0005f;
-
-
-        //float shadowColor = 0.2f;
-        //float shadowDepthBias = 0.0005f;
-        //bool colorizeCascadeLayer = false;
-        //float pad;
     };
 
-    // ConstantBuffer クラスで管理
-    std::unique_ptr<ConstantBuffer<SceneConstants>>     sceneCBuffer;
+    std::unique_ptr<ConstantBuffer<FrameConstants>>     sceneCBuffer;
     std::unique_ptr <ConstantBuffer<ShaderConstants>>   shaderCBuffer;
 
     ActorColliderManager actorColliderManager;
 
-
     DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
     DirectX::XMFLOAT4 lightColor{ 1.0f,1.0f,1.0f,4.1f };
     float iblIntensity = 2.0f;  //Image Basesd Lightingの強度
-
 
     Microsoft::WRL::ComPtr<ID3D11PixelShader> finalPs;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> deferredPs;
@@ -136,7 +89,6 @@ class BootScene : public Scene
 
     std::unique_ptr<FullScreenQuad> frameBufferBlit;
 
-    void SetUpActors();
 
     SIZE framebufferDimensions = {};
 
@@ -147,7 +99,7 @@ public:
 
     void Start() override;
 
-    void Update(ID3D11DeviceContext* immediateContext, float deltaTime) override;
+    void Update(float deltaTime) override;
 
     void Render(ID3D11DeviceContext* immediateContext, float deltaTime) override;
 
@@ -156,6 +108,8 @@ public:
     bool OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height) override;
 
     void DrawGui() override;
+
+    void SetUpActors()override;
 
     //シーンの自動登録
     static inline Scene::Autoenrollment<BootScene> _autoenrollment;

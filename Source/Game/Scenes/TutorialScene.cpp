@@ -353,7 +353,7 @@ void TutorialScene::Start()
     tutorialSource->Play(XAUDIO2_LOOP_INFINITE);
 }
 
-void TutorialScene::Update(ID3D11DeviceContext* immediate_context, float deltaTime)
+void TutorialScene::Update(float deltaTime)
 {
     auto camera = std::dynamic_pointer_cast<MainCamera>(GetActorManager()->GetActorByName("mainCameraActor"));
 

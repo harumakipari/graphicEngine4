@@ -33,7 +33,7 @@
 
 bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
-    sceneCBuffer = std::make_unique<ConstantBuffer<SceneConstants>>(device);
+    sceneCBuffer = std::make_unique<ConstantBuffer<FrameConstants>>(device);
     shaderCBuffer = std::make_unique<ConstantBuffer<ShaderConstants>>(device);
     sceneCBuffer->data.elapsedTime = 0;//ŠJŽnŽž‚É‚O‚É‚µ‚Ä‚¨‚­
 
@@ -430,7 +430,7 @@ void BootScene::Start()
 
 }
 
-void BootScene::Update(ID3D11DeviceContext* immediateContext, float deltaTime)
+void BootScene::Update(float deltaTime)
 {
     using namespace DirectX;
 

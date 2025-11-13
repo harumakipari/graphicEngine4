@@ -70,7 +70,7 @@ private:
     //シーンが始まったとき
     virtual void Start() {};
     // 純粋仮想関数：シーンの更新
-    virtual void Update(ID3D11DeviceContext* immediate_context, float delta_time) = 0;
+    virtual void Update(float delta_time) = 0;
     // 純粋仮想関数：シーンの描画
     virtual void Render(ID3D11DeviceContext* immediate_context, float delta_time) = 0;
     // 仮想関数：シーンの終了処理
@@ -95,6 +95,8 @@ private:
 
     virtual void DrawGui() {}
 
+protected:
+    virtual void SetUpActors() {}
 public:
     // テンプレート関数：シーンの初期化
     //template<class _boot_scene>

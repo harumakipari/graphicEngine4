@@ -139,7 +139,7 @@ public:
 
     void Start() override;
 
-    void Update(ID3D11DeviceContext* immediate_context, float delta_time) override;
+    void Update(float delta_time) override;
 
     void Render(ID3D11DeviceContext* immediate_context, float delta_time) override;
 

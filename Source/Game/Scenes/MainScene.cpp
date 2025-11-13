@@ -243,7 +243,7 @@ void MainScene::Start()
     warning->Play();
 }
 
-void MainScene::Update(ID3D11DeviceContext* immediateContext, float elapsedTime)
+void MainScene::Update(float elapsedTime)
 {
     auto camera = std::dynamic_pointer_cast<MainCamera>(GetActorManager()->GetActorByName("mainCameraActor"));
 

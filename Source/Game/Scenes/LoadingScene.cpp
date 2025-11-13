@@ -146,7 +146,7 @@ void LoadingScene::SetUpActors()
     enemy->PlayAnimation("Rotate", false);
 }
 
-void LoadingScene::Update(ID3D11DeviceContext* immediate_context, float delta_time)
+void LoadingScene::Update(float delta_time)
 {
     shaderToy.iTime += delta_time;
     shaderToy.iResolution.x = Graphics::GetScreenWidth();

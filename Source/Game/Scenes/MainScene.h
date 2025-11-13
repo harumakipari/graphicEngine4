@@ -262,7 +262,7 @@ public:
 public:
     bool Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props) override;
     void Start() override;
-    void Update(ID3D11DeviceContext* immediate_context, float delta_time) override;
+    void Update(float delta_time) override;
     void Render(ID3D11DeviceContext* immediate_context, float delta_time) override;
     bool Uninitialize(ID3D11Device* device) override;
     bool OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height) override;

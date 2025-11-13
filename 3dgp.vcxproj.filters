@@ -480,6 +480,12 @@
     <ClCompile Include="Source\Graphics\PostProcess\SSAOEffect.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\PostProcess\SSREffect.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Scene\SceneBase.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1008,6 +1014,7 @@
     <ClInclude Include="Source\PBD\PBDSystem.h" />
     <ClInclude Include="Source\PBD\PBDConstaraintData.h" />
     <ClInclude Include="Source\Graphics\PostProcess\SSREffect.h" />
+    <ClInclude Include="Source\Engine\Scene\SceneBase.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">
@@ -1248,6 +1255,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\SSAOPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SSRPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

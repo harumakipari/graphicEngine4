@@ -12,7 +12,7 @@ bool Scene::_update(ID3D11DeviceContext* immediateContext, float deltaTime)
         _current_scene->actorManager_->Update(deltaTime);
     }
     // 現在のシーンの更新処理
-    _current_scene->Update(immediateContext, deltaTime);
+    _current_scene->Update(deltaTime);
     // シーンを切り替える場合にレンダリングをスキップするためのフラグ
     bool skipRendering = false;
     // 次のシーンが設定されている場合、シーンを切り替える

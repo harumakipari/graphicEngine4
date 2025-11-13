@@ -229,6 +229,7 @@
     <ClCompile Include="Source\Engine\Input\GamePad.cpp" />
     <ClCompile Include="Source\Engine\Input\InputSystem.cpp" />
     <ClCompile Include="Source\Engine\Scene\Scene.cpp" />
+    <ClCompile Include="Source\Engine\Scene\SceneBase.cpp" />
     <ClCompile Include="Source\Game\Actors\Beam\Beam.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\ActionDerived.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\BehaviorData.cpp" />
@@ -341,6 +342,7 @@
     <ClInclude Include="Source\Engine\Input\GamePad.h" />
     <ClInclude Include="Source\Engine\Input\InputSystem.h" />
     <ClInclude Include="Source\Engine\Scene\Scene.h" />
+    <ClInclude Include="Source\Engine\Scene\SceneBase.h" />
     <ClInclude Include="Source\Engine\Scene\SceneRegistry.h" />
     <ClInclude Include="Source\Engine\Serialization\DirectXSerializers.h" />
     <ClInclude Include="Source\Engine\Utility\Timer.h" />
