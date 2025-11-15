@@ -517,7 +517,7 @@ void SoftBodySimulate::CreateAndUploadResources(ID3D11Device* device)
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     }
-    hr = CreatePsFromCSO(device, "./Shader/GltfModelDefferedPS.cso", pixelShader.ReleaseAndGetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", pixelShader.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     hr = CreateGsFromCSO(device, "./Shader/GltfModelCsmGS.cso", geometryShaderCSM.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
@@ -544,128 +544,13 @@ void SoftBodySimulate::CreateAndUploadResources(ID3D11Device* device)
     hr = device->CreateBuffer(&bufferDesc, NULL, primitiveJointCbuffer.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    auto FindPositionByNodeName = [&](std::string targetName)
-        {
-            for (auto& node : nodes)
-            {
-                if (node.name == targetName)
-                {
-                    // globalTransform の 4列目が位置
-                    return DirectX::XMFLOAT3
-                    (
-                        node.globalTransform._41,
-                        node.globalTransform._42,
-                        node.globalTransform._43
-                    );
-                }
-            }
-
-            return DirectX::XMFLOAT3(0, 0, 0);
-        };
-
-    std::vector<std::string> pinNodeNames =
-    {
-        "R_shoulder2_07",
-        "R_shoulder1_06",
-        "R_shoulder_05",
-        "L_shoulder_08",
-        "L_shoulder1_09",
-        "L_shoulder2_010",
-    };
-
-    std::vector<DirectX::XMFLOAT3> pinPositions;
-    for (auto& name : pinNodeNames)
-    {
-        pinPositions.push_back(FindPositionByNodeName(name));
-    }
-
-    // 各メッシュに対して頂点を固定判定
-    const float pinThreshold = 1.02f; // 近距離判定の閾値
-
     // UAVとSRVを作成
     for (auto& mesh : meshes)
     {
         for (auto& primitive : mesh.primitives)
         {// ここでデータを入れる
-            primitive.clothVertexOffset = (uint32_t)allVertices.size(); // オフセット保存
+            primitive.clothVertexOffset = static_cast<uint32_t>(allVertices.size()); // オフセット保存
 
-            // 固定点を決める
-             // AABBを計算
-            DirectX::XMFLOAT3 min = { FLT_MAX, FLT_MAX, FLT_MAX };
-            DirectX::XMFLOAT3 max = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
-
-            for (auto& v : primitive.cachedVertices)
-            {
-                min.x = std::min(min.x, v.position.x);
-                min.y = std::min(min.y, v.position.y);
-                min.z = std::min(min.z, v.position.z);
-
-                max.x = std::max(max.x, v.position.x);
-                max.y = std::max(max.y, v.position.y);
-                max.z = std::max(max.z, v.position.z);
-            }
-
-            // 四隅の判定
-#if 1
-            for (auto& v : primitive.cachedVertices)
-            {
-                bool isCorner =
-                    (fabs(v.position.x - min.x) < 0.001f || fabs(v.position.x - max.x) < 0.001f) &&
-                    (fabs(v.position.z - min.z) < 0.001f || fabs(v.position.z - max.z) < 0.001f) &&
-                    (fabs(v.position.y - max.y) < 0.001f); // 上辺
-
-                if (isCorner)
-                {
-                    v.isPinned = 1;
-                }
-            }
-            //for (auto& v : primitive.cachedVertices)
-            //{
-            //    v.isPinned = 0; // 初期化
-            //    for (auto& pinPos : pinPositions)
-            //    {
-            //        float dx = v.position.x - pinPos.x;
-            //        float dy = v.position.y - pinPos.y;
-            //        float dz = v.position.z - pinPos.z;
-            //        float distSq = dx * dx + dy * dy + dz * dz;
-
-            //        if (distSq < pinThreshold * pinThreshold)
-            //        {
-            //            v.isPinned = 1;
-            //            break;
-            //        }
-            //    }
-            //}
-#else
-
-            //const float yThreshold = 0.001f;
-            const float yThreshold = 10.5f;
-            for (auto& v : primitive.cachedVertices)
-            {
-                if (fabs(v.position.y - min.y) < yThreshold)
-                {
-                    v.isPinned = 1;
-                }
-                else
-                {
-                    v.isPinned = 0;
-                }
-            }
-
-            //for (auto& v : primitive.cachedVertices)
-            //{
-            //    bool isCorner =
-            //        (fabs(v.position.x - min.x) < 0.001f || fabs(v.position.x - max.x) < 0.001f) &&
-            //        (fabs(v.position.z - min.z) < 0.001f || fabs(v.position.z - max.z) < 0.001f) &&
-            //        (fabs(v.position.y - max.y) < 0.001f); // 上辺
-
-            //    if (isCorner)
-            //    {
-            //        v.isPinned = 1;
-            //    }
-            //}
-
-#endif // 0
             allVertices.insert(allVertices.end(),
                 primitive.cachedVertices.begin(),
                 primitive.cachedVertices.end());
@@ -703,143 +588,9 @@ void SoftBodySimulate::CreateAndUploadResources(ID3D11Device* device)
         }
     }
 
-    auto MakeEdgeKey = [&](uint32_t a, uint32_t b)
-        {
-            if (a < b)
-                return (uint64_t(a) << 32) | uint64_t(b);
-            else
-                return (uint64_t(b) << 32) | uint64_t(a);
-        };
-
-    // 対角線を探すために。。？
-    std::unordered_map<uint64_t, std::vector<uint32_t>> edgeOpp;
-    edgeOpp.reserve(globalIndices.size() / 2);
-
-    //// 頂点ごとのエッジのリスト
-    //std::vector<std::vector<ClothEdge>> vertexEdges(allVertices.size());
-    //const size_t MAX_EDGES = 8;
-
-#if 0
-    for (size_t i = 0; i < globalIndices.size(); i += 3)
-    {
-        // 頂点バッファの値を取り出す
-        uint32_t i0 = globalIndices[i + 0];
-        uint32_t i1 = globalIndices[i + 1];
-        uint32_t i2 = globalIndices[i + 2];
-
-        edgeOpp[MakeEdgeKey(i0, i1)].push_back(i2);
-        edgeOpp[MakeEdgeKey(i1, i2)].push_back(i0);
-        edgeOpp[MakeEdgeKey(i2, i0)].push_back(i1);
-
-        // 頂点インデックスごとにエッジを追加する
-        auto AddEdge = [&](uint32_t a, uint32_t b)
-            {
-                DirectX::XMFLOAT3 pa = allVertices[a].position;
-                DirectX::XMFLOAT3 pb = allVertices[b].position;
-                DirectX::XMFLOAT3 delta = { pb.x - pa.x, pb.y - pa.y, pb.z - pa.z };
-                float restLength = sqrtf(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
-
-                ClothEdge edge;
-                edge.neighbor = b;
-                edge.delta = delta;
-                edge.restLength = restLength;
-
-                vertexEdges[a].push_back(edge);
-            };
-
-        // 相互に頂点を追加する
-        AddEdge(i0, i1);
-        AddEdge(i1, i0);
-        AddEdge(i1, i2);
-        AddEdge(i2, i1);
-        AddEdge(i2, i0);
-        AddEdge(i0, i2);
-    }
-
-    for (auto& kv : edgeOpp)
-    {
-        std::vector<uint32_t>& opps = kv.second;
-        std::sort(opps.begin(), opps.end());
-        opps.erase(
-            std::unique(opps.begin(), opps.end()), opps.end());
-
-        const size_t n = opps.size();
-        if (n < 2)
-        {
-            continue;
-        }
-
-        for (size_t a = 0; a < n; ++a)
-        {
-            for (size_t b = a + 1; b < n; ++b)
-            {
-                uint32_t vA = opps[a];
-                uint32_t vB = opps[b];
-                if (vA == vB)
-                    continue;
-                // compute rest length and delta 
-                const auto& pa = allVertices[vA].position;
-                const auto& pb = allVertices[vB].position;
-                DirectX::XMFLOAT3 delta = { pb.x - pa.x, pb.y - pa.y, pb.z - pa.z };
-                float restLength = sqrtf(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
-                ClothEdge eAB;
-                eAB.neighbor = vB;
-                eAB.delta = delta;
-                eAB.restLength = restLength;
-                ClothEdge eBA;
-                eBA.neighbor = vA;
-                eBA.delta = DirectX::XMFLOAT3{ -delta.x, -delta.y, -delta.z };
-                eBA.restLength = restLength;
-                // push into per-vertex adjacency (bidirectional) 
-                vertexEdges[vA].push_back(eAB);
-                vertexEdges[vB].push_back(eBA);
-            }
-        }
-    }
-
-    // 重複しているのを削除する と　距離が短いものを優先して残す
-    finalEdges.clear();
-    finalEdges.reserve(allVertices.size() * MAX_EDGES);
-
-    for (size_t v = 0; v < vertexEdges.size(); ++v)
-    {
-        std::vector<ClothEdge>& edges = vertexEdges[v];
-        // 距離が短いのを残す
-        std::sort(edges.begin(), edges.end(),
-            [&](const ClothEdge& a, const ClothEdge& b)
-            {
-                if (a.neighbor != b.neighbor)
-                    return a.neighbor < b.neighbor;
-                return a.restLength < b.restLength;
-            }
-        );
-
-
-        // 重複削除
-        std::sort(edges.begin(), edges.end(),
-            [](auto& a, auto& b) { return a.neighbor < b.neighbor; });
-        edges.erase(std::unique(edges.begin(), edges.end(),
-            [](auto& a, auto& b) { return a.neighbor == b.neighbor; }),
-            edges.end());
-
-        // 制限数に揃える
-        if (edges.size() > MAX_EDGES)
-            edges.resize(MAX_EDGES);
-
-        while (edges.size() < MAX_EDGES)
-        {
-            edges.push_back({ UINT32_MAX, {0,0,0}, 0 }); // 無効エッジ
-        }
-
-        // 一個の長い配列にする   8個ごとに
-        for (auto& e : edges)
-        {
-            finalEdges.push_back(e);
-        }
-    }
-#else
-
-    const float maxDistance = 20.0f;
+    // 各頂点に近い頂点８つを探してエッジを作る
+    constexpr float maxDistance = 20.0f;
+    std::vector<ClothEdge> fEdges;
     for (auto& mesh : meshes)
     {
         for (auto& primitive : mesh.primitives)
@@ -902,9 +653,74 @@ void SoftBodySimulate::CreateAndUploadResources(ID3D11Device* device)
         }
     }
 
-#endif // 0
+    // 全頂点を Particle に変換する
+    particles.resize(allVertices.size());
+    for (size_t i = 0; i < allVertices.size(); i++)
+    {
+        particles[i].position = allVertices[i].position;
+        particles[i].expectedPosition = allVertices[i].position;
+        particles[i].velocity = { 0,0,0 };
+        particles[i].force = { 0,0,0 };
+        particles[i].invMass = (allVertices[i].isPinned ? 0.0f : 1.0f);
+    }
+
+    for (auto& mesh : meshes)
+    {
+        for (auto& prim : mesh.primitives)
+        {
+            uint32_t offset = prim.clothVertexOffset;
+
+            for (auto& e : prim.finalEdges)
+            {
+                DistanceConstraint c;
+                c.i0 = offset + reinterpret_cast<int>(&e) - reinterpret_cast<int>(&prim.finalEdges[0]);  // ← v の index（後述）
+                c.i1 = offset + e.neighbor;
+                c.restLength = e.restLength;
+
+                distanceConstraints.push_back(c);
+            }
+        }
+    }
+
+    D3D11_BUFFER_DESC desc = {};
+    desc.ByteWidth = sizeof(Particle) * particles.size();
+    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+    desc.StructureByteStride = sizeof(Particle);
+    desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+
+    D3D11_SUBRESOURCE_DATA init = {};
+    init.pSysMem = particles.data();
+
+    device->CreateBuffer(&desc, &init, &particleBuffer);
+
+    D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+    uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+    uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+    uavDesc.Buffer.NumElements = particles.size();
+
+    device->CreateUnorderedAccessView(particleBuffer.Get(), &uavDesc, &particleUav);
+
+    desc.ByteWidth = sizeof(DistanceConstraint) * distanceConstraints.size();
+    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    desc.StructureByteStride = sizeof(DistanceConstraint);
+    desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+
+    init.pSysMem = distanceConstraints.data();
+
+    device->CreateBuffer(&desc, &init, &distanceConstraintBuffer);
+
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+    srvDesc.BufferEx.NumElements = distanceConstraints.size();
+
+    device->CreateShaderResourceView(distanceConstraintBuffer.Get(), &srvDesc, &distanceConstraintSrv);
+
     cbuffer_->data.vertexCount = static_cast<int>(allVertices.size());
 
+#if 0
     for (auto& mesh : meshes)
     {
         for (auto& primitive : mesh.primitives)
@@ -914,13 +730,15 @@ void SoftBodySimulate::CreateAndUploadResources(ID3D11Device* device)
     }
 
     CreateClothPingPongBuffers(device, allVertices);
+
+#endif // 0
 }
 
 void SoftBodySimulate::Simulate(ID3D11DeviceContext* immediateContext)
 {
     ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
     cbuffer_->Activate(immediateContext, 10);
-
+#if 0
     for (auto& mesh : meshes)
     {
         for (auto& primitive : mesh.primitives)
@@ -986,7 +804,7 @@ void SoftBodySimulate::Simulate(ID3D11DeviceContext* immediateContext)
             std::swap(a, b);
         }
     }
-
+#endif
 }
 
 void SoftBodySimulate::CreateClothPingPongBuffers(ID3D11Device* device, const std::vector<Mesh::Vertex>& vertices)
@@ -1107,7 +925,12 @@ void SoftBodySimulate::Render(ID3D11DeviceContext* immediateContext, const Direc
                 //immediateContext->IASetVertexBuffers(0, 1, buffers.at(primitive.vertexBufferView.buffer).GetAddressOf(), &stride, &offset);
                 //immediateContext->IASetVertexBuffers(0, 1, clothVB[b].GetAddressOf(), &stride, &offset);
                 //immediateContext->IASetVertexBuffers(0, 1, clothVB.GetAddressOf(), &stride, &offset);
+#if 0
                 immediateContext->IASetVertexBuffers(0, 1, primitive.clothVB.GetAddressOf(), &stride, &offset);
+#else
+                immediateContext->IASetVertexBuffers(0, 1, buffers.at(primitive.vertexBufferView.buffer).GetAddressOf(), &stride, &offset);
+                //immediateContext->IASetVertexBuffers(0, 1, particleBuffer.GetAddressOf(), &stride, &offset);
+#endif // 0
 
                 PrimitiveConstants primitiveData = {};
                 primitiveData.material = primitive.material;

@@ -354,7 +354,7 @@ public:
             AddPipeLineState("CascadeShadowMapElasticBuilding", desc);
         }
 
-        // cloth
+        // cloth ‚±‚êŽg‚¦‚Ä‚È‚¢
         {
             desc.inputLayout = nullptr;
             desc.geometryShader = nullptr;

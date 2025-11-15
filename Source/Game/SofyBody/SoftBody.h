@@ -48,9 +48,23 @@ public:
         DirectX::XMFLOAT3 position;
         DirectX::XMFLOAT3 expectedPosition;
         DirectX::XMFLOAT3 velocity;
+        DirectX::XMFLOAT3 force;
         float invMass;
     };
 
+    std::vector<Particle> particles;
+    Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> particleUav;
+    Microsoft::WRL::ComPtr<ID3D11Buffer> particleBuffer;
+
+    struct DistanceConstraint
+    {
+        int i0;
+        int i1;
+        float restLength;
+    };
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> distanceConstraintSrv;
+    Microsoft::WRL::ComPtr<ID3D11Buffer> distanceConstraintBuffer;
+    std::vector<DistanceConstraint> distanceConstraints;
 
     SoftBodySimulate(ID3D11Device* device, const std::string& filename);
     virtual ~SoftBodySimulate() = default;
@@ -254,6 +268,7 @@ public:
             UINT indexCount = 0;
             std::vector<ClothEdge> finalEdges;
 
+#if 0
             void CreateClothPingPongBuffers(ID3D11Device* device)
             {
                 HRESULT hr = S_OK; // バッファ記述 
@@ -265,7 +280,7 @@ public:
                 bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
                 bufferDesc.StructureByteStride = sizeof(Mesh::Vertex);
                 D3D11_SUBRESOURCE_DATA subresourceData = {};
-                subresourceData.pSysMem = cachedVertices.data(); 
+                subresourceData.pSysMem = cachedVertices.data();
                 subresourceData.SysMemPitch = 0;
                 subresourceData.SysMemSlicePitch = 0;
                 for (int i = 0; i < 2; ++i)
@@ -327,6 +342,8 @@ public:
             Microsoft::WRL::ComPtr<ID3D11Buffer> clothIB;   // インデックスバッファ
             Microsoft::WRL::ComPtr<ID3D11Buffer> clothEdgeBuffer;   // エッジ用のバッファ
             Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> clothEdgeSRV;
+#endif // 0
+
 
             bool has(const char* attribute) const
             {
@@ -544,7 +561,7 @@ public:
     std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textureResourceViews;
 
 private:
-    void FetchNodes(const tinygltf::Model& gltf_model);
+    void FetchNodes(const tinygltf::Model& gltfModel);
     void CumulateTransforms(std::vector<Node>& nodes);
     void FetchMeshes(ID3D11Device* device, const tinygltf::Model& gltf_model);
 

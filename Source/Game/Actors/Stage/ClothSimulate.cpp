@@ -772,41 +772,6 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
     hr = device->CreateBuffer(&bufferDesc, NULL, primitiveJointCbuffer.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    auto FindPositionByNodeName = [&](std::string targetName)
-        {
-            for (auto& node : nodes)
-            {
-                if (node.name == targetName)
-                {
-                    // globalTransform の 4列目が位置
-                    return DirectX::XMFLOAT3
-                    (
-                        node.globalTransform._41,
-                        node.globalTransform._42,
-                        node.globalTransform._43
-                    );
-                }
-            }
-
-            return DirectX::XMFLOAT3(0, 0, 0);
-        };
-
-    std::vector<std::string> pinNodeNames =
-    {
-        "R_shoulder2_07",
-        "R_shoulder1_06",
-        "R_shoulder_05",
-        "L_shoulder_08",
-        "L_shoulder1_09",
-        "L_shoulder2_010",
-    };
-
-    std::vector<DirectX::XMFLOAT3> pinPositions;
-    for (auto& name : pinNodeNames)
-    {
-        pinPositions.push_back(FindPositionByNodeName(name));
-    }
-
     // 各メッシュに対して頂点を固定判定
     const float pinThreshold = 1.02f; // 近距離判定の閾値
 
