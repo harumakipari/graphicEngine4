@@ -11,18 +11,12 @@
 #include "Graphics/Sprite/SpriteBatch.h"
 #include "Graphics/PostProcess/FrameBuffer.h"
 #include "Graphics/PostProcess/FullScreenQuad.h"
-#include "Graphics/Core/RenderState.h"
 
 #include "Graphics/Resource/GltfModelBase.h"
 #include "Graphics/Renderer/ShapeRenderer.h"
 
-#include "Graphics/Core/ConstantBuffer.h"
-#include "Graphics/Core/Shader.h"
-#include "Graphics/Resource/Texture.h"
-
 
 #include "Graphics/PostProcess/Bloom.h"
-#include "Graphics/Shadow/ShadowMap.h"
 #include "Graphics/Environment/SkyMap.h"
 #include "Graphics/Shadow/CascadeShadowMap.h"
 #include "Graphics/PostProcess/MultipleRenderTargets.h"
@@ -33,19 +27,16 @@
 #include "Game/Actors/Enemy/RiderEnemy.h"
 
 #include "Physics/CollisionMesh.h"
-#include "Graphics/Effect/Particles.h"
-#include "Graphics/Cloud/VolumetricCloudscapes.h"
-#include "Graphics/Core/LightManager.h"
 #include "Graphics/PostProcess/GBuffer.h"
 
 #include "Graphics/Effect/EffectSystem.h"
 
 #include "Core/ActorManager.h"
-#include "Core/World.h"
+#include "Engine/Scene/SceneBase.h"
 
 #include "Utils/EasingHandler.h"
 
-class MainScene : public Scene
+class MainScene : public SceneBase
 {
     std::unique_ptr<Sprite> sprites[8];
     std::unique_ptr<SpriteBatch> sprite_batches[8];
@@ -262,8 +253,8 @@ public:
 public:
     bool Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props) override;
     void Start() override;
-    void Update(float delta_time) override;
-    void Render(ID3D11DeviceContext* immediate_context, float delta_time) override;
+    void Update(float deltaTime) override;
+    void Render(ID3D11DeviceContext* immediateContext, float deltaTime) override;
     bool Uninitialize(ID3D11Device* device) override;
     bool OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height) override;
     void DrawGui() override;

@@ -4,7 +4,6 @@
 #define IMGUI_ENABLE_DOCKING
 #include "imgui.h"
 #endif
-#include <random>
 
 #include "Graphics/Core/Shader.h"
 #include "Graphics/Core/Graphics.h"
@@ -14,7 +13,6 @@
 #include "Engine/Utility/Win32Utils.h"
 #include "Engine/Utility/Timer.h"
 //#include "Camera.h"
-#include "Physics/Collider.h"
 #include "Physics/Physics.h"
 #include "Physics/PhysicsUtility.h"
 #include "Components/Camera/CameraComponent.h"
@@ -28,7 +26,6 @@
 #include "Game/Actors/Stage/BossBuilding.h"
 #include "Game/Actors/Stage/Bomb.h"
 #include "Game/Actors/Item/PickUpItem.h"
-#include "Game/Actors/Stage/Objects/StageProp.h"
 #include "Game/Actors/Camera/TitleCamera.h"
 #include "Game/Actors/Player/TitlePlayer.h"
 #include "Game/Managers/GameManager.h"
@@ -49,13 +46,15 @@
 #include "Widgets/PauseUIFactory.h"
 #include "Widgets/ResultUIFactory.h"
 #include "Widgets/Image.h"
-#include "Widgets/Timer.h"
 
 #include "Game/Actors/Enemy/EmptyEnemy.h"
 #include "Components/Audio/AudioSourceComponent.h"
 
 bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
+    SceneBase::Initialize(device, width, height, props);
+
+
     OutputDebugStringA((std::string("Scene::Initialize this=") + std::to_string(reinterpret_cast<uintptr_t>(this)) + "\n").c_str());
     OutputDebugStringA((std::string("_current_scene.get()=") + std::to_string(reinterpret_cast<uintptr_t>(this)) + "\n").c_str());
     OutputDebugStringA((std::string("actorManager_ ptr=") + std::to_string(reinterpret_cast<uintptr_t>(this->GetActorManager())) + "\n").c_str());
@@ -243,8 +242,10 @@ void MainScene::Start()
     warning->Play();
 }
 
-void MainScene::Update(float elapsedTime)
+void MainScene::Update(float deltaTime)
 {
+    SceneBase::Update(deltaTime);
+
     auto camera = std::dynamic_pointer_cast<MainCamera>(GetActorManager()->GetActorByName("mainCameraActor"));
 
     ////elapsedTimeを止めてposeする
@@ -254,12 +255,12 @@ void MainScene::Update(float elapsedTime)
     //}
     //camera->SetOldTarget(player->GetPosition());
 
-    Physics::Instance().Update(elapsedTime);
+    Physics::Instance().Update(deltaTime);
     //gameWorld_->Tick(elapsed_time);
     //ActorManager::Update(elapsedTime);
-    EventSystem::Update(elapsedTime);//追加
-    objectManager.Update(elapsedTime);//追加
-    GameManager::Update(elapsedTime);
+    EventSystem::Update(deltaTime);//追加
+    objectManager.Update(deltaTime);//追加
+    GameManager::Update(deltaTime);
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
 
@@ -267,25 +268,18 @@ void MainScene::Update(float elapsedTime)
     {
         Graphics::StylizeWindow(!Graphics::fullscreenMode);
     }
-
-#ifdef _DEBUG
-    if (InputSystem::GetInputState("F8", InputStateMask::Trigger))
-    {
-        CameraManager::ToggleCamera();
-    }
-#endif
     float screenWidth = Graphics::GetScreenWidth();
     float screenHeight = Graphics::GetScreenHeight();
 
-    shaderToy.iTime += elapsedTime;
+    shaderToy.iTime += deltaTime;
     shaderToy.iResolution.x = screenWidth;
     shaderToy.iResolution.y = screenHeight;
 
 
     //フェードハンドラ
-    fadeHandler.Update(fadeValue, elapsedTime);
+    fadeHandler.Update(fadeValue, deltaTime);
     float dummy;
-    waitHandler.Update(dummy, elapsedTime);
+    waitHandler.Update(dummy, deltaTime);
     if (isBossDeath || isPlayerDeath)
     {
         ObjectManager::Find("Fade")->GetComponent<Image>()->color.a = fadeValue;
@@ -412,7 +406,7 @@ void MainScene::Update(float elapsedTime)
         isPlayerDeath = true;
     }
 
-    effectSystem->Update(elapsedTime);
+    effectSystem->Update(deltaTime);
 
 
     auto cameraComp = CameraManager::GetCurrentCamera();
@@ -604,7 +598,7 @@ void MainScene::Update(float elapsedTime)
     if (integrateParticles)
     {
         immediateContext->CSSetShaderResources(0, 1, colorTemperChart.GetAddressOf());
-        particles->Integrate(immediateContext, elapsedTime);
+        particles->Integrate(immediateContext, deltaTime);
     }
 #else
     //static bool run_once = true;
@@ -629,7 +623,7 @@ void MainScene::Update(float elapsedTime)
 
     if (particles != nullptr)
     {
-        enemys[0]->UpdateParticle(immediateContext, elapsedTime, particles.get());
+        enemys[0]->UpdateParticle(immediateContext, deltaTime, particles.get());
     }
     particles->particleSystemData.direction = { 1,0,0 };
     particles->particleSystemData.strength = 2.0f;
