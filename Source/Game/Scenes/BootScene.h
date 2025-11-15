@@ -34,66 +34,6 @@
 
 class BootScene : public SceneBase
 {
-#if 0
-    struct FrameConstants
-    {
-        float elapsedTime = 0.0f;
-        float deltaTime = 0.0f;
-        float gravity = -9.8f;
-    };
-
-    struct ShaderConstants
-    {
-        int  enableSsao;
-        int  enableCascadedShadowMaps;
-        int  enableSsr;
-        int  enableFog;
-
-        int  enableBloom;
-        int  enableBlur;
-        int  directionalLightEnable = true; // 平行光源の on / off
-        int  colorizeCascadedLayer = false;
-
-        float shadowColor = 0.2f;
-        float shadowDepthBias = 0.0005f;
-    };
-
-    std::unique_ptr<ConstantBuffer<FrameConstants>>     sceneCBuffer;
-    std::unique_ptr <ConstantBuffer<ShaderConstants>>   shaderCBuffer;
-
-
-
-    DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
-    DirectX::XMFLOAT4 lightColor{ 1.0f,1.0f,1.0f,4.1f };
-    float iblIntensity = 2.0f;  //Image Basesd Lightingの強度
-
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> finalPs;
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> deferredPs;
-
-    // フルスクリーンクアッドを使ったレンダーターゲットのブレンド・コピー処理
-    std::unique_ptr<FullScreenQuad> fullscreenQuadTransfer;
-
-    // CASCADED_SHADOW_MAPS
-    std::unique_ptr<CascadedShadowMaps> cascadedShadowMaps;
-    float criticalDepthValue = 62.0f; 
-
-    // MULTIPLE_RENDER_TARGETS
-    std::unique_ptr<MultipleRenderTargets> multipleRenderTargets;
-
-    // GBUFFER
-    std::unique_ptr<GBuffer> gBufferRenderTarget;
-    bool useDeferredRendering = false;
-
-    //スカイマップ
-    std::unique_ptr<SkyMap> skyMap;
-
-    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> environmentTextures[8];
-
-    std::unique_ptr<FullScreenQuad> frameBufferBlit;
-
-
-    SIZE framebufferDimensions = {};
-#endif // 0
     ActorColliderManager actorColliderManager;
 
     UIRoot uiRoot;
@@ -109,8 +49,6 @@ public:
 
     bool Uninitialize(ID3D11Device* device) override;
 
-    //bool OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height) override;
-
     void DrawGui() override;
 
     void SetUpActors()override;
@@ -119,21 +57,6 @@ public:
     static inline Scene::Autoenrollment<BootScene> _autoenrollment;
 
 private:
-#if 0
-    std::unique_ptr<LightManager> lightManager;
-    std::unique_ptr<PostEffectManager> postEffectManager;
-    std::unique_ptr<SceneEffectManager> sceneEffectManager;
-    // SCREEN_SPACE_AMBIENT_OCCLUSION
-    bool enableSSAO = true;
-    bool enableCascadedShadowMaps = true;
-    bool enableSSR = true;
-    bool enableFog = false;
-    bool enableBloom = false;
-
-    // ImGuiで使用する
-    std::shared_ptr<Actor> selectedActor_;  // 選択中のアクターを保持
-
-#endif // 0
     std::shared_ptr<TitlePlayer> titlePlayer;
     std::shared_ptr<Stage>  title;
     std::shared_ptr<CollisionMesh> stageCollisionMesh;

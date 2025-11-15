@@ -43,7 +43,6 @@ public:
     void DrawGui()
     {
 #ifdef USE_IMGUI
-        ImGui::Begin("Scene Effects");
 
         for (auto& [name, effect] : effects)
         {
@@ -53,7 +52,6 @@ public:
                 ImGui::TreePop();
             }
         }
-        ImGui::End(); 
 #endif
     }
 private:

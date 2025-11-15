@@ -135,7 +135,6 @@ void SceneBase::DrawGui()
 {
 #ifdef USE_IMGUI
     SetupImGuiStyle();
-
     DrawOutliner();
     DrawInspector();
     DrawShortcutInfo();

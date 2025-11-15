@@ -33,67 +33,6 @@
 
 bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
-#if 0
-    sceneCBuffer = std::make_unique<ConstantBuffer<FrameConstants>>(device);
-    shaderCBuffer = std::make_unique<ConstantBuffer<ShaderConstants>>(device);
-    sceneCBuffer->data.elapsedTime = 0;//開始時に０にしておく
-
-    // ライト
-    {
-        lightManager = std::make_unique<LightManager>();
-        lightManager->Initialize(device);
-        lightManager->SetDirectionalLight(lightDirection, lightColor);
-    }
-
-    // ポストエフェクト
-    {
-        postEffectManager = std::make_unique<PostEffectManager>();
-        postEffectManager->AddEffect(std::make_unique<BloomEffect>());
-        postEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
-    }
-
-    // シーンエフェクト
-    {
-        sceneEffectManager = std::make_unique<SceneEffectManager>();
-        sceneEffectManager->AddEffect(std::make_unique<FogEffect>());
-        sceneEffectManager->AddEffect(std::make_unique<SSAOEffect>());
-        sceneEffectManager->AddEffect(std::make_unique<SSREffect>());
-        sceneEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
-    }
-    HRESULT hr = { S_OK };
-
-    //スカイマップ
-    skyMap = std::make_unique<decltype(skyMap)::element_type>(device, L"./Data/Environment/Sky/cloud/skybox.dds");
-
-    fullscreenQuadTransfer = std::make_unique<FullScreenQuad>(device);
-
-    // MULTIPLE_RENDER_TARGETS
-    multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, static_cast<uint32_t>(width), height, 3);
-
-    // GBUFFER
-    gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
-    hr = CreatePsFromCSO(device, "./Shader/DeferredPS.cso", deferredPs.ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    //CascadedShadowMaps
-    cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
-
-    D3D11_TEXTURE2D_DESC texture2dDesc;
-    //テクスチャをロード
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_charlie.dds", environmentTextures[0].ReleaseAndGetAddressOf(), &texture2dDesc);
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/diffuse_iem.dds", environmentTextures[1].ReleaseAndGetAddressOf(), &texture2dDesc);
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/specular_pmrem.dds", environmentTextures[2].ReleaseAndGetAddressOf(), &texture2dDesc);
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_sheen_e.dds", environmentTextures[3].ReleaseAndGetAddressOf(), &texture2dDesc);
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-#endif // 0
-
-
     SceneBase::Initialize(device, width, height, props);
 
     Physics::Instance().Initialize();
@@ -441,8 +380,6 @@ void BootScene::Update(float deltaTime)
 
     SceneBase::Update(deltaTime);
 
-    //lightManager->Update(deltaTime);
-
     pbd->Update(deltaTime);
     //pbd->Update(1 / 60.0f);
 
@@ -467,11 +404,6 @@ void BootScene::Update(float deltaTime)
     EventSystem::Update(deltaTime);//追加
     objectManager.Update(deltaTime);//追加
 
-
-    //if (InputSystem::GetInputState("F8", InputStateMask::Trigger))
-    //{
-    //    CameraManager::ToggleCamera();
-    //}
 #ifdef _DEBUG
     if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
     {
@@ -529,20 +461,6 @@ void BootScene::SetUpActors()
     CameraManager::SetDebugCamera(debugCameraActor);
 }
 
-//bool BootScene::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
-//{
-//    framebufferDimensions.cx = static_cast<LONG>(width);
-//    framebufferDimensions.cy = static_cast<LONG>(height);
-//
-//    cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
-//
-//    multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, framebufferDimensions.cx, framebufferDimensions.cy, 3);
-//
-//    postEffectManager->Initialize(device, framebufferDimensions.cx, framebufferDimensions.cy);
-//    sceneEffectManager->Initialize(device, framebufferDimensions.cx, framebufferDimensions.cy);
-//    return true;
-//}
-
 bool BootScene::Uninitialize(ID3D11Device* device)
 {
     //ClearActorManager();
@@ -552,59 +470,12 @@ bool BootScene::Uninitialize(ID3D11Device* device)
 
 void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
-#if 0
-    //サンプラーステートを設定
-    RenderState::BindSamplerStates(immediateContext);
-    RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
-    RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
-
-    // IBL
-    immediateContext->PSSetShaderResources(32, 1, environmentTextures[0].GetAddressOf());
-    immediateContext->PSSetShaderResources(33, 1, environmentTextures[1].GetAddressOf());
-    immediateContext->PSSetShaderResources(34, 1, environmentTextures[2].GetAddressOf());
-    immediateContext->PSSetShaderResources(35, 1, environmentTextures[3].GetAddressOf());
-
-    D3D11_VIEWPORT viewport;
-    UINT num_viewports{ 1 };
-    immediateContext->RSGetViewports(&num_viewports, &viewport);
-
-    float aspect_ratio{ viewport.Width / viewport.Height };
-
-
-    // SCREEN_SPACE_AMBIENT_OCCLUSION
-    shaderCBuffer->data.enableSsao = enableSSAO;
-    shaderCBuffer->data.enableBloom = enableBloom;
-    shaderCBuffer->data.enableFog = enableFog;
-    shaderCBuffer->data.enableCascadedShadowMaps = enableCascadedShadowMaps;
-    shaderCBuffer->data.enableSsr = enableSSR;
-    // SCREEN_SPACE_REFLECTION
-    //sceneCBuffer->data.reflectionIntensity = reflectionIntensity;
-    // FOG
-    sceneCBuffer->data.elapsedTime += deltaTime;
-    sceneCBuffer->data.deltaTime = deltaTime;
-
-    sceneCBuffer->Activate(immediateContext, 1); // slot1 にセット
-
-    //shaderCBuffer->data.maxDistance = 20;
-    //shaderCBuffer->data.resolution = resolution;
-    //shaderCBuffer->data.steps = steps;
-    //shaderCBuffer->data.thickness = thickness;
-    shaderCBuffer->Activate(immediateContext, 9); // slot2 にセット
-
-    // slot3 は cascadedShadowMap に使用中
-    //fogCBuffer->Activate(immediateContext, 8); // slot4 にセット
-
-    lightManager->Apply(immediateContext, 11);
-#endif // 0
-
     auto camera = CameraManager::GetCurrentCamera();
     if (camera)
     {
         ViewConstants data = camera->GetViewConstants();
         sceneRender.UpdateViewConstants(immediateContext, data);
     }
-
 
     UpdateConstantBuffer(immediateContext);
 
@@ -880,46 +751,9 @@ void BootScene::DrawGui()
 {
     pbd->DrawGui();
     SceneBase::DrawGui();
+}
 #if 0
-    sceneEffectManager->DrawGui();
-
-    postEffectManager->DrawGui();
-
 #ifdef USE_IMGUI
-    ImGuiStyle& style = ImGui::GetStyle();
-    style.Colors[ImGuiCol_Text] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-    style.Colors[ImGuiCol_WindowBg] = ImVec4(0.05f, 0.08f, 0.15f, 0.95f);
-    style.Colors[ImGuiCol_TitleBg] = ImVec4(0.0f, 0.1f, 0.25f, 1.0f);
-    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.0f, 0.15f, 0.35f, 1.0f);
-    style.Colors[ImGuiCol_Header] = ImVec4(0.0f, 0.2f, 0.4f, 0.8f);
-    style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.0f, 0.3f, 0.6f, 1.0f);
-    style.Colors[ImGuiCol_FrameBg] = ImVec4(0.1f, 0.15f, 0.25f, 0.9f);
-    style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.15f, 0.25f, 0.4f, 1.0f);
-    // ビューポートサイズ取得
-    ImGuiIO& io = ImGui::GetIO();
-    ImGuiViewport* viewport = ImGui::GetMainViewport();
-    const float screen_width = viewport->WorkSize.x;
-    const float screen_height = viewport->WorkSize.y;
-
-    const float left_panel_width = 300.0f;
-    const float right_panel_width = 400.0f;
-
-    ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x + viewport->WorkSize.x - 300.0f,
-        viewport->WorkPos.y + viewport->WorkSize.y - 100.0f));
-    ImGui::SetNextWindowBgAlpha(0.3f); // 半透明
-
-
-    // ==== 左側：アウトライナー ====
-    ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x, viewport->WorkPos.y));
-    ImGui::SetNextWindowSize(ImVec2(left_panel_width, screen_height));
-    ImGui::Begin("Actor Outliner", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-
-    for (auto& actor : this->GetActorManager()->GetAllActors()) {
-        bool is_selected = (selectedActor_ == actor);
-        if (ImGui::Selectable(actor->GetName().c_str(), is_selected)) {
-            selectedActor_ = actor;
-        }
-    }
 
     // ==== UIアウトライナ(追加)　====
     EditorGUI::DrawMainMenu();
@@ -934,205 +768,59 @@ void BootScene::DrawGui()
 
     ImGui::End();
 
-    // ==== 右側：インスペクタ ====
-    ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x + screen_width - right_panel_width, viewport->WorkPos.y));
-    ImGui::SetNextWindowSize(ImVec2(right_panel_width, screen_height));
-    ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
-    // タブUI開始
-    if (ImGui::BeginTabBar("InspectorTabs"))
-    {
-        // ===== Actorタブ =====
-        if (ImGui::BeginTabItem("Actor"))
-        {
-            if (selectedActor_) {
-                selectedActor_->DrawImGuiInspector();
-            }
-            else {
-                ImGui::Text("No actor selected.");
-            }
-            ImGui::EndTabItem();
-        }
 
-        // ===== PostEffectタブ =====
-        if (ImGui::BeginTabItem("PostEffect"))
-        {
-            // -------------------------
-            // SSAO
-            // -------------------------
-            if (ImGui::Checkbox("Enable SSAO", &enableSSAO))
-            {
-                // SSAO有効切り替え時の処理があればここで
-            }
-#if 0
-            if (enableSSAO && ImGui::TreeNode("SSAO Settings")) {
-                ImGui::SliderFloat("Radius", &ssaoRadius, 0.1f, 10.0f);
-                ImGui::SliderInt("Sample Count", &ssaoSamples, 4, 64);
-                ImGui::TreePop();
-            }
-#endif
-
-            // ========== SSR ==========
-            if (ImGui::Checkbox("Enable SSR", &enableSSR)) {}
-            if (enableSSR && ImGui::TreeNode("SSR Settings"))
-            {
-                //ImGui::SliderFloat("Reflection Intensity", &reflectionIntensity, 0.0f, 1.0f);
-                //ImGui::SliderFloat("Max Distance", &maxDistance, 0.0f, 30.0f);
-                //ImGui::SliderFloat("Resolution", &resolution, 0.0f, 1.0f);
-                //ImGui::SliderInt("Steps", &steps, 0, 20);
-                //ImGui::SliderFloat("Thickness", &thickness, 0.0f, 1.0f);
-                ImGui::TreePop();
-            }
-
-            // -------------------------
-            // Bloom
-            // -------------------------
-            if (ImGui::Checkbox("Enable Bloom", &enableBloom))
-            {
-            }
-            if (enableBloom && ImGui::TreeNode("Bloom Settings"))
-            {
-                //ImGui::SliderFloat("Threshold", &bloomer->bloom_extraction_threshold, 0.0f, 5.0f);
-                //ImGui::SliderFloat("Intensity", &bloomer->bloom_intensity, 0.0f, 5.0f);
-                ImGui::TreePop();
-            }
-
-            // -------------------------
-            // Fog
-            // -------------------------
-            if (ImGui::Checkbox("Enable Fog", &enableFog))
-            {
-            }
-            if (enableFog && ImGui::TreeNode("Fog Settings"))
-            {
-                //ImGui::ColorEdit3("Fog Color", fogCBuffer->data.fogColor);
-                //ImGui::SliderFloat("Intensity", &(fogCBuffer->data.fogColor[3]), 0.0f, 10.0f);
-                //ImGui::SliderFloat("Density", &fogCBuffer->data.fogDensity, 0.0f, 0.05f, "%.6f");
-                //ImGui::SliderFloat("Height Falloff", &fogCBuffer->data.fogHeightFalloff, 0.001f, 1.0f, "%.4f");
-                //ImGui::SliderFloat("Cutoff Distance", &fogCBuffer->data.fogCutoffDistance, 0.0f, 1000.0f);
-                //ImGui::SliderFloat("Ground Level", &fogCBuffer->data.groundLevel, -100.0f, 100.0f);
-                //ImGui::SliderFloat("Mie Scattering", &fogCBuffer->data.mieScatteringFactor, 0.0f, 1.0f, "%.4f");
-                //ImGui::SliderFloat("Time Scale", &fogCBuffer->data.timeScale, 0.0f, 1.0f, "%.4f");
-                //ImGui::SliderFloat("Noise Scale", &fogCBuffer->data.noiseScale, 0.0f, 0.5f, "%.4f");
-                ImGui::TreePop();
-            }
 
 #if 0
-            // ========== Volumetric Cloudscapes ==========
-            if (ImGui::Checkbox("Enable Volumetric Clouds", &enableVolumetricClouds)) {}
-            if (enableVolumetricClouds && ImGui::TreeNode("Cloud Settings")) {
-                ImGui::DragFloat4("Camera Focus", &cameraFocus.x, 0.5f);
+    // ========== Volumetric Cloudscapes ==========
+    if (ImGui::Checkbox("Enable Volumetric Clouds", &enableVolumetricClouds)) {}
+    if (enableVolumetricClouds && ImGui::TreeNode("Cloud Settings")) {
+        ImGui::DragFloat4("Camera Focus", &cameraFocus.x, 0.5f);
 
-                ImGui::DragFloat("Density Scale", &volumetricCloudscapes->constantData.densityScale, 0.001f, 0.0f, 1.0f);
-                ImGui::DragFloat("Cloud Coverage", &volumetricCloudscapes->constantData.cloudCoverageScale, 0.001f, 0.0f, 0.5f);
-                ImGui::DragFloat("Rain Absorption", &volumetricCloudscapes->constantData.rainCloudAbsorptionScale, 0.01f, 0.0f, 10.0f, "%.2f");
-                ImGui::DragFloat("Cloud Type", &volumetricCloudscapes->constantData.cloudTypeScale, 0.01f, 0.0f, 10.0f, "%.2f");
+        ImGui::DragFloat("Density Scale", &volumetricCloudscapes->constantData.densityScale, 0.001f, 0.0f, 1.0f);
+        ImGui::DragFloat("Cloud Coverage", &volumetricCloudscapes->constantData.cloudCoverageScale, 0.001f, 0.0f, 0.5f);
+        ImGui::DragFloat("Rain Absorption", &volumetricCloudscapes->constantData.rainCloudAbsorptionScale, 0.01f, 0.0f, 10.0f, "%.2f");
+        ImGui::DragFloat("Cloud Type", &volumetricCloudscapes->constantData.cloudTypeScale, 0.01f, 0.0f, 10.0f, "%.2f");
 
-                ImGui::DragFloat("LowFreq Perlin", &volumetricCloudscapes->constantData.lowFrequencyPerlinWorleySamplingScale, 0.000001f, 0.0f, 1.0f, "%.7f");
-                ImGui::DragFloat("HighFreq Worley", &volumetricCloudscapes->constantData.highFrequencyWorleySamplingScale, 0.00001f, 0.0f, 1.0f, "%.5f");
-                ImGui::DragFloat("Horizon Distance", &volumetricCloudscapes->constantData.horizonDistanceScale, 0.0001f, 0.0f, 1.0f, "%.4f");
+        ImGui::DragFloat("LowFreq Perlin", &volumetricCloudscapes->constantData.lowFrequencyPerlinWorleySamplingScale, 0.000001f, 0.0f, 1.0f, "%.7f");
+        ImGui::DragFloat("HighFreq Worley", &volumetricCloudscapes->constantData.highFrequencyWorleySamplingScale, 0.00001f, 0.0f, 1.0f, "%.5f");
+        ImGui::DragFloat("Horizon Distance", &volumetricCloudscapes->constantData.horizonDistanceScale, 0.0001f, 0.0f, 1.0f, "%.4f");
 
-                ImGui::SliderFloat2("Wind Direction", &volumetricCloudscapes->constantData.windDirection.x, -1.0f, 1.0f);
-                ImGui::SliderFloat("Wind Speed", &volumetricCloudscapes->constantData.windSpeed, 0.0f, 20.0f);
+        ImGui::SliderFloat2("Wind Direction", &volumetricCloudscapes->constantData.windDirection.x, -1.0f, 1.0f);
+        ImGui::SliderFloat("Wind Speed", &volumetricCloudscapes->constantData.windSpeed, 0.0f, 20.0f);
 
-                ImGui::DragFloat("Earth Radius", &volumetricCloudscapes->constantData.earthRadius, 1.0f);
-                ImGui::DragFloat("Cloud Altitude Min", &volumetricCloudscapes->constantData.cloudAltitudesMinMax.x, 1.0f);
-                ImGui::DragFloat("Cloud Altitude Max", &volumetricCloudscapes->constantData.cloudAltitudesMinMax.y, 1.0f);
+        ImGui::DragFloat("Earth Radius", &volumetricCloudscapes->constantData.earthRadius, 1.0f);
+        ImGui::DragFloat("Cloud Altitude Min", &volumetricCloudscapes->constantData.cloudAltitudesMinMax.x, 1.0f);
+        ImGui::DragFloat("Cloud Altitude Max", &volumetricCloudscapes->constantData.cloudAltitudesMinMax.y, 1.0f);
 
-                ImGui::DragFloat("Long Distance Density", &volumetricCloudscapes->constantData.cloudDensityLongDistanceScale, 0.01f, 0.0f, 36.0f, "%.2f");
-                ImGui::Checkbox("Powdered Sugar Effect", reinterpret_cast<bool*>(&volumetricCloudscapes->constantData.enablePowderedSugarEffect));
+        ImGui::DragFloat("Long Distance Density", &volumetricCloudscapes->constantData.cloudDensityLongDistanceScale, 0.01f, 0.0f, 36.0f, "%.2f");
+        ImGui::Checkbox("Powdered Sugar Effect", reinterpret_cast<bool*>(&volumetricCloudscapes->constantData.enablePowderedSugarEffect));
 
-                ImGui::SliderInt("Ray Marching Steps", &volumetricCloudscapes->constantData.rayMarchingSteps, 1, 128);
-                ImGui::Checkbox("Auto Ray Marching", reinterpret_cast<bool*>(&volumetricCloudscapes->constantData.autoRayMarchingSteps));
+        ImGui::SliderInt("Ray Marching Steps", &volumetricCloudscapes->constantData.rayMarchingSteps, 1, 128);
+        ImGui::Checkbox("Auto Ray Marching", reinterpret_cast<bool*>(&volumetricCloudscapes->constantData.autoRayMarchingSteps));
 
-                ImGui::TreePop();
-            }
-#endif
-            ImGui::EndTabItem();
-        }
-
-        // ===== SceneSettingsタブ（任意）=====
-        if (ImGui::BeginTabItem("Scene"))
-        {
-            // -------------------------
-            // Light Settings
-            // -------------------------
-            if (ImGui::CollapsingHeader("Light Settings", ImGuiTreeNodeFlags_DefaultOpen))
-            {
-                ImGui::Checkbox("useDeferredRendering", &useDeferredRendering);
-                lightManager->DrawGUI();
-            }
-
-            // -------------------------
-            // CSM (シャドウ関連)
-            // -------------------------
-            if (ImGui::CollapsingHeader("Cascaded Shadow Maps"))
-            {
-                ImGui::SliderFloat("Critical Depth", &criticalDepthValue, 0.0f, 1000.0f);
-                ImGui::SliderFloat("Split Scheme", &cascadedShadowMaps->splitSchemeWeight, 0.0f, 1.0f);
-                ImGui::SliderFloat("Z Mult", &cascadedShadowMaps->zMult, 1.0f, 100.0f);
-                ImGui::Checkbox("Fit To Cascade", &cascadedShadowMaps->fitToCascade);
-                ImGui::SliderFloat("Shadow Color", &shaderCBuffer->data.shadowColor, 0.0f, 1.0f);
-                ImGui::DragFloat("Depth Bias", &shaderCBuffer->data.shadowDepthBias, 0.00001f, 0.0f, 0.01f, "%.8f");
-                bool colorize = shaderCBuffer->data.colorizeCascadedLayer != 0;
-                if (ImGui::Checkbox("Colorize Layer", &colorize))
-                {
-                    shaderCBuffer->data.colorizeCascadedLayer = colorize ? 1 : 0;
-                }
-
-                //ImGui::Checkbox("Colorize Layer", &shaderCBuffer->data.colorizeCascadedLayer);
-                //ImGui::DragInt("Colorize Layer", &shaderCBuffer->data.colorizeCascadedlayer);
-                //ImGui::SliderFloat("Shadow Color", &shaderConstants.shadowColor, 0.0f, 1.0f);
-                //ImGui::DragFloat("Depth Bias", &shaderConstants.shadowDepthBias, 0.00001f, 0.0f, 0.01f, "%.8f");
-                //ImGui::Checkbox("Colorize Layer", &shaderConstants.colorizeCascadedlayer);
-            }
-            ImGui::EndTabItem();
-        }
-
-        // ==== UIタブ（追加） ====
-        if (ImGui::BeginTabItem("UI"))
-        {
-            objectManager.DrawProperty();
-
-            ImGui::Separator();
-            ImGui::Text("EventSystem");
-            ImGui::Separator();
-
-            EventSystem::DrawProperty();
-
-            ImGui::EndTabItem();
-        }
-        ImGui::EndTabBar();
+        ImGui::TreePop();
     }
-
-    ImGui::End();
-
-    ImVec2 padding(10.0f, 10.0f);
-    ImVec2 window_pos = ImVec2(viewport->WorkPos.x + padding.x,
-        viewport->WorkPos.y + viewport->WorkSize.y - 100.0f);
-
-    ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always);
-    ImGui::SetNextWindowBgAlpha(0.25f); // 透明度（0.0f ～ 1.0f）
-
-    ImGui::Begin("ShortcutInfo", nullptr,
-        ImGuiWindowFlags_NoTitleBar |
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_AlwaysAutoResize |
-        ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoSavedSettings |
-        ImGuiWindowFlags_NoFocusOnAppearing |
-        ImGuiWindowFlags_NoNav |
-        ImGuiWindowFlags_NoDecoration);
-
-    ImGui::Text(" ShortcutInfo:");
-    ImGui::BulletText("Alt + Enter  : fullscreen");
-    ImGui::BulletText("F8           : debugCamera");
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-#if 0
-    ImGui::Text("Video memory usage %d MB", video_memory_usage());
 #endif
-    ImGui::End();
+    ImGui::EndTabItem();
+
+
+// ==== UIタブ（追加） ====
+if (ImGui::BeginTabItem("UI"))
+{
+    objectManager.DrawProperty();
+
+    ImGui::Separator();
+    ImGui::Text("EventSystem");
+    ImGui::Separator();
+
+    EventSystem::DrawProperty();
+
+    ImGui::EndTabItem();
+}
+ImGui::EndTabBar();
+
+ImGui::End();
+
 #endif  
 #endif // 0
-
-}

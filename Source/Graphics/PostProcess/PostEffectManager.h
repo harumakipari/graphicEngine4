@@ -45,7 +45,6 @@ public:
     void DrawGui()
     {
 #ifdef USE_IMGUI
-        ImGui::Begin("Post Effects");
 
         for (auto& [name, effect] : effects)
         {
@@ -55,7 +54,6 @@ public:
                 ImGui::TreePop();
             }
         }
-        ImGui::End();
 #endif
     }
 
