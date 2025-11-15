@@ -41,6 +41,7 @@ class MainScene : public SceneBase
     std::unique_ptr<Sprite> sprites[8];
     std::unique_ptr<SpriteBatch> sprite_batches[8];
 
+#if 0
     struct SceneConstants
     {
         DirectX::XMFLOAT4X4 viewProjection;
@@ -169,6 +170,8 @@ class MainScene : public SceneBase
     };
     FogConstants fogConstants;
 
+#endif // 0
+
     // ScreenSpaceProjectionMapping
     static constexpr int MAX_PROJECTION_MAPPING = 32;
     struct ProjectionMappingConstants
@@ -187,8 +190,11 @@ class MainScene : public SceneBase
 
     Microsoft::WRL::ComPtr<ID3D11PixelShader> screenSpaceProjectionMappingPixelShader;
 
-
     Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffers[8];
+
+    Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShaders[8];
+
+#if 0
 
     //DirectX::XMFLOAT4 lightDirection{ 0.4f, -0.8f, -0.4f, 0.0f };
     //DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.64f, -0.4f, 0.0f };
@@ -197,7 +203,6 @@ class MainScene : public SceneBase
     float iblIntensity = 1.0f;  //Image Basesd Lightingの強度
     //float iblIntensity = 4.5f;  //Image Basesd Lightingの強度
 
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShaders[8];
 
     std::unique_ptr<FrameBuffer> framebuffers[8];
 
@@ -219,21 +224,10 @@ class MainScene : public SceneBase
 
     //スカイマップ
     std::unique_ptr<SkyMap> skyMap;
-
+#endif
     //当たり判定のメッシュ
     std::unique_ptr<CollisionMesh> collisionMesh;
 
-    //デバックを描画
-    //std::unique_ptr<ShapeRenderer> shapeRenderer = nullptr;
-
-    //線分デバック用の配列
-    ShapeRenderer::Type type = ShapeRenderer::Type::Segment;
-    std::vector<DirectX::XMFLOAT3> points;
-
-    // ShaderToy で追加
-    //std::unique_ptr<FullScreenQuad> shaderToyTransfer; // ShadowToy用の
-    //std::unique_ptr<FrameBuffer> shaderToyFrameBuffer; // ShadowToy用の
-    //Microsoft::WRL::ComPtr<ID3D11PixelShader> shaderToyPS;
 
     struct ShaderToyCB
     {
@@ -256,7 +250,6 @@ public:
     void Update(float deltaTime) override;
     void Render(ID3D11DeviceContext* immediateContext, float deltaTime) override;
     bool Uninitialize(ID3D11Device* device) override;
-    bool OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height) override;
     void DrawGui() override;
 private:
     // ImGuiで使用する
@@ -274,7 +267,7 @@ private:
     void LoadModel();
 
     //Actorをセット
-    void SetUpActors();
+    void SetUpActors() override;
 
     //パーティクルシステムセットする
     void SetParticleSystem();
@@ -296,10 +289,12 @@ public:
     //ステージ
     std::shared_ptr<Stage> stage;
 
+#if 0
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceViews[8];
 
     SIZE framebufferDimensions;
 
+#endif // 0
     //TODO:02IMGUI用
     DirectX::XMFLOAT3 spherePosition{ 2.0f,0.0f,0.0f };
     DirectX::XMFLOAT4 playerDebugColor{ 1.0f,1.0f,1.0f,1.0f };
@@ -335,6 +330,7 @@ public:
     // シーンの自動登録
     static inline Scene::Autoenrollment<MainScene> _autoenrollment;
 
+#if 0
     // SCREEN_SPACE_AMBIENT_OCCLUSION
     bool enableSSAO = true;
     bool enableCascadedShadowMaps = true;
@@ -358,15 +354,20 @@ public:
     // VOLUMETRIC_CLOUDSCAPES
     //std::unique_ptr<VolumetricCloudscapes> volumetricCloudscapes;
     //int downsamplingFactor = 4;
-    
+
     // GBUFFER
     std::unique_ptr<GBuffer> gBufferRenderTarget;
     bool useDeferredRendering = false;
 
+#endif // 0
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> noise2d;
+
     // VOLUMETRIC_CLOUDSCAPES
     DirectX::XMFLOAT4 cameraFocus{ 0.0f, 1.0f, 0.0f, 1.0f };
 
-    Renderer actorRender;
+    SceneRenderer actorRender;
+
+    Renderer render;
 
     ActorColliderManager actorColliderManager;
 

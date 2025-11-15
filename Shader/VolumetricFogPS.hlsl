@@ -17,7 +17,7 @@ Texture2D depthTexture : register(t1);
 Texture2DArray cascadedShadowMaps : register(t2);
 
 // NOISE
-Texture3D noise3D : register(t10);
+//Texture3D noise3D : register(t10);
 
 float SunlightRadiance(float3 position, VS_OUT pin)
 {

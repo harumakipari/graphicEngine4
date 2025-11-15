@@ -62,6 +62,7 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     HRESULT hr;
 
     D3D11_BUFFER_DESC bufferDesc{};
+#if 0
     bufferDesc.ByteWidth = sizeof(sceneConstants);
     bufferDesc.Usage = D3D11_USAGE_DEFAULT;
     bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -89,6 +90,8 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[2].ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
+#endif // 0
+
     //ProjectionMappingConstants
     bufferDesc.ByteWidth = sizeof(projectionMappingConstants);
     bufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -98,6 +101,7 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     bufferDesc.StructureByteStride = 0;
     hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[3].ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+#if 0
 
     bufferDesc.ByteWidth = sizeof(LightConstants);
     bufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -112,13 +116,12 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     framebuffers[0] = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
     hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", pixelShaders[2].GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
     D3D11_TEXTURE2D_DESC texture2dDesc;
 # if 0
     LoadTextureFromFile(device, L"./Data/Effect/Particles/noise.png", noise2d.GetAddressOf(), &texture2dDesc);
 #else
     //LoadTextureFromFile(device, L"./Data/Effect/Particles/noise1.png", noise2d.GetAddressOf(), &texture2dDesc);
-    hr=LoadTextureFromFile(device, L"./Data/Effect/Textures/noise.png", noise2d.GetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Effect/Textures/noise.png", noise2d.GetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
 #endif
@@ -178,11 +181,31 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_ggx.dds", shaderResourceViews[3].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
+    framebuffers[1] = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
+#endif
+    D3D11_TEXTURE2D_DESC texture2dDesc;
+
+# if 0
+    LoadTextureFromFile(device, L"./Data/Effect/Particles/noise.png", noise2d.GetAddressOf(), &texture2dDesc);
+#else
+    //LoadTextureFromFile(device, L"./Data/Effect/Particles/noise1.png", noise2d.GetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Effect/Textures/noise.png", noise2d.GetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+#endif
+
+
+    //// LoadSceneに持っていく用
+//CreatePsFromCSO(device, "./Shader/ShaderToyPS.cso", shaderToyPS.GetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/ShaderToySkyPS.cso", pixelShaders[3].GetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr = CreatePsFromCSO(device, "./Shader/ShaderToyPS.cso", pixelShaders[4].GetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
 
     Physics::Instance().Initialize();
 
     // 最終の描画
-    framebuffers[1] = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
 
     bufferDesc.ByteWidth = sizeof(ShaderToyCB);
     bufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -738,6 +761,17 @@ void MainScene::Update(float deltaTime)
 }
 void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
 {
+    auto camera = CameraManager::GetCurrentCamera();
+    if (camera)
+    {
+        ViewConstants data = camera->GetViewConstants();
+        actorRender.UpdateViewConstants(immediateContext, data);
+    }
+
+    UpdateConstantBuffer(immediateContext);
+
+
+#if 0
     //サンプラーステートを設定
     RenderState::BindSamplerStates(immediateContext);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
@@ -813,6 +847,8 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
     immediateContext->PSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
 
 
+
+#endif // 0
 
 #if 1
     // PROJECTION_MAPPING
@@ -947,6 +983,7 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
     immediateContext->PSSetShaderResources(15, 1, effectSystem->projectionTexture.GetAddressOf());
 #endif // 1
 
+#if 0
     shaderConstants.maxDistance = maxDistance;
     shaderConstants.resolution = resolution;
     shaderConstants.steps = steps;
@@ -958,11 +995,15 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
     immediateContext->UpdateSubresource(constantBuffers[2].Get(), 0, 0, &fogConstants, 0, 0);
     immediateContext->PSSetConstantBuffers(4, 1, constantBuffers[2].GetAddressOf());    //3 は cascadedShadowMap に使用中
 
-    immediateContext->UpdateSubresource(constantBuffers[3].Get(), 0, 0, &projectionMappingConstants, 0, 0);
-    immediateContext->PSSetConstantBuffers(5, 1, constantBuffers[3].GetAddressOf());
-
     immediateContext->UpdateSubresource(constantBuffers[4].Get(), 0, 0, &lightConstants, 0, 0);
     immediateContext->PSSetConstantBuffers(11, 1, constantBuffers[4].GetAddressOf());    //3 は cascadedShadowMap に使用中
+
+
+#endif // 0
+
+
+    immediateContext->UpdateSubresource(constantBuffers[3].Get(), 0, 0, &projectionMappingConstants, 0, 0);
+    immediateContext->PSSetConstantBuffers(5, 1, constantBuffers[3].GetAddressOf());
 
     //定数バッファをGPUに送信
     {
@@ -1016,7 +1057,7 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
                 //shaderToyFrameBuffer->shaderResourceViews[0].Get(), //color Map
                 nullptr
             };
-            fullscreenQuadTransfer->Blit(immediateContext, shaderResourceViews, 0, 1, pixelShaders[3].Get());
+            fullscreenQuad->Blit(immediateContext, shaderResourceViews, 0, 1, pixelShaders[3].Get());
             //shaderToyTransfer->Blit(immediateContext, shaderResourceViews, 0, 1, shaderToyPS.Get());
             //shaderToyFrameBuffer->Deactivate(immediateContext);
             //if (isBossDeath)
@@ -1043,12 +1084,13 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
 
 
         //gameWorld_->Render(immediateContext);
+        actorRender.currentRenderPath = RenderPath::Forward;
 
         actorRender.RenderOpaque(immediateContext);
         actorRender.RenderMask(immediateContext);
         actorRender.RenderBlend(immediateContext);
-        actorRender.RenderInstanced(immediateContext);
-        actorRender.RenderBuilding(immediateContext);
+        render.RenderInstanced(immediateContext);
+        render.RenderBuilding(immediateContext);
 
 
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
@@ -1166,11 +1208,6 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
             ViewConstants data = camera->GetViewConstants();
             cameraView = data.view;
             cameraProjection = data.projection;
-#if 0
-            cameraView = camera->GetView();
-            cameraProjection = camera->GetProjection();
-
-#endif // 0
         }
         // CASCADED_SHADOW_MAPS
         // Make cascaded shadow maps
@@ -1179,82 +1216,40 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
         RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        //actorRender.CastShadowRender(immediateContext);
+        actorRender.currentRenderPath = RenderPath::Shadow;
         actorRender.CastShadowRender(immediateContext);
         //gameWorld_->CastShadowRender(immediateContext);
         cascadedShadowMaps->Deactive(immediateContext);
-
-        // FOG
-        {
-#if 0
-            framebuffers[0]->Clear(immediateContext, 0, 0, 0, 0);
-            framebuffers[0]->Activate(immediateContext);
-
-
-            RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
-            RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-            RenderState::BindRasterizerState(immediateContext, RASTER_STATE::SOLID_CULL_NONE);
-            ID3D11ShaderResourceView* shader_resource_views[]
-            {
-                multipleRenderTargets->renderTargetShaderResourceViews[0],  //colorMap
-                multipleRenderTargets->depthStencilShaderResourceView,      //depthMap
-                cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
-            };
-            fullscreenQuadTransfer->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), pixelShaders[2]/*VolumetricFogPS*/.Get());
-
-            framebuffers[0]->Deactivate(immediateContext);
-#endif
-        }
-
-        framebuffers[1]->Clear(immediateContext, 0, 0, 0, 0);
-        framebuffers[1]->Activate(immediateContext);
-
-        // ScreenSpace-ProjectionMapping
-        {
-            ID3D11ShaderResourceView* srvs[]
-            {
-                multipleRenderTargets->renderTargetShaderResourceViews[0],  //colorMap
-                multipleRenderTargets->depthStencilShaderResourceView,      //depthMap
-            };
-
-            //プロジェクションマッピングで出すテクスチャをセット
-            immediateContext->PSSetShaderResources(15, 1, effectSystem->projectionTexture.GetAddressOf());
-            immediateContext->PSSetShaderResources(16, 1, &multipleRenderTargets->renderTargetShaderResourceViews[0]);
-
-            //シーンのSRVとDepth値をPixelShaderに送って描画
-            fullscreenQuadTransfer->Blit(immediateContext, srvs, 20, _countof(srvs), screenSpaceProjectionMappingPixelShader.Get());
-        }
-
-
-        framebuffers[1]->Deactivate(immediateContext);
-
-        //framebuffers[1]->Clear(immediateContext, 0, 0, 0, 0);
-        //framebuffers[1]->Activate(immediateContext);
 
         // CASCADED_SHADOW_MAPS
         // Draw shadow to scene framebuffer
         // FINAL_PASS
         {
-            //ブルーム
             RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
             RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
             RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-            //bloomer->make(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
-            bloomer->make(immediateContext, framebuffers[1]->shaderResourceViews[0].Get());
+
+            sceneEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)], multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::NORMAL)],
+                multipleRenderTargets->depthStencilShaderResourceView, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::POSITION)], cascadedShadowMaps->depthMap().Get());
+            postEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
+
 
             ID3D11ShaderResourceView* shader_resource_views[]
             {
                 // MULTIPLE_RENDER_TARGETS
-                //multipleRenderTargets->renderTargetShaderResourceViews[0],  //colorMap
-                framebuffers[1]->shaderResourceViews[0].Get(),
-                multipleRenderTargets->renderTargetShaderResourceViews[1],
-                multipleRenderTargets->renderTargetShaderResourceViews[2],
+                multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)],  //colorMap
+                multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::POSITION)],
+                multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::NORMAL)],
                 multipleRenderTargets->depthStencilShaderResourceView,      //depthMap
-                bloomer->shader_resource_view(),    //bloom
-                framebuffers[0]->shaderResourceViews[0].Get(),  //fog
-                cascadedShadowMaps->depthMap().Get(),   //cascaededShadowMaps
+                postEffectManager->GetOutput("BloomEffect"),
+                sceneEffectManager->GetOutput("FogEffect"),
+                sceneEffectManager->GetOutput("SSAOEffect"),    //SSAO
+                sceneEffectManager->GetOutput("SSREffect"),
+                cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
             };
             // メインフレームバッファとブルームエフェクトを組み合わせて描画
-            fullscreenQuadTransfer->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), pixelShaders[0]/*final pass*/.Get());
+            fullscreenQuad->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());
 
         }
     }
@@ -1277,311 +1272,74 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
 
 void MainScene::DrawGui()
 {
+    SceneBase::DrawGui();
+
+
 #ifdef USE_IMGUI
-    ImGuiStyle& style = ImGui::GetStyle();
-    style.Colors[ImGuiCol_Text] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-    style.Colors[ImGuiCol_WindowBg] = ImVec4(0.05f, 0.08f, 0.15f, 0.95f);
-    style.Colors[ImGuiCol_TitleBg] = ImVec4(0.0f, 0.1f, 0.25f, 1.0f);
-    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.0f, 0.15f, 0.35f, 1.0f);
-    style.Colors[ImGuiCol_Header] = ImVec4(0.0f, 0.2f, 0.4f, 0.8f);
-    style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.0f, 0.3f, 0.6f, 1.0f);
-    style.Colors[ImGuiCol_FrameBg] = ImVec4(0.1f, 0.15f, 0.25f, 0.9f);
-    style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.15f, 0.25f, 0.4f, 1.0f);
-    // ビューポートサイズ取得
-    ImGuiIO& io = ImGui::GetIO();
-    ImGuiViewport* viewport = ImGui::GetMainViewport();
-    const float screen_width = viewport->WorkSize.x;
-    const float screen_height = viewport->WorkSize.y;
-
-    const float left_panel_width = 300.0f;
-    const float right_panel_width = 400.0f;
-
-    ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x + viewport->WorkSize.x - 300.0f,
-        viewport->WorkPos.y + viewport->WorkSize.y - 100.0f));
-    ImGui::SetNextWindowBgAlpha(0.3f); // 半透明
-
-
-    // ==== 左側：アウトライナー ====
-    ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x, viewport->WorkPos.y));
-    ImGui::SetNextWindowSize(ImVec2(left_panel_width, screen_height));
-    ImGui::Begin("Actor Outliner", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-
-    for (auto& actor : GetActorManager()->allActors_) {
-        bool is_selected = (selectedActor_ == actor);
-        if (ImGui::Selectable(actor->GetName().c_str(), is_selected)) {
-            selectedActor_ = actor;
-        }
-    }
-
-    // ==== UIアウトライナ(追加)　====
-    EditorGUI::DrawMainMenu();
-
-    if (ImGui::TreeNodeEx("UI Outliner", ImGuiTreeNodeFlags_DefaultOpen))
+#if 0
+    // ==== UIタブ（追加） ====
+    if (ImGui::BeginTabItem("UI"))
     {
-        objectManager.DrawHierarchy();
+        objectManager.DrawProperty();
 
-        ImGui::TreePop();
+        ImGui::Separator();
+        ImGui::Text("EventSystem");
+        ImGui::Separator();
+
+        EventSystem::DrawProperty();
+
+        ImGui::EndTabItem();
     }
-
-
-    ImGui::End();
-
-    // ==== 右側：インスペクタ ====
-    ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x + screen_width - right_panel_width, viewport->WorkPos.y));
-    ImGui::SetNextWindowSize(ImVec2(right_panel_width, screen_height));
-    ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-
-    // タブUI開始
-    if (ImGui::BeginTabBar("InspectorTabs"))
+    // ==== EffectSystemタブ（追加） ====
+    if (ImGui::BeginTabItem("Effects"))
     {
-        // ===== Actorタブ =====
-        if (ImGui::BeginTabItem("Actor"))
-        {
-            if (selectedActor_) {
-                selectedActor_->DrawImGuiInspector();
-            }
-            else {
-                ImGui::Text("No actor selected.");
-            }
-            ImGui::EndTabItem();
-        }
+        effectSystem->DrawGUI();
 
-        // ===== PostEffectタブ =====
-        if (ImGui::BeginTabItem("PostEffect"))
-        {
-            // -------------------------
-            // SSAO
-            // -------------------------
-            if (ImGui::Checkbox("Enable SSAO", &enableSSAO))
+        ImGui::EndTabItem();
+    }
+    // ==== Itemタブ（追加） ====
+    if (ImGui::BeginTabItem("Item"))
+    {
+        static bool isYoffsetFromTarget = true;
+        ImGui::Checkbox("eye is yOffset from target", &isYoffsetFromTarget);
+
+        uint32_t* enableMappings = &projectionMappingConstants.enableMapping[0].x;
+        uint32_t* textureId = &projectionMappingConstants.textureId[0].x;
+        for (int i = 0; i < MAX_PROJECTION_MAPPING; i++) {
+            ImGui::PushID(i);
+
+            if (ImGui::TreeNodeEx(("Projection" + std::to_string(i)).c_str(), ImGuiTreeNodeFlags_DefaultOpen))
             {
-                // SSAO有効切り替え時の処理があればここで
-            }
-#if 0
-            if (enableSSAO && ImGui::TreeNode("SSAO Settings")) {
-                ImGui::SliderFloat("Radius", &ssaoRadius, 0.1f, 10.0f);
-                ImGui::SliderInt("Sample Count", &ssaoSamples, 4, 64);
-                ImGui::TreePop();
-            }
-#endif
+                ImGui::Checkbox("enable", reinterpret_cast<bool*>(&enableMappings[i]));
+                ImGui::SliderInt("texture Id", reinterpret_cast<int*>(&textureId[i]), 0, 1);
 
-            // ========== SSR ==========
-            if (ImGui::Checkbox("Enable SSR", &enableSSR)) {}
-            if (enableSSR && ImGui::TreeNode("SSR Settings"))
-            {
-                ImGui::SliderFloat("Reflection Intensity", &refrectionIntensity, 0.0f, 1.0f);
-                ImGui::SliderFloat("Max Distance", &maxDistance, 0.0f, 30.0f);
-                ImGui::SliderFloat("Resolution", &resolution, 0.0f, 1.0f);
-                ImGui::SliderInt("Steps", &steps, 0, 20);
-                ImGui::SliderFloat("Thickness", &thickness, 0.0f, 1.0f);
-                ImGui::TreePop();
-            }
+                ImGui::DragFloat3("target", &targets[i].x);
 
-            // -------------------------
-            // Bloom
-            // -------------------------
-            if (ImGui::Checkbox("Enable Bloom", &enableBloom))
-            {
-            }
-            if (enableBloom && ImGui::TreeNode("Bloom Settings"))
-            {
-                ImGui::SliderFloat("Threshold", &bloomer->bloom_extraction_threshold, 0.0f, 5.0f);
-                ImGui::SliderFloat("Intensity", &bloomer->bloom_intensity, 0.0f, 5.0f);
-                ImGui::TreePop();
-            }
-
-            // -------------------------
-            // Fog
-            // -------------------------
-            if (ImGui::Checkbox("Enable Fog", &enableFog))
-            {
-            }
-            if (enableFog && ImGui::TreeNode("Fog Settings"))
-            {
-                ImGui::ColorEdit3("Fog Color", fogConstants.fogColor);
-                ImGui::SliderFloat("Intensity", &(fogConstants.fogColor[3]), 0.0f, 10.0f);
-                ImGui::SliderFloat("Density", &fogConstants.fogDensity, 0.0f, 0.05f, "%.6f");
-                ImGui::SliderFloat("Height Falloff", &fogConstants.fogHeightFalloff, 0.001f, 1.0f, "%.4f");
-                ImGui::SliderFloat("Cutoff Distance", &fogConstants.fogCutoffDistance, 0.0f, 1000.0f);
-                ImGui::SliderFloat("Ground Level", &fogConstants.groundLevel, -100.0f, 100.0f);
-                ImGui::SliderFloat("Mie Scattering", &fogConstants.mieScatteringCoef, 0.0f, 1.0f, "%.4f");
-                ImGui::SliderFloat("Time Scale", &fogConstants.timeScale, 0.0f, 1.0f, "%.4f");
-                ImGui::SliderFloat("Noise Scale", &fogConstants.noiseScale, 0.0f, 0.5f, "%.4f");
-                ImGui::TreePop();
-            }
-
-#if 0
-            // ========== Volumetric Cloudscapes ==========
-            if (ImGui::Checkbox("Enable Volumetric Clouds", &enableVolumetricClouds)) {}
-            if (enableVolumetricClouds && ImGui::TreeNode("Cloud Settings")) {
-                ImGui::DragFloat4("Camera Focus", &cameraFocus.x, 0.5f);
-
-                ImGui::DragFloat("Density Scale", &volumetricCloudscapes->constantData.densityScale, 0.001f, 0.0f, 1.0f);
-                ImGui::DragFloat("Cloud Coverage", &volumetricCloudscapes->constantData.cloudCoverageScale, 0.001f, 0.0f, 0.5f);
-                ImGui::DragFloat("Rain Absorption", &volumetricCloudscapes->constantData.rainCloudAbsorptionScale, 0.01f, 0.0f, 10.0f, "%.2f");
-                ImGui::DragFloat("Cloud Type", &volumetricCloudscapes->constantData.cloudTypeScale, 0.01f, 0.0f, 10.0f, "%.2f");
-
-                ImGui::DragFloat("LowFreq Perlin", &volumetricCloudscapes->constantData.lowFrequencyPerlinWorleySamplingScale, 0.000001f, 0.0f, 1.0f, "%.7f");
-                ImGui::DragFloat("HighFreq Worley", &volumetricCloudscapes->constantData.highFrequencyWorleySamplingScale, 0.00001f, 0.0f, 1.0f, "%.5f");
-                ImGui::DragFloat("Horizon Distance", &volumetricCloudscapes->constantData.horizonDistanceScale, 0.0001f, 0.0f, 1.0f, "%.4f");
-
-                ImGui::SliderFloat2("Wind Direction", &volumetricCloudscapes->constantData.windDirection.x, -1.0f, 1.0f);
-                ImGui::SliderFloat("Wind Speed", &volumetricCloudscapes->constantData.windSpeed, 0.0f, 20.0f);
-
-                ImGui::DragFloat("Earth Radius", &volumetricCloudscapes->constantData.earthRadius, 1.0f);
-                ImGui::DragFloat("Cloud Altitude Min", &volumetricCloudscapes->constantData.cloudAltitudesMinMax.x, 1.0f);
-                ImGui::DragFloat("Cloud Altitude Max", &volumetricCloudscapes->constantData.cloudAltitudesMinMax.y, 1.0f);
-
-                ImGui::DragFloat("Long Distance Density", &volumetricCloudscapes->constantData.cloudDensityLongDistanceScale, 0.01f, 0.0f, 36.0f, "%.2f");
-                ImGui::Checkbox("Powdered Sugar Effect", reinterpret_cast<bool*>(&volumetricCloudscapes->constantData.enablePowderedSugarEffect));
-
-                ImGui::SliderInt("Ray Marching Steps", &volumetricCloudscapes->constantData.rayMarchingSteps, 1, 128);
-                ImGui::Checkbox("Auto Ray Marching", reinterpret_cast<bool*>(&volumetricCloudscapes->constantData.autoRayMarchingSteps));
-
-                ImGui::TreePop();
-            }
-#endif
-            ImGui::EndTabItem();
-        }
-
-        // ===== SceneSettingsタブ（任意）=====
-        if (ImGui::BeginTabItem("Scene"))
-        {
-            // -------------------------
-            // Light Settings
-            // -------------------------
-            if (ImGui::CollapsingHeader("Light Settings", ImGuiTreeNodeFlags_DefaultOpen))
-            {
-                ImGui::Checkbox("useDeferredRendering", &useDeferredRendering);
-                ImGui::Checkbox("directionalLightEnable", &directionalLightEnable);
-                ImGui::SliderFloat3("Light Direction", &lightDirection.x, -1.0f, 1.0f);
-                ImGui::SliderFloat3("Light Color", &colorLight.x, -1.0f, 1.0f);
-                ImGui::SliderFloat("IBL Intensity", &iblIntensity, 0.0f, 10.0f);
-                ImGui::SliderFloat("Light Intensity", &colorLight.w, 0.0f, 10.0f);
-                ImGui::Checkbox("pointLightEnable", &pointLightEnable);
-                ImGui::SliderInt("Point Light Count", &pointLightCount, 0, 8);
-                for (int i = 0; i < pointLightCount; i++)
-                {
-                    std::string header = "PointLight[" + std::to_string(i) + "]";
-                    if (ImGui::CollapsingHeader(header.c_str()))
-                    {
-                        ImGui::DragFloat3(("Position##" + std::to_string(i)).c_str(), &pointLightPosition[i].x, 0.1f);
-                        ImGui::ColorEdit3(("Color##" + std::to_string(i)).c_str(), &pointLightColor[i].x);
-                        ImGui::SliderFloat(("Range##" + std::to_string(i)).c_str(), &pointLightRange[i], 0.0f, 10.0f);
-                        ImGui::SliderFloat(("Intensity##" + std::to_string(i)).c_str(), &pointLightColor[i].w, 0.0f, 10.0f);
-                    }
+                if (!isYoffsetFromTarget) {
+                    ImGui::DragFloat3("eye", &eyes[i].x);
                 }
-            }
-
-            // -------------------------
-            // CSM (シャドウ関連)
-            // -------------------------
-            if (ImGui::CollapsingHeader("Cascaded Shadow Maps"))
-            {
-                ImGui::SliderFloat("Critical Depth", &criticalDepthValue, 0.0f, 1000.0f);
-                ImGui::SliderFloat("Split Scheme", &cascadedShadowMaps->splitSchemeWeight, 0.0f, 1.0f);
-                ImGui::SliderFloat("Z Mult", &cascadedShadowMaps->zMult, 1.0f, 100.0f);
-                ImGui::Checkbox("Fit To Cascade", &cascadedShadowMaps->fitToCascade);
-                ImGui::SliderFloat("Shadow Color", &shaderConstants.shadowColor, 0.0f, 1.0f);
-                ImGui::DragFloat("Depth Bias", &shaderConstants.shadowDepthBias, 0.00001f, 0.0f, 0.01f, "%.8f");
-                ImGui::Checkbox("Colorize Layer", &shaderConstants.colorizeCascadedlayer);
-            }
-            ImGui::EndTabItem();
-        }
-
-        // ==== UIタブ（追加） ====
-        if (ImGui::BeginTabItem("UI"))
-        {
-            objectManager.DrawProperty();
-
-            ImGui::Separator();
-            ImGui::Text("EventSystem");
-            ImGui::Separator();
-
-            EventSystem::DrawProperty();
-
-            ImGui::EndTabItem();
-        }
-        // ==== EffectSystemタブ（追加） ====
-        if (ImGui::BeginTabItem("Effects"))
-        {
-            effectSystem->DrawGUI();
-
-            ImGui::EndTabItem();
-        }
-        // ==== Itemタブ（追加） ====
-        if (ImGui::BeginTabItem("Item"))
-        {
-            static bool isYoffsetFromTarget = true;
-            ImGui::Checkbox("eye is yOffset from target", &isYoffsetFromTarget);
-
-            uint32_t* enableMappings = &projectionMappingConstants.enableMapping[0].x;
-            uint32_t* textureId = &projectionMappingConstants.textureId[0].x;
-            for (int i = 0; i < MAX_PROJECTION_MAPPING; i++) {
-                ImGui::PushID(i);
-
-                if (ImGui::TreeNodeEx(("Projection" + std::to_string(i)).c_str(), ImGuiTreeNodeFlags_DefaultOpen))
-                {
-                    ImGui::Checkbox("enable", reinterpret_cast<bool*>(&enableMappings[i]));
-                    ImGui::SliderInt("texture Id", reinterpret_cast<int*>(&textureId[i]), 0, 1);
-
-                    ImGui::DragFloat3("target", &targets[i].x);
-
-                    if (!isYoffsetFromTarget) {
-                        ImGui::DragFloat3("eye", &eyes[i].x);
-                    }
-                    else {
-                        eyes[i] = targets[i];
-                    }
-                    ImGui::TreePop();
+                else {
+                    eyes[i] = targets[i];
                 }
-
-                ImGui::PopID();
+                ImGui::TreePop();
             }
 
-
-            GameManager::DrawGUI();
-
-            ImGui::EndTabItem();
+            ImGui::PopID();
         }
 
-        ImGui::EndTabBar();
+
+        GameManager::DrawGUI();
+
+        ImGui::EndTabItem();
     }
 
-    ImGui::End();
+    ImGui::EndTabBar();
 
-    ImVec2 padding(10.0f, 10.0f);
-    ImVec2 window_pos = ImVec2(viewport->WorkPos.x + padding.x,
-        viewport->WorkPos.y + viewport->WorkSize.y - 100.0f);
-
-    ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always);
-    ImGui::SetNextWindowBgAlpha(0.25f); // 透明度（0.0f ～ 1.0f）
-
-    ImGui::Begin("ShortcutInfo", nullptr,
-        ImGuiWindowFlags_NoTitleBar |
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_AlwaysAutoResize |
-        ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoSavedSettings |
-        ImGuiWindowFlags_NoFocusOnAppearing |
-        ImGuiWindowFlags_NoNav |
-        ImGuiWindowFlags_NoDecoration);
-
-    ImGui::Text(" ShortcutInfo:");
-#ifdef USE_IMGUI
-    //ImGui::Text("occupipedAABBs size:%d", static_cast<int>(SpawnValidator::GetAABBs().size()));
-    //ImGui::Text("targets size:%d", static_cast<int>(SpawnValidator::GetTargets().size()));
-    //ImGui::Text("ShockWaveTargetRegistry size:%d", static_cast<int>(ShockWaveTargetRegistry::GetTargets().size()));
-    //ImGui::BulletText("Alt + Enter  : fullscreen");
-    //ImGui::BulletText("F8           : debugCamera");
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::Text("Video memory usage %d MB", Graphics::VideoMemoryUsage());
-#if 0
-#endif
-
-    ImGui::End();
-#endif
+#endif // 0
 #endif
 }
+
+
 
 bool MainScene::Uninitialize(ID3D11Device* device)
 {
@@ -1593,31 +1351,6 @@ bool MainScene::Uninitialize(ID3D11Device* device)
     return true;
 }
 
-bool MainScene::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
-{
-    framebufferDimensions.cx = static_cast<LONG>(width);
-    framebufferDimensions.cy = height;
-
-    cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
-
-    // MULTIPLE_RENDER_TARGETS
-    multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, framebufferDimensions.cx, framebufferDimensions.cy, 3);
-
-    framebuffers[0] = std::make_unique<FrameBuffer>(device, framebufferDimensions.cx, framebufferDimensions.cy, true);
-    //framebuffers[1] = std::make_unique<FrameBuffer>(device, framebufferDimensions.cx / downsamplingFactor, framebufferDimensions.cy / downsamplingFactor);
-    framebuffers[1] = std::make_unique<FrameBuffer>(device, framebufferDimensions.cx, framebufferDimensions.cy, true);
-
-    //ブルーム
-    bloomer = std::make_unique<Bloom>(device, framebufferDimensions.cx, framebufferDimensions.cy);
-
-    return true;
-}
-
-//パーティクルシステムセットする
-void MainScene::SetParticleSystem()
-{
-
-}
 
 void MainScene::LoadModel()
 {
