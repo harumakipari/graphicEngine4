@@ -28,7 +28,7 @@ public:
 
     void UpdateConstantBuffer(ID3D11DeviceContext* immediateContext);
 
-    virtual bool Uninitialize(ID3D11Device* device) override{}
+    virtual bool Uninitialize(ID3D11Device* device) override { return true; }
     virtual bool OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height) override;
     virtual void DrawGui() override;
 
@@ -119,6 +119,6 @@ protected:
     //==============================
     // メンバー関数
     //==============================
-    virtual void DrawSceneGui();  ///< 各シーン固有のImGui描画フック
+    virtual void DrawSceneGui() {}///< 各シーン固有のImGui描画フック
 
 };

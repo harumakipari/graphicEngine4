@@ -10,6 +10,7 @@
 #include "Graphics/PostProcess/FullScreenQuad.h"
 #include "Graphics/PostProcess/GBuffer.h"
 #include "Core/ActorManager.h"
+#include "Engine/Scene/SceneBase.h"
 
 #include "Graphics/Environment/SkyMap.h"
 #include "Graphics/Shadow/CascadeShadowMap.h"
@@ -31,8 +32,9 @@
 
 #include "PBD/PBDSystem.h"
 
-class BootScene : public Scene
+class BootScene : public SceneBase
 {
+#if 0
     struct FrameConstants
     {
         float elapsedTime = 0.0f;
@@ -59,7 +61,7 @@ class BootScene : public Scene
     std::unique_ptr<ConstantBuffer<FrameConstants>>     sceneCBuffer;
     std::unique_ptr <ConstantBuffer<ShaderConstants>>   shaderCBuffer;
 
-    ActorColliderManager actorColliderManager;
+
 
     DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
     DirectX::XMFLOAT4 lightColor{ 1.0f,1.0f,1.0f,4.1f };
@@ -91,6 +93,8 @@ class BootScene : public Scene
 
 
     SIZE framebufferDimensions = {};
+#endif // 0
+    ActorColliderManager actorColliderManager;
 
     UIRoot uiRoot;
 
@@ -105,7 +109,7 @@ public:
 
     bool Uninitialize(ID3D11Device* device) override;
 
-    bool OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height) override;
+    //bool OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height) override;
 
     void DrawGui() override;
 
@@ -115,24 +119,27 @@ public:
     static inline Scene::Autoenrollment<BootScene> _autoenrollment;
 
 private:
+#if 0
     std::unique_ptr<LightManager> lightManager;
     std::unique_ptr<PostEffectManager> postEffectManager;
     std::unique_ptr<SceneEffectManager> sceneEffectManager;
-    std::shared_ptr<TitlePlayer> titlePlayer;
-    std::shared_ptr<Stage>  title;
-    std::shared_ptr<CollisionMesh> stageCollisionMesh;
-    std::shared_ptr<TitleCamera> mainCameraActor;
-    // ImGuiで使用する
-    std::shared_ptr<Actor> selectedActor_;  // 選択中のアクターを保持
-
-    SceneRenderer sceneRender;
-
     // SCREEN_SPACE_AMBIENT_OCCLUSION
     bool enableSSAO = true;
     bool enableCascadedShadowMaps = true;
     bool enableSSR = true;
     bool enableFog = false;
     bool enableBloom = false;
+
+    // ImGuiで使用する
+    std::shared_ptr<Actor> selectedActor_;  // 選択中のアクターを保持
+
+#endif // 0
+    std::shared_ptr<TitlePlayer> titlePlayer;
+    std::shared_ptr<Stage>  title;
+    std::shared_ptr<CollisionMesh> stageCollisionMesh;
+    std::shared_ptr<TitleCamera> mainCameraActor;
+
+    SceneRenderer sceneRender;
 
     std::unique_ptr<PBD::System> pbd;
 };

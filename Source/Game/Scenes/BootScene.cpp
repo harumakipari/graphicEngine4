@@ -33,6 +33,7 @@
 
 bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
+#if 0
     sceneCBuffer = std::make_unique<ConstantBuffer<FrameConstants>>(device);
     shaderCBuffer = std::make_unique<ConstantBuffer<ShaderConstants>>(device);
     sceneCBuffer->data.elapsedTime = 0;//開始時に０にしておく
@@ -90,6 +91,10 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_sheen_e.dds", environmentTextures[3].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+#endif // 0
+
+
+    SceneBase::Initialize(device, width, height, props);
 
     Physics::Instance().Initialize();
 
@@ -434,7 +439,9 @@ void BootScene::Update(float deltaTime)
 {
     using namespace DirectX;
 
-    lightManager->Update(deltaTime);
+    SceneBase::Update(deltaTime);
+
+    //lightManager->Update(deltaTime);
 
     pbd->Update(deltaTime);
     //pbd->Update(1 / 60.0f);
@@ -461,10 +468,10 @@ void BootScene::Update(float deltaTime)
     objectManager.Update(deltaTime);//追加
 
 
-    if (InputSystem::GetInputState("F8", InputStateMask::Trigger))
-    {
-        CameraManager::ToggleCamera();
-    }
+    //if (InputSystem::GetInputState("F8", InputStateMask::Trigger))
+    //{
+    //    CameraManager::ToggleCamera();
+    //}
 #ifdef _DEBUG
     if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
     {
@@ -522,19 +529,19 @@ void BootScene::SetUpActors()
     CameraManager::SetDebugCamera(debugCameraActor);
 }
 
-bool BootScene::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
-{
-    framebufferDimensions.cx = static_cast<LONG>(width);
-    framebufferDimensions.cy = static_cast<LONG>(height);
-
-    cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
-
-    multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, framebufferDimensions.cx, framebufferDimensions.cy, 3);
-
-    postEffectManager->Initialize(device, framebufferDimensions.cx, framebufferDimensions.cy);
-    sceneEffectManager->Initialize(device, framebufferDimensions.cx, framebufferDimensions.cy);
-    return true;
-}
+//bool BootScene::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
+//{
+//    framebufferDimensions.cx = static_cast<LONG>(width);
+//    framebufferDimensions.cy = static_cast<LONG>(height);
+//
+//    cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
+//
+//    multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, framebufferDimensions.cx, framebufferDimensions.cy, 3);
+//
+//    postEffectManager->Initialize(device, framebufferDimensions.cx, framebufferDimensions.cy);
+//    sceneEffectManager->Initialize(device, framebufferDimensions.cx, framebufferDimensions.cy);
+//    return true;
+//}
 
 bool BootScene::Uninitialize(ID3D11Device* device)
 {
@@ -545,6 +552,7 @@ bool BootScene::Uninitialize(ID3D11Device* device)
 
 void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
+#if 0
     //サンプラーステートを設定
     RenderState::BindSamplerStates(immediateContext);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
@@ -563,12 +571,6 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
     float aspect_ratio{ viewport.Width / viewport.Height };
 
-    auto camera = CameraManager::GetCurrentCamera();
-    if (camera)
-    {
-        ViewConstants data = camera->GetViewConstants();
-        sceneRender.UpdateViewConstants(immediateContext, data);
-    }
 
     // SCREEN_SPACE_AMBIENT_OCCLUSION
     shaderCBuffer->data.enableSsao = enableSSAO;
@@ -594,7 +596,17 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     //fogCBuffer->Activate(immediateContext, 8); // slot4 にセット
 
     lightManager->Apply(immediateContext, 11);
+#endif // 0
 
+    auto camera = CameraManager::GetCurrentCamera();
+    if (camera)
+    {
+        ViewConstants data = camera->GetViewConstants();
+        sceneRender.UpdateViewConstants(immediateContext, data);
+    }
+
+
+    UpdateConstantBuffer(immediateContext);
 
     if (!useDeferredRendering)
     {// フォワードレンダリング
@@ -704,7 +716,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
             };
             // メインフレームバッファとブルームエフェクトを組み合わせて描画
-            fullscreenQuadTransfer->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());
+            fullscreenQuad->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());
 
         }
     }
@@ -767,7 +779,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
         // MULTIPLE_RENDER_TARGETS
         RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
-        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
 
 
@@ -782,9 +794,10 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],   // emissiveMap
         };
         // メインフレームバッファとブルームエフェクトを組み合わせて描画
-        fullscreenQuadTransfer->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), deferredPs.Get());
+        fullscreenQuad->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), deferredPs.Get());
 
         RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
 
         sceneRender.currentRenderPath = RenderPath::Forward;
         sceneRender.RenderBlend(immediateContext);
@@ -848,7 +861,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
                 cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
             };
             // メインフレームバッファとブルームエフェクトを組み合わせて描画
-            fullscreenQuadTransfer->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());
+            fullscreenQuad->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());
         }
     }
 
@@ -866,7 +879,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 void BootScene::DrawGui()
 {
     pbd->DrawGui();
-
+    SceneBase::DrawGui();
+#if 0
     sceneEffectManager->DrawGui();
 
     postEffectManager->DrawGui();
@@ -1118,5 +1132,7 @@ void BootScene::DrawGui()
     ImGui::Text("Video memory usage %d MB", video_memory_usage());
 #endif
     ImGui::End();
-#endif
+#endif  
+#endif // 0
+
 }

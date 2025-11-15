@@ -105,6 +105,11 @@ bool SceneBase::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
 
 void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
 {
+    RenderState::BindSamplerStates(immediateContext);
+    RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
+    RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
+    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+
     // IBL
     immediateContext->PSSetShaderResources(32, 1, environmentTextures[0].GetAddressOf());
     immediateContext->PSSetShaderResources(33, 1, environmentTextures[1].GetAddressOf());
