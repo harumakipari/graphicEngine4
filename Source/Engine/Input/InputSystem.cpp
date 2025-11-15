@@ -233,6 +233,7 @@ void InputSystem::Update(float deltaTime)
 
     //アクティブデバイス判定
 
+#if 0
     //コントローラー
     {
         auto buttons = state.Gamepad.wButtons;
@@ -260,6 +261,39 @@ void InputSystem::Update(float deltaTime)
             activeDevice = InputDeviceType::Mouse;
         }
     }
+#else
+    // 1. Gamepad
+    {
+        auto buttons = state.Gamepad.wButtons;
+        auto lx = state.Gamepad.sThumbLX;
+        auto ly = state.Gamepad.sThumbLY;
+
+        if (buttons != 0 ||
+            abs(lx) > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ||
+            abs(ly) > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
+        {
+            activeDevice = InputDeviceType::Gamepad;
+        }
+    }
+
+    // 2. Keyboard（Updateの中で検知済みなのでスキャンしない）
+
+    // ※キー更新中にこれを入れれば良い：
+    // if(key->GetDeviceType()==Keyboard && key->IsPressedRaw()) activeDevice = Keyboard;
+
+    // 3. Mouse
+    {
+        if (GetAsyncKeyState(VK_LBUTTON) & 0x8000 ||
+            GetAsyncKeyState(VK_RBUTTON) & 0x8000 ||
+            mousePositionX[0] != mousePositionX[1] ||
+            mousePositionY[0] != mousePositionY[1])
+        {
+            activeDevice = InputDeviceType::Mouse;
+        }
+    }
+
+
+#endif // 0
 }
 
 bool InputSystem::GetInputState(const std::string& action, InputStateMask state, DeviceFlags flag)

@@ -62,35 +62,6 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     HRESULT hr;
 
     D3D11_BUFFER_DESC bufferDesc{};
-#if 0
-    bufferDesc.ByteWidth = sizeof(sceneConstants);
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = 0;
-    hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[0].ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    bufferDesc.ByteWidth = sizeof(shaderConstants);
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = 0;
-    hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[1].ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    bufferDesc.ByteWidth = sizeof(fogConstants);
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = 0;
-    hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[2].ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-#endif // 0
 
     //ProjectionMappingConstants
     bufferDesc.ByteWidth = sizeof(projectionMappingConstants);
@@ -101,88 +72,6 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     bufferDesc.StructureByteStride = 0;
     hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[3].ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-#if 0
-
-    bufferDesc.ByteWidth = sizeof(LightConstants);
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = 0;
-    hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffers[4].ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    // FOG 
-    framebuffers[0] = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
-    hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", pixelShaders[2].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    D3D11_TEXTURE2D_DESC texture2dDesc;
-# if 0
-    LoadTextureFromFile(device, L"./Data/Effect/Particles/noise.png", noise2d.GetAddressOf(), &texture2dDesc);
-#else
-    //LoadTextureFromFile(device, L"./Data/Effect/Particles/noise1.png", noise2d.GetAddressOf(), &texture2dDesc);
-    hr = LoadTextureFromFile(device, L"./Data/Effect/Textures/noise.png", noise2d.GetAddressOf(), &texture2dDesc);
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-#endif
-    sceneConstants.time = 0;//開始時に０にしておく
-#if 1
-    //Microsoft::WRL::ComPtr<ID3D11Resource> resource;
-    //hr = DirectX::CreateDDSTextureFromFile(device, L"./Data/Effect/Particles/_noise_3d.dds", resource.GetAddressOf(), noise3d.GetAddressOf());
-    //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-#else
-    ProcomputedNoiseTexture3d(device, 64, noise3d.GetAddressOf());
-#endif
-    //スカイマップ
-    //skyMap = std::make_unique<decltype(skyMap)::element_type >(device, L"./Data/Environment/Sky/winter_evening_4k.DDS");
-    //skyMap = std::make_unique<decltype(skyMap)::element_type >(device, L"./Data/Environment/Sky/cloud/skybox.dds");
-
-    fullscreenQuadTransfer = std::make_unique<FullScreenQuad>(device);
-
-    // MULTIPLE_RENDER_TARGETS
-    multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, static_cast<uint32_t>(width), height, 3);
-
-    // GBUFFER
-    gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
-    hr = CreatePsFromCSO(device, "./Shader/DeferredPS.cso", pixelShaders[1].ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    //ブルーム
-    bloomer = std::make_unique<Bloom>(device, static_cast<uint32_t>(width), height);
-    hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", pixelShaders[0].ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    //CascadedShadpwMaps
-    cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
-
-    // VOLUMETRIC_CLOUDSCAPES
-    //volumetricCloudscapes = std::make_unique<decltype(volumetricCloudscapes)::element_type>(device, L"./Data/Environment/VolumetricCloudscapes/weather.bmp");
-    //framebuffers[1] = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width) / downsamplingFactor, height / downsamplingFactor);
-
-    //gameWorld_ = std::make_unique<World>();
-
-    //shaderToy
-    //shaderToyTransfer = std::make_unique<FullScreenQuad>(device);
-
-    //// LoadSceneに持っていく用
-    //CreatePsFromCSO(device, "./Shader/ShaderToyPS.cso", shaderToyPS.GetAddressOf());
-    hr = CreatePsFromCSO(device, "./Shader/ShaderToySkyPS.cso", pixelShaders[3].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = CreatePsFromCSO(device, "./Shader/ShaderToyPS.cso", pixelShaders[4].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    //テクスチャをロード
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_charlie.dds", shaderResourceViews[0].ReleaseAndGetAddressOf(), &texture2dDesc);
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/diffuse_iem.dds", shaderResourceViews[1].ReleaseAndGetAddressOf(), &texture2dDesc);
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/specular_pmrem.dds", shaderResourceViews[2].ReleaseAndGetAddressOf(), &texture2dDesc);
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_ggx.dds", shaderResourceViews[3].ReleaseAndGetAddressOf(), &texture2dDesc);
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    framebuffers[1] = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
-#endif
     D3D11_TEXTURE2D_DESC texture2dDesc;
 
 # if 0
@@ -771,84 +660,6 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
     UpdateConstantBuffer(immediateContext);
 
 
-#if 0
-    //サンプラーステートを設定
-    RenderState::BindSamplerStates(immediateContext);
-    RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
-    RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
-
-    //IBL
-    immediateContext->PSSetShaderResources(32, 1, shaderResourceViews[0].GetAddressOf());
-    immediateContext->PSSetShaderResources(33, 1, shaderResourceViews[1].GetAddressOf());
-    immediateContext->PSSetShaderResources(34, 1, shaderResourceViews[2].GetAddressOf());
-    immediateContext->PSSetShaderResources(35, 1, shaderResourceViews[3].GetAddressOf());
-
-    // NOISE
-    immediateContext->PSSetShaderResources(10, 1, noise3d.GetAddressOf());
-    immediateContext->PSSetShaderResources(11, 1, noise2d.GetAddressOf());
-
-    D3D11_VIEWPORT viewport;
-    UINT num_viewports{ 1 };
-    immediateContext->RSGetViewports(&num_viewports, &viewport);
-
-
-    float aspect_ratio{ viewport.Width / viewport.Height };
-
-    auto camera = CameraManager::GetCurrentCamera();
-    if (camera)
-    {
-        ViewConstants data = camera->GetViewConstants();
-        sceneConstants.cameraPosition = data.cameraPosition;
-        sceneConstants.view = data.view;
-        sceneConstants.projection = data.projection;
-
-        DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&data.projection);
-        DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&data.view);
-        DirectX::XMStoreFloat4x4(&sceneConstants.viewProjection, V * P);
-
-        // CASCADED_SHADOW_MAPS
-        DirectX::XMStoreFloat4x4(&sceneConstants.invProjection, DirectX::XMMatrixInverse(NULL, P));
-        DirectX::XMStoreFloat4x4(&sceneConstants.invViewProjection, DirectX::XMMatrixInverse(NULL, V * P));
-
-        // COMPUTE_PARTICLE_SYSTEM
-        DirectX::XMStoreFloat4x4(&sceneConstants.invView, DirectX::XMMatrixInverse(NULL, V));
-    }
-
-    //sceneConstants.lightDirection = lightDirection;
-    //sceneConstants.colorLight = colorLight;
-    //sceneConstants.iblIntensity = iblIntensity;
-    lightConstants.lightDirection = lightDirection;
-    lightConstants.colorLight = colorLight;
-    lightConstants.iblIntensity = iblIntensity;
-    lightConstants.directionalLightEnable = static_cast<int>(directionalLightEnable);
-    lightConstants.pointLightEnable = static_cast<int>(pointLightEnable);
-    lightConstants.pointLightCount = pointLightCount;
-    for (int i = 0; i < pointLightCount; i++)
-    {
-        lightConstants.pointsLight[i].position = pointLightPosition[i];
-        lightConstants.pointsLight[i].color = pointLightColor[i];
-        lightConstants.pointsLight[i].range = pointLightRange[i];
-    }
-
-    // SCREEN_SPACE_AMBIENT_OCCLUSION
-    sceneConstants.enableSSAO = enableSSAO;
-    sceneConstants.enableBloom = enableBloom;
-    sceneConstants.enableFog = enableFog;
-    sceneConstants.enableCascadedShadowMaps = enableCascadedShadowMaps;
-    sceneConstants.enableSSR = enableSSR;
-    // SCREEN_SPACE_REFLECTION
-    sceneConstants.reflectionIntensity = refrectionIntensity;
-    // FOG
-    sceneConstants.time += elapsedTime;
-
-    immediateContext->UpdateSubresource(constantBuffers[0].Get(), 0, 0, &sceneConstants, 0, 0);
-    immediateContext->VSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
-    immediateContext->PSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
-
-
-
-#endif // 0
 
 #if 1
     // PROJECTION_MAPPING
@@ -983,23 +794,6 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
     immediateContext->PSSetShaderResources(15, 1, effectSystem->projectionTexture.GetAddressOf());
 #endif // 1
 
-#if 0
-    shaderConstants.maxDistance = maxDistance;
-    shaderConstants.resolution = resolution;
-    shaderConstants.steps = steps;
-    shaderConstants.thickness = thickness;
-
-    immediateContext->UpdateSubresource(constantBuffers[1].Get(), 0, 0, &shaderConstants, 0, 0);
-    immediateContext->PSSetConstantBuffers(2, 1, constantBuffers[1].GetAddressOf());
-
-    immediateContext->UpdateSubresource(constantBuffers[2].Get(), 0, 0, &fogConstants, 0, 0);
-    immediateContext->PSSetConstantBuffers(4, 1, constantBuffers[2].GetAddressOf());    //3 は cascadedShadowMap に使用中
-
-    immediateContext->UpdateSubresource(constantBuffers[4].Get(), 0, 0, &lightConstants, 0, 0);
-    immediateContext->PSSetConstantBuffers(11, 1, constantBuffers[4].GetAddressOf());    //3 は cascadedShadowMap に使用中
-
-
-#endif // 0
 
 
     immediateContext->UpdateSubresource(constantBuffers[3].Get(), 0, 0, &projectionMappingConstants, 0, 0);
@@ -1253,6 +1047,260 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
 
         }
     }
+    else
+    {// ディファードレンダリング
+        gBufferRenderTarget->Clear(immediateContext);
+        gBufferRenderTarget->Acticate(immediateContext);
+
+        // SKY_MAP
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        if (camera)
+        {
+            ViewConstants data = camera->GetViewConstants();
+            skyMap->Blit(immediateContext, data.viewProjection);
+        }
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+
+        actorRender.currentRenderPath = RenderPath::Deferred;
+        actorRender.RenderOpaque(immediateContext);
+        actorRender.RenderMask(immediateContext);
+        //sceneRender.RenderBlend(immediateContext);
+
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
+
+        // デバック描画
+#if _DEBUG
+        actorColliderManager.DebugRender(immediateContext);
+        //PhysicsTest::Instance().DebugRender(immediateContext);
+        //GameManager::DebugRender(immediateContext);
+#endif
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+
+        //actorRender.RenderOpaque(immediateContext);
+        //actorRender.RenderMask(immediateContext);
+        //actorRender.RenderBlend(immediateContext);
+
+        gBufferRenderTarget->Deactivate(immediateContext);
+
+        // MULTIPLE_RENDER_TARGETS
+#if 1
+        multipleRenderTargets->Clear(immediateContext);
+        multipleRenderTargets->Activate(immediateContext);
+#endif
+        RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        //splash->Render(immediateContext, 0, 0, viewport.Width, viewport.Height);
+
+        RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+
+
+        RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        //sprite_batches[0]->Begin(immediateContext);
+        //sprite_batches[0]->Render(immediateContext, 0, 0, 1280, 720);
+        //sprite_batches[0]->End(immediateContext);
+
+        // Shader Toy
+        {
+            //shaderToyFrameBuffer->Clear(immediateContext);// 512 * 512
+            //shaderToyFrameBuffer->Activate(immediateContext);
+
+            ID3D11ShaderResourceView* shaderResourceViews[]
+            {
+                //shaderToyFrameBuffer->shaderResourceViews[0].Get(), //color Map
+                nullptr
+            };
+            fullscreenQuad->Blit(immediateContext, shaderResourceViews, 0, 1, pixelShaders[3].Get());
+            //shaderToyTransfer->Blit(immediateContext, shaderResourceViews, 0, 1, shaderToyPS.Get());
+            //shaderToyFrameBuffer->Deactivate(immediateContext);
+            //if (isBossDeath)
+            {
+                //if (auto enemy = std::dynamic_pointer_cast<DefeatEnemy>(ActorManager::GetActorByName("defetEnemy")))
+                {
+                    //if (enemy->isFinish)
+                    {
+                        //fullscreenQuadTransfer->Blit(immediateContext, shaderResourceViews, 0, 1, pixelShaders[4].Get());
+                    }
+                }
+            }
+        }
+
+
+
+        // MULTIPLE_RENDER_TARGETS
+        //RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
+        RenderState::BindBlendState(immediateContext, BLEND_STATE::ADD);
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+
+
+        // ここでライティングの処理
+        ID3D11ShaderResourceView* shaderResourceViews[]
+        {
+            // MULTIPLE_RENDER_TARGETS
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],  // normalMap
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::PBR_VALUE)],   // msrMap
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],   // colorMap
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],   // emissiveMap
+        };
+        // メインフレームバッファとブルームエフェクトを組み合わせて描画
+        fullscreenQuad->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), deferredPs.Get());
+
+        RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
+
+        actorRender.currentRenderPath = RenderPath::Forward;
+        actorRender.RenderBlend(immediateContext);
+        render.RenderInstanced(immediateContext);
+        render.RenderBuilding(immediateContext);
+
+        immediateContext->GSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
+        immediateContext->PSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
+        immediateContext->CSSetConstantBuffers(1, 1, constantBuffers[0].GetAddressOf());
+
+        //瓦礫のDissolve
+        immediateContext->PSSetShaderResources(11, 1, noise2d.GetAddressOf());
+        for (const auto& actor : ShockWaveTargetRegistry::GetTargets())
+        {
+            if (auto build = std::dynamic_pointer_cast<Building>(actor))
+            {
+                if (auto& debri = build->convexComponent)
+                {
+                    if (debri->GetActive())
+                    {
+                        //effectSystem->computeParticles[9]->PixelEmitBegin(immediateContext, elapsedTime);
+
+                        //RenderState::BindDepthStencilState(Graphics::GetDeviceContext(), DEPTH_STATE::ZT_OFF_ZW_OFF, 0);
+                        //RenderState::BindRasterizerState(Graphics::GetDeviceContext(), RASTER_STATE::SOLID_CULL_NONE);
+
+                        DirectX::XMFLOAT4X4 world;
+                        DirectX::XMStoreFloat4x4(&world, DirectX::XMMatrixIdentity());
+                        PipeLineStateDesc pipelineState;
+                        pipelineState.pixelShader = effectSystem->dissolvePixelShader;
+
+                        debri->GetMeshComponent()->SetPipeLineState(pipelineState);
+
+                        for (auto& material : debri->GetMeshComponent()->model->materials)
+                        {
+                            material.replacedPixelShader = effectSystem->dissolvePixelShader;
+                        }
+                        //if (value > 1.f) value = 1.f;
+                        debri->GetMeshComponent()->model->SetDisolveFactor(build->GetDissolveRate());
+
+                        //描画
+                        debri->GetMeshComponent()->model->Render(immediateContext, world, debri->GetAnimatedNodes(), InterleavedGltfModel::RenderPass::All, pipelineState);
+
+                        //effectSystem->computeParticles[9]->PixelEmitEnd(immediateContext);
+                        //meshComponent->model->Render(immediateContext, world, convexComponent->GetAnimatedNodes(), InterleavedGltfModel::RenderPass::Mask);
+                    }
+                }
+            }
+            else if (auto build = std::dynamic_pointer_cast<BossBuilding>(actor))
+            {
+                if (auto& debri = build->convexComponent)
+                {
+                    if (debri->GetActive())
+                    {
+                        //effectSystem->computeParticles[9]->PixelEmitBegin(immediateContext, elapsedTime);
+
+                        //RenderState::BindDepthStencilState(Graphics::GetDeviceContext(), DEPTH_STATE::ZT_OFF_ZW_OFF, 0);
+                        //RenderState::BindRasterizerState(Graphics::GetDeviceContext(), RASTER_STATE::SOLID_CULL_NONE);
+
+                        DirectX::XMFLOAT4X4 world;
+                        DirectX::XMStoreFloat4x4(&world, DirectX::XMMatrixIdentity());
+                        PipeLineStateDesc pipelineState;
+                        pipelineState.pixelShader = effectSystem->dissolvePixelShader;
+
+                        debri->GetMeshComponent()->SetPipeLineState(pipelineState);
+
+                        for (auto& material : debri->GetMeshComponent()->model->materials)
+                        {
+                            material.replacedPixelShader = effectSystem->dissolvePixelShader;
+                        }
+                        //if (value > 1.f) value = 1.f;
+                        debri->GetMeshComponent()->model->SetDisolveFactor(build->GetDissolveRate());
+
+                        //描画
+                        debri->GetMeshComponent()->model->Render(immediateContext, world, debri->GetAnimatedNodes(), InterleavedGltfModel::RenderPass::All, pipelineState);
+
+                        //effectSystem->computeParticles[9]->PixelEmitEnd(immediateContext);
+                        //meshComponent->model->Render(immediateContext, world, convexComponent->GetAnimatedNodes(), InterleavedGltfModel::RenderPass::Mask);
+                    }
+                }
+            }
+        }
+        //immediateContext->PSSetShaderResources(0, 1, particleTexture.GetAddressOf());
+        //immediateContext->GSSetShaderResources(0, 1, colorTemperChart.GetAddressOf());
+        //actorRender.RenderParticle(immediateContext);
+        effectSystem->Render(immediateContext);
+#if 1
+        multipleRenderTargets->Deactivate(immediateContext);
+#endif
+
+        DirectX::XMFLOAT4X4 cameraView;
+        DirectX::XMFLOAT4X4 cameraProjection;
+
+        if (camera)
+        {
+            ViewConstants data = camera->GetViewConstants();
+            cameraView = data.view;
+            cameraProjection = data.projection;
+#if 0
+            cameraView = camera->GetView();
+            cameraProjection = camera->GetProjection();
+
+#endif // 0
+        }
+        // CASCADED_SHADOW_MAPS
+        // Make cascaded shadow maps
+        cascadedShadowMaps->Clear(immediateContext);
+        cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightDirection, criticalDepthValue, 3/*cbSlot*/);
+        RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        //actorRender.CastShadowRender(immediateContext);
+        actorRender.currentRenderPath = RenderPath::Shadow;
+        actorRender.CastShadowRender(immediateContext);
+        //gameWorld_->CastShadowRender(immediateContext);
+        cascadedShadowMaps->Deactive(immediateContext);
+
+
+        // CASCADED_SHADOW_MAPS
+        // Draw shadow to scene framebuffer
+        // FINAL_PASS
+        {
+            RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
+            RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
+            RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+            postEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)]);
+            sceneEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)], gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
+                gBufferRenderTarget->depthStencilShaderResourceView, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)], cascadedShadowMaps->depthMap().Get());
+
+
+            ID3D11ShaderResourceView* shader_resource_views[]
+            {
+                //gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],  //colorMap
+                multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)],  //colorMap
+                gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
+                gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
+                gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
+                postEffectManager->GetOutput("BloomEffect"),
+                sceneEffectManager->GetOutput("FogEffect"),
+                sceneEffectManager->GetOutput("SSAOEffect"),
+                sceneEffectManager->GetOutput("SSREffect"),
+                cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
+            };
+            // メインフレームバッファとブルームエフェクトを組み合わせて描画
+            fullscreenQuad->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());
+        }
+        }
 
     // UI描画
     {
