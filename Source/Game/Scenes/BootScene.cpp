@@ -327,30 +327,30 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
 void BootScene::Start()
 {
-    //TitleUIFactory::Create(this);
+    TitleUIFactory::Create(this);
 
-    //auto titleButtonObj = objectManager.FindGameObject("TitleButton");
-    //auto titleButton = titleButtonObj->GetComponent<Button>();
-    //titleButton->AddOnClickEvent([&]()
-    //    {
-    //        //titlePlayer->PlayAnimation("Rotation", false);
-    //        titlePlayer->OnPushStart();
-    //        mainCameraActor->OnClick();
-    //    });
+    auto titleButtonObj = objectManager.FindGameObject("TitleButton");
+    auto titleButton = titleButtonObj->GetComponent<Button>();
+    titleButton->AddOnClickEvent([&]()
+        {
+            //titlePlayer->PlayAnimation("Rotation", false);
+            titlePlayer->OnPushStart();
+            mainCameraActor->OnClick();
+        });
 
-    //auto backButtonObj = objectManager.FindGameObject("BackToTitle");
-    //auto backButton = backButtonObj->GetComponent<Button>();
-    //backButton->AddOnClickEvent([&]()
-    //    {
-    //        titlePlayer->OnPushBackToTitle();
-    //        title->OnPushBackToTitle();
-    //    });
+    auto backButtonObj = objectManager.FindGameObject("BackToTitle");
+    auto backButton = backButtonObj->GetComponent<Button>();
+    backButton->AddOnClickEvent([&]()
+        {
+            //titlePlayer->OnPushBackToTitle();
+            //title->OnPushBackToTitle();
+        });
 
-    ////タイトルBGM
-    //UIFactory::SetObjectManager(&objectManager);
-    //AudioSource* titleBgm = UIFactory::Create("TitleBGM")->AddComponent<AudioSource>(L"./Data/Sound/BGM/title.wav");
-    //titleBgm->SetVolume(0.5f);
-    //titleBgm->Play(XAUDIO2_LOOP_INFINITE);
+    //タイトルBGM
+    UIFactory::SetObjectManager(&objectManager);
+    AudioSource* titleBgm = UIFactory::Create("TitleBGM")->AddComponent<AudioSource>(L"./Data/Sound/BGM/title.wav");
+    titleBgm->SetVolume(0.5f);
+    titleBgm->Play(XAUDIO2_LOOP_INFINITE);
 
 
 

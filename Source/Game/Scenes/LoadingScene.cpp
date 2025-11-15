@@ -46,10 +46,7 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
     hr = device->CreateBuffer(&bufferDesc, nullptr, shaderToyConstantBuffer.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-
-
     cbuffer = std::make_unique<ConstantBuffer<constants>>(device);
-
 
     //shaderToy
     shaderToyTransfer = std::make_unique<FullScreenQuad>(device);
@@ -60,9 +57,6 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     hr = CreatePsFromCSO(device, "./Shader/ShaderToySkyPS.cso", pixel_shaders[1].ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    // ShaderToy
-    //shaderToy = std::make_unique<ShaderToy>(device);
 
     type = std::stoi(props.at("type"));
     preload_scene = props.at("preload");
@@ -94,38 +88,16 @@ void LoadingScene::Update(float deltaTime)
     shaderToy.iTime += deltaTime;
     shaderToy.iResolution.x = Graphics::GetScreenWidth();
     shaderToy.iResolution.y = Graphics::GetScreenHeight();
-    if (InputSystem::GetInputState("MouseLeft", InputStateMask::None))
-    {
-        //shaderToy.iMouse.x = static_cast<float>(InputSystem::GetMousePositionX());
-        //shaderToy.iMouse.y = static_cast<float>(InputSystem::GetMousePositionY());
+    if (_has_finished_preloading()/* && !enemy->GetAnimationController()->IsPlayAnimation()*/)
+    {// ‰ñ“]‚ªŽO‰ñ‚µ‚½‚ç
+        _transition(preload_scene, {});
     }
-
-    //auto camera = std::dynamic_pointer_cast<TitleCamera>(ActorManager::GetActorByName("mainLoadingCameraActor"));
-    //LoadingActorManager::Update(deltaTime);
-    //if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
-    {
-        if (_has_finished_preloading()/* && !enemy->GetAnimationController()->IsPlayAnimation()*/)
-        {// ‰ñ“]‚ªŽO‰ñ‚µ‚½‚ç
-            //_transition(preload_scene, {});
-        }
-    }
-
-#ifdef USE_IMGUI
-    ImGui::Begin("Loading Scene");
-    ImGui::DragFloat3("cameraTarget", &cameraTarget.x, 0.2f);
-    ImGui::End();
-#endif
-
 }
 
 
 
 bool LoadingScene::Uninitialize(ID3D11Device* device)
 {
-    //LoadingActorManager::ClearAll();
-    //ActorManager::ClearAll();
-    //enemy->SetPendingDestroy();
-    //mainCameraActor->SetPendingDestroy();
     return true;
 }
 
@@ -333,9 +305,6 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime
 #endif
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
-        //actorRender.RenderOpaque(immediateContext);
-        //actorRender.RenderMask(immediateContext);
-        //actorRender.RenderBlend(immediateContext);
 
         gBufferRenderTarget->Deactivate(immediateContext);
 
@@ -354,8 +323,28 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
 
+        RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+
+        // Shadow Toy
+        {
+            //shaderToyFrameBuffer->Clear(immediateContext);// 512 * 512
+            //shaderToyFrameBuffer->Activate(immediateContext);
+
+            ID3D11ShaderResourceView* shaderResourceViews[]
+            {
+                nullptr
+            };
+            //shaderToyTransfer->Blit(immediateContext, shaderResourceViews, 0, 1, shaderToyPS.Get());
+            shaderToyTransfer->Blit(immediateContext, shaderResourceViews, 0, 1, pixel_shaders[type].Get());
+            //shaderToyFrameBuffer->Deactivate(immediateContext);
+        }
+
+
         // MULTIPLE_RENDER_TARGETS
-        RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
+        //RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
+        RenderState::BindBlendState(immediateContext, BLEND_STATE::ADD);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
 

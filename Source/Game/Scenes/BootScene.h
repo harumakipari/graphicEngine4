@@ -6,26 +6,15 @@
 #include <wrl.h>
 #include <memory>
 
-#include "Graphics/Sprite/Sprite.h"
-#include "Graphics/PostProcess/FullScreenQuad.h"
-#include "Graphics/PostProcess/GBuffer.h"
 #include "Core/ActorManager.h"
 #include "Engine/Scene/SceneBase.h"
 
-#include "Graphics/Environment/SkyMap.h"
-#include "Graphics/Shadow/CascadeShadowMap.h"
-#include "Graphics/PostProcess/MultipleRenderTargets.h"
 #include "Graphics/Effect/EffectSystem.h"
 
-#include "Graphics/Core/LightManager.h"
-#include "Graphics/PostProcess/PostEffectManager.h"
-
 #include "Graphics/Renderer/SceneRenderer.h"
-#include "Graphics/Core/ConstantBuffer.h"
 
 #include "Game/Actors/Player/TitlePlayer.h"
 #include "Game/Actors/Camera/TitleCamera.h"
-#include "Graphics/PostProcess/SceneEffectManager.h"
 
 #include "UI/Widgets/Widget.h"
 #include "Physics/CollisionMesh.h"
