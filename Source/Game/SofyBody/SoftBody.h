@@ -43,6 +43,14 @@ public:
         LH_Z_UP
     };
 
+    struct Particle
+    {
+        DirectX::XMFLOAT3 position;
+        DirectX::XMFLOAT3 expectedPosition;
+        DirectX::XMFLOAT3 velocity;
+        float invMass;
+    };
+
 
     SoftBodySimulate(ID3D11Device* device, const std::string& filename);
     virtual ~SoftBodySimulate() = default;
@@ -157,6 +165,14 @@ public:
     };
 
 
+    struct ClothEdge
+    {
+        uint32_t neighbor;  // 隣接頂点のインデックス
+        DirectX::XMFLOAT3 delta;    // 初期の相対ベクトル
+        float restLength;   // 初期距離
+    };
+
+
     struct Mesh
     {
         struct Particle
@@ -218,7 +234,6 @@ public:
         std::string name;
 
 
-
         struct Primitive
         {
             //std::vector<int> materialIndices; // 複数のマテリアル候補
@@ -237,6 +252,7 @@ public:
             // 描画時に必要
             UINT startIndexLocation = 0;
             UINT indexCount = 0;
+            std::vector<ClothEdge> finalEdges;
 
             void CreateClothPingPongBuffers(ID3D11Device* device)
             {

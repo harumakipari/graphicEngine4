@@ -486,6 +486,9 @@
     <ClCompile Include="Source\Engine\Scene\SceneBase.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\SofyBody\SoftBody.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1015,6 +1018,7 @@
     <ClInclude Include="Source\PBD\PBDConstaraintData.h" />
     <ClInclude Include="Source\Graphics\PostProcess\SSREffect.h" />
     <ClInclude Include="Source\Engine\Scene\SceneBase.h" />
+    <ClInclude Include="Source\Game\SofyBody\SoftBody.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">
