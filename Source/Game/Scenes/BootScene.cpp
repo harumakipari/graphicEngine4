@@ -5,9 +5,7 @@
 #include "imgui.h"
 #endif
 
-#include "Graphics/Core/Shader.h"
 #include "Graphics/Core/Graphics.h"
-#include "Graphics/Resource/Texture.h"
 #include "Graphics/Core/RenderState.h"
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
@@ -26,9 +24,6 @@
 #include "Physics/Physics.h"
 
 #include "Graphics/PostProcess/BloomEffect.h"
-#include "Graphics/PostProcess/FogEffect.h"
-#include "Graphics/PostProcess/SSAOEffect.h"
-#include "Graphics/PostProcess/SSREffect.h"
 
 
 bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
@@ -746,6 +741,10 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         //uiRoot.Draw(immediateContext);
     }
 }
+
+
+
+
 
 void BootScene::DrawGui()
 {

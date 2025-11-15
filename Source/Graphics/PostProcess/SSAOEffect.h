@@ -41,6 +41,9 @@ private:
     std::unique_ptr<FullScreenQuad> fullScreenQuad;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> ssaoPS;
     std::unique_ptr<ConstantBuffer<SSAOConstantBuffer>> ssaoCBuffer;
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> ssaoKernelPoints;
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> ssaoNoise;
+
 
     float sigma = 0.3f;
     float power = 1.0f;
