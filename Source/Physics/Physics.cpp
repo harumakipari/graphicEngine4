@@ -416,12 +416,13 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
     // NOTE:④シェイプキャスト
     //--------------------------
     physx::PxSphereGeometry pxGeometry(radius);
-    physx::PxSweepBuffer pxSweepBuffer;
-    //physx::PxSweepBufferN<1> pxSweepBuffer;
+    //physx::PxSweepBuffer pxSweepBuffer;
+    physx::PxSweepBufferN<1> pxSweepBuffer;
     physx::PxTransform pxTransform(
         physx::PxVec3(origin.x, origin.y, origin.z),
         physx::PxQuat(0, 0, 0, 1));
     physx::PxHitFlags hitFlags = physx::PxHitFlag::ePOSITION | physx::PxHitFlag::eNORMAL;
+    //physx::PxHitFlags hitFlags = physx::PxHitFlag::eDEFAULT;
     bool hit = pxScene->sweep(pxGeometry,
         physx::PxTransform(origin.x, origin.y, origin.z),
         physx::PxVec3(direction.x, direction.y, direction.z),

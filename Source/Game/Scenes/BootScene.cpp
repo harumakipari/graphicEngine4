@@ -698,7 +698,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-        //objectManager.Draw(immediateContext);
+        objectManager.Draw(immediateContext);
         //softBodyEngine.Render(immediateContext);
         //uiRoot.Draw(immediateContext);
     }
