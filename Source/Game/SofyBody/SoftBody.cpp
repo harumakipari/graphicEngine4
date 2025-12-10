@@ -33,7 +33,7 @@ bool nullLoadImageData_(tinygltf::Image*, const int, std::string*, std::string*,
 SoftBodySimulate::SoftBodySimulate(ID3D11Device* device, const std::string& filename) : filename(filename)
 {
     std::filesystem::path cerealFilename(filename);
-    cerealFilename.replace_extension("clothCereal");
+    cerealFilename.replace_extension("soft_cereal");
     if (std::filesystem::exists(cerealFilename.c_str()))
     {
         std::ifstream ifs(cerealFilename.c_str(), std::ios::binary);
@@ -673,7 +673,7 @@ void SoftBodySimulate::CreateAndUploadResources(ID3D11Device* device)
             for (auto& e : prim.finalEdges)
             {
                 DistanceConstraint c;
-                c.i0 = offset + reinterpret_cast<int>(&e) - reinterpret_cast<int>(&prim.finalEdges[0]);  // Å© v ÇÃ indexÅiå„èqÅj
+                c.i0 = offset + reinterpret_cast<int>(&e) - reinterpret_cast<int>(&prim.finalEdges[0]);
                 c.i1 = offset + e.neighbor;
                 c.restLength = e.restLength;
 
@@ -720,6 +720,24 @@ void SoftBodySimulate::CreateAndUploadResources(ID3D11Device* device)
 
     cbuffer_->data.vertexCount = static_cast<int>(allVertices.size());
 
+    for (auto& mesh : meshes)
+    {
+        for (auto& primitive : mesh.primitives)
+        {
+            for (auto v : primitive.cachedVertices)
+            {
+                Particle p;
+                p.position = v.position;
+                p.expectedPosition = v.position;
+                p.force = { 0.0f,0.0f,0.0f };
+                p.invMass = 1.0f;
+                p.velocity = { 0.0f,0.0f,0.0f };
+                particles.push_back(p);
+            }
+        }
+    }
+
+
 #if 0
     for (auto& mesh : meshes)
     {
@@ -738,6 +756,9 @@ void SoftBodySimulate::Simulate(ID3D11DeviceContext* immediateContext)
 {
     ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
     cbuffer_->Activate(immediateContext, 10);
+
+
+
 #if 0
     for (auto& mesh : meshes)
     {

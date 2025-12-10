@@ -244,6 +244,7 @@
     <ClCompile Include="Source\Game\Actors\Stage\BossBuilding.cpp" />
     <ClCompile Include="Source\Game\Actors\Stage\Building.cpp" />
     <ClCompile Include="Source\Game\Actors\Stage\ClothSimulate.cpp" />
+    <ClCompile Include="Source\Game\Actors\Stage\TestSoftBody.cpp" />
     <ClCompile Include="Source\Game\Managers\BuildingManager.cpp" />
     <ClCompile Include="Source\Game\Managers\GameManager.cpp" />
     <ClCompile Include="Source\Game\Managers\TutorialSystem.cpp" />
@@ -339,6 +340,7 @@
     <ClInclude Include="Source\Engine\Camera\CameraManager.h" />
     <ClInclude Include="Source\Engine\Debug\Assert.h" />
     <ClInclude Include="Source\Engine\Debug\Logger.h" />
+    <ClInclude Include="Source\Engine\Effects\ComputeParticleSystem.h" />
     <ClInclude Include="Source\Engine\Framework\Framework.h" />
     <ClInclude Include="Source\Engine\Input\GamePad.h" />
     <ClInclude Include="Source\Engine\Input\InputSystem.h" />
@@ -378,6 +380,7 @@
     <ClInclude Include="Source\Game\Actors\Stage\ClothSimulate.h" />
     <ClInclude Include="Source\Game\Actors\Stage\ElasticBuilding.h" />
     <ClInclude Include="Source\Game\Actors\Stage\Objects\StageProp.h" />
+    <ClInclude Include="Source\Game\Actors\Stage\TestSoftBody.h" />
     <ClInclude Include="Source\Game\Actors\Stage\Stage.h" />
     <ClInclude Include="Source\Game\Actors\Stage\Building.h" />
     <ClInclude Include="Source\Game\Actors\Stage\TitleStage.h" />
@@ -396,6 +399,7 @@
     <ClInclude Include="Source\Game\Utils\TiledMapLoader.h" />
     <ClInclude Include="Source\Graphics\Cloud\VolumetricCloudscapes.h" />
     <ClInclude Include="Source\Graphics\Core\ConstantBuffer.h" />
+    <ClInclude Include="Source\Graphics\Core\GltfDxgiHelper.h" />
     <ClInclude Include="Source\Graphics\Core\Graphics.h" />
     <ClInclude Include="Source\Graphics\Core\LightManager.h" />
     <ClInclude Include="Source\Graphics\Core\PipelineState.h" />

@@ -178,6 +178,9 @@
     <Filter Include="Sources\Game\SoftBody">
       <UniqueIdentifier>{661907ba-3dd0-4d85-b006-dafcfdeef164}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Engine\Effects">
+      <UniqueIdentifier>{66d89f78-2178-43db-9c4f-4c59fff951e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
@@ -487,6 +490,9 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\SofyBody\SoftBody.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Actors\Stage\TestSoftBody.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1019,6 +1025,9 @@
     <ClInclude Include="Source\Graphics\PostProcess\SSREffect.h" />
     <ClInclude Include="Source\Engine\Scene\SceneBase.h" />
     <ClInclude Include="Source\Game\SofyBody\SoftBody.h" />
+    <ClInclude Include="Source\Engine\Effects\ComputeParticleSystem.h" />
+    <ClInclude Include="Source\Game\Actors\Stage\TestSoftBody.h" />
+    <ClInclude Include="Source\Graphics\Core\GltfDxgiHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">
@@ -1237,9 +1246,6 @@
     <FxCompile Include="Shader\ClothCS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\ClothVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\ClothSimulateCopyCS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -1330,6 +1336,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\Sampler.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\PbdParticleData.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

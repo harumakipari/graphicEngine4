@@ -28,6 +28,7 @@
 
 bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
+
     SceneBase::Initialize(device, width, height, props);
 
     Physics::Instance().Initialize();
@@ -36,18 +37,15 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     {
         pbd = std::make_unique<PBD::System>();
         float stiffness = 0.5f;
-
 #if 0
         // 二点の確認
-
         pbd->AddParticle({ 0,10,0 }, 0.0f);
         pbd->AddParticle({ 0,3,0 }, 1.0f);
         pbd->AddDistanceConstraints(0, 1, 0.005f);
 #else
 #if 0
         //三角形二枚の確認
-
-        pbd->AddParticle({ 0,5,0 }, 0.0f);  //0
+        pbd->AddParticle({ 0,5,0 }, 1.0f);  //0
         pbd->AddParticle({ 2,1,0 }, 1.0f);  //1
         pbd->AddParticle({ -2,1,0 }, 1.0f); //2
         pbd->AddParticle({ 0,1,2 }, 1.0f);  //3
@@ -61,7 +59,7 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         // 曲げ拘束（p1-p2 が共有辺の2三角形で構成）
         pbd->AddBendingConstraint(0, 1, 2, 3, 0.5f);
 #else
-#if 0
+#if 1
         // グリッドの布
         const int width = 3;
         const int height = 3;
@@ -319,6 +317,8 @@ bool BootScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 #endif // 1
     }
 
+
+
     //アクターをセット
     SetUpActors();
     EventSystem::Initialize();//追加 UI
@@ -333,7 +333,6 @@ void BootScene::Start()
     auto titleButton = titleButtonObj->GetComponent<Button>();
     titleButton->AddOnClickEvent([&]()
         {
-            //titlePlayer->PlayAnimation("Rotation", false);
             titlePlayer->OnPushStart();
             mainCameraActor->OnClick();
         });
@@ -342,8 +341,6 @@ void BootScene::Start()
     auto backButton = backButtonObj->GetComponent<Button>();
     backButton->AddOnClickEvent([&]()
         {
-            //titlePlayer->OnPushBackToTitle();
-            //title->OnPushBackToTitle();
         });
 
     //タイトルBGM
@@ -375,8 +372,8 @@ void BootScene::Update(float deltaTime)
 
     SceneBase::Update(deltaTime);
 
-    pbd->Update(deltaTime);
-    //pbd->Update(1 / 60.0f);
+    //pbd->Update(deltaTime);
+    pbd->Update(1 / 60.0f);
 
     const auto& p = pbd->GetParticles()[0];
     const auto& p1 = pbd->GetParticles()[1];
@@ -418,37 +415,21 @@ void BootScene::SetUpActors()
     titlePlayer = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitlePlayer>("actor", playerTr);
 
     Transform titleTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    //title = this->GetActorManager()->CreateAndRegisterActor<Stage>("title");
     auto titleStage = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleStage>("title", titleTr);
 
     Transform buildTr(DirectX::XMFLOAT3{ 4.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto elasticBuilding = this->GetActorManager()->CreateAndRegisterActorWithTransform<ElasticBuilding>("elasticBuilding", buildTr);
 
-    //Transform ballTr(DirectX::XMFLOAT3{ 0.0f,5.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    //auto springyBall = this->GetActorManager()->CreateAndRegisterActorWithTransform<SpringyBall>("springyBall", ballTr);
-
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
-    //CameraManager::SetGameCamera(mainCameraActor.get());
+#if 0
+    CameraManager::SetGameCamera(mainCameraActor.get());
+#else
     CameraManager::SetGameCamera(debugCameraActor.get());
-
+#endif // 0
     stageCollisionMesh = std::make_shared<CollisionMesh>(Graphics::GetDevice(), "./Data/Models/Stage/stage.gltf", true);
 
-    //#if 1
-    //    Transform sphereTr(DirectX::XMFLOAT3{ 0.0f,10.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    //    auto sphereTest = this->GetActorManager()->CreateAndRegisterActorWithTransform<SphereTest>("sphereTest", sphereTr);
-    //
-    //#endif // 0
-    //
-    //Transform planeTr(DirectX::XMFLOAT3{ 0.0f,15.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
-    //auto planeTest = this->GetActorManager()->CreateAndRegisterActorWithTransform<TestPBD>("TestPBD", planeTr);
-
-
-    //auto debugCameraActor = ActorManager::CreateAndRegisterActor<Actor>("debugCam");
-    //auto debugCamera = debugCameraActor->NewSceneComponent<DebugCameraComponent>("debugCamera");
-
-    //Transform enemyTr(DirectX::XMFLOAT3{ 6.7f,0.0f,5.6f }, DirectX::XMFLOAT3{ 0.0f,-35.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     Transform enemyTr(DirectX::XMFLOAT3{ 6.7f,0.0f,5.6f }, DirectX::XMFLOAT3{ 0.0f,-15.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<EmptyEnemy>("enemy", enemyTr);
 
@@ -458,7 +439,6 @@ void BootScene::SetUpActors()
 
 bool BootScene::Uninitialize(ID3D11Device* device)
 {
-    //ClearActorManager();
     Physics::Instance().Finalize();
     return true;
 }
@@ -549,10 +529,8 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-        //actorRender.CastShadowRender(immediateContext);
         sceneRender.currentRenderPath = RenderPath::Shadow;
         sceneRender.CastShadowRender(immediateContext);
-        //gameWorld_->CastShadowRender(immediateContext);
         cascadedShadowMaps->Deactive(immediateContext);
 
         // CASCADED_SHADOW_MAPS
@@ -634,20 +612,10 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         multipleRenderTargets->Clear(immediateContext);
         multipleRenderTargets->Activate(immediateContext);
 #endif
-        RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
-        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-        //splash->Render(immediateContext, 0, 0, viewport.Width, viewport.Height);
-
-        RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
-        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
-
         // MULTIPLE_RENDER_TARGETS
         RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-
 
         // ここでライティングの処理
         ID3D11ShaderResourceView* shaderResourceViews[]
@@ -687,22 +655,17 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
 #endif // 0
         }
-        // CASCADED_SHADOW_MAPS
-        // Make cascaded shadow maps
+        // 影を作る処理
         cascadedShadowMaps->Clear(immediateContext);
         cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightDirection, criticalDepthValue, 3/*cbSlot*/);
         RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-        //actorRender.CastShadowRender(immediateContext);
         sceneRender.currentRenderPath = RenderPath::Shadow;
         sceneRender.CastShadowRender(immediateContext);
-        //gameWorld_->CastShadowRender(immediateContext);
         cascadedShadowMaps->Deactive(immediateContext);
 
 
-        // CASCADED_SHADOW_MAPS
-        // Draw shadow to scene framebuffer
         // FINAL_PASS
         {
             RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
@@ -715,7 +678,6 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
             ID3D11ShaderResourceView* shader_resource_views[]
             {
-                //gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],  //colorMap
                 multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)],  //colorMap
                 gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
                 gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
@@ -736,7 +698,7 @@ void BootScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-        objectManager.Draw(immediateContext);
+        //objectManager.Draw(immediateContext);
         //softBodyEngine.Render(immediateContext);
         //uiRoot.Draw(immediateContext);
     }

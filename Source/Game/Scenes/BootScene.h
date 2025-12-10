@@ -54,4 +54,5 @@ private:
     SceneRenderer sceneRender;
 
     std::unique_ptr<PBD::System> pbd;
+
 };
