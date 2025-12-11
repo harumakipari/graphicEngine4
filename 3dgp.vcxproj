@@ -225,6 +225,7 @@
     <ClCompile Include="Source\Core\World.cpp" />
     <ClCompile Include="Source\Engine\Audio\Audio.cpp" />
     <ClCompile Include="Source\Engine\Debug\Logger.cpp" />
+    <ClCompile Include="Source\Engine\Easing\EasingHandler.cpp" />
     <ClCompile Include="Source\Engine\Framework\Framework.cpp" />
     <ClCompile Include="Source\Engine\Input\GamePad.cpp" />
     <ClCompile Include="Source\Engine\Input\InputSystem.cpp" />
@@ -251,6 +252,7 @@
     <ClCompile Include="Source\Game\Scenes\BootScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\MainScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\LoadingScene.cpp" />
+    <ClCompile Include="Source\Game\Scenes\SampleScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\TutorialScene.cpp" />
     <ClCompile Include="Source\Game\SofyBody\SoftBody.cpp" />
     <ClCompile Include="Source\Graphics\Cloud\VolumetricCloudscapes.cpp" />
@@ -324,6 +326,7 @@
     <ClInclude Include="Source\Components\CollisionShape\ShapeComponent.h" />
     <ClInclude Include="Source\Components\CollisionShape\StaticMeshCollisionComponent.h" />
     <ClInclude Include="Source\Components\Controller\ControllerComponent.h" />
+    <ClInclude Include="Source\Components\Easing\EasingComponent.h" />
     <ClInclude Include="Source\Components\Effect\EffectComponent.h" />
     <ClInclude Include="Source\Components\Game\EraseInAreaComponent.h" />
     <ClInclude Include="Source\Components\Game\ItemSpawnerComponent.h" />
@@ -340,6 +343,8 @@
     <ClInclude Include="Source\Engine\Camera\CameraManager.h" />
     <ClInclude Include="Source\Engine\Debug\Assert.h" />
     <ClInclude Include="Source\Engine\Debug\Logger.h" />
+    <ClInclude Include="Source\Engine\Easing\Easing.h" />
+    <ClInclude Include="Source\Engine\Easing\EasingHandler.h" />
     <ClInclude Include="Source\Engine\Effects\ComputeParticleSystem.h" />
     <ClInclude Include="Source\Engine\Framework\Framework.h" />
     <ClInclude Include="Source\Engine\Input\GamePad.h" />
@@ -392,6 +397,7 @@
     <ClInclude Include="Source\Game\Scenes\BootScene.h" />
     <ClInclude Include="Source\Game\Scenes\MainScene.h" />
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
+    <ClInclude Include="Source\Game\Scenes\SampleScene.h" />
     <ClInclude Include="Source\Game\Scenes\TutorialScene.h" />
     <ClInclude Include="Source\Game\SofyBody\SoftBody.h" />
     <ClInclude Include="Source\Game\Utils\ShockWaveTargetRegistry.h" />
