@@ -11,7 +11,7 @@
 #include "Graphics/Resource/GltfModel.h"
 #include "Graphics/Resource/GltfModelStaticBatching.h"
 #include "Engine/Utility/Win32Utils.h"
-#include "Engine/Utility/Timer.h"
+#include "Engine/Utility/Time.h"
 //#include "Camera.h"
 #include "Physics/Physics.h"
 #include "Physics/PhysicsUtility.h"

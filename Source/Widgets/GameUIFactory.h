@@ -209,6 +209,7 @@ public:
 			//WARNING
 			GameObject* warningCanvas = UIFactory::CreateCanvas("WarningCanvas");
 			GameObject* warning = UIFactory::CreateImage("Warning", warningCanvas, L"./Data/Textures/UI/WARNING.png");
+#if 0
 			EasingHandler handler;
 			handler.SetEasing(EaseType::Linear, 0.0f, 1.0f, 0.5f);
 			handler.SetEasing(EaseType::Linear, 1.0f, 0.0f, 0.5f);
@@ -221,6 +222,8 @@ public:
 				}, true);
 			//Easingコンポーネント
 			warning->AddComponent<EasingComponent>(&warning->GetComponent<Image>()->color.a)->StartHandler(handler);
+
+#endif // 0
 		}
 
 	}

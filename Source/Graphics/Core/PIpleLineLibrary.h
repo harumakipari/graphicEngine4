@@ -356,6 +356,7 @@ public:
 
         // cloth ‚±‚êŽg‚¦‚Ä‚È‚¢
         {
+#if 0
             desc.inputLayout = nullptr;
             desc.geometryShader = nullptr;
             hr = CreateVsFromCSO(device, "./Shader/ClothVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
@@ -365,6 +366,8 @@ public:
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
             desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_NONE;
             AddPipeLineState("cloth", desc);
+
+#endif // 0
         }
 
     }

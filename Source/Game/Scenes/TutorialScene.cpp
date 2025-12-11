@@ -11,7 +11,7 @@
 #include "Graphics/Core/RenderState.h"
 #include "Engine/Input/InputSystem.h"
 #include "Engine/Utility/Win32Utils.h"
-#include "Engine/Utility/Timer.h"
+#include "Engine/Utility/Time.h"
 #include "Core/ActorManager.h"
 
 
@@ -335,15 +335,18 @@ void TutorialScene::Start()
 
     TutorialSystem::SetInitializeFunction(TutorialStep::Finish, [&]()
         {
+#if 0
             EasingHandler handler;
             handler.SetEasing(EaseType::OutExp, 0.0f, 1.0f, 0.5f);
             handler.SetCompletedFunction([]() {
                 const char* types[] = { "0", "1" };
                 Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
                 });
+
             GameObject* fadeCanvas = ObjectManager::Find("FadeCanvas");
             fadeCanvas->SetActive(true);
             fadeCanvas->GetComponent<EasingComponent>()->StartHandler(handler);
+#endif // 0
         });
 
     //チュートリアルBGM

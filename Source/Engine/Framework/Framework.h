@@ -5,7 +5,7 @@
 #include <sstream>
 
 #include "Engine/Utility/Win32Utils.h"
-#include "Engine/Utility/Timer.h"
+#include "Engine/Utility/Time.h"
 
 
 #ifdef USE_IMGUI
@@ -98,7 +98,7 @@ public:
             }
             else
             {
-                tictoc.tick();
+                tictoc.Tick();
                 calculate_frame_stats();
 
                 // SCENE_TRANSITION
@@ -108,10 +108,10 @@ public:
                 ImGui::NewFrame();
 #endif
 
-                bool skipRendering = Update(tictoc.time_interval());
+                bool skipRendering = Update(tictoc.DeltaTime());
 
-                Render(tictoc.time_interval(), skipRendering);
-                //Render(tictoc.time_interval());
+                Render(tictoc.DeltaTime(), skipRendering);
+                //Render(tictoc.DeltaTime());
 
 #ifdef USE_IMGUI
                 ImGui::Render();
@@ -171,10 +171,10 @@ public:
             }
             break;
         case WM_ENTERSIZEMOVE:
-            tictoc.stop();
+            tictoc.Stop();
             break;
         case WM_EXITSIZEMOVE:
-            tictoc.start();
+            tictoc.Start();
             break;
         case WM_SIZE:
         {
@@ -203,12 +203,12 @@ private:
     void Render(float elapsed_time/*Elapsed seconds from last frame*/, bool renderable);
     bool Uninitialize();
 private:
-    HighResTimer tictoc;
+    Time tictoc;
     uint32_t frames{ 0 };
     float elapsed_time{ 0.0f };
     void calculate_frame_stats()
     {
-        if (++frames, (tictoc.time_stamp() - elapsed_time) >= 1.0f)
+        if (++frames, (tictoc.TimeStamp() - elapsed_time) >= 1.0f)
         {
             float fps = static_cast<float>(frames);
             std::wostringstream outs;

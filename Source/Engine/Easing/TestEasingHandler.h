@@ -7,7 +7,7 @@
 /**
  * @brief イージング種別。
  */
-enum class EaseType
+enum class TestEaseType
 {
 	InQuad,
 	OutQuad,
@@ -42,7 +42,7 @@ enum class EaseType
 /**
  * @brief イージングを制御するハンドラクラス。
  */
-class EasingHandler
+class TestEasingHandler
 {
 public:
 	/**
@@ -58,9 +58,9 @@ public:
 	};
 
 	/** @brief 既定コンストラクタ。*/
-	EasingHandler() {}
+	TestEasingHandler() {}
 	/** @brief デストラクタ。*/
-	~EasingHandler() {}
+	~TestEasingHandler() {}
 
 	/**
 	 * @brief イージング要素を追加します。
@@ -70,7 +70,7 @@ public:
 	 * @param duration 補間時間（秒）。
 	 * @param back バック系で用いる係数（未使用タイプでは無視）。
 	 */
-	void AddEasing(EaseType type, float start, float end, float duration = 1.0f, float back = 1.70158f);
+	void AddEasing(TestEaseType type, float start, float end, float duration = 1.0f, float back = 1.70158f);
 	/** @brief 既製のイージング要素を追加します。*/
 	void AddEasing(const EaseItem& item);
 
@@ -139,7 +139,7 @@ public:
 	 * @param func back 非対応関数の出力先。
 	 * @param backFunc back 対応関数の出力先。
 	 */
-	static void ToEasingFunction(EaseType type, std::function<float(float, float, float, float)>& func, std::function<float(float, float, float, float, float)>& backFunc);
+	static void ToEasingFunction(TestEaseType type, std::function<float(float, float, float, float)>& func, std::function<float(float, float, float, float, float)>& backFunc);
 
 private:
 	/** @brief 完了時コールバックがあれば実行します。*/

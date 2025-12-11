@@ -8,7 +8,7 @@
 #include "Engine/Utility/Win32Utils.h"
 #include "Engine/Debug/Assert.h"
 #include "Graphics/Core/Shader.h"
-#include "Engine/Utility/Timer.h"
+#include "Engine/Utility/Time.h"
 
 #include "Texture.h"
 

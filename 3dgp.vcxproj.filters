@@ -426,9 +426,6 @@
     <ClCompile Include="Source\Components\Game\EraseInAreaComponent.cpp">
       <Filter>Sources\Components\Game</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Utils\EasingHandler.cpp">
-      <Filter>Sources\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Game\Managers\BuildingManager.cpp">
       <Filter>Sources\Game\Scenes\Managers</Filter>
     </ClCompile>
@@ -498,7 +495,13 @@
     <ClCompile Include="Source\Game\Scenes\SampleScene.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Easing\EasingHandler.cpp">
+    <ClCompile Include="Source\Engine\Easing\TestEasingHandler.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Utility\Time.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\EasingHandler.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -653,7 +656,7 @@
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h">
       <Filter>Sources\Game\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Utility\Timer.h">
+    <ClInclude Include="Source\Engine\Utility\Time.h">
       <Filter>Sources\Engine\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Audio\Audio.h">
@@ -830,9 +833,6 @@
     <ClInclude Include="Source\Widgets\AudioSource.h">
       <Filter>Sources\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Widgets\EasingComponent.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Widgets\Utils\EditorGUI.h">
       <Filter>Sources\Widgets\Utils</Filter>
     </ClInclude>
@@ -927,12 +927,6 @@
     </ClInclude>
     <ClInclude Include="Source\Widgets\Mask.h">
       <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Utils\easing.h">
-      <Filter>Sources\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Utils\EasingHandler.h">
-      <Filter>Sources\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\GamePropety.h">
       <Filter>Sources\Game\Utils</Filter>
@@ -1036,8 +1030,11 @@
     <ClInclude Include="Source\Graphics\Core\GltfDxgiHelper.h" />
     <ClInclude Include="Source\Game\Scenes\SampleScene.h" />
     <ClInclude Include="Source\Engine\Easing\Easing.h" />
-    <ClInclude Include="Source\Engine\Easing\EasingHandler.h" />
-    <ClInclude Include="Source\Components\Easing\EasingComponent.h" />
+    <ClInclude Include="Source\Engine\Easing\TestEasingHandler.h" />
+    <ClInclude Include="Source\Components\Easing\TestEasingComponent.h" />
+    <ClInclude Include="Source\Utils\easing.h" />
+    <ClInclude Include="Source\Utils\EasingHandler.h" />
+    <ClInclude Include="Source\Widgets\EasingComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">

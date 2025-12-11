@@ -129,7 +129,7 @@ public:
         //    Shake();
         //}
 
-        handler.Update(power, deltaTime);
+        //handler.Update(power, deltaTime);
     }
 
     virtual void DrawImGuiInspector() override
@@ -183,8 +183,11 @@ public:
     //カメラシェイク
     void Shake(float power = 0.02f, float time = 0.2f)
     {
+#if 0
         handler.Clear();
         handler.SetEasing(EaseType::Linear, power, 0.f, time);
+
+#endif // 0
     }
 
     //フォーカスを手動設定できるようにする用

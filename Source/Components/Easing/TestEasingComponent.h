@@ -1,6 +1,6 @@
 #pragma once
-#include "Components/Base/Component.h"
-#include "Engine/Easing/EasingHandler.h"
+#include "Components/Base/SceneComponent.h"
+#include "Engine/Easing/TestEasingHandler.h"
 
 /**
  * @file
@@ -18,8 +18,17 @@ struct PropertyAccessor
 	std::function<void(T)> setter;  // ’l‚ğ‘‚«‚Ş
 };
 
-class EasingComponent:public Component
+#if 0
+class EasingComponent :public SceneComponent
 {
 public:
+	EasingComponent(const std::string& name, std::shared_ptr<Actor> owner) :SceneComponent(name, owner) {}
+
+	virtual ~EasingComponent() = default;
+
+protected:
+
 
 };
+
+#endif // 0

@@ -86,6 +86,7 @@ public:
                         2.0f,
                         8.7f
                     };
+#if 0
 
                     // イージングでeyeに向けてカメラを移動させる
                     x2Easing.Clear();
@@ -97,6 +98,8 @@ public:
                     z2Easing.Clear();
                     z2Easing.SetEasing(EaseType::InOutSine, GetPosition().z, eyePos.z, 1.5f);
 
+
+#endif // 0
                 };
         }
     };
@@ -119,24 +122,23 @@ public:
 
         zEasing.SetEasing(EaseType::OutQuart, 5.0f, 4.0f, 0.5f);
 #else
-        xEasing.Clear();
-        xEasing.SetWait(5.f);
-        xEasing.SetEasing(EaseType::InOutSine, 0.0f, 1.0f, 1.5f);
+        //xEasing.Clear();
+        //xEasing.SetWait(5.f);
+        //xEasing.SetEasing(EaseType::InOutSine, 0.0f, 1.0f, 1.5f);
 
-        yEasing.Clear();
-        easeY = 2.5f;
-        yEasing.SetWait(5.f);
-        yEasing.SetEasing(EaseType::Linear, 2.5f, 1.0f, 1.0f);
-        //yEasing.SetWait(0.15f);
-        yEasing.SetEasing(EaseType::OutCubic, 1.0f, 1.5f, 0.25f);
-        yEasing.SetEasing(EaseType::OutCubic, 1.5f, 1.0f, 0.25f);
+        //yEasing.Clear();
+        //easeY = 2.5f;
+        //yEasing.SetWait(5.f);
+        //yEasing.SetEasing(EaseType::Linear, 2.5f, 1.0f, 1.0f);
+        ////yEasing.SetWait(0.15f);
+        //yEasing.SetEasing(EaseType::OutCubic, 1.0f, 1.5f, 0.25f);
+        //yEasing.SetEasing(EaseType::OutCubic, 1.5f, 1.0f, 0.25f);
 
-        zEasing.Clear();
-        zEasing.SetEasing(EaseType::Linear, 2.0f, 6.0f, 4.0f);
+        //zEasing.Clear();
+        //zEasing.SetEasing(EaseType::Linear, 2.0f, 6.0f, 4.0f);
 
-        zEasing.SetEasing(EaseType::OutExp, 6.0f, 5.0f, 0.25f);
+        //zEasing.SetEasing(EaseType::OutExp, 6.0f, 5.0f, 0.25f);
 
-        //zEasing.SetEasing(EaseType::Linear, 6.0f, 5.0f, 0.5f);
 
 #endif // 0
 
