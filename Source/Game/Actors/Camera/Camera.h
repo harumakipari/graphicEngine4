@@ -180,6 +180,7 @@ public:
             //    CollisionHelper::ToBit(CollisionLayer::Building)))   // wantHitRayer)
             if (Physics::Instance().SphereCast(origin, direction, distance, 1.0f, result))   // wantHitRayer)
             {
+                OutputDebugStringA("sphere cast hit building!\n");
                 if (auto build = dynamic_cast<Building*>(result.actor))
                 {
                     build->preSkeltalMeshComponent->model->SetAlpha(0.3f);

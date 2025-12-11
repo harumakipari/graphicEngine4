@@ -397,7 +397,7 @@ namespace PBD
                 if (p.invMass <= 0.0f) continue;
                 double m = 1.0 / p.invMass;
                 com = XMVectorAdd(com, XMVectorScale(XMLoadFloat3(&p.position), (float)m));
-                totalMass += m;
+                totalMass += (float)m;
             }
             if (totalMass <= 0.0) return;
             com = XMVectorScale(com, (float)(1.0 / totalMass));

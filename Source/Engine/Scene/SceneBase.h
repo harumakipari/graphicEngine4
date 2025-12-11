@@ -28,11 +28,23 @@ public:
 
     void UpdateConstantBuffer(ID3D11DeviceContext* immediateContext);
 
+    virtual void Render(ID3D11DeviceContext* immediateContext, float delta_time) override;
+
     virtual bool Uninitialize(ID3D11Device* device) override { return true; }
     virtual bool OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height) override;
     virtual void DrawGui() override;
 
+    virtual void SceneDebugRender(ID3D11DeviceContext* immediateContext) {}
+
+    virtual void SceneRender(ID3D11DeviceContext* immediateContext) {}
+
 private:
+    void ForwardRender(ID3D11DeviceContext* immediateContext);
+
+    void DeferredRender(ID3D11DeviceContext* immediateContext);
+
+    void Draw(ID3D11DeviceContext* immediateContext);
+
     void DrawOutliner();
 
     void DrawShortcutInfo();
@@ -115,6 +127,7 @@ protected:
 
     std::shared_ptr<Actor> selectedActor_;  // 選択中のアクターを保持
 
+    SceneRenderer sceneRender;
 
     //==============================
     // メンバー関数

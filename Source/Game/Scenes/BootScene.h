@@ -51,7 +51,6 @@ private:
     std::shared_ptr<CollisionMesh> stageCollisionMesh;
     std::shared_ptr<TitleCamera> mainCameraActor;
 
-    SceneRenderer sceneRender;
 
     std::unique_ptr<PBD::System> pbd;
 

@@ -403,6 +403,7 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
 // スフィアキャスト
 bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, float radius, RaycastHit2& result)
 {
+    OutputDebugStringA("sphere cast is acting!\n");
     physx::PxQueryFilterData pxQueryFilterData(
         physx::PxQueryFlag::eDYNAMIC |
         physx::PxQueryFlag::eSTATIC |
@@ -416,8 +417,8 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
     // NOTE:④シェイプキャスト
     //--------------------------
     physx::PxSphereGeometry pxGeometry(radius);
-    //physx::PxSweepBuffer pxSweepBuffer;
-    physx::PxSweepBufferN<1> pxSweepBuffer;
+    physx::PxSweepBuffer pxSweepBuffer;
+    //physx::PxSweepBufferN<1> pxSweepBuffer;
     physx::PxTransform pxTransform(
         physx::PxVec3(origin.x, origin.y, origin.z),
         physx::PxQuat(0, 0, 0, 1));
