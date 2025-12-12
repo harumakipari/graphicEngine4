@@ -37,7 +37,8 @@ public:
         // 描画用コンポーネントを追加
         skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         //skeltalMeshComponent->SetModel("./Data/Models/Characters/Player/chara_animation.gltf");
-        skeltalMeshComponent->SetModel("./Data/Models/Characters/GirlSoldier/Idle.gltf");
+        //skeltalMeshComponent->SetModel("./Data/Models/Characters/GirlSoldier/Idle.gltf");
+        skeltalMeshComponent->SetModel("./Data/Models/Characters/Aurora_Gracial/idle.gltf");
         //skeltalMeshComponent->SetModel("./Data/Models/Characters/Test/MDL.gltf");
         //skeltalMeshComponent->SetModel("./Data/Models/Characters/Player/chara_idle.gltf");
         //skeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
