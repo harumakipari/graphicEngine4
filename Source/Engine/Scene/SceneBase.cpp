@@ -49,6 +49,8 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     // MULTIPLE_RENDER_TARGETS
     multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, static_cast<uint32_t>(width), height, 3);
 
+    frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
+
     // GBUFFER
     gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
     hr = CreatePsFromCSO(device, "./Shader/DeferredPS.cso", deferredPs.ReleaseAndGetAddressOf());
@@ -270,6 +272,9 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
     // MULTIPLE_RENDER_TARGETS
 #if 1
+    frameBuffer->Clear(immediateContext);
+    frameBuffer->Activate(immediateContext);
+#else
     multipleRenderTargets->Clear(immediateContext);
     multipleRenderTargets->Activate(immediateContext);
 #endif
@@ -290,16 +295,28 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     };
     // メインフレームバッファとブルームエフェクトを組み合わせて描画
     fullscreenQuad->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), deferredPs.Get());
+#if 0
+    multipleRenderTargets->Deactivate(immediateContext);
+#else
+    frameBuffer->Deactivate(immediateContext);
+#endif // 0
+#if 0
+    multipleRenderTargets->Activate(immediateContext, gBufferRenderTarget->depthStencilView);
+#else
+    frameBuffer->Activate(immediateContext, gBufferRenderTarget->depthStencilView);
+#endif // 0
 
     RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
+    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
 
     sceneRender.currentRenderPath = RenderPath::Forward;
     sceneRender.RenderBlend(immediateContext);
+    //multipleRenderTargets->Deactivate(immediateContext);
 
+    frameBuffer->Deactivate(immediateContext);
 
 #if 1
-    multipleRenderTargets->Deactivate(immediateContext);
 #endif
 
     DirectX::XMFLOAT4X4 cameraView;
@@ -334,7 +351,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
         ID3D11ShaderResourceView* shader_resource_views[]
         {
-            multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)],  //colorMap
+            //multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)],  //colorMap
+            frameBuffer->shaderResourceViews[0].Get(),
             gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
             gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
             gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap

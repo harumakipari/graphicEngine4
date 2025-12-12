@@ -16,7 +16,7 @@ public:
     
     void Clear(ID3D11DeviceContext* immediateContext,
         float r = 0, float g = 0, float b = 0, float a = 1, float depth = 1);
-    void Activate(ID3D11DeviceContext* immediateContext);
+    void Activate(ID3D11DeviceContext* immediateContext, ID3D11DepthStencilView* adoptedDepthStencilView = NULL);
     void Deactivate(ID3D11DeviceContext* immediateContext);
 
 private:

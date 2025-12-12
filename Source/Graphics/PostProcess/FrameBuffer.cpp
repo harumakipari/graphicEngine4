@@ -2,7 +2,7 @@
 
 #include "Engine/Utility/Win32Utils.h"
 
-FrameBuffer::FrameBuffer(ID3D11Device* device, uint32_t width, uint32_t height, bool withDepthStencil )
+FrameBuffer::FrameBuffer(ID3D11Device* device, uint32_t width, uint32_t height, bool withDepthStencil)
 {
     HRESULT hr{ S_OK };
     Microsoft::WRL::ComPtr<ID3D11Texture2D> renderTargetBuffer;
@@ -79,7 +79,7 @@ void FrameBuffer::Clear(ID3D11DeviceContext* immediateContext,
     }
 }
 
-void FrameBuffer::Activate(ID3D11DeviceContext* immediateContext)
+void FrameBuffer::Activate(ID3D11DeviceContext* immediateContext, ID3D11DepthStencilView* adoptedDepthStencilView)
 {
     viewportCount = D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE;
     immediateContext->RSGetViewports(&viewportCount, cachedViewPorts);
@@ -87,7 +87,7 @@ void FrameBuffer::Activate(ID3D11DeviceContext* immediateContext)
         cachedDepthStencilView.ReleaseAndGetAddressOf());
 
     immediateContext->RSSetViewports(1, &viewport);
-    immediateContext->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencilView.Get());
+    immediateContext->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), adoptedDepthStencilView ? adoptedDepthStencilView : depthStencilView.Get());
 }
 
 void FrameBuffer::Deactivate(ID3D11DeviceContext* immediateContext)

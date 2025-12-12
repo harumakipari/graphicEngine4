@@ -767,11 +767,11 @@ void soft_body::create_and_upload_resources(ID3D11Device* device)
         { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "ROTATION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     };
-    CreateVsFromCSO(device, "soft_body_vs.cso", vertex_shader.ReleaseAndGetAddressOf(), input_layout.ReleaseAndGetAddressOf(), input_element_desc, _countof(input_element_desc));
-    CreatePsFromCSO(device, "soft_body_ps.cso", pixel_shader.ReleaseAndGetAddressOf());
+    hr = CreateVsFromCSO(device, "soft_body_vs.cso", vertex_shader.ReleaseAndGetAddressOf(), input_layout.ReleaseAndGetAddressOf(), input_element_desc, _countof(input_element_desc));
+    hr = CreatePsFromCSO(device, "soft_body_ps.cso", pixel_shader.ReleaseAndGetAddressOf());
     // SOFT_BODY
-    CreateCsFromCSO(device, "simulate_cloth_cs.cso", simulate_cloth_cs.GetAddressOf());
-    CreateCsFromCSO(device, "simulate_cloth_copy_cs.cso", simulate_cloth_copy_cs.GetAddressOf());
+    hr = CreateCsFromCSO(device, "simulate_cloth_cs.cso", simulate_cloth_cs.GetAddressOf());
+    hr = CreateCsFromCSO(device, "simulate_cloth_copy_cs.cso", simulate_cloth_copy_cs.GetAddressOf());
 
     {
         D3D11_BUFFER_DESC buffer_desc = {};

@@ -11,7 +11,8 @@ void SSAOEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t heigh
     ssaoBuffer = std::make_unique<FrameBuffer>(device, width, height, true);
     ssaoCBuffer = std::make_unique<ConstantBuffer<SSAOConstantBuffer>>(device);
 
-    HRESULT hr = CreatePsFromCSO(device, "./Shader/SSAOPS.cso", ssaoPS.GetAddressOf());
+    //HRESULT hr = CreatePsFromCSO(device, "./Shader/SSAOPS.cso", ssaoPS.GetAddressOf());
+    HRESULT hr = CreatePsFromCSO(device, "./Shader/ScreenSpaceAmbientOcclusionPS.cso", ssaoPS.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 }
 
@@ -29,10 +30,19 @@ void SSAOEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResour
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+#if 0
     ID3D11ShaderResourceView* shaderResourceViews[]
     {
         gbufferDepth,       //depthMap
     };
+#else
+    ID3D11ShaderResourceView* shaderResourceViews[]
+    {
+        gbufferDepth,       //depthMap
+        gbufferNormal,
+
+    };
+#endif // 0
     fullScreenQuad->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), ssaoPS.Get());
 
     ssaoBuffer->Deactivate(immediateContext);

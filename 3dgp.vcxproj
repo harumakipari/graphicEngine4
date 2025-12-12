@@ -788,6 +788,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
+    <FxCompile Include="Shader\ScreenSpaceAmbientOcclusionPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shader\ScreenSpaceProjectionMappingPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -877,6 +883,7 @@
     <None Include="Shader\BidirectionalReflectanceDistributionFunction.hlsli" />
     <None Include="Shader\Bloom.hlsli" />
     <None Include="Shader\Cloth.hlsli" />
+    <None Include="Shader\Common.hlsli" />
     <None Include="Shader\ComputeParticle.hlsli" />
     <None Include="Shader\ComputeParticleBitonicSort.hlsli" />
     <None Include="Shader\Constants.hlsli" />

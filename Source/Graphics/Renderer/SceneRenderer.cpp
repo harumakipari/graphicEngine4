@@ -388,21 +388,21 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                 immediateContext->PSSetShaderResources(1, static_cast<UINT>(shaderResourceViews.size()), shaderResourceViews.data());
 
 
-                if (auto cloth = dynamic_cast<const ClothMeshComponent*>(meshComponent))
-                {
-#if 0
-                    immediateContext->IASetIndexBuffer(model->buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
-                    immediateContext->VSSetShaderResources(0, 1, cloth->preVertexSRV.GetAddressOf());
-                    immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / SizeofComponent(primitive.indexBufferView.format), 0, 0);
-#else
-                    immediateContext->IASetIndexBuffer(model->buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
-                    //immediateContext->VSSetShaderResources(0, 1, cloth->currentVertexSRV.GetAddressOf());
-                    immediateContext->VSSetShaderResources(0, 1, cloth->clothSRV[cloth->a].GetAddressOf());
-                    immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / SizeofComponent(primitive.indexBufferView.format), 0, 0);
-#endif // 0
-
-                }
-                else
+//                if (auto cloth = dynamic_cast<const ClothMeshComponent*>(meshComponent))
+//                {
+//#if 0
+//                    immediateContext->IASetIndexBuffer(model->buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
+//                    immediateContext->VSSetShaderResources(0, 1, cloth->preVertexSRV.GetAddressOf());
+//                    immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / SizeofComponent(primitive.indexBufferView.format), 0, 0);
+//#else
+//                    immediateContext->IASetIndexBuffer(model->buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
+//                    //immediateContext->VSSetShaderResources(0, 1, cloth->currentVertexSRV.GetAddressOf());
+//                    immediateContext->VSSetShaderResources(0, 1, cloth->clothSRV[cloth->a].GetAddressOf());
+//                    immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / SizeofComponent(primitive.indexBufferView.format), 0, 0);
+//#endif // 0
+//
+//                }
+//                else
                 {
                     if (primitive.indexBufferView.buffer > -1)
                     {

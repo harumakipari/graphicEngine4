@@ -513,7 +513,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 {
     float4 color = colorTexture.Sample(linearBorderBlackSamplerState, pin.texcoord);
     float alpha = color.a;
-    
+    //return color;
     
     float depthNdc = depthTexture.Sample(linearBorderBlackSamplerState, pin.texcoord).x;
     
@@ -550,6 +550,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     depthTexture.GetDimensions(mip_level, depthDimensions.x, depthDimensions.y, number_of_samples);
     float depth = depthTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord);
 
+    //return color;
 
     // SCREEN_SPACE_AMBIENT_OCCLUSION
 #if 0
@@ -601,8 +602,10 @@ float4 main(VS_OUT pin) : SV_TARGET
     {
         occlusion = ambientOcclusionTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord);
     }
-    color.rgb *= occlusion;
+    //color.rgb *= occlusion;
 #endif
+
+        //return color;
 
     // CASCADED_SHADOW_MAPS
     float shadowFactor = CalculatedCascadedShadowFactor(pin);
