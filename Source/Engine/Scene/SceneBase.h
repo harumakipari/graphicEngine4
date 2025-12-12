@@ -113,7 +113,7 @@ protected:
     DirectX::XMFLOAT4 lightColor{ 1.0f, 1.0f, 1.0f, 4.1f };
     float iblIntensity_ = 2.0f;
 
-    bool useDeferredRendering = false;
+    bool useDeferredRendering = true;
     bool enableSSAO = true;
     bool enableCascadedShadowMaps = true;
     bool enableSSR = true;

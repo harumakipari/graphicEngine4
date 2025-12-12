@@ -1,9 +1,13 @@
 #include "SSAOEffect.h"
 
+#include <DirectXMath.h>
+#include <random>
+
 #include "imgui.h"
 #include "Engine/Utility/Win32Utils.h"
 #include "Graphics/Core/RenderState.h"
 #include "Graphics/Core/Shader.h"
+#include "Graphics/Resource/Texture.h"
 
 void SSAOEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height)
 {
@@ -14,14 +18,43 @@ void SSAOEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t heigh
     //HRESULT hr = CreatePsFromCSO(device, "./Shader/SSAOPS.cso", ssaoPS.GetAddressOf());
     HRESULT hr = CreatePsFromCSO(device, "./Shader/ScreenSpaceAmbientOcclusionPS.cso", ssaoPS.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+    // SSAOカーネルポイント用の構造化バッファを作成する
+    std::mt19937 mt(std::random_device{}());
+    std::uniform_real_distribution<float> dist_snorm(-1.0f, +1.0f);
+    std::uniform_real_distribution<float> dist_unorm(-0.0f, +1.0f);
+    std::vector<DirectX::XMFLOAT3> ssao_kernel_points_data(64);
+    for (size_t kernel_index = 0; kernel_index < ssao_kernel_points_data.size(); ++kernel_index)
+    {
+        DirectX::XMFLOAT3 kernel = { dist_snorm(mt), dist_snorm(mt), dist_unorm(mt) };
+        float scale = static_cast<float>(kernel_index) / ssao_kernel_points_data.size();
+        scale = 0.1f + scale * (1.0f - 0.1f); // lerp
+        DirectX::XMStoreFloat3(&kernel, DirectX::XMVectorScale(DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&kernel)), dist_unorm(mt) * scale));
+        ssao_kernel_points_data.at(kernel_index) = kernel;
+    }
+    create_structured_buffer_shader_resource_view<DirectX::XMFLOAT3>(device, ssao_kernel_points_data, ssaoKernelPoints.ReleaseAndGetAddressOf());
+    // Create structured buffer for ssao noise
+    std::vector<DirectX::XMFLOAT3> ssao_noise_data(16);
+    for (DirectX::XMFLOAT3& noise : ssao_noise_data)
+    {
+        noise = { dist_snorm(mt), dist_snorm(mt), 0.0f };
+    }
+    create_structured_buffer_shader_resource_view<DirectX::XMFLOAT3>(device, ssao_noise_data, ssaoNoise.ReleaseAndGetAddressOf());
 }
 
 void SSAOEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal, ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* shadowMap)
 {
+#if 0
     ssaoCBuffer->data.sigma = sigma;
     ssaoCBuffer->data.power = power;
     ssaoCBuffer->data.improvedNormalReconstructionFromDepth = improvedNormalReconstructionFromDepth;
     ssaoCBuffer->data.bilateralBlur = bilateralBlur;
+#else
+    ssaoCBuffer->data.radius = radius;
+    ssaoCBuffer->data.power = power;
+    ssaoCBuffer->data.bias = bias;
+    ssaoCBuffer->data.split_u = split_u;
+#endif // 0
     ssaoCBuffer->Activate(immediateContext, 5);
 
     ssaoBuffer->Clear(immediateContext, 0, 0, 0, 0);
@@ -40,20 +73,29 @@ void SSAOEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResour
     {
         gbufferDepth,       //depthMap
         gbufferNormal,
-
+        ssaoKernelPoints.Get(),
+        ssaoNoise.Get()
     };
 #endif // 0
     fullScreenQuad->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), ssaoPS.Get());
 
     ssaoBuffer->Deactivate(immediateContext);
+
+    ID3D11ShaderResourceView* null_shader_resource_views[] =
+    {
+        NULL, NULL, NULL, NULL
+    };
+    immediateContext->PSSetShaderResources(0, _countof(null_shader_resource_views), null_shader_resource_views);
 }
 
 void SSAOEffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
+#if 0
     ImGui::Checkbox("improvedNormalReconstructionFromDepth", &improvedNormalReconstructionFromDepth);
     ImGui::Checkbox("bilateralBlur", &bilateralBlur);
     ImGui::SliderFloat("sigma", &sigma, 0.0f, +1.0f);
+#endif
     ImGui::SliderFloat("power", &power, 0.0f, +1.0f);
 #endif
 }

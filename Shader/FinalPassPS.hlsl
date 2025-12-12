@@ -511,6 +511,9 @@ float rand(float2 co)
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
+    uint mipLevel = 0, width, height, number_of_level;
+    colorTexture.GetDimensions(mipLevel, width, height, number_of_level);
+
     float4 color = colorTexture.Sample(linearBorderBlackSamplerState, pin.texcoord);
     float alpha = color.a;
     //return color;
@@ -533,7 +536,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     positionWorldSpace = positionWorldSpace / positionWorldSpace.w;
     
     uint2 dimensions;
-    uint mipLevel = 0, numberOfLevels;
+    uint numberOfLevels;
     positionTexture.GetDimensions(mipLevel, dimensions.x, dimensions.y, numberOfLevels);
     
     // SCREEN_SPACE_REFLECTION
@@ -554,12 +557,11 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     // SCREEN_SPACE_AMBIENT_OCCLUSION
 #if 0
-    float occlusion = CalculatedSSAOColor(pin);
-    if (enableSSAO)
-    {
-        color.rgb *= occlusion;
-    }
-#else
+    //float occlusion = CalculatedSSAOColor(pin);
+    //if (enableSSAO)
+    //{
+    //    color.rgb *= occlusion;
+    //}
     float occlusion = 1.0;
     if (bilateralBlur)
     {
@@ -602,7 +604,44 @@ float4 main(VS_OUT pin) : SV_TARGET
     {
         occlusion = ambientOcclusionTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord);
     }
-    //color.rgb *= occlusion;
+    color.rgb *= occlusion;
+#else
+    const float radius = 4.0;
+    const float sigma = 2.0 * radius * radius;
+    const float sigma2 = 0.01;
+    float curr_depth = depth;
+    float weight = 0.0;
+	
+    float accumulated_occlusion = 0;
+	
+    for (float i = -radius; i <= radius; i += 1.0)
+    {
+        for (float j = -radius; j <= radius; j += 1.0)
+        {
+            float dx = i / width;
+            float dy = j / height;
+            float2 uv = float2(pin.texcoord.x + dx, pin.texcoord.y + dy);
+			
+            float distance = i * i + j * j;
+            float domain_gaussian = exp(-distance / sigma);
+			
+            float sample_depth = depthTexture.SampleLevel(linearBorderBlackSamplerState, uv, 0);
+            distance = (curr_depth - sample_depth) * (curr_depth - sample_depth);
+            float range_gaussian = exp(-distance / sigma2);
+			
+			// Sample occlusion(ambient) factor
+            float sample_occlusion = ambientOcclusionTexture.SampleLevel(linearBorderBlackSamplerState, uv, 0);
+            accumulated_occlusion += sample_occlusion * domain_gaussian * range_gaussian;
+
+            weight += domain_gaussian * range_gaussian;
+        }
+    }
+    float occlusion = accumulated_occlusion / weight;
+    //if (pin.texcoord.x > screen_space_ambient_occlusion_constants_data.split_u)
+    {
+        color *= occlusion;
+    }
+
 #endif
 
         //return color;
