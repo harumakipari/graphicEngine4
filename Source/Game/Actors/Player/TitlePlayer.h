@@ -7,7 +7,6 @@
 #include "Utils/EasingHandler.h"
 #include "Game/Actors/Enemy/DefeatEnemy.h"
 
-
 class TitlePlayer :public Character
 {
 public:

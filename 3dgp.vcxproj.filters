@@ -1277,6 +1277,12 @@
     <FxCompile Include="Shader\SSRPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\ScreenSpaceAmbientOcclusionPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GltfModelForwardTranspacyPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ComputeParticle.hlsli">
@@ -1346,6 +1352,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\PbdParticleData.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\Common.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
