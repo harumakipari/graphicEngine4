@@ -37,8 +37,8 @@ public:
         skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         //skeltalMeshComponent->SetModel("./Data/Models/Characters/Player/chara_animation.gltf");
         //skeltalMeshComponent->SetModel("./Data/Models/Characters/GirlSoldier/Idle.gltf");
-        //skeltalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/idle.gltf");
-        skeltalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_B.glb");
+        skeltalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/idle.gltf");
+        //skeltalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_B.glb");
         //skeltalMeshComponent->SetModel("./Data/Models/Characters/Idle_Noise_A.glb");
         //skeltalMeshComponent->SetModel("./Data/Models/Characters/Test/MDL.gltf");
         //skeltalMeshComponent->SetModel("./Data/Models/Characters/Player/chara_idle.gltf");
@@ -47,7 +47,7 @@ public:
         //skeltalMeshComponent->SetIsCastShadow(false);
         const std::vector<std::string> animationFilenames =
         {
-            "./Data/Models/Characters/GirlSoldier/Emote_Slice.glb",
+            "./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_B.glb",
             "./Data/Models/Characters/GirlSoldier/Jog_Fwd.glb",
             "./Data/Models/Characters/GirlSoldier/Ability_E_InMotion.glb",
             "./Data/Models/Characters/GirlSoldier/HitReact_Front.glb",
