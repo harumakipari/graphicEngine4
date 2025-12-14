@@ -21,9 +21,9 @@ SamplerComparisonState comparisonSamplerState : register(s7);
 //Texture2D shadowMap : register(t8);
 
 
-float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
+float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_Target
 {
-    
+    return float4(1, 1, 1, 1);
     const float GAMMA = 2.2;
     const MaterialConstants m = materials[material];
     

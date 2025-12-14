@@ -184,6 +184,9 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ParticleVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelForwardTranspacyPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\RoundedLoadingPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
