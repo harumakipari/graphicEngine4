@@ -25,11 +25,7 @@ public:
         SetScale(transform.GetScale());
 
         stage = this->NewSceneComponent<StaticMeshComponent>("stageComponent", "empty");
-        //stage->SetModel("./Data/Models/Title/title_yuka_kabe.gltf");
         stage->SetModel("./Data/Models/boss_fight_stage/scene.gltf");
-        //stage->SetModel("./Data/Models/Objects/bmw_m4_dtm.glb");
-        //stage->SetModel("./Data/Models/Coins/coin_gold.gltf");
-        //stage->SetModel("./Data/Models/Stage/SpotLightStage/stydio_6.gltf");
         stage->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         stage->SetRelativeLocationDirect({ 0.0f,2.45f,0.0f });
 

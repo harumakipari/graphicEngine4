@@ -5,15 +5,6 @@
 #include "Engine/Input/GamePad.h"
 #include "PlayerState.h"
 
-//TODO :01 ここ変更する
-// colliderをセットするときに位置や半径、追加したい当たり判定の種類を伝えてセットできるようにする
-//#include "Physics/Collider.h"
-//
-//#include "Physics/CollisionEvent.h"
-//#include "Physics/Physics.h"
-//#include "Core/ActorManager.h"
-
-
 #include "Components/Controller/ControllerComponent.h"
 #include "Components/Render/MeshComponent.h"
 #include "Components/Effect/EffectComponent.h"
@@ -91,13 +82,6 @@ public:
     std::shared_ptr<SphereComponent> playerDamageRight;
 
     void Initialize(const Transform& transform)override;
-
-    // 入力をオンにするか
-    bool CanMove()override
-    {
-        // チャージビーム状態じゃなかったら入力をオンにする
-        return state != State::StartCharge && state != State::CantMoveCharge;
-    }
 
     std::shared_ptr<EffectComponent> effectChargeComponent;
     std::shared_ptr<SphereComponent> sphereRightComponent;

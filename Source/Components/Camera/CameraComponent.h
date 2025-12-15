@@ -178,6 +178,27 @@ public:
 
     void Tick(float deltaTime)override
     {
+#ifdef USE_IMGUI
+        //マウスホイールで距離変更有効
+        if (isEnableWheel)
+        {
+            //// シーンビュー上でのみホイール操作を受け付ける
+            //float left, top, right, bottom;
+            //Graphics::GetScreenRect(left, top, right, bottom);
+
+            //// マウスがシーンビュー上にあるか
+            //if (ImGui::IsMouseHoveringRect(ImVec2(left, top), ImVec2(right, bottom), false))
+            {
+                //ホイールで距離変更
+                if (float wheelDelta = ImGui::GetIO().MouseWheel)
+                {
+                    distance -= wheelDelta;
+                    distance = std::clamp(distance, minDistance, maxDistance);
+                }
+            }
+        }
+#endif // USE_IMGUI
+
 #if 1
         Transform transform = owner_.lock()->GetRootComponent()->GetComponentWorldTransform();
 

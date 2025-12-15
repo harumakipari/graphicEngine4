@@ -13,7 +13,7 @@ Texture2D<float4> materialTextures[5] : register(t1);
 #define ANISOTROPIC 2
 SamplerState samplerStates[5] : register(s0);
 
-GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) 
+GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
 {
     GBUFFER_PS_OUT pout;
     const float GAMMA = 2.2;
@@ -22,21 +22,29 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     float4 baseColorFactor = m.pbrMetallicRoughness.baseColorFactor;
     const int baseColorTexture = m.pbrMetallicRoughness.basecolorTexture.index;
 
-    float4 baseColor = baseColorFactor;
+    //float4 baseColor = baseColorFactor;
 
     if (baseColorTexture > -1)
     {
         float4 sampled = materialTextures[BASECOLOR_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(sampled.rgb, GAMMA);
-        baseColor *= sampled;
+        baseColorFactor *= sampled;
+
     }
     
     if (m.alphaMode == 0 /*OPAQUE*/)
     {
         baseColorFactor.a = 1.0;
     }
+    //if (m.alphaMode == 1 && baseColorFactor.a < 1.0)
+    //{
+    //    pout.color = float4(1, 0, 0, 1);
+    //    return pout;
+    //    discard;
+    //}
     if (baseColorFactor.a < m.alphaCutoff)
     {
+        //pout.color = float4(1, 0, 0, 1);
         discard;
     }
     
@@ -102,7 +110,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     }
     
     //pout.color = baseColorFactor;
-    pout.color = baseColor;
+    pout.color = baseColorFactor;
     //pout.position = mul(pin.wPosition, view); // to viewSpace
     //pout.normal = mul(float4(N.xyz, 0), view); //to viewSpace;
     pout.position = pin.wPosition; // to viewSpace
@@ -110,5 +118,5 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     pout.emissive = float4(emissiveFactor, 0);
     pout.material = float4(metallicFactor, occlusionFactor, roughnessFactor, occlusionStrength);
     
-	return pout;
+    return pout;
 }

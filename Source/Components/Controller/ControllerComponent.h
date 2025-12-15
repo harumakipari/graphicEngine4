@@ -21,7 +21,7 @@ class Actor;
 class InputComponent :public SceneComponent
 {
 public:
-    InputComponent(const std::string& name,std::shared_ptr<Actor> owner) :SceneComponent(name, owner) {}
+    InputComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner) {}
 
     void Tick(float deltaTime)override
     {
@@ -74,7 +74,7 @@ public:
     // アクション名で起こるイベントを設定
     //使用例
     // inputComponent->BindAction("Jump",[](){/*　処理　*/ });
-    void BindAction(const std::string& action, std::function<void()> callback)
+    void BindAction(const std::string& action, const std::function<void()>& callback)
     {
         bindings_[action] = callback;
     }
@@ -140,7 +140,7 @@ private:
 class MovementComponent :public SceneComponent
 {
 public:
-    MovementComponent(const std::string& name,std::shared_ptr<Actor> owner) :SceneComponent(name, owner) {}
+    MovementComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner) {}
 
     void Tick(float deltaTime)override;
 
@@ -175,7 +175,7 @@ private:
 class MovementComponentOutInput :public SceneComponent
 {
 public:
-    MovementComponentOutInput(const std::string& name, std::shared_ptr<Actor> owner) :SceneComponent(name, owner) {}
+    MovementComponentOutInput(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner) {}
 
     void Tick(float deltaTime)override;
 
@@ -214,7 +214,7 @@ private:
 class RotationComponent :public SceneComponent
 {
 public:
-    RotationComponent(const std::string& name,std::shared_ptr<Actor> owner) :SceneComponent(name, owner) {}
+    RotationComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner) {}
 
     void SetDirection(const DirectX::XMFLOAT3& dir);
 
@@ -258,7 +258,7 @@ private:
 class RotationTestComponent :public SceneComponent
 {
 public:
-    RotationTestComponent(const std::string& name, std::shared_ptr<Actor> owner) :SceneComponent(name, owner) {}
+    RotationTestComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner) {}
 
     void SetDirection(const DirectX::XMFLOAT3& dir);
 

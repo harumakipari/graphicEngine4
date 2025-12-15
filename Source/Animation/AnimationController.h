@@ -23,7 +23,7 @@ public:
         blendAnimationNodes = target_->model->GetNodes();
     }
 
-    void AddAnimation(std::string animationName, size_t animationClip)
+    void AddAnimation(const std::string& animationName, const size_t animationClip)
     {
         animationNameToIndex_[animationName] = animationClip;
     }
@@ -36,7 +36,7 @@ public:
 
     // 使用例
     // modelComponent->SetAnimationClip(
-    void SetAnimationClip(const std::string& animationName, bool loop = false, bool isBlend = false, float blendTime = 0.3f)
+    void SetAnimationClip(const std::string& animationName, const bool loop = false, const bool isBlend = false, const float blendTime = 0.3f)
     {
         this->isAnimationFinished = false;
         this->animationNextClip = animationNameToIndex_[animationName];
@@ -54,7 +54,7 @@ public:
         }
     }
 
-    void OnUpdate(float deltaTime)
+    void OnUpdate(const float deltaTime)
     {
         animationTime += deltaTime * animationRate;
 
@@ -130,7 +130,7 @@ public:
     }
 
     // アニメーションの再生倍率を変更する関数
-    void SetAnimationRate(float animationRate) { this->animationRate = animationRate; }
+    void SetAnimationRate(const float animationRate) { this->animationRate = animationRate; }
 
     // アニメーションを止める処理
     void Stop()
