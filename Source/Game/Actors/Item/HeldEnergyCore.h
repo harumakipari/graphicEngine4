@@ -24,9 +24,9 @@ public:
         // 描画用コンポーネントを追加
         std::shared_ptr<SkeletalMeshComponent>skeltalMeshComponent = this->NewSceneComponentWithParent<class SkeletalMeshComponent>("skeltalComponent", rootComponent_ ? rootComponent_ : nullptr);
         skeltalMeshComponent->SetModel("./Data/Models/Items/HeldEnergyCore/heldEnergyCore.gltf");
-        //skeltalMeshComponent->model->isModelInMeters = false;
+        //skeletalMeshComponent->model->isModelInMeters = false;
         SetScale(DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f));
-        //skeltalMeshComponent->SetIsVisible(false); // アイテム生成時に一フレーム描画されてしまうから
+        //skeletalMeshComponent->SetIsVisible(false); // アイテム生成時に一フレーム描画されてしまうから
         skeltalMeshComponent->SetRelativeLocationDirect(tempPosition); // player の横に生成する position
         //// 当たり判定のコンポーネントを追加
         //std::shared_ptr<SphereComponent> sphereComponent = this->NewComponent<class SphereComponent>("sphereComponent", rootComponent_ ? rootComponent_ : nullptr);

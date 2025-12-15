@@ -33,8 +33,8 @@ public:
         skeltalMeshComponent->SetModel("./Data/Models/Characters/Enemy/boss_idle.gltf");
         skeltalMeshComponent->SetMaterialPS("./Shader/TestPS.cso", "L_emission2");
         skeltalMeshComponent->SetMaterialPS("./Shader/TestPS.cso", "L_boss_emission");
-        //skeltalMeshComponent->SetMaterialPS("./Shader/GltfModelEmissionPS.cso", "L_emission2");
-        //skeltalMeshComponent->SetMaterialPS("./Shader/GltfModelEmissionPS.cso", "L_boss_emission");
+        //skeletalMeshComponent->SetMaterialPS("./Shader/GltfModelEmissionPS.cso", "L_emission2");
+        //skeletalMeshComponent->SetMaterialPS("./Shader/GltfModelEmissionPS.cso", "L_boss_emission");
 
         const std::vector<std::string> animationFilenames =
         {

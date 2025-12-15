@@ -35,16 +35,16 @@ public:
     {
         // 描画用コンポーネントを追加
         skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
-        //skeltalMeshComponent->SetModel("./Data/Models/Characters/Player/chara_animation.gltf");
-        //skeltalMeshComponent->SetModel("./Data/Models/Characters/GirlSoldier/Idle.gltf");
+        //skeletalMeshComponent->SetModel("./Data/Models/Characters/Player/chara_animation.gltf");
+        //skeletalMeshComponent->SetModel("./Data/Models/Characters/GirlSoldier/Idle.gltf");
         skeltalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/idle.gltf");
-        //skeltalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_B.glb");
-        //skeltalMeshComponent->SetModel("./Data/Models/Characters/Idle_Noise_A.glb");
-        //skeltalMeshComponent->SetModel("./Data/Models/Characters/Test/MDL.gltf");
-        //skeltalMeshComponent->SetModel("./Data/Models/Characters/Player/chara_idle.gltf");
-        //skeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
-        //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-        //skeltalMeshComponent->SetIsCastShadow(false);
+        //skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_B.glb");
+        //skeletalMeshComponent->SetModel("./Data/Models/Characters/Idle_Noise_A.glb");
+        //skeletalMeshComponent->SetModel("./Data/Models/Characters/Test/MDL.gltf");
+        //skeletalMeshComponent->SetModel("./Data/Models/Characters/Player/chara_idle.gltf");
+        //skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
+        //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", skeletalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+        //skeletalMeshComponent->SetIsCastShadow(false);
         const std::vector<std::string> animationFilenames =
         {
             "./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_B.glb",
@@ -91,12 +91,12 @@ public:
     {
         if (useDeffered)
         {
-            //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDeferredPS.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+            //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelDeferredPS.cso", skeletalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
 
         }
         else
         {
-            //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+            //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPS.cso", skeletalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
         }
     }
 

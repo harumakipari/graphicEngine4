@@ -45,7 +45,7 @@ void Beam::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair)
             //this->DestroyComponentByName("effectBeamComponet");
 
             ////Physics::EnqueueDefferfOperations({ DefferdPhysicsOperation::Type::DestroyComponent,sphereComponent.get() });
-            //skeltalMeshComponent->SetIsVisible(false);
+            //skeletalMeshComponent->SetIsVisible(false);
 
             //this->ScheduleDestroyComponentByName("skeltalComponent");
             //this->ScheduleDestroyComponentByName("sphereComponent");
@@ -84,7 +84,7 @@ void Beam::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair)
         //this->DestroyComponentByName("effectBeamComponet");
 
         ////Physics::EnqueueDefferfOperations({ DefferdPhysicsOperation::Type::DestroyComponent,sphereComponent.get() });
-            //skeltalMeshComponent->SetIsVisible(false);
+            //skeletalMeshComponent->SetIsVisible(false);
 
             //this->ScheduleDestroyComponentByName("skeltalComponent");
             //this->ScheduleDestroyComponentByName("sphereComponent");

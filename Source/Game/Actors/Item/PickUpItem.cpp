@@ -8,8 +8,8 @@ void PickUpItem::Initialize(const Transform& transform)
     // 描画用コンポーネントを追加
     skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
     skeltalMeshComponent->SetModel("./Data/Models/Items/PickUpEnergyCore/pick_up_item.gltf");
-    //skeltalMeshComponent->model->isModelInMeters = false;
-    //skeltalMeshComponent->SetIsVisible(false); // アイテム生成時に一フレーム描画されてしまうから
+    //skeletalMeshComponent->model->isModelInMeters = false;
+    //skeletalMeshComponent->SetIsVisible(false); // アイテム生成時に一フレーム描画されてしまうから
     HRESULT hr= CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     skeltalMeshComponent->model->emission = 15.0f;

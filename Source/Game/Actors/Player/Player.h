@@ -77,7 +77,7 @@ public:
         //PushState(std::make_shared<IdlingState>());
     }
     // 描画用コンポーネントを追加
-    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
     // 描画の基準点　左
     std::shared_ptr<SkeletalMeshComponent> leftComponent;
     //std::shared_ptr<SceneComponent> leftComponent;
@@ -108,7 +108,7 @@ public:
     std::shared_ptr<AudioSourceComponent> beamChargeAudioComponent;
     std::shared_ptr<AudioSourceComponent> beamLaunchAudioComponent;
     std::shared_ptr<AudioSourceComponent> itemAudioComponent;
-    DirectX::XMFLOAT3 GetVelocity() { return velocity; }
+    DirectX::XMFLOAT3 GetVelocity() const { return velocity; }
 
     void Update(float elapsedTime)override;
 

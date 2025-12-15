@@ -27,7 +27,7 @@ public:
     {
         std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         // ƒ‚ƒfƒ‹Šm”F
-        //skeltalMeshComponent->SetModel("./Data/Models/Characters/Enemy/boss_idle.gltf");
+        //skeletalMeshComponent->SetModel("./Data/Models/Characters/Enemy/boss_idle.gltf");
         skeltalMeshComponent->SetModel("./Data/Models/Characters/Savarog/Idle.gltf");
         skeltalMeshComponent->SetMaterialPS("./Shader/GltfModelEmissionPS.cso", "L_emission2");
         skeltalMeshComponent->SetMaterialPS("./Shader/GltfModelEmissionPS.cso", "L_boss_emission");

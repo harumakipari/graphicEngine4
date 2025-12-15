@@ -67,7 +67,7 @@ public:
     // I—¹ˆ—
     virtual void Finalize() {}
 
-    void SetRootComponent(std::shared_ptr<SceneComponent> root)
+    void SetRootComponent(const std::shared_ptr<SceneComponent>& root)
     {
         rootComponent_ = root;
     }

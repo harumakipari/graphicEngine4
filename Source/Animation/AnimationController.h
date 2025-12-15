@@ -29,14 +29,14 @@ public:
     }
 
     // アニメーション再生しているかどうか
-    bool IsPlayAnimation()
+    bool IsPlayAnimation() const
     {
         return !(this->isAnimationFinished);
     }
 
     // 使用例
     // modelComponent->SetAnimationClip(
-    void SetAnimationClip(/*size_t animationClip,*/std::string animationName, bool loop = false, bool isBlend = false, float blendTime = 0.3f)
+    void SetAnimationClip(const std::string& animationName, bool loop = false, bool isBlend = false, float blendTime = 0.3f)
     {
         this->isAnimationFinished = false;
         this->animationNextClip = animationNameToIndex_[animationName];
@@ -106,7 +106,7 @@ public:
                     if (requestStopLoop)
                     {
                         isAnimationLoop = false;    // ループしないモードにする
-                        animationTime = 0.0f;   
+                        animationTime = 0.0f;
                         requestStopLoop = false;
                     }
                     else
@@ -153,7 +153,7 @@ private:
     std::vector<InterleavedGltfModel::Node> animationNodes[2];
     std::vector<InterleavedGltfModel::Node> blendAnimationNodes;
 
-    enum class AnimationTransitionState
+    enum class AnimationTransitionState :uint8_t
     {
         NotStarted,
         Inprogress,

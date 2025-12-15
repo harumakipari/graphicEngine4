@@ -24,54 +24,62 @@
 void Player::Initialize(const Transform& transform)
 {
     // 描画用コンポーネントを追加
-    skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
-    //skeltalMeshComponent->SetModel("./Data/Models/Characters/Player/karichara.gltf");
-
-    skeltalMeshComponent->SetModel("./Data/Models/Characters/Player/chara_animation.gltf");
-    //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-    skeltalMeshComponent->model->emission = 5.0f;
-    //skeltalMeshComponent->SetModel("./Data/Models/Characters/Enemy/boss.gltf");
-    //skeltalMeshComponent->SetModel("./Data/Models/Characters/Enemy/boss_idle.gltf");
-    //skeltalMeshComponent->SetMaterialPS("./Shader/GltfModelEmissionPS.cso", "L_emission2");
-    //skeltalMeshComponent->SetMaterialPS("./Shader/GltfModelEmissionPS.cso", "L_boss_emission");
-    HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelGameCharacter.cso", skeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+    skeletalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeletalComponent");
+    skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/idle.gltf");
+    HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelGameCharacter.cso", skeletalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     SetPosition(transform.GetLocation());
     SetQuaternionRotation(transform.GetRotation());
     SetScale(transform.GetScale());
-    //SetScale(DirectX::XMFLOAT3(0.5f,0.5f,0.5f));
     const std::vector<std::string> animationFilenames =
     {
-        //"./Data/Models/Characters/Player/result_win.gltf",
-        //"..\\glTF-Sample-Models-main\\original\\CharacterAnimation\\Ability_E_InMotion.glb",
-        //"..\\glTF-Sample-Models-main\\original\\CharacterAnimation\\Primary_Attack_Fast_A.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_A.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_B.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Level_Start.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd_Start.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd_Stop.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_A.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_B.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_C.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_D.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Ability_R.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Emote_Ice_Sculpture.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Back.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Front.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Left.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Right.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Death.glb",
     };
-    skeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
-    //skeltalMeshComponent->AppendAnimations(animationFilenames);
+    skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
+    skeletalMeshComponent->AppendAnimations(animationFilenames);
     // アニメーションコントローラーを作成
-    auto controller = std::make_shared<AnimationController>(skeltalMeshComponent.get());
+    auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
     controller->AddAnimation("Idle", 0);
-    //controller->AddAnimation("Win", 1);
-    // アニメーションコントローラーをcharacterに追加
+    controller->AddAnimation("Idle_Noise_A", 1);
+    controller->AddAnimation("Idle_Noise_B", 2);
+    controller->AddAnimation("Level_Start", 3);
+    controller->AddAnimation("Jog_Fwd_Start", 4);
+    controller->AddAnimation("Jog_Fwd", 5);
+    controller->AddAnimation("Jog_Fwd_Stop", 6);
+    controller->AddAnimation("Primary_Attack_Fast_A", 7);
+    controller->AddAnimation("Primary_Attack_Fast_B", 8);
+    controller->AddAnimation("Primary_Attack_Fast_C", 9);
+    controller->AddAnimation("Primary_Attack_Fast_D", 10);
+    controller->AddAnimation("Ability_R", 11);
+    controller->AddAnimation("Emote_Ice_Sculpture", 12);
+    controller->AddAnimation("HitReact_Back", 13);
+    controller->AddAnimation("HitReact_Front", 14);
+    controller->AddAnimation("HitReact_Left", 15);
+    controller->AddAnimation("HitReact_Right", 16);
+    controller->AddAnimation("Death", 17);
+
+    // アニメーションコントローラーを character に追加
     this->SetAnimationController(controller);
-    //PlayAnimation("Idle",true,false);
 
-    //leftFirstPos = skeltalMeshComponent->model->GetJointLocalPosition("R_core_FK", skeltalMeshComponent->model->nodes);
-    //rightFirstPos = skeltalMeshComponent->model->GetJointLocalPosition("L_core_FK", skeltalMeshComponent->model->nodes);
-
-
-    // プレイヤーの左の見た目
-    leftComponent = this->NewSceneComponent<class SkeletalMeshComponent>("leftComponent", "skeltalComponent");
-    leftComponent->SetModel("./Data/Models/Characters/Player/PlayerSide/player_side_left.gltf");
-    leftComponent->SetRelativeLocationDirect(leftFirstPos);
-    //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", leftComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-    hr=CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPlayerSidePS.cso", leftComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    leftComponent->model->emission = 0.0f;
-    leftComponent->model->cpuColor = { 1.0f,1.0f,1.0f };
     // 敵の攻撃が当たる左側 
-    playerDamageLeft = this->NewSceneComponent<class SphereComponent>("playerDamageLeft", "skeltalComponent");
+    playerDamageLeft = this->NewSceneComponent<class SphereComponent>("playerDamageLeft", "skeletalComponent");
     playerDamageLeft->SetRadius(0.01f);
     //playerDamageLeft->SetRelativeLocationDirect(DirectX::XMFLOAT3(-(radius), 0.0f, 0.0f));
     playerDamageLeft->SetRelativeLocationDirect(DirectX::XMFLOAT3(-(rightFirstPos.x + radius), rightFirstPos.y, rightFirstPos.z));
@@ -88,7 +96,7 @@ void Player::Initialize(const Transform& transform)
     playerDamageLeft->SetIsVisibleDebugShape(false);
 
     // 左側のアイテム収集用当たり判定
-    boxLeftHitComponent = this->NewSceneComponent<class BoxComponent>("boxHitLeftComponent", "skeltalComponent");
+    boxLeftHitComponent = this->NewSceneComponent<class BoxComponent>("boxHitLeftComponent", "skeletalComponent");
     boxLeftHitComponent->SetHalfBoxExtent(firstHalfBoxExtent);
     boxLeftHitComponent->SetMass(10.0f);
     //boxLeftHitComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(-radius * 0.5f, 0.0f, 0.0f));
@@ -107,16 +115,8 @@ void Player::Initialize(const Transform& transform)
     //boxLeftHitComponent->SetIsVisibleDebugBox(false);
     //boxLeftHitComponent->SetIsVisibleDebugShape(false);
 
-    // プレイヤーの右の見た目
-    rightComponent = this->NewSceneComponent<class SkeletalMeshComponent>("rightComponent", "skeltalComponent");
-    rightComponent->SetModel("./Data/Models/Characters/Player/PlayerSide/player_side_right.gltf");
-    rightComponent->SetRelativeLocationDirect(rightFirstPos);
-    hr=CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelPlayerSidePS.cso", rightComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    rightComponent->model->emission = 0.0f;
-    leftComponent->model->cpuColor = { 1.0f,1.0f,1.0f };
     // 敵の攻撃が当たる右側 
-    playerDamageRight = this->NewSceneComponent<class SphereComponent>("playerDamageRight", "skeltalComponent");
+    playerDamageRight = this->NewSceneComponent<class SphereComponent>("playerDamageRight", "skeletalComponent");
     playerDamageRight->SetRadius(0.01f);
     //playerDamageRight->SetRelativeLocationDirect(DirectX::XMFLOAT3((radius), 0.0f, 0.0f));
     playerDamageRight->SetRelativeLocationDirect(DirectX::XMFLOAT3(rightFirstPos.x + radius, rightFirstPos.y, rightFirstPos.z));
@@ -133,7 +133,7 @@ void Player::Initialize(const Transform& transform)
     playerDamageRight->SetIsVisibleDebugShape(false);
 
     // 右側のアイテム収集用当たり判定
-    boxRightHitComponent = this->NewSceneComponent<class BoxComponent>("boxHitRightComponent", "skeltalComponent");
+    boxRightHitComponent = this->NewSceneComponent<class BoxComponent>("boxHitRightComponent", "skeletalComponent");
     boxRightHitComponent->SetHalfBoxExtent(firstHalfBoxExtent);
     boxRightHitComponent->SetMass(10.0f);
     boxRightHitComponent->SetRelativeLocationDirect(firstRightBoxPosition);
@@ -151,8 +151,8 @@ void Player::Initialize(const Transform& transform)
     //boxRightHitComponent->SetIsVisibleDebugBox(false);
     //boxRightHitComponent->SetIsVisibleDebugShape(false);
 
-    //// 敵からの攻撃を受ける当たり判定用のコンポーネントを追加
-    std::shared_ptr<CapsuleComponent> capsuleComponent = this->NewSceneComponent<class CapsuleComponent>("capsuleComponent", "skeltalComponent");
+    // 敵からの攻撃を受ける当たり判定用のコンポーネントを追加
+    std::shared_ptr<CapsuleComponent> capsuleComponent = this->NewSceneComponent<class CapsuleComponent>("capsuleComponent", "skeletalComponent");
     capsuleComponent->SetRadiusAndHeight(radius, height);
     capsuleComponent->SetMass(mass);
     capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
@@ -175,16 +175,16 @@ void Player::Initialize(const Transform& transform)
     capsuleComponent->Initialize();
 
     // ビームチャージ音コンポーネントを追加
-    beamChargeAudioComponent = this->NewSceneComponent<AudioSourceComponent>("beamChargeAudioComponent", "skeltalComponent");
+    beamChargeAudioComponent = this->NewSceneComponent<AudioSourceComponent>("beamChargeAudioComponent", "skeletalComponent");
     beamChargeAudioComponent->SetSource(L"./Data/Sound/SE/beam_charge.wav");
     beamChargeAudioComponent->SetLoopOption(1.48f, 0.313f);
     // ビーム発射音コンポーネントを追加
-    beamLaunchAudioComponent = this->NewSceneComponent<AudioSourceComponent>("beamLaunchAudioComponent", "skeltalComponent");
+    beamLaunchAudioComponent = this->NewSceneComponent<AudioSourceComponent>("beamLaunchAudioComponent", "skeletalComponent");
     beamLaunchAudioComponent->SetSource(L"./Data/Sound/SE/beam_launch.wav");
     // エフェクトコンポーネントを追加
-    effectChargeComponent = this->NewSceneComponent<class EffectComponent>("effectChargeComponet", "skeltalComponent");
+    effectChargeComponent = this->NewSceneComponent<class EffectComponent>("effectChargeComponet", "skeletalComponent");
     // アイテム取得音
-    itemAudioComponent = this->NewSceneComponent<AudioSourceComponent>("itemAudioComponent", "skeltalComponent");
+    itemAudioComponent = this->NewSceneComponent<AudioSourceComponent>("itemAudioComponent", "skeletalComponent");
     itemAudioComponent->SetSource(L"./Data/Sound/SE/energy.wav");
     AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
         {
@@ -496,7 +496,7 @@ void Player::Initialize(const Transform& transform)
         });
 
     // 入力用のコンポーネントを追加
-    inputComponent = this->NewSceneComponent<class InputComponent>("inputComponent", "skeltalComponent");
+    inputComponent = this->NewSceneComponent<class InputComponent>("inputComponent", "skeletalComponent");
     //inputComponent->BindAction("Jump", [&]()
     //    {
     //        ChangeState(std::make_shared<JumpStartState>());
@@ -505,10 +505,10 @@ void Player::Initialize(const Transform& transform)
     //inputComponent->BindActionAndButton(GamePad::Button::y, "Jump", TriggerMode::none); //[v]
 
     // 移動用コンポーネントを追加
-    movementComponent = this->NewSceneComponent<class MovementComponent>("movementComponent", "skeltalComponent");
+    movementComponent = this->NewSceneComponent<class MovementComponent>("movementComponent", "skeletalComponent");
 
     // 回転用コンポーネントを追加
-    rotationComponent = this->NewSceneComponent<class RotationComponent>("rotationComponet", "skeltalComponent");
+    rotationComponent = this->NewSceneComponent<class RotationComponent>("rotationComponet", "skeletalComponent");
 
     OutputDebugStringA(("Actor::Initialize called. rootComponent_ use_count = " + std::to_string(rootComponent_.use_count()) + "\n").c_str());
 }
@@ -520,67 +520,27 @@ void Player::Update(float elapsedTime)
     // これは絶対入れる　アニメーションの更新をしているから
     Character::Update(elapsedTime);
 
-    if (GameManager::GetGameTimerStart() && !onceFrag)
-    {// ゲームが開始されたら
-        state = State::Idle;
-        onceFrag = true;
-    }
+    //if (GameManager::GetGameTimerStart() && !onceFrag)
+    //{// ゲームが開始されたら
+    //    state = State::Idle;
+    //    onceFrag = true;
+    //}
 
-    ItemColor(elapsedTime);
 
     // ステージ境界
-    DirectX::XMFLOAT3 pos = GetPosition();
-    pos.x = std::clamp(pos.x, -21.0f, 21.0f);
-    pos.z = std::clamp(pos.z, -16.0f, 16.0f);
-    pos.y = 0.8f;
-    SetPosition(pos);
+    //DirectX::XMFLOAT3 pos = GetPosition();
+    //pos.x = std::clamp(pos.x, -21.0f, 21.0f);
+    //pos.z = std::clamp(pos.z, -16.0f, 16.0f);
+    //pos.y = 0.8f;
+    //SetPosition(pos);
 
-    float leftT = std::clamp(static_cast<float>(leftItemCount) / static_cast<float>(leftItemMax), 0.0f, 1.0f);
-    float curveT = 1.0f - (1.0f - leftT) * (1.0f - leftT);
-    leftComponent->model->emission = std::lerp(0.0f, 5.0f, curveT);
-    float rightT = std::clamp(static_cast<float>(rightItemCount) / static_cast<float>(rightItemMax), 0.0f, 1.0f);
-    float curveRT = 1.0f - (1.0f - rightT) * (1.0f - rightT);
-    rightComponent->model->emission = std::lerp(0.0f, 5.0f, curveRT);
-    // 歯車境界
-    //if (auto enemy = std::dynamic_pointer_cast<RiderEnemy>(ActorManager::GetActorByName("enemy")))
-    //{
-    //    if (enemy->IsEnemyJumping())
-    //    {
-    //        DirectX::XMFLOAT3 gearPos = enemy->GetJumpPosition();
-    //        // ギアの半径
-    //        float radius = 2.0f;
-    //        
-    //        // 現在位置とギア中心のXZ差分
-    //        float dx = pos.x - gearPos.x;
-    //        float dz = pos.z - gearPos.z;
+    //DirectX::XMFLOAT3 leftPos = boxLeftHitComponent->GetRelativeLocation();
+    //leftPos.y = leftFirstPos.y;
+    //boxLeftHitComponent->SetRelativeLocationDirect(leftPos);
 
-    //        float distSq = dx * dx + dz * dz;
-    //        float radiusSq = radius * radius;
-
-    //        if (distSq < radiusSq)
-    //        {
-    //            float dist = std::sqrt(distSq);
-    //            float pushDist = radius - dist;
-
-    //            float nx = dx / dist;
-    //            float nz = dz / dist;
-
-    //            pos.x += nx * pushDist;
-    //            pos.z += nz * pushDist;
-
-    //            SetPosition(pos);
-    //        }
-    //    }
-    //};
-
-
-    DirectX::XMFLOAT3 leftPos = boxLeftHitComponent->GetRelativeLocation();
-    leftPos.y = leftFirstPos.y;
-    boxLeftHitComponent->SetRelativeLocationDirect(leftPos);
-
-    DirectX::XMFLOAT3 rightPos = boxRightHitComponent->GetRelativeLocation();
-    rightPos.y = rightFirstPos.y;
-    boxRightHitComponent->SetRelativeLocationDirect(rightPos);
+    //DirectX::XMFLOAT3 rightPos = boxRightHitComponent->GetRelativeLocation();
+    //rightPos.y = rightFirstPos.y;
+    //boxRightHitComponent->SetRelativeLocationDirect(rightPos);
 
 
     {// UI
@@ -604,93 +564,6 @@ void Player::Update(float elapsedTime)
         {
             bossInvisibleTime -= elapsedTime;
         }
-    }
-
-    // 左右の描画の位置を取るため
-    //rightFirstPos = skeltalMeshComponent->model->GetJointLocalPosition("R_core_FK", skeltalMeshComponent->model->nodes);
-    //leftFirstPos = skeltalMeshComponent->model->GetJointLocalPosition("L_core_FK", skeltalMeshComponent->model->nodes);
-
-    {// EraseInArea に当たった時のダメージ処理
-        int damageLeft = 0;
-        int damageRight = 0;
-
-        if (hitLeftThisFrame && hitRightThisFrame)
-        {// 両方に当たった
-            int half = currentFrameDamage / 2;
-            damageLeft = half;
-            damageRight = half;
-        }
-        else if (hitLeftThisFrame && !hitRightThisFrame)
-        {// 左にだけヒットした場合
-            damageLeft = currentFrameDamage;
-        }
-        else if (hitRightThisFrame && !hitLeftThisFrame)
-        {// 右にだけヒットした場合
-            damageRight = currentFrameDamage;
-        }
-
-        ApplyDamageToLeft(damageLeft);
-        ApplyDamageToRight(damageRight);
-
-        if (applyInvincibilityNextFrame)
-        {
-            SetInvincible();  // この時点で無敵時間開始
-            applyInvincibilityNextFrame = false;
-        }
-        // playerSide の scale を変更する
-        DirectX::XMFLOAT3 leftScale = { 1.0f,1.0f,1.0f };
-        leftScale.x += leftItemCount * scaleBigSize;
-        leftScale.y += leftItemCount * scaleBigSize;
-        leftScale.z += leftItemCount * scaleBigSize;
-        leftComponent->SetRelativeScaleDirect(leftScale);
-        DirectX::XMFLOAT3 rightScale = { 1.0f,1.0f,1.0f };
-        rightScale.x += rightItemCount * scaleBigSize;
-        rightScale.y += rightItemCount * scaleBigSize;
-        rightScale.z += rightItemCount * scaleBigSize;
-        rightComponent->SetRelativeScaleDirect(rightScale);
-
-        UpdateItemVisualShrink(elapsedTime);
-        ResetHitFlags();
-    }
-    {// プレイヤーの回転スピードなど調整
-        float currentItemCount = static_cast<float>(leftItemCount + rightItemCount);
-        float maxItemCount = static_cast<float>(leftItemMax + rightItemMax);
-
-        float t = std::clamp(currentItemCount / maxItemCount, 0.0f, 1.0f);
-        currentSpeed = std::lerp(maxSpeed, minSpeed, t);
-        // スピード調整
-        movementComponent->SetSpeed(currentSpeed);
-        // 回転調整
-        Turn(elapsedTime);
-        if (leftItemCount + rightItemCount == 0)
-        {// アイテムを持っていないとき
-            currentSpeed = noItemSpeed;
-        }
-
-
-        {// チュートリアルの移動判定
-            DirectX::XMFLOAT3 dir = inputComponent->GetMoveInput();
-            if (!(std::abs(dir.x - 0.0f) <= FLT_EPSILON && std::abs(dir.y - 0.0f) <= FLT_EPSILON && std::abs(dir.z - 0.0f) <= FLT_EPSILON))
-            {// 入力値が0.0fよりも大きい場合
-                TutorialSystem::AchievedAction(TutorialStep::Move);
-            }
-        }
-
-        if (TutorialSystem::GetCurrentStep() == TutorialStep::ManyCollect || TutorialSystem::GetCurrentStep() == TutorialStep::ManyCollect2)
-        {
-            state = State::CantChargeBeam;
-        }
-
-
-        // player の回転の処理
-        //{
-        //    DirectX::XMFLOAT3 moveDir = inputComponent->GetMoveInput();
-        //    float lenSq = moveDir.x * moveDir.x + moveDir.y * moveDir.y + moveDir.z * moveDir.z;
-        //    if (lenSq > 0.0001f)
-        //    {
-        //        rotationComponent->SetDirection(moveDir);
-        //    }
-        //}
     }
 
     switch (state)
@@ -784,14 +657,6 @@ void Player::Update(float elapsedTime)
 
 #endif // 0
 
-    DirectX::XMFLOAT3 origin = GetPosition();
-    //origin.z += -1.0f;
-    origin.y += height * 0.75f;
-    DirectX::XMFLOAT3 direction = GetForward();
-    //DirectX::XMFLOAT3 direction = DirectX::XMFLOAT3(0.0f,0.0f,-1.0f);
-
-    float distance = 3.0f;
-    RaycastHit result;
 
     // プレイヤーの被弾時に色を変える処理
     if (isHitBlinking)
@@ -821,70 +686,10 @@ void Player::Update(float elapsedTime)
         color.y = 1.0f;
         color.z = 1.0f;
     }
-    skeltalMeshComponent->model->cpuColor.x = color.x;
-    skeltalMeshComponent->model->cpuColor.y = color.y;
-    skeltalMeshComponent->model->cpuColor.z = color.z;
+    skeletalMeshComponent->model->cpuColor.x = color.x;
+    skeletalMeshComponent->model->cpuColor.y = color.y;
+    skeletalMeshComponent->model->cpuColor.z = color.z;
 
-    //MyQueryCallback callback;
-
-    //physx::PxRaycastBuffer hit;
-    //physx::PxQueryFilterData filterData;
-    //filterData.flags = physx::PxQueryFlag::eSTATIC | physx::PxQueryFlag::ePREFILTER;
-    //filterData.data.word0 = 1;
-
-    //bool q = Physics::Instance().GetScene()->raycast(
-    //    physx::PxVec3(0, 10, 0),
-    //    physx::PxVec3(0, -1, 0),
-    //    100.0f,
-    //    hit,
-    //    physx::PxHitFlag::eDEFAULT,
-    //    filterData,
-    //    &callback);
-    //HitResult hit;
-    //if (Physics::Instance().RayCast(origin, direction, distance, hit))
-    //{
-    //    OutputDebugStringA(("Player is hit " + std::to_string(hit.position.x) + "\n").c_str());
-    //}
-    //if (Physics::Instance().SphereCast(origin, direction, distance, 0.3f, hit))
-    //{// これうまく動いた
-    //    //OutputDebugStringA(("Player is hit " + std::to_string(hit.position.x) + "\n").c_str());
-    //}
-
-    //auto shape = GetComponent<CapsuleComponent>();
-    ////if (!shape)
-    //{// これうまく動いた
-    //    if (PhysicsTest::Instance().SphereCast(origin, direction, distance, 0.3f, result, shape->GetCollisionLayer(), shape->GetCollisionMask()))
-    //    {
-    //        //OutputDebugStringA(("Player is hit " + (result.actor->GetName()) + "\n").c_str());
-    //        auto p = result.actor->GetPosition();
-    //        int a = 0;
-    //    }
-    //}
-
-
-    //if (animationController_->IsPlayAnimation() && isIdleEnd)
-    //{
-    //    animationController_->RequestStopLoop();
-    //}
-    //if (!animationController_->IsPlayAnimation())
-    //{
-    //    PlayAnimation("Win", false);
-    //}
-
-    //if (InputSystem::GetInputState("E"))
-    //{
-    //    //this->PlayAnimation("Run", true, true);
-    //    isIdleEnd = true;
-    //}
-    //if (InputSystem::GetInputState("E"))
-    //{
-    //    this->PlayAnimation("Attack", false, true);
-
-    //}
-    //if (InputSystem::GetInputState("T"))
-    //{
-    //    this->PlayAnimation("Idle");
-    //}
 #if USE_IMGUI
     ImGui::Begin("Player");
     ImGui::Text("State: %s", [&]() {
@@ -914,7 +719,7 @@ void Player::TryStartCharge()
         // チャージの音を再生する
         beamChargeAudioComponent->Play(XAUDIO2_LOOP_INFINITE);
 
-        DirectX::XMFLOAT3 pos = skeltalMeshComponent->GetJointWorldPosition("beam_FK");
+        DirectX::XMFLOAT3 pos = skeletalMeshComponent->GetJointWorldPosition("beam_FK");
 
         // エフェクトコンポーネントに伝達
         effectChargeComponent->SetWorldLocationDirect(pos);
@@ -962,7 +767,7 @@ void Player::FireBeam()
             vel.x, vel.y, vel.z);
         OutputDebugStringA(buf);
         // Beam を生成する
-        Transform trans={ pos ,{0,0,0,1},{1,1,1}};
+        Transform trans = { pos ,{0,0,0,1},{1,1,1} };
         auto beam = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<Beam>("beam", trans);
         beam->SetItemPower(beamItemPower);
         float maxPower = static_cast<float>(rightItemMax + leftItemMax);

@@ -47,9 +47,9 @@ public:
     {
         skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
 #if 0
-        //skeltalMeshComponent->SetModel("..\\glTF-Sample-Models-main\\original\\EnemyTest\\Idle_Relaxed_B_HS.gltf");
+        //skeletalMeshComponent->SetModel("..\\glTF-Sample-Models-main\\original\\EnemyTest\\Idle_Relaxed_B_HS.gltf");
         skeltalMeshComponent->SetModel("./Data/Models/Characters/Enemy/plantune.gltf");
-        //skeltalMeshComponent->model->isModelInMeters = false;
+        //skeletalMeshComponent->model->isModelInMeters = false;
         skeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
         SetScale(DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f));
 #else // ƒ‚ƒfƒ‹Šm”F
@@ -140,7 +140,7 @@ public:
 
         bossHandComponent = this->NewSceneComponent<class SphereComponent>("bossHand", "skeltalComponent");
         bossHandComponent->SetRadius(0.5f);
-        //DirectX::XMFLOAT3 bossHand = skeltalMeshComponent->model->GetJointLocalPosition("R_thumb1_FK", skeltalMeshComponent->model->GetNodes());
+        //DirectX::XMFLOAT3 bossHand = skeletalMeshComponent->model->GetJointLocalPosition("R_thumb1_FK", skeletalMeshComponent->model->GetNodes());
         DirectX::XMFLOAT3 bossHand = skeltalMeshComponent->model->GetJointLocalPosition("R_thumb1_FK", skeltalMeshComponent->modelNodes);
         bossHandComponent->SetRelativeLocationDirect(bossHand);
         bossHandComponent->SetMass(40.0f);

@@ -27,7 +27,7 @@ public:
         }
     };
 
-    void SetAnimationController(std::shared_ptr<AnimationController> controller)
+    void SetAnimationController(const std::shared_ptr<AnimationController>& controller)
     {
         animationController_ = controller;
     }
@@ -38,7 +38,7 @@ public:
     }
 
     // 使用
-    void PlayAnimation(const std::string& name, bool loop = true, bool blend = true, float blendTime = 0.3f)
+    void PlayAnimation(const std::string& name, bool loop = true, bool blend = true, float blendTime = 0.3f) const
     {
         if (animationController_)
         {
@@ -46,7 +46,7 @@ public:
         }
     }
 
-    void StopAnimation()
+    void StopAnimation() const
     {
         if (animationController_)
         {
@@ -63,7 +63,7 @@ public:
     size_t GetAnimationIndex()const override { return animationIndex; }
 
     // アニメーションの再生倍率を変更する関数
-    void SetAnimationRate(float animationRate)
+    void SetAnimationRate(float animationRate) const
     {
         if (animationController_)
         {
@@ -133,7 +133,7 @@ public:
     }
 
     // 入力をオンにするか
-    virtual bool CanMove() { return true; }
+    virtual bool CanMove() { return canMove; }
 
     //進行方向にレイを飛ばす
     bool RaycastForward(const CollisionMesh* collisionMesh, DirectX::XMFLOAT4X4 transform)
@@ -228,6 +228,7 @@ protected:
     // アニメーションコントローラー
     std::shared_ptr<AnimationController> animationController_;
 
+    bool canMove = true;
 private:
 
 };

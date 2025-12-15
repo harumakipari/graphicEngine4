@@ -287,7 +287,7 @@ public:
 //                if (SpawnValidator::IsAreaFree(shape->GetAABB()))
 //                {
 //                    //SpawnValidator::RegisterAABB(shape->GetAABB());
-//                    if (auto model = actor->skeltalMeshComponent)
+//                    if (auto model = actor->skeletalMeshComponent)
 //                    {
 //                        model->SetIsVisible(true);
 //                        if (onSuccess)

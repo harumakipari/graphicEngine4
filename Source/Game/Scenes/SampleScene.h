@@ -46,7 +46,6 @@ public:
     static inline Scene::Autoenrollment<SampleScene> _autoenrollment;
 
 private:
-    std::shared_ptr<TitlePlayer> titlePlayer;
     std::shared_ptr<Stage>  title;
     std::shared_ptr<CollisionMesh> stageCollisionMesh;
     std::shared_ptr<TitleCamera> mainCameraActor;

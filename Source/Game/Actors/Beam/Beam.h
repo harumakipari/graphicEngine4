@@ -29,9 +29,9 @@ public:
         // 描画用コンポーネントを追加
         skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Models/Beam/beam.gltf");
-        //skeltalMeshComponent->model->isModelInMeters = false;
+        //skeletalMeshComponent->model->isModelInMeters = false;
         SetPosition(transform.GetLocation());
-        //skeltalMeshComponent->SetIsVisible(false);
+        //skeletalMeshComponent->SetIsVisible(false);
         //float t = std::clamp(itemPower / itemMaxPower, 0.0f, 1.0f);
         float t = 1.0f;
         float s = std::lerp(1.0f, 3.5f, t);

@@ -624,10 +624,10 @@ public:
     {
         // 描画用コンポーネントを追加
         skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
-        //skeltalMeshComponent->SetModel("./Data/Models/TestCloth/cloth1.gltf", true);
+        //skeletalMeshComponent->SetModel("./Data/Models/TestCloth/cloth1.gltf", true);
         skeltalMeshComponent->SetModel("./Data/Models/TestCloth/cloth1.gltf", true);
         skeltalMeshComponent->overridePipelineName = "cloth";
-        //skeltalMeshComponent->SetIsVisible(false);
+        //skeletalMeshComponent->SetIsVisible(false);
 
         //clothMesh = this->NewSceneComponent<class ClothMeshComponent>("clothComponent", "skeltalComponent");
         //clothMesh->SetModel("./Data/Models/TestCloth/cloth1.gltf", true);
@@ -639,7 +639,7 @@ public:
         SetScale(transform.GetScale());
 
 
-        //clothMesh = std::make_unique<ClothMeshComponent>(Graphics::GetDevice(), skeltalMeshComponent.get());
+        //clothMesh = std::make_unique<ClothMeshComponent>(Graphics::GetDevice(), skeletalMeshComponent.get());
 
     }
 

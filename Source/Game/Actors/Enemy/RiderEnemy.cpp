@@ -162,7 +162,7 @@ void RiderEnemy::Update(float elapsedTime)
 
     DirectX::XMFLOAT3 bossHand = skeltalMeshComponent->model->GetJointLocalPosition("R_thumb1_FK", skeltalMeshComponent->model->GetNodes());
     bossHandComponent->SetRelativeLocationDirect(bossHand);
-    //DirectX::XMFLOAT3 bossHand = skeltalMeshComponent->model->GetJointWorldPosition("PLT:ThumbFinger2_L_BK", skeltalMeshComponent->model->nodes, rootComponent_->GetComponentWorldTransform().ToWorldTransform());
+    //DirectX::XMFLOAT3 bossHand = skeletalMeshComponent->model->GetJointWorldPosition("PLT:ThumbFinger2_L_BK", skeletalMeshComponent->model->nodes, rootComponent_->GetComponentWorldTransform().ToWorldTransform());
     //bossHandComponent->SetWorldLocationDirect(bossHand);
 
     isAttacked = false;

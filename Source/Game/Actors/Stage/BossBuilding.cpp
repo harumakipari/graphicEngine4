@@ -275,7 +275,7 @@ void BossBuilding::CallHitShockWave(float power, int beamItemCount, const Direct
         //lifeTimeComponent->SetLifeTime(5.0f);
 
         ////float itemPower = beam->GetItemCount();
-        //buildDroppedItem->skeltalMeshComponent->SetIsVisible(true); // 見えるようにする
+        //buildDroppedItem->skeletalMeshComponent->SetIsVisible(true); // 見えるようにする
 
         // ビルからアイテムをドロップする
         auto itemSpawner = this->NewSceneComponentWithParent<ItemSpawnerComponent>("itemSpawnerComponent", skeltalMeshComponent);

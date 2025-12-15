@@ -133,7 +133,7 @@ void Building::Update(float delta_time)
             ScheduleDeactivate(convexTimer);
 
             //// ビルからアイテムをドロップする
-            //auto itemSpawner = this->NewSceneComponentWithParent<ItemSpawnerComponent>("itemSpawnerComponent", skeltalMeshComponent);
+            //auto itemSpawner = this->NewSceneComponentWithParent<ItemSpawnerComponent>("itemSpawnerComponent", skeletalMeshComponent);
             //// ボスに破壊されたときは 5 の固定値とする
             //itemSpawner->SpawnItems(5, true);
             //TutorialSystem::AchievedAction(TutorialStep::BreakBuilds);
@@ -166,7 +166,7 @@ void Building::Update(float delta_time)
             ScheduleDeactivate(convexTimer);
 
             //// ビルからアイテムをドロップする
-            //auto itemSpawner = this->NewSceneComponentWithParent<ItemSpawnerComponent>("itemSpawnerComponent", skeltalMeshComponent);
+            //auto itemSpawner = this->NewSceneComponentWithParent<ItemSpawnerComponent>("itemSpawnerComponent", skeletalMeshComponent);
             //// ボスに破壊されたときは 5 の固定値とする
             //itemSpawner->SpawnItems(5, true);
             //TutorialSystem::AchievedAction(TutorialStep::BreakBuilds);

@@ -48,11 +48,6 @@ void SampleScene::Update(float deltaTime)
 
     SceneBase::Update(deltaTime);
 
-    auto build = GetActorManager()->GetActorByName("elasticBuilding");
-    mainCameraActor->SetTarget(build->GetPosition());
-    //uiRoot.OnClick(mousePosX, mousePosY);
-
-    //ActorManager::Update(deltaTime);
     Physics::Instance().Update(deltaTime);
     EventSystem::Update(deltaTime);//’Ç‰Á
     objectManager.Update(deltaTime);//’Ç‰Á
@@ -72,16 +67,13 @@ void SampleScene::SetUpActors()
     mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
     Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    titlePlayer = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitlePlayer>("actor", playerTr);
+    auto titlePlayer = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
     mainCameraComponent->target = (titlePlayer->GetRootComponent());
     mainCameraComponent->followTarget = (titlePlayer->GetRootComponent());
     mainCameraComponent->lookAtTarget = (titlePlayer->GetRootComponent());
 
     Transform titleTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto titleStage = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleStage>("title", titleTr);
-
-    Transform buildTr(DirectX::XMFLOAT3{ 4.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto elasticBuilding = this->GetActorManager()->CreateAndRegisterActorWithTransform<ElasticBuilding>("elasticBuilding", buildTr);
 
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
