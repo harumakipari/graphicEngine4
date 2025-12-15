@@ -59,7 +59,8 @@ void Time::Tick() // Call every frame.
 
 	QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&thisTime));
 	// Time difference between this frame and the previous.
-	deltaTime = (thisTime - lastTime) * secondsPerCount;
+	deltaTime = (thisTime - lastTime) * secondsPerCount * static_cast<double>(timeScale);
+	unscaledDeltaTime = (thisTime - lastTime) * secondsPerCount;
 
 	// Prepare for next frame.
 	lastTime = thisTime;

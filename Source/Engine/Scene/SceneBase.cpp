@@ -143,11 +143,11 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
         sceneRender.UpdateViewConstants(immediateContext, data);
     }
     UpdateConstantBuffer(immediateContext);
-    //if (!useDeferredRendering)
-    //{// フォワードレンダリング
-    //    ForwardRender(immediateContext);
-    //}
-    //else
+    if (!useDeferredRendering)
+    {// フォワードレンダリング
+        ForwardRender(immediateContext);
+    }
+    else
     {
         DeferredRender(immediateContext);
     }

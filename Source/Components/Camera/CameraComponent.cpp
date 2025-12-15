@@ -7,6 +7,42 @@ const DirectX::XMFLOAT4X4& CameraComponent::GetView()
 {
 #if 1
     using namespace DirectX;
+    //using namespace DirectX;
+    //// ターゲット座標
+    //XMFLOAT3 targetPos{ 0,0,0 };
+    //if (!target.expired())
+    //{
+    //    targetPos = target.lock()
+    //        ->GetComponentWorldTransform()
+    //        .GetLocation();
+    //}
+
+    //XMVECTOR focus = XMLoadFloat3(&targetPos);
+
+    //// 回転（Yaw → Pitch）
+    //XMMATRIX rot =
+    //    XMMatrixRotationY(yaw) *
+    //    XMMatrixRotationX(pitch);
+
+    //// 後ろ方向に distance
+    //XMVECTOR offset =
+    //    XMVector3TransformCoord(
+    //        XMVectorSet(0, 0, -distance, 0),
+    //        rot
+    //    );
+
+    //XMVECTOR eye = focus + offset;
+
+    //XMMATRIX viewMat = XMMatrixLookAtLH(
+    //    eye,
+    //    focus,
+    //    XMVectorSet(0, 1, 0, 0)
+    //);
+
+    //XMStoreFloat4x4(&view, viewMat);
+    //return view;
+
+#if 0
     // クォータニオンから回転行列
     XMMATRIX rotationMatrix{};
     XMVECTOR eye{};
@@ -33,12 +69,12 @@ const DirectX::XMFLOAT4X4& CameraComponent::GetView()
 
 
     XMVECTOR target = eye + forward;
-    
-    if (customTarget) 
+
+    if (customTarget)
     {
         target = XMLoadFloat3(&_target);
     }
-    
+
     //カメラシェイク処理
     if (handler.GetSequenceCount() > 0)
     {
@@ -54,6 +90,35 @@ const DirectX::XMFLOAT4X4& CameraComponent::GetView()
     XMStoreFloat4x4(&view, ViewMatrix);
     return view;
 #else
+    XMFLOAT3 position = owner_.lock()->GetPosition();
+    if (!lookAtTarget.expired())
+    {
+        XMFLOAT3 lookAtTargetPos = lookAtTarget.lock()->GetComponentLocation();
+        XMMATRIX ViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&position),
+            XMLoadFloat3(&lookAtTargetPos),
+            XMVectorSet(0, 1, 0, 0));
+        XMStoreFloat4x4(&view, ViewMatrix);
+        return view;
+    }
+    XMFLOAT4 rotation = owner_.lock()->GetQuaternionRotation();
+    XMVECTOR Quaternion = XMLoadFloat4(&rotation);
+    XMVECTOR Forward = XMVector3TransformNormal(
+        XMVectorSet(0, 0, -1, 0), // Unityのforwardと反対 (-Z)
+        XMMatrixRotationQuaternion(Quaternion) // 回転を適用
+    );
+    XMVECTOR Focus = XMLoadFloat3(&position) + Forward;
+    XMVECTOR Eye = Focus + Forward * distance;
+    XMVECTOR Up = XMVector3TransformNormal(
+        XMVectorSet(0, 1, 0, 0),
+        XMMatrixRotationQuaternion(Quaternion)
+    );
+    XMMATRIX ViewMatrix = XMMatrixLookAtLH(Eye, Focus, Up);
+    XMStoreFloat4x4(&view, ViewMatrix);
+    return view;
+
+
+#endif // 0
+#else
     using namespace DirectX;
 
     XMMATRIX mat = XMLoadFloat4x4(&GetWorldTransform());
@@ -68,6 +133,55 @@ const DirectX::XMFLOAT4X4& CameraComponent::GetView()
     return view;
 #endif
 }
+const DirectX::XMFLOAT4X4& SimpleCameraComponent::GetView()
+{
+    using namespace DirectX;
+    // ターゲット座標
+    XMFLOAT3 targetPos{ 0,0,0 };
+    if (!target.expired())
+    {
+        targetPos = target.lock()
+            ->GetComponentWorldTransform()
+            .GetLocation();
+    }
+
+    XMVECTOR focus = XMLoadFloat3(&targetPos);
+
+    // 回転（Yaw → Pitch）
+    XMMATRIX rot =
+        XMMatrixRotationY(yaw) *
+        XMMatrixRotationX(pitch);
+
+    // 後ろ方向に distance
+    XMVECTOR offset =
+        XMVector3TransformCoord(
+            XMVectorSet(0, 0, -distance, 0),
+            rot
+        );
+
+    XMVECTOR eye = focus + offset;
+
+    XMMATRIX viewMat = XMMatrixLookAtLH(
+        eye,
+        focus,
+        XMVectorSet(0, 1, 0, 0)
+    );
+
+    XMStoreFloat4x4(&view, viewMat);
+    return view;
+}
+
+
+const DirectX::XMFLOAT4X4& SimpleCameraComponent::GetProjection()
+{
+    using namespace DirectX;
+    XMStoreFloat4x4(
+        &projection,
+        XMMatrixPerspectiveFovLH(fovY, aspect, nearZ, farZ)
+    );
+    return projection;
+}
+
 
 void DebugCameraComponent::HandleKeyboardInput(float deltaTime)
 {

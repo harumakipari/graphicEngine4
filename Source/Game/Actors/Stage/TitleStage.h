@@ -31,7 +31,7 @@ public:
         //stage->SetModel("./Data/Models/Coins/coin_gold.gltf");
         //stage->SetModel("./Data/Models/Stage/SpotLightStage/stydio_6.gltf");
         stage->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
-        //stage->SetRelativeScaleDirect({ -1.0f,1.0f,-1.0f });
+        stage->SetRelativeLocationDirect({ 0.0f,2.45f,0.0f });
 
         titleLogo = this->NewSceneComponent<StaticMeshComponent>("logoComponent", "empty");
         titleLogo->SetModel("./Data/Models/Title/title_rogo.gltf");
@@ -54,6 +54,7 @@ public:
         trafficLight->SetRelativeScaleDirect({ 2.0f,2.0f,2.0f });
         trafficLight->SetRelativeLocationDirect({ 4.25f,0.09f,7.27f });
         trafficLight->SetRelativeEulerRotationDirect({ -12.4f,8.169f,53.431f });
+        trafficLight->SetIsVisible(false);
         //CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", trafficLight->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
     }
 

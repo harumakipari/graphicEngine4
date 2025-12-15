@@ -23,8 +23,8 @@ public:
     {
         mainCameraComponent = this->NewSceneComponent<class CameraComponent>("mainCamera");
         mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(35), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
-        SetPosition(DirectX::XMFLOAT3(-0.13f, 1.2f, -4.3f));
-        SetEulerRotation(DirectX::XMFLOAT3(1.4f, 20.6f, 0.0f));
+        //SetPosition(DirectX::XMFLOAT3(-0.13f, 1.2f, -4.3f));
+        //SetEulerRotation(DirectX::XMFLOAT3(1.4f, 20.6f, 0.0f));
     };
 
     //更新処理
@@ -56,20 +56,20 @@ public:
         mainCameraComponent->_target = focus;
         SetPosition(eye);
 #else
-        XMFLOAT3 focus = target;   
+        //XMFLOAT3 focus = target;   
 
-        XMVECTOR Focus = XMLoadFloat3(&focus);
-        XMVECTOR dir = XMVector3Normalize(XMVectorSet(0.3f, 5.2f, -1.0f, 0)); // 好きな方向
-        XMVECTOR eyePos = Focus - dir * distance;
+        //XMVECTOR Focus = XMLoadFloat3(&focus);
+        //XMVECTOR dir = XMVector3Normalize(XMVectorSet(0.3f, 5.2f, -1.0f, 0)); // 好きな方向
+        //XMVECTOR eyePos = Focus - dir * distance;
 
-        XMFLOAT3 eye;
-        XMStoreFloat3(&eye, eyePos);
+        //XMFLOAT3 eye;
+        //XMStoreFloat3(&eye, eyePos);
 
-        // カメラ本体の Transform を更新（必要なら）
-        SetPosition(eye);
+        //// カメラ本体の Transform を更新（必要なら）
+        //SetPosition(eye);
 
-        // ビュー行列を計算
-        mainCameraComponent->LookAt(eye, focus, XMFLOAT3(0, 1, 0));
+        //// ビュー行列を計算
+        //mainCameraComponent->LookAt(eye, focus, XMFLOAT3(0, 1, 0));
 
 #endif // 0
     }
@@ -87,10 +87,10 @@ public:
     void DrawImGuiDetails()override
     {
 #ifdef USE_IMGUI
-        ImGui::DragFloat3("offset", &offset.x, 0.3f);
-        ImGui::DragFloat3("offset2", &offset2.x, 0.3f);
-        ImGui::DragFloat3("cameraTarget", &target.x, 0.3f);
-        ImGui::DragFloat("distance", &distance, 0.3f);
+        //ImGui::DragFloat3("offset", &offset.x, 0.3f);
+        //ImGui::DragFloat3("offset2", &offset2.x, 0.3f);
+        //ImGui::DragFloat3("cameraTarget", &target.x, 0.3f);
+        //ImGui::DragFloat("distance", &distance, 0.3f);
 #endif
     }
 

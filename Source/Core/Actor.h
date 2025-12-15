@@ -29,7 +29,7 @@ public:
     virtual ~Actor() = default;
 
     //引数付きコンストラクタ
-    Actor(std::string actorName) :actorName(actorName) 
+    Actor(std::string actorName) :actorName(actorName)
     {
         OutputDebugStringA(("Actor constructor: ownedSceneComponents_ size=" + std::to_string(ownedSceneComponents_.size()) + "\n").c_str());
         OutputDebugStringA((", capacity=" + std::to_string(ownedSceneComponents_.capacity()) + "\n").c_str());
@@ -85,16 +85,16 @@ public:
         // 自分自身が shared_ptr で管理されている前提で、それを渡す
         std::shared_ptr<Actor> sharedThis = shared_from_this(); // Actorは std::enable_shared_from_this 継承が必要
         // Debugチェック1: 自分自身の確認
-        _ASSERT_EXPR(sharedThis != nullptr , "shared_from_this() returned nullptr!");
+        _ASSERT_EXPR(sharedThis != nullptr, "shared_from_this() returned nullptr!");
 
         std::shared_ptr<T> newComponent = std::make_shared<T>(name, sharedThis);
-        _ASSERT_EXPR(newComponent != nullptr , "Failed to create new SceneComponent!");
+        _ASSERT_EXPR(newComponent != nullptr, "Failed to create new SceneComponent!");
         //std::shared_ptr<T> newComponent = std::make_shared<T>(name, this);
 
         if constexpr ((std::is_base_of<SceneComponent, T>::value))
         {
             std::shared_ptr<SceneComponent> sceneComponent = std::dynamic_pointer_cast<SceneComponent>(newComponent);
-            _ASSERT_EXPR(sceneComponent != nullptr,"Dynamic cast to SceneComponent failed!");
+            _ASSERT_EXPR(sceneComponent != nullptr, "Dynamic cast to SceneComponent failed!");
             if (parentName.empty())
             {
                 if (rootComponent_)
@@ -468,6 +468,24 @@ public:
     //　collisionComponent　が Dynamic の物と当たった時に通る
     virtual void NotifyHit(CollisionComponent* selfComp, CollisionComponent* otherComp, Actor* otherActor, const DirectX::XMFLOAT3& hitPos, const DirectX::XMFLOAT3& normal, const DirectX::XMFLOAT3& impulse) {}
 
+    //進行方向の単位ベクトルを取得する
+    const DirectX::XMFLOAT3& GetForward()
+    {
+        // Z軸方向の単位方向ベクトル　デフォルト
+        DirectX::XMVECTOR DefaultForward = DirectX::XMVectorSet(0, 0, 1, 0);
+        //playerの回転値によって作られる回転行列
+        DirectX::XMMATRIX RotationMatrix = DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&GetQuaternionRotation()));
+        //DirectX::XMMATRIX RotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(GetQuaternionRotation().x, GetQuaternionRotation().y, GetQuaternionRotation().z);
+        // デフォルトのベクトルに回転行列を適応する
+        DirectX::XMVECTOR TransformedForward = DirectX::XMVector3TransformNormal(DefaultForward, RotationMatrix);
+        //正規化
+        TransformedForward = DirectX::XMVector3Normalize(TransformedForward);
+
+        DirectX::XMStoreFloat3(&front, TransformedForward);
+        return front;
+    }
+
+
 #if 0
     //モデルのジョイントのpositionを取得する関数
     const DirectX::XMFLOAT3& GetJointPosition(size_t nodeIndex)
@@ -657,6 +675,9 @@ protected:
 
     // オイラー角を使うかどうか
     DirectX::XMFLOAT3 angle = { 0.0f,0.0f,0.0f };
+
+    //前方向ベクトル
+    DirectX::XMFLOAT3 front{ 0.0f,0.0f,1.0f/*,0.0f*/ };
 };
 
 static inline bool operator==(const std::shared_ptr<Actor>& actor, const std::string& name)

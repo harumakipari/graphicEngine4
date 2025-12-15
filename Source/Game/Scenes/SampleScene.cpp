@@ -71,9 +71,11 @@ void SampleScene::SetUpActors()
 {
     mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
-
     Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     titlePlayer = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitlePlayer>("actor", playerTr);
+    mainCameraComponent->target = (titlePlayer->GetRootComponent());
+    mainCameraComponent->followTarget = (titlePlayer->GetRootComponent());
+    mainCameraComponent->lookAtTarget = (titlePlayer->GetRootComponent());
 
     Transform titleTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto titleStage = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleStage>("title", titleTr);
@@ -84,7 +86,7 @@ void SampleScene::SetUpActors()
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
-#if 0
+#if 1
     CameraManager::SetGameCamera(mainCameraActor.get());
 #else
     CameraManager::SetGameCamera(debugCameraActor.get());

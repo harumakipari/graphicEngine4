@@ -82,7 +82,7 @@ protected:
         int directionalLightEnable = true;
         int colorizeCascadedLayer = false;
 
-        float shadowColor = 0.2f;
+        float shadowColor = 0.802f;
         float shadowDepthBias = 0.0005f;
     };
 

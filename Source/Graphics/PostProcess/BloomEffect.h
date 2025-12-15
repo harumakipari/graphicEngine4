@@ -30,8 +30,8 @@ public:
 private:
     //float bloom_extraction_threshold = 0.85f;
     //float bloom_intensity = 0.016f;
-    float bloomExtractionThreshold = 0.777f;
-    float bloomIntensity = 0.163f;
+    float bloomExtractionThreshold = 1.762f;
+    float bloomIntensity = 0.082f;
 
 private:
     std::unique_ptr<FullScreenQuad> bitBlockTransfer;
