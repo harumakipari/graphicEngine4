@@ -441,7 +441,7 @@ void TutorialScene::SetUpActors()
     player = GetActorManager()->CreateAndRegisterActorWithTransform<Player>("actor", playerTr);
 
     auto mainCameraActor = GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
-    auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
+    auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
 
     CameraManager::SetGameCamera(mainCameraActor.get());
 

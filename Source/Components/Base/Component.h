@@ -78,7 +78,7 @@ inline UpdateTransformFlags operator~(UpdateTransformFlags flag)
 class Component
 {
 public:
-    Component(const std::string& name,std::shared_ptr<Actor> owner) :name_(name), owner_(owner), active_(true) {};
+    Component(const std::string& name, const std::shared_ptr<Actor>& owner) :name_(name), owner_(owner), active_(true) {};
     virtual ~Component() = default;
 
     Component(const Component& rhs) = delete;

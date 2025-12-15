@@ -25,7 +25,7 @@ class Actor;
 class SceneComponent :public Component, public std::enable_shared_from_this<SceneComponent>
 {
 public:
-    SceneComponent(const std::string& name,std::shared_ptr<Actor> owner) :Component(name, owner)
+    SceneComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :Component(name, owner)
     {
     }
 

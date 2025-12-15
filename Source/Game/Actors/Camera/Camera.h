@@ -32,7 +32,7 @@ public:
 
     virtual void Initialize(const Transform& transform)override
     {
-        mainCameraComponent = this->NewSceneComponent<class CameraComponent>("mainCamera");
+        mainCameraComponent = this->NewSceneComponent<class TPSCameraComponent>("mainCamera");
         mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(45), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
     }
 
@@ -55,7 +55,7 @@ public:
         return viewConstants;
     }
 protected:
-    std::shared_ptr<CameraComponent> mainCameraComponent;
+    std::shared_ptr<TPSCameraComponent> mainCameraComponent;
 };
 
 class DebugCamera :public Camera
@@ -125,7 +125,7 @@ public:
         {
         case MainCamera::State::Normal:
         {
-            mainCameraComponent->customTarget = true;
+            //mainCameraComponent->customTarget = true;
 
             DirectX::XMVECTOR vOld = XMLoadFloat3(&oldTarget);
             DirectX::XMVECTOR vNew = XMLoadFloat3(&target);
@@ -160,7 +160,7 @@ public:
             DirectX::XMVECTOR dirNormalized = DirectX::XMVector3Normalize(dirVec);
             // 前フレームのターゲット
             preTarget = tar;
-            mainCameraComponent->_target = clampedTarget;
+            //mainCameraComponent->_target = clampedTarget;
             // lerp 先の position を保存
             afterTarget = clampedTarget;
             afterEye = eye;
@@ -210,9 +210,9 @@ public:
         {
             if (auto enemy = std::dynamic_pointer_cast<RiderEnemy>(GetOwnerScene()->GetActorManager()->GetActorByName("enemy")))
             {// 敵の位置を取る
-                mainCameraComponent->customTarget = true;
+                //mainCameraComponent->customTarget = true;
                 DirectX::XMFLOAT3 targetVec = enemy->bossJointComponent->GetComponentWorldTransform().GetLocation();
-                mainCameraComponent->_target = targetVec;
+                //mainCameraComponent->_target = targetVec;
                 DirectX::XMFLOAT3 playerFirstPos = { 0.7f,0.8f,-9.5f };
                 playerFirstPos.y += 1.5f;
                 playerFirstPos.x += distanceX;
@@ -265,8 +265,8 @@ public:
             DirectX::XMFLOAT3 nowTarget, nowEye;
             DirectX::XMStoreFloat3(&nowTarget, NowTar);
             DirectX::XMStoreFloat3(&nowEye, NowEye);
-            mainCameraComponent->customTarget = true;
-            mainCameraComponent->_target = nowTarget;
+            //mainCameraComponent->customTarget = true;
+            //mainCameraComponent->_target = nowTarget;
             SetPosition(nowEye);
             if (t >= 1.0f)
             {// lerp し終わったら
@@ -283,7 +283,7 @@ public:
 
     void Shake(float power = 0.02f, float time = 0.2f)
     {
-        mainCameraComponent->Shake(power, time);
+        //mainCameraComponent->Shake(power, time);
     }
 
     void SetOldTarget(const DirectX::XMFLOAT3& oldTarget)

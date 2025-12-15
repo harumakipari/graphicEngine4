@@ -17,7 +17,7 @@ public:
     DefeatEnemyCamera(std::string actorName) :Camera(actorName) {}
 
     virtual ~DefeatEnemyCamera() = default;
-    std::shared_ptr<CameraComponent> mainCameraComponent;
+    std::shared_ptr<TPSCameraComponent> mainCameraComponent;
     std::shared_ptr<SphereComponent> sphereComponent;
 
     float easeX = 0.0f;
@@ -29,7 +29,7 @@ public:
 
     void Initialize(const Transform& transform)override
     {
-        mainCameraComponent = this->NewSceneComponent<class CameraComponent>("mainCamera");
+        mainCameraComponent = this->NewSceneComponent<class TPSCameraComponent>("mainCamera");
         mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(45), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
         SetPosition(DirectX::XMFLOAT3(0.0f, 5.0f, -5.0f));
         SetEulerRotation(DirectX::XMFLOAT3(0.0f, 50.0f, 0.0f));
@@ -176,8 +176,8 @@ public:
             eye.y = easeY;
             preTargetPos = focus;
             preEyePos = eye;
-            mainCameraComponent->customTarget = true;
-            mainCameraComponent->_target = focus;
+            //mainCameraComponent->customTarget = true;
+            //mainCameraComponent->_target = focus;
             SetPosition(eye);
             elapsedTime = 0.0f;
             break;
@@ -215,19 +215,19 @@ public:
 
             //mainCameraComponent->_target = resultPlayerPos;
             //SetPosition(nextEyePos);
-            mainCameraComponent->customTarget = true;
+            //mainCameraComponent->customTarget = true;
 
             if (t >= 1.0f)
             {
                 //resultPlayer->SetType(TitlePlayer::Type::ResultWinMove);
-                mainCameraComponent->_target = tar;
+                //mainCameraComponent->_target = tar;
                 SetPosition(nextEyePos);
                 state = State::SceneResult;
                 resultPlayer->isCameraFinish = true;
             }
             else
             {
-                mainCameraComponent->_target = tar;
+                //mainCameraComponent->_target = tar;
                 SetPosition(e);
             }
 #if 0
@@ -266,8 +266,8 @@ public:
 
             XMVECTOR Eye = Focus + (Right * -eyeOffset.x) + (Forward * eyeOffset.z) + (Up * eyeOffset.y);
             XMStoreFloat3(&nextEyePos, Eye);
-            mainCameraComponent->customTarget = true;
-            mainCameraComponent->_target = resultPlayerPos;
+            //mainCameraComponent->customTarget = true;
+            //mainCameraComponent->_target = resultPlayerPos;
             SetPosition(nextEyePos);
         }
         break;

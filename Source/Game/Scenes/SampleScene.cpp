@@ -65,12 +65,12 @@ void SampleScene::Update(float deltaTime)
 void SampleScene::SetUpActors()
 {
     mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleCamera>("mainCameraActor");
-    auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
+    auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto titlePlayer = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
     mainCameraComponent->target = (titlePlayer->GetRootComponent());
-    mainCameraComponent->followTarget = (titlePlayer->GetRootComponent());
-    mainCameraComponent->lookAtTarget = (titlePlayer->GetRootComponent());
+    //mainCameraComponent->followTarget = (titlePlayer->GetRootComponent());
+    //mainCameraComponent->lookAtTarget = (titlePlayer->GetRootComponent());
 
     Transform titleTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto titleStage = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleStage>("title", titleTr);
