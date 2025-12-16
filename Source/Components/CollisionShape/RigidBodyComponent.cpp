@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "RigidBodyComponent.h"
 
 #include <PxPhysicsAPI.h>

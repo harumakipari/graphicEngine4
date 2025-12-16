@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "GltfModelBase.h"
 #include <stack>
 #include <functional>

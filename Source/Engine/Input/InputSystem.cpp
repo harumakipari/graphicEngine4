@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "InputSystem.h"
 #include <Windows.h>
 #include "Graphics/Core/Graphics.h"

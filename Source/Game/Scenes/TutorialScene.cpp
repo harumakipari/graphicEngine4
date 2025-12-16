@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "TutorialScene.h"
 
 #ifdef USE_IMGUI

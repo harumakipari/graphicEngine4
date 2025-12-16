@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "LifeTimeComponent.h"
 
 #include "Core/Actor.h"

@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Particles.h"
 #include "Graphics/Core/Graphics.h"
 #include "Graphics/Core/Shader.h"

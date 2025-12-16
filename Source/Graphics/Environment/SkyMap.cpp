@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "SkyMap.h"
 #include "Engine/Utility/Win32Utils.h"
 #include "Graphics/Resource/Texture.h"

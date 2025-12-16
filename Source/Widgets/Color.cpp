@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Color.h"
 // ’è”‚Ì’è‹`
 const Color Color::Red = Color(1.0f, 0.0f, 0.0f);

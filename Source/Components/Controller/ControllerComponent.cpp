@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "ControllerComponent.h"
 
 #include "Core/Actor.h"

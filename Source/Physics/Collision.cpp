@@ -1,3 +1,4 @@
+#include "pch.h"
 #include <DirectXCollision.h>
 #include "Collision.h"
 #include "Graphics/Resource/InterleavedGltfModel.h"

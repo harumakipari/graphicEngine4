@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "PickUpItem.h"
 #include "Game/Utils/SpawnValidator.h"
 #include "Game/Actors/Enemy/RiderEnemy.h"

@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "SoftBody.h"
 // INTERLEAVED_GLTF_MODEL
 #include <functional>
@@ -632,7 +633,7 @@ void SoftBodySimulate::CreateAndUploadResources(ID3D11Device* device)
                     [](auto& a, auto& b) { return a.distance < b.distance; });
 
                 // 
-                for (size_t k = 0; k < std::min(MAX_EDGES, candidates.size()); ++k)
+                for (size_t k = 0; k < std::min<float>(MAX_EDGES, candidates.size()); ++k)
                 {
                     ClothEdge edge;
                     edge.neighbor = candidates[k].neighbor;

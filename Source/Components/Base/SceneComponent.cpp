@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "SceneComponent.h"
 
 #include "Core/Actor.h"

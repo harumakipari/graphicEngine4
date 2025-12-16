@@ -1,4 +1,5 @@
-﻿#include "Logger.h"
+﻿#include "pch.h"
+#include "Logger.h"
 
 #ifdef USE_IMGUI
 #define IMGUI_ENABLE_DOCKING

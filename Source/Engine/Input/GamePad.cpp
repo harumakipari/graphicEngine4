@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "GamePad.h"
 #include <math.h>
 #include <algorithm>

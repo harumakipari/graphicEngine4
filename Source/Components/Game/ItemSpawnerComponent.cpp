@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "ItemSpawnerComponent.h"
 
 #include "Core/ActorManager.h"

@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "ShaderToy.h"
 
 #include "Graphics/Core/Shader.h"

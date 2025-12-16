@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "HuskParticle.h"
 
 #include <random>

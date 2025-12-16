@@ -1,4 +1,5 @@
 // INTERLEAVED_GLTF_MODEL
+#include "pch.h"
 #include "TestSoftBody.h"
 #include <functional>
 #include <filesystem>

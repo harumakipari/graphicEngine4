@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "StateMachine.h"
 
 #include "Engine/Debug/Assert.h"

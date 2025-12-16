@@ -1,3 +1,4 @@
+#include "pch.h"
 // INTERLEAVED_GLTF_MODEL
 #include "ClothSimulate.h"
 #include <functional>
@@ -559,13 +560,13 @@ void ClothSimulate::SetupPinVertices(int curretPinMode)
 
             for (auto& v : primitive.cachedVertices)
             {
-                min.x = std::min(min.x, v.position.x);
-                min.y = std::min(min.y, v.position.y);
-                min.z = std::min(min.z, v.position.z);
+                min.x = std::min<float>(min.x, v.position.x);
+                min.y = std::min<float>(min.y, v.position.y);
+                min.z = std::min<float>(min.z, v.position.z);
 
-                max.x = std::max(max.x, v.position.x);
-                max.y = std::max(max.y, v.position.y);
-                max.z = std::max(max.z, v.position.z);
+                max.x = std::max<float>(max.x, v.position.x);
+                max.y = std::max<float>(max.y, v.position.y);
+                max.z = std::max<float>(max.z, v.position.z);
             }
 
             // Žl‹÷‚Ì”»’è
@@ -789,13 +790,13 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
 
             for (auto& v : primitive.cachedVertices)
             {
-                min.x = std::min(min.x, v.position.x);
-                min.y = std::min(min.y, v.position.y);
-                min.z = std::min(min.z, v.position.z);
+                min.x = std::min<float>(min.x, v.position.x);
+                min.y = std::min<float>(min.y, v.position.y);
+                min.z = std::min<float>(min.z, v.position.z);
 
-                max.x = std::max(max.x, v.position.x);
-                max.y = std::max(max.y, v.position.y);
-                max.z = std::max(max.z, v.position.z);
+                max.x = std::max<float>(max.x, v.position.x);
+                max.y = std::max<float>(max.y, v.position.y);
+                max.z = std::max<float>(max.z, v.position.z);
             }
 
             // Žl‹÷‚Ì”»’è
@@ -1074,7 +1075,7 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
                     [](auto& a, auto& b) { return a.distance < b.distance; });
 
                 // 
-                for (size_t k = 0; k < std::min(MAX_EDGES, candidates.size()); ++k)
+                for (size_t k = 0; k < std::min<float>(MAX_EDGES, candidates.size()); ++k)
                 {
                     ClothEdge edge;
                     edge.neighbor = candidates[k].neighbor;

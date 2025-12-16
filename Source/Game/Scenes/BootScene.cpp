@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "BootScene.h"
 
 #ifdef USE_IMGUI

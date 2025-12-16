@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "AudioSource.h"
 #include "Utils/Dialog.h"
 #include "Utils/stdUtiles.h"

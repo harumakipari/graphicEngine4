@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Dialog.h"
 
 #include <shlwapi.h>

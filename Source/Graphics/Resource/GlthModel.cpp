@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "GltfModel.h"
 #define TINYGLTF_IMPLEMENTATION 
 

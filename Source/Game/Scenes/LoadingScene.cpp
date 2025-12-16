@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "LoadingScene.h"
 
 #ifdef USE_IMGUI

@@ -1,3 +1,4 @@
+#include "pch.h"
 #define NOMINMAX
 
 #include "CascadeShadowMap.h"
@@ -98,7 +99,7 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
     float m43 = cameraProjection._43;
     float zn = -m43 / m33;
     float zf = (m33 * zn) / (m33 - 1);
-    zf = criticalDepthValue > 0 ? std::min(zf, criticalDepthValue) : zf;
+    zf = criticalDepthValue > 0 ? std::min<float>(zf, criticalDepthValue) : zf;
 
 	// calculates split plane distances in view space
 	for (size_t cascadeIndex = 0; cascadeIndex < cascadeCount; ++cascadeIndex)
@@ -140,21 +141,21 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
 			DirectX::XMVectorSet(center.x, center.y, center.z, 1.0f),
 			DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 
-		float minX = std::numeric_limits<float>::max();
-		float maxX = std::numeric_limits<float>::lowest();
-		float minY = std::numeric_limits<float>::max();
-		float maxY = std::numeric_limits<float>::lowest();
-		float minZ = std::numeric_limits<float>::max();
-		float maxZ = std::numeric_limits<float>::lowest();
+		float minX = (std::numeric_limits<float>::max)();
+		float maxX = (std::numeric_limits<float>::lowest)();
+		float minY = (std::numeric_limits<float>::max)();
+		float maxY = (std::numeric_limits<float>::lowest)();
+		float minZ = (std::numeric_limits<float>::max)();
+		float maxZ = (std::numeric_limits<float>::lowest)();
 		for (DirectX::XMFLOAT4 corner : corners)
 		{
 			DirectX::XMStoreFloat4(&corner, DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat4(&corner), V));
-			minX = std::min(minX, corner.x);
-			maxX = std::max(maxX, corner.x);
-			minY = std::min(minY, corner.y);
-			maxY = std::max(maxY, corner.y);
-			minZ = std::min(minZ, corner.z);
-			maxZ = std::max(maxZ, corner.z);
+			minX = std::min<float>(minX, corner.x);
+			maxX = std::max<float>(maxX, corner.x);
+			minY = std::min<float>(minY, corner.y);
+			maxY = std::max<float>(maxY, corner.y);
+			minZ = std::min<float>(minZ, corner.z);
+			maxZ = std::max<float>(maxZ, corner.z);
 		}
 
 #if 1

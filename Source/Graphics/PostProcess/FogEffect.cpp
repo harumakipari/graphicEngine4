@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "FogEffect.h"
 
 #include "imgui.h"

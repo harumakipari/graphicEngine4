@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "TestEasingHandler.h"
 
 void TestEasingHandler::AddEasing(TestEaseType type, float start, float end, float duration, float back)

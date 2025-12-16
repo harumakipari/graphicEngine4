@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "ComputeParticleSystem.h"
 
 #ifdef USE_IMGUI

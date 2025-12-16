@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "staticMesh.h"
 #include "GeometricPrimitive.h"
 #include "Graphics/Core/Shader.h"

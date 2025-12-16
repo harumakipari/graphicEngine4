@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "SceneRenderer.h"
 
 #include "Engine/Scene/Scene.h"

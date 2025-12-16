@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "EasingHandler.h"
 
 void EasingHandler::SetEasing(EaseType type, float start, float end, float duration, float back)

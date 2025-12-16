@@ -1,3 +1,4 @@
+#include "pch.h"
 // INTERLEAVED_GLTF_MODEL
 #include "InterleavedGltfModel.h"
 #include <functional>

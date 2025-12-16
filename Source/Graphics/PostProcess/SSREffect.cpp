@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "SSREffect.h"
 
 #include "imgui.h"

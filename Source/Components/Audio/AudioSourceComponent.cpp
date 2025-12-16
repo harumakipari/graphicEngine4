@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "AudioSourceComponent.h"
 
 #include <Windows.h>

@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "FullScreenQuad.h"
 #include "Graphics/Core/Shader.h"
 

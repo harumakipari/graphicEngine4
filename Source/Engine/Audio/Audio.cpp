@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Audio.h"
 
 #include <x3daudio.h>

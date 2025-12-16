@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "EffectSystem.h"
 
 #ifdef USE_IMGUI

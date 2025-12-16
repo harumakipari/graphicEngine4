@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "ShapeComponent.h"
 #include "Core/Actor.h"
 

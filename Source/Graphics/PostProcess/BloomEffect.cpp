@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "BloomEffect.h"
 #ifdef USE_IMGUI
 #define IMGUI_ENABLE_DOCKING

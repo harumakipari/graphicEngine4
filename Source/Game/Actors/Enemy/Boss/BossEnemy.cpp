@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "BossEnemy.h"
 
 void BossEnemy::Initialize(const Transform& transform)

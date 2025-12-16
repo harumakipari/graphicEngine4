@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "BuildingManager.h"
 #include "Core/ActorManager.h"
 #include "Game/Actors/Player/Player.h"

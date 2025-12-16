@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "BossBuilding.h"
 #include "Game/Actors/Enemy/RiderEnemy.h"
 #include "Game/Actors/Stage/Bomb.h"
