@@ -21,7 +21,15 @@ float4 main(VS_OUT pin) : SV_TARGET
     float metallicFactor = msr.x;
     float roughnessFactor = msr.z;
     
-    float3 emmisiveFactor = emissiveMap.Sample(linearBorderBlackSamplerState, pin.texcoord).xyz;
+    float4 emmisiveInfo = emissiveMap.Sample(linearBorderBlackSamplerState, pin.texcoord);
+    float3 emmisiveFactor = emmisiveInfo.xyz;
+    float pixelInfo = emmisiveInfo.w;
+
+    if (pixelInfo == 1)
+    { // 何も書き込まれていなかったら スカイマップのために
+        discard;
+    }
+
     float3 N = normalMap.Sample(linearBorderBlackSamplerState, pin.texcoord).xyz;
     const float3 f0 = lerp(0.04, color.rgb, metallicFactor);
     const float3 f90 = 1.0;

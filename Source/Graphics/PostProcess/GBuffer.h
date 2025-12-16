@@ -9,6 +9,7 @@
 
 enum class SRV_SLOT :uint8_t
 {
+    SCENE_COLOR = 0,
     NORMAL,     // world normal
     PBR_VALUE,  // x:metallic y:occlusion z:roughness w:occlusionStrength
     COLOR,
@@ -169,13 +170,14 @@ public:
         }
     }
 private:
-    static constexpr UINT GBufferCount = 5;
+    static constexpr UINT GBufferCount = 6;
     UINT viewportCount = D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE;
     D3D11_VIEWPORT catchedViewports[D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE];
     ID3D11RenderTargetView* catchedRenderTargetViews[maxBufferCount];
     ID3D11DepthStencilView* catchedDepthStencilView;
     static constexpr DXGI_FORMAT GBufferFormats[GBufferCount] =
     {
+        DXGI_FORMAT_R16G16B16A16_FLOAT, // Scene Color
         DXGI_FORMAT_R16G16B16A16_FLOAT, // Normal
         DXGI_FORMAT_R16G16B16A16_FLOAT, // マテリアルの情報？
         DXGI_FORMAT_R8G8B8A8_UNORM,  //  albedo Opacity + Mask??とか？

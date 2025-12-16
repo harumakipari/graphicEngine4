@@ -246,14 +246,6 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     gBufferRenderTarget->Clear(immediateContext);
     gBufferRenderTarget->Acticate(immediateContext);
 
-    // スカイマップを描画
-    RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-    if (camera)
-    {
-        ViewConstants data = camera->GetViewConstants();
-        skyMap->Blit(immediateContext, data.viewProjection);
-    }
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Deferred;
@@ -292,6 +284,16 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     {
         frameBuffer->Clear(immediateContext);
         frameBuffer->Activate(immediateContext);
+
+        // スカイマップを描画
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        if (camera)
+        {
+            ViewConstants data = camera->GetViewConstants();
+            skyMap->Blit(immediateContext, data.viewProjection);
+        }
+
         RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);

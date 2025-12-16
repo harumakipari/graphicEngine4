@@ -516,10 +516,15 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     float4 color = colorTexture.Sample(linearBorderBlackSamplerState, pin.texcoord);
     float alpha = color.a;
-    //return color;
-    
     float depthNdc = depthTexture.Sample(linearBorderBlackSamplerState, pin.texcoord).x;
-    
+
+    // GBuffer‚ð‘‚«ž‚ñ‚Å‚¢‚È‚¢—Ìˆæ‚ÍColor‚»‚Ì‚Ü‚Ü•Ô‚·
+    bool isSky = (depthNdc == 0.0 || depthNdc >= 1.0);
+    if (isSky)
+    {
+        return float4(color.rgb, 1.0);
+    }
+
     float4 positionNdc;
     // texture space to ndc
     positionNdc.x = pin.texcoord.x * +2 - 1;
@@ -548,7 +553,7 @@ float4 main(VS_OUT pin) : SV_TARGET
         color.rgb += reflectionTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord);
 #endif
     }
-	uint mip_level = 0, number_of_samples;
+    uint mip_level = 0, number_of_samples;
     uint2 depthDimensions;
     depthTexture.GetDimensions(mip_level, depthDimensions.x, depthDimensions.y, number_of_samples);
     float depth = depthTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord);

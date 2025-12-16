@@ -115,7 +115,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     //pout.normal = mul(float4(N.xyz, 0), view); //to viewSpace;
     pout.position = pin.wPosition; // to viewSpace
     pout.normal = float4(N.xyz, 0); //to viewSpace;
-    pout.emissive = float4(emissiveFactor, 0);
+    pout.emissive = float4(emissiveFactor, 0); // 元々wは１だったがスカイマップなどの時に使用するため０に変更
     pout.material = float4(metallicFactor, occlusionFactor, roughnessFactor, occlusionStrength);
     
     return pout;
