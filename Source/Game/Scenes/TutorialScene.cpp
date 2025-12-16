@@ -17,7 +17,6 @@
 
 
 #include "Physics/Physics.h"
-#include "Physics/PhysicsUtility.h"
 #include "Physics/CollisionSystem.h"
 
 #include "Widgets/ObjectManager.h"
@@ -460,7 +459,7 @@ bool TutorialScene::Uninitialize(ID3D11Device* device)
     //ActorManager::ClearAll();
     Physics::Instance().Finalize();
     CollisionSystem::ClearAll();
-    PhysicsTest::Instance().Finalize();
+    //PhysicsTest::Instance().Finalize();
     //SpawnValidator::Clear();    // “o˜^‚µ‚Ä‚¢‚½ Box ‚ð”jŠü‚·‚é
     return true;
 }

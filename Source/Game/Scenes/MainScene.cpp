@@ -15,7 +15,6 @@
 #include "Engine/Utility/Time.h"
 //#include "Camera.h"
 #include "Physics/Physics.h"
-#include "Physics/PhysicsUtility.h"
 #include "Components/Camera/CameraComponent.h"
 #include "Game/Actors/Camera/Camera.h"
 #include "Game/Actors/Camera/DefeatEnemyCamera.h"
@@ -1395,7 +1394,6 @@ bool MainScene::Uninitialize(ID3D11Device* device)
     //ActorManager::ClearAll();
     GameManager::Finalize();
     Physics::Instance().Finalize();
-    PhysicsTest::Instance().Finalize();
     CollisionSystem::ClearAll();
     //SpawnValidator::Clear();    // “o˜^‚µ‚Ä‚¢‚½ Box ‚ð”jŠü‚·‚é
     return true;

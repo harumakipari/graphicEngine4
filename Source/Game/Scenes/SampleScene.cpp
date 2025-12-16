@@ -59,6 +59,8 @@ void SampleScene::Update(float deltaTime)
     //CollisionSystem::ApplyPushAll();
 
 
+
+
 #ifdef _DEBUG
     if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
     {

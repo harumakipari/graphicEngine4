@@ -9,7 +9,6 @@
 
 #include "Graphics/Core/Graphics.h"
 #include "Physics/Physics.h"
-#include "Physics/PhysicsUtility.h"
 #include "Core/ActorManager.h"
 #include "Game/Actors/Beam/Beam.h"
 #include "Game/Actors/Enemy/RiderEnemy.h"
@@ -740,7 +739,7 @@ void Player::DrawImGuiDetails()
 
     //if (ImGui::TreeNode("Player"))
     {
-        PhysicsTest::Instance().DebugShapePosition();
+        //PhysicsTest::Instance().DebugShapePosition();
         // 現在のプレイヤーステートを表示
         //if (!stateStack.empty())
         //{

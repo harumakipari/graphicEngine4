@@ -54,26 +54,24 @@ public:
     void Update(float elapsedTime);
 
     // フィジクス取得
-    physx::PxPhysics* GetPhysics() { return pxPhysics; }
-
-    // 形状を作る関数
-    physx::PxShape* CreateShape(const physx::PxGeometry& geometry) { return pxPhysics->createShape(geometry, *pxMaterial); }
+    physx::PxPhysics* GetPhysics() const { return pxPhysics; }
 
     // シーン取得
-    physx::PxScene* GetScene() { return pxScene; }
+    physx::PxScene* GetScene() const { return pxScene; }
 
     // コントローラーマネージャー取得
-    physx::PxControllerManager* GetControllerManager() { return pxControllerManager; }
+    physx::PxControllerManager* GetControllerManager() const { return pxControllerManager; }
 
     // マテリアル取得
-    physx::PxMaterial* GetMaterial() { return pxMaterial; }
+    physx::PxMaterial* GetMaterial() const { return pxMaterial; }
 
     // デフォルトのマテリアル取得
-    physx::PxMaterial* GetDefaultMaterial()
+    physx::PxMaterial* GetDefaultMaterial() const
     {
         physx::PxMaterial* defaultMaterial_ = pxPhysics->createMaterial(0.5f, 0.5f, 0.6f); /* static friction, dynamic friction, restitution*/
         return defaultMaterial_;
     }
+
 
     // レイキャスト
     bool RayCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, HitResult& result);
@@ -81,11 +79,6 @@ public:
     // スフィアキャスト
     bool SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, float radius, HitResult& result);
     bool SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, float radius, RaycastHit2& result);
-    // simulate 後でする処理を追加する
-    static void EnqueueDefferfOperations(const DefferdPhysicsOperation& op)
-    {
-        defferfOps_.push_back(op);
-    }
 
 
 protected:
