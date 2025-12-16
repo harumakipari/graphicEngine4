@@ -24,6 +24,7 @@ void ConvexCollisionComponent::CreateConvexMeshFromModel(MeshComponent* meshComp
 // ÉÇÉfÉãÇ©ÇÁ TriangleMesh ÇçÏê¨Ç∑ÇÈ
 void TriangleMeshCollisionComponent::CreateConvexMeshFromModel(MeshComponent* meshComponent)
 {
+    meshComponent_ = meshComponent;
     rigidBody_ = std::make_unique<TriangleMeshRigidBodyComponent>(name_ + "singleRigidBody", owner_.lock(), meshComponent);
     uint32_t triangleMeshLayer = CollisionHelper::ToBit(CollisionLayer::WorldStatic);
     uint32_t triangleMeshMask = CollisionHelper::MakeMask({ CollisionLayer::Convex,CollisionLayer::Player,CollisionLayer::Enemy });
@@ -31,5 +32,8 @@ void TriangleMeshCollisionComponent::CreateConvexMeshFromModel(MeshComponent* me
     //uint32_t triangleMeshMask = static_cast<uint32_t>(0xFFFFFFFF);
     rigidBody_->SetCollisionFilter(triangleMeshLayer, triangleMeshMask);
     rigidBody_->Initialize(Physics::Instance().GetPhysics());
+
     rigidBody_->AddToScene(Physics::Instance().GetScene());
+
+
 }

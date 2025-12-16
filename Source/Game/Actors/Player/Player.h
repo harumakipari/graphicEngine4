@@ -69,25 +69,11 @@ public:
     }
     // 描画用コンポーネントを追加
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
-    // 描画の基準点　左
-    std::shared_ptr<SkeletalMeshComponent> leftComponent;
-    //std::shared_ptr<SceneComponent> leftComponent;
-    std::shared_ptr<BoxComponent> boxLeftHitComponent;
-    // 描画の基準点　右
-    std::shared_ptr<SkeletalMeshComponent> rightComponent;
-    std::shared_ptr<BoxComponent> boxRightHitComponent;
-
-    // ダメージ用の当たり判定
-    std::shared_ptr<SphereComponent> playerDamageLeft;
-    std::shared_ptr<SphereComponent> playerDamageRight;
-
     void Initialize(const Transform& transform)override;
 
     std::shared_ptr<EffectComponent> effectChargeComponent;
-    std::shared_ptr<SphereComponent> sphereRightComponent;
     std::shared_ptr<InputComponent> inputComponent;
     std::shared_ptr<RotationComponent> rotationComponent;
-    std::shared_ptr<SphereComponent> sphereLeftComponent;
     std::shared_ptr<MovementComponent> movementComponent;
     std::shared_ptr<AudioSourceComponent> beamChargeAudioComponent;
     std::shared_ptr<AudioSourceComponent> beamLaunchAudioComponent;
@@ -147,26 +133,26 @@ public:
     // 所持アイテムを全てクリアする
     void HasItemReset()
     {
-        // 当たり判定の範囲を戻す
-        boxLeftHitComponent->ResizeBox(firstHalfBoxExtent.x, firstHalfBoxExtent.y, firstHalfBoxExtent.z);
-        boxLeftHitComponent->SetRelativeLocationDirect(firstLeftBoxPosition);
-        boxRightHitComponent->ResizeBox(firstHalfBoxExtent.x, firstHalfBoxExtent.y, firstHalfBoxExtent.z);
-        boxRightHitComponent->SetRelativeLocationDirect(firstRightBoxPosition);
-        // カウントを戻す
-        leftItemCount = 0;
-        rightItemCount = 0;
-        // 見た目の描画のスケールを戻す
-        DirectX::XMFLOAT3 leftScale = { 1.0f,1.0f,1.0f };
-        leftComponent->SetRelativeScaleDirect(leftScale);
-        DirectX::XMFLOAT3 rightScale = { 1.0f,1.0f,1.0f };
-        rightComponent->SetRelativeScaleDirect(rightScale);
-        // player のダメージの当たり判定を戻す
-        //playerDamageLeft->SetRelativeLocationDirect(firstLeftDamagePosition);
-        playerDamageLeft->SetRelativeLocationDirect(DirectX::XMFLOAT3(-(rightFirstPos.x + radius), rightFirstPos.y, rightFirstPos.z));
-        playerDamageLeft->ResizeSphere(firstDamageRadius);
-        //playerDamageRight->SetRelativeLocationDirect(firstRightDamagePosition);
-        playerDamageRight->SetRelativeLocationDirect(DirectX::XMFLOAT3((rightFirstPos.x + radius), rightFirstPos.y, rightFirstPos.z));
-        playerDamageRight->ResizeSphere(firstDamageRadius);
+        //// 当たり判定の範囲を戻す
+        //boxLeftHitComponent->ResizeBox(firstHalfBoxExtent.x, firstHalfBoxExtent.y, firstHalfBoxExtent.z);
+        //boxLeftHitComponent->SetRelativeLocationDirect(firstLeftBoxPosition);
+        //boxRightHitComponent->ResizeBox(firstHalfBoxExtent.x, firstHalfBoxExtent.y, firstHalfBoxExtent.z);
+        //boxRightHitComponent->SetRelativeLocationDirect(firstRightBoxPosition);
+        //// カウントを戻す
+        //leftItemCount = 0;
+        //rightItemCount = 0;
+        //// 見た目の描画のスケールを戻す
+        //DirectX::XMFLOAT3 leftScale = { 1.0f,1.0f,1.0f };
+        //leftComponent->SetRelativeScaleDirect(leftScale);
+        //DirectX::XMFLOAT3 rightScale = { 1.0f,1.0f,1.0f };
+        //rightComponent->SetRelativeScaleDirect(rightScale);
+        //// player のダメージの当たり判定を戻す
+        ////playerDamageLeft->SetRelativeLocationDirect(firstLeftDamagePosition);
+        //playerDamageLeft->SetRelativeLocationDirect(DirectX::XMFLOAT3(-(rightFirstPos.x + radius), rightFirstPos.y, rightFirstPos.z));
+        //playerDamageLeft->ResizeSphere(firstDamageRadius);
+        ////playerDamageRight->SetRelativeLocationDirect(firstRightDamagePosition);
+        //playerDamageRight->SetRelativeLocationDirect(DirectX::XMFLOAT3((rightFirstPos.x + radius), rightFirstPos.y, rightFirstPos.z));
+        //playerDamageRight->ResizeSphere(firstDamageRadius);
     }
 
     // 左のアイテムストックにダメージを適応する
@@ -218,18 +204,18 @@ public:
         leftScale.y += leftItemCount * scaleBigSize;
         leftScale.z += leftItemCount * scaleBigSize;
         // プレイヤーの左のアイテムの収集の当たり判定を大きくする
-        float leftBoxWidth = -leftFirstPos.x + leftScale.x * firstPlayerSideSize;
-        boxLeftHitComponent->ResizeBox((leftBoxWidth) * 0.5f, firstHalfBoxExtent.y, firstHalfBoxExtent.z);
-        boxLeftHitComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(-(leftBoxWidth) * 0.5f, firstLeftBoxPosition.y, firstLeftBoxPosition.z));
-        // プレイヤーの左のダメージ当たり判定を大きくする
-        float leftDamageRadius = (leftScale.x * firstPlayerSideSize) * 0.5f; // player の半径は足さない
-        playerDamageLeft->ResizeSphere(leftDamageRadius);
-        playerDamageLeft->SetRelativeLocationDirect(DirectX::XMFLOAT3(-(rightFirstPos.x + leftDamageRadius), rightFirstPos.y + leftDamageRadius, rightFirstPos.z));
-        // スケールを小さくする処理
+        //float leftBoxWidth = -leftFirstPos.x + leftScale.x * firstPlayerSideSize;
+        //boxLeftHitComponent->ResizeBox((leftBoxWidth) * 0.5f, firstHalfBoxExtent.y, firstHalfBoxExtent.z);
+        //boxLeftHitComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(-(leftBoxWidth) * 0.5f, firstLeftBoxPosition.y, firstLeftBoxPosition.z));
+        //// プレイヤーの左のダメージ当たり判定を大きくする
+        //float leftDamageRadius = (leftScale.x * firstPlayerSideSize) * 0.5f; // player の半径は足さない
+        //playerDamageLeft->ResizeSphere(leftDamageRadius);
+        //playerDamageLeft->SetRelativeLocationDirect(DirectX::XMFLOAT3(-(rightFirstPos.x + leftDamageRadius), rightFirstPos.y + leftDamageRadius, rightFirstPos.z));
+        //// スケールを小さくする処理
         afterLeftScale = leftScale.x;
         isLeftShrinking = true;
         shrinkElapsedTimeLeft = 0.0f;
-        currentLeftScale = leftComponent->GetRelativeScale().x;
+        //currentLeftScale = leftComponent->GetRelativeScale().x;
     }
 
     // 右のアイテムストックにダメージを適応する
@@ -279,19 +265,19 @@ public:
         rightScale.y += rightItemCount * scaleBigSize;
         rightScale.z += rightItemCount * scaleBigSize;
         // プレイヤーの右のアイテムの収集の当たり判定を大きくする
-        float rightBoxWidth = rightFirstPos.x + rightScale.x * firstPlayerSideSize;
-        boxRightHitComponent->ResizeBox((rightBoxWidth) * 0.5f, firstHalfBoxExtent.y, firstHalfBoxExtent.z);
-        boxRightHitComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3((rightBoxWidth) * 0.5f, firstRightBoxPosition.y, firstRightBoxPosition.z));
-        // プレイヤーの右のダメージ当たり判定を大きくする
-        float rightDamageRadius = (rightScale.x * firstPlayerSideSize) * 0.5f; // player の半径は足さない
-        playerDamageRight->ResizeSphere(rightDamageRadius);
-        playerDamageRight->SetRelativeLocationDirect(DirectX::XMFLOAT3(rightFirstPos.x + rightDamageRadius, rightFirstPos.y + rightDamageRadius, rightFirstPos.z));
+        //float rightBoxWidth = rightFirstPos.x + rightScale.x * firstPlayerSideSize;
+        //boxRightHitComponent->ResizeBox((rightBoxWidth) * 0.5f, firstHalfBoxExtent.y, firstHalfBoxExtent.z);
+        //boxRightHitComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3((rightBoxWidth) * 0.5f, firstRightBoxPosition.y, firstRightBoxPosition.z));
+        //// プレイヤーの右のダメージ当たり判定を大きくする
+        //float rightDamageRadius = (rightScale.x * firstPlayerSideSize) * 0.5f; // player の半径は足さない
+        //playerDamageRight->ResizeSphere(rightDamageRadius);
+        //playerDamageRight->SetRelativeLocationDirect(DirectX::XMFLOAT3(rightFirstPos.x + rightDamageRadius, rightFirstPos.y + rightDamageRadius, rightFirstPos.z));
 
 
         // スケールを小さくする処理
         isRightShrinking = true;
         shrinkElapsedTimeRight = 0.0f;
-        currentRightScale = rightComponent->GetRelativeScale().x;
+        //currentRightScale = rightComponent->GetRelativeScale().x;
         afterRightScale = rightScale.x;
     }
 
@@ -546,8 +532,8 @@ private:
                 return colorStops.front().second; 
             };
 
-        leftComponent->model->cpuColor = GetColor(leftItemCount);
-        rightComponent->model->cpuColor = GetColor(rightItemCount);
+        //leftComponent->model->cpuColor = GetColor(leftItemCount);
+        //rightComponent->model->cpuColor = GetColor(rightItemCount);
     }
 
 

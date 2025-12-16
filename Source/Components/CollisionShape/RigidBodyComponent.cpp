@@ -16,7 +16,7 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
     PxVec3 pxPosition(pos.x, pos.y, pos.z);
     PxQuat pxRotation(rot.x, rot.y, rot.z, rot.w);
     // physx の原点を上げるため
-    //pos.y += shapeComponent_->GetModelHeight();
+    pos.y += shapeComponent_->GetModelHeight();
     // PxTransform を作成して使用する
     PxTransform transform(pxPosition, pxRotation);
 
@@ -703,7 +703,22 @@ void TriangleMeshRigidBodyComponent::Initialize(physx::PxPhysics* physics)
     pxShape_->setSimulationFilterData(filterData);
     pxShape_->setQueryFilterData(filterData);
 
-    pxActor_ = physics->createRigidStatic(PxTransform(PxIdentity));
+    DirectX::XMFLOAT3 pos = owner_->GetOwner()->GetPosition();
+    DirectX::XMFLOAT4 rot = owner_->GetComponentRotation();
+    PxVec3 pxPosition(pos.x, pos.y, pos.z);
+    PxQuat pxRotation(rot.x, rot.y, rot.z, rot.w);
+    PxTransform transform(pxPosition, pxRotation);
+
+    pxActor_ = physics->createRigidStatic(transform);
     pxActor_->userData = owner_->GetOwner();     // Actor へのポインタ
     pxActor_->attachShape(*pxShape_);
+
+
+    physx::PxTransform pose(
+        PxVec3(pos.x, pos.y, pos.z),
+        PxQuat(rot.x, rot.y, rot.z, rot.w).getNormalized()
+    );
+
+    pxActor_->setGlobalPose(pose);
+
 }

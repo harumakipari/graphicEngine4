@@ -1,11 +1,9 @@
 #include "pch.h"
 #include "BossEnemy.h"
+#include "BossState.h"
 
 void BossEnemy::Initialize(const Transform& transform)
 {
-    SetPosition(transform.GetLocation());
-    SetQuaternionRotation(transform.GetRotation());
-    SetScale(transform.GetScale());
 
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeletalComponent");
     skeletalMeshComponent->SetModel("./Data/Models/Characters/Savarog/Idle.gltf");
@@ -65,5 +63,31 @@ void BossEnemy::Initialize(const Transform& transform)
     animationController_->AddAnimation("Victory_Emote", 23);
 
     // ステートマシンを作成
+    stateMachine_ = std::make_shared<StateMachine>();
+    stateMachine_->RegisterState(std::make_unique<EnemyIdleState>(this));
+    stateMachine_->RegisterState(std::make_unique<EnemyWalkState>(this));
+    stateMachine_->RegisterState(std::make_unique<EnemyAttackState>(this));
+    // 初期ステートを設定
+    stateMachine_->ChangeState("Idle");
+
+    // 敵からの攻撃を受ける当たり判定用のコンポーネントを追加
+    std::shared_ptr<CapsuleComponent> capsuleComponent = this->NewSceneComponent<class CapsuleComponent>("capsuleComponent", "skeletalComponent");
+    DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
+    height = size.y;
+    radius = size.x * 0.25f;
+    capsuleComponent->SetRadiusAndHeight(radius, height);
+    capsuleComponent->SetMass(mass);
+    capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+    capsuleComponent->SetRelativeEulerRotationDirect(DirectX::XMFLOAT3(90.0f, 0.0f, 0.0f));
+    capsuleComponent->SetLayer(CollisionLayer::Enemy);
+    capsuleComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+    capsuleComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::None);
+    capsuleComponent->SetModelHeight(height * 0.5f);
+    capsuleComponent->SetIsVisibleDebugBox(false);
+    capsuleComponent->Initialize();
+
+    SetPosition(transform.GetLocation());
+    SetQuaternionRotation(transform.GetRotation());
+    SetScale(transform.GetScale());
 
 }

@@ -459,6 +459,7 @@ bool TutorialScene::Uninitialize(ID3D11Device* device)
 {
     //ActorManager::ClearAll();
     Physics::Instance().Finalize();
+    CollisionSystem::ClearAll();
     PhysicsTest::Instance().Finalize();
     //SpawnValidator::Clear();    // “o˜^‚µ‚Ä‚¢‚½ Box ‚ð”jŠü‚·‚é
     return true;
@@ -575,7 +576,7 @@ void TutorialScene::Render(ID3D11DeviceContext* immediateContext, float delta_ti
     // ƒfƒoƒbƒN•`‰æ
 #if _DEBUG
     actorColliderManager.DebugRender(immediateContext);
-    PhysicsTest::Instance().DebugRender(immediateContext);
+    //PhysicsTest::Instance().DebugRender(immediateContext);
     //GameManager::DebugRender(immediateContext);
 #endif
     // Š¢âI

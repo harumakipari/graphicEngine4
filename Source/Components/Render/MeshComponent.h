@@ -99,6 +99,12 @@ public:
         modelNodes = model->GetNodes();
     }
 
+    DirectX::XMFLOAT3 GetModelSize()
+    {
+        AABB aabb = model->GetAABB();
+        return{ aabb.max.x - aabb.min.x,aabb.max.y - aabb.min.y,aabb.max.z - aabb.min.z };
+    }
+
     void AppendAnimations(const std::vector<std::string>& filenames) const
     {
         model->AddAnimations(filenames);

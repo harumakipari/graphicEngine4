@@ -13,6 +13,7 @@
 
 #include "Game/Actors/Camera/TitleCamera.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"
+#include "Game/Actors/Enemy/Boss/BossEnemy.h"
 #include "Game/Actors/Stage/ElasticBuilding.h"
 #include "Game/Actors/Stage/Cloth.h"
 #include "Game/SofyBody/MassPoint.h"
@@ -26,7 +27,7 @@
 #include "Game/Actors/Stage/FightStage.h"
 
 #include "Graphics/PostProcess/BloomEffect.h"
-
+#include "Physics/CollisionSystem.h"
 
 
 bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
@@ -48,12 +49,15 @@ void SampleScene::Start()
 void SampleScene::Update(float deltaTime)
 {
     using namespace DirectX;
-
     SceneBase::Update(deltaTime);
 
     Physics::Instance().Update(deltaTime);
     EventSystem::Update(deltaTime);//’Ç‰Á
     objectManager.Update(deltaTime);//’Ç‰Á
+
+    CollisionSystem::DetectAndResolveCollisions();
+    //CollisionSystem::ApplyPushAll();
+
 
 #ifdef _DEBUG
     if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
@@ -90,7 +94,7 @@ void SampleScene::SetUpActors()
     //stageCollisionMesh = std::make_shared<CollisionMesh>(Graphics::GetDevice(), "./Data/Models/Stage/stage.gltf", true);
 
     Transform enemyTr(DirectX::XMFLOAT3{ 6.7f,0.0f,5.6f }, DirectX::XMFLOAT3{ 0.0f,-15.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<EmptyEnemy>("enemy", enemyTr);
+    auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("enemy", enemyTr);
 
 
     CameraManager::SetDebugCamera(debugCameraActor);

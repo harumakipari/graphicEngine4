@@ -573,5 +573,6 @@ public:
 
 private:
     std::shared_ptr<TriangleMeshRigidBodyComponent> rigidBody_;
+    MeshComponent* meshComponent_ = nullptr;
 };
 #endif  //SHAPE_COMPONENT_H

@@ -7,6 +7,108 @@
 #include "Engine/Utility/Win32Utils.h"
 #include "Physics/CollisionSystem.h"
 
+DirectX::XMFLOAT3 KinematicMovementComponent::MoveAndSlide(const DirectX::XMFLOAT3& desiredMove)
+{
+    using namespace DirectX;
+    using namespace physx;
+
+    PxScene* pxScene = Physics::Instance().GetScene();
+
+    if (!shapeComponent_||!pxScene)
+    {
+        return desiredMove;
+    }
+
+    // 移動量が小さすぎる場合は無視
+    XMVECTOR v = XMLoadFloat3(&desiredMove);
+    if (XMVector3LengthSq(v).m128_f32[0] < 1e-6f)
+        return desiredMove;
+    PxTransform currentTransform;
+    {
+        auto owner = shapeComponent_->GetOwner();
+        auto pos = owner->GetPosition();
+        auto rot = owner->GetQuaternionRotation();
+
+        currentTransform = PxTransform(
+            PxVec3(pos.x, pos.y, pos.z),
+            PxQuat(rot.x, rot.y, rot.z, rot.w)
+        );
+    }
+    auto info = shapeComponent_->GetPhysicsShapeInfo();
+
+    PxVec3 direction(
+        desiredMove.x,
+        desiredMove.y,
+        desiredMove.z);
+
+    float distance = direction.normalize(); // direction 正規化 + 距離取得
+    if (distance <= 0.0001f)
+        return desiredMove;
+
+    PxSweepBuffer hit;
+    PxQueryFilterData filterData;
+    filterData.flags = PxQueryFlag::eSTATIC; // TriangleMesh は Static
+
+    bool blocked = pxScene->sweep(
+        info.geometry.any(),
+        currentTransform,
+        direction,
+        distance,
+        hit,
+        PxHitFlag::eDEFAULT,
+        filterData);
+
+    if (hit.hasBlock&&hit.block.distance<=0.0001f)
+    {
+        return { 0.0f,0.0f,0.0f };
+    }
+
+    // ヒットなし → そのまま移動
+    if (!blocked || !hit.hasBlock)
+        return desiredMove;
+
+    // めり込む直前まで移動
+    float safeDist = PxMax(hit.block.distance - 0.001f, 0.0f);
+
+    XMFLOAT3 result;
+    result.x = direction.x * safeDist;
+    result.y = direction.y * safeDist;
+    result.z = direction.z * safeDist;
+
+    // Slide 計算
+    PxVec3 n = hit.block.normal;
+    PxVec3 moveDir(
+        desiredMove.x,
+        desiredMove.y,
+        desiredMove.z);
+
+    // 法線方向成分を削除
+    PxVec3 slide =
+        moveDir - n * moveDir.dot(n);
+
+#if 1
+    // 再帰 or 1回だけスライド（まずは1回）
+    result.x += slide.x * 0.5f;
+    result.y += slide.y * 0.5f;
+    result.z += slide.z * 0.5f;
+#else
+    slide.normalize();
+    slide *= (distance - safeDist);
+
+    result.x += slide.x;
+    result.y += slide.y;
+    result.z += slide.z;
+#endif // 0
+
+    return result;
+}
+
+MovementComponent::MovementComponent(const std::string& name, const std::shared_ptr<Actor>& owner)
+    :SceneComponent(name, owner)
+{
+    kinematicMove_ = std::make_unique<KinematicMovementComponent>();
+}
+
 void MovementComponent::Tick(float deltaTime)
 {
     if (!owner_.lock())
@@ -50,13 +152,22 @@ void MovementComponent::Tick(float deltaTime)
     DirectX::XMFLOAT3 moveVec;
     DirectX::XMStoreFloat3(&moveVec, v);
 
+    // TriangleMeshにたいするSweep
+    //DirectX::XMFLOAT3 sweptMove = kinematicMove_->MoveAndSlide(moveVec);
+    DirectX::XMFLOAT3 sweptMove = moveVec;
+
+
     // 衝突システムから押し出しベクトルを取得
     DirectX::XMFLOAT3 pushVec = CollisionSystem::GetPushVectorForActor(owner_.lock().get());
 
     // 合算
-    moveVec.x += pushVec.x;
-    moveVec.y += pushVec.y;
-    moveVec.z += pushVec.z;
+    sweptMove.x += pushVec.x;
+    sweptMove.y += pushVec.y;
+    sweptMove.z += pushVec.z;
+
+    //moveVec.x += pushVec.x;
+    //moveVec.y += pushVec.y;
+    //moveVec.z += pushVec.z;
 
     //R.r[0] = DirectX::XMVectorScale(R.r[0], dir.x);
     //R.r[1] = DirectX::XMVectorScale(R.r[1], dir.y);
@@ -66,7 +177,7 @@ void MovementComponent::Tick(float deltaTime)
     //DirectX::XMStoreFloat4(&quaternion, q);
     //owner_->rootComponent_->SetLocalRotation(quaternion);
 
-    owner_.lock()->rootComponent_->AddWorldOffset(moveVec);
+    owner_.lock()->rootComponent_->AddWorldOffset(sweptMove);
 
 
     float yaw = DirectX::XMConvertToDegrees(std::atan2f(dir.x, dir.z));

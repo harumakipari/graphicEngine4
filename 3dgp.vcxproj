@@ -270,6 +270,7 @@
     <ClCompile Include="Source\Game\Actors\Enemy\BehaviorData.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\BehaviorTree.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossEnemy.cpp" />
+    <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossState.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\EnemyMath.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\JudgmentDerived.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\NodeBase.cpp" />
