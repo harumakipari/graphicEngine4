@@ -18,8 +18,8 @@
 #include "Widgets/GameObject.h"
 #include "Widgets/Mask.h"
 
-// チュートリアルに使用
 #include "PlayerStateDerived.h"
+// チュートリアルに使用
 #include "Game/Managers/TutorialSystem.h"
 
 void Player::Initialize(const Transform& transform)

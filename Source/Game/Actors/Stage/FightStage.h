@@ -18,8 +18,9 @@ public:
 
         std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->NewSceneComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent", "staticMeshComponent");
         triangleMeshComponent->AddWorldOffset({ 0.0f,2.45f,0.0f });
+        triangleMeshComponent->SetLayer(CollisionLayer::Convex);
+        triangleMeshComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
         triangleMeshComponent->CreateConvexMeshFromModel(staticMeshComponent.get());
-
     }
 
     void Update(float elapsedTime)override {}

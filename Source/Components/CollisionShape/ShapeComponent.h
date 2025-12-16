@@ -547,14 +547,26 @@ private:
 };
 
 // staticBatchinModel にのみ使用可能
-class TriangleMeshCollisionComponent :public SceneComponent
+class TriangleMeshCollisionComponent :public CollisionComponent
 {
 public:
-    TriangleMeshCollisionComponent(const std::string& name, std::shared_ptr<Actor> owner) :SceneComponent(name, owner) {}
+    TriangleMeshCollisionComponent(const std::string& name, std::shared_ptr<Actor> owner) :CollisionComponent(name, owner) {}
 
     virtual void Initialize()override {}
 
-    void Tick(float deltaTime)override {}
+    void Tick(const float deltaTime)override
+    {
+        if (rigidBody_)
+        {
+            rigidBody_->Tick(deltaTime);
+        }
+    }
+    void AddToScene()override
+    {
+        rigidBody_->AddToScene(Physics::Instance().GetScene());
+    }
+
+
 
     // モデルから TriangleMesh を作成する
     void CreateConvexMeshFromModel(MeshComponent* meshComponent);

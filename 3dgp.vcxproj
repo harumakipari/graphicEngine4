@@ -238,6 +238,7 @@
     <ClCompile Include="Source\Game\Actors\Enemy\ActionDerived.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\BehaviorData.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\BehaviorTree.cpp" />
+    <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossEnemy.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\EnemyMath.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\JudgmentDerived.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\NodeBase.cpp" />
@@ -370,6 +371,7 @@
     <ClInclude Include="Source\Game\Actors\Enemy\ActionDerived.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\BehaviorData.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\BehaviorTree.h" />
+    <ClInclude Include="Source\Game\Actors\Enemy\Boss\BossEnemy.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\DefeatEnemy.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\EmptyEnemy.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\Enemy.h" />
