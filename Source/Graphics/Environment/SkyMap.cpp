@@ -23,7 +23,8 @@ SkyMap::SkyMap(ID3D11Device* device, const wchar_t* filename, bool generateMips)
     hr = CreateVsFromCSO(device, "./Shader/SkyMapVS.cso", skyMapVs.GetAddressOf(), NULL, NULL, 0);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     // ピクセルシェーダーの読み込み（通常のスカイマップ用）
-    hr = CreatePsFromCSO(device, "./Shader/SkyMapPS.cso", skyMapPs.GetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/SkyMapGBufferPS.cso", skyMapPs.GetAddressOf());
+    //hr = CreatePsFromCSO(device, "./Shader/SkyMapPS.cso", skyMapPs.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     // ピクセルシェーダーの読み込み（スカイボックス用）
     hr = CreatePsFromCSO(device, "./Shader/SkyBoxPS.cso", skyBoxPs.GetAddressOf());

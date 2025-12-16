@@ -19,6 +19,7 @@
 #include "Widgets/Mask.h"
 
 // チュートリアルに使用
+#include "PlayerStateDerived.h"
 #include "Game/Managers/TutorialSystem.h"
 
 void Player::Initialize(const Transform& transform)
@@ -77,6 +78,16 @@ void Player::Initialize(const Transform& transform)
 
     // アニメーションコントローラーを character に追加
     this->SetAnimationController(controller);
+
+    // ステートマシンを作成
+    stateMachine_ = std::make_shared<StateMachine>();
+    stateMachine_->RegisterState(std::make_unique<PlayerIdleState>(this));
+    stateMachine_->RegisterState(std::make_unique<PlayerRunningState>(this));
+
+    // ステートマシンを character に追加
+    //this->SetStateMachine(stateMachine);
+    // 初期ステートを設定
+    stateMachine_->ChangeState("Idle");
 
     // 敵の攻撃が当たる左側 
     playerDamageLeft = this->NewSceneComponent<class SphereComponent>("playerDamageLeft", "skeletalComponent");

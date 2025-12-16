@@ -504,6 +504,12 @@
     <ClCompile Include="Source\Utils\EasingHandler.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\State\StateMachine.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Actors\Player\PlayerStateDerived.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1035,6 +1041,9 @@
     <ClInclude Include="Source\Utils\easing.h" />
     <ClInclude Include="Source\Utils\EasingHandler.h" />
     <ClInclude Include="Source\Widgets\EasingComponent.h" />
+    <ClInclude Include="Source\Game\State\StateMachine.h" />
+    <ClInclude Include="Source\Game\State\StateBase.h" />
+    <ClInclude Include="Source\Game\Actors\Player\PlayerStateDerived.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">
@@ -1281,6 +1290,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GltfModelForwardTranspacyPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SkyMapGBufferPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

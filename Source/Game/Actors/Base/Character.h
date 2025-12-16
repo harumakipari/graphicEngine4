@@ -7,6 +7,7 @@
 #include "Components/Render/MeshComponent.h"
 #include "Components/CollisionShape/CollisionComponent.h"
 #include "Animation/AnimationController.h"
+#include "Game/State/StateMachine.h"
 
 class Character :public Actor
 {
@@ -25,16 +26,33 @@ public:
         {
             animationController_->OnUpdate(deltaTime);
         }
+        if (stateMachine_)
+        {
+            stateMachine_->Update(deltaTime);
+        }
     };
 
+    // アニメーションコントローラーをセットする
     void SetAnimationController(const std::shared_ptr<AnimationController>& controller)
     {
         animationController_ = controller;
     }
 
+    // ステートマシンをセットする
+    void SetStateMachine(const std::shared_ptr<StateMachine>& stateMachine)
+    {
+        stateMachine_ = stateMachine;
+    }
+
     std::shared_ptr<AnimationController> GetAnimationController()
     {
         return animationController_;
+    }
+
+    // ステートマシンを取得する
+    std::shared_ptr<StateMachine> GetStateMachine()
+    {
+        return stateMachine_;
     }
 
     // 使用
@@ -227,6 +245,10 @@ protected:
 
     // アニメーションコントローラー
     std::shared_ptr<AnimationController> animationController_;
+
+    // ステートマシン
+    std::shared_ptr<StateMachine> stateMachine_;
+
 
     bool canMove = true;
 private:

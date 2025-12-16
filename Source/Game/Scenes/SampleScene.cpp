@@ -69,6 +69,7 @@ void SampleScene::SetUpActors()
     Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto titlePlayer = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
     mainCameraComponent->target = (titlePlayer->GetRootComponent());
+    mainCameraComponent->pitch = DirectX::XMConvertToRadians(19.0f);
     //mainCameraComponent->followTarget = (titlePlayer->GetRootComponent());
     //mainCameraComponent->lookAtTarget = (titlePlayer->GetRootComponent());
 
