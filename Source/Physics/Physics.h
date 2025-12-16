@@ -108,17 +108,6 @@ private:
         physx::PxPairFlags& pairFlags,
         const void* constantBlock, physx::PxU32 constantBlockSize);
 
-    void PostSimulate()
-    {
-        for (auto* dyn : gravityEnableList_)
-        {
-            if (dyn && dyn->is<physx::PxRigidDynamic>())
-            {
-                dyn->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, false);
-            }
-        }
-        gravityEnableList_.clear();
-    }
 private:
 
     physx::PxDefaultAllocator			pxAllocator;

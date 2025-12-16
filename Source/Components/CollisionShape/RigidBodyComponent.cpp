@@ -13,10 +13,10 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
 
     DirectX::XMFLOAT3 pos = shapeComponent_->GetOwner()->GetPosition();
     DirectX::XMFLOAT4 rot = shapeComponent_->GetComponentRotation();
+    pos.y += shapeComponent_->GetModelHeight();
     PxVec3 pxPosition(pos.x, pos.y, pos.z);
     PxQuat pxRotation(rot.x, rot.y, rot.z, rot.w);
     // physx の原点を上げるため
-    pos.y += shapeComponent_->GetModelHeight();
     // PxTransform を作成して使用する
     PxTransform transform(pxPosition, pxRotation);
 
@@ -31,6 +31,7 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
     {
         // 形状のローカル姿勢を調整
         physx::PxTransform pxShapeTransform = pxShape_->getLocalPose();
+        //pxShapeTransform.p.y = shapeComponent_->GetModelHeight(); // 上に補正して
         pxShapeTransform.q = physx::PxQuat(physx::PxPiDivTwo, physx::PxVec3(0.0f, 1.0f, 0.0f));	//90度回転させて
         pxShape_->setLocalPose(pxShapeTransform);	//シーンに設定(カプセルを立たせるため)通常は横向き
     }
@@ -39,12 +40,23 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
         // 上に補正する
         pxShape_->setLocalPose(physx::PxTransform(physx::PxVec3(0.0f, shapeComponent_->GetModelHeight(), 0.0f)));
     }
-    physx::PxFilterData filterData;
-    filterData.word0 = layer_;
-    filterData.word1 = mask_;
 
-    pxShape_->setSimulationFilterData(filterData);
-    pxShape_->setQueryFilterData(filterData);
+    // レイキャストなど用のレイヤー設定
+    //physx::PxFilterData pxFilterData = pxShape_->getQueryFilterData();
+    //pxFilterData.word0 = 1;
+    //pxShape_->setQueryFilterData(pxFilterData);
+    physx::PxFilterData queryData;
+    queryData.word0 = 0xFFFFFFFF;
+    queryData.word1 = 0xFFFFFFFF;
+
+    pxShape_->setQueryFilterData(queryData);
+
+    //physx::PxFilterData filterData;
+    //filterData.word0 = layer_;
+    //filterData.word1 = mask_;
+
+    //pxShape_->setSimulationFilterData(filterData);
+    //pxShape_->setQueryFilterData(filterData);
 
     pxShape_->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
     //if (isTrigger_)
@@ -77,6 +89,7 @@ void SingleRigidBodyComponent::Tick(float deltaTime)
         Transform t = shapeComponent_->GetComponentWorldTransform();
         //Transform t = shapeComponent_->GetOwner()->rootComponent_->GetFinalWorldTransform();
 
+#if 0
         if (shapeComponent_->GetCollisionType() == "Capsule")
         {// ShapeComponent がカプセルの時
             ShapeComponent::CapsuleAxis axis = shapeComponent_->GetCapusleAxis();
@@ -113,7 +126,9 @@ void SingleRigidBodyComponent::Tick(float deltaTime)
                 //DirectX::XMStoreFloat4(&rotation, qResult);
                 //t.SetRotation(rotation);
             }
+
         }
+#endif // 0
 
         PxTransform pxT = PhysicsHelper::ToPxTransform(t);
         // 当たり判定が地面の下に行くのを防ぐ
@@ -274,11 +289,11 @@ void MultiRigidBodyComponent::Initialize(physx::PxPhysics* physics)
 
         // ここでログを出す
         {
-        //    char buf[256];
-        //    sprintf_s(buf, "[Init] Node %zu: worldPx.p = (%f, %f, %f)\n",
-        //        nodeIndex,
-        //        worldPx.p.x, worldPx.p.y, worldPx.p.z);
-        //    OutputDebugStringA(buf);
+            //    char buf[256];
+            //    sprintf_s(buf, "[Init] Node %zu: worldPx.p = (%f, %f, %f)\n",
+            //        nodeIndex,
+            //        worldPx.p.x, worldPx.p.y, worldPx.p.z);
+            //    OutputDebugStringA(buf);
         }
 
         std::vector<DirectX::XMFLOAT3> physicsVertices = ReturnPhysxVertices(mesh);
@@ -317,7 +332,7 @@ void MultiRigidBodyComponent::Initialize(physx::PxPhysics* physics)
             OutputDebugStringA("PxConvexMeshGeometry is invalid.\n");
             continue;
         }
-        PxShape* pxShape_ = physics->createShape(geometry, material,true); // 専用 shape を作成する
+        PxShape* pxShape_ = physics->createShape(geometry, material, true); // 専用 shape を作成する
         //pxShape_->userData = meshComponent_;   // MeshComponent へのポインタ
         pxShape_->userData = collisionComponent_;   // MeshComponent へのポインタ
 
@@ -355,8 +370,8 @@ void MultiRigidBodyComponent::Initialize(physx::PxPhysics* physics)
         //float baseMass = 10.0f; // 基準質量
         //float mass = baseMass * volumeScale;
         //currentBody->setMass(mass);
-        currentBody->setMass(20.0f);  
-        currentBody->setMassSpaceInertiaTensor(PxVec3(1.0f,1.0f,1.0f));  // Y軸の回転を抑える
+        currentBody->setMass(20.0f);
+        currentBody->setMassSpaceInertiaTensor(PxVec3(1.0f, 1.0f, 1.0f));  // Y軸の回転を抑える
         currentBody->setLinearDamping(0.9f);
         //currentBody->setLinearDamping(0.3f);
         currentBody->setAngularDamping(0.8f);
@@ -460,7 +475,7 @@ void MultiRigidBodyComponent::Initialize(physx::PxPhysics* physics)
 #endif
 }
 
-void MultiRigidBodyComponent::Destroy() 
+void MultiRigidBodyComponent::Destroy()
 {
     using namespace physx;
 #if 0
@@ -493,7 +508,7 @@ void MultiRigidBodyComponent::Destroy()
         for (PxShape* shape : shapes)
         {
             PxGeometryHolder holder = shape->getGeometry();
-            if (holder.getType() == PxGeometryType::eCONVEXMESH) 
+            if (holder.getType() == PxGeometryType::eCONVEXMESH)
             {
                 auto geom = holder.convexMesh(); // PxConvexMeshGeometry
                 geom.convexMesh->release();

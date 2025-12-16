@@ -48,12 +48,8 @@ void Physics::Initialize()
         pxSceneDesc.cpuDispatcher = pxDispatcher;
         pxSceneDesc.filterShader = SimulationFilterShader;	// NOTE:⑧衝突検出フィルタリング
         pxSceneDesc.simulationEventCallback = this;
-        //pxSceneDesc.staticKineFilteringMode = physx::PxPairFilteringMode::eKEEP;
-        //pxSceneDesc.kineKineFilteringMode = physx::PxPairFilteringMode::eKEEP;
-        //pxSceneDesc.flags |= physx::PxSceneFlag::eENABLE_ACTIVE_ACTORS;   // ActiveActors を送る
-        //pxSceneDesc.flags |= physx::PxSceneFlag::eENABLE_KINEMATIC_STATIC_PAIRS;
-        //pxSceneDesc.flags |= physx::PxSceneFlag::eENABLE_VISUALIZATION;   // 可視化そのものを有効
-                //pxSceneDesc.visualizationScale = 1.0f;
+        //	pxSceneDesc.flags |= physx::PxSceneFlag::eENABLE_PCM;
+        //	pxSceneDesc.flags |= physx::PxSceneFlag::eENABLE_STABILIZATION;
 
         pxScene = pxPhysics->createScene(pxSceneDesc);
         _ASSERT_EXPR(pxScene != nullptr, "Failed pxPhysics->createScene");
@@ -108,24 +104,11 @@ void Physics::Finalize()
 // 更新処理
 void Physics::Update(float elapsedTime)
 {
-    //static bool frag = true;
-    //// 物理シミュレーション処理
-    //if (GetAsyncKeyState('N') & 0x8000)
-    //{
-    //    frag = !frag;
-    //}
-    //if (frag)
-    //{
-
-#if 1
 
     pxScene->simulate(elapsedTime);//simulate今から開始するよっていう合図
     pxScene->fetchResults(true);//	計算が終わるまで待つ
-    PostSimulate();
 
-#endif // 0
 
-    //ExecuteDefferdOperations();
     //--------------------------
     // NOTE:⑬キネマティックオブジェクト同士の衝突処理
     //--------------------------
@@ -321,21 +304,19 @@ bool Physics::RayCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& 
     );
     pxQueryFilterData.data.word0 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
     pxQueryFilterData.data.word1 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
-    //OutputDebugStringA(("Ray Origin: " + std::to_string(origin.x) + ", " + std::to_string(origin.y) + ", " + std::to_string(origin.z) + "\n").c_str());
-    //OutputDebugStringA(("Ray Dir: " + std::to_string(direction.x) + ", " + std::to_string(direction.y) + ", " + std::to_string(direction.z) + "\n").c_str());
 
     //--------------------------
     // NOTE:①レイキャスト
     //--------------------------
     physx::PxVec3 pxOrigin(origin.x, origin.y, origin.z);
     physx::PxVec3 pxDirection(direction.x, direction.y, direction.z);
-    physx::PxRaycastBuffer/*N<1>*/ pxRaycastBuffer;
+    physx::PxRaycastBufferN<1> pxRaycastBuffer;
     bool hit = pxScene->raycast(
         pxOrigin, pxDirection, distance,
         pxRaycastBuffer,
         physx::PxHitFlag::eDEFAULT,
         pxQueryFilterData,		// NOTE:②フィルタリング設定
-        &Physics::Instance());
+        this);
     if (hit && pxRaycastBuffer.hasBlock)
     {
         //--------------------------
@@ -404,13 +385,16 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
 // スフィアキャスト
 bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, float radius, RaycastHit2& result)
 {
-    OutputDebugStringA("sphere cast is acting!\n");
-    physx::PxQueryFilterData pxQueryFilterData(
+    physx::PxQueryFilterData pxQueryFilterData{};
+    pxQueryFilterData.flags =
         physx::PxQueryFlag::eDYNAMIC |
         physx::PxQueryFlag::eSTATIC |
         physx::PxQueryFlag::ePREFILTER |
-        physx::PxQueryFlag::ePOSTFILTER
-    );
+        physx::PxQueryFlag::ePOSTFILTER;
+
+    //pxQueryFilterData.data.word0 = 1;
+    //pxQueryFilterData.data.word1 = 1;
+
     pxQueryFilterData.data.word0 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
     pxQueryFilterData.data.word1 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
 
@@ -419,25 +403,25 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
     //--------------------------
     physx::PxSphereGeometry pxGeometry(radius);
     physx::PxSweepBuffer pxSweepBuffer;
-    //physx::PxSweepBufferN<1> pxSweepBuffer;
+
+
+
     physx::PxTransform pxTransform(
         physx::PxVec3(origin.x, origin.y, origin.z),
         physx::PxQuat(0, 0, 0, 1));
-    physx::PxHitFlags hitFlags = physx::PxHitFlag::ePOSITION | physx::PxHitFlag::eNORMAL;
-    //physx::PxHitFlags hitFlags = physx::PxHitFlag::eDEFAULT;
+    //physx::PxHitFlags hitFlags = physx::PxHitFlag::ePOSITION | physx::PxHitFlag::eNORMAL;
+    physx::PxHitFlags hitFlags = physx::PxHitFlag::eDEFAULT;
     bool hit = pxScene->sweep(pxGeometry,
         physx::PxTransform(origin.x, origin.y, origin.z),
         physx::PxVec3(direction.x, direction.y, direction.z),
         distance,
         pxSweepBuffer,
-        //physx::PxHitFlag::eDEFAULT,
         hitFlags,
         pxQueryFilterData,
         this);
     if (hit && pxSweepBuffer.hasBlock)
     {
         const physx::PxVec3& p = pxSweepBuffer.block.position;
-        //OutputDebugStringA(("Hit Position: " + std::to_string(p.x) + "," + std::to_string(p.y) + "," + std::to_string(p.z) + "\n").c_str());
         const physx::PxVec3& n = pxSweepBuffer.block.normal;
 
         result.hitPoint = DirectX::XMFLOAT3(p.x, p.y, p.z);
@@ -458,8 +442,8 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
 
 physx::PxQueryHitType::Enum Physics::preFilter(const physx::PxFilterData& filterData, const physx::PxShape* shape, const physx::PxRigidActor* actor, physx::PxHitFlags& queryFlags)
 {
-    //OutputDebugStringA("=== preFilter CALLED ===\n");
-
+    OutputDebugStringA("=== preFilter CALLED ===\n");
+    return physx::PxQueryHitType::eBLOCK;
     //--------------------------
     // NOTE:③フィルタリング処理
     //--------------------------

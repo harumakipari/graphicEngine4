@@ -4,7 +4,6 @@
 
 void BossEnemy::Initialize(const Transform& transform)
 {
-
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeletalComponent");
     skeletalMeshComponent->SetModel("./Data/Models/Characters/Savarog/Idle.gltf");
     skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
@@ -71,12 +70,13 @@ void BossEnemy::Initialize(const Transform& transform)
     stateMachine_->ChangeState("Idle");
 
     // 敵からの攻撃を受ける当たり判定用のコンポーネントを追加
+#if 1
     std::shared_ptr<CapsuleComponent> capsuleComponent = this->NewSceneComponent<class CapsuleComponent>("capsuleComponent", "skeletalComponent");
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
     height = size.y;
     radius = size.x * 0.25f;
     capsuleComponent->SetRadiusAndHeight(radius, height);
-    capsuleComponent->SetMass(mass);
+    capsuleComponent->SetMass(40.0f);
     capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
     capsuleComponent->SetRelativeEulerRotationDirect(DirectX::XMFLOAT3(90.0f, 0.0f, 0.0f));
     capsuleComponent->SetLayer(CollisionLayer::Enemy);
@@ -85,7 +85,18 @@ void BossEnemy::Initialize(const Transform& transform)
     capsuleComponent->SetModelHeight(height * 0.5f);
     capsuleComponent->SetIsVisibleDebugBox(false);
     capsuleComponent->Initialize();
+#else
+    std::shared_ptr<BoxComponent> boxComponent = this->NewSceneComponent<class BoxComponent>("capsuleComponent", "skeletalComponent");
+    DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
+    boxComponent->SetBoxExtent({ size.x * 0.5f,size.y * 0.5f,size.z * 0.5f });
+    boxComponent->SetModelHeight(size.y * 0.5f);
+    boxComponent->SetMass(40.0f);
+    boxComponent->SetLayer(CollisionLayer::Enemy);
+    boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+    boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+    boxComponent->Initialize();
 
+#endif // 0
     SetPosition(transform.GetLocation());
     SetQuaternionRotation(transform.GetRotation());
     SetScale(transform.GetScale());

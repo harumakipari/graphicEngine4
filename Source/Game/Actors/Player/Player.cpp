@@ -90,6 +90,7 @@ void Player::Initialize(const Transform& transform)
     stateMachine_->ChangeState("Idle");
 
 
+#if 1
     // 敵からの攻撃を受ける当たり判定用のコンポーネントを追加
     std::shared_ptr<CapsuleComponent> capsuleComponent = this->NewSceneComponent<class CapsuleComponent>("capsuleComponent", "skeletalComponent");
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
@@ -97,7 +98,7 @@ void Player::Initialize(const Transform& transform)
     radius = size.x * 0.5f;
     capsuleComponent->SetRadiusAndHeight(radius, height);
     capsuleComponent->SetMass(mass);
-    capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+    //capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
     capsuleComponent->SetRelativeEulerRotationDirect(DirectX::XMFLOAT3(90.0f, 0.0f, 0.0f));
     capsuleComponent->SetLayer(CollisionLayer::Player);
     capsuleComponent->SetResponseToLayer(CollisionLayer::ShockWave, CollisionComponent::CollisionResponse::None);
@@ -115,6 +116,19 @@ void Player::Initialize(const Transform& transform)
     //    capsuleComponent->GetCollisionLayer(), capsuleComponent->GetCollisionMask());
     //OutputDebugStringA(debugBuffer);
     capsuleComponent->Initialize();
+#else
+    std::shared_ptr<BoxComponent> boxComponent = this->NewSceneComponent<class BoxComponent>("capsuleComponent", "skeletalComponent");
+    DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
+    boxComponent->SetBoxExtent({ size.x * 0.5f,size.y * 0.5f,size.z * 0.5f });
+    boxComponent->SetModelHeight(size.y * 0.5f);
+    boxComponent->SetMass(40.0f);
+    boxComponent->SetLayer(CollisionLayer::Player);
+    boxComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
+    boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+    boxComponent->Initialize();
+
+#endif // 0
+
 
     // ビームチャージ音コンポーネントを追加
     beamChargeAudioComponent = this->NewSceneComponent<AudioSourceComponent>("beamChargeAudioComponent", "skeletalComponent");

@@ -48,7 +48,6 @@ public:
 private:
     std::shared_ptr<Stage>  title;
     std::shared_ptr<CollisionMesh> stageCollisionMesh;
-    std::shared_ptr<TitleCamera> mainCameraActor;
 
 
     std::unique_ptr<PBD::System> pbd;

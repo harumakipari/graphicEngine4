@@ -438,7 +438,14 @@ public:
     PhysicsShapeInfo GetPhysicsShapeInfo()const override
     {
         PhysicsShapeInfo info;
-        info.geometry = physx::PxCapsuleGeometry(radius_, height * 0.5f);
+        // 見た目の全長（頭～足）
+        float totalHeight = height;
+
+        // PhysX 用 halfHeight（球を除いた円柱部分）
+        float halfHeight = (totalHeight * 0.5f) - radius_;
+        halfHeight = std::max<float>(halfHeight, 0.0f);
+
+        info.geometry = physx::PxCapsuleGeometry(radius_, halfHeight);
         //DirectX::XMFLOAT3 pos = GetComponentWorldTransform().GetLocation();
         //DirectX::XMFLOAT3 pos = attachParent_.lock()->GetWorldPosition();
         //pos = attachParent_.lock()->GetLocalPosition();
@@ -451,11 +458,16 @@ public:
         q = DirectX::XMQuaternionNormalize(q);
         DirectX::XMStoreFloat4(&rot, q);
 
-        info.transform = physx::PxTransform{
-            physx::PxVec3(pos.x,pos.y,pos.z),
-            physx::PxQuat(rot.x,rot.y,rot.z,rot.w)
-        };
+        // World 回転
+        physx::PxQuat worldQ(rot.x, rot.y, rot.z, rot.w);
 
+        // Capsule を X → Y に立てる回転
+        physx::PxQuat capsuleAxisQ(physx::PxPiDivTwo, physx::PxVec3(0, 1, 0));
+
+        info.transform = physx::PxTransform(
+            physx::PxVec3(pos.x, pos.y, pos.z),
+            worldQ * capsuleAxisQ
+        );
         //info.transform = physx::PxTransform{ {pos.x,pos.y,pos.z} };
 
         //if (capsuleAxis == ShapeComponent::CapsuleAxis::y)

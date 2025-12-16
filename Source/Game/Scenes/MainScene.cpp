@@ -1307,7 +1307,7 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
         RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-        objectManager.Draw(immediateContext);
+        //objectManager.Draw(immediateContext);
     }
 
     //framebuffers[1]->Deactivate(immediateContext);

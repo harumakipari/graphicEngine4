@@ -157,13 +157,13 @@ void MovementComponent::Tick(float deltaTime)
     DirectX::XMFLOAT3 sweptMove = moveVec;
 
 
-    // 衝突システムから押し出しベクトルを取得
-    DirectX::XMFLOAT3 pushVec = CollisionSystem::GetPushVectorForActor(owner_.lock().get());
+    //// 衝突システムから押し出しベクトルを取得
+    //DirectX::XMFLOAT3 pushVec = CollisionSystem::GetPushVectorForActor(owner_.lock().get());
 
-    // 合算
-    sweptMove.x += pushVec.x;
-    sweptMove.y += pushVec.y;
-    sweptMove.z += pushVec.z;
+    //// 合算
+    //sweptMove.x += pushVec.x;
+    //sweptMove.y += pushVec.y;
+    //sweptMove.z += pushVec.z;
 
     //moveVec.x += pushVec.x;
     //moveVec.y += pushVec.y;

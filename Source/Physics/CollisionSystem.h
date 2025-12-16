@@ -183,6 +183,7 @@ public:
                 }
 
                 // 押し出しベクトル
+
                 float pushDistance = std::min<float>(depth, 1.0f); // 最大深さ制限
                 dir = dir.getNormalized();
 

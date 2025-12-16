@@ -36,7 +36,7 @@ public:
         // 描画用コンポーネントを追加
         skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Debug/Primitives/cube.glb");
-        skeltalMeshComponent->SetIsVisible(false);
+        //skeltalMeshComponent->SetIsVisible(false);
         pointComponent = this->NewSceneComponent<class SkeletalMeshComponent>("pointComponent");
         pointComponent->SetModel("./Data/Debug/Primitives/sphere.glb");
         pointComponent->SetWorldLocationDirect({ 0.0f,5.0f,0.0f });

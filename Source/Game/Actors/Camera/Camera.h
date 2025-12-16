@@ -18,6 +18,7 @@
 #include "Game/Managers/GameManager.h"
 
 #include "Engine/Camera/CameraConstants.h"
+#include "Game/Actors/Stage/ElasticBuilding.h"
 
 class Camera :public Actor
 {
@@ -104,16 +105,16 @@ public:
         Camera::Initialize(transform);
         // 当たり判定のコンポーネントを追加
         //sphereComponent = this->NewSceneComponent<class SphereComponent>("sphereComponent", "springArm");
-        sphereComponent = this->NewSceneComponent<class SphereComponent>("sphereComponent", mainCameraComponent->name());
-        sphereComponent->SetRadius(0.2f);
-        //sphereComponent->SetMass(40.0f);
-        sphereComponent->SetLayer(CollisionLayer::Camera);
-        sphereComponent->SetResponseToLayer(CollisionLayer::Building, CollisionComponent::CollisionResponse::Trigger);
-        sphereComponent->SetResponseToLayer(CollisionLayer::Camera, CollisionComponent::CollisionResponse::None);
-        sphereComponent->Initialize();
-        sphereComponent->SetIsVisibleDebugBox(false);
-        sphereComponent->SetIsVisibleDebugShape(false);
-        sphereComponent->DisableCollision();
+        //sphereComponent = this->NewSceneComponent<class SphereComponent>("sphereComponent", mainCameraComponent->name());
+        //sphereComponent->SetRadius(0.2f);
+        ////sphereComponent->SetMass(40.0f);
+        //sphereComponent->SetLayer(CollisionLayer::Camera);
+        //sphereComponent->SetResponseToLayer(CollisionLayer::Building, CollisionComponent::CollisionResponse::Trigger);
+        //sphereComponent->SetResponseToLayer(CollisionLayer::Camera, CollisionComponent::CollisionResponse::None);
+        //sphereComponent->Initialize();
+        //sphereComponent->SetIsVisibleDebugBox(false);
+        //sphereComponent->SetIsVisibleDebugShape(false);
+        //sphereComponent->DisableCollision();
     };
 
     //更新処理
@@ -175,14 +176,15 @@ public:
             DirVec = DirectX::XMVector3Normalize(DirVec);
             DirectX::XMStoreFloat3(&direction, DirVec);
             DirectX::XMStoreFloat(&distance, distanceVec);
+            distance = 100.0f;
             //if (PhysicsTest::Instance().SphereCast(origin, direction, distance, 0.4f, result, CollisionHelper::ToBit(CollisionLayer::Camera),     // myLayer
             //    CollisionHelper::ToBit(CollisionLayer::Building)))   // wantHitRayer)
             if (Physics::Instance().SphereCast(origin, direction, distance, 1.0f, result))   // wantHitRayer)
             {
-                OutputDebugStringA("sphere cast hit building!\n");
-                if (auto build = dynamic_cast<Building*>(result.actor))
+                if (auto build = dynamic_cast<ElasticBuilding*>(result.actor))
                 {
-                    build->preSkeltalMeshComponent->model->SetAlpha(0.3f);
+                    OutputDebugStringA("sphere cast hit building!\n");
+                    build->skeltalMeshComponent->SetIsVisible(false);
                 }
                 else if (auto bossBuild = dynamic_cast<BossBuilding*>(result.actor))
                 {
@@ -193,9 +195,9 @@ public:
             {
                 for (const auto& actor : ShockWaveTargetRegistry::GetTargets())
                 {
-                    if (auto build = std::dynamic_pointer_cast<Building>(actor))
+                    if (auto build = dynamic_cast<ElasticBuilding*>(result.actor))
                     {
-                        build->preSkeltalMeshComponent->model->SetAlpha(1.0f);
+                        build->skeltalMeshComponent->SetIsVisible(true);
                     }
                     else if (auto bossBuild = std::dynamic_pointer_cast<BossBuilding>(actor))
                     {
