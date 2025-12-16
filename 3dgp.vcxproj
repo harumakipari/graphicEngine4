@@ -390,6 +390,7 @@
     <ClInclude Include="Source\Game\Actors\Stage\Cloth.h" />
     <ClInclude Include="Source\Game\Actors\Stage\ClothSimulate.h" />
     <ClInclude Include="Source\Game\Actors\Stage\ElasticBuilding.h" />
+    <ClInclude Include="Source\Game\Actors\Stage\FightStage.h" />
     <ClInclude Include="Source\Game\Actors\Stage\Objects\StageProp.h" />
     <ClInclude Include="Source\Game\Actors\Stage\TestSoftBody.h" />
     <ClInclude Include="Source\Game\Actors\Stage\Stage.h" />

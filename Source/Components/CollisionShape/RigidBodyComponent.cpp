@@ -673,14 +673,15 @@ void TriangleMeshRigidBodyComponent::Initialize(physx::PxPhysics* physics)
         pxMeshDesc.triangles.count = static_cast<PxU32>(indices32.size() / 3);
         pxMeshDesc.triangles.stride = 3 * sizeof(PxU32);
         pxMeshDesc.triangles.data = indices32.data();
+        pxMeshDesc.flags = PxMeshFlag::eFLIPNORMALS; // 32ビットインデックス
     }
     else
     {
         pxMeshDesc.triangles.count = static_cast<PxU32>(indices16.size() / 3);
         pxMeshDesc.triangles.stride = 3 * sizeof(PxU16);
         pxMeshDesc.triangles.data = indices16.data();
+        pxMeshDesc.flags = PxMeshFlag::e16_BIT_INDICES;
     }
-    pxMeshDesc.flags = PxMeshFlag::e16_BIT_INDICES;
 
     PxTriangleMesh* triangleMesh = nullptr;
     PxDefaultMemoryOutputStream writeBuffer;
