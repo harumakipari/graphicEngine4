@@ -16,10 +16,10 @@ public:
         staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         //staticMeshComponent->SetRelativeLocationDirect({ 0.0f,2.45f,0.0f });
 
-        //std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->NewSceneComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent", "staticMeshComponent");
-        //triangleMeshComponent->SetLayer(CollisionLayer::Convex);
-        //triangleMeshComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-        //triangleMeshComponent->CreateConvexMeshFromModel(staticMeshComponent.get());
+        std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->NewSceneComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent", "staticMeshComponent");
+        triangleMeshComponent->SetLayer(CollisionLayer::Convex);
+        triangleMeshComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        triangleMeshComponent->CreateConvexMeshFromModel(staticMeshComponent.get());
     }
 
     void Update(float elapsedTime)override {}

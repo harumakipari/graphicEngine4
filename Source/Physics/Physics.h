@@ -53,6 +53,9 @@ public:
     // 更新処理
     void Update(float elapsedTime);
 
+    // 描画処理
+    void Render(const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection, const DirectX::XMFLOAT3& lightDirection);
+
     // フィジクス取得
     physx::PxPhysics* GetPhysics() const { return pxPhysics; }
 
@@ -127,6 +130,24 @@ private:
         physx::PxVec3					normal;
         physx::PxF32					depth;
     };
+
+    struct Line
+    {
+        DirectX::XMFLOAT3	start;
+        DirectX::XMFLOAT3	end;
+        DirectX::XMFLOAT4	color;
+    };
+
+    struct Capsule
+    {
+        DirectX::XMFLOAT4X4	transform;
+        float				radius;
+        float				height;
+        DirectX::XMFLOAT4	color;
+    };
+    std::vector<Line>		lines;
+    std::vector<Capsule>	capsules;
+
 
     std::vector<physx::PxRigidDynamic*> gravityEnableList_;
 

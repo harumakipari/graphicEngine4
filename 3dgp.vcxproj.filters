@@ -198,9 +198,6 @@
     <ClCompile Include="Source\Components\Camera\CameraComponent.cpp">
       <Filter>Sources\Components\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Physics\PhysicsUtility.cpp">
-      <Filter>Sources\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Components\CollisionShape\ShapeComponent.cpp">
       <Filter>Sources\Components\CollisionShape</Filter>
     </ClCompile>
@@ -510,6 +507,21 @@
     <ClCompile Include="Source\Game\Actors\Player\PlayerStateDerived.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossEnemy.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossState.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Renderer\PrimitiveRenderer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\pch.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Renderer\PrimitiveShapeRenderer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -535,9 +547,6 @@
     </ClInclude>
     <ClInclude Include="Source\Components\Camera\CameraComponent.h">
       <Filter>Sources\Components\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Physics\PhysicsUtility.h">
-      <Filter>Sources\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\Animation\AnimationController.h">
       <Filter>Sources\Animation</Filter>
@@ -1044,6 +1053,12 @@
     <ClInclude Include="Source\Game\State\StateMachine.h" />
     <ClInclude Include="Source\Game\State\StateBase.h" />
     <ClInclude Include="Source\Game\Actors\Player\PlayerStateDerived.h" />
+    <ClInclude Include="Source\Game\Actors\Enemy\Boss\BossEnemy.h" />
+    <ClInclude Include="Source\Game\Actors\Enemy\Boss\BossState.h" />
+    <ClInclude Include="Source\Game\Actors\Stage\FightStage.h" />
+    <ClInclude Include="Source\Graphics\Renderer\PrimitiveRenderer.h" />
+    <ClInclude Include="Source\pch.h" />
+    <ClInclude Include="Source\Graphics\Renderer\PrimitiveShapeRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">
@@ -1295,6 +1310,24 @@
     <FxCompile Include="Shader\SkyMapGBufferPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\PrimitiveRendererPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\PrimitiveRendererVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SolidShapeRendererPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SolidShapeRendererVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\WiredShapeRendererPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\WiredShapeRendererVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ComputeParticle.hlsli">
@@ -1367,6 +1400,15 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\Common.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\PrimitiveRenderer.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\SolidShapeRenderer.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\WiredShapeRenderer.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

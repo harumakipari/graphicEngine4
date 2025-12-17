@@ -187,6 +187,12 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelForwardTranspacyPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\PrimitiveRendererPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\PrimitiveRendererVS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\RoundedLoadingPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
@@ -226,6 +232,12 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\SkyMapVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\SolidShapeRendererPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\SolidShapeRendererVS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\sprite_ps.cso</FullPath>
     </ContentFile>
     <ContentFile>
@@ -254,6 +266,12 @@
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricFogPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\WiredShapeRendererPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\WiredShapeRendererVS.cso</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />
