@@ -252,11 +252,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     sceneRender.currentRenderPath = RenderPath::Deferred;
     sceneRender.RenderOpaque(immediateContext);
     sceneRender.RenderMask(immediateContext);
-    // デバック描画
-#if _DEBUG
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-    //actorColliderManager.DebugRender(immediateContext);
-#endif
+
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     gBufferRenderTarget->Deactivate(immediateContext);
 
@@ -329,6 +325,14 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
     sceneRender.currentRenderPath = RenderPath::Forward;
     sceneRender.RenderBlend(immediateContext); // ここで警告出る
+
+    // デバック描画
+#if _DEBUG
+    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
+    //actorColliderManager.DebugRender(immediateContext);
+    Physics::Instance().Render(cameraView,cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+#endif
+    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
     frameBuffer->Deactivate(immediateContext);
 

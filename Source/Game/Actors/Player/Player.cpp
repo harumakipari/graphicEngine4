@@ -476,6 +476,21 @@ void Player::Update(float elapsedTime)
     // これは絶対入れる　アニメーションの更新をしているから
     Character::Update(elapsedTime);
 
+    XMFLOAT3 position = GetPosition();
+    angle = GetEulerRotation();
+
+    // レイキャストテスト
+    HitResult hit;
+    if (Physics::Instance().RayCast(
+        DirectX::XMFLOAT3(position.x, position.y + 1.5f, position.z),
+        DirectX::XMFLOAT3(sinf(angle.y), 0, cosf(angle.y)),
+        5.0f,
+        hit))
+    {
+        Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
+    }
+
+
     //if (GameManager::GetGameTimerStart() && !onceFrag)
     //{// ゲームが開始されたら
     //    state = State::Idle;
