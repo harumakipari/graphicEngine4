@@ -17,7 +17,7 @@ public:
         //staticMeshComponent->SetRelativeLocationDirect({ 0.0f,2.45f,0.0f });
 
         std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->NewSceneComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent", "staticMeshComponent");
-        triangleMeshComponent->SetLayer(CollisionLayer::Convex);
+        triangleMeshComponent->SetLayer(CollisionLayer::WorldStatic);
         triangleMeshComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
         triangleMeshComponent->CreateConvexMeshFromModel(staticMeshComponent.get());
     }

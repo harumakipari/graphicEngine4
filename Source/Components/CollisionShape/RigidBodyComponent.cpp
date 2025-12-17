@@ -689,7 +689,7 @@ void TriangleMeshRigidBodyComponent::Initialize(physx::PxPhysics* physics)
         pxMeshDesc.triangles.count = static_cast<PxU32>(indices32.size() / 3);
         pxMeshDesc.triangles.stride = 3 * sizeof(PxU32);
         pxMeshDesc.triangles.data = indices32.data();
-        pxMeshDesc.flags = PxMeshFlag::eFLIPNORMALS; // 32ビットインデックス
+        //pxMeshDesc.flags = PxMeshFlag::eFLIPNORMALS; // 32ビットインデックス
     }
     else
     {
@@ -714,9 +714,16 @@ void TriangleMeshRigidBodyComponent::Initialize(physx::PxPhysics* physics)
     pxShape_->userData = owner_;   // MeshComponent へのポインタ
 
     // 衝突フィルタ
-    PxFilterData filterData(layer_, mask_, 0, 0);
-    pxShape_->setSimulationFilterData(filterData);
-    pxShape_->setQueryFilterData(filterData);
+    //physx::PxFilterData pxFilterData = pxShape_->getQueryFilterData();
+    physx::PxFilterData queryData = pxShape_->getQueryFilterData();
+    queryData.word0 = 0xFFFFFFFF;
+    queryData.word1 = 0xFFFFFFFF;
+    pxShape_->setQueryFilterData(queryData);
+    pxShape_->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+    pxShape_->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true); // 念のため
+    //PxFilterData filterData(layer_, mask_, 0, 0);
+    //pxShape_->setSimulationFilterData(filterData);
+    //pxShape_->setQueryFilterData(filterData);
 
     DirectX::XMFLOAT3 pos = owner_->GetOwner()->GetPosition();
     DirectX::XMFLOAT4 rot = owner_->GetComponentRotation();

@@ -668,6 +668,7 @@ bool Physics::RayCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& 
     //--------------------------
     physx::PxVec3 pxOrigin(origin.x, origin.y, origin.z);
     physx::PxVec3 pxDirection(direction.x, direction.y, direction.z);
+    pxDirection.normalize();
     physx::PxRaycastBufferN<1> pxRaycastBuffer;
     bool hit = pxScene->raycast(
         pxOrigin, pxDirection, distance,
@@ -892,13 +893,13 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
 
 physx::PxQueryHitType::Enum Physics::preFilter(const physx::PxFilterData& filterData, const physx::PxShape* shape, const physx::PxRigidActor* actor, physx::PxHitFlags& queryFlags)
 {
-    OutputDebugStringA("=== preFilter CALLED ===\n");
-    return physx::PxQueryHitType::eBLOCK;
+    //OutputDebugStringA("=== preFilter CALLED ===\n");
+    //return physx::PxQueryHitType::eBLOCK;
     //--------------------------
     // NOTE:③フィルタリング処理
     //--------------------------
     physx::PxFilterData shapeFilterData = shape->getQueryFilterData();
-    if ((shapeFilterData.word0 & filterData.word0) == 0)	// NOTE:⑥レイヤーマスク判定
+    if ((shapeFilterData.word0 & filterData.word0) == 0xFFFFFF)	// NOTE:⑥レイヤーマスク判定
     {
         return physx::PxQueryHitType::eNONE;
     }
