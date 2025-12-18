@@ -263,6 +263,7 @@
     <ClCompile Include="Source\Engine\Debug\Logger.cpp" />
     <ClCompile Include="Source\Engine\Easing\TestEasingHandler.cpp" />
     <ClCompile Include="Source\Engine\Effects\CoreComputeParticleSystem.cpp" />
+    <ClCompile Include="Source\Engine\Effects\EffectEditor.cpp" />
     <ClCompile Include="Source\Engine\Effects\EffectManager.cpp" />
     <ClCompile Include="Source\Engine\Framework\Framework.cpp" />
     <ClCompile Include="Source\Engine\Input\GamePad.cpp" />
@@ -398,6 +399,7 @@
     <ClInclude Include="Source\Engine\Easing\Easing.h" />
     <ClInclude Include="Source\Engine\Easing\TestEasingHandler.h" />
     <ClInclude Include="Source\Engine\Effects\CoreComputeParticleSystem.h" />
+    <ClInclude Include="Source\Engine\Effects\EffectEditor.h" />
     <ClInclude Include="Source\Engine\Effects\EffectManager.h" />
     <ClInclude Include="Source\Engine\Framework\Framework.h" />
     <ClInclude Include="Source\Engine\Input\GamePad.h" />

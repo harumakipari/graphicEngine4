@@ -69,9 +69,9 @@ void Time::Tick() // Call every frame.
 	// Force nonnegative.  The DXSDK's CDXUTTimer mentions that if the 
 	// processor goes into a power save mode or we get shuffled to another
 	// processor, then mDeltaTime can be negative.
-	if (deltaTime < 0.0)
+	if (deltaTime < 0.0f)
 	{
-		deltaTime = 0.0;
+		deltaTime = 0.0f;
 	}
 }
 

@@ -37,6 +37,7 @@ void main( uint3 dispatchThreadId : SV_DispatchThreadID )
     
     particleDataBuffer[particleIndex].velocity = emitParticleBuffer[emitIndex].velocity;
     particleDataBuffer[particleIndex].acceleration = emitParticleBuffer[emitIndex].acceleration;
-    particleDataBuffer[particleIndex].color = emitParticleBuffer[emitIndex].color;
+    particleDataBuffer[particleIndex].startColor = emitParticleBuffer[emitIndex].startColor;
+    particleDataBuffer[particleIndex].endColor = emitParticleBuffer[emitIndex].endColor;
     particleDataBuffer[particleIndex].customData = emitParticleBuffer[emitIndex].customData;
 }

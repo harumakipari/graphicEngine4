@@ -45,6 +45,7 @@ void main( uint3 dispatchThreadId : SV_DispatchThreadID )
     //if (data.parameter.x == 0)
     switch ((int) (data.parameter.x + 0.5f))
     {
+#if 0
         case 1://ターゲット位置に集まるエフェクト
         {
             //速度更新
@@ -86,31 +87,31 @@ void main( uint3 dispatchThreadId : SV_DispatchThreadID )
             data.color.a = saturate(data.parameter.y);
             break;
         }
+#endif
         default:
         {
             //速度更新
-            data.velocity.xyz += data.acceleration.xyz * deltaTime;
+                data.velocity.xyz += data.acceleration.xyz * deltaTime;
         
             //位置更新
-            data.position.xyz += data.velocity.xyz * deltaTime;
+                data.position.xyz += data.velocity.xyz * deltaTime;
         
+            // ライフタイム比率算出(z:寿命、y:残り寿命)
+                float lifeRatio = (data.parameter.z - data.parameter.y) / data.parameter.z;
+                uint frameCount = textureSplitCount.x * textureSplitCount.y;
             //切り取り座標を算出
-            //uint type = (uint)((data.parameter.z - data.parameter.y / data.parameter.z) * (textureSplitCount.x * textureSplitCount.y));
-            //uint type = lerp(0, (textureSplitCount.x * textureSplitCount.y), ((data.parameter.z - data.parameter.y) / data.parameter.z));
-            float lifeRatio = (data.parameter.z - data.parameter.y) / data.parameter.z;
-            uint frameCount = textureSplitCount.x * textureSplitCount.y;
-            uint type = min((uint) (lifeRatio * frameCount), frameCount - 1); // clamping
+                uint type = min((uint) (lifeRatio * frameCount), frameCount - 1); // clamping
             
-            float w = 1.0 / textureSplitCount.x;
-            float h = 1.0 / textureSplitCount.y;
-            float2 uv = float2((type % textureSplitCount.x) * w, (type / textureSplitCount.x) * h);
-            data.texcoord.xy = uv;
-            data.texcoord.zw = float2(w, h);
+                float w = 1.0 / textureSplitCount.x;
+                float h = 1.0 / textureSplitCount.y;
+                float2 uv = float2((type % textureSplitCount.x) * w, (type / textureSplitCount.x) * h);
+                data.texcoord.xy = uv;
+                data.texcoord.zw = float2(w, h);
         
-            //徐々に透明にしていく
-            data.color.a = saturate(data.parameter.y);
-            break;
-        }
+            // 開始色から終了色へ線形補間
+                data.color = lerp(data.startColor, data.endColor, lifeRatio);
+                break;
+            }
     }
         
     //深度ソート値算出

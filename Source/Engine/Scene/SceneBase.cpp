@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "SceneBase.h"
-
+#include <profiler.h>
 #include "ImGuizmo.h"
+#include "Engine/Effects/EffectManager.h"
 
 #include "Engine/Input/InputSystem.h"
 #include "Game/Actors/Camera/Camera.h"
@@ -188,6 +189,21 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     //actorColliderManager.DebugRender(immediateContext);
     //PhysicsTest::Instance().DebugRender(immediateContext);
 #endif
+    // PARTICLES
+    {
+        ProfileScopedSection_2(0, "Particles", ImGuiControl::Profiler::Green);
+
+        //深度ステンシルステート設定
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF, 1);
+        //ラスタライザ設定
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+
+        //定数バッファ更新
+
+        // パーティクル描画
+        EffectManager::Render(immediateContext);
+    }
+
 
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     multipleRenderTargets->Deactivate(immediateContext);
@@ -325,6 +341,22 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
     sceneRender.currentRenderPath = RenderPath::Forward;
     sceneRender.RenderBlend(immediateContext); // ここで警告出る
+
+    // PARTICLES
+    {
+        ProfileScopedSection_2(0, "Particles", ImGuiControl::Profiler::Green);
+
+        //深度ステンシルステート設定
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF, 1);
+        //ラスタライザ設定
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+
+        //定数バッファ更新
+
+        // パーティクル描画
+        EffectManager::Render(immediateContext);
+    }
+
 
     // デバック描画
 #if _DEBUG

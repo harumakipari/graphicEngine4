@@ -113,7 +113,39 @@ void main(point GS_IN gin[1], inout TriangleStream<PS_IN> output)
     
     //ワールド行列生成
     float4x4 scaleMatrix = MatrixScaling(float3(size, 1));
-    float4x4 rotationMatrix = mul(billbordMatrix, MatrixRotationRollPitchYaw(particleDataBuffer[particleIndex].rotation.xyz));
+
+    //回転行列生成
+    float4x4 rotationMatrix = (float4x4) 0;
+    
+    //描画モードによって回転行列を変更
+    switch ((int) (particleDataBuffer[particleIndex].parameter.x + 0.5f))
+    {
+        case 0: // Billboard
+            rotationMatrix = mul(billbordMatrix, MatrixRotationRollPitchYaw(particleDataBuffer[particleIndex].rotation.xyz));
+            break;
+        
+        case 1: // StretchedBillboard
+        {
+                float3 velocity = particleDataBuffer[particleIndex].velocity;
+                float speed = length(velocity);
+                float3 dir = speed > 1e-5f ? normalize(velocity) : float3(0, 0, 1);
+
+                float3 camRight = normalize(invView._m00_m01_m02);
+                float3 camUp = normalize(cross(dir, camRight));
+                camRight = normalize(cross(camUp, dir));
+
+                rotationMatrix = float4x4(
+            float4(camRight, 0),
+            float4(camUp, 0),
+            float4(dir, 0),
+            float4(0, 0, 0, 1)
+            );
+                break;
+            }
+        case 2: // FixedRotation
+            rotationMatrix = MatrixRotationRollPitchYaw(particleDataBuffer[particleIndex].rotation.xyz);
+            break;
+    }
     float4x4 translationMatrix = MatrixTranslation(particleDataBuffer[particleIndex].position.xyz);
     float4x4 worldMatrix = mul(mul(scaleMatrix, rotationMatrix), translationMatrix);
     float4x4 worldViewProjectionMatrix = mul(worldMatrix, viewProjection);
@@ -137,13 +169,13 @@ void main(point GS_IN gin[1], inout TriangleStream<PS_IN> output)
         float2(0, 1),
         float2(1, 1),
     };
-	for (uint i = 0; i < 4; i++)
-	{
-		PS_IN element;
+    for (uint i = 0; i < 4; i++)
+    {
+        PS_IN element;
         element.position = mul(vertexPositions[i], worldViewProjectionMatrix);
         element.texcoord = texcoord.xy + texcoord.zw * vertexTexcoords[i];
         element.color = color;
-		output.Append(element);
-	}
+        output.Append(element);
+    }
     output.RestartStrip();
 }

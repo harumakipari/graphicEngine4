@@ -14,6 +14,8 @@
 #include "Engine/Input/InputSystem.h"
 #include "Graphics/Renderer/ShapeRenderer.h"
 #include "../../Components/Audio/AudioSourceComponent.h"
+#include "Engine/Effects/EffectEditor.h"
+#include "Engine/Effects/EffectManager.h"
 
 
 //コンストラクタ：ウィンドウハンドルを受け取って初期化
@@ -47,6 +49,19 @@ bool Framework::Initialize()
     Scene::_boot(device, "SampleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
 
 
+    //パーティクルシステム
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> particleTexture;
+    HRESULT hr = LoadTextureFromFile(device, L"./Data/Effect/Textures/particle.png", particleTexture.GetAddressOf(), NULL);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    particleSystem = std::make_unique<CoreComputeParticleSystem>(device, 30000, particleTexture);
+
+    // エフェクトマネージャー初期化
+    EffectManager::Initialize();
+
+    //エフェクトエディタ初期化
+    EffectEditor::Initialize();
+
+
     //プロファイラ初期化
     ProfileInitialize(&isPaused, Framework::SetPause/*, ImGuiControl::Profiler::DefaultMaxThreads*/);
     ProfileThreadName(0, "Main Thread");
@@ -65,7 +80,7 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
     // SCENE_TRANSITION
     {
         ProfileScopedSection_2(0, "SceneUpdate", ImGuiControl::Profiler::Blue);
-        skipRendering = Scene::_update(immediateContext, deltaTime * timeScale);
+        skipRendering = Scene::_update(immediateContext, deltaTime);
     }
 
 #ifdef USE_IMGUI
@@ -80,8 +95,22 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
     //}
     {
         ProfileScopedSection_2(0, "InputUpdate", ImGuiControl::Profiler::Green);
-        InputSystem::Update(deltaTime);
+        //入力システム更新
+        if (GetForegroundWindow() == Graphics::GetHwnd())
+        {
+            InputSystem::Update(Time::UnscaledDeltaTime());
+        }
     }
+
+    //パーティクルシステム更新
+    {
+        ProfileScopedSection_2(0, "ComputeParticleSystem::Update", ImGuiControl::Profiler::Blue);
+        particleSystem->Update(Graphics::GetDeviceContext(), deltaTime);
+
+        // エフェクトマネージャ更新
+        EffectManager::Update(deltaTime);
+    }
+
 
     return skipRendering;
 
@@ -126,6 +155,10 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
         ProfileScopedSection_2(0, "ImGui", ImGuiControl::Profiler::Yellow);
         ProfileDrawUI();
         Scene::_drawGUI();
+
+        //エフェクトエディタGUI描画
+        EffectEditor::DrawGUI();
+
     }
 
     /*ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -157,6 +190,10 @@ bool Framework::Uninitialize()
     ProfileShutdown();
 
     ID3D11Device* device = Graphics::GetDevice();
+
+    // エフェクトマネージャー終了
+    EffectManager::ClearAll();
+
 
     Audio::ClearAll();
 

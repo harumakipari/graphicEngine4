@@ -15,7 +15,8 @@ struct EmitParticleData
     float4 velocity; // 初速
     float4 acceleration; // 加速度
     
-    float4 color; // 色情報
+    float4 startColor; // 開始色情報
+    float4 endColor; // 終了色情報
     
     float4 customData; //カスタムデータ
 };
@@ -34,7 +35,9 @@ struct ParticleData
 
     float4 texcoord; //  UV座標
     float4 color; // 色情報
-    
+    float4 startColor; // 開始色情報
+    float4 endColor; // 終了色情報
+
     float4 customData; // カスタムデータ
 };
 

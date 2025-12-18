@@ -62,6 +62,7 @@ void main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     emitParticleBuffer[particleIndex].acceleration = 0;
     emitParticleBuffer[particleIndex].acceleration.y = 0.1f;
     
-    emitParticleBuffer[particleIndex].color = baseColor;
+    emitParticleBuffer[particleIndex].startColor = baseColor;
+    emitParticleBuffer[particleIndex].endColor = baseColor;
     
 }
