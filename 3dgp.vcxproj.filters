@@ -522,6 +522,24 @@
     <ClCompile Include="Source\Graphics\Renderer\PrimitiveShapeRenderer.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core\Vector.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\CoreColor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Effects\EffectManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Debug\Dialog.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Resources\ResourceManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Effects\CoreComputeParticleSystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1040,7 +1058,7 @@
     <ClInclude Include="Source\Graphics\PostProcess\SSREffect.h" />
     <ClInclude Include="Source\Engine\Scene\SceneBase.h" />
     <ClInclude Include="Source\Game\SofyBody\SoftBody.h" />
-    <ClInclude Include="Source\Engine\Effects\ComputeParticleSystem.h" />
+    <ClInclude Include="Source\Engine\Effects\CoreComputeParticleSystem.h" />
     <ClInclude Include="Source\Game\Actors\Stage\TestSoftBody.h" />
     <ClInclude Include="Source\Graphics\Core\GltfDxgiHelper.h" />
     <ClInclude Include="Source\Game\Scenes\SampleScene.h" />
@@ -1059,6 +1077,14 @@
     <ClInclude Include="Source\Graphics\Renderer\PrimitiveRenderer.h" />
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\Graphics\Renderer\PrimitiveShapeRenderer.h" />
+    <ClInclude Include="Source\Core\Vector.h" />
+    <ClInclude Include="Source\Engine\Effects\EffectManager.h" />
+    <ClInclude Include="Source\Core\CoreColor.h" />
+    <ClInclude Include="Source\Engine\Utility\JsonUtils.h" />
+    <ClInclude Include="Source\Engine\Utility\JsonFileHandler.h" />
+    <ClInclude Include="Source\Engine\Debug\Dialog.h" />
+    <ClInclude Include="Source\Engine\Resources\Resource.h" />
+    <ClInclude Include="Source\Engine\Resources\ResourceManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">

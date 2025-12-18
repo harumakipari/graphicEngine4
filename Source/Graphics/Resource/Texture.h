@@ -3,6 +3,7 @@
 #include <vector>
 #include <wrl/client.h>
 
+#include "Engine/Resources/Resource.h"
 #include "Engine/Utility/Win32Utils.h"
 
 _NODISCARD HRESULT LoadTextureFromFile(ID3D11Device* device,
@@ -49,5 +50,43 @@ HRESULT create_structured_buffer_shader_resource_view(ID3D11Device* device, cons
 	return hr;
 }
 
+/**
+ * @brief テクスチャ資源クラス。
+ * @details SRV と記述子の管理、ファイル読み込みやダミー生成、解放を提供します。
+ */
+class Texture : public Resource
+{
+public:
+	/** @brief 既定コンストラクタ。*/
+	Texture() = default;
+	/** @brief デストラクタ。内部 `Release()` を呼びます。*/
+	virtual ~Texture() noexcept override { Release(); }
+
+	/** @brief パスからテクスチャを読み込みます。*/
+	bool LoadFromFile(const std::string& filePath) override;
+	/** @brief ワイド文字パス版の読み込み。*/
+	bool Load(ID3D11Device* device, const std::wstring& filePath);
+	/**
+	 * @brief ダミーテクスチャを生成します。
+	 * @param device D3D11 デバイス。
+	 * @param value RGBA を 0xAABBGGRR 形式で指定。
+	 * @param dimension 正方テクスチャの一辺のピクセル数。
+	 */
+	bool MakeDummy(ID3D11Device* device, DWORD value = 0xFFFFFFFF, UINT dimension = 16);
+	/** @brief SRV と記述子を解放します。*/
+	void Release();
+
+	/** @brief SRV を取得します。*/
+	ID3D11ShaderResourceView* GetSRV() const { return m_Srv.Get(); }
+	/** @brief SRV のアドレスを取得します（API 呼び出し用）。*/
+	ID3D11ShaderResourceView** GetSRVAddress() { return m_Srv.GetAddressOf(); }
+	/** @brief 2D テクスチャ記述子を取得します。*/
+	const D3D11_TEXTURE2D_DESC& GetDesc() const { return m_Desc; }
+private:
+	/** @brief シェーダリソースビュー。*/
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_Srv = nullptr;
+	/** @brief テクスチャ記述子。*/
+	D3D11_TEXTURE2D_DESC m_Desc{};
+};
 
 void ReleaseAllTextures();

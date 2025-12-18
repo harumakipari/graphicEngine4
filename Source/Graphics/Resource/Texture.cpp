@@ -10,6 +10,7 @@
 #include <string>   
 
 #include "Engine/Utility/Win32Utils.h"
+#include "Graphics/Core/Graphics.h"
 using namespace DirectX;
 
 using namespace std;
@@ -124,7 +125,32 @@ HRESULT LoadTextureFromMemory(ID3D11Device* device, const void* data, size_t siz
     return hr;
 }
 
+bool Texture::LoadFromFile(const std::string& filePath)
+{
+    _path = filePath;
+    auto device = Graphics::GetDevice();
+    if (filePath.empty())
+        return MakeDummy(device);
 
+    return Load(device, std::wstring(filePath.begin(), filePath.end()));
+}
+
+bool Texture::Load(ID3D11Device* device, const std::wstring& filePath)
+{
+    HRESULT hr = LoadTextureFromFile(device, filePath.c_str(), m_Srv.ReleaseAndGetAddressOf(), &m_Desc);
+    return SUCCEEDED(hr);
+}
+
+bool Texture::MakeDummy(ID3D11Device* device, DWORD value, UINT dimension)
+{
+    HRESULT hr = MakeDummyTexture(device, m_Srv.ReleaseAndGetAddressOf(), value, dimension);
+    return SUCCEEDED(hr);
+}
+
+void Texture::Release()
+{
+    m_Srv.Reset();
+}
 
 // キャッシュされたすべてのテクスチャを解放する関数
 void ReleaseAllTextures()

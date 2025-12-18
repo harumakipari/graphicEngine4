@@ -76,6 +76,8 @@ public:
     // シェイプレンダラ取得
     static PrimitiveShapeRenderer* GetShapeRenderer()  { return shapeRenderer.get(); }
 
+    static HWND GetHwnd() { return hWnd; }
+
 
     static inline BOOL fullscreenMode{ FALSE };// フルスクリーンモードかどうか
 private:
