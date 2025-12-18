@@ -207,6 +207,20 @@ namespace MathHelper
         XMStoreFloat3(&out, n);
         return out;
     }
+
+    inline DirectX::XMVECTOR QuaternionLookAt(const DirectX::XMVECTOR& Original, const DirectX::XMVECTOR& Target)
+    {
+        DirectX::XMVECTOR Forward = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(Target, Original));
+        DirectX::XMVECTOR Up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+        DirectX::XMVECTOR Right = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(Up, Forward));
+        Up = DirectX::XMVector3Cross(Forward, Right);
+        DirectX::XMMATRIX Rotation = DirectX::XMMatrixIdentity();
+        Rotation.r[0] = Right;
+        Rotation.r[1] = Up; Rotation.r[2] = Forward;
+        DirectX::XMVECTOR Quaternion = DirectX::XMQuaternionRotationMatrix(Rotation);
+        return Quaternion;
+    }
+
 }
 
 #endif //MATH_HELPER_H
