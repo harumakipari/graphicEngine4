@@ -127,7 +127,7 @@ void SampleScene::Update(float deltaTime)
             //}
 
 
-            //RaycastHit2 result;
+            //HitResultWithActor result;
             //if (Physics::Instance().SphereCast(rayStart, rayDir, FLT_MAX, 1.0f, result))   // wantHitRayer)
             //{
             //    if (auto stage = dynamic_cast<Stage*>(result.actor))

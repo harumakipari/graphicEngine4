@@ -480,24 +480,35 @@ void Player::Update(float elapsedTime)
 
     // レイキャストテスト
     HitResult hit;
-    if (Physics::Instance().RayCast(
+    bool hitGround = Physics::Instance().RayCast(
         DirectX::XMFLOAT3(position.x, position.y + 1.5f, position.z),
         DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f),
+        5.0f,
+        hit, CollisionHelper::ToBit(CollisionLayer::WorldStatic));
+
+    if (hitGround /*&& hit.normal.y > 0.6f*/)
+    {
+        //const float groundOffset = 1.0f;
+        //float desiredDist = 1.5f - groundOffset;
+
+        //if (hit.distance < desiredDist)
+        //{
+        //    position.y += (desiredDist - hit.distance);
+        //    SetPosition(position);
+        //}
+
+        Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
+        //isGrounded = true;
+    }
+
+    if (Physics::Instance().RayCast(
+        DirectX::XMFLOAT3(position.x, position.y + 1.5f, position.z),
+        DirectX::XMFLOAT3(sinf(angle.y), 0, cosf(angle.y)),
         15.0f,
         hit, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
     {
-        Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
+        Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 1, 1, 1 });
     }
-
-    //HitResult hit;
-    //if (Physics::Instance().RayCast(
-    //    DirectX::XMFLOAT3(position.x, position.y + 1.5f, position.z),
-    //    DirectX::XMFLOAT3(sinf(angle.y), 0, cosf(angle.y)),
-    //    15.0f,
-    //    hit))
-    //{
-    //    Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
-    //}
 
 
     //if (GameManager::GetGameTimerStart() && !onceFrag)

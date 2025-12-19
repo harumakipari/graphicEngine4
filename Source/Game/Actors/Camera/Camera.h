@@ -165,7 +165,7 @@ public:
             // lerp æ‚Ì position ‚ð•Û‘¶
             afterTarget = clampedTarget;
             afterEye = eye;
-            RaycastHit2 result;
+            HitResultWithActor result;
             DirectX::XMFLOAT3 origin = GetPosition();
             DirectX::XMFLOAT3 direction;
             direction.x = mainCameraComponent->GetView()._31;
@@ -198,11 +198,10 @@ public:
             {
                 if (auto build = dynamic_cast<FightStage*>(result.actor))
                 {
-                    Graphics::GetShapeRenderer()->DrawSphere(result.hitPoint, 0.1f, { 0, 1, 0, 1 });
+                    Graphics::GetShapeRenderer()->DrawSphere(result.hitPoint, 0.1f, { 0, 0, 0, 1 });
                 }
                 if (auto build = dynamic_cast<ElasticBuilding*>(result.actor))
                 {
-                    OutputDebugStringA("sphere cast hit building!\n");
                     build->skeltalMeshComponent->SetIsVisible(false);
                 }
                 else if (auto bossBuild = dynamic_cast<BossBuilding*>(result.actor))

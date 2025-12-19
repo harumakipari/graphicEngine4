@@ -795,7 +795,7 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
 }
 
 // スフィアキャスト
-bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, float radius, RaycastHit2& result, uint32_t wantToHitLayer/*なにと当たりたいか、ここの数字に入れたら、この数値と同じレイヤーに当たる*/)
+bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, float radius, HitResultWithActor& result, uint32_t wantToHitLayer/*なにと当たりたいか、ここの数字に入れたら、この数値と同じレイヤーに当たる*/)
 {
     physx::PxQueryFilterData pxQueryFilterData{};
     pxQueryFilterData.flags =
