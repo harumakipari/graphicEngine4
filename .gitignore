@@ -36,3 +36,4 @@ imgui.ini
 x64/
 *.cod
 *.cso
+Data/Models/pink_pudding/scene.cereal

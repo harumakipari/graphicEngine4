@@ -12,9 +12,12 @@ public:
     void Initialize(const Transform& transform)override
     {
         std::shared_ptr<StaticMeshComponent> staticMeshComponent = this->NewSceneComponent<class StaticMeshComponent>("staticMeshComponent");
+#if 0
         staticMeshComponent->SetModel("./Data/Models/Stage/ExampleStage.gltf", true);
-        //staticMeshComponent->SetModel("./Data/Models/boss_fight_stage/scene.gltf", true);
+#else
+        staticMeshComponent->SetModel("./Data/Models/boss_fight_stage/scene.gltf", true);
         staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
+#endif // 1
         //staticMeshComponent->SetRelativeLocationDirect({ 0.0f,2.45f,0.0f });
 
         std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->NewSceneComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent", "staticMeshComponent");

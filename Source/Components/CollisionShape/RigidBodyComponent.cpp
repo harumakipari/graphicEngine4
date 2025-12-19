@@ -707,7 +707,7 @@ void TriangleMeshRigidBodyComponent::Initialize(physx::PxPhysics* physics)
         pxMeshDesc.triangles.count = static_cast<PxU32>(indices32.size() / 3);
         pxMeshDesc.triangles.stride = 3 * sizeof(PxU32);
         pxMeshDesc.triangles.data = indices32.data();
-        //pxMeshDesc.flags = PxMeshFlag::eFLIPNORMALS; // 32ビットインデックス
+        //pxMeshDesc.flags = PxMeshFlag::eFLIPNORMALS; // 32ビットインデックス これレイキャスト効かなくなる
     }
     else
     {

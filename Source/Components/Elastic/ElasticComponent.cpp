@@ -78,6 +78,8 @@ void ElasticMeshComponent::Tick(float deltaTime)
             HitResultWithActor result;
             if (Physics::Instance().SphereCast(rayStart, rayDir, FLT_MAX, 0.001f, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
             {
+                Graphics::GetShapeRenderer()->DrawSphere(result.hitPoint, 0.03f, { 1, 1, 1, 1 });
+
                 if (auto stage = dynamic_cast<FightStage*>(result.actor))
                 {
                     intersectPos = result.hitPoint;

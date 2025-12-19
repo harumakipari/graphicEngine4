@@ -3,6 +3,7 @@
 #include "Core/Actor.h"
 #include "Graphics/Core/ConstantBuffer.h"
 #include "Components/CollisionShape/ShapeComponent.h"
+#include "Components/Effect/ParticleComponent.h"
 #include "Components/Elastic/ElasticComponent.h"
 
 class ElasticBuilding : public Actor
@@ -221,6 +222,7 @@ public:
     {
     }
     std::shared_ptr<ElasticMeshComponent> elasticBuilding;
+    std::shared_ptr<ParticleComponent> particleComponent;
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
@@ -238,9 +240,9 @@ public:
         boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
         boxComponent->Initialize();
 
+        particleComponent = this->NewSceneComponent<class ParticleComponent>("particleComponent", "elasticBuilding");
+        particleComponent->Load("./Data/Effect/Files/testEffect.json");
 
-
-        
         SetPosition(transform.GetLocation());
         SetQuaternionRotation(transform.GetRotation());
         SetScale(transform.GetScale());
@@ -249,6 +251,13 @@ public:
     }
     void Update(float deltaTime)override
     {
+        if (InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
+        {
+            if (particleComponent)
+            {
+                particleComponent->Play();
+            }
+        }
     }
     void DrawImGuiDetails()
     {
