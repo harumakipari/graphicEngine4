@@ -98,8 +98,7 @@ void Player::Initialize(const Transform& transform)
     radius = size.x * 0.5f;
     capsuleComponent->SetRadiusAndHeight(radius, height);
     capsuleComponent->SetMass(mass);
-    //capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
-    capsuleComponent->SetRelativeEulerRotationDirect(DirectX::XMFLOAT3(90.0f, 0.0f, 0.0f));
+    capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
     capsuleComponent->SetLayer(CollisionLayer::Player);
     capsuleComponent->SetResponseToLayer(CollisionLayer::ShockWave, CollisionComponent::CollisionResponse::None);
     capsuleComponent->SetResponseToLayer(CollisionLayer::PlayerSide, CollisionComponent::CollisionResponse::None);
@@ -483,12 +482,22 @@ void Player::Update(float elapsedTime)
     HitResult hit;
     if (Physics::Instance().RayCast(
         DirectX::XMFLOAT3(position.x, position.y + 1.5f, position.z),
-        DirectX::XMFLOAT3(sinf(angle.y), 0, cosf(angle.y)),
+        DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f),
         15.0f,
         hit))
     {
         Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
     }
+
+    //HitResult hit;
+    //if (Physics::Instance().RayCast(
+    //    DirectX::XMFLOAT3(position.x, position.y + 1.5f, position.z),
+    //    DirectX::XMFLOAT3(sinf(angle.y), 0, cosf(angle.y)),
+    //    15.0f,
+    //    hit))
+    //{
+    //    Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
+    //}
 
 
     //if (GameManager::GetGameTimerStart() && !onceFrag)

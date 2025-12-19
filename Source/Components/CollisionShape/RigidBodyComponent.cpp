@@ -13,7 +13,7 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
 
     DirectX::XMFLOAT3 pos = shapeComponent_->GetOwner()->GetPosition();
     DirectX::XMFLOAT4 rot = shapeComponent_->GetComponentRotation();
-    pos.y += shapeComponent_->GetModelHeight();
+    //pos.y += shapeComponent_->GetModelHeight();
     PxVec3 pxPosition(pos.x, pos.y, pos.z);
     PxQuat pxRotation(rot.x, rot.y, rot.z, rot.w);
     // physx の原点を上げるため
@@ -31,8 +31,21 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
     {
         // 形状のローカル姿勢を調整
         physx::PxTransform pxShapeTransform = pxShape_->getLocalPose();
+
+        switch (shapeComponent_->GetCapusleAxis())
+        {
+        case ShapeComponent::CapsuleAxis::x:
+            pxShapeTransform.q = physx::PxQuat(physx::PxPiDivTwo, physx::PxVec3(1.0f, 0.0f, 0.0f));
+            break;
+        case ShapeComponent::CapsuleAxis::y:
+            pxShapeTransform.p = PxVec3(0.0f, shapeComponent_->GetModelHeight(), 0.0f);
+            pxShapeTransform.q = physx::PxQuat(physx::PxPiDivTwo, physx::PxVec3(0.0f, 0.0f, 1.0f));	//90度回転させて
+            break;
+        case ShapeComponent::CapsuleAxis::z:
+            pxShapeTransform.q = physx::PxQuat(physx::PxPiDivTwo, physx::PxVec3(0.0f, 1.0f, 0.0f));
+            break;
+        };
         //pxShapeTransform.p.y = shapeComponent_->GetModelHeight(); // 上に補正して
-        pxShapeTransform.q = physx::PxQuat(physx::PxPiDivTwo, physx::PxVec3(0.0f, 1.0f, 0.0f));	//90度回転させて
         pxShape_->setLocalPose(pxShapeTransform);	//シーンに設定(カプセルを立たせるため)通常は横向き
     }
     else

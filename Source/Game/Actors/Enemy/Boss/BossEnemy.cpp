@@ -78,7 +78,6 @@ void BossEnemy::Initialize(const Transform& transform)
     capsuleComponent->SetRadiusAndHeight(radius, height);
     capsuleComponent->SetMass(40.0f);
     capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
-    capsuleComponent->SetRelativeEulerRotationDirect(DirectX::XMFLOAT3(90.0f, 0.0f, 0.0f));
     capsuleComponent->SetLayer(CollisionLayer::Enemy);
     capsuleComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
     capsuleComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::None);

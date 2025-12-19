@@ -179,6 +179,20 @@ public:
             distance = 100.0f;
             //if (PhysicsTest::Instance().SphereCast(origin, direction, distance, 0.4f, result, CollisionHelper::ToBit(CollisionLayer::Camera),     // myLayer
             //    CollisionHelper::ToBit(CollisionLayer::Building)))   // wantHitRayer)
+
+                // レイキャストテスト
+            HitResult hit;
+            if (Physics::Instance().SphereCast(
+                DirectX::XMFLOAT3(origin.x, origin.y + 1.5f, origin.z),
+                direction,
+                5.0f,
+                0.1f, hit))
+            {
+                Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
+            }
+
+
+
             if (Physics::Instance().SphereCast(origin, direction, distance, 1.0f, result))   // wantHitRayer)
             {
                 if (auto build = dynamic_cast<ElasticBuilding*>(result.actor))

@@ -117,6 +117,14 @@ void SampleScene::Update(float deltaTime)
             {
                 Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
             }
+            //HitResult hit;
+            //if (Physics::Instance().RayCast(
+            //    rayStart, rayDir,
+            //    FLT_MAX,
+            //    hit))
+            //{
+            //    Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
+            //}
 
 
             //RaycastHit2 result;

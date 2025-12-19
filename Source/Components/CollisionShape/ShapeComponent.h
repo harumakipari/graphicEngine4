@@ -460,9 +460,20 @@ public:
 
         // World âÒì]
         physx::PxQuat worldQ(rot.x, rot.y, rot.z, rot.w);
-
+        physx::PxQuat capsuleAxisQ = { physx::PxPiDivTwo, physx::PxVec3(0.0f, 0.0f, 1.0f) };
         // Capsule Ç X Å® Y Ç…óßÇƒÇÈâÒì]
-        physx::PxQuat capsuleAxisQ(physx::PxPiDivTwo, physx::PxVec3(0, 1, 0));
+        switch (capsuleAxis)
+        {
+        case CapsuleAxis::x:
+            capsuleAxisQ = { physx::PxPiDivTwo, physx::PxVec3(1.0f, 0.0f, 0.0f) };
+            break;
+        case ShapeComponent::CapsuleAxis::y:
+            capsuleAxisQ = {physx::PxPiDivTwo, physx::PxVec3(0.0f, 0.0f, 1.0f)};
+            break;
+        case ShapeComponent::CapsuleAxis::z:
+            capsuleAxisQ = { physx::PxPiDivTwo, physx::PxVec3(0.0f, 1.0f, 0.0f) };
+            break;
+        };
 
         info.transform = physx::PxTransform(
             physx::PxVec3(pos.x, pos.y, pos.z),
