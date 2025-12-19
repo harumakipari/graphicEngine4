@@ -810,6 +810,7 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
     //--------------------------
     // NOTE:④シェイプキャスト
     //--------------------------
+#if 0
     physx::PxSphereGeometry pxGeometry(50);
     physx::PxSweepBuffer pxSweepBuffer;
 
@@ -845,6 +846,47 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
         distance = result.distance;
     }
     distance += radius;
+
+
+#else
+    physx::PxSphereGeometry pxGeometry(radius);
+    physx::PxSweepBuffer pxSweepBuffer;
+    //physx::PxSweepBufferN<1> pxSweepBuffer;
+    physx::PxTransform pxTransform(
+        physx::PxVec3(origin.x, origin.y, origin.z),
+        physx::PxQuat(0, 0, 0, 1));
+    physx::PxHitFlags hitFlags = physx::PxHitFlag::ePOSITION | physx::PxHitFlag::eNORMAL;
+    bool hit = pxScene->sweep(pxGeometry,
+        physx::PxTransform(origin.x, origin.y, origin.z),
+        physx::PxVec3(direction.x, direction.y, direction.z),
+        distance,
+        pxSweepBuffer,
+        //physx::PxHitFlag::eDEFAULT,
+        hitFlags,
+        pxQueryFilterData,
+        this);
+    if (hit && pxSweepBuffer.hasBlock)
+    {
+        const physx::PxVec3& p = pxSweepBuffer.block.position;
+        //OutputDebugStringA(("Hit Position: " + std::to_string(p.x) + "," + std::to_string(p.y) + "," + std::to_string(p.z) + "\n").c_str());
+        const physx::PxVec3& n = pxSweepBuffer.block.normal;
+
+        result.hitPoint = DirectX::XMFLOAT3(p.x, p.y, p.z);
+        result.normal = DirectX::XMFLOAT3(n.x, n.y, n.z);
+        result.distance = pxSweepBuffer.block.distance;
+        if (pxSweepBuffer.block.actor && pxSweepBuffer.block.actor->userData)
+            result.actor = static_cast<Actor*>(pxSweepBuffer.block.actor->userData);
+
+        if (pxSweepBuffer.block.shape && pxSweepBuffer.block.shape->userData)
+            result.component = static_cast<ShapeComponent*>(pxSweepBuffer.block.shape->userData);
+
+
+        distance = result.distance;
+    }
+    distance += radius;
+#endif // 0
+
+
 
     Line& line = lines.emplace_back();
     line.start = origin;

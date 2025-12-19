@@ -2,6 +2,7 @@
 #include "SceneBase.h"
 #include <profiler.h>
 #include "ImGuizmo.h"
+#include "Engine/Effects/EffectEditor.h"
 #include "Engine/Effects/EffectManager.h"
 
 #include "Engine/Input/InputSystem.h"
@@ -359,11 +360,11 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
 
     // デバック描画
-#if _DEBUG
+//#if _DEBUG
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
     //actorColliderManager.DebugRender(immediateContext);
     Physics::Instance().Render(cameraView,cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
-#endif
+//#endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
     frameBuffer->Deactivate(immediateContext);
@@ -555,6 +556,13 @@ void SceneBase::DrawInspector()
         {
             DrawSceneSettingsTab();
             ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("EffectEditor"))
+        {
+            //エフェクトエディタGUI描画
+            EffectEditor::DrawGUI();
+            //ImGui::EndTabItem();
         }
 
         ImGui::EndTabBar();

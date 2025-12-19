@@ -156,8 +156,6 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
         ProfileDrawUI();
         Scene::_drawGUI();
 
-        //エフェクトエディタGUI描画
-        EffectEditor::DrawGUI();
 
     }
 

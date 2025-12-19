@@ -19,6 +19,7 @@
 
 #include "Engine/Camera/CameraConstants.h"
 #include "Game/Actors/Stage/ElasticBuilding.h"
+#include "Game/Actors/Stage/FightStage.h"
 
 class Camera :public Actor
 {
@@ -181,20 +182,24 @@ public:
             //    CollisionHelper::ToBit(CollisionLayer::Building)))   // wantHitRayer)
 
                 // レイキャストテスト
-            HitResult hit;
-            if (Physics::Instance().SphereCast(
-                DirectX::XMFLOAT3(origin.x, origin.y + 1.5f, origin.z),
-                direction,
-                5.0f,
-                0.1f, hit))
+            //HitResult hit;
+            //if (Physics::Instance().SphereCast(
+            //    DirectX::XMFLOAT3(origin.x, origin.y + 1.5f, origin.z),
+            //    direction,
+            //    FLT_MAX,
+            //    0.1f, hit))
+            //{
+            //    Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
+            //}
+
+
+
+            if (Physics::Instance().SphereCast(origin, direction, FLT_MAX, 0.1f, result))   // wantHitRayer)
             {
-                Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
-            }
-
-
-
-            if (Physics::Instance().SphereCast(origin, direction, distance, 1.0f, result))   // wantHitRayer)
-            {
+                if (auto build = dynamic_cast<FightStage*>(result.actor))
+                {
+                    Graphics::GetShapeRenderer()->DrawSphere(result.hitPoint, 0.1f, { 0, 1, 0, 1 });
+                }
                 if (auto build = dynamic_cast<ElasticBuilding*>(result.actor))
                 {
                     OutputDebugStringA("sphere cast hit building!\n");
