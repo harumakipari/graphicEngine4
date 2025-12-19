@@ -562,7 +562,7 @@ void SceneBase::DrawInspector()
         {
             //エフェクトエディタGUI描画
             EffectEditor::DrawGUI();
-            //ImGui::EndTabItem();
+            ImGui::EndTabItem();
         }
 
         ImGui::EndTabBar();

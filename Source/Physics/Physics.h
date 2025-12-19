@@ -77,11 +77,11 @@ public:
 
 
     // レイキャスト
-    bool RayCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, HitResult& result);
+    bool RayCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, HitResult& result, uint32_t wantToHitLayer = 0xFFFFFF/*なにと当たりたいか、ここの数字に入れたら、この数値と同じレイヤーに当たる*/);
 
     // スフィアキャスト
-    bool SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, float radius, HitResult& result);
-    bool SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, float radius, RaycastHit2& result);
+    bool SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, float radius, HitResult& result, uint32_t wantToHitLayer = 0xFFFFFF/*なにと当たりたいか、ここの数字に入れたら、この数値と同じレイヤーに当たる*/);
+    bool SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, float radius, RaycastHit2& result, uint32_t wantToHitLayer = 0xFFFFFF/*なにと当たりたいか、ここの数字に入れたら、この数値と同じレイヤーに当たる*/);
 
 
 protected:

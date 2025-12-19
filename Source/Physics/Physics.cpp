@@ -649,7 +649,7 @@ void Physics::Render(const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4&
 
 
 // レイキャスト
-bool Physics::RayCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, HitResult& result)
+bool Physics::RayCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, HitResult& result,uint32_t wantToHitLayer/*なにと当たりたいか、ここの数字に入れたら、この数値と同じレイヤーに当たる*/)
 {
     //--------------------------
     // NOTE:②フィルタリング設定
@@ -660,8 +660,10 @@ bool Physics::RayCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& 
         physx::PxQueryFlag::ePREFILTER |
         physx::PxQueryFlag::ePOSTFILTER
     );
-    pxQueryFilterData.data.word0 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
-    pxQueryFilterData.data.word1 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
+    //pxQueryFilterData.data.word0 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
+    //pxQueryFilterData.data.word1 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
+    pxQueryFilterData.data.word0 = wantToHitLayer;	// NOTE:⑤レイヤーマスク
+
 
     //--------------------------
     // NOTE:①レイキャスト
@@ -701,7 +703,7 @@ bool Physics::RayCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& 
 }
 
 // スフィアキャスト
-bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, float radius, HitResult& result)
+bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, float radius, HitResult& result, uint32_t wantToHitLayer/*なにと当たりたいか、ここの数字に入れたら、この数値と同じレイヤーに当たる*/)
 {
     physx::PxQueryFilterData pxQueryFilterData(
         physx::PxQueryFlag::eDYNAMIC |
@@ -709,8 +711,9 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
         physx::PxQueryFlag::ePREFILTER |
         physx::PxQueryFlag::ePOSTFILTER
     );
-    pxQueryFilterData.data.word0 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
-    pxQueryFilterData.data.word1 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
+    //pxQueryFilterData.data.word0 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
+    pxQueryFilterData.data.word0 = wantToHitLayer;	// NOTE:⑤レイヤーマスク
+    //pxQueryFilterData.data.word1 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
 
     //--------------------------
     // NOTE:④シェイプキャスト
@@ -792,7 +795,7 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
 }
 
 // スフィアキャスト
-bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, float radius, RaycastHit2& result)
+bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT3& direction, float distance, float radius, RaycastHit2& result, uint32_t wantToHitLayer/*なにと当たりたいか、ここの数字に入れたら、この数値と同じレイヤーに当たる*/)
 {
     physx::PxQueryFilterData pxQueryFilterData{};
     pxQueryFilterData.flags =
@@ -804,8 +807,8 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
     //pxQueryFilterData.data.word0 = 1;
     //pxQueryFilterData.data.word1 = 1;
 
-    pxQueryFilterData.data.word0 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
-    pxQueryFilterData.data.word1 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
+    pxQueryFilterData.data.word0 = wantToHitLayer;	// NOTE:⑤レイヤーマスク
+    //pxQueryFilterData.data.word1 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
 
     //--------------------------
     // NOTE:④シェイプキャスト
@@ -941,7 +944,8 @@ physx::PxQueryHitType::Enum Physics::preFilter(const physx::PxFilterData& filter
     // NOTE:③フィルタリング処理
     //--------------------------
     physx::PxFilterData shapeFilterData = shape->getQueryFilterData();
-    if ((shapeFilterData.word0 & filterData.word0) == 0xFFFFFF)	// NOTE:⑥レイヤーマスク判定
+    //if ((shapeFilterData.word0 & filterData.word0) == 0xFFFFFF)	// NOTE:⑥レイヤーマスク判定
+    if ((shapeFilterData.word0 & filterData.word0) == 0)	// NOTE:⑥レイヤーマスク判定
     {
         return physx::PxQueryHitType::eNONE;
     }

@@ -484,7 +484,7 @@ void Player::Update(float elapsedTime)
         DirectX::XMFLOAT3(position.x, position.y + 1.5f, position.z),
         DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f),
         15.0f,
-        hit))
+        hit, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
     {
         Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
     }

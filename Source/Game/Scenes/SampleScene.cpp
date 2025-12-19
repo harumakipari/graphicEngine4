@@ -113,7 +113,7 @@ void SampleScene::Update(float deltaTime)
             if (Physics::Instance().RayCast(
                 rayStart, rayDir,
                 FLT_MAX,
-                hit))
+                hit, CollisionHelper::ToBit(CollisionLayer::WorldStatic)| CollisionHelper::ToBit(CollisionLayer::Player)))
             {
                 Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
             }

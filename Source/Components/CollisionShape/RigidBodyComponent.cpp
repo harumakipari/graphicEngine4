@@ -55,23 +55,28 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
     }
 
     // レイキャストなど用のレイヤー設定
-    //physx::PxFilterData pxFilterData = pxShape_->getQueryFilterData();
-    //pxFilterData.word0 = 1;
-    //pxShape_->setQueryFilterData(pxFilterData);
-    physx::PxFilterData queryData;
-    queryData.word0 = 0xFFFFFFFF;
-    queryData.word1 = 0xFFFFFFFF;
+    physx::PxFilterData pxFilterData = pxShape_->getQueryFilterData();
+    pxFilterData.word0 = layer_;
+    //pxFilterData.word0 = 1;// 1なら当たる　０なら当たらない
+    pxShape_->setQueryFilterData(pxFilterData);
+#if 1
+    //physx::PxFilterData queryData;
+    //queryData.word0 = 0xFFFFFFFF;
+    //queryData.word1 = 0xFFFFFFFF;
 
-    pxShape_->setQueryFilterData(queryData);
+    //pxShape_->setQueryFilterData(queryData);
+#else
 
-    //physx::PxFilterData filterData;
-    //filterData.word0 = layer_;
-    //filterData.word1 = mask_;
+    physx::PxFilterData filterData;
+    filterData.word0 = layer_;
 
-    //pxShape_->setSimulationFilterData(filterData);
-    //pxShape_->setQueryFilterData(filterData);
+    pxShape_->setSimulationFilterData(filterData);
+    pxShape_->setQueryFilterData(filterData);
 
+
+#endif // 0
     pxShape_->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+    //pxShape_->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
     //if (isTrigger_)
     //{
     //    pxShape_->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
@@ -729,8 +734,10 @@ void TriangleMeshRigidBodyComponent::Initialize(physx::PxPhysics* physics)
     // 衝突フィルタ
     //physx::PxFilterData pxFilterData = pxShape_->getQueryFilterData();
     physx::PxFilterData queryData = pxShape_->getQueryFilterData();
-    queryData.word0 = 0xFFFFFFFF;
-    queryData.word1 = 0xFFFFFFFF;
+    //queryData.word0 = 0xFFFFFFFF;
+    //queryData.word1 = 0xFFFFFFFF;
+    queryData.word0 = layer_;
+    //queryData.word0 = 1;
     pxShape_->setQueryFilterData(queryData);
     pxShape_->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true);
     pxShape_->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true); // 念のため
