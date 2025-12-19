@@ -197,6 +197,16 @@ public:
             AddPipeLineState("defferdOpaqueStaticMesh", desc);
         }
 
+        // StaticMesh defferd Stage Blend —p
+        {
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
+            AddPipeLineState("defferdBlendStaticMesh", desc);
+        }
+
+
         // StaticMesh forward Mask —p
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());

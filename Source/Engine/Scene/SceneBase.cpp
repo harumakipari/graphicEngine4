@@ -45,7 +45,7 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     HRESULT hr = { S_OK };
 
     //スカイマップ
-    skyMap = std::make_unique<decltype(skyMap)::element_type>(device, L"./Data/Environment/Sky/cloud/skybox.dds");
+    skyMap = std::make_unique<decltype(skyMap)::element_type>(device, L"./Data/Environment/Sky/Night/skybox.dds");
 
     fullscreenQuad = std::make_unique<FullScreenQuad>(device);
 

@@ -253,7 +253,7 @@ void EffectEditor::DrawGUI()
 						{
 							emitterData.shapeData.shape = static_cast<EffectManager::ShapeType>(shapeTypeIndex);
 						}
-						const char* directionModeItems[] = { "Default", "Random", "Axis", "Outward", "Inward", "Normal" };
+						const char* directionModeItems[] = { "Default", "Axis", "Random", "Outward", "Inward", "Normal" };
 						int directionModeIndex = static_cast<int>(emitterData.shapeData.directionMode);
 						if (ImGui::Combo("Direction Mode", &directionModeIndex, directionModeItems, IM_ARRAYSIZE(directionModeItems)))
 						{

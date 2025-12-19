@@ -17,6 +17,7 @@ public:
 #else
         staticMeshComponent->SetModel("./Data/Models/boss_fight_stage/scene.gltf", true);
         staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
+        //staticMeshComponent->overrideDeferredPipelineName=
 #endif // 1
         //staticMeshComponent->SetRelativeLocationDirect({ 0.0f,2.45f,0.0f });
 
@@ -24,6 +25,10 @@ public:
         triangleMeshComponent->SetLayer(CollisionLayer::WorldStatic);
         triangleMeshComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
         triangleMeshComponent->CreateConvexMeshFromModel(staticMeshComponent.get());
+
+        SetPosition(transform.GetLocation());
+        SetQuaternionRotation(transform.GetRotation());
+        SetScale(transform.GetScale());
     }
 
     void Update(float elapsedTime)override {}

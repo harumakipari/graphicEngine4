@@ -27,8 +27,9 @@ void Player::Initialize(const Transform& transform)
     // 描画用コンポーネントを追加
     skeletalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeletalComponent");
     skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/idle.gltf");
-    HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelGameCharacter.cso", skeletalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    //skeletalMeshComponent->SetModel("./Data/Models/Characters/GirlSoldier/idle.gltf");
+    //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelGameCharacter.cso", skeletalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+    //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     SetPosition(transform.GetLocation());
     SetQuaternionRotation(transform.GetRotation());
