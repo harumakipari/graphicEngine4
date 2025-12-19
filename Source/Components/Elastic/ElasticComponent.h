@@ -7,8 +7,10 @@ class ElasticMeshComponent :public MeshComponent
 public:
     ElasticMeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :MeshComponent(name, owner)
     {
-        overridePipelineName= "elasticBuilding";
+        overrideDeferredPipelineName= "elasticBuildingDeferred";
+        overrideForwardPipelineName = "elasticBuildingForward";
         overrideCascadeShadowPipelineName = "CascadeShadowMapElasticBuilding";
+
     }
 
     ~ElasticMeshComponent() override = default;

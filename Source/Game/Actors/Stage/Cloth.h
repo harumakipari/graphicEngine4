@@ -626,12 +626,12 @@ public:
         skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
         //skeletalMeshComponent->SetModel("./Data/Models/TestCloth/cloth1.gltf", true);
         skeltalMeshComponent->SetModel("./Data/Models/TestCloth/cloth1.gltf", true);
-        skeltalMeshComponent->overridePipelineName = "cloth";
+        skeltalMeshComponent->overrideDeferredPipelineName = "cloth";
         //skeletalMeshComponent->SetIsVisible(false);
 
         //clothMesh = this->NewSceneComponent<class ClothMeshComponent>("clothComponent", "skeltalComponent");
         //clothMesh->SetModel("./Data/Models/TestCloth/cloth1.gltf", true);
-        //clothMesh->overridePipelineName = "cloth";
+        //clothMesh->overrideDeferredPipelineName = "cloth";
 
 
         SetPosition(transform.GetLocation());

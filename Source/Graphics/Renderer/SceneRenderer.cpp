@@ -177,6 +177,8 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext) const
     }
 }
 
+
+
 void SceneRenderer::CastShadowRender(ID3D11DeviceContext* immediateContext)
 {
     Scene* currentScene = Scene::GetCurrentScene();  // Œ»Ý‚ÌƒV[ƒ“Žæ“¾
@@ -328,9 +330,23 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                     {
                         pipelineName = *material.overridePipelineName;
                     }
-                    else if (meshComponent->overridePipelineName.has_value())
+                    else if (meshComponent->overrideDeferredPipelineName.has_value())
                     {
-                        pipelineName = *meshComponent->overridePipelineName;
+                        if (pass == InterleavedGltfModel::RenderPass::Blend)
+                        {
+                            if (meshComponent->overrideForwardPipelineName.has_value())
+                            {
+                                pipelineName = *meshComponent->overrideForwardPipelineName;
+                            }
+                            else
+                            {
+                                pipelineName = *meshComponent->overrideDeferredPipelineName;
+                            }
+                        }
+                        else
+                        {
+                            pipelineName = *meshComponent->overrideDeferredPipelineName;
+                        }
                     }
                     else
                     {
@@ -533,9 +549,9 @@ void SceneRenderer::DrawWithStaticBatching(ID3D11DeviceContext* immediateContext
         {
             pipelineName = *material.overridePipelineName;
         }
-        else if (meshComponent->overridePipelineName.has_value())
+        else if (meshComponent->overrideDeferredPipelineName.has_value())
         {
-            pipelineName = *meshComponent->overridePipelineName;
+            pipelineName = *meshComponent->overrideDeferredPipelineName;
         }
         else
         {

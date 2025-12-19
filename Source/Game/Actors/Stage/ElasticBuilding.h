@@ -52,7 +52,8 @@ public:
         //buildComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         //buildComponent->model->isModelInMeters = true;
         //buildComponent->SetWorldLocationDirect({ 4.0f,0.0f,0.0f });
-        buildComponent->overridePipelineName = "elasticBuilding";
+        buildComponent->overrideDeferredPipelineName = "elasticBuildingDeferred";
+        buildComponent->overrideForwardPipelineName = "elasticBuildingForward";
         buildComponent->overrideCascadeShadowPipelineName = "CascadeShadowMapElasticBuilding";
         buildComponent->SetIsVisible(false);
         elasticBuildingCBuffer = std::make_unique<ConstantBuffer<ElasticBuildingConstants>>(Graphics::GetDevice());
@@ -224,7 +225,21 @@ public:
     {
         // 描画用コンポーネントを追加
         elasticBuilding = this->NewSceneComponent<ElasticMeshComponent>("elasticBuilding");
-        elasticBuilding->SetModel("./Data/Models/Building/bomb_bill.gltf");
+        //elasticBuilding->SetModel("./Data/Models/Building/bomb_bill.gltf");
+        elasticBuilding->SetModel("./Data/Models/pink_pudding/scene.gltf");
+
+
+        std::shared_ptr<BoxComponent> boxComponent = this->NewSceneComponent<class BoxComponent>("boxComponent", "elasticBuilding");
+        DirectX::XMFLOAT3 size = elasticBuilding->GetModelSize();
+        boxComponent->SetBoxExtent({ size.x * 0.5f,size.y * 0.5f,size.z * 0.5f });
+        boxComponent->SetMass(40.0f);
+        boxComponent->SetLayer(CollisionLayer::Enemy);
+        boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+        boxComponent->Initialize();
+
+
+
         
         SetPosition(transform.GetLocation());
         SetQuaternionRotation(transform.GetRotation());

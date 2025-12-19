@@ -322,7 +322,17 @@ public:
             AddPipeLineState("defferdBlendSkeltalMesh", desc);
         }
 
-        // elasticBuilding
+        // elasticBuilding forward Blend —p
+        {
+            hr = CreateVsFromCSO(device, "./Shader/ElasticBuildsVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTranspacyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
+            AddPipeLineState("elasticBuildingForward", desc);
+        }
+
+        // elasticBuilding deferred Blend —p
         {
             hr = CreateVsFromCSO(device, "./Shader/ElasticBuildsVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
@@ -330,7 +340,7 @@ public:
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
             desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_NONE;
-            AddPipeLineState("elasticBuilding", desc);
+            AddPipeLineState("elasticBuildingDeferred", desc);
         }
 
 

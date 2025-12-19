@@ -76,7 +76,7 @@ void ElasticMeshComponent::Tick(float deltaTime)
             DirectX::XMFLOAT3 buildCurveDir;
 
             HitResultWithActor result;
-            if (Physics::Instance().SphereCast(rayStart, rayDir, FLT_MAX, 0.1f, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
+            if (Physics::Instance().SphereCast(rayStart, rayDir, FLT_MAX, 0.001f, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
             {
                 if (auto stage = dynamic_cast<FightStage*>(result.actor))
                 {
@@ -166,6 +166,7 @@ void ElasticMeshComponent::Tick(float deltaTime)
         static float momentumZ = -0.8f;  // 慣性バッファ
         float speed = 4.0f;     // ボールの硬さ
         float damping = 0.95f;   // 減衰率
+        float midY = position.y + modelHeight * 0.5f;
 
         DirectX::XMFLOAT3 p = { elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z };
         float buildHeight = modelHeight;
@@ -184,7 +185,7 @@ void ElasticMeshComponent::Tick(float deltaTime)
         p.z -= deltaTime * speed * momentumZ;
 
         elasticConstants.p1 = { position.x,position.y,position.z,1.0f };
-        elasticConstants.p2 = { position.x,buildHeight,position.z ,1.0f };
+        elasticConstants.p2 = { position.x,midY,position.z ,1.0f };
         elasticConstants.p3 = { p.x,p.y,p.z,1.0f };
     }
 }

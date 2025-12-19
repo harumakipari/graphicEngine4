@@ -58,6 +58,7 @@ void SampleScene::Update(float deltaTime)
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
 
+#if 0
 
     // マウスカーソルを取得
     if (InputSystem::GetInputState("MouseLeft"))
@@ -113,7 +114,7 @@ void SampleScene::Update(float deltaTime)
             if (Physics::Instance().RayCast(
                 rayStart, rayDir,
                 FLT_MAX,
-                hit, CollisionHelper::ToBit(CollisionLayer::WorldStatic)| CollisionHelper::ToBit(CollisionLayer::Player)))
+                hit, CollisionHelper::ToBit(CollisionLayer::WorldStatic) | CollisionHelper::ToBit(CollisionLayer::Player)))
             {
                 Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
             }
@@ -246,6 +247,8 @@ void SampleScene::Update(float deltaTime)
             //}
         }
 
+
+#endif // 0
 #ifdef _DEBUG
         if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
         {
@@ -253,7 +256,6 @@ void SampleScene::Update(float deltaTime)
             Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
         }
 #endif // !_DEBUG
-    }
 }
 
 void SampleScene::SetUpActors()
@@ -273,8 +275,13 @@ void SampleScene::SetUpActors()
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
-    Transform buildTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
+    Transform buildTr(DirectX::XMFLOAT3{ 3.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
     auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<TestElasticBuilding>("building", buildTr);
+
+
+    Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,0.0f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
+    auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<TestElasticBuilding>("building", buildTr2);
+
 
 #if 1
     CameraManager::SetGameCamera(mainCameraActor.get());

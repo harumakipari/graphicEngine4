@@ -35,7 +35,8 @@ public:
     bool isCloth = false;
 
     PipeLineStateDesc pipeLineState_;
-    std::optional<std::string> overridePipelineName;
+    std::optional<std::string> overrideDeferredPipelineName ;
+    std::optional<std::string> overrideForwardPipelineName ;
     std::optional<std::string> overrideCascadeShadowPipelineName;
 public:
     MeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner) {};
@@ -46,6 +47,13 @@ public:
     virtual void Tick(float deltaTime)override
     {
     }
+
+    DirectX::XMFLOAT3 GetModelSize()
+    {
+        AABB aabb = model->GetAABB();
+        return{ aabb.max.x - aabb.min.x,aabb.max.y - aabb.min.y,aabb.max.z - aabb.min.z };
+    }
+
     virtual void SetModel(const std::string& fileName, bool isSaveVerticesData = false) = 0;
 
     virtual void RenderOpaque(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const = 0;
@@ -102,11 +110,6 @@ public:
         modelNodes = model->GetNodes();
     }
 
-    DirectX::XMFLOAT3 GetModelSize()
-    {
-        AABB aabb = model->GetAABB();
-        return{ aabb.max.x - aabb.min.x,aabb.max.y - aabb.min.y,aabb.max.z - aabb.min.z };
-    }
 
     void AppendAnimations(const std::vector<std::string>& filenames) const
     {
