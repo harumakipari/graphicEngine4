@@ -540,6 +540,15 @@
     <ClCompile Include="Source\Engine\Effects\CoreComputeParticleSystem.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Components\Effect\ParticleComponent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Effects\EffectEditor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\Elastic\ElasticComponent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1085,6 +1094,9 @@
     <ClInclude Include="Source\Engine\Debug\Dialog.h" />
     <ClInclude Include="Source\Engine\Resources\Resource.h" />
     <ClInclude Include="Source\Engine\Resources\ResourceManager.h" />
+    <ClInclude Include="Source\Components\Effect\ParticleComponent.h" />
+    <ClInclude Include="Source\Engine\Effects\EffectEditor.h" />
+    <ClInclude Include="Source\Components\Elastic\ElasticComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">

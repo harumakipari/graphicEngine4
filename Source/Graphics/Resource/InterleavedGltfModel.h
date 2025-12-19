@@ -92,6 +92,8 @@ public:
 
     AABB GetAABB()const;
 
+    DirectX::XMFLOAT3 GetModelSize() const;
+
     struct Scene
     {
         std::string name;
@@ -310,7 +312,7 @@ public:
     };
     std::vector<BatchMesh> batchMeshes;
     //const bool staticBatching;
-    Mode mode;
+    Mode mode = Mode::SkeltalMesh;
 
     // INTERLEAVED_GLTF_MODEL
     std::vector<Microsoft::WRL::ComPtr<ID3D11Buffer>> buffers;
@@ -587,7 +589,7 @@ public:
     //}
 private:
     void FetchNodes(const tinygltf::Model& gltf_model);
-    void CumulateTransforms(std::vector<Node>& nodes);
+    void CumulateTransforms(std::vector<Node>& nodes) const;
     void FetchMeshes(ID3D11Device* device, const tinygltf::Model& gltf_model);
     // INTERLEAVED_GLTF_MODEL
     void FetchAndBatchMeshes(ID3D11Device* device, const tinygltf::Model& gltf_model);

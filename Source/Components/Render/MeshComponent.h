@@ -58,6 +58,9 @@ public:
 
     virtual bool IsVisible() const { return isVisible_; }
 
+    // 他のメッシュコンポーネントに必要な外部からの定数バッファ更新するためのフック関数
+    virtual void UpdateConstantBuffer(ID3D11DeviceContext* immediateContext) const {}
+
     virtual void DrawImGuiInspector() override
     {
 #ifdef USE_IMGUI

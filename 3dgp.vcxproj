@@ -251,6 +251,7 @@
     <ClCompile Include="Source\Components\Controller\ControllerComponent.cpp" />
     <ClCompile Include="Source\Components\Effect\EffectComponent.cpp" />
     <ClCompile Include="Source\Components\Effect\ParticleComponent.cpp" />
+    <ClCompile Include="Source\Components\Elastic\ElasticComponent.cpp" />
     <ClCompile Include="Source\Components\Game\EraseInAreaComponent.cpp" />
     <ClCompile Include="Source\Components\Game\ItemSpawnerComponent.cpp" />
     <ClCompile Include="Source\Components\Game\LifeTimeComponent.cpp" />
@@ -380,6 +381,7 @@
     <ClInclude Include="Source\Components\Easing\TestEasingComponent.h" />
     <ClInclude Include="Source\Components\Effect\EffectComponent.h" />
     <ClInclude Include="Source\Components\Effect\ParticleComponent.h" />
+    <ClInclude Include="Source\Components\Elastic\ElasticComponent.h" />
     <ClInclude Include="Source\Components\Game\EraseInAreaComponent.h" />
     <ClInclude Include="Source\Components\Game\ItemSpawnerComponent.h" />
     <ClInclude Include="Source\Components\Game\LifeTimeComponent.h" />

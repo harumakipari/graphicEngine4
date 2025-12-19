@@ -236,8 +236,14 @@ AABB InterleavedGltfModel::GetAABB()const
     return result;
 }
 
+DirectX::XMFLOAT3 InterleavedGltfModel::GetModelSize() const
+{
+    AABB box = GetAABB();
+    DirectX::XMFLOAT3 size = { box.max.x - box.min.x,box.max.y - box.min.y,box.max.z - box.min.z };
+    return size;
+}
 
-void InterleavedGltfModel::CumulateTransforms(std::vector<Node>& nodes)
+void InterleavedGltfModel::CumulateTransforms(std::vector<Node>& nodes) const
 {
     std::function<void(int, int)> traverse = [&](int parentIndex, int nodeIndex)->void
         {

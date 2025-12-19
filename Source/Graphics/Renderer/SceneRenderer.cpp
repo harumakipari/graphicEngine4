@@ -3,6 +3,7 @@
 
 #include "Engine/Scene/Scene.h"
 #include "Game/Actors/Stage/Cloth.h"
+#include "Components/Elastic/ElasticComponent.h"
 
 UINT SizeofComponent(DXGI_FORMAT format)
 {
@@ -66,6 +67,7 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::v
                 //meshComponent->model->Render(immediateContext, worldMat, convexComponent->GetAnimatedNodes(), InterleavedGltfModel::RenderPass::Opaque);
             }
 
+            meshComponent->UpdateConstantBuffer(immediateContext);
 
             if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
             {// 
@@ -114,6 +116,7 @@ void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext) const
             const auto& worldMat = meshComponent->GetComponentWorldTransform().ToWorldTransform();
             // 各 MeshComponent の model を取り出す
             const InterleavedGltfModel* model = meshComponent->model.get();
+            meshComponent->UpdateConstantBuffer(immediateContext);
 
             if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
             {// 
@@ -159,6 +162,7 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext) const
             const auto& worldMat = meshComponent->GetComponentWorldTransform().ToWorldTransform();
             // 各 MeshComponent の model を取り出す
             const InterleavedGltfModel* model = meshComponent->model.get();
+            meshComponent->UpdateConstantBuffer(immediateContext);
 
             if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
             {// 
@@ -205,6 +209,7 @@ void SceneRenderer::CastShadowRender(ID3D11DeviceContext* immediateContext)
             const auto& worldMat = meshComponent->GetComponentWorldTransform().ToWorldTransform();
             // 各 MeshComponent の model を取り出す
             const InterleavedGltfModel* model = meshComponent->model.get();
+            meshComponent->UpdateConstantBuffer(immediateContext);
 
             if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
             {// 
@@ -228,201 +233,207 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
     //std::string pName = GetPipelineName(currentRenderPath, static_cast<MaterialAlphaMode>(pass), static_cast<ModelMode>(model->mode));
     //pipeLineStateSet->BindPipeLineState(immediateContext, pName);
     //pipeLineStateSet->BindPipeLineState(immediateContext, "forwardOpaqueSkeltalMesh");
-    std::function<void(int)> traverse = [&](int nodeIndex)->void {
-        const InterleavedGltfModel::Node& node = animatedNodes.at(nodeIndex);
-        if (node.skin > -1)
+    std::function<void(int)> traverse = [&](int nodeIndex)->void
         {
-            const InterleavedGltfModel::Skin& skin = model->skins.at(node.skin);
-            _ASSERT_EXPR(skin.joints.size() <= PRIMITIVE_MAX_JOINTS, L"The size of the joint array is insufficient, please expand it.");
-            for (size_t jointIndex = 0; jointIndex < skin.joints.size(); ++jointIndex)
+            if (nodeIndex < 0 || nodeIndex >= static_cast<int>(animatedNodes.size()))
             {
-                DirectX::XMStoreFloat4x4(&primitiveJointCBuffer->data.matrices[jointIndex],
-                    DirectX::XMLoadFloat4x4(&skin.inverseBindMatrices.at(jointIndex)) *
-                    DirectX::XMLoadFloat4x4(&animatedNodes.at(skin.joints.at(jointIndex)).globalTransform) *
-                    DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&node.globalTransform))
-                );
+                assert(false && "nodeIndex out of animatedNodes range");
+                return;
             }
-            // 2番に定数バッファを送る
-            primitiveJointCBuffer->Activate(immediateContext, 2);
-        }
-        if (node.mesh > -1)
-        {
-            const InterleavedGltfModel::Mesh& mesh = model->meshes.at(node.mesh);
-            for (const InterleavedGltfModel::Mesh::Primitive& primitive : mesh.primitives)
+            const InterleavedGltfModel::Node& node = animatedNodes.at(nodeIndex);
+            if (node.skin > -1)
             {
-                // INTERLEAVED_GLTF_MODEL
-                UINT stride = sizeof(InterleavedGltfModel::Mesh::Vertex);
-                UINT offset = 0;
-
+                const InterleavedGltfModel::Skin& skin = model->skins.at(node.skin);
+                _ASSERT_EXPR(skin.joints.size() <= PRIMITIVE_MAX_JOINTS, L"The size of the joint array is insufficient, please expand it.");
+                for (size_t jointIndex = 0; jointIndex < skin.joints.size(); ++jointIndex)
                 {
-                    immediateContext->IASetVertexBuffers(0, 1, model->buffers.at(primitive.vertexBufferView.buffer).GetAddressOf(), &stride, &offset);
+                    DirectX::XMStoreFloat4x4(&primitiveJointCBuffer->data.matrices[jointIndex],
+                        DirectX::XMLoadFloat4x4(&skin.inverseBindMatrices.at(jointIndex)) *
+                        DirectX::XMLoadFloat4x4(&animatedNodes.at(skin.joints.at(jointIndex)).globalTransform) *
+                        DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&node.globalTransform))
+                    );
                 }
-
-                primitiveCBuffer->data.material = primitive.material;
-                primitiveCBuffer->data.hasTangent = primitive.has("TANGENT");
-                primitiveCBuffer->data.skin = node.skin;
-                primitiveCBuffer->data.color = { model->cpuColor.x,model->cpuColor.y,model->cpuColor.z,model->alpha };
-                primitiveCBuffer->data.emission = model->emission;
-                primitiveCBuffer->data.dissolveFactor = model->disolveFactor;
-
-                //座標系の変換を行う
-                const DirectX::XMFLOAT4X4 coordinateSystemTransforms[]
+                // 2番に定数バッファを送る
+                primitiveJointCBuffer->Activate(immediateContext, 2);
+            }
+            if (node.mesh > -1)
+            {
+                const InterleavedGltfModel::Mesh& mesh = model->meshes.at(node.mesh);
+                for (const InterleavedGltfModel::Mesh::Primitive& primitive : mesh.primitives)
                 {
-                    {//RHS Y-UP
-                        -1,0,0,0,
-                         0,1,0,0,
-                         0,0,1,0,
-                         0,0,0,1,
-                    },
-                    {//LHS Y-UP
-                        1,0,0,0,
-                        0,1,0,0,
-                        0,0,1,0,
-                        0,0,0,1,
-                    },
-                    {//RHS Z-UP
-                        -1,0, 0,0,
-                         0,0,-1,0,
-                         0,1, 0,0,
-                         0,0, 0,1,
-                    },
-                    {//LHS Z-UP
-                        1,0,0,0,
-                        0,0,1,0,
-                        0,1,0,0,
-                        0,0,0,1,
-                    },
-                };
+                    // INTERLEAVED_GLTF_MODEL
+                    UINT stride = sizeof(InterleavedGltfModel::Mesh::Vertex);
+                    UINT offset = 0;
 
-                float scaleFactor;
-
-                if (model->isModelInMeters)
-                {
-                    scaleFactor = 1.0f;//メートル単位の時
-                }
-                else
-                {
-                    scaleFactor = 0.01f;//㎝単位の時
-                }
-                DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
-
-                DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, DirectX::XMLoadFloat4x4(&node.globalTransform) * C * DirectX::XMLoadFloat4x4(&world));
-                // 0番に定数バッファを送る
-                primitiveCBuffer->Activate(immediateContext, 0);
-
-                const InterleavedGltfModel::Material& material = model->materials.at(primitive.material);
-
-                std::string pipelineName;
-                if (material.overridePipelineName.has_value())
-                {
-                    pipelineName = *material.overridePipelineName;
-                }
-                else if (meshComponent->overridePipelineName.has_value())
-                {
-                    pipelineName = *meshComponent->overridePipelineName;
-                }
-                else
-                {
-                    pipelineName = GetPipelineName(currentRenderPath, static_cast<MaterialAlphaMode>(material.data.alphaMode), static_cast<ModelMode>(model->mode));
-                }
-                pipeLineStateSet->BindPipeLineState(immediateContext, pipelineName);
-                ////ここで設定
-                //if (material.replacedPixelShader)
-                //{
-                //    immediateContext->PSSetShader(material.replacedPixelShader.Get(), nullptr, 0);
-                //}
-                //else
-                //{
-                //    immediateContext->PSSetShader(pipeline.pixelShader ? pipeline.pixelShader.Get() : pixelShader.Get(), nullptr, 0);
-                //}
-                //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
-
-                bool passed = false;
-                switch (pass)
-                {
-                case InterleavedGltfModel::RenderPass::Opaque:
-                    if (material.data.alphaMode == 0/*OPAQUE*/)
                     {
-                        RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE);
-                        passed = true;
+                        immediateContext->IASetVertexBuffers(0, 1, model->buffers.at(primitive.vertexBufferView.buffer).GetAddressOf(), &stride, &offset);
                     }
-                    break;
-                case InterleavedGltfModel::RenderPass::Mask:
-                    if (material.data.alphaMode == 1/*MASK*/)
+
+                    primitiveCBuffer->data.material = primitive.material;
+                    primitiveCBuffer->data.hasTangent = primitive.has("TANGENT");
+                    primitiveCBuffer->data.skin = node.skin;
+                    primitiveCBuffer->data.color = { model->cpuColor.x,model->cpuColor.y,model->cpuColor.z,model->alpha };
+                    primitiveCBuffer->data.emission = model->emission;
+                    primitiveCBuffer->data.dissolveFactor = model->disolveFactor;
+
+                    //座標系の変換を行う
+                    const DirectX::XMFLOAT4X4 coordinateSystemTransforms[]
                     {
-                        RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE);
-                        passed = true;
-                    }
-                    break;
-                case InterleavedGltfModel::RenderPass::Blend:
-                    if (material.data.alphaMode == 2/*BLEND*/)
+                        {//RHS Y-UP
+                            -1,0,0,0,
+                             0,1,0,0,
+                             0,0,1,0,
+                             0,0,0,1,
+                        },
+                        {//LHS Y-UP
+                            1,0,0,0,
+                            0,1,0,0,
+                            0,0,1,0,
+                            0,0,0,1,
+                        },
+                        {//RHS Z-UP
+                            -1,0, 0,0,
+                             0,0,-1,0,
+                             0,1, 0,0,
+                             0,0, 0,1,
+                        },
+                        {//LHS Z-UP
+                            1,0,0,0,
+                            0,0,1,0,
+                            0,1,0,0,
+                            0,0,0,1,
+                        },
+                    };
+
+                    float scaleFactor;
+
+                    if (model->isModelInMeters)
                     {
-                        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF);
-                        RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
-                        passed = true;
-                    }
-                    break;
-                case InterleavedGltfModel::RenderPass::All:
-                    passed = true;
-                    break;
-                }
-                if (!passed)
-                {
-                    continue;
-                }
-
-                const int textureIndices[] =
-                {
-                    material.data.pbrMetallicRoughness.basecolorTexture.index,
-                    material.data.pbrMetallicRoughness.metallicRoughnessTexture.index,
-                    material.data.normalTexture.index,
-                    material.data.emissiveTexture.index,
-                    material.data.occlusionTexture.index,
-                };
-
-                ID3D11ShaderResourceView* nullShaderResourceView = {};
-                std::vector<ID3D11ShaderResourceView*> shaderResourceViews(_countof(textureIndices));
-                for (int textureIndex = 0; textureIndex < shaderResourceViews.size(); ++textureIndex)
-                {
-                    shaderResourceViews.at(textureIndex) = textureIndices[textureIndex] > -1 ? model->textureResourceViews.at(model->textures.at(textureIndices[textureIndex]).source).Get() : nullShaderResourceView;
-                }
-                immediateContext->PSSetShaderResources(1, static_cast<UINT>(shaderResourceViews.size()), shaderResourceViews.data());
-
-
-//                if (auto cloth = dynamic_cast<const ClothMeshComponent*>(meshComponent))
-//                {
-//#if 0
-//                    immediateContext->IASetIndexBuffer(model->buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
-//                    immediateContext->VSSetShaderResources(0, 1, cloth->preVertexSRV.GetAddressOf());
-//                    immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / SizeofComponent(primitive.indexBufferView.format), 0, 0);
-//#else
-//                    immediateContext->IASetIndexBuffer(model->buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
-//                    //immediateContext->VSSetShaderResources(0, 1, cloth->currentVertexSRV.GetAddressOf());
-//                    immediateContext->VSSetShaderResources(0, 1, cloth->clothSRV[cloth->a].GetAddressOf());
-//                    immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / SizeofComponent(primitive.indexBufferView.format), 0, 0);
-//#endif // 0
-//
-//                }
-//                else
-                {
-                    if (primitive.indexBufferView.buffer > -1)
-                    {
-                        // INTERLEAVED_GLTF_MODEL
-                        immediateContext->IASetIndexBuffer(model->buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
-                        immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / SizeofComponent(primitive.indexBufferView.format), 0, 0);
+                        scaleFactor = 1.0f;//メートル単位の時
                     }
                     else
                     {
-                        // INTERLEAVED_GLTF_MODEL
-                        immediateContext->Draw(primitive.vertexBufferView.sizeInBytes / primitive.vertexBufferView.strideInBytes, 0);
+                        scaleFactor = 0.01f;//㎝単位の時
+                    }
+                    DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
+
+                    DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, DirectX::XMLoadFloat4x4(&node.globalTransform) * C * DirectX::XMLoadFloat4x4(&world));
+                    // 0番に定数バッファを送る
+                    primitiveCBuffer->Activate(immediateContext, 0);
+
+                    const InterleavedGltfModel::Material& material = model->materials.at(primitive.material);
+
+                    std::string pipelineName;
+                    if (material.overridePipelineName.has_value())
+                    {
+                        pipelineName = *material.overridePipelineName;
+                    }
+                    else if (meshComponent->overridePipelineName.has_value())
+                    {
+                        pipelineName = *meshComponent->overridePipelineName;
+                    }
+                    else
+                    {
+                        pipelineName = GetPipelineName(currentRenderPath, static_cast<MaterialAlphaMode>(material.data.alphaMode), static_cast<ModelMode>(model->mode));
+                    }
+                    pipeLineStateSet->BindPipeLineState(immediateContext, pipelineName);
+                    ////ここで設定
+                    //if (material.replacedPixelShader)
+                    //{
+                    //    immediateContext->PSSetShader(material.replacedPixelShader.Get(), nullptr, 0);
+                    //}
+                    //else
+                    //{
+                    //    immediateContext->PSSetShader(pipeline.pixelShader ? pipeline.pixelShader.Get() : pixelShader.Get(), nullptr, 0);
+                    //}
+                    //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+
+                    bool passed = false;
+                    switch (pass)
+                    {
+                    case InterleavedGltfModel::RenderPass::Opaque:
+                        if (material.data.alphaMode == 0/*OPAQUE*/)
+                        {
+                            RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE);
+                            passed = true;
+                        }
+                        break;
+                    case InterleavedGltfModel::RenderPass::Mask:
+                        if (material.data.alphaMode == 1/*MASK*/)
+                        {
+                            RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE);
+                            passed = true;
+                        }
+                        break;
+                    case InterleavedGltfModel::RenderPass::Blend:
+                        if (material.data.alphaMode == 2/*BLEND*/)
+                        {
+                            RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF);
+                            RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
+                            passed = true;
+                        }
+                        break;
+                    case InterleavedGltfModel::RenderPass::All:
+                        passed = true;
+                        break;
+                    }
+                    if (!passed)
+                    {
+                        continue;
+                    }
+
+                    const int textureIndices[] =
+                    {
+                        material.data.pbrMetallicRoughness.basecolorTexture.index,
+                        material.data.pbrMetallicRoughness.metallicRoughnessTexture.index,
+                        material.data.normalTexture.index,
+                        material.data.emissiveTexture.index,
+                        material.data.occlusionTexture.index,
+                    };
+
+                    ID3D11ShaderResourceView* nullShaderResourceView = {};
+                    std::vector<ID3D11ShaderResourceView*> shaderResourceViews(_countof(textureIndices));
+                    for (int textureIndex = 0; textureIndex < shaderResourceViews.size(); ++textureIndex)
+                    {
+                        shaderResourceViews.at(textureIndex) = textureIndices[textureIndex] > -1 ? model->textureResourceViews.at(model->textures.at(textureIndices[textureIndex]).source).Get() : nullShaderResourceView;
+                    }
+                    immediateContext->PSSetShaderResources(1, static_cast<UINT>(shaderResourceViews.size()), shaderResourceViews.data());
+
+
+                    //                if (auto cloth = dynamic_cast<const ClothMeshComponent*>(meshComponent))
+                    //                {
+                    //#if 0
+                    //                    immediateContext->IASetIndexBuffer(model->buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
+                    //                    immediateContext->VSSetShaderResources(0, 1, cloth->preVertexSRV.GetAddressOf());
+                    //                    immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / SizeofComponent(primitive.indexBufferView.format), 0, 0);
+                    //#else
+                    //                    immediateContext->IASetIndexBuffer(model->buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
+                    //                    //immediateContext->VSSetShaderResources(0, 1, cloth->currentVertexSRV.GetAddressOf());
+                    //                    immediateContext->VSSetShaderResources(0, 1, cloth->clothSRV[cloth->a].GetAddressOf());
+                    //                    immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / SizeofComponent(primitive.indexBufferView.format), 0, 0);
+                    //#endif // 0
+                    //
+                    //                }
+                    //                else
+                    {
+                        if (primitive.indexBufferView.buffer > -1)
+                        {
+                            // INTERLEAVED_GLTF_MODEL
+                            immediateContext->IASetIndexBuffer(model->buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
+                            immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / SizeofComponent(primitive.indexBufferView.format), 0, 0);
+                        }
+                        else
+                        {
+                            // INTERLEAVED_GLTF_MODEL
+                            immediateContext->Draw(primitive.vertexBufferView.sizeInBytes / primitive.vertexBufferView.strideInBytes, 0);
+                        }
                     }
                 }
             }
-        }
-        for (std::vector<int>::value_type childIndex : node.children)
-        {
-            traverse(childIndex);
-        }
+            for (std::vector<int>::value_type childIndex : node.children)
+            {
+                traverse(childIndex);
+            }
         };
     for (std::vector<int>::value_type nodeIndex : model->scenes.at(model->defaultScene).nodes)
     {

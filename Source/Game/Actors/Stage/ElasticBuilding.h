@@ -3,6 +3,7 @@
 #include "Core/Actor.h"
 #include "Graphics/Core/ConstantBuffer.h"
 #include "Components/CollisionShape/ShapeComponent.h"
+#include "Components/Elastic/ElasticComponent.h"
 
 class ElasticBuilding : public Actor
 {
@@ -212,6 +213,32 @@ public:
 
 };
 
+class TestElasticBuilding : public Actor
+{
+public:
+    TestElasticBuilding(const std::string& modelName) :Actor(modelName)
+    {
+    }
+    std::shared_ptr<ElasticMeshComponent> elasticBuilding;
+    void Initialize(const Transform& transform)override
+    {
+        // 描画用コンポーネントを追加
+        elasticBuilding = this->NewSceneComponent<ElasticMeshComponent>("elasticBuilding");
+        elasticBuilding->SetModel("./Data/Models/Building/bomb_bill.gltf");
+        
+        SetPosition(transform.GetLocation());
+        SetQuaternionRotation(transform.GetRotation());
+        SetScale(transform.GetScale());
+
+        elasticBuilding->Initialize();
+    }
+    void Update(float deltaTime)override
+    {
+    }
+    void DrawImGuiDetails()
+    {
+    };
+};
 
 class SpringyBall : public Actor
 {

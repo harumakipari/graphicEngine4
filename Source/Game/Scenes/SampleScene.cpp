@@ -273,8 +273,8 @@ void SampleScene::SetUpActors()
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
-    Transform buildTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<ElasticBuilding>("building", buildTr);
+    Transform buildTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
+    auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<TestElasticBuilding>("building", buildTr);
 
 #if 1
     CameraManager::SetGameCamera(mainCameraActor.get());
