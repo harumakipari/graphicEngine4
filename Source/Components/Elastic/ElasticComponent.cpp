@@ -17,7 +17,7 @@ void ElasticMeshComponent::Initialize()
         /*p1*/ DirectX::XMFLOAT4(position.x, position.y, position.z, 1.0f),
         /*p2*/ DirectX::XMFLOAT4(position.x,position.y, position.z, 1.0f),
         /*p3*/ DirectX::XMFLOAT4(position.x, position.y + modelHeight, position.z, 1.0f),
-        /*buildProgress*/ 0.0f,
+        /*maxAngleDegree*/ 100.0f, // 度以上は曲がらない
         /*modelHeight*/ modelHeight
     };
     elasticBuildingCBuffer->data = elasticConstants;
@@ -147,10 +147,12 @@ void ElasticMeshComponent::Tick(float deltaTime)
             diff = DirectX::XMVectorSetY(diff, 0.0f); // 高さは無視して水平方向だけのベクトルにする
 
             float dist = DirectX::XMVectorGetX(DirectX::XMVector3Length(diff));
-            float maxDist = buildHeight; // 好みで調整
+            float maxDist = buildHeight+ elasticParameters.maxDist; // 好みで調整
             float scale = (dist > maxDist) ? (maxDist / dist) : 1.0f;
             DirectX::XMVECTOR clampedDir = diff * scale;
             //DirectX::XMVECTOR clampedDir = diff * moveAmount; // mouse の変化量 を使う場合
+
+
 
             // p3 = 建物の上端＋方向ベクトル
             DirectX::XMFLOAT3 p3;
@@ -163,11 +165,6 @@ void ElasticMeshComponent::Tick(float deltaTime)
     else
     {// 左ボタンを押していない時
 
-        static float momentumX = -0.8f;  // 慣性バッファ
-        static float momentumY = -0.8f;  // 慣性バッファ
-        static float momentumZ = -0.8f;  // 慣性バッファ
-        float speed = 4.0f;     // ボールの硬さ
-        float damping = 0.95f;   // 減衰率
         float midY = position.y + modelHeight * 0.5f;
 
         DirectX::XMFLOAT3 p = { elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z };
@@ -179,20 +176,21 @@ void ElasticMeshComponent::Tick(float deltaTime)
         float gradY = p.y - targetY;// x - a
         float gradZ = p.z - targetZ;// x - a
 
-        momentumX = damping * momentumX + gradX/*parmator*/;
-        momentumY = damping * momentumY + gradY/*parmator*/;
-        momentumZ = damping * momentumZ + gradZ/*parmator*/;
-        p.x -= deltaTime * speed * momentumX;
-        p.y -= deltaTime * speed * momentumY;
-        p.z -= deltaTime * speed * momentumZ;
+        elasticParameters.momentumX = elasticParameters.damping * elasticParameters.momentumX + gradX/*parmator*/;
+        elasticParameters.momentumY = elasticParameters.damping * elasticParameters.momentumY + gradY/*parmator*/;
+        elasticParameters.momentumZ = elasticParameters.damping * elasticParameters.momentumZ + gradZ/*parmator*/;
+        p.x -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumX;
+        p.y -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumY;
+        p.z -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumZ;
 
         elasticConstants.p1 = { position.x,position.y,position.z,1.0f };
         elasticConstants.p2 = { position.x,midY,position.z ,1.0f };
         elasticConstants.p3 = { p.x,p.y,p.z,1.0f };
     }
+    elasticConstants.maxAngleDegree = elasticParameters.maxAngleDegrees;
 }
 
-void ElasticMeshComponent::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext) const 
+void ElasticMeshComponent::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext) const
 {
     elasticBuildingCBuffer->data = elasticConstants;
     elasticBuildingCBuffer->Activate(immediateContext, 6);

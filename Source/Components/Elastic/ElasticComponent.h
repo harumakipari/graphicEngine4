@@ -7,10 +7,9 @@ class ElasticMeshComponent :public MeshComponent
 public:
     ElasticMeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :MeshComponent(name, owner)
     {
-        overrideDeferredPipelineName= "elasticBuildingDeferred";
+        overrideDeferredPipelineName = "elasticBuildingDeferred";
         overrideForwardPipelineName = "elasticBuildingForward";
         overrideCascadeShadowPipelineName = "CascadeShadowMapElasticBuilding";
-
     }
 
     ~ElasticMeshComponent() override = default;
@@ -41,6 +40,13 @@ public:
     }
 
     void UpdateConstantBuffer(ID3D11DeviceContext* immediateContext) const override;
+
+    void AddImpulse(const DirectX::XMFLOAT3& impulse)
+    {
+        elasticParameters.momentumX += impulse.x / elasticParameters.mass;
+        elasticParameters.momentumY += impulse.y / elasticParameters.mass;
+        elasticParameters.momentumZ += impulse.z / elasticParameters.mass;
+    }
 
     // --- このあたりの関数を使っていないから後程削除する ---
     void RenderOpaque(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world)const override
@@ -81,13 +87,20 @@ public:
     virtual void DrawImGuiInspector() override
     {
 #ifdef USE_IMGUI
-
         SceneComponent::DrawImGuiInspector();
         if (ImGui::TreeNode((name_ + "  model").c_str()))
         {
             ImGui::Checkbox("isVisible", &isVisible_);
             ImGui::TreePop();
         }
+        ImGui::SliderFloat("Stiffness", &elasticParameters.stiffness, 0.1f, 10.0f);
+        ImGui::SliderFloat("Damping", &elasticParameters.damping, 0.1f, 0.99f);
+        ImGui::SliderFloat("Mass", &elasticParameters.mass, 0.1f, 5.0f);
+        ImGui::SliderFloat("momentumX", &elasticParameters.momentumX, -10.0f, 10.0f);
+        ImGui::SliderFloat("momentumY", &elasticParameters.momentumY, -10.0f, 10.0f);
+        ImGui::SliderFloat("momentumZ", &elasticParameters.momentumZ, -10.0f, 10.0f);
+        ImGui::SliderFloat(" maxDist", &elasticParameters.maxDist, -100.0f, 120.0f);
+        ImGui::SliderFloat(" maxAngleDegrees", &elasticParameters.maxAngleDegrees, 0.0f, 360.0f);
 #endif
     }
 
@@ -96,12 +109,26 @@ public:
         DirectX::XMFLOAT4 p1; // 始点
         DirectX::XMFLOAT4 p2; // 制御点
         DirectX::XMFLOAT4 p3; // 終点
-        float buildProgress; // 0.0 ~ 1.0  t
+        float maxAngleDegree; // 度以上曲がらない
         float modelHeight; // モデルの高さ
+    };
+
+    struct ElasticParameters
+    {
+        float stiffness = 4.0f;     // 硬さ（戻る力）
+        float damping = 0.95f;    // 減衰
+        float mass = 1.0f;     // 重さ（外力用）
+        float maxAngleDegrees = 100.0f;     // 最大変形量
+        float momentumX = 0.0f;
+        float momentumY = 0.0f;
+        float momentumZ = 0.0f;
+        float maxDist = 0.0f;
     };
 
 private:
     std::unique_ptr<ConstantBuffer<ElasticConstants>> elasticBuildingCBuffer;
     ElasticConstants elasticConstants{};
+    ElasticParameters elasticParameters;
+    DirectX::XMFLOAT3 externalForce_{ 0,0,0 };
     float modelHeight = 0.0f;
 };

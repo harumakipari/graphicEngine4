@@ -92,6 +92,11 @@ private:
     };
     std::unique_ptr<ConstantBuffer<PrimitiveConstants>> primitiveCBuffer;
 
+    // モデルごとに更新したいPlusAlpha 用定数バッファ
+    struct PlusAlphaConstants
+    {
+    };
+
 public:
     // 今のRenderPath
     RenderPath currentRenderPath = RenderPath::Deferred;

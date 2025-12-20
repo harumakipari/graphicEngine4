@@ -57,7 +57,7 @@ cbuffer ELASTIC_CONSTANT_BUFFER : register(b6)
     float4 p1; // 始点
     float4 p2; // 制御点
     float4 p3; // 終点
-    float buildProgress; // 0.0 ~ 1.0  t
+    float maxAngleDegree; // 0.0 ~ 1.0  t
     float buildHeight; // ビルの高さ
 }
 
@@ -110,7 +110,7 @@ VS_OUT_CSM main(VS_IN vin, uint instanceId : SV_INSTANCEID)
 #if 1
         float cosAngle = clamp(dot(up, bezierTangent), -1.0, 1.0);
         float angle = acos(cosAngle);
-        float maxAngle = radians(80.0); // 30 度以上は回転しない
+        float maxAngle = radians(maxAngleDegree); // 30 度以上は回転しない
         angle = clamp(angle, -maxAngle, maxAngle);
         float sinAngle = sin(angle);
         //float sinAngle = sqrt(max(0.0, 1.0 - cosAngle * cosAngle));

@@ -31,7 +31,7 @@ cbuffer ELASTIC_CONSTANT_BUFFER : register(b6)
     float4 p1; // 始点
     float4 p2; // 制御点
     float4 p3; // 終点
-    float buildProgress; // 0.0 ~ 1.0  t
+    float maxAngleDegree; // 0.0 ~ 1.0  t
     float buildHeight; // ビルの高さ
 }
 
@@ -84,7 +84,7 @@ VS_OUT main(VS_IN vin)
 #if 1
         float cosAngle = clamp(dot(up, bezierTangent), -1.0, 1.0);
         float angle = acos(cosAngle);
-        float maxAngle = radians(80.0); // 30 度以上は回転しない
+        float maxAngle = radians(maxAngleDegree); // 30 度以上は回転しない
         angle = clamp(angle, -maxAngle, maxAngle);
         float sinAngle = sin(angle);
         //float sinAngle = sqrt(max(0.0, 1.0 - cosAngle * cosAngle));
@@ -129,87 +129,5 @@ VS_OUT main(VS_IN vin)
     vout.wTangent = float4(SafeNormalize(outTangent, float3(1, 0, 0)), sigma);
 
     vout.texcoord = vin.texcoord;
-    return vout;
-    // モデル座標系 -> ワールド座標系
-    //float4 worldPos = mul(vin.position, world);
-    
-    // 高さ比でtを決定
-    float localY = worldPos.y;
-    t = saturate((localY - p1.y) / max(buildHeight, 0.00001f));
-    
-    // ベジェ曲線上の位置を計算　ワールド空間
-    bezierPos = QuadricBezier(p1.xyz, p2.xyz, p3.xyz, t);
-    
-    //float3 straightPos = p1.xyz + float3(0, (localY - p1.y), 0);
-
-    //float3 deformedPos = bezierPos + (worldPos.xyz - straightPos);
-
-    
-    vout.position = mul(float4(bezierPos, 1), viewProjection);
-    //vout.wPosition = float4(deformedPos, 1);
-    vout.wPosition = float4(bezierPos, 1);
-
-    vout.wNormal = vout.wNormal = normalize(mul(vin.normal, world));
-    float3 worldTangent = normalize(mul(float4(vin.tangent.xyz, 0), world).xyz);
-    vout.wTangent = float4(worldTangent, vin.tangent.w);
-
-    vout.texcoord = vin.texcoord;
-    return vout;
-    
-    // p1,p2,p3 のベジェ曲線を作るから。。p1 は頂点の座標？
-    //float4 p1 = vin.position;
-    
-    float3 base = p1.xyz;
-    meshHeight = p3.y - p1.y;
-    float3 meshUp = float3(0, meshHeight, 0);
-    float3 meshTop = base + meshUp;
-    
-    float3 curveDir = normalize(QuadricBezierTangent(p1.xyz, p2.xyz, p3.xyz, buildProgress)).xyz;
-    float3 curveTarget = p2.xyz;
-    float3 curveEnd = p3.xyz;
-    
-    float height = clamp((vin.position.y - base.y) / meshHeight, 0.0, 1.0);
-    //float3 bezierPos = QuadricBezier(p1.xyz, p2.xyz, p3.xyz, height);
-    
-    float4 newPos = float4(vin.position.x, 0, vin.position.z, 1);
-    //newPos.xyz += bezierPos - base;
-    
-    vout.position = newPos;
-    
-    
-        
-    //vin.position.w = 1;
-    //vout.position = mul(vin.position, mul(world, viewProjection));
-    
-    ////vout.position /= vout.position.w; // to ndc
-    
-    
-    //vout.wPosition = mul(vin.position, world);
-    
-    //vin.normal.w = 0;
-    //vout.wNormal = normalize(mul(vin.normal, world));
-    //vin.tangent.w = 0;
-    //vout.wTangent = normalize(mul(vin.tangent, world));
-    //vout.wTangent.w = sigma;
-    
-    //vout.texcoord = vin.texcoord;
-    
-    //return vout;
-
-    
-    vin.position.w = 1;
-    vout.position = mul(newPos, mul(world, viewProjection));
-
-    vout.wPosition = mul(newPos, world);
-    
-    vin.normal.w = 0;
-    vout.wNormal = normalize(mul(vin.normal, world));
-    
-    vin.tangent.w = 0;
-    vout.wTangent = normalize(mul(vin.tangent, world));
-    vout.wTangent.w = sigma;
-    
-    vout.texcoord = vin.texcoord;
-    
     return vout;
 }
