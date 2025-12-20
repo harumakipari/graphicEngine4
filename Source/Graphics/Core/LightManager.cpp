@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "LightManager.h"
-
+#include "Engine/Scene/Scene.h"
+#include "Components/Render/PointLightComponent.h"
 #include <string>
 
 #ifdef USE_IMGUI
@@ -18,7 +19,24 @@ void LightManager::Initialize(ID3D11Device* device)
 
 void LightManager::Update(float deltaTime)
 {
-    assert(pointLights.size() <= 8);
+    renderPointLights.clear();
+
+    // ① デバッグライト
+    for (auto& l : debugPointLights)
+    {
+        renderPointLights.push_back(l);
+        if (renderPointLights.size() >= 8) break;
+    }
+
+    // ② Sceneライト
+    for (auto& l : scenePointLights)
+    {
+        renderPointLights.push_back(l);
+        if (renderPointLights.size() >= 8) break;
+    }
+
+    constants.pointLightCount = static_cast<int>(renderPointLights.size());
+
     constants.iblIntensity = iblIntensity;
     constants.directionalLightEnable = directionalLightEnable;
     constants.pointLightCount = pointLightCount;
@@ -29,10 +47,8 @@ void LightManager::Update(float deltaTime)
     // デフォルト初期化
     for (int i = 0; i < 8; i++)
     {
-        if (i < pointLights.size())
-            constants.pointsLight[i] = pointLights[i];
-        else
-            constants.pointsLight[i] = {}; // 余分はゼロクリア
+        constants.pointsLight[i] =
+            (i < renderPointLights.size()) ? renderPointLights[i] : PointLight{};
     }
 }
 
@@ -40,6 +56,24 @@ void LightManager::Apply(ID3D11DeviceContext* immediateContext, int slot) const
 {
     lightCBuffer->data = constants;
     lightCBuffer->Activate(immediateContext, slot);
+}
+
+void LightManager::CollectPointLightsFromScene(const Scene& scene)
+{
+    scenePointLights.clear();
+
+    for (auto& actor : scene.GetActorManager()->GetAllActors())
+    {
+        std::vector<PointLightComponent*> components;
+        actor->GetComponents<PointLightComponent>(components);
+        for (auto& light : components)
+        {
+            if (!light->IsUsePointLight()) continue;
+
+            scenePointLights.push_back(light->ToRenderLight());
+            if (scenePointLights.size() >= 8) break;
+        }
+    }
 }
 
 void LightManager::DrawGUI()
@@ -53,18 +87,18 @@ void LightManager::DrawGUI()
     ImGui::SliderFloat("Light Intensity", &lightColor.w, 0.0f, 10.0f);
     ImGui::Checkbox("pointLightEnable", &pointLightEnable);
     ImGui::SliderInt("Point Light Count", &pointLightCount, 0, 8);
-    if (pointLights.size() != static_cast<size_t>(pointLightCount))
-        pointLights.resize(pointLightCount); // 個数を合わせる
+    if (debugPointLights.size() != static_cast<size_t>(pointLightCount))
+        debugPointLights.resize(pointLightCount); // 個数を合わせる
 
     for (int i = 0; i < pointLightCount; i++)
     {
         std::string header = "PointLight[" + std::to_string(i) + "]";
         if (ImGui::CollapsingHeader(header.c_str()))
         {
-            ImGui::DragFloat3(("Position##" + std::to_string(i)).c_str(), &pointLights[i].position.x, 0.1f);
-            ImGui::ColorEdit3(("Color##" + std::to_string(i)).c_str(), &pointLights[i].color.x);
-            ImGui::SliderFloat(("Range##" + std::to_string(i)).c_str(), &pointLights[i].range, 0.0f, 10.0f);
-            ImGui::SliderFloat(("Intensity##" + std::to_string(i)).c_str(), &pointLights[i].color.w, 0.0f, 10.0f);
+            ImGui::DragFloat3(("Position##" + std::to_string(i)).c_str(), &debugPointLights[i].position.x, 0.1f);
+            ImGui::ColorEdit3(("Color##" + std::to_string(i)).c_str(), &debugPointLights[i].color.x);
+            ImGui::SliderFloat(("Range##" + std::to_string(i)).c_str(), &debugPointLights[i].range, 0.0f, 10.0f);
+            ImGui::SliderFloat(("Intensity##" + std::to_string(i)).c_str(), &debugPointLights[i].color.w, 0.0f, 10.0f);
         }
     }
 #endif

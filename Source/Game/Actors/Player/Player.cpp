@@ -13,10 +13,14 @@
 #include "Game/Actors/Beam/Beam.h"
 #include "Game/Actors/Enemy/RiderEnemy.h"
 
+#include "Components/Render/PointLightComponent.h"
+
 // UIで追加
 #include "Widgets/ObjectManager.h"
 #include "Widgets/GameObject.h"
 #include "Widgets/Mask.h"
+
+
 
 #include "PlayerStateDerived.h"
 // チュートリアルに使用
@@ -28,8 +32,8 @@ void Player::Initialize(const Transform& transform)
     skeletalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeletalComponent");
     skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/idle.gltf");
     //skeletalMeshComponent->SetModel("./Data/Models/Characters/GirlSoldier/idle.gltf");
-    HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelCharacterPS.cso", skeletalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelCharacterPS.cso", skeletalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+    //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     SetPosition(transform.GetLocation());
     SetQuaternionRotation(transform.GetRotation());
@@ -129,6 +133,12 @@ void Player::Initialize(const Transform& transform)
 
 #endif // 0
 
+    // ポイントライトコンポーネントを追加
+    auto pointLightComponent = this->NewSceneComponent<PointLightComponent>("pointLightComponent", "skeletalComponent");
+    pointLightComponent->SetRelativeLocationDirect({ 0.4f, 2.1f, 0.3f });
+    pointLightComponent->SetColor({ 1.0f, 1.0f, 1.0f });
+    pointLightComponent->SetRange(1.5f);
+    pointLightComponent->SetIntensity(10.0f);
 
     // ビームチャージ音コンポーネントを追加
     beamChargeAudioComponent = this->NewSceneComponent<AudioSourceComponent>("beamChargeAudioComponent", "skeletalComponent");

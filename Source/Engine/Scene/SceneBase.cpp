@@ -134,6 +134,9 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
 
     sceneCBuffer->Activate(immediateContext, 1);
     shaderCBuffer->Activate(immediateContext, 9);
+
+    // シーンからポイントライト集める
+    lightManager->CollectPointLightsFromScene(*this);
     lightManager->Apply(immediateContext, 11);
 }
 

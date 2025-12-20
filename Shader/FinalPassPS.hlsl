@@ -683,7 +683,10 @@ float4 main(VS_OUT pin) : SV_TARGET
             layerColor = layerColors[cascadeIndex];
         }
 #endif
-        color.rgb *= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
+        if (enableCascadedShadowMaps)
+        {
+            color.rgb *= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
+        }
     }
     
     //float3 cascadedShadowMapColor = CalculatedCascadedShadowColor(pin);

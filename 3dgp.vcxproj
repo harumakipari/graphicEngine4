@@ -388,6 +388,7 @@
     <ClInclude Include="Source\Components\Game\ShockWaveCollisionComponent.h" />
     <ClInclude Include="Source\Components\Game\TimerActionComponent.h" />
     <ClInclude Include="Source\Components\Render\MeshComponent.h" />
+    <ClInclude Include="Source\Components\Render\PointLightComponent.h" />
     <ClInclude Include="Source\Components\Transform\Transform.h" />
     <ClInclude Include="Source\Core\Actor.h" />
     <ClInclude Include="Source\Core\ActorManager.h" />

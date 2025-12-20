@@ -4,6 +4,8 @@
 #include <memory>
 #include "Graphics/Core/ConstantBuffer.h"
 
+class Scene;
+
 class LightManager
 {
 public:
@@ -33,8 +35,10 @@ public:
 
     void AddPointLight(const PointLight& light)
     {
-        pointLights.push_back(light);
+        renderPointLights.push_back(light);
     }
+
+    void CollectPointLightsFromScene(const Scene& scene);
 
     void SetDirectionalLight(const DirectX::XMFLOAT4& dir, const DirectX::XMFLOAT4& color)
     {
@@ -45,6 +49,7 @@ public:
     void DrawGUI();
 
     const DirectX::XMFLOAT4& GetLightDirection() const { return lightDirection; }
+
 
 
 private:
@@ -92,6 +97,12 @@ private:
     int pointLightCount = 8;
 
     LightConstants constants = {};
-    std::vector<PointLight> pointLights;
+    // GPUに送る最終のポイントライト情報
+    std::vector<PointLight> renderPointLights;
+    // ① デバッグ / 手動ライト（ImGui用）
+    std::vector<PointLight> debugPointLights;
+    // ② SceneComponent 由来ライト
+    std::vector<PointLight> scenePointLights;
+
     std::unique_ptr<ConstantBuffer<LightConstants>> lightCBuffer;
 };
