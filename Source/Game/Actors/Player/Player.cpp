@@ -477,32 +477,58 @@ void Player::Update(float elapsedTime)
     Character::Update(elapsedTime);
 
     XMFLOAT3 position = GetPosition();
+    XMFLOAT3 prevPosition = position;
+
     angle = GetEulerRotation();
 
-    // レイキャストテスト
+    //========================
+    // 1. 重力
+    //========================
+    velocity.y += gravity_ * elapsedTime;
+
+    //========================
+    // 2. 位置更新（予測）
+    //========================
+    position.y += velocity.y * elapsedTime;
+
+    isGrounded_ = false;
+
+    //========================
+    // 3. 下向き RayCast（前フレーム基準）
+    //========================
     HitResult hit;
-    bool hitGround = Physics::Instance().RayCast(
-        DirectX::XMFLOAT3(position.x, position.y + 1.5f, position.z),
-        DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f),
-        5.0f,
-        hit, CollisionHelper::ToBit(CollisionLayer::WorldStatic));
 
-    if (hitGround /*&& hit.normal.y > 0.6f*/)
-    {
-        //const float groundOffset = 1.0f;
-        //float desiredDist = 1.5f - groundOffset;
+    float rayStartY = prevPosition.y + groundOffset_;
+    float fallDistance = prevPosition.y - position.y;
 
-        //if (hit.distance < desiredDist)
-        //{
-        //    position.y += (desiredDist - hit.distance);
-        //    SetPosition(position);
-        //}
-
-        Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
-        //isGrounded = true;
-    }
+    float rayLength = groundOffset_ + fallDistance + 0.1f;
+    rayLength = std::max<float>(rayLength, groundOffset_ + 0.2f);
 
     if (Physics::Instance().RayCast(
+        { prevPosition.x, rayStartY, prevPosition.z },
+        { 0.0f, -1.0f, 0.0f },
+        rayLength,
+        hit,
+        CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
+    {
+        float groundY = hit.position.y;
+        float desiredY = groundY /*+ groundOffset_*/;
+
+        //========================
+        // 4. 押し戻し
+        //========================
+        if (position.y <= desiredY)
+        {
+            position.y = desiredY;
+            velocity.y = 0.0f;
+            isGrounded_ = true;
+        }
+
+        Graphics::GetShapeRenderer()->DrawSphere(
+            hit.position, 0.1f, { 1,0,0,1 });
+    }
+
+    SetPosition(position);    if (Physics::Instance().RayCast(
         DirectX::XMFLOAT3(position.x, position.y + 1.5f, position.z),
         DirectX::XMFLOAT3(sinf(angle.y), 0, cosf(angle.y)),
         15.0f,

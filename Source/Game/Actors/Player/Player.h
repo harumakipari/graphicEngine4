@@ -556,4 +556,12 @@ private:
     }
 private:
     float elapsedTime_ = 0.0f;
+
+
+    bool isGrounded_ = false;
+
+    float gravity_ = -4.9f;        // 重力
+    float groundOffset_ = 1.0f;     // キャラの足元高さ（カプセル半径とか）
+    float snapEpsilon_ = 0.05f;     // 地面とみなす許容誤差
+
 };

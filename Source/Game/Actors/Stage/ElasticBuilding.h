@@ -229,6 +229,7 @@ public:
         elasticBuilding = this->NewSceneComponent<ElasticMeshComponent>("elasticBuilding");
         //elasticBuilding->SetModel("./Data/Models/Building/bomb_bill.gltf");
         elasticBuilding->SetModel("./Data/Models/pink_pudding/scene.gltf");
+        //elasticBuilding->SetModel("./Data/Models/cherry_pudding/scene.gltf");
 
 
         std::shared_ptr<BoxComponent> boxComponent = this->NewSceneComponent<class BoxComponent>("boxComponent", "elasticBuilding");

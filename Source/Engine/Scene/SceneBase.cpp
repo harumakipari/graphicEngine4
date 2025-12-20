@@ -339,9 +339,12 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-
     sceneRender.currentRenderPath = RenderPath::Forward;
     sceneRender.RenderBlend(immediateContext); // Ç±Ç±Ç≈åxçêèoÇÈ
+
+    //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_FRONT);
+    //sceneRender.currentRenderPath = RenderPath::Forward;
+    //sceneRender.RenderBlend(immediateContext); // Ç±Ç±Ç≈åxçêèoÇÈ
 
     // PARTICLES
     {
@@ -363,7 +366,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 #if _DEBUG
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
     //actorColliderManager.DebugRender(immediateContext);
-    //Physics::Instance().Render(cameraView,cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+    Physics::Instance().Render(cameraView,cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
 #endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 

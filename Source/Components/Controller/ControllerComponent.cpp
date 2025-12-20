@@ -178,6 +178,10 @@ void MovementComponent::Tick(float deltaTime)
     //owner_->rootComponent_->SetLocalRotation(quaternion);
 
     owner_.lock()->rootComponent_->AddWorldOffset(sweptMove);
+    //if (auto character = dynamic_cast<Character*>(owner_.lock().get()))
+    //{
+    //    character->velocity = sweptMove;
+    //}
 
 
     float yaw = DirectX::XMConvertToDegrees(std::atan2f(dir.x, dir.z));

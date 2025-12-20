@@ -145,12 +145,12 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
      
     // MULTIPLE_RENDER_TARGETS
     float3 finalColor = diffuse + specular + emmisive;
-    finalColor *= cpuColor.rgb;
+    //finalColor *= cpuColor.rgb;
     //finalColor = lerp(finalColor, cpuColor.rgb, 0.5);
     //finalColor += cpuColor.rgb * 0.3;
     //finalColor = lerp(finalColor, cpuColor.rgb, 0.7);
     pout.color = float4(finalColor, basecolorFactor.a) * basecolorFactor;
-    pout.color *= 1.3f;
+    //pout.color *= 1.3f;
     pout.position = mul(pin.wPosition, view); // to viewSpace
     pout.normal = mul(float4(N.xyz, 0), view); //to viewSpace;
     return pout;
