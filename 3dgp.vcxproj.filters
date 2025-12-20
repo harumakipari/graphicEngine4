@@ -1366,6 +1366,9 @@
     <FxCompile Include="Shader\WiredShapeRendererVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\GltfModelFightStagePS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ComputeParticle.hlsli">
@@ -1447,6 +1450,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\WiredShapeRenderer.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\FilterFunctions.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

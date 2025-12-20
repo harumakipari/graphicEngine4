@@ -152,8 +152,6 @@ void ElasticMeshComponent::Tick(float deltaTime)
             DirectX::XMVECTOR clampedDir = diff * scale;
             //DirectX::XMVECTOR clampedDir = diff * moveAmount; // mouse の変化量 を使う場合
 
-
-
             // p3 = 建物の上端＋方向ベクトル
             DirectX::XMFLOAT3 p3;
             DirectX::XMStoreFloat3(&p3, basePos + DirectX::XMVectorSet(0, buildHeight, 0, 0) + clampedDir);

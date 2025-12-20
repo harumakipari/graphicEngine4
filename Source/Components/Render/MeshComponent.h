@@ -34,12 +34,15 @@ public:
     // 仮
     bool isCloth = false;
 
-    PipeLineStateDesc pipeLineState_;
-    std::optional<std::string> overrideDeferredPipelineName ;
-    std::optional<std::string> overrideForwardPipelineName ;
+    PipeLineStateDesc pipeLineState_;   // これ使ってないから後で消す
+    std::optional<std::string> overrideDeferredPipelineName;
+    std::optional<std::string> overrideForwardPipelineName;
     std::optional<std::string> overrideCascadeShadowPipelineName;
 public:
-    MeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner) {};
+    MeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner)
+    {
+        plusAlphaCBuffer = std::make_unique<ConstantBuffer<PlusAlphaConstants>>(Graphics::GetDevice());
+    };
     std::shared_ptr<InterleavedGltfModel> model;
     // モデルのノード情報
     std::vector<InterleavedGltfModel::Node> modelNodes = {};
@@ -69,6 +72,14 @@ public:
     // 他のメッシュコンポーネントに必要な外部からの定数バッファ更新するためのフック関数
     virtual void UpdateConstantBuffer(ID3D11DeviceContext* immediateContext) const {}
 
+    void UpdatePlusAlphaConstants(ID3D11DeviceContext* immediateContext)
+    {
+        plusAlphaCBuffer->data.hueShift = hueShift;
+        plusAlphaCBuffer->data.saturation = saturation;
+        plusAlphaCBuffer->data.brightness = brightness;
+        plusAlphaCBuffer->Activate(immediateContext, 7);
+    }
+
     virtual void DrawImGuiInspector() override
     {
 #ifdef USE_IMGUI
@@ -77,6 +88,9 @@ public:
         if (ImGui::TreeNode((name_ + "  model").c_str()))
         {
             ImGui::Checkbox("isVisible", &isVisible_);
+            ImGui::SliderFloat("hueShift", &hueShift, 0.0f, +360.0f);
+            ImGui::SliderFloat("saturation", &saturation, 0.1f, +2.0f);
+            ImGui::SliderFloat("brightness", &brightness, 0.1f, +2.0f);
             ImGui::TreePop();
         }
 #endif
@@ -89,11 +103,27 @@ public:
     void SetIsCastShadow(bool isCastShadow) { this->isCastShadow_ = isCastShadow; }
 
     virtual bool IsCastShadow() const { return isCastShadow_; }
+
+
+    // モデルごとに更新したいPlusAlpha 用定数バッファ
+    struct PlusAlphaConstants
+    {
+        float	hueShift;	// 色相調整
+        float	saturation;	// 彩度調整
+        float	brightness;	// 明度調整
+    };
+    std::unique_ptr<ConstantBuffer<PlusAlphaConstants>> plusAlphaCBuffer;
+
+
 protected:
     //描画するかどうか
     bool isVisible_ = true;
     // 影をつけるかどうか
     bool isCastShadow_ = true;
+
+    float hueShift = 0.0f;	// 色相調整
+    float saturation = 1.0f;	// 彩度調整
+    float brightness = 1.0f;	// 明度調整
 };
 
 class SkeletalMeshComponent :public MeshComponent

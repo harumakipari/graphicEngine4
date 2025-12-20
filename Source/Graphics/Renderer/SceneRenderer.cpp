@@ -68,6 +68,7 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::v
             }
 
             meshComponent->UpdateConstantBuffer(immediateContext);
+            meshComponent->UpdatePlusAlphaConstants(immediateContext);
 
             if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
             {// 
@@ -106,7 +107,7 @@ void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext) const
         std::vector<MeshComponent*> meshComponents;
         actor->GetComponents<MeshComponent>(meshComponents);
 
-        for (const MeshComponent* meshComponent : meshComponents)
+        for ( MeshComponent* meshComponent : meshComponents)
         {
             if (!meshComponent->IsVisible())
             { // 描画フラグが false ならスキップ
@@ -117,6 +118,7 @@ void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext) const
             // 各 MeshComponent の model を取り出す
             const InterleavedGltfModel* model = meshComponent->model.get();
             meshComponent->UpdateConstantBuffer(immediateContext);
+            meshComponent->UpdatePlusAlphaConstants(immediateContext);
 
             if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
             {// 
@@ -152,7 +154,7 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext) const
         std::vector<MeshComponent*> meshComponents;
         actor->GetComponents<MeshComponent>(meshComponents);
 
-        for (const MeshComponent* meshComponent : meshComponents)
+        for ( MeshComponent* meshComponent : meshComponents)
         {
             if (!meshComponent->IsVisible())
             { // 描画フラグが false ならスキップ
@@ -163,6 +165,7 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext) const
             // 各 MeshComponent の model を取り出す
             const InterleavedGltfModel* model = meshComponent->model.get();
             meshComponent->UpdateConstantBuffer(immediateContext);
+            meshComponent->UpdatePlusAlphaConstants(immediateContext);
 
             if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
             {// 
@@ -551,7 +554,21 @@ void SceneRenderer::DrawWithStaticBatching(ID3D11DeviceContext* immediateContext
         }
         else if (meshComponent->overrideDeferredPipelineName.has_value())
         {
-            pipelineName = *meshComponent->overrideDeferredPipelineName;
+            if (pass == InterleavedGltfModel::RenderPass::Blend)
+            {
+                if (meshComponent->overrideForwardPipelineName.has_value())
+                {
+                    pipelineName = *meshComponent->overrideForwardPipelineName;
+                }
+                else
+                {
+                    pipelineName = *meshComponent->overrideDeferredPipelineName;
+                }
+            }
+            else
+            {
+                pipelineName = *meshComponent->overrideDeferredPipelineName;
+            }
         }
         else
         {

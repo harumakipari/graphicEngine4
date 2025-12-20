@@ -782,6 +782,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
+    <FxCompile Include="Shader\GltfModelFightStagePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shader\GltfModelGameCharacter.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -1005,6 +1011,7 @@
     <None Include="Shader\ComputeParticle.hlsli" />
     <None Include="Shader\ComputeParticleBitonicSort.hlsli" />
     <None Include="Shader\Constants.hlsli" />
+    <None Include="Shader\FilterFunctions.hlsli" />
     <None Include="Shader\FullScreenQuad.hlsli" />
     <None Include="Shader\geometricPrimitive.hlsli" />
     <None Include="Shader\GltfModel.hlsli" />

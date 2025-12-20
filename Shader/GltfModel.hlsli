@@ -51,6 +51,15 @@ cbuffer PRIMITIVE_CONSTANT_BUFFER : register(b0)
     row_major float4x4 invWorld;
 }
 
+
+cbuffer PLUS_ALPHA_CONSTANT_BUFFER : register(b7)
+{
+    float hueShift; // êFëäí≤êÆ
+    float saturation; // ç ìxí≤êÆ
+    float brightness; // ñæìxí≤êÆ
+}
+
+
 //cbuffer SCENE_CONSTANT_BUFFER : register(b1)
 //{
 //    row_major float4x4 viewProjection;

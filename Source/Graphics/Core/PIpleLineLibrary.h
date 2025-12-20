@@ -243,6 +243,15 @@ public:
             AddPipeLineState("defferdBlendStaticMesh", desc);
         }
 
+        // StaticMesh defferd stage —p
+        {
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelFightStagePS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+            //desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
+            AddPipeLineState("deferredFightStage", desc);
+        }
+
         // StaticMesh Cascade ShadowMap —p
         {
             desc.pixelShader = nullptr;

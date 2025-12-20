@@ -17,7 +17,9 @@ public:
 #else
         staticMeshComponent->SetModel("./Data/Models/boss_fight_stage/scene.gltf", true);
         staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
-        //staticMeshComponent->overrideDeferredPipelineName=
+        staticMeshComponent->overrideDeferredPipelineName = "deferredFightStage";
+        //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelFightStagePS.cso", staticMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
+        //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 #endif // 1
         //staticMeshComponent->SetRelativeLocationDirect({ 0.0f,2.45f,0.0f });
 
