@@ -7,106 +7,10 @@
 #include "Engine/Utility/Win32Utils.h"
 #include "Physics/CollisionSystem.h"
 
-DirectX::XMFLOAT3 KinematicMovementComponent::MoveAndSlide(const DirectX::XMFLOAT3& desiredMove)
-{
-    using namespace DirectX;
-    using namespace physx;
-
-    PxScene* pxScene = Physics::Instance().GetScene();
-
-    if (!shapeComponent_||!pxScene)
-    {
-        return desiredMove;
-    }
-
-    // 移動量が小さすぎる場合は無視
-    XMVECTOR v = XMLoadFloat3(&desiredMove);
-    if (XMVector3LengthSq(v).m128_f32[0] < 1e-6f)
-        return desiredMove;
-    PxTransform currentTransform;
-    {
-        auto owner = shapeComponent_->GetOwner();
-        auto pos = owner->GetPosition();
-        auto rot = owner->GetQuaternionRotation();
-
-        currentTransform = PxTransform(
-            PxVec3(pos.x, pos.y, pos.z),
-            PxQuat(rot.x, rot.y, rot.z, rot.w)
-        );
-    }
-    auto info = shapeComponent_->GetPhysicsShapeInfo();
-
-    PxVec3 direction(
-        desiredMove.x,
-        desiredMove.y,
-        desiredMove.z);
-
-    float distance = direction.normalize(); // direction 正規化 + 距離取得
-    if (distance <= 0.0001f)
-        return desiredMove;
-
-    PxSweepBuffer hit;
-    PxQueryFilterData filterData;
-    filterData.flags = PxQueryFlag::eSTATIC; // TriangleMesh は Static
-
-    bool blocked = pxScene->sweep(
-        info.geometry.any(),
-        currentTransform,
-        direction,
-        distance,
-        hit,
-        PxHitFlag::eDEFAULT,
-        filterData);
-
-    if (hit.hasBlock&&hit.block.distance<=0.0001f)
-    {
-        return { 0.0f,0.0f,0.0f };
-    }
-
-    // ヒットなし → そのまま移動
-    if (!blocked || !hit.hasBlock)
-        return desiredMove;
-
-    // めり込む直前まで移動
-    float safeDist = PxMax(hit.block.distance - 0.001f, 0.0f);
-
-    XMFLOAT3 result;
-    result.x = direction.x * safeDist;
-    result.y = direction.y * safeDist;
-    result.z = direction.z * safeDist;
-
-    // Slide 計算
-    PxVec3 n = hit.block.normal;
-    PxVec3 moveDir(
-        desiredMove.x,
-        desiredMove.y,
-        desiredMove.z);
-
-    // 法線方向成分を削除
-    PxVec3 slide =
-        moveDir - n * moveDir.dot(n);
-
-#if 1
-    // 再帰 or 1回だけスライド（まずは1回）
-    result.x += slide.x * 0.5f;
-    result.y += slide.y * 0.5f;
-    result.z += slide.z * 0.5f;
-#else
-    slide.normalize();
-    slide *= (distance - safeDist);
-
-    result.x += slide.x;
-    result.y += slide.y;
-    result.z += slide.z;
-#endif // 0
-
-    return result;
-}
 
 MovementComponent::MovementComponent(const std::string& name, const std::shared_ptr<Actor>& owner)
     :SceneComponent(name, owner)
 {
-    kinematicMove_ = std::make_unique<KinematicMovementComponent>();
 }
 
 void MovementComponent::Tick(float deltaTime)
@@ -157,31 +61,64 @@ void MovementComponent::Tick(float deltaTime)
     DirectX::XMFLOAT3 sweptMove = moveVec;
 
 
-    //// 衝突システムから押し出しベクトルを取得
-    //DirectX::XMFLOAT3 pushVec = CollisionSystem::GetPushVectorForActor(owner_.lock().get());
+    // 水平方向のみ使う
+    DirectX::XMFLOAT3 horizontalMove = sweptMove;
+    horizontalMove.y = 0.0f;
 
-    //// 合算
-    //sweptMove.x += pushVec.x;
-    //sweptMove.y += pushVec.y;
-    //sweptMove.z += pushVec.z;
+    // 長さチェック
+    float moveLen = std::sqrt(
+        horizontalMove.x * horizontalMove.x +
+        horizontalMove.z * horizontalMove.z
+    );
 
-    //moveVec.x += pushVec.x;
-    //moveVec.y += pushVec.y;
-    //moveVec.z += pushVec.z;
+    if (moveLen > 0.0001f)
+    {
+        // 正規化
+        horizontalMove.x /= moveLen;
+        horizontalMove.z /= moveLen;
 
-    //R.r[0] = DirectX::XMVectorScale(R.r[0], dir.x);
-    //R.r[1] = DirectX::XMVectorScale(R.r[1], dir.y);
-    //R.r[2] = DirectX::XMVectorScale(R.r[2], dir.z);
-    //DirectX::XMVECTOR q = DirectX::XMQuaternionRotationMatrix(R);
-    //DirectX::XMFLOAT4 quaternion;
-    //DirectX::XMStoreFloat4(&quaternion, q);
-    //owner_->rootComponent_->SetLocalRotation(quaternion);
+        DirectX::XMFLOAT3 pos = owner_.lock()->GetPosition();
+
+        HitResult hit;
+        bool hitWall = Physics::Instance().SphereCast(
+            { pos.x, pos.y + wallRayHeight_, pos.z },
+            horizontalMove,
+            moveLen + wallRadius_,
+            0.1f,hit,
+            CollisionHelper::ToBit(CollisionLayer::WorldStatic)
+        );
+
+        if (hitWall)
+        {
+            // 壁まで進める最大距離（少し余裕を持たせる）
+            float allowedDist = hit.distance - 0.01f;
+
+            allowedDist = std::max<float>(allowedDist, 0.0f);
+
+            // 水平方向の移動量を制限
+            sweptMove.x = horizontalMove.x * allowedDist;
+            sweptMove.z = horizontalMove.z * allowedDist;
+
+            // さらに「滑り」成分を追加したい場合
+            DirectX::XMFLOAT3 n = hit.normal;
+
+            float dot =
+                moveVec.x * n.x +
+                moveVec.z * n.z;
+
+            if (dot < 0.0f)
+            {
+                sweptMove.x -= n.x * dot;
+                sweptMove.z -= n.z * dot;
+            }
+        }
+    }
+
+    /* ============================
+       ★ ここまで壁当たり判定 ★
+       ============================ */
 
     owner_.lock()->rootComponent_->AddWorldOffset(sweptMove);
-    //if (auto character = dynamic_cast<Character*>(owner_.lock().get()))
-    //{
-    //    character->velocity = sweptMove;
-    //}
 
 
     float yaw = DirectX::XMConvertToDegrees(std::atan2f(dir.x, dir.z));

@@ -136,14 +136,6 @@ private:
     DirectX::XMFLOAT3 moveInput_ = { 0.0f,0.0f,0.0f };
 
 };
-class KinematicMovementComponent
-{
-public:
-    DirectX::XMFLOAT3 MoveAndSlide(const DirectX::XMFLOAT3& desiredMove);
-
-    ShapeComponent* shapeComponent_ = nullptr;
-    
-};
 
 class MovementComponent :public SceneComponent
 {
@@ -151,7 +143,6 @@ public:
     MovementComponent(const std::string& name, const std::shared_ptr<Actor>& owner);
 
 
-    void SetShapeComponent(ShapeComponent* shapeComp) const { kinematicMove_->shapeComponent_ = shapeComp; }
 
     void Tick(float deltaTime)override;
 
@@ -182,7 +173,9 @@ private:
 
     DirectX::XMFLOAT3 inputDelta_; // ¡ƒtƒŒ[ƒ€‚ÌˆÚ“®—Ê
 
-    std::unique_ptr<KinematicMovementComponent> kinematicMove_;
+
+    float wallRayHeight_ = 1.0f;   // ˜`‹¹‚ ‚½‚è
+    float wallRadius_ = 0.4f;   // ƒLƒƒƒ‰”¼Œa
 };
 
 

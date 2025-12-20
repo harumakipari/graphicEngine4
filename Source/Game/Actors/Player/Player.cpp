@@ -462,7 +462,7 @@ void Player::Initialize(const Transform& transform)
 
     // 移動用コンポーネントを追加
     movementComponent = this->NewSceneComponent<class MovementComponent>("movementComponent", "skeletalComponent");
-    movementComponent->SetShapeComponent(capsuleComponent.get());
+    
     // 回転用コンポーネントを追加
     rotationComponent = this->NewSceneComponent<class RotationComponent>("rotationComponet", "skeletalComponent");
 
@@ -528,7 +528,10 @@ void Player::Update(float elapsedTime)
             hit.position, 0.1f, { 1,0,0,1 });
     }
 
-    SetPosition(position);    if (Physics::Instance().RayCast(
+    SetPosition(position);    
+    
+    
+    if (Physics::Instance().RayCast(
         DirectX::XMFLOAT3(position.x, position.y + 1.5f, position.z),
         DirectX::XMFLOAT3(sinf(angle.y), 0, cosf(angle.y)),
         15.0f,
