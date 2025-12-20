@@ -196,6 +196,8 @@ void DebugCameraComponent::HandleKeyboardInput(float deltaTime)
     DirectX::XMVECTOR up = DirectX::XMVectorSet(0, 1, 0, 0);
 
     DirectX::XMVECTOR move = DirectX::XMVectorZero();
+#ifdef USE_IMGUI
+
     if (float wheelDelta = ImGui::GetIO().MouseWheel)
     {
         move += forward * wheelDelta * 30.0f;
@@ -204,7 +206,7 @@ void DebugCameraComponent::HandleKeyboardInput(float deltaTime)
         //distance -= wheelDelta;
         //distance = std::clamp(distance, 0.1f,100.0f);
     }
-
+#endif
     if (InputSystem::GetInputState("W")) { move += forward; }
     if (InputSystem::GetInputState("S")) { move -= forward; }
     if (InputSystem::GetInputState("D")) { move += right; }

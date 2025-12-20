@@ -3,6 +3,7 @@
 #include <profiler.h>
 #include "ImGuizmo.h"
 #include "Engine/Debug/DebugDrawManager.h"
+#include "Engine/Debug/EditorGizmo.h"
 #include "Engine/Effects/EffectEditor.h"
 #include "Engine/Effects/EffectManager.h"
 
@@ -372,7 +373,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 #if _DEBUG
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
     //actorColliderManager.DebugRender(immediateContext);
-    Physics::Instance().Render(cameraView,cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+    Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
     DebugDrawManager::Render(immediateContext);
 #endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
@@ -424,6 +425,7 @@ void SceneBase::DrawGui()
 #ifdef USE_IMGUI
     SetupImGuiStyle();
     DrawOutliner();
+    // DrawGizmo();// 
     DrawInspector();
     DrawShortcutInfo();
 #endif
@@ -595,29 +597,66 @@ void SceneBase::DrawPostEffectTab()
 
 void SceneBase::DrawGizmo()
 {
-    //if (!selectedActor_) return;
+    ImGui::Begin("Viewport",
+        nullptr,
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoScrollbar |
+        ImGuiWindowFlags_NoScrollWithMouse
+    );
 
-    //ImGuizmo::BeginFrame();
+    // =========================
+    // ① 3D描画結果を表示
+    // =========================
+    constexpr float VIEW_W = 1280.0f;
+    constexpr float VIEW_H = 720.0f;
 
-    //ImGuizmo::SetOrthographic(false);
-    //ImGuizmo::SetDrawlist();
+    ImVec2 avail = ImGui::GetContentRegionAvail();
 
-    //ImGuiViewport* vp = ImGui::GetMainViewport();
-    //ImGuizmo::SetRect(vp->WorkPos.x, vp->WorkPos.y, vp->WorkSize.x, vp->WorkSize.y);
+    // 中央寄せ
+    ImVec2 offset(
+        (avail.x - VIEW_W) * 0.5f,
+        (avail.y - VIEW_H) * 0.5f
+    );
+    if (offset.x < 0) offset.x = 0;
+    if (offset.y < 0) offset.y = 0;
 
-    //auto& transform = selectedActor_->GetRootComponent()->GetTransform();
-    //DirectX::XMMATRIX world = transform.GetWorldMatrix();
-    //DirectX::XMMATRIX view = CameraManager::GetCurrentCamera()->GetViewMatrix();
-    //DirectX::XMMATRIX proj = CameraManager::GetCurrentCamera()->GetProjMatrix();
+    ImGui::SetCursorPos(ImGui::GetCursorPos() + offset);
 
-    //ImGuizmo::Manipulate(
-    //    (float*)&view, (float*)&proj,
-    //    ImGuizmo::TRANSLATE, // ROTATE or SCALEもOK
-    //    ImGuizmo::WORLD,
-    //    (float*)&world
-    //);
+    // === 3D描画 ===
+    ImGui::Image(
+        frameBuffer->shaderResourceViews[0].Get(),
+        ImVec2(VIEW_W, VIEW_H)
+    );
 
-    //if (ImGuizmo::IsUsing()) {
-    //    transform.SetFromMatrix(world); // ←ワールド行列から位置・回転・スケール再計算
-    //}
+    // ★ Image の Rect を取得
+    ImVec2 imageMin = ImGui::GetItemRectMin();
+    ImVec2 imageSize = ImGui::GetItemRectSize();
+
+    DirectX::XMMATRIX CameraView;
+    DirectX::XMMATRIX CameraProjection;
+
+    if (auto camera = CameraManager::GetCurrentCamera())
+    {
+        ViewConstants data = camera->GetViewConstants();
+        CameraView = XMLoadFloat4x4(&data.view);
+        CameraProjection = XMLoadFloat4x4(&data.projection);
+    }
+
+
+    if (selectedActor_)
+    {
+        auto root = selectedActor_->GetRootComponent();
+        if (root)
+        {
+            EditorGizmo::Draw(
+                root,
+                CameraView,
+                CameraProjection,
+                imageMin,
+                imageSize
+            );
+        }
+    }
+
+    ImGui::End();
 }
