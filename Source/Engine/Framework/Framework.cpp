@@ -13,7 +13,8 @@
 
 #include "Engine/Input/InputSystem.h"
 #include "Graphics/Renderer/ShapeRenderer.h"
-#include "../../Components/Audio/AudioSourceComponent.h"
+#include "Components/Audio/AudioSourceComponent.h"
+#include "Engine/Debug/DebugDrawManager.h"
 #include "Engine/Effects/EffectEditor.h"
 #include "Engine/Effects/EffectManager.h"
 
@@ -76,6 +77,10 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
 
     //オーディオ更新
     Audio::Update(deltaTime);
+
+    // デバックコマンド更新
+    DebugDrawManager::Tick(deltaTime);
+
     bool skipRendering;
     // SCENE_TRANSITION
     {

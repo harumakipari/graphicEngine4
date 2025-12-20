@@ -1,5 +1,6 @@
 #pragma once
 #include "Components/Base/SceneComponent.h"
+#include "Engine/Debug/DebugDrawManager.h"
 #include "Graphics/Core/LightManager.h"
 
 class PointLightComponent :public SceneComponent
@@ -11,6 +12,15 @@ public:
 
     virtual void Tick(float deltaTime)override
     {
+#if _DEBUG
+        XMFLOAT3 pos = GetComponentLocation();
+        DebugDrawManager::DrawSphere(
+            pos,
+            0.1f,
+            DirectX::XMFLOAT4(color.x, color.y, color.z, 1.0f),
+            0.0f
+        );
+#endif
     }
 
     virtual void DrawImGuiInspector() override
@@ -44,7 +54,7 @@ public:
 
     void SetColor(const DirectX::XMFLOAT3& color)
     {
-        this->color.x = color.x ;
+        this->color.x = color.x;
         this->color.y = color.y;
         this->color.z = color.z;
     }

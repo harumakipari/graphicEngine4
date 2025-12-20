@@ -89,6 +89,8 @@ void ShapeRenderer::Initialize(ID3D11Device* device)
 // ‹…•`‰æ
 void ShapeRenderer::DrawSphere(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, const DirectX::XMFLOAT4& color)
 {
+    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
+
     DebugConstants data1{ color };
     immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
     immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());

@@ -2,6 +2,7 @@
 #include "SceneBase.h"
 #include <profiler.h>
 #include "ImGuizmo.h"
+#include "Engine/Debug/DebugDrawManager.h"
 #include "Engine/Effects/EffectEditor.h"
 #include "Engine/Effects/EffectManager.h"
 
@@ -191,8 +192,10 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
 #if _DEBUG
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
     //actorColliderManager.DebugRender(immediateContext);
-    //PhysicsTest::Instance().DebugRender(immediateContext);
+    Physics::Instance().Render(data.view, data.projection, { lightDirection.x,lightDirection.y,lightDirection.z });
+    DebugDrawManager::Render(immediateContext);
 #endif
+    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     // PARTICLES
     {
         ProfileScopedSection_2(0, "Particles", ImGuiControl::Profiler::Green);
@@ -369,7 +372,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 #if _DEBUG
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
     //actorColliderManager.DebugRender(immediateContext);
-    //Physics::Instance().Render(cameraView,cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+    Physics::Instance().Render(cameraView,cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+    DebugDrawManager::Render(immediateContext);
 #endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 

@@ -6,7 +6,7 @@ cbuffer CONSTANTS : register(b12)
 }
 
 
-float4 main(VS_OUT pin) : SV_TARGET
+float4 main(VS_OUT pin) : SV_TARGET0
 {
     return color; //デバック用で色指定
     const MaterialConstants m = materials[material];
