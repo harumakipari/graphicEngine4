@@ -19,9 +19,9 @@
 
 enum SoundType
 {
-	BGM,
-	SE,
-	EnumCount
+	bgm,
+	se,
+	enumCount,
 };
 
 class AudioSourceComponent;
@@ -58,16 +58,16 @@ public:
 	static void GetMasterVolume(float& volume) { masterVoice->GetVolume(&volume); }
 
 	//BGM全体のボリューム設定
-	static void SetBgmVolume(float volume) { submixVoices[BGM]->SetVolume(volume); }
+	static void SetBgmVolume(float volume) { submixVoices[bgm]->SetVolume(volume); }
 
 	//BGM全体のボリューム取得
-	static void GetBgmVolume(float& volume) { submixVoices[BGM]->GetVolume(&volume); }
+	static void GetBgmVolume(float& volume) { submixVoices[bgm]->GetVolume(&volume); }
 
 	//SE全体のボリューム設定
-	static void SetSeVolume(float volume) { submixVoices[SE]->SetVolume(volume); }
+	static void SetSeVolume(float volume) { submixVoices[se]->SetVolume(volume); }
 
 	//SE全体のボリューム取得
-	static void GetSeVolume(float& volume) { submixVoices[SE]->GetVolume(&volume); }
+	static void GetSeVolume(float& volume) { submixVoices[se]->GetVolume(&volume); }
 
 	virtual ~Audio();
 
@@ -97,7 +97,7 @@ private:
 private:
 	static inline Microsoft::WRL::ComPtr<IXAudio2> xaudio2;
 	static inline IXAudio2MasteringVoice* masterVoice = nullptr;
-	static inline IXAudio2SubmixVoice* submixVoices[SoundType::EnumCount];
+	static inline IXAudio2SubmixVoice* submixVoices[SoundType::enumCount];
 };
 
 

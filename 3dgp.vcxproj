@@ -246,6 +246,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Components\Audio\AudioSourceComponent.cpp" />
+    <ClCompile Include="Source\Components\Audio\CoreAudioSourceComponent.cpp" />
     <ClCompile Include="Source\Components\Base\Component.cpp" />
     <ClCompile Include="Source\Components\Base\SceneComponent.cpp" />
     <ClCompile Include="Source\Components\Camera\CameraComponent.cpp" />
@@ -265,6 +266,7 @@
     <ClCompile Include="Source\Core\Vector.cpp" />
     <ClCompile Include="Source\Core\World.cpp" />
     <ClCompile Include="Source\Engine\Audio\Audio.cpp" />
+    <ClCompile Include="Source\Engine\Audio\CoreAudio.cpp" />
     <ClCompile Include="Source\Engine\Debug\DebugDrawManager.cpp" />
     <ClCompile Include="Source\Engine\Debug\Dialog.cpp" />
     <ClCompile Include="Source\Engine\Debug\EditorGizmo.cpp" />
@@ -377,6 +379,7 @@
     <ClInclude Include="External\imgui\timer.h" />
     <ClInclude Include="Source\Animation\AnimationController.h" />
     <ClInclude Include="Source\Components\Audio\AudioSourceComponent.h" />
+    <ClInclude Include="Source\Components\Audio\CoreAudioSourceComponent.h" />
     <ClInclude Include="Source\Components\Base\Component.h" />
     <ClInclude Include="Source\Components\Base\SceneComponent.h" />
     <ClInclude Include="Source\Components\Camera\CameraComponent.h" />
@@ -403,6 +406,7 @@
     <ClInclude Include="Source\Core\Vector.h" />
     <ClInclude Include="Source\Core\World.h" />
     <ClInclude Include="Source\Engine\Audio\Audio.h" />
+    <ClInclude Include="Source\Engine\Audio\CoreAudio.h" />
     <ClInclude Include="Source\Engine\Camera\CameraConstants.h" />
     <ClInclude Include="Source\Engine\Camera\CameraManager.h" />
     <ClInclude Include="Source\Engine\Debug\Assert.h" />

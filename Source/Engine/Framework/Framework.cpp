@@ -14,6 +14,7 @@
 #include "Engine/Input/InputSystem.h"
 #include "Graphics/Renderer/ShapeRenderer.h"
 #include "Components/Audio/AudioSourceComponent.h"
+#include "Engine/Audio/CoreAudio.h"
 #include "Engine/Debug/DebugDrawManager.h"
 #include "Engine/Effects/EffectEditor.h"
 #include "Engine/Effects/EffectManager.h"
@@ -29,6 +30,7 @@ Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fu
     InputSystem::Initialize();
     RenderState::Initialize();
     Audio::Initialize();
+    CoreAudio::Initialize();
 }
 
 bool Framework::Initialize()
@@ -77,6 +79,7 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
 
     //オーディオ更新
     Audio::Update(deltaTime);
+    CoreAudio::Update(deltaTime);
 
     // デバックコマンド更新
     DebugDrawManager::Tick(deltaTime);
@@ -197,6 +200,7 @@ bool Framework::Uninitialize()
     // エフェクトマネージャー終了
     EffectManager::ClearAll();
 
+    CoreAudio::ClearAll();
 
     Audio::ClearAll();
 

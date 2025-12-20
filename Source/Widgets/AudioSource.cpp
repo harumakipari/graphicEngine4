@@ -5,7 +5,7 @@
 
 void AudioSource::SetSource(const wchar_t* filePath)
 {
-	this->type = std::wstring(filePath).find(L"BGM") != std::wstring::npos ? SoundType::BGM : SoundType::SE;
+	this->type = std::wstring(filePath).find(L"BGM") != std::wstring::npos ? SoundType::bgm : SoundType::se;
 	this->filePath = filePath;
 	sptrBuffer = Audio::AudioBuffer::GetResource(filePath);
 	Audio::CreateAudioSource(sptrBuffer, &sourceVoice, type);

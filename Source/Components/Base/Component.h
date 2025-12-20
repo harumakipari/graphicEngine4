@@ -108,7 +108,7 @@ public:
 
     bool GetActive() { return active_; }
 
-    virtual void UpdateComponentToWorld(UpdateTransformFlags update_transform_flags = UpdateTransformFlags::None, TeleportType teleport = TeleportType::None) = 0;
+    virtual void UpdateComponentToWorld(UpdateTransformFlags update_transform_flags = UpdateTransformFlags::None, TeleportType teleport = TeleportType::None) {}    
 
     virtual void Destroy()
     {

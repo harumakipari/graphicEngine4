@@ -5,6 +5,7 @@
 #include "Components/CollisionShape/ShapeComponent.h"
 #include "Components/Effect/ParticleComponent.h"
 #include "Components/Elastic/ElasticComponent.h"
+#include "Engine/Audio/CoreAudio.h"
 
 class ElasticBuilding : public Actor
 {
@@ -257,6 +258,8 @@ public:
             if (particleComponent)
             {
                 particleComponent->Play();
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE/pudding.wav");
+
             }
         }
     }

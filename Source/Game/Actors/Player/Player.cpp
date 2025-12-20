@@ -24,6 +24,7 @@
 
 #include "PlayerStateDerived.h"
 // チュートリアルに使用
+#include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Game/Managers/TutorialSystem.h"
 
 void Player::Initialize(const Transform& transform)
@@ -93,6 +94,8 @@ void Player::Initialize(const Transform& transform)
     //this->SetStateMachine(stateMachine);
     // 初期ステートを設定
     stateMachine_->ChangeState("Idle");
+
+
 
 
 #if 1

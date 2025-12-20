@@ -101,8 +101,8 @@ void Audio::CreateAudioSource(std::shared_ptr<AudioBuffer> buffer,
 	IXAudio2SourceVoice** sourceVoice, SoundType type)
 {
 	// BGM,SEの送信先を設定
-	XAUDIO2_SEND_DESCRIPTOR send[SoundType::EnumCount] = { { 0, submixVoices[BGM] }, { 0, submixVoices[SE] } };
-	XAUDIO2_VOICE_SENDS sends[SoundType::EnumCount] = { {1, &send[BGM]}, {1, &send[SE]} };
+	XAUDIO2_SEND_DESCRIPTOR send[SoundType::enumCount] = { { 0, submixVoices[bgm] }, { 0, submixVoices[se] } };
+	XAUDIO2_VOICE_SENDS sends[SoundType::enumCount] = { {1, &send[bgm]}, {1, &send[se]} };
 
 	HRESULT hr = xaudio2->CreateSourceVoice(sourceVoice, (WAVEFORMATEX*)&buffer->wfx, 0, XAUDIO2_DEFAULT_FREQ_RATIO, nullptr, &sends[type], nullptr);
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
@@ -120,10 +120,10 @@ void Audio::Initialize()
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
 	// BGMとSE用のサブミキサーボイスを作成（ステレオ: 2チャンネル）
-	hr = xaudio2->CreateSubmixVoice(&submixVoices[BGM], 2, 44100);
+	hr = xaudio2->CreateSubmixVoice(&submixVoices[bgm], 2, 44100);
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-	hr = xaudio2->CreateSubmixVoice(&submixVoices[SE], 2, 44100);
+	hr = xaudio2->CreateSubmixVoice(&submixVoices[se], 2, 44100);
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
 #ifdef X3DAUDIO
@@ -223,7 +223,7 @@ void Audio::Update(float deltaTime)
 
 void AudioSourceComponent::SetSource(const wchar_t* filePath)
 {
-	this->type = std::wstring(filePath).find(L"BGM") != std::wstring::npos ? SoundType::BGM : SoundType::SE;
+	this->type = std::wstring(filePath).find(L"BGM") != std::wstring::npos ? SoundType::bgm : SoundType::se;
 	this->filePath = filePath;
 	sptrBuffer = Audio::AudioBuffer::GetResource(filePath);
 	Audio::CreateAudioSource(Audio::AudioBuffer::GetResource(this->filePath), &sourceVoice, type);
@@ -374,7 +374,7 @@ void AudioSourceComponent::DrawImGuiInspector()
 
 StandaloneAudioSource::StandaloneAudioSource(const wchar_t* filePath)
 {
-	this->type = std::wstring(filePath).find(L"BGM") != std::wstring::npos ? SoundType::BGM : SoundType::SE;
+	this->type = std::wstring(filePath).find(L"BGM") != std::wstring::npos ? SoundType::bgm : SoundType::se;
 	sptrBuffer = Audio::AudioBuffer::GetResource(filePath);
 	Audio::CreateAudioSource(sptrBuffer, &sourceVoice, type);
 }

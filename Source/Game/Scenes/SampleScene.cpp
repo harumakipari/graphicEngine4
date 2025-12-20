@@ -6,6 +6,7 @@
 #include "imgui.h"
 #endif
 
+#include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Graphics/Core/Graphics.h"
 #include "Graphics/Core/RenderState.h"
 #include "Engine/Input/InputSystem.h"
@@ -44,6 +45,12 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
 
 void SampleScene::Start()
 {
+    auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
+   auto audioComp= audioActor->NewSceneComponent<CoreAudioSourceComponent>("audioSource");
+    audioComp->SetSource(L"./Data/Sound/BGM/title.wav");
+    audioComp->SetLoop(true);
+    audioComp->Play();
+
 }
 
 void SampleScene::Update(float deltaTime)
