@@ -5,7 +5,8 @@
 void BossEnemy::Initialize(const Transform& transform)
 {
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeletalComponent");
-    skeletalMeshComponent->SetModel("./Data/Models/Characters/Savarog/Idle.gltf");
+    //skeletalMeshComponent->SetModel("./Data/Models/Characters/Savarog/Idle.gltf");
+    skeletalMeshComponent->SetModel("./Data/Models/Characters/SevarogBloodred/Idle.gltf");
     skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
     const std::vector<std::string> animationFilenames =
     {

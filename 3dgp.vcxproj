@@ -548,6 +548,7 @@
     <ClInclude Include="Source\Physics\Physics.h" />
     <ClInclude Include="Source\Physics\PhysicsHelper.h" />
     <ClInclude Include="Source\Test\SoftBody2d.h" />
+    <ClInclude Include="Source\UI\UIManger.h" />
     <ClInclude Include="Source\UI\Widgets\Widget.h" />
     <ClInclude Include="Source\Utils\easing.h" />
     <ClInclude Include="Source\Utils\EasingHandler.h" />

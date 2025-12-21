@@ -37,3 +37,10 @@ x64/
 *.cod
 *.cso
 Data/Models/pink_pudding/scene.cereal
+Data/Environment/Sky/Night2/diffuse_iem.dds
+Data/Environment/Sky/Night2/lut_charlie.dds
+Data/Environment/Sky/Night2/lut_ggx.dds
+Data/Environment/Sky/Night2/lut_sheen_e.dds
+Data/Environment/Sky/Night2/sheen_pmrem.dds
+Data/Environment/Sky/Night2/skybox.dds
+Data/Environment/Sky/Night2/specular_pmrem.dds

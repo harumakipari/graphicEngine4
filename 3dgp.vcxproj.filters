@@ -549,6 +549,21 @@
     <ClCompile Include="Source\Components\Elastic\ElasticComponent.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="External\imgui\ImGuizmo.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\Audio\CoreAudioSourceComponent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Audio\CoreAudio.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Debug\DebugDrawManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Debug\EditorGizmo.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1097,6 +1112,13 @@
     <ClInclude Include="Source\Components\Effect\ParticleComponent.h" />
     <ClInclude Include="Source\Engine\Effects\EffectEditor.h" />
     <ClInclude Include="Source\Components\Elastic\ElasticComponent.h" />
+    <ClInclude Include="External\imgui\ImGuizmo.h" />
+    <ClInclude Include="Source\Components\Audio\CoreAudioSourceComponent.h" />
+    <ClInclude Include="Source\Components\Render\PointLightComponent.h" />
+    <ClInclude Include="Source\Engine\Audio\CoreAudio.h" />
+    <ClInclude Include="Source\Engine\Debug\DebugDrawManager.h" />
+    <ClInclude Include="Source\Engine\Debug\EditorGizmo.h" />
+    <ClInclude Include="Source\UI\UIManger.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">

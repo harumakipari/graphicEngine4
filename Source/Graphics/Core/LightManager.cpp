@@ -83,8 +83,8 @@ void LightManager::DrawGUI()
     ImGui::Checkbox("directionalLightEnable", &directionalLightEnable);
     ImGui::SliderFloat3("Light Direction", &lightDirection.x, -1.0f, 1.0f);
     ImGui::SliderFloat3("Light Color", &lightColor.x, -1.0f, 1.0f);
-    ImGui::SliderFloat("IBL Intensity", &iblIntensity, 0.0f, 10.0f);
-    ImGui::SliderFloat("Light Intensity", &lightColor.w, 0.0f, 10.0f);
+    ImGui::SliderFloat("IBL Intensity", &iblIntensity, 0.0f, 20.0f);
+    ImGui::SliderFloat("Light Intensity", &lightColor.w, 0.0f, 20.0f);
     ImGui::Checkbox("pointLightEnable", &pointLightEnable);
     ImGui::SliderInt("Point Light Count", &pointLightCount, 0, 8);
     if (debugPointLights.size() != static_cast<size_t>(pointLightCount))
