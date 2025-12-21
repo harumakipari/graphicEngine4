@@ -115,6 +115,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     //return float4(Lo, 1.0f);
     //return float4(diffuse + specular + emmisive, basecolorFactor.a) * basecolorFactor;
     return float4(diffuse + specular + emmisive, 1.0) * color;
+    return float4(diffuse + specular + emmisive, 1.0) * color;
     
     
     return finalColor;

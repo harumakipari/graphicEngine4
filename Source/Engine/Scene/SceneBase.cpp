@@ -47,7 +47,7 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     HRESULT hr = { S_OK };
 
     //スカイマップ
-    skyMap = std::make_unique<decltype(skyMap)::element_type>(device, L"./Data/Environment/Sky/Night/skybox.dds");
+    skyMap = std::make_unique<decltype(skyMap)::element_type>(device, L"./Data/Environment/Sky/Night2/skybox.dds");
 
     fullscreenQuad = std::make_unique<FullScreenQuad>(device);
 
@@ -372,9 +372,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     // デバック描画
 #if _DEBUG
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-    //actorColliderManager.DebugRender(immediateContext);
-    Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
-    DebugDrawManager::Render(immediateContext);
+    //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+    //DebugDrawManager::Render(immediateContext);
 #endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 

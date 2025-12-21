@@ -114,6 +114,9 @@ public:
     };
     std::unique_ptr<ConstantBuffer<PlusAlphaConstants>> plusAlphaCBuffer;
 
+    float hueShift = 0.0f;	// 色相調整
+    float saturation = 1.0f;	// 彩度調整
+    float brightness = 1.0f;	// 明度調整
 
 protected:
     //描画するかどうか
@@ -121,9 +124,6 @@ protected:
     // 影をつけるかどうか
     bool isCastShadow_ = true;
 
-    float hueShift = 0.0f;	// 色相調整
-    float saturation = 1.0f;	// 彩度調整
-    float brightness = 1.0f;	// 明度調整
 };
 
 class SkeletalMeshComponent :public MeshComponent
