@@ -352,18 +352,18 @@ void BootScene::Start()
 
 
 
-    uiRoot.root = std::make_unique<UIWidget>("canvas");
+    //uiRoot.root = std::make_unique<UIWidget>("canvas");
 
-    auto button = std::make_unique<UIButton>("button");
-    button->SetSprite(L"./Data/Textures/UI/start_button.png");
-    button->SetPosition(100, 100);
-    button->SetSize(100, 100);
-    button->onClick = ([&]()
-        {
-            button->SetSize(200, 200);
-        });
+    //auto button = std::make_unique<UIButton>("button");
+    //button->SetSprite(L"./Data/Textures/UI/start_button.png");
+    //button->SetPosition(100, 100);
+    //button->SetSize(100, 100);
+    //button->onClick = ([&]()
+    //    {
+    //        button->SetSize(200, 200);
+    //    });
 
-    uiRoot.root->AddChild(std::move(button));
+    //uiRoot.root->AddChild(std::move(button));
 
 }
 

@@ -331,6 +331,7 @@
     <ClCompile Include="Source\Graphics\Renderer\PrimitiveShapeRenderer.cpp" />
     <ClCompile Include="Source\Graphics\Renderer\SceneRenderer.cpp" />
     <ClCompile Include="Source\Graphics\Renderer\ShapeRenderer.cpp" />
+    <ClCompile Include="Source\Graphics\Renderer\SpriteRenderer.cpp" />
     <ClCompile Include="Source\Graphics\Resource\GeometricPrimitive.cpp" />
     <ClCompile Include="Source\Graphics\Resource\GltfModelBase.cpp" />
     <ClCompile Include="Source\Graphics\Resource\GltfModelStaticBatching.cpp" />
@@ -518,6 +519,7 @@
     <ClInclude Include="Source\Graphics\Renderer\PrimitiveShapeRenderer.h" />
     <ClInclude Include="Source\Graphics\Renderer\SceneRenderer.h" />
     <ClInclude Include="Source\Graphics\Renderer\ShapeRenderer.h" />
+    <ClInclude Include="Source\Graphics\Renderer\SpriteRenderer.h" />
     <ClInclude Include="Source\Graphics\Resource\GeometricPrimitive.h" />
     <ClInclude Include="Source\Graphics\Resource\GltfModel.h" />
     <ClInclude Include="Source\Graphics\Resource\GltfModelBase.h" />

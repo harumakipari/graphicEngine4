@@ -23,9 +23,9 @@
 //コンストラクタ：ウィンドウハンドルを受け取って初期化
 Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fullscreen), windowed_style(static_cast<DWORD>(GetWindowLongPtrW(hwnd, GWL_STYLE)))
 {
-//#ifndef _DEBUG
+#ifndef _DEBUG
     fullscreenMode = true;
-//#endif
+#endif
     Graphics::Initialize(hwnd, fullscreenMode);
     InputSystem::Initialize();
     RenderState::Initialize();

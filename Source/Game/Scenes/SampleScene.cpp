@@ -29,6 +29,7 @@
 
 #include "Graphics/PostProcess/BloomEffect.h"
 #include "Physics/CollisionSystem.h"
+#include "UI/UIManger.h"
 
 
 bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
@@ -46,11 +47,49 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
 void SampleScene::Start()
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
-   auto audioComp= audioActor->NewSceneComponent<CoreAudioSourceComponent>("audioSource");
+    auto audioComp = audioActor->NewSceneComponent<CoreAudioSourceComponent>("audioSource");
     audioComp->SetSource(L"./Data/Sound/BGM/title.wav");
     audioComp->SetLoop(true);
     audioComp->Play();
     audioComp->SetVolume(0.2f);
+
+    uiManager = std::make_unique<UIManager>();
+
+
+    std::shared_ptr<Sprite> uiSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/UI/icon_chara.png");
+
+    std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>();
+    image->texture = uiSprite;
+    image->position = { 50, 50 };
+    image->size = { 200, 200 };
+
+    uiManager->Add(image);
+
+
+    std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>();
+    button->texture = uiSprite;
+    button->position = { 300, 50 };
+    button->size = { 200, 80 };
+
+    uiManager->Add(button);
+
+    std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>();
+    gauge->texture = uiSprite;
+    gauge->position = { 50, 300 };
+    gauge->size = { 300, 40 };
+    gauge->value = 1.0f;
+
+    uiManager->Add(gauge);
+
+    // ボタンでゲージ減らす
+    button->onClick = [gauge]()
+        {
+            OutputDebugStringA("Button Clicked!\n");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
+            gauge->value -= 0.1f;
+            if (gauge->value < 0.0f)
+                gauge->value = 0.0f;
+        };
 
 }
 
@@ -66,6 +105,7 @@ void SampleScene::Update(float deltaTime)
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
 
+    uiManager->Update(deltaTime);
 #if 0
 
     // マウスカーソルを取得
@@ -266,59 +306,60 @@ void SampleScene::Update(float deltaTime)
 #endif // !_DEBUG
 }
 
-void SampleScene::SetUpActors()
-{
-    auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
-    auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
-    //Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
-    Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 1.3f,1.3f,1.3f });
-    auto player = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
-    mainCameraComponent->target = (player->GetRootComponent());
-    mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
-    //mainCameraComponent->followTarget = (titlePlayer->GetRootComponent());
-    //mainCameraComponent->lookAtTarget = (titlePlayer->GetRootComponent());
+    void SampleScene::SetUpActors()
+    {
+        auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
+        auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
+        //Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
+        Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 1.3f,1.3f,1.3f });
+        auto player = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
+        mainCameraComponent->target = (player->GetRootComponent());
+        mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
+        //mainCameraComponent->followTarget = (titlePlayer->GetRootComponent());
+        //mainCameraComponent->lookAtTarget = (titlePlayer->GetRootComponent());
 
-    //Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
-    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<FightStage>("stage", stageTr);
+        //Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
+        auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<FightStage>("stage", stageTr);
 
-    auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
-    debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
+        auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
+        debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
-    //Transform buildTr(DirectX::XMFLOAT3{ 3.0f,-2.45f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
-    //auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<TestElasticBuilding>("building", buildTr);
+        //Transform buildTr(DirectX::XMFLOAT3{ 3.0f,-2.45f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
+        //auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<TestElasticBuilding>("building", buildTr);
 
 
-    Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,-2.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
-    auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<TestElasticBuilding>("building", buildTr2);
+        Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,-2.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
+        auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<TestElasticBuilding>("building", buildTr2);
 
 
 #if 1
-    CameraManager::SetGameCamera(mainCameraActor.get());
+        CameraManager::SetGameCamera(mainCameraActor.get());
 #else
-    CameraManager::SetGameCamera(debugCameraActor.get());
+        CameraManager::SetGameCamera(debugCameraActor.get());
 #endif // 0
-    //stageCollisionMesh = std::make_shared<CollisionMesh>(Graphics::GetDevice(), "./Data/Models/Stage/stage.gltf", true);
+        //stageCollisionMesh = std::make_shared<CollisionMesh>(Graphics::GetDevice(), "./Data/Models/Stage/stage.gltf", true);
 
-    Transform enemyTr(DirectX::XMFLOAT3{ 6.7f,-2.45f,5.6f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
-    auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("enemy", enemyTr);
+        Transform enemyTr(DirectX::XMFLOAT3{ 6.7f,-2.45f,5.6f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
+        auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("enemy", enemyTr);
 
 
-    CameraManager::SetDebugCamera(debugCameraActor);
-}
+        CameraManager::SetDebugCamera(debugCameraActor);
+    }
 
-bool SampleScene::Uninitialize(ID3D11Device* device)
-{
-    Physics::Instance().Finalize();
-    return true;
-}
+    bool SampleScene::Uninitialize(ID3D11Device * device)
+    {
+        Physics::Instance().Finalize();
+        return true;
+    }
 
-void SampleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
-{
-    SceneBase::Render(immediateContext, deltaTime);
-}
+    void SampleScene::Render(ID3D11DeviceContext * immediateContext, float deltaTime)
+    {
+        SceneBase::Render(immediateContext, deltaTime);
+        uiManager->Draw();
+    }
 
-void SampleScene::DrawGui()
-{
-    SceneBase::DrawGui();
-}
+    void SampleScene::DrawGui()
+    {
+        SceneBase::DrawGui();
+    }

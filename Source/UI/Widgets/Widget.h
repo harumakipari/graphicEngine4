@@ -5,215 +5,153 @@
 #include <vector>
 #include <functional>
 
+#include "Core/CoreColor.h"
+#include "Core/Vector.h"
+#include "Engine/Input/InputSystem.h"
 #include "Graphics/Core/Graphics.h"
+#include "Graphics/Renderer/SpriteRenderer.h"
 #include "Graphics/Sprite/Sprite.h"
+#include "Widgets/Color.h"
 
-class UIWidget :public std::enable_shared_from_this <UIWidget>
+class UICoreComponent
 {
 public:
-    // コンストラクタ
-    UIWidget(const std::string& name) :name_(name), active_(true) {};
+    virtual ~UICoreComponent() = default;
+    virtual void Update(float dt) {}
+    virtual void Draw() {}
+    virtual void OnMouseEnter() {}
+    virtual void OnMouseLeave() {}
+    virtual void OnMouseDown() {}
+    virtual void OnMouseUp() {}
+    virtual void OnClick() {}
 
-    virtual ~UIWidget() {}
-    //{
-    //    for (auto child : children_)
-    //    {
-    //        delete child;
-    //    }
-    //}
+    void SetParent(UICoreComponent* parent);
+    const std::vector<UICoreComponent*>& GetChildren() const;
 
-    // ファイル設定
-    void SetSprite(const std::wstring& filename)
-    {
-        ID3D11Device* device = Graphics::GetDevice();
-        sprite_ = std::make_shared<Sprite>(device, filename.c_str());
-    }
-
-    // 位置の設定
-    void SetPosition(float x, float y) { x_ = x; y_ = y; }
-    // サイズの設定
-    void SetSize(float w, float h) { width_ = w; height_ = h; }
-
-    // 子Widgetを追加
-    void AddChild(std::unique_ptr<UIWidget> child)
-    {
-        child->parent_ = this;
-        children_.push_back(std::move(child));
-    }
-    //// 子Widgetを追加
-    //void AddChild(UIWidget* child)
-    //{
-    //    child->parent_ = this;
-    //    children_.push_back(child);
-    //}
-
-    // 親子構造のGetters
-    UIWidget* GetParent() const { return parent_; }
-    const std::vector<std::unique_ptr<UIWidget>>& GetChildren() const { return children_; }
-    //const std::vector<UIWidget*>& GetChildren() const { return children_; }
-
-    // 可視性設定
-    void SetVisible(bool visible) { isVisible_ = visible; }
-    bool IsVisible() const { return isVisible_; }
-
-    // 座標取得（親の座標を加味した絶対座標）
-    float GetAbsoluteX() const
-    {
-
-        return parent_ ? parent_->GetAbsoluteX() + x_ : x_;
-    }
-    float GetAbsoluteY() const
-    {
-        return parent_ ? parent_->GetAbsoluteY() + y_ : y_;
-    }
-
-    virtual void Draw(ID3D11DeviceContext* immediateContext)
-    {
-        if (!isVisible_)
-        {
-            return;
-        }
-
-        if (sprite_)
-        {
-            sprite_->Render(immediateContext, x_, y_, width_, height_);
-        }
-
-        for (auto& child : children_)
-        {
-            child->Draw(immediateContext);
-        }
-    }
-
-    // マウスのヒット判定
-    bool HitTest(float mouseX, float mouseY) const
-    {
-        if (!isVisible_) return false;
-        float absX = GetAbsoluteX();
-        float absY = GetAbsoluteY();
-        return
-            (mouseX >= absX && mouseX <= absX + width_ &&
-                mouseY >= absY && mouseY <= absY + height_);
-    }
-
-    // 入力処理
-    virtual bool OnMouseDown(float mouseX, float mouseY)
-    {
-        if (!isVisible_) return false;
-
-        for (auto it = children_.rbegin(); it != children_.rend(); ++it)
-        {
-            if ((*it)->HitTest(mouseX, mouseY))
-            {
-                if ((*it)->OnMouseDown(mouseX, mouseY))
-                {
-                    //HandleClick();
-                    return true;
-                }
-            }
-        }
-        if (HitTest(mouseX, mouseY))
-        {
-            HandleClick();
-            return true;
-        }
-        return false;
-    }
-
-    virtual bool OnMouseMove(float mouseX, float mouseY)
-    {
-        return false;
-    }
-
+    // スクリーン座標
+    XMFLOAT2 position;
+    XMFLOAT2 size;
+    bool visible = true;
+    bool enabled = true;
 
 protected:
-    // 画面上の位置とサイズ（スクリーン座標系の矩形）
-    float x_ = 0.0f;
-    float y_ = 0.0f;
-    float width_ = 100.0f;
-    float height_ = 30.0f;
-
-    // 子ウィジェットのリスト
-    //std::vector<UIWidget*> children_;
-    std::vector<std::unique_ptr<UIWidget>> children_;
-    // 親Widget（nullptrならルート）
-    UIWidget* parent_ = nullptr;
-
-    // 表示状態
-    bool isVisible_ = true;
-
-    bool active_ = true;
-
-    std::shared_ptr<Sprite> sprite_;
-
-    std::string name_;
-
-protected:
-    // 派生クラスでオーバーライドする
-    virtual void HandleClick() {}
+    UICoreComponent* parent = nullptr;
+    std::vector<UICoreComponent*> children;
 };
 
-class UIButton :public UIWidget
+
+class UIImageComponent : public UICoreComponent
 {
 public:
-    enum class State
-    {
-        Normal, Hovered, Pressed
-    };
+    std::shared_ptr<Sprite>  texture;
+    CoreColor color = CoreColor::White;
 
-    UIButton(const std::string& name) :UIWidget(name) {}
+    void Draw() override
+    {
+        if (!visible) return;
+
+        SpriteRenderer::Draw(
+            texture.get(),
+            position,
+            size,
+            color
+        );
+    }
+};
+
+
+enum class UIButtonState
+{
+    Normal,
+    Hovered,
+    Pressed
+};
+
+class UIButtonComponent : public UIImageComponent
+{
+public:
+    UIButtonState state = UIButtonState::Normal;
 
     std::function<void()> onClick;
 
-    void Draw(ID3D11DeviceContext* immediateContext) override
+    void Update(float dt) override
     {
-        if (!IsVisible()) return;
+        DirectX::XMFLOAT2 cursor = InputSystem::GetMousePosition();
 
-        DirectX::XMFLOAT4 color = { 1.0f,1.0f,1.0f,1.0f };
-        if (state_ == State::Hovered)
+        bool inside = IsInside(cursor);
+
+        if (inside)
         {
-            color.w = 0.5f;
+            // マウスカーソルを取得
+            if (InputSystem::GetInputState("MouseLeft"))
+            {// 左ボタンを押している間
+                state = UIButtonState::Pressed;
+            }
+            else
+            {
+                if (state == UIButtonState::Pressed &&
+                    InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
+                {
+                    OnClick();
+                }
+                state = UIButtonState::Hovered;
+            }
         }
-        if (sprite_)
+        else
         {
-            sprite_->Render(immediateContext, GetAbsoluteX(), GetAbsoluteY(), width_, height_, color.x, color.y, color.z, color.w, 0.0f);
+            state = UIButtonState::Normal;
         }
 
-        for (auto& child : GetChildren())
-            child->Draw(immediateContext);
+        UpdateVisual();
     }
 
-
-protected:
-    void HandleClick()override
+    void OnClick() override
     {
-        if (onClick)
-        {
-            onClick();
-        }
+        if (onClick) onClick();
     }
 
-    State state_ = State::Normal;
+private:
+    bool IsInside(const DirectX::XMFLOAT2& p)
+    {
+        return p.x >= position.x &&
+            p.x <= position.x + size.x &&
+            p.y >= position.y &&
+            p.y <= position.y + size.y;
+    }
+
+    void UpdateVisual()
+    {
+        switch (state)
+        {
+        case UIButtonState::Normal:  color = CoreColor::White; break;
+        case UIButtonState::Hovered: color = CoreColor(0.8f, 0.8f, 0.8f, 1); break;
+        case UIButtonState::Pressed: color = CoreColor(0.8f, 0.8f, 0.8f, 1); break;
+        }
+    }
 };
 
-class UIRoot
+
+class UIGaugeComponent : public UIImageComponent
 {
 public:
-    std::unique_ptr<UIWidget> root;
+    float value = 1.0f;  // 0.0f ~ 1.0f
+    bool horizontal = true;
 
-    void Draw(ID3D11DeviceContext* immediateContext)
+    void Draw() override
     {
-        if (root)
-        {
-            root->Draw(immediateContext);
-        }
-    }
 
-    void OnClick(float mouseX, float mouseY)
-    {
-        if (root)
-        {
-            root->OnMouseDown(mouseX, mouseY);
-        }
+        XMFLOAT2 drawSize = size;
+
+        if (horizontal)
+            drawSize.x *= value;
+        else
+            drawSize.y *= value;
+
+        SpriteRenderer::Draw(
+            texture.get(),
+            position,
+            drawSize,
+            color
+        );
     }
 };

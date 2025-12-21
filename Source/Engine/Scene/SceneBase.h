@@ -126,7 +126,7 @@ protected:
     SIZE framebufferDimensions = {};
 
     // UI
-    UIRoot uiRoot_;
+    //UIRoot uiRoot_;
 
     std::shared_ptr<Actor> selectedActor_;  // 選択中のアクターを保持
 
