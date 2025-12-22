@@ -29,8 +29,6 @@ class SampleScene : public SceneBase
 
     //UIRoot uiRoot;
 
-    std::unique_ptr<UIManager> uiManager;
-
 public:
     bool Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props) override;
 

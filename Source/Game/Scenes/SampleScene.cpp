@@ -53,7 +53,6 @@ void SampleScene::Start()
     audioComp->Play();
     audioComp->SetVolume(0.2f);
 
-    uiManager = std::make_unique<UIManager>();
 
 
     std::shared_ptr<Sprite> uiSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/UI/icon_chara.png");
@@ -105,7 +104,6 @@ void SampleScene::Update(float deltaTime)
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
 
-    uiManager->Update(deltaTime);
 #if 0
 
     // マウスカーソルを取得
@@ -356,7 +354,6 @@ void SampleScene::Update(float deltaTime)
     void SampleScene::Render(ID3D11DeviceContext * immediateContext, float deltaTime)
     {
         SceneBase::Render(immediateContext, deltaTime);
-        uiManager->Draw();
     }
 
     void SampleScene::DrawGui()

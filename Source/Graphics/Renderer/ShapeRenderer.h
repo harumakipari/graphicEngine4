@@ -55,6 +55,8 @@ public:
     // ü•ª•`‰æ
     static void DrawLineSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition, const DirectX::XMFLOAT4& color);
 
+    // ‰~’Œ•`‰æ
+    static void DrawCylinder(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color);
 
     //ü•`‰æ ”ì‚Â‚È‚¬
     static void DrawSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition);

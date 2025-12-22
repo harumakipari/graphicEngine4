@@ -82,6 +82,9 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     // フォントを初期化
     font = std::make_unique<Font>(device, "./Data/Font/miniDragon.fnt", 1024);
     //font = std::make_unique<Font>(device, "./Data/Font/MS Gothic.fnt", 1024);
+    // UIマネージャーを初期化
+    uiManager = std::make_unique<UIManager>();
+
 
     return true;
 }
@@ -92,6 +95,8 @@ void SceneBase::Update(float deltaTime)
 
     sceneCBuffer->data.elapsedTime += deltaTime;
     sceneCBuffer->data.deltaTime = deltaTime;
+
+    uiManager->Update(deltaTime);
 
 #ifdef _DEBUG
     if (InputSystem::GetInputState("F8", InputStateMask::Trigger))
@@ -385,8 +390,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     // デバック描画
 #if _DEBUG
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-    //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
-    //DebugDrawManager::Render(immediateContext);
+   Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+   DebugDrawManager::Render(immediateContext);
 #endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
@@ -429,6 +434,8 @@ void SceneBase::Draw(ID3D11DeviceContext* immediateContext)
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
         objectManager.Draw(immediateContext);
 
+        uiManager->Draw();
+
         // フォントの描画
         {
             font->Begin(immediateContext);
@@ -440,7 +447,6 @@ void SceneBase::Draw(ID3D11DeviceContext* immediateContext)
             font->Draw(10, 300, L"色々改造してね。");
             font->End(immediateContext);
         }
-
 
     }
 }

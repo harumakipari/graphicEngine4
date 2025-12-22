@@ -170,6 +170,27 @@ void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext, const Dir
     }
 }
 
+void ShapeRenderer::DrawCylinder(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color)
+{
+    DebugConstants data1{ color };
+    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
+    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+
+    DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
+
+    // カプセルの円柱部分
+    {
+        DirectX::XMMATRIX S = DirectX::XMMatrixScaling(radius, radius, height); 
+        DirectX::XMMATRIX world = S * T;
+        DirectX::XMFLOAT4X4 m;
+        DirectX::XMStoreFloat4x4(&m, world);
+        cylinder->Render(immediateContext, m, RenderPass::Opaque);
+    }
+
+}
+
+
 void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext,
     const DirectX::XMFLOAT3& position,
     const DirectX::XMFLOAT4& rotation, // ← クォータニオン追加

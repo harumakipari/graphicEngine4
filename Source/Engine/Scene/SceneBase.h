@@ -18,6 +18,8 @@
 #include <memory>
 #include <unordered_map>
 
+#include "UI/UIManger.h"
+
 
 /// @brief 全シーン共通の基底クラス。描画・定数バッファ・ライト・ポストエフェクトを統一管理する。
 class SceneBase : public Scene
@@ -139,5 +141,7 @@ protected:
     //==============================
     virtual void DrawSceneGui() {}///< 各シーン固有のImGui描画フック
 
-    std::unique_ptr<Font>				font;
+
+    std::unique_ptr<Font>	font;
+    std::unique_ptr<UIManager> uiManager;
 };

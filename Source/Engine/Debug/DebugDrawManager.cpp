@@ -77,6 +77,22 @@ void DebugDrawManager::DrawLine(
     commands_.push_back(command);
 }
 
+void DebugDrawManager::DrawCylinder(
+    const DirectX::XMFLOAT3& pos,
+    float radius,
+    float height,
+    const DirectX::XMFLOAT4& color,
+    float life)
+{
+    DebugDrawCommand command{};
+    command.type = DebugDrawType::Capsule;
+    command.position = pos;
+    command.size = DirectX::XMFLOAT3{ radius, height, 0.0f };
+    command.color = color;
+    command.lifetime = life;
+    commands_.push_back(command);
+}
+
 void DebugDrawManager::Tick(float deltaTime)
 {
 #if 0 // ライフタイムいる時に使用する
@@ -129,6 +145,14 @@ void DebugDrawManager::Render(ID3D11DeviceContext* immediateContext)
             break;
         case DebugDrawType::Capsule:
             ShapeRenderer::DrawCapsule(
+                immediateContext,
+                cmd.position,
+                cmd.size.x,
+                cmd.size.y,
+                cmd.color);
+            break;
+        case DebugDrawType::Cylinder:
+            ShapeRenderer::DrawCylinder(
                 immediateContext,
                 cmd.position,
                 cmd.size.x,

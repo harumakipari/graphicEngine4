@@ -6,6 +6,7 @@ enum class DebugDrawType :uint8_t
     Box,
     Line,
     Capsule,
+    Cylinder,
 };
 
 struct DebugDrawCommand
@@ -43,6 +44,13 @@ public:
     static void DrawLine(
         const DirectX::XMFLOAT3& startPos,
         const DirectX::XMFLOAT3& endPos,
+        const DirectX::XMFLOAT4& color,
+        float life = 0.0f);
+
+    static void DrawCylinder(
+        const DirectX::XMFLOAT3& pos,
+        float radius,
+        float height,
         const DirectX::XMFLOAT4& color,
         float life = 0.0f);
 
