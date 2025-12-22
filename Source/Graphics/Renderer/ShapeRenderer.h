@@ -6,117 +6,249 @@
 #include <vector>
 #include "Graphics/Resource/GltfModel.h"
 
+/**
+ * @file ShapeRenderer.h
+ * @brief デバッグ用の形状描画ユーティリティ定義
+ */
 class ShapeRenderer
 {
 public:
-    enum class Type :uint8_t
-    {
-        Line,
-        Segment,
-        Point
-    };
+ /**
+ * @brief 描画プリミティブの種類
+ */
+ enum class Type :uint8_t
+ {
+ /// 無限に伸びる線
+ Line,
+ /// 線分
+ Segment,
+ /// 点
+ Point
+ };
 
 public:
-    ShapeRenderer() = default;
-    virtual ~ShapeRenderer() = default;
+ ShapeRenderer() = default;
+ virtual ~ShapeRenderer() = default;
 
-    static void Initialize(ID3D11Device* device);
+ /**
+ * @brief シェイプレンダラーの初期化を行う
+ * @param device 描画に使用するD3D11デバイス
+ */
+ static void Initialize(ID3D11Device* device);
 
-    // 箱描画  // 箱の底面が原点
-    static void DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
+ /**
+ * @brief 箱を描画する（箱の底面が原点になる）
+ * @param immediateContext 描画に使用するデバイスコンテキスト
+ * @param position 箱の位置（底面が原点の基準位置）
+ * @param angle 回転（ラジアン）を含むXYZ角
+ * @param size 箱のサイズ（幅・高さ・奥行）
+ * @param color 描画色（RGBA）
+ */
+ static void DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
 
-    static void DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& transform, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
+ /**
+ * @brief 箱を描画する（ワールド変換を直接指定）
+ * @param immediateContext 描画に使用するデバイスコンテキスト
+ * @param transform ワールド変換行列
+ * @param size 箱のサイズ
+ * @param color 描画色（RGBA）
+ */
+ static void DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& transform, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
 
-    // 箱描画  // 箱の真ん中が原点
-    static void DrawBoxCenter(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
+ /**
+ * @brief 箱を描画する（箱の中心が原点になる）
+ * @param immediateContext 描画に使用するデバイスコンテキスト
+ * @param position 箱の中心位置
+ * @param angle 回転（ラジアン）を含むXYZ角
+ * @param size 箱のサイズ
+ * @param color 描画色（RGBA）
+ */
+ static void DrawBoxCenter(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color);
 
-    // 球描画
-    static void DrawSphere(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, const DirectX::XMFLOAT4& color);
+ /**
+ * @brief 球を描画する
+ * @param immediateContext 描画に使用するデバイスコンテキスト
+ * @param position 球の中心位置
+ * @param radius 半径
+ * @param color 描画色（RGBA）
+ */
+ static void DrawSphere(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, const DirectX::XMFLOAT4& color);
 
-    // カプセル描画
-    static void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color);
+ /**
+ * @brief カプセルを描画する（位置のみ）
+ * @param immediateContext 描画に使用するデバイスコンテキスト
+ * @param position カプセルの位置
+ * @param radius カプセルの半径
+ * @param height カプセルの高さ（シリンダ部分の長さ）
+ * @param color 描画色（RGBA）
+ */
+ static void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color);
 
-    static void DrawCapsule(ID3D11DeviceContext* immediateContext,
-        const DirectX::XMFLOAT3& position,
-        const DirectX::XMFLOAT4& rotation, // ← クォータニオン追加
-        float radius, float height,
-        const DirectX::XMFLOAT4& color);
+ /**
+ * @brief カプセルを描画する（クォータニオンで回転を指定）
+ * @param immediateContext 描画に使用するデバイスコンテキスト
+ * @param position カプセルの位置
+ * @param rotation クォータニオンによる回転（X,Y,Z,W）
+ * @param radius カプセルの半径
+ * @param height カプセルの高さ
+ * @param color 描画色（RGBA）
+ */
+ static void DrawCapsule(ID3D11DeviceContext* immediateContext,
+ const DirectX::XMFLOAT3& position,
+ const DirectX::XMFLOAT4& rotation, // ← クォータニオン追加
+ float radius, float height,
+ const DirectX::XMFLOAT4& color);
 
-    static void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition, float radius, const DirectX::XMFLOAT4& color);
+ /**
+ * @brief カプセルを描画する（始点・終点で定義）
+ * @param immediateContext 描画に使用するデバイスコンテキスト
+ * @param startPosition カプセルの始点
+ * @param endPosition カプセルの終点
+ * @param radius カプセルの半径
+ * @param color 描画色（RGBA）
+ */
+ static void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition, float radius, const DirectX::XMFLOAT4& color);
 
-    static void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& worldTransform, float radius, float height, const DirectX::XMFLOAT4& color);
+ /**
+ * @brief カプセルを描画する（ワールド変換を直接指定）
+ * @param immediateContext 描画に使用するデバイスコンテキスト
+ * @param worldTransform ワールド変換行列
+ * @param radius カプセルの半径
+ * @param height カプセルの高さ
+ * @param color 描画色（RGBA）
+ */
+ static void DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& worldTransform, float radius, float height, const DirectX::XMFLOAT4& color);
 
-    //線描画　汎用性
-    static  void DrawSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4& color, const std::vector<DirectX::XMFLOAT3>& points, Type type);
+ /**
+ * @brief 汎用的な線描画（複数点）
+ * @param immediateContext 描画に使用するデバイスコンテキスト
+ * @param color 線の色
+ * @param points 頂点配列
+ * @param type 描画タイプ（Line/Segment/Point）
+ */
+ static void DrawSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4& color, const std::vector<DirectX::XMFLOAT3>& points, Type type);
 
-    // 点描画
-    static void DrawPoint(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT4& color);
+ /**
+ * @brief 点を描画する
+ * @param immediateContext 描画に使用するデバイスコンテキスト
+ * @param position 点の位置
+ * @param color 点の色
+ */
+ static void DrawPoint(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT4& color);
 
-    // 線分描画
-    static void DrawLineSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition, const DirectX::XMFLOAT4& color);
+ /**
+ * @brief 線分を描画する（始点と終点を指定）
+ * @param immediateContext 描画に使用するデバイスコンテキスト
+ * @param startPosition 始点
+ * @param endPosition 終点
+ * @param color 線の色
+ */
+ static void DrawLineSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition, const DirectX::XMFLOAT4& color);
 
-    // 円柱描画
-    static void DrawCylinder(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color);
+ /**
+ * @brief 円柱を描画する
+ * @param immediateContext 描画に使用するデバイスコンテキスト
+ * @param position 円柱の中心位置
+ * @param radius 半径
+ * @param height 高さ
+ * @param color 描画色（RGBA）
+ */
+ static void DrawCylinder(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color);
 
-    //線描画 数珠つなぎ
-    static void DrawSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition);
+ /**
+ * @brief 数珠つなぎの線を描画する（デフォルト色・タイプ）
+ * @param immediateContext 描画に使用するデバイスコンテキスト
+ * @param startPosition 始点
+ * @param endPosition 終点
+ */
+ static void DrawSegment(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition);
 private:
-    struct DebugConstants
-    {
-        DirectX::XMFLOAT4 color;
-    };
+ /**
+ * @brief シェーダに渡すデバッグ定数バッファ構造体
+ */
+ struct DebugConstants
+ {
+ DirectX::XMFLOAT4 color; /**< RGBA色 */
+ };
 
-    static inline Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
+ // バッファ/シェーダ/入力レイアウト
+ static inline Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
 
-    static inline Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
-    static inline Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
-    static inline Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
+ static inline Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
+ static inline Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
+ static inline Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
 
-    static inline Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer[2];
+ static inline Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer[2];
 
-    static inline constexpr size_t maxPoints = 1500;
+ static inline constexpr size_t maxPoints =1500; /**< 内部で扱える最大頂点数 */
 
-    static inline std::unique_ptr<GltfModel> sphere = nullptr;
-    static inline std::unique_ptr<GltfModel> topHalfSphere = nullptr;
-    static inline std::unique_ptr<GltfModel> bottomHalfSphere = nullptr;
-    static inline std::unique_ptr<GltfModel> cylinder = nullptr;
-    static inline std::unique_ptr<GltfModel> capsule = nullptr;
-    static inline std::unique_ptr<GltfModel> cube = nullptr;        // 箱の底面が原点
-    static inline std::unique_ptr<GltfModel> cubeCenter = nullptr;  // 箱の真ん中が原点
+ // プリミティブ用のモデル
+ static inline std::unique_ptr<GltfModel> sphere = nullptr; /**< 球モデル */
+ static inline std::unique_ptr<GltfModel> topHalfSphere = nullptr; /**< 半球（上）モデル */
+ static inline std::unique_ptr<GltfModel> bottomHalfSphere = nullptr; /**< 半球（下）モデル */
+ static inline std::unique_ptr<GltfModel> cylinder = nullptr; /**< 円柱モデル */
+ static inline std::unique_ptr<GltfModel> capsule = nullptr; /**< カプセルモデル */
+ static inline std::unique_ptr<GltfModel> cube = nullptr; /**< 箱（底が原点）モデル */
+ static inline std::unique_ptr<GltfModel> cubeCenter = nullptr; /**< 箱（中心が原点）モデル */
 };
 
 
-//デバック直線、線分、点を描画する
+// デバッグ用の直線・線分・点を描画するユーティリティクラス
+/**
+ * @brief 可変長のライン/セグメント描画を行うヘルパークラス
+ */
 class LineSegment
 {
 public:
-    enum class Type
-    {
-        Line,
-        Segment,
-        Point
-    };
+ /**
+ * @brief 描画タイプ
+ */
+ enum class Type
+ {
+ /// 無限に伸びる線
+ Line,
+ /// 区切られた線分
+ Segment,
+ /// 点描画
+ Point
+ };
 
-    LineSegment(ID3D11Device* device, size_t maxSegments);
+ /**
+ * @brief コンストラクタ
+ * @param device D3D11デバイス
+ * @param maxSegments 確保する最大セグメント数（内部バッファサイズ）
+ */
+ LineSegment(ID3D11Device* device, size_t maxSegments);
 
-    virtual ~LineSegment() = default;
+ virtual ~LineSegment() = default;
 
-    void Draw(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& viewProjection, const DirectX::XMFLOAT4& color, const std::vector<DirectX::XMFLOAT3>& points, Type type);
+ /**
+ * @brief ベクタ点列を与えて描画する
+ * @param immediateContext 描画に使用するデバイスコンテキスト
+ * @param viewProjection ビュープロジェクション行列
+ * @param color 線/点の色
+ * @param points 頂点配列
+ * @param type 描画タイプ
+ */
+ void Draw(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& viewProjection, const DirectX::XMFLOAT4& color, const std::vector<DirectX::XMFLOAT3>& points, Type type);
 private:
-    struct Constants
-    {
-        DirectX::XMFLOAT4X4 viewProjection;
-        DirectX::XMFLOAT4 color;
-    };
+ /**
+ * @brief 描画用定数バッファ構造体
+ */
+ struct Constants
+ {
+ DirectX::XMFLOAT4X4 viewProjection; /**< ビュープロジェクション行列 */
+ DirectX::XMFLOAT4 color; /**< 描画色 */
+ };
 
-    Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
+ Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer; /**< 頂点バッファ */
 
-    Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
-    Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
+ Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader; /**< 頂点シェーダ */
+ Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader; /**< ピクセルシェーダ */
+ Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout; /**< 入力レイアウト */
 
-    Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer;
+ Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer; /**< 定数バッファ */
 
-    const size_t max_points;
+ const size_t max_points; /**< 内部で保持できる最大頂点数 */
 
 };

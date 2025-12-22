@@ -483,7 +483,7 @@ void SceneBase::DrawShortcutInfo()
         ImGuiWindowFlags_NoNav |
         ImGuiWindowFlags_NoDecoration);
 
-    ImGui::Text(" ShortcutInfo:");
+    ImGui::Text(reinterpret_cast<const char*>(u8"ショートカットキー:"));
     ImGui::BulletText("Alt + Enter  : fullscreen");
     ImGui::BulletText("F8           : debugCamera");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -552,23 +552,6 @@ void SceneBase::DrawSceneSettingsTab()
         lightManager->DrawGUI();
     }
 
-    // -------------------------
-    // CSM (シャドウ関連)
-    // -------------------------
-    if (ImGui::CollapsingHeader("Cascaded Shadow Maps"))
-    {
-        ImGui::SliderFloat("Critical Depth", &criticalDepthValue, 0.0f, 1000.0f);
-        ImGui::SliderFloat("Split Scheme", &cascadedShadowMaps->splitSchemeWeight, 0.0f, 1.0f);
-        ImGui::SliderFloat("Z Mult", &cascadedShadowMaps->zMult, 1.0f, 100.0f);
-        ImGui::Checkbox("Fit To Cascade", &cascadedShadowMaps->fitToCascade);
-        ImGui::SliderFloat("Shadow Color", &shaderCBuffer->data.shadowColor, 0.0f, 1.0f);
-        ImGui::DragFloat("Depth Bias", &shaderCBuffer->data.shadowDepthBias, 0.00001f, 0.0f, 0.01f, "%.8f");
-        bool colorize = shaderCBuffer->data.colorizeCascadedLayer != 0;
-        if (ImGui::Checkbox("Colorize Layer", &colorize))
-        {
-            shaderCBuffer->data.colorizeCascadedLayer = colorize ? 1 : 0;
-        }
-    }
 }
 
 
@@ -624,6 +607,24 @@ void SceneBase::DrawPostEffectTab()
 
     sceneEffectManager->DrawGui();
     postEffectManager->DrawGui();
+    // -------------------------
+    // CSM (シャドウ関連)
+    // -------------------------
+    if (ImGui::CollapsingHeader("Cascaded Shadow Maps"))
+    {
+        ImGui::SliderFloat("Critical Depth", &criticalDepthValue, 0.0f, 1000.0f);
+        ImGui::SliderFloat("Split Scheme", &cascadedShadowMaps->splitSchemeWeight, 0.0f, 1.0f);
+        ImGui::SliderFloat("Z Mult", &cascadedShadowMaps->zMult, 1.0f, 100.0f);
+        ImGui::Checkbox("Fit To Cascade", &cascadedShadowMaps->fitToCascade);
+        ImGui::SliderFloat("Shadow Color", &shaderCBuffer->data.shadowColor, 0.0f, 1.0f);
+        ImGui::DragFloat("Depth Bias", &shaderCBuffer->data.shadowDepthBias, 0.00001f, 0.0f, 0.01f, "%.8f");
+        bool colorize = shaderCBuffer->data.colorizeCascadedLayer != 0;
+        if (ImGui::Checkbox("Colorize Layer", &colorize))
+        {
+            shaderCBuffer->data.colorizeCascadedLayer = colorize ? 1 : 0;
+        }
+    }
+
 }
 
 

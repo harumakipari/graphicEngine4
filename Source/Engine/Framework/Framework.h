@@ -60,6 +60,8 @@ public:
     static inline const float defaultTimeScale = 1.0f;
     static inline float timeScale = 1.0f;
 
+    ImFont* fontJP;
+
 
     CONST HWND hwnd;
 
@@ -85,8 +87,22 @@ public:
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\consola.ttf", 14.0f, nullptr, glyphRangesJapanese);
+        // 日本語用（メイリオ or MSゴシック）
+         fontJP = ImGui::GetIO().Fonts->AddFontFromFileTTF(
+            "C:\\Windows\\Fonts\\meiryo.ttc",
+            //"C:\\Windows\\Fonts\\msgothic.ttc",
+            16.0f,
+            nullptr,
+            ImGui::GetIO().Fonts->GetGlyphRangesJapanese()
+        );
         ImGui_ImplWin32_Init(hwnd);
         ImGui_ImplDX11_Init(Graphics::GetDevice(), Graphics::GetDeviceContext());
+#if 1
+        ImGui_ImplDX11_InvalidateDeviceObjects();
+        ImGui_ImplDX11_CreateDeviceObjects();
+
+#endif // 1
+
         ImGui::StyleColorsDark();
 #endif
 
