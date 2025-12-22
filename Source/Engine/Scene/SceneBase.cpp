@@ -483,7 +483,7 @@ void SceneBase::DrawShortcutInfo()
         ImGuiWindowFlags_NoNav |
         ImGuiWindowFlags_NoDecoration);
 
-    ImGui::Text(reinterpret_cast<const char*>(u8"ショートカットキー:"));
+    ImGui::Text(U8("ショートカットキー:"));
     ImGui::BulletText("Alt + Enter  : fullscreen");
     ImGui::BulletText("F8           : debugCamera");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);

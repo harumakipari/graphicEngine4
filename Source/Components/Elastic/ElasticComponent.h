@@ -127,9 +127,18 @@ public:
     };
 
 private:
+    void UpdatePushElastic(float deltaTime);
+
+    void UpdatePullElastic(float deltaTime);
+
+
     std::unique_ptr<ConstantBuffer<ElasticConstants>> elasticBuildingCBuffer;
     ElasticConstants elasticConstants{};
     ElasticParameters elasticParameters;
     DirectX::XMFLOAT3 externalForce_{ 0,0,0 };
     float modelHeight = 0.0f;
+
+    DirectX::XMFLOAT2 dragStartMousePos = { 0.0f,0.0f };
+    bool isDragging = false;
+    float baseStretchRate = 1.0f;
 };
