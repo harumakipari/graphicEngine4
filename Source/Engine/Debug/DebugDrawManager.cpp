@@ -18,6 +18,65 @@ void DebugDrawManager::DrawSphere(
     commands_.push_back(command);
 }
 
+void DebugDrawManager::DrawBox(
+    const DirectX::XMFLOAT3& pos,
+    const DirectX::XMFLOAT3& size,
+    const DirectX::XMFLOAT4& color,
+    float life)
+{
+    DebugDrawCommand command{};
+    command.type = DebugDrawType::Box;
+    command.position = pos;
+    command.size = size;
+    command.color = color;
+    command.lifetime = life;
+    commands_.push_back(command);
+}
+
+void DebugDrawManager::DrawCapsule(
+    const DirectX::XMFLOAT3& startPos,
+    const DirectX::XMFLOAT3& endPos,
+    float radius,
+    const DirectX::XMFLOAT4& color,
+    float life)
+{
+    DebugDrawCommand command{};
+    command.type = DebugDrawType::Capsule;
+    // カプセルの中心位置を計算
+    command.position = DirectX::XMFLOAT3{
+        (startPos.x + endPos.x) * 0.5f,
+        (startPos.y + endPos.y) * 0.5f,
+        (startPos.z + endPos.z) * 0.5f
+    };
+    // size.x に半径、size.y に高さを格納
+    DirectX::XMVECTOR startVec = DirectX::XMLoadFloat3(&startPos);
+    DirectX::XMVECTOR endVec = DirectX::XMLoadFloat3(&endPos);
+    DirectX::XMVECTOR heightVec = DirectX::XMVectorSubtract(endVec, startVec);
+    float height = DirectX::XMVectorGetX(DirectX::XMVector3Length(heightVec));
+    command.size = DirectX::XMFLOAT3{ radius, height, 0.0f };
+    command.color = color;
+    command.lifetime = life;
+    commands_.push_back(command);
+}
+
+void DebugDrawManager::DrawLine(
+    const DirectX::XMFLOAT3& startPos,
+    const DirectX::XMFLOAT3& endPos,
+    const DirectX::XMFLOAT4& color,
+    float life)
+{
+    DebugDrawCommand command{};
+    command.type = DebugDrawType::Line;
+    // 線の終点位置を position に格納
+    command.position = startPos;
+    command.endPosition = endPos;
+    // size は未使用だが初期化しておく
+    command.size = DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f };
+    command.color = color;
+    command.lifetime = life;
+    commands_.push_back(command);
+}
+
 void DebugDrawManager::Tick(float deltaTime)
 {
 #if 0 // ライフタイムいる時に使用する
@@ -65,8 +124,8 @@ void DebugDrawManager::Render(ID3D11DeviceContext* immediateContext)
         case DebugDrawType::Line:
             ShapeRenderer::DrawSegment(
                 immediateContext,
-                DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f },
-                cmd.position);
+                cmd.position,
+                cmd.endPosition);
             break;
         case DebugDrawType::Capsule:
             ShapeRenderer::DrawCapsule(

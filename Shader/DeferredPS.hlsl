@@ -22,7 +22,6 @@ float4 main(VS_OUT pin) : SV_TARGET
     float roughnessFactor = msr.z;
     
     float4 emmisiveInfo = emissiveMap.Sample(linearBorderBlackSamplerState, pin.texcoord);
-    float3 emmisiveFactor = emmisiveInfo.xyz;
     float pixelInfo = emmisiveInfo.w;
 
     if (pixelInfo == 1)
@@ -95,7 +94,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
     float occlusionFactor = msr.y;
     float occlusionStrength = msr.w;
-    float3 emmisive = emmisiveFactor;
+    float3 emmisive = emmisiveInfo.rgb;
    
     
 #if 1   //ŠO‚Ì”wŒi‚ðˆÚ‚·
@@ -107,10 +106,11 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 totalDiffuse = diffuse + pointDiffuse + iblDiffuse;
     float3 totalSpecular = specular + pointSpecular + iblSpecular;
 
+    diffuse = totalDiffuse + occlusionFactor;
+    specular = totalSpecular + occlusionFactor;
+
     diffuse = lerp(totalDiffuse, totalDiffuse * occlusionFactor, occlusionStrength);
     specular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
-    //diffuse = lerp(diffuse, diffuse * occlusionFactor, occlusionStrength);
-    //specular = lerp(specular, specular * occlusionFactor, occlusionStrength);
     float3 Lo = diffuse + specular + emmisive;
     //return float4(Lo, 1.0f);
     //return float4(diffuse + specular + emmisive, basecolorFactor.a) * basecolorFactor;

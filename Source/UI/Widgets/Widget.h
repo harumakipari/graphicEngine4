@@ -16,6 +16,16 @@
 class UICoreComponent
 {
 public:
+    UICoreComponent(const std::string& filename)
+    {
+        texture = std::make_shared<Sprite>(Graphics::GetDevice(), std::wstring(filename.begin(), filename.end()).c_str());
+    }
+    UICoreComponent()
+    {
+        // ダミーテクスチャを設定
+        //texture = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/UI/dummy.png");
+    }
+
     virtual ~UICoreComponent() = default;
     virtual void Update(float dt) {}
     virtual void Draw() {}
@@ -34,6 +44,8 @@ public:
     bool visible = true;
     bool enabled = true;
 
+    std::shared_ptr<Sprite>  texture;
+
 protected:
     UICoreComponent* parent = nullptr;
     std::vector<UICoreComponent*> children;
@@ -43,7 +55,6 @@ protected:
 class UIImageComponent : public UICoreComponent
 {
 public:
-    std::shared_ptr<Sprite>  texture;
     CoreColor color = CoreColor::White;
 
     void Draw() override

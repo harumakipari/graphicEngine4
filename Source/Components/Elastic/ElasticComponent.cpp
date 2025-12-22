@@ -18,7 +18,8 @@ void ElasticMeshComponent::Initialize()
         /*p2*/ DirectX::XMFLOAT4(position.x,position.y, position.z, 1.0f),
         /*p3*/ DirectX::XMFLOAT4(position.x, position.y + modelHeight, position.z, 1.0f),
         /*maxAngleDegree*/ 100.0f, // 度以上は曲がらない
-        /*modelHeight*/ modelHeight
+        /*modelHeight*/ modelHeight,
+        /*stretchRate*/ 1.0f,
     };
     elasticBuildingCBuffer->data = elasticConstants;
 }
@@ -72,7 +73,6 @@ void ElasticMeshComponent::Tick(float deltaTime)
             DirectX::XMFLOAT3 rayDir;
             DirectX::XMStoreFloat3(&rayDir, RayDir);
             XMFLOAT3 intersectPos, intersectNormal;
-            std::string intersectionMesh, intersectionMaterial;
             DirectX::XMFLOAT3 buildCurveDir;
 
             HitResultWithActor result;
@@ -147,7 +147,7 @@ void ElasticMeshComponent::Tick(float deltaTime)
             diff = DirectX::XMVectorSetY(diff, 0.0f); // 高さは無視して水平方向だけのベクトルにする
 
             float dist = DirectX::XMVectorGetX(DirectX::XMVector3Length(diff));
-            float maxDist = buildHeight+ elasticParameters.maxDist; // 好みで調整
+            float maxDist = buildHeight + elasticParameters.maxDist; // 好みで調整
             float scale = (dist > maxDist) ? (maxDist / dist) : 1.0f;
             DirectX::XMVECTOR clampedDir = diff * scale;
             //DirectX::XMVECTOR clampedDir = diff * moveAmount; // mouse の変化量 を使う場合
@@ -158,6 +158,13 @@ void ElasticMeshComponent::Tick(float deltaTime)
             elasticConstants.p1 = { position.x,position.y,position.z,1.0f };
             elasticConstants.p2 = { position.x,midY,position.z ,1.0f };
             elasticConstants.p3 = { p3.x,p3.y,p3.z,1.0f };
+
+            float currentLength = DirectX::XMVectorGetX(
+                DirectX::XMVector3Length(
+                    XMLoadFloat3(&intersectPos) -
+                    XMLoadFloat3(&position)));
+
+            elasticConstants.stretchRate = currentLength / modelHeight;
         }
     }
     else
@@ -186,6 +193,16 @@ void ElasticMeshComponent::Tick(float deltaTime)
         elasticConstants.p3 = { p.x,p.y,p.z,1.0f };
     }
     elasticConstants.maxAngleDegree = elasticParameters.maxAngleDegrees;
+
+
+    
+#if 0
+    std::wstring msg =
+        L"elastic Constant: " + std::to_wstring(elasticConstants.stretchRate);
+
+    OutputDebugStringW(msg.c_str());
+
+#endif // 0
 }
 
 void ElasticMeshComponent::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext) const

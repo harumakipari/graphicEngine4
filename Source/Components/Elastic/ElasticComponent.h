@@ -111,6 +111,7 @@ public:
         DirectX::XMFLOAT4 p3; // 終点
         float maxAngleDegree; // 度以上曲がらない
         float modelHeight; // モデルの高さ
+        float stretchRate;  // モデルの伸び率
     };
 
     struct ElasticParameters

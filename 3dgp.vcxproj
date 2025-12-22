@@ -1028,6 +1028,7 @@
     <None Include="Shader\ComputeParticle.hlsli" />
     <None Include="Shader\ComputeParticleBitonicSort.hlsli" />
     <None Include="Shader\Constants.hlsli" />
+    <None Include="Shader\ElasticConstants.hlsli" />
     <None Include="Shader\FilterFunctions.hlsli" />
     <None Include="Shader\FullScreenQuad.hlsli" />
     <None Include="Shader\geometricPrimitive.hlsli" />

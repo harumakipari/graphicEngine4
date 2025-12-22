@@ -564,6 +564,9 @@
     <ClCompile Include="Source\Engine\Debug\EditorGizmo.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\Renderer\SpriteRenderer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1119,6 +1122,7 @@
     <ClInclude Include="Source\Engine\Debug\DebugDrawManager.h" />
     <ClInclude Include="Source\Engine\Debug\EditorGizmo.h" />
     <ClInclude Include="Source\UI\UIManger.h" />
+    <ClInclude Include="Source\Graphics\Renderer\SpriteRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">
@@ -1475,6 +1479,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\FilterFunctions.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\ElasticConstants.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

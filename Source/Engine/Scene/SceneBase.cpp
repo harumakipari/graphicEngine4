@@ -272,7 +272,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     gBufferRenderTarget->Acticate(immediateContext);
 
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
     sceneRender.currentRenderPath = RenderPath::Deferred;
     sceneRender.RenderOpaque(immediateContext);
     sceneRender.RenderMask(immediateContext);
@@ -343,15 +343,24 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     // フォーワードの透明描画
     frameBuffer->Activate(immediateContext, gBufferRenderTarget->depthStencilView);
 
+#if 0
     RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
     sceneRender.currentRenderPath = RenderPath::Forward;
     sceneRender.RenderBlend(immediateContext); // ここで警告出る
+#else
+    RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
+    RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
+    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_FRONT);
+    sceneRender.currentRenderPath = RenderPath::Forward;
+    sceneRender.RenderBlend(immediateContext); // ここで警告出る
 
-    //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_FRONT);
-    //sceneRender.currentRenderPath = RenderPath::Forward;
-    //sceneRender.RenderBlend(immediateContext); // ここで警告出る
+    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+    sceneRender.currentRenderPath = RenderPath::Forward;
+    sceneRender.RenderBlend(immediateContext); // ここで警告出る
+#endif // 0
+
 
     // PARTICLES
     {
@@ -372,8 +381,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     // デバック描画
 #if _DEBUG
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-    //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
-    //DebugDrawManager::Render(immediateContext);
+    Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+    DebugDrawManager::Render(immediateContext);
 #endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 

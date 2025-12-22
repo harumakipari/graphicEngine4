@@ -434,7 +434,7 @@ public:
 
         RenderState::BindDepthStencilState(immediateContext, sets_[name].depthState);
         RenderState::BindBlendState(immediateContext, sets_[name].blendState);
-        RenderState::BindRasterizerState(immediateContext, sets_[name].rasterState);
+        //RenderState::BindRasterizerState(immediateContext, sets_[name].rasterState);
     }
 
 
