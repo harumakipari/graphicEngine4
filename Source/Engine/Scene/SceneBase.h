@@ -115,9 +115,9 @@ protected:
     float iblIntensity_ = 2.0f;
 
     bool useDeferredRendering = true;
-    bool enableSSAO = true;
+    bool enableSSAO = false;
     bool enableCascadedShadowMaps = true;
-    bool enableSSR = true;
+    bool enableSSR = false;
     bool enableFog = false;
     bool enableBloom = false;
 

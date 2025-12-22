@@ -238,6 +238,7 @@ public:
         boxComponent->SetBoxExtent({ size.x * 0.5f,size.y * 0.5f,size.z * 0.5f });
         boxComponent->SetMass(40.0f);
         boxComponent->SetLayer(CollisionLayer::Enemy);
+        //boxComponent->SetModelHeight(size.y * 0.5f);
         boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
         boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
         boxComponent->Initialize();

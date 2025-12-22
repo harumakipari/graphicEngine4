@@ -21,8 +21,10 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     shaderCBuffer = std::make_unique<ConstantBuffer<ShaderConstants>>(device);
     sceneCBuffer->data.elapsedTime = 0;//開始時に０にしておく
 
+
     // ライト
     {
+
         lightManager = std::make_unique<LightManager>();
         lightManager->Initialize(device);
         lightManager->SetDirectionalLight(lightDirection, lightColor);
@@ -193,7 +195,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
 #if _DEBUG
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
     //actorColliderManager.DebugRender(immediateContext);
-    Physics::Instance().Render(data.view, data.projection, { lightDirection.x,lightDirection.y,lightDirection.z });
+    Physics::Instance().Render(data.view, data.projection, { lightManager->GetLightDirection().x,lightManager->GetLightDirection().y,lightManager->GetLightDirection().z });
     DebugDrawManager::Render(immediateContext);
 #endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
@@ -228,7 +230,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     }
     // カスケードシャドウマップ生成
     cascadedShadowMaps->Clear(immediateContext);
-    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightDirection, criticalDepthValue, 3/*cbSlot*/);
+    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), criticalDepthValue, 3/*cbSlot*/);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
@@ -292,14 +294,13 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
     // 影を作る処理
     cascadedShadowMaps->Clear(immediateContext);
-    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightDirection, criticalDepthValue, 3/*cbSlot*/);
+    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), criticalDepthValue, 3/*cbSlot*/);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
     sceneRender.currentRenderPath = RenderPath::Shadow;
     sceneRender.CastShadowRender(immediateContext);
     cascadedShadowMaps->Deactive(immediateContext);
-
 
     // ライティングのパス
     {
@@ -381,8 +382,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     // デバック描画
 #if _DEBUG
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-    Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
-    DebugDrawManager::Render(immediateContext);
+    //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+    //DebugDrawManager::Render(immediateContext);
 #endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 

@@ -53,4 +53,7 @@ private:
     std::unique_ptr<FrameBuffer> fogBuffer;
     std::unique_ptr<FullScreenQuad> fullScreenQuad;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> fogPS;
+
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> noise2d;
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> noise3d;
 };

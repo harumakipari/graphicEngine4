@@ -494,6 +494,7 @@
     <ClInclude Include="Source\Graphics\Core\LightManager.h" />
     <ClInclude Include="Source\Graphics\Core\PipelineState.h" />
     <ClInclude Include="Source\Graphics\Core\PipleLineLibrary.h" />
+    <ClInclude Include="Source\Graphics\Core\PrecomputedNoiseTexture3d.h" />
     <ClInclude Include="Source\Graphics\Core\RenderState.h" />
     <ClInclude Include="Source\Graphics\Core\SceneRenderContext.h" />
     <ClInclude Include="Source\Graphics\Core\Shader.h" />

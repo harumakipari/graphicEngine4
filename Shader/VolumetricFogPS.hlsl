@@ -17,23 +17,23 @@ Texture2D depthTexture : register(t1);
 Texture2DArray cascadedShadowMaps : register(t2);
 
 // NOISE
-//Texture3D noise3D : register(t10);
+Texture3D noise3D : register(t10);
 
 float SunlightRadiance(float3 position, VS_OUT pin)
 {
     float depthNdc = depthTexture.Sample(linearBorderBlackSamplerState, pin.texcoord).x;
     float4 positionNdc;
-    // texture space to ndc
+    // テクスチャ座標 → NDC 座標変換
     positionNdc.x = pin.texcoord.x * +2 - 1;
     positionNdc.y = pin.texcoord.y * -2 + 1;
     positionNdc.z = depthNdc;
     positionNdc.w = 1;
     
-    // ndc to view space
+     // NDC 空間 → View 空間へ変換
     float4 positionViewSpace = mul(positionNdc, inverseProjection);
     positionViewSpace = positionViewSpace / positionViewSpace.w;
     
-    // Find alayer of cascaded view frustum volume
+     // View 空間での深度を使って、どのカスケードに属するかを判定
     float depthViewSpace = positionViewSpace.z;
     int cascadeIndex = -1;
     for (uint layer = 0; layer < 4; ++layer)
@@ -45,11 +45,21 @@ float SunlightRadiance(float3 position, VS_OUT pin)
             break;
         }
     }
+     // フォグ内のワールド座標をライト空間（クリップ空間）へ変換
+#if 0
     float4 p = mul(float4(position, 1.0), viewProjection); //world to clip space
     p = p / p.w; // clip to ndc
     // ndc to tecture coordinate
     p.x = p.x * 0.5 + 0.5;
     p.y = -p.y * 0.5 + 0.5;
+#else
+    float4 p = mul(float4(position, 1.0), cascadedMatrices[cascadeIndex]);
+    p /= p.w;
+    // ndc to texture coordinate
+    p.x = p.x * +0.5 + 0.5;
+    p.y = p.y * -0.5 + 0.5;
+    
+#endif
     //return shadowTexture.SampleCmpLevelZero(comparisonSamplerState, p.xy, p.z - shadowDepthBias).x;
     return cascadedShadowMaps.SampleCmpLevelZero(comparisonSamplerState, float3(p.xy, cascadeIndex), p.z - shadowDepthBias).x;
 }
@@ -95,12 +105,12 @@ float DitheredRayMarch(float2 screenPos, float3 rayStart, float3 rayDir, float r
         
         float density = fogDensity;
         
-   #if 0 
+#if 0
         const float3 noiseVelocity = normalize(float3(1, 0, 0));
         float3 noiseSamplePosition = frac(currentPosition * noiseScale + noiseVelocity * elapsedTime * timeScale);
         float noise = 0.5 * noise3D.Sample(linearSamplerState, noiseSamplePosition);
         density *= noise;
-   #endif
+#endif
         
         ApplyHeightFog(currentPosition, density);
         

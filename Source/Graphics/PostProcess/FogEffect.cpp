@@ -1,9 +1,12 @@
 #include "pch.h"
 #include "FogEffect.h"
 
+#include <DDSTextureLoader.h>
+
 #include "imgui.h"
 #include "Graphics/Core/RenderState.h"
 #include "Graphics/Core/Shader.h"
+#include "Graphics/Resource/Texture.h"
 
 void FogEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height)
 {
@@ -12,6 +15,23 @@ void FogEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height
     fogBuffer = std::make_unique<FrameBuffer>(device, width, height, true);
     HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", fogPS.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+    D3D11_TEXTURE2D_DESC texture2dDesc;
+#if 0
+    hr = LoadTextureFromFile(device, L"./Data/ShaderTextures/noise.png", noise2d.GetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+#else
+    hr = LoadTextureFromFile(device, L"./Data/ShaderTextures/noise1.png", noise2d.GetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+#endif
+
+#if 1
+    Microsoft::WRL::ComPtr<ID3D11Resource> resource;
+    hr = DirectX::CreateDDSTextureFromFile(device, L"./Data/ShaderTextures/_noise_3d.dds", resource.GetAddressOf(), noise3d.GetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+#else
+    ////////PreComputeNoiseTexture3d(device.Get(), 64, noise3d.GetAddressOf());
+#endif
 }
 
 void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal, ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* shadowMap)
@@ -21,12 +41,16 @@ void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourc
     fogBuffer->Clear(immediateContext, 0, 0, 0, 0);
     fogBuffer->Activate(immediateContext);
 
+    immediateContext->PSSetShaderResources(10, 1, noise3d.GetAddressOf());
+    immediateContext->PSSetShaderResources(11, 1, noise2d.GetAddressOf());
+
+
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
     ID3D11ShaderResourceView* shaderResourceViews[]
     {
-        gbufferColor,  
+        gbufferColor,
         gbufferDepth,       //depthMap
         shadowMap,          //cascadedShadowMaps
     };
