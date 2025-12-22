@@ -699,8 +699,10 @@ float4 main(VS_OUT pin) : SV_TARGET
     if (enableFog)
     {
         color.rgb += CalculatedFogColor(pin);
+        //color.rgb = CalculatedFogColor(pin);
     }
-    
+
+    //return float4(color.rgb, 1.0);
     //Šm”F
     //return float4(fogFacter.xxx, 1);
     

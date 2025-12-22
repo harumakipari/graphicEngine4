@@ -11,11 +11,13 @@
 #include "Graphics/PostProcess/MultipleRenderTargets.h"
 #include "Graphics/Shadow/CascadeShadowMap.h"
 #include "UI/Widgets/Widget.h"
+#include "UI/Font.h"
 
 #include <d3d11.h>
 #include <wrl.h>
 #include <memory>
 #include <unordered_map>
+
 
 /// @brief 全シーン共通の基底クラス。描画・定数バッファ・ライト・ポストエフェクトを統一管理する。
 class SceneBase : public Scene
@@ -137,4 +139,5 @@ protected:
     //==============================
     virtual void DrawSceneGui() {}///< 各シーン固有のImGui描画フック
 
+    std::unique_ptr<Font>				font;
 };

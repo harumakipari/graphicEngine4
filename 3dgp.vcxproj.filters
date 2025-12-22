@@ -567,6 +567,9 @@
     <ClCompile Include="Source\Graphics\Renderer\SpriteRenderer.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\UI\Font.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1123,6 +1126,8 @@
     <ClInclude Include="Source\Engine\Debug\EditorGizmo.h" />
     <ClInclude Include="Source\UI\UIManger.h" />
     <ClInclude Include="Source\Graphics\Renderer\SpriteRenderer.h" />
+    <ClInclude Include="Source\Graphics\Core\PrecomputedNoiseTexture3d.h" />
+    <ClInclude Include="Source\UI\Font.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">
@@ -1395,6 +1400,12 @@
     <FxCompile Include="Shader\GltfModelFightStagePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\FontPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FontVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ComputeParticle.hlsli">
@@ -1482,6 +1493,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\ElasticConstants.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\Font.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

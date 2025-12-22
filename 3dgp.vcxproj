@@ -354,6 +354,7 @@
     <ClCompile Include="Source\Physics\CollisionMesh.cpp" />
     <ClCompile Include="Source\Physics\Physics.cpp" />
     <ClCompile Include="Source\Test\SoftBody2d.cpp" />
+    <ClCompile Include="Source\UI\Font.cpp" />
     <ClCompile Include="Source\Utils\EasingHandler.cpp" />
     <ClCompile Include="Source\Widgets\AudioSource.cpp" />
     <ClCompile Include="Source\Widgets\Color.cpp" />
@@ -551,6 +552,7 @@
     <ClInclude Include="Source\Physics\Physics.h" />
     <ClInclude Include="Source\Physics\PhysicsHelper.h" />
     <ClInclude Include="Source\Test\SoftBody2d.h" />
+    <ClInclude Include="Source\UI\Font.h" />
     <ClInclude Include="Source\UI\UIManger.h" />
     <ClInclude Include="Source\UI\Widgets\Widget.h" />
     <ClInclude Include="Source\Utils\easing.h" />
@@ -723,6 +725,18 @@
     <FxCompile Include="Shader\FinalPassPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\FontPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\FontVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\FullScreenQuadPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -1031,6 +1045,7 @@
     <None Include="Shader\Constants.hlsli" />
     <None Include="Shader\ElasticConstants.hlsli" />
     <None Include="Shader\FilterFunctions.hlsli" />
+    <None Include="Shader\Font.hlsli" />
     <None Include="Shader\FullScreenQuad.hlsli" />
     <None Include="Shader\geometricPrimitive.hlsli" />
     <None Include="Shader\GltfModel.hlsli" />

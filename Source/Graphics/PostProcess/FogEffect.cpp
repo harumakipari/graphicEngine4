@@ -12,7 +12,7 @@ void FogEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height
 {
     fogCBuffer = std::make_unique<ConstantBuffer<FogConstants>>(device);
     fullScreenQuad = std::make_unique<FullScreenQuad>(device);
-    fogBuffer = std::make_unique<FrameBuffer>(device, width, height, true);
+    fogBuffer = std::make_unique<FrameBuffer>(device, width, height, false);
     HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", fogPS.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 

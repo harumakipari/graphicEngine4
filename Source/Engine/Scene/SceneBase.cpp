@@ -24,7 +24,6 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     // ライト
     {
-
         lightManager = std::make_unique<LightManager>();
         lightManager->Initialize(device);
         lightManager->SetDirectionalLight(lightDirection, lightColor);
@@ -56,7 +55,7 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     // MULTIPLE_RENDER_TARGETS
     multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, static_cast<uint32_t>(width), height, 3);
 
-    frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, true);
+    frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
 
     // GBUFFER
     gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
@@ -79,6 +78,10 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_sheen_e.dds", environmentTextures[3].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+    // フォントを初期化
+    font = std::make_unique<Font>(device, "./Data/Font/miniDragon.fnt", 1024);
+    //font = std::make_unique<Font>(device, "./Data/Font/MS Gothic.fnt", 1024);
 
     return true;
 }
@@ -425,6 +428,20 @@ void SceneBase::Draw(ID3D11DeviceContext* immediateContext)
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
         objectManager.Draw(immediateContext);
+
+        // フォントの描画
+        {
+            font->Begin(immediateContext);
+            font->Draw(10, 0, L"abcdefg");
+            font->Draw(10, 50, L"あいうえお");
+            font->Draw(10, 100, L"カキクケコ");
+            font->Draw(10, 150, L"漢字最高！");
+            font->Draw(10, 200, L"改行が\nできるよ");
+            font->Draw(10, 300, L"色々改造してね。");
+            font->End(immediateContext);
+        }
+
+
     }
 }
 
