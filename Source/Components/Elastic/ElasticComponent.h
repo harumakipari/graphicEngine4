@@ -48,6 +48,9 @@ public:
         elasticParameters.momentumZ += impulse.z / elasticParameters.mass;
     }
 
+    // サクランボのためにプリンの表面の位置を取得する関数
+    DirectX::XMFLOAT3 GetSurfacePosition();
+
     // --- このあたりの関数を使っていないから後程削除する ---
     void RenderOpaque(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world)const override
     {
@@ -93,6 +96,8 @@ public:
             ImGui::Checkbox("isVisible", &isVisible_);
             ImGui::TreePop();
         }
+        ImGui::DragFloat3("p2", &elasticConstants.p2.x, 0.1f);
+        ImGui::DragFloat3("p3", &elasticConstants.p3.x, 0.1f);
         ImGui::SliderFloat("Stiffness", &elasticParameters.stiffness, 0.1f, 10.0f);
         ImGui::SliderFloat("Damping", &elasticParameters.damping, 0.1f, 0.99f);
         ImGui::SliderFloat("Mass", &elasticParameters.mass, 0.1f, 5.0f);
@@ -112,6 +117,10 @@ public:
         float maxAngleDegree; // 度以上曲がらない
         float modelHeight; // モデルの高さ
         float stretchRate;  // モデルの伸び率
+        float pullLength;
+        DirectX::XMFLOAT3 pullDir;
+        float pad;
+        DirectX::XMFLOAT3 grabPoint;
     };
 
     struct ElasticParameters
@@ -129,6 +138,7 @@ public:
 private:
     void UpdatePushElastic(float deltaTime);
 
+    void UpdateBezierFromPull(const DirectX::XMVECTOR& pullDir, float pullLength);
     void UpdatePullElastic(float deltaTime);
 
 
@@ -139,6 +149,9 @@ private:
     float modelHeight = 0.0f;
 
     DirectX::XMFLOAT2 dragStartMousePos = { 0.0f,0.0f };
-    bool isDragging = false;
     float baseStretchRate = 1.0f;
+
+    const float maxPullLength = 5.0f; // 最大引っ張り長さ
+    DirectX::XMFLOAT3 grabPointWorld = { 0.0f,0.0f,0.0f };
+    bool hasGrabPoint = false;
 };

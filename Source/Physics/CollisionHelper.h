@@ -23,7 +23,7 @@ enum class CollisionLayer :uint32_t
     EraseInArea = 1 << 13, // Á‚·ƒGƒŠƒA@“G‚Ì”š’e‚È‚Ç
     Bomb = 1 << 14,// ”š’e
 
-
+    Everything = 0xFFFFFF,
 };
 
 
@@ -66,5 +66,7 @@ namespace CollisionHelper
         return (mask & ToBit(layer)) != 0;
     }
 }
+
+
 
 #endif //COLLISION_HELPER_H

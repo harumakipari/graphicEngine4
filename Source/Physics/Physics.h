@@ -8,7 +8,6 @@
 #include <memory>
 
 #include "Graphics/Renderer/ShapeRenderer.h"
-#include "DefferdPhysicsOperation.h"
 struct HitResult
 {
     DirectX::XMFLOAT3	position;
@@ -151,5 +150,4 @@ private:
 
     std::vector<physx::PxRigidDynamic*> gravityEnableList_;
 
-    static inline std::vector<DefferdPhysicsOperation> defferfOps_;
 };

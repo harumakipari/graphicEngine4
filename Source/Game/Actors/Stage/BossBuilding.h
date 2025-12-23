@@ -9,7 +9,6 @@
 #include "Core/ActorManager.h"
 
 #include "Physics/Physics.h"
-#include "Physics/DefferdPhysicsOperation.h"
 
 #include "Components/Effect/EffectComponent.h"
 #include "Components/Render/MeshComponent.h"

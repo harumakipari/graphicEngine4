@@ -6,6 +6,7 @@
 #include "Components/Effect/ParticleComponent.h"
 #include "Components/Elastic/ElasticComponent.h"
 #include "Engine/Audio/CoreAudio.h"
+#include "Engine/Debug/DebugDrawManager.h"
 
 class ElasticBuilding : public Actor
 {
@@ -223,15 +224,16 @@ public:
     {
     }
     std::shared_ptr<ElasticMeshComponent> elasticBuilding;
+    std::shared_ptr<SkeletalMeshComponent> cherry;
     std::shared_ptr<ParticleComponent> particleComponent;
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
         elasticBuilding = this->NewSceneComponent<ElasticMeshComponent>("elasticBuilding");
         //elasticBuilding->SetModel("./Data/Models/Building/bomb_bill.gltf");
-        elasticBuilding->SetModel("./Data/Models/pink_pudding/scene.gltf");
+        //elasticBuilding->SetModel("./Data/Models/pink_pudding/scene.gltf");
         //elasticBuilding->SetModel("./Data/Models/cherry_pudding/scene.gltf");
-
+        elasticBuilding->SetModel("./Data/Models/cherry_pudding/pudding.glb");
 
         std::shared_ptr<BoxComponent> boxComponent = this->NewSceneComponent<class BoxComponent>("boxComponent", "elasticBuilding");
         DirectX::XMFLOAT3 size = elasticBuilding->GetModelSize();
@@ -242,6 +244,11 @@ public:
         boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
         boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
         boxComponent->Initialize();
+
+        cherry = this->NewSceneComponent<SkeletalMeshComponent>("cherry", "elasticBuilding");
+        cherry->SetModel("./Data/Models/cherry_pudding/cherry.glb");
+        cherry->SetRelativeLocationDirect({ 0.0f,size.y,0.0f });
+
 
         particleComponent = this->NewSceneComponent<class ParticleComponent>("particleComponent", "elasticBuilding");
         particleComponent->Load("./Data/Effect/Files/testEffect.json");
@@ -263,6 +270,10 @@ public:
 
             }
         }
+        XMFLOAT3 surfacePos=elasticBuilding->GetSurfacePosition();
+        DebugDrawManager::DrawSphere(surfacePos, 0.1f, { 1.0f,1.0f,.0f,1.0f });
+        cherry->SetWorldLocationDirect(surfacePos);
+
     }
     void DrawImGuiDetails()
     {

@@ -548,7 +548,7 @@
     <ClInclude Include="Source\Physics\CollisionHelper.h" />
     <ClInclude Include="Source\Physics\CollisionMesh.h" />
     <ClInclude Include="Source\Physics\CollisionSystem.h" />
-    <ClInclude Include="Source\Physics\DefferdPhysicsOperation.h" />
+    <ClInclude Include="Source\Physics\CollisionFunction.h" />
     <ClInclude Include="Source\Physics\Physics.h" />
     <ClInclude Include="Source\Physics\PhysicsHelper.h" />
     <ClInclude Include="Source\Test\SoftBody2d.h" />

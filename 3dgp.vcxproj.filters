@@ -953,7 +953,7 @@
     <ClInclude Include="Source\Components\Game\LifeTimeComponent.h">
       <Filter>Sources\Components\Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Physics\DefferdPhysicsOperation.h">
+    <ClInclude Include="Source\Physics\CollisionFunction.h">
       <Filter>Sources\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\Components\Audio\AudioSourceComponent.h">

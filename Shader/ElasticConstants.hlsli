@@ -32,6 +32,10 @@ cbuffer ELASTIC_CONSTANT_BUFFER : register(b6)
     float maxAngleDegree; // 0.0 ~ 1.0  t
     float buildHeight; // ƒrƒ‹‚Ì‚‚³
     float stretchRate; // ˆø‚«L‚Î‚µ—¦
+    float pullLength;
+    float3 pullDir;
+    float pad;
+    float3 grabPoint;
 }
 
 float3 SafeNormalize(float3 v, float3 fallback)

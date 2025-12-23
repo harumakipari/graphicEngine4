@@ -2,7 +2,6 @@
 #include "Beam.h"
 
 #include "Physics/Physics.h"
-#include "Physics/DefferdPhysicsOperation.h"
 
 #include "Game/Actors/Stage/Building.h"
 #include "Game/Actors/Stage/BossBuilding.h"

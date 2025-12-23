@@ -132,9 +132,11 @@ void SampleScene::Update(float deltaTime)
         auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
         debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
-        //Transform buildTr(DirectX::XMFLOAT3{ 3.0f,-2.45f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
-        //auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<TestElasticBuilding>("building", buildTr);
-
+        Transform buildTr(DirectX::XMFLOAT3{ -5.0f,-2.45f,3.0 }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
+        auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("building", buildTr);
+        building->NewSceneComponent<SkeletalMeshComponent>("cloth")->SetModel("./Data/Models/cherry_pudding/scene.gltf");
+        building->SetPosition(DirectX::XMFLOAT3{ -5.0f,-2.45f,3.0 });
+        building->SetScale(DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
 
         Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,-2.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
         auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<TestElasticBuilding>("building", buildTr2);

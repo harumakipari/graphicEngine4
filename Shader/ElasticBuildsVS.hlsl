@@ -14,11 +14,15 @@ VS_OUT main(VS_IN vin)
     // ② t (高さ比)
     float meshHeight = max(buildHeight, 1e-5);
 
-#if 0
+    float3 testDir = normalize(float3(0, 0, 1)); // Z+ 方向
+    float testLength = 1.0;
+
+#if 1
     float t = saturate((worldPos.y - p1.y) / meshHeight);
 #else
-    float stretchedHeight = buildHeight * stretchRate;
-    float t = saturate((worldPos.y - p1.y) / stretchedHeight);
+// 原点を基準に投影
+    float axisDist = dot(worldPos, testDir);
+    float t = saturate(axisDist / testLength);
 #endif
 
 
@@ -27,12 +31,14 @@ VS_OUT main(VS_IN vin)
     float3 bezierTangentRaw = QuadricBezierTangent(p1.xyz, p2.xyz, p3.xyz, t);
     float3 bezierTangent = SafeNormalize(bezierTangentRaw, float3(0, 0, 1));
 
+#if 1
     // ④ 直線の芯とローカルオフセット
     float3 straightPos = p1.xyz + float3(0, (worldPos.y - p1.y), 0);
     float3 localOffset = worldPos - straightPos;
 
-#if 1
-    localOffset.y *= stretchRate;
+#else
+    float3 straightPos = base + pullDir * axisDist;
+    float3 localOffset = worldPos - straightPos;
 #endif
 
     // ⑤ 回転軸・角度の準備（安定処理）
