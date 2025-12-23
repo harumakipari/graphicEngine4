@@ -283,6 +283,7 @@
     <ClCompile Include="Source\Engine\Scene\SceneBase.cpp" />
     <ClCompile Include="Source\Engine\Utility\Time.cpp" />
     <ClCompile Include="Source\Game\Actors\Beam\Beam.cpp" />
+    <ClCompile Include="Source\Game\Actors\Dessert\Cherry.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\ActionDerived.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\BehaviorData.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\BehaviorTree.cpp" />
@@ -439,6 +440,8 @@
     <ClInclude Include="Source\Game\Actors\Camera\Camera.h" />
     <ClInclude Include="Source\Game\Actors\Camera\DefeatEnemyCamera.h" />
     <ClInclude Include="Source\Game\Actors\Camera\TitleCamera.h" />
+    <ClInclude Include="Source\Game\Actors\Dessert\Cherry.h" />
+    <ClInclude Include="Source\Game\Actors\Dessert\Pudding.h" />
     <ClInclude Include="Source\Game\Actors\Effect\ShockWave.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\ActionBase.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\ActionDerived.h" />

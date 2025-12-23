@@ -60,9 +60,11 @@ public:
     static inline const float defaultTimeScale = 1.0f;
     static inline float timeScale = 1.0f;
 
+#ifdef USE_IMGUI
+
     ImFont* fontJP;
 
-
+#endif
     CONST HWND hwnd;
 
 

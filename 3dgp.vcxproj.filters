@@ -570,6 +570,9 @@
     <ClCompile Include="Source\UI\Font.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Actors\Dessert\Cherry.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1128,6 +1131,8 @@
     <ClInclude Include="Source\Graphics\Renderer\SpriteRenderer.h" />
     <ClInclude Include="Source\Graphics\Core\PrecomputedNoiseTexture3d.h" />
     <ClInclude Include="Source\UI\Font.h" />
+    <ClInclude Include="Source\Game\Actors\Dessert\Cherry.h" />
+    <ClInclude Include="Source\Game\Actors\Dessert\Pudding.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">

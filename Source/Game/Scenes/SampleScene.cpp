@@ -13,6 +13,7 @@
 #include "Core/ActorManager.h"
 
 #include "Game/Actors/Camera/TitleCamera.h"
+#include "Game/Actors/Dessert/Pudding.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"
 #include "Game/Actors/Enemy/Boss/BossEnemy.h"
 #include "Game/Actors/Stage/ElasticBuilding.h"
@@ -139,7 +140,7 @@ void SampleScene::Update(float deltaTime)
         building->SetScale(DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
 
         Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,-2.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
-        auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<TestElasticBuilding>("building", buildTr2);
+        auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pudding>("building", buildTr2);
 
 
 #if 1
