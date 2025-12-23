@@ -278,17 +278,17 @@ public:
         XMVECTOR yAxis = XMVector3Normalize(XMLoadFloat3(&tangent));
 
         // fallbackÅiê^è„Çå¸Ç¢ÇƒÇÈÇ∆Ç´ópÅj
-        XMVECTOR worldForward = XMVectorSet(0, 1, 0, 0);
+        XMVECTOR worldForward = XMVectorSet(0, 0, 1, 0);
         if (fabsf(XMVectorGetX(XMVector3Dot(yAxis, worldForward))) > 0.99f)
         {
-            worldForward = XMVectorSet(1, 0, 0, 0);
+            worldForward = XMVectorSet(0 ,0, 1, 0);
         }
 
         // Xé≤ = forward Å~ Y
-        XMVECTOR xAxis = XMVector3Normalize(XMVector3Cross(worldForward, yAxis));
+        XMVECTOR xAxis = XMVector3Normalize(XMVector3Cross( yAxis,worldForward));
 
         // Zé≤ = Y Å~ X
-        XMVECTOR zAxis = XMVector3Cross(yAxis, xAxis);
+        XMVECTOR zAxis = XMVector3Cross(xAxis, yAxis);
 
         // âÒì]çsóÒ
         XMMATRIX rotMatrix =
