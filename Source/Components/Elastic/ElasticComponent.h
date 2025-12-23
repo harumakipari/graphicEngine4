@@ -49,7 +49,7 @@ public:
     }
 
     // サクランボのためにプリンの表面の位置を取得する関数
-    DirectX::XMFLOAT3 GetSurfacePosition();
+    void GetSurfacePositionTangent(DirectX::XMFLOAT3& surfacePosition,DirectX::XMFLOAT3& tangent);
 
     // --- このあたりの関数を使っていないから後程削除する ---
     void RenderOpaque(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world)const override
@@ -106,6 +106,7 @@ public:
         ImGui::SliderFloat("momentumZ", &elasticParameters.momentumZ, -10.0f, 10.0f);
         ImGui::SliderFloat(" maxDist", &elasticParameters.maxDist, -100.0f, 120.0f);
         ImGui::SliderFloat(" maxAngleDegrees", &elasticParameters.maxAngleDegrees, 0.0f, 360.0f);
+        ImGui::DragFloat(U8("サクランボのオフセット"), &cherryOffset, 0.01f);
 #endif
     }
 
@@ -154,4 +155,6 @@ private:
     const float maxPullLength = 5.0f; // 最大引っ張り長さ
     DirectX::XMFLOAT3 grabPointWorld = { 0.0f,0.0f,0.0f };
     bool hasGrabPoint = false;
+
+    float cherryOffset = -0.5f;// サクランボのためのオフセット
 };

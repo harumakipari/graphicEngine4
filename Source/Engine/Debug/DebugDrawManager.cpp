@@ -138,10 +138,10 @@ void DebugDrawManager::Render(ID3D11DeviceContext* immediateContext)
                 cmd.color);
             break;
         case DebugDrawType::Line:
-            ShapeRenderer::DrawSegment(
+            ShapeRenderer::DrawLineSegment(
                 immediateContext,
                 cmd.position,
-                cmd.endPosition);
+                cmd.endPosition,cmd.color);
             break;
         case DebugDrawType::Capsule:
             ShapeRenderer::DrawCapsule(

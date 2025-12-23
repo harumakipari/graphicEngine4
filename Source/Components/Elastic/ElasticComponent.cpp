@@ -315,20 +315,29 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
 
 
 // サクランボのためにプリンの表面の位置を取得する関数
-DirectX::XMFLOAT3 ElasticMeshComponent::GetSurfacePosition()
+void  ElasticMeshComponent::GetSurfacePositionTangent(DirectX::XMFLOAT3& surfacePosition, DirectX::XMFLOAT3& tangent)
 {
     XMVECTOR p2 = XMLoadFloat3((XMFLOAT3*)&elasticConstants.p2);
     XMVECTOR p3 = XMLoadFloat3((XMFLOAT3*)&elasticConstants.p3);
 
-    XMVECTOR tangent = XMVector3Normalize(2.0f * (p3 - p2)); // 接線ベクトル t=1.0fだから
+    XMVECTOR Tangent = XMVector3Normalize(2.0f * (p3 - p2)); // 接線ベクトル t=1.0fだから
 
     XMVECTOR up = XMVectorSet(0, 1, 0, 0);
-    XMVECTOR normal = XMVector3Normalize(XMVector3Cross(tangent, XMVector3Cross(up, tangent)));
-    float radius = 0.01f; // プリンの半径
-    XMVECTOR surfacePos = p3 + normal * radius;
-    DirectX::XMFLOAT3 surfacePos_;
-    DirectX::XMStoreFloat3(&surfacePos_, surfacePos);
-    return surfacePos_;
+    XMVECTOR normal = XMVector3Normalize(XMVector3Cross(Tangent, XMVector3Cross(up, Tangent)));
+     // プリンの半径
+    XMVECTOR surfacePos = p3 + Tangent * cherryOffset;
+    DirectX::XMStoreFloat3(&surfacePosition, surfacePos);
+
+    // 表面
+    DebugDrawManager::DrawSphere(surfacePosition, 0.03f, { 1,1,0,1 });
+    // 接線
+    XMVECTOR Debug = XMVectorAdd(p3, Tangent);
+    XMFLOAT3 debugPos;
+    XMStoreFloat3(&debugPos, Debug);
+    DebugDrawManager::DrawLine({ elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z },
+        debugPos, { 1,0,1,1 });
+
+    XMStoreFloat3(&tangent, Tangent);
 }
 
 

@@ -270,9 +270,39 @@ public:
 
             }
         }
-        XMFLOAT3 surfacePos=elasticBuilding->GetSurfacePosition();
-        DebugDrawManager::DrawSphere(surfacePos, 0.1f, { 1.0f,1.0f,.0f,1.0f });
+        XMFLOAT3 surfacePos, tangent;
+        elasticBuilding->GetSurfacePositionTangent(surfacePos, tangent);
         cherry->SetWorldLocationDirect(surfacePos);
+
+        // ===== ‰ñ“] =====
+        XMVECTOR yAxis = XMVector3Normalize(XMLoadFloat3(&tangent));
+
+        // fallbacki^ã‚ðŒü‚¢‚Ä‚é‚Æ‚«—pj
+        XMVECTOR worldForward = XMVectorSet(0, 1, 0, 0);
+        if (fabsf(XMVectorGetX(XMVector3Dot(yAxis, worldForward))) > 0.99f)
+        {
+            worldForward = XMVectorSet(1, 0, 0, 0);
+        }
+
+        // XŽ² = forward ~ Y
+        XMVECTOR xAxis = XMVector3Normalize(XMVector3Cross(worldForward, yAxis));
+
+        // ZŽ² = Y ~ X
+        XMVECTOR zAxis = XMVector3Cross(yAxis, xAxis);
+
+        // ‰ñ“]s—ñ
+        XMMATRIX rotMatrix =
+        {
+            xAxis,
+            yAxis,
+            zAxis,
+            XMVectorSet(0, 0, 0, 1)
+        };
+
+        XMVECTOR rotQuat = XMQuaternionRotationMatrix(rotMatrix);
+        DirectX::XMFLOAT4 rot;
+        XMStoreFloat4(&rot, rotQuat);
+        cherry->SetRelativeRotationDirect(rot);
 
     }
     void DrawImGuiDetails()
