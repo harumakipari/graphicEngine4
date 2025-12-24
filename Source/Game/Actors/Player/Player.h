@@ -52,7 +52,7 @@ public:
     // ステートを設定する
     void SetState(Player::State state) { this->state = state; }
 private:
-    State state = Player::State::CantMoveCharge;
+    State state = Player::State::Idle;
 public:
     Player() = default;
     ~Player() = default;

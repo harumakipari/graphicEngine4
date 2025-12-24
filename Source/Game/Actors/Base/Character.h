@@ -76,10 +76,6 @@ public:
 
     virtual void Move(float elapsedTime) {}
 
-    void SetAnimationIndex(size_t index) { animationIndex = index; }
-
-    size_t GetAnimationIndex()const override { return animationIndex; }
-
     // アニメーションの再生倍率を変更する関数
     void SetAnimationRate(float animationRate) const
     {

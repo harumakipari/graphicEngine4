@@ -161,7 +161,7 @@ public:
     {
         // Œ³X‚Ì” ‚Ì“–‚½‚è”»’è‚ðÁ‚·
         boxComponent->DisableCollision();
-        this->ScheduleDestroyComponentByName("boxComponent");
+        this->RequestDestroyComponent("boxComponent");
 
         preSkeltalMeshComponent->SetIsVisible(false);
         preSkeltalMeshComponent->SetIsCastShadow(false);

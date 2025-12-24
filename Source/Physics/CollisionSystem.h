@@ -72,7 +72,7 @@ public:
                 CollisionComponent* aComponent = aComponentShared.get();
                 CollisionComponent* bComponent = bComponentShared.get();
 
-                if (!aActor->isActive || !bActor->isActive)
+                if (!aActor->IsActive() || !bActor->IsActive())
                 {
                     continue;
                 }
@@ -135,8 +135,8 @@ public:
 
 
                 // 衝突イベント(Actor 通知)
-                aActor->BroadcastHit(hitPairA);
-                bActor->BroadcastHit(hitPairB);
+                aActor->DispatchHitEvent(hitPairA);
+                bActor->DispatchHitEvent(hitPairB);
 
                 // 衝突イベント(Actor 通知)
                 aActor->OnHit(hitPairA);

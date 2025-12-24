@@ -284,7 +284,7 @@ void EffectSystem::Update(float deltaTime)
     auto actorManager = currentScene->GetActorManager();  // ActorManagerŽæ“¾
 
     for (auto& actor : actorManager->allActors_) {
-        if (!actor->rootComponent_ || !actor->isActive) {
+        if (!actor->GetRootComponent() || !actor->IsActive()) {
             continue;
         }
 

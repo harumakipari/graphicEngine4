@@ -28,7 +28,7 @@ void BuildingManager::SpawnItemArea(Area& area, int col, int row)
         //building->Initialize();
         //building->UpdateAllComponentTransforms();
 
-        auto shape = building->GetSceneComponentByName("boxComponent");
+        auto shape = building->FindComponentByName("boxComponent");
         if (auto box = std::dynamic_pointer_cast<BoxComponet>(shape))
         {
             if (SpawnValidator::IsAreaFree(box->GetAABB()))

@@ -118,7 +118,7 @@ void MovementComponent::Tick(float deltaTime)
        š ‚±‚±‚Ü‚Å•Ç“–‚½‚è”»’è š
        ============================ */
 
-    owner_.lock()->rootComponent_->AddWorldOffset(sweptMove);
+    owner_.lock()->GetRootComponent()->AddWorldOffset(sweptMove);
 
 
     float yaw = DirectX::XMConvertToDegrees(std::atan2f(dir.x, dir.z));
@@ -169,7 +169,7 @@ void MovementComponentOutInput::Tick(float deltaTime)
     moveVec.z += pushVec.z;
 
 
-    owner_.lock()->rootComponent_->AddWorldOffset(moveVec);
+    owner_.lock()->GetRootComponent()->AddWorldOffset(moveVec);
 
 
     float yaw = DirectX::XMConvertToDegrees(std::atan2f(dir.x, dir.z));

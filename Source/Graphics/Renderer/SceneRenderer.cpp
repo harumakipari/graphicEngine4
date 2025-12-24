@@ -36,12 +36,12 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::v
 
     for (auto actor : allActors)
     {
-        if (!actor->rootComponent_)
+        if (!actor->GetRootComponent())
         {
             continue;
         }
 
-        if (!actor->isActive)
+        if (!actor->IsActive())
         {// actorが存在していなかったらスキップ
             continue;
         }
@@ -93,12 +93,12 @@ void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext) const
 
     for (auto actor : allActors)
     {
-        if (!actor->rootComponent_)
+        if (!actor->GetRootComponent())
         {
             continue;
         }
 
-        if (!actor->isActive)
+        if (!actor->IsActive())
         {// actorが存在していなかったらスキップ
             continue;
         }
@@ -140,12 +140,12 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext) const
 
     for (auto actor : allActors)
     {
-        if (!actor->rootComponent_)
+        if (!actor->GetRootComponent())
         {
             continue;
         }
 
-        if (!actor->isActive)
+        if (!actor->IsActive())
         {// actorが存在していなかったらスキップ
             continue;
         }
@@ -190,12 +190,12 @@ void SceneRenderer::CastShadowRender(ID3D11DeviceContext* immediateContext)
 
     for (auto actor : allActors)
     {
-        if (!actor->rootComponent_)
+        if (!actor->GetRootComponent())
         {
             continue;
         }
 
-        if (!actor->isActive)
+        if (!actor->IsActive())
         {// actorが存在していなかったらスキップ
             continue;
         }

@@ -113,7 +113,7 @@ void Player::Initialize(const Transform& transform)
     capsuleComponent->SetResponseToLayer(CollisionLayer::EraseInArea, CollisionComponent::CollisionResponse::Trigger);
     capsuleComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
     capsuleComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::None);
-    //capsuleComponent->SetResponseToLayer(CollisionLayer::Building, CollisionComponent::CollisionResponse::None);
+    capsuleComponent->SetResponseToLayer(CollisionLayer::Building, CollisionComponent::CollisionResponse::Block);
     capsuleComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::None);
     capsuleComponent->SetModelHeight(height * 0.5f);
     capsuleComponent->SetIsVisibleDebugBox(false);
@@ -175,7 +175,7 @@ void Player::Initialize(const Transform& transform)
                     return;
                 }
 
-                if (!item->GetIsValid())
+                if (!item->IsAlive())
                 {
                     return;
                 }
@@ -479,7 +479,7 @@ void Player::Initialize(const Transform& transform)
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponet", "skeletalComponent");
 
-    OutputDebugStringA(("Actor::Initialize called. rootComponent_ use_count = " + std::to_string(rootComponent_.use_count()) + "\n").c_str());
+    OutputDebugStringA(("Actor::Initialize called. rootComponent_ use_count = " + std::to_string(GetRootComponent().use_count()) + "\n").c_str());
 }
 
 
@@ -679,7 +679,7 @@ void Player::Update(float elapsedTime)
         beam->SetTempMass(itemPower);
         beam->Initialize();
         beam->PostInitialize();
-        auto sphere = std::dynamic_pointer_cast<SphereComponent>(beam->GetSceneComponentByName("sphereComponent"));
+        auto sphere = std::dynamic_pointer_cast<SphereComponent>(beam->FindComponentByName("sphereComponent"));
         sphere->SetKinematic(false);
         sphere->SetGravity(false);
         //sphere->SetMass(itemPower);
@@ -808,7 +808,6 @@ void Player::FireBeam()
         beam->SetItemMaxPower(maxPower);
         beam->SetItemCount(rightItemCount + leftItemCount);
         float itemPower = beamItemPower * 10.0f;
-        beam->SetTempPosition(pos);
         beam->SetTempMass(itemPower);
         //beam->Initialize();
         //beam->UpdateAllComponentTransforms();

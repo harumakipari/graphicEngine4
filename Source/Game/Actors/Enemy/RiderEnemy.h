@@ -207,7 +207,7 @@ public:
         DirectX::XMFLOAT3 bossJoint = skeltalMeshComponent->model->GetJointLocalPosition("spine2_FK", skeltalMeshComponent->model->GetNodes());
         bossJointComponent->SetRelativeLocationDirect(bossJoint);
 
-        OutputDebugStringA(("Actor::Initialize called. rootComponent_ use_count = " + std::to_string(rootComponent_.use_count()) + "\n").c_str());
+        OutputDebugStringA(("Actor::Initialize called. rootComponent_ use_count = " + std::to_string(GetRootComponent().use_count()) + "\n").c_str());
     }
 
     //@collisionComponent@‚ª Dynamic ‚Ì•¨‚Æ“–‚½‚Á‚½‚É’Ê‚é

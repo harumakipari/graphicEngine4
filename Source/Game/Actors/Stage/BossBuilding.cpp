@@ -40,7 +40,7 @@ void BossBuilding::Update(float deltaTime)
         explosionSoundComponent->Play();
 
         boxComponent->DisableCollision();
-        this->ScheduleDestroyComponentByName("boxComponent");
+        this->RequestDestroyComponent("boxComponent");
 
         preSkeltalMeshComponent->SetIsVisible(false);
         preSkeltalMeshComponent->SetIsCastShadow(false);
@@ -82,7 +82,7 @@ void BossBuilding::Update(float deltaTime)
         {// ボスによって壊されたら
             // 元々の箱の当たり判定を消す
             boxComponent->DisableCollision();
-            this->ScheduleDestroyComponentByName("boxComponent");
+            this->RequestDestroyComponent("boxComponent");
 
             preSkeltalMeshComponent->SetIsVisible(false);
             preSkeltalMeshComponent->SetIsCastShadow(false);
@@ -122,7 +122,7 @@ void BossBuilding::Update(float deltaTime)
             //explosionSoundComponent->Play();
             // 元々の箱の当たり判定を消す
             boxComponent->DisableCollision();
-            this->ScheduleDestroyComponentByName("boxComponent");
+            this->RequestDestroyComponent("boxComponent");
 
             preSkeltalMeshComponent->SetIsVisible(false);
             preSkeltalMeshComponent->SetIsCastShadow(false);
@@ -158,7 +158,7 @@ void BossBuilding::Update(float deltaTime)
             }
             // 元々の箱の当たり判定を消す
             boxComponent->DisableCollision();
-            this->ScheduleDestroyComponentByName("boxComponent");
+            this->RequestDestroyComponent("boxComponent");
 
             preSkeltalMeshComponent->SetIsVisible(false);
             preSkeltalMeshComponent->SetIsCastShadow(false);
@@ -191,7 +191,7 @@ void BossBuilding::Update(float deltaTime)
         {// 
             // 元々の箱の当たり判定を消す
             boxComponent->DisableCollision();
-            this->ScheduleDestroyComponentByName("boxComponent");
+            this->RequestDestroyComponent("boxComponent");
 
             preSkeltalMeshComponent->SetIsVisible(false);
             preSkeltalMeshComponent->SetIsCastShadow(false);
@@ -258,8 +258,8 @@ void BossBuilding::CallHitShockWave(float power, int beamItemCount, const Direct
         eraseInAreaComponent->DisableCollision();
         // 元々の箱の当たり判定を消す
         boxComponent->DisableCollision();
-        this->ScheduleDestroyComponentByName("boxComponent");
-        this->ScheduleDestroyComponentByName("eraseInAreaComponent");
+        this->RequestDestroyComponent("boxComponent");
+        this->RequestDestroyComponent("eraseInAreaComponent");
         //this->DestroyComponentByName("boxComponent");
         // ビームを消す
         //beam->SetValid(false);

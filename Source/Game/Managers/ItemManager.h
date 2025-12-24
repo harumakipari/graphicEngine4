@@ -182,11 +182,10 @@ private:
             // ActorManager はポインタなので-> でアクセス
             Transform transform{ spawnPos,{0,0,0,1},{1,1,1} };
             auto item = currentScene->GetActorManager()->CreateAndRegisterActorWithTransform<PickUpItem>("item", transform);
-            item->SetTempPosition(spawnPos);
             //item->Initialize();
             //item->UpdateAllComponentTransforms();
 #if 0
-            auto box = item->GetSceneComponentByName("boxComponent");
+            auto box = item->FindComponentByName("boxComponent");
             if (auto box = std::dynamic_pointer_cast<BoxComponet>(shape))
             {
                 if (SpawnValidator::IsAreaFree(box->GetAABB()))
@@ -200,7 +199,7 @@ private:
                 }
             }
 #else
-            auto shape = item->GetSceneComponentByName("sphereComponent");
+            auto shape = item->FindComponentByName("sphereComponent");
             if (auto sphere = std::dynamic_pointer_cast<SphereComponent>(shape))
             {
                 if (SpawnValidator::IsAreaFree(sphere->GetAABB()))

@@ -9,13 +9,13 @@ void World::Tick(float deltaTime)
         for (std::shared_ptr<Actor>& actor : allActors_)
         {
             //for (std::shared_ptr<SceneComponent>& component : actor->ownedSceneComponents_)
-            for (std::shared_ptr<Component>& component : actor->ownedSceneComponents_)
+            for (const std::shared_ptr<Component>& component : actor->GetComponents())
             {
                 component->Tick(deltaTime);
             }
-            if (actor->rootComponent_)
+            if (actor->GetRootComponent())
             {
-                actor->rootComponent_->UpdateComponentToWorld();
+                actor->GetRootComponent()->UpdateComponentToWorld();
             }
             actor->Update(deltaTime);
         }

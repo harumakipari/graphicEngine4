@@ -81,7 +81,7 @@ void Building::Update(float delta_time)
         {// ボスによって壊されたら
             // 元々の箱の当たり判定を消す
             boxComponent->DisableCollision();
-            this->ScheduleDestroyComponentByName("boxComponent");
+            this->RequestDestroyComponent("boxComponent");
 
             preSkeltalMeshComponent->SetIsVisible(false);
             preSkeltalMeshComponent->SetIsCastShadow(false);
@@ -116,7 +116,7 @@ void Building::Update(float delta_time)
 
             // 元々の箱の当たり判定を消す
             boxComponent->DisableCollision();
-            this->ScheduleDestroyComponentByName("boxComponent");
+            this->RequestDestroyComponent("boxComponent");
 
             preSkeltalMeshComponent->SetIsVisible(false);
             preSkeltalMeshComponent->SetIsCastShadow(false);
@@ -149,7 +149,7 @@ void Building::Update(float delta_time)
         {// ボスビルによって壊されたら
                         // 元々の箱の当たり判定を消す
             boxComponent->DisableCollision();
-            this->ScheduleDestroyComponentByName("boxComponent");
+            this->RequestDestroyComponent("boxComponent");
 
             preSkeltalMeshComponent->SetIsVisible(false);
             preSkeltalMeshComponent->SetIsCastShadow(false);
@@ -183,7 +183,7 @@ void Building::Update(float delta_time)
             shockWaveMeshComponent->Initialize(0.1f, shockWaveRange, shockWaveTime, beamPower_);
             // 元々の箱の当たり判定を消す
             boxComponent->DisableCollision();
-            this->ScheduleDestroyComponentByName("boxComponent");
+            this->RequestDestroyComponent("boxComponent");
 
             preSkeltalMeshComponent->SetIsVisible(false);
             preSkeltalMeshComponent->SetIsCastShadow(false);
@@ -251,7 +251,7 @@ void Building::CallHitShockWave(float power, int beamItemCount, const DirectX::X
 
         // 元々の箱の当たり判定を消す
         boxComponent->DisableCollision();
-        this->ScheduleDestroyComponentByName("boxComponent");
+        this->RequestDestroyComponent("boxComponent");
 
         //this->ScheduleDestroyComponentByName("boxComponent");
         //this->DestroyComponentByName("boxComponent");

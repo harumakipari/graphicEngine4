@@ -10,12 +10,12 @@ void Renderer::RenderParticle(ID3D11DeviceContext* immediateContext)
     auto& allActors = currentScene->GetActorManager()->GetAllActors();
     for (auto& actor : allActors)
     {
-        if (!actor->rootComponent_)
+        if (!actor->GetRootComponent())
         {
             continue;
         }
 
-        if (!actor->isActive)
+        if (!actor->IsActive())
         {// actorが存在していなかったらスキップ
             continue;
         }
@@ -36,7 +36,7 @@ void Renderer::RenderOpaque(ID3D11DeviceContext* immediateContext)
     auto& allActors = currentScene->GetActorManager()->GetAllActors();
     for (auto& actor : allActors)
     {
-        if (!actor->rootComponent_ || !actor->isActive)
+        if (!actor->GetRootComponent() || !actor->IsActive())
         {
             continue;
         }
@@ -70,11 +70,11 @@ void Renderer::RenderMask(ID3D11DeviceContext* immediateContext)
     auto& allActors = currentScene->GetActorManager()->GetAllActors();
     for (auto& actor : allActors)
     {
-        if (!actor->rootComponent_)
+        if (!actor->GetRootComponent())
         {
             continue;
         }
-        if (!actor->isActive)
+        if (!actor->IsActive())
         {// actorが存在していなかったらスキップ
             continue;
         }
@@ -123,12 +123,12 @@ void Renderer::RenderBlend(ID3D11DeviceContext* immediateContext)
     auto& allActors = currentScene->GetActorManager()->GetAllActors();
     for (auto& actor : allActors)
     {
-        if (!actor->rootComponent_)
+        if (!actor->GetRootComponent())
         {
             continue;
         }
 
-        if (!actor->isActive)
+        if (!actor->IsActive())
         {// actorが存在していなかったらスキップ
             continue;
         }
@@ -178,11 +178,11 @@ void Renderer::RenderInstanced(ID3D11DeviceContext* immediateContext)
     auto& allActors = currentScene->GetActorManager()->GetAllActors();
     for (auto& actor : allActors)
     {
-        if (!actor->rootComponent_)
+        if (!actor->GetRootComponent())
         {
             continue;
         }
-        if (!actor->isActive)
+        if (!actor->IsActive())
         {// actorが存在していなかったらスキップ
             continue;
         }
@@ -221,12 +221,12 @@ void Renderer::CastShadowRender(ID3D11DeviceContext* immediateContext)
     auto& allActors = currentScene->GetActorManager()->GetAllActors();
     for (auto& actor : allActors)
     {
-        if (!actor->rootComponent_)
+        if (!actor->GetRootComponent())
         {
             continue;
         }
 
-        if (!actor->isActive)
+        if (!actor->IsActive())
         {// actorが存在していなかったらスキップ
             continue;
         }
@@ -283,12 +283,12 @@ void ActorColliderManager::DebugRender(ID3D11DeviceContext* immediateContext)
     auto& allActors = currentScene->GetActorManager()->GetAllActors();
     for (auto& actor : allActors)
     {
-        if (!actor->rootComponent_)
+        if (!actor->GetRootComponent())
         {
             continue;
         }
 
-        if (!actor->isActive)
+        if (!actor->IsActive())
         {// actorが存在していなかったらスキップ
             continue;
         }

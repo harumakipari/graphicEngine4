@@ -51,7 +51,7 @@ void PickUpItem::Initialize()
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     skeltalMeshComponent->model->emission = 15.0f;
-    SetPosition(tempPosition);    // こっちを使うよーーー
+    
 
     // 当たり判定のコンポーネントを追加
     sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", "skeletalComponent");

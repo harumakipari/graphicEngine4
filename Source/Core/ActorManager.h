@@ -173,7 +173,7 @@ public:
             //    component->OnUnregister();
             //}
             //actor->Finalize();
-            actor->Destroy();
+            actor->DestroyActor();
         }
         allActors_.clear();
         actorCacheByName_.clear();
@@ -205,18 +205,18 @@ public:
             //OutputDebugStringA(buf);
 
             //if (!actor->isValid)
-            if (actor->isPendingKill)
+            if (actor->IsPendingKill())
             {
                 //char buf[256];
                 //sprintf_s(buf, "actor=%s, isValid=%d, isActive=%d\n → Destroy() を呼ぶ！\n", actor->GetName().c_str(), actor->isValid, actor->isActive);
                 //OutputDebugStringA(buf);
 
                 //OutputDebugStringA(" → Destroy() を呼ぶ！\n");
-                actor->Destroy();
+                actor->DestroyActor();
                 continue;
             }
 
-            for (auto& component : actor->ownedSceneComponents_)
+            for (auto& component : actor->GetComponents())
             {
                 component->Tick(deltaTime);
             }
@@ -226,9 +226,9 @@ public:
             //    component->Tick(deltaTime);
             //}
 
-            if (actor->rootComponent_)
+            if (actor->GetRootComponent())
             {
-                actor->rootComponent_->UpdateComponentToWorld();
+                actor->GetRootComponent()->UpdateComponentToWorld();
             }
             actor->Update(deltaTime);
 
@@ -244,7 +244,7 @@ public:
         // isValid == false のアクターだけを削除
         allActors_.erase(
             std::remove_if(allActors_.begin(), allActors_.end(),
-                [](const std::shared_ptr<Actor>& a) { return !a || !a->isValid; }),
+                [](const std::shared_ptr<Actor>& a) { return !a || !a->IsAlive(); }),
             allActors_.end());
     }
 
@@ -505,12 +505,12 @@ public:
     {
         for (const auto& actor : ShockWaveTargetRegistry::GetTargets())
         {
-            if (!actor->rootComponent_)
+            if (!actor->GetRootComponent())
             {
                 continue;
             }
 
-            if (!actor->isActive)
+            if (!actor->IsActive())
             {// actorが存在していなかったらスキップ
                 continue;
             }

@@ -23,7 +23,7 @@ void ShockWaveCollisionComponent::Tick(float deltaTime)
     //for (auto actor : ActorManager::allActors_)
     for (auto& actor : ShockWaveTargetRegistry::GetTargets())
     {
-        if (!actor || !actor->GetIsValid())
+        if (!actor || !actor->IsAlive())
         {
             continue;
         }
@@ -83,7 +83,7 @@ void ShockWaveCollisionComponent::Tick(float deltaTime)
     if (elapsedTime_ > durationSeconds_)
     {
         // I—¹Œã‚Í”jŠü‚·‚é
-        this->GetOwner()->ScheduleDestroyComponentByName(this->name_);
+        this->GetOwner()->RequestDestroyComponent(this->name_);
     }
 }
 

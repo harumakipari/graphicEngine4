@@ -38,7 +38,7 @@ public:
         if (elapsedTime_ > durationSeconds_)
         {
             // I—¹Œã‚Í”jŠü‚·‚é
-            this->GetOwner()->ScheduleDestroyComponentByName(this->name_);
+            this->GetOwner()->RequestDestroyComponent(this->name_);
         }
     }
 

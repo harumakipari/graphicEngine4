@@ -108,18 +108,10 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     //アクターをセット
     SetUpActors();
 
-    //パーティクルシステム
-    //particles = std::make_unique<decltype(particles)::element_type>(device, 10000);
-    //LoadTextureFromFile(device, L"./Data/Effect/Particles/LargeFlame01.tif", particleTexture.GetAddressOf(), NULL);
-    //particles->particleSystemData.spriteSheetGrid = { 8,8 };
-    ////LoadTextureFromFile(device, L"./Data/Effect/Particles/Ramp02.png", colorTemperChart.GetAddressOf(), NULL); // blue
-    //LoadTextureFromFile(device, L"./Data/Effect/Particles/ramp01.png", colorTemperChart.GetAddressOf(), NULL); // red 
 
     effectSystem = std::make_unique<EffectSystem>();
     effectSystem->Initialize();
-    //collisionMesh = std::make_unique<decltype(collisionMesh)::element_type>(device, "./Data/Models/Stage/ExampleStage.gltf");
 
-    //sprite_batches[0] = std::make_unique<SpriteBatch>(device, L"./Data/Textures/Screens/GameScene/screenshot.jpg", 1);
 
     EventSystem::Initialize();//追加 UI
 
@@ -322,7 +314,7 @@ void MainScene::Update(float deltaTime)
 
 
     auto cameraComp = CameraManager::GetCurrentCamera();
-    if (cameraComp && enemies[0] && enemies[0]->rootComponent_)
+    if (cameraComp && enemies[0] && enemies[0]->GetRootComponent())
     {
         ViewConstants data = cameraComp->GetViewConstants();
 
@@ -358,7 +350,7 @@ void MainScene::Update(float deltaTime)
 
     // エネミー プレイヤー　スクリーン座標取得
     {
-        if (cameraComp && enemies[0] && enemies[0]->rootComponent_ && player && player->rootComponent_)
+        if (cameraComp && enemies[0] && enemies[0]->GetRootComponent() && player && player->GetRootComponent())
         {
             ViewConstants data = cameraComp->GetViewConstants();
 
@@ -387,7 +379,7 @@ void MainScene::Update(float deltaTime)
 
     // UIの角度
     {
-        if (enemies[0] && enemies[0]->rootComponent_ && player && player->rootComponent_)
+        if (enemies[0] && enemies[0]->GetRootComponent() && player && player->GetRootComponent())
         {
             DirectX::XMFLOAT3 worldEnemyPos = enemies[0]->GetPosition();
             DirectX::XMFLOAT3 worldPlayerPos = player->GetPosition();
@@ -440,7 +432,7 @@ void MainScene::Update(float deltaTime)
         intersection.y = screenHeight;
     }
 
-    if (enemies[0] && enemies[0]->rootComponent_ && camera)
+    if (enemies[0] && enemies[0]->GetRootComponent() && camera)
     {
         if (enemies[0]->GetIsStartPerf())
         {// 敵の最初の演出中
@@ -469,7 +461,7 @@ void MainScene::Update(float deltaTime)
     //position.z -= 3.0f;
     ////gameWorld_->FindActorByName("mainCameraActor")->GetComponentByName("springArm")->SetWorldLocationDirect(position);
     //ActorManager::GetActorByName("mainCameraActor")->GetComponentByName("springArm")->SetWorldLocationDirect(position);
-    if (player && player->rootComponent_ && camera)
+    if (player && player->GetRootComponent() && camera)
     {
         camera->SetTarget(player->GetPosition());
         // プレイヤーの被弾時のカメラシェイク
@@ -731,7 +723,7 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
         if (auto bomb = std::dynamic_pointer_cast<Bomb>(actor))
         {
 
-            if (bomb->GetIsValid() && !bomb->IsGoingUp())
+            if (bomb->IsAlive() && !bomb->IsGoingUp())
             {
                 DirectX::XMFLOAT3 pos = bomb->GetPosition();
                 DirectX::XMFLOAT3 projectionPos = bomb->GetProjectionPosition();
@@ -1528,7 +1520,8 @@ void MainScene::SetUpActors()
     //auto bomb1 = ActorManager::CreateAndRegisterActorWithTransform<Bomb>("bomb", bombTr1);
 
     auto mainCameraActor = GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
-    auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
+    auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
+    mainCameraComponent->target = (player->GetRootComponent());
     //auto mainCameraActor = gameWorld_->SpawnActor<Actor>("mainCameraActor");
     //auto springArmComponent = mainCameraActor->NewComponent<class SpringArmComponent>("springArm");
     ////springArmComponent->SetRelativeEulerRotationDirect({ 20.0f, 0.0f, 0.0f });
