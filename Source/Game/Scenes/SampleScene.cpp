@@ -48,7 +48,7 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
 void SampleScene::Start()
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
-    auto audioComp = audioActor->NewSceneComponent<CoreAudioSourceComponent>("audioSource");
+    auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
     audioComp->SetSource(L"./Data/Sound/BGM/title.wav");
     audioComp->SetLoop(true);
     audioComp->Play();
@@ -135,7 +135,7 @@ void SampleScene::Update(float deltaTime)
 
         Transform buildTr(DirectX::XMFLOAT3{ -5.0f,-2.45f,3.0 }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
         auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("building", buildTr);
-        building->NewSceneComponent<SkeletalMeshComponent>("pudding")->SetModel("./Data/Models/cherry_pudding/scene.gltf");
+        building->AddComponent<SkeletalMeshComponent>("pudding")->SetModel("./Data/Models/cherry_pudding/scene.gltf");
 
         Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,-2.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
         auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pudding>("building", buildTr2);

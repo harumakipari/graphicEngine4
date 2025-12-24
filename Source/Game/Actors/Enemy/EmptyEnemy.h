@@ -25,7 +25,7 @@ public:
 
     void Initialize(const Transform& transform)override
     {
-        std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
+        std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
         // ƒ‚ƒfƒ‹Šm”F
         //skeletalMeshComponent->SetModel("./Data/Models/Characters/Enemy/boss_idle.gltf");
         skeltalMeshComponent->SetModel("./Data/Models/Characters/Savarog/Idle.gltf");

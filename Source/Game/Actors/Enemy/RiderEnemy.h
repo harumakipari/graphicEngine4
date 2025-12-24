@@ -45,7 +45,7 @@ public:
 public:
     void Initialize(const Transform& transform)override
     {
-        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
 #if 0
         //skeletalMeshComponent->SetModel("..\\glTF-Sample-Models-main\\original\\EnemyTest\\Idle_Relaxed_B_HS.gltf");
         skeltalMeshComponent->SetModel("./Data/Models/Characters/Enemy/plantune.gltf");
@@ -112,7 +112,7 @@ public:
         this->SetAnimationController(controller);
         this->PlayAnimation("Walk");
 
-        moveComponent = this->NewSceneComponent<MovementComponentOutInput>("movementComponent", "skeltalComponent");
+        moveComponent = this->AddComponent<MovementComponentOutInput>("movementComponent", "skeltalComponent");
 
         //std::shared_ptr<CapsuleComponent> capsuleComponent = this->NewComponent<class CapsuleComponent>("capsuleComponent", "skeltalComponent");
         //capsuleComponent->SetRadiusAndHeight(radius, height);
@@ -120,7 +120,7 @@ public:
         //capsuleComponent->Initialize();
 
 
-        std::shared_ptr<BoxComponent> boxComponent = this->NewSceneComponent<class BoxComponent>("capsuleComponent", "skeltalComponent");
+        std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("capsuleComponent", "skeltalComponent");
         boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(1.5f, 2.1f, radius));
         boxComponent->SetModelHeight(2.1f * 0.5f);
         boxComponent->SetMass(40.0f);
@@ -138,7 +138,7 @@ public:
         boxComponent->Initialize();
 
 
-        bossHandComponent = this->NewSceneComponent<class SphereComponent>("bossHand", "skeltalComponent");
+        bossHandComponent = this->AddComponent<class SphereComponent>("bossHand", "skeltalComponent");
         bossHandComponent->SetRadius(0.5f);
         //DirectX::XMFLOAT3 bossHand = skeletalMeshComponent->model->GetJointLocalPosition("R_thumb1_FK", skeletalMeshComponent->model->GetNodes());
         DirectX::XMFLOAT3 bossHand = skeltalMeshComponent->model->GetJointLocalPosition("R_thumb1_FK", skeltalMeshComponent->modelNodes);
@@ -154,55 +154,55 @@ public:
         bossHandComponent->SetResponseToLayer(CollisionLayer::PickUpItem, CollisionComponent::CollisionResponse::Block);
         bossHandComponent->Initialize();
 
-        //std::shared_ptr<SphereComponent> attackRangeComponent = this->NewSceneComponent<class SphereComponent>("attackRangeComponent", "skeltalComponent");
+        //std::shared_ptr<SphereComponent> attackRangeComponent = this->AddComponent<class SphereComponent>("attackRangeComponent", "skeltalComponent");
         //attackRangeComponent->SetRadius(attackRange);
         //attackRangeComponent->SetIsVisibleDebugBox(false);
 
-        std::shared_ptr<SphereComponent> nearRangeComponent = this->NewSceneComponent<class SphereComponent>("nearRangeComponent", "skeltalComponent");
+        std::shared_ptr<SphereComponent> nearRangeComponent = this->AddComponent<class SphereComponent>("nearRangeComponent", "skeltalComponent");
         nearRangeComponent->SetRadius(distNear);
         nearRangeComponent->SetIsVisibleDebugBox(false);
 
-        std::shared_ptr<SphereComponent> midRangeComponent = this->NewSceneComponent<class SphereComponent>("midRangeComponent", "skeltalComponent");
+        std::shared_ptr<SphereComponent> midRangeComponent = this->AddComponent<class SphereComponent>("midRangeComponent", "skeltalComponent");
         midRangeComponent->SetRadius(distMid);
         midRangeComponent->SetIsVisibleDebugBox(false);
 
-        std::shared_ptr<SphereComponent> farRangeComponent = this->NewSceneComponent<class SphereComponent>("farRangeComponent", "skeltalComponent");
+        std::shared_ptr<SphereComponent> farRangeComponent = this->AddComponent<class SphereComponent>("farRangeComponent", "skeltalComponent");
         farRangeComponent->SetRadius(distFar);
         farRangeComponent->SetIsVisibleDebugBox(false);
 
 
         // ギアのモデルコンポーネントを追加
-        gearInMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("gearInComponent", "skeltalComponent");
+        gearInMeshComponent = this->AddComponent<class SkeletalMeshComponent>("gearInComponent", "skeltalComponent");
         gearInMeshComponent->SetModel("./Data/Effect/Models/gear_effect_in.gltf");
         gearInMeshComponent->SetIsCastShadow(false);
         gearInMeshComponent->SetIsVisible(false);
-        gearOutMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("gearOutComponent", "skeltalComponent");
+        gearOutMeshComponent = this->AddComponent<class SkeletalMeshComponent>("gearOutComponent", "skeltalComponent");
         gearOutMeshComponent->SetModel("./Data/Effect/Models/gear_effect.gltf");
         gearOutMeshComponent->SetIsCastShadow(false);
         gearOutMeshComponent->SetIsVisible(false);
 
         // 突進時の音コンポーネントを追加
-        rushAudioComponent = this->NewSceneComponent<AudioSourceComponent>("rushAudioComponent", "skeltalComponent");
+        rushAudioComponent = this->AddComponent<AudioSourceComponent>("rushAudioComponent", "skeltalComponent");
         rushAudioComponent->SetSource(L"./Data/Sound/SE/rush.wav");
 
         // ミサイル時の音コンポーネントを追加
-        misileAudioComponent = this->NewSceneComponent<AudioSourceComponent>("misileAudioComponent", "skeltalComponent");
+        misileAudioComponent = this->AddComponent<AudioSourceComponent>("misileAudioComponent", "skeltalComponent");
         misileAudioComponent->SetSource(L"./Data/Sound/SE/missile_launch.wav");
 
         // 必殺技時の音コンポーネントを追加
-        specialAudioComponent = this->NewSceneComponent<AudioSourceComponent>("specialAudioComponent", "skeltalComponent");
+        specialAudioComponent = this->AddComponent<AudioSourceComponent>("specialAudioComponent", "skeltalComponent");
         specialAudioComponent->SetSource(L"./Data/Sound/SE/special.wav");
 
         // 着地時の音コンポーネントを追加
-        landingAudioComponent = this->NewSceneComponent<AudioSourceComponent>("landingAudioComponent", "skeltalComponent");
+        landingAudioComponent = this->AddComponent<AudioSourceComponent>("landingAudioComponent", "skeltalComponent");
         landingAudioComponent->SetSource(L"./Data/Sound/SE/landing.wav");
 
         // 歩きのコンポーネント
-        walkAudioComponent = this->NewSceneComponent<AudioSourceComponent>("walkAudioComponent", "skeltalComponent");
+        walkAudioComponent = this->AddComponent<AudioSourceComponent>("walkAudioComponent", "skeltalComponent");
         walkAudioComponent->SetSource(L"./Data/Sound/SE/walk.wav");
 
         // 目玉にジョイントを入れる
-        bossJointComponent = this->NewSceneComponent<SphereComponent>("bossJointComponent", "skeltalComponent");
+        bossJointComponent = this->AddComponent<SphereComponent>("bossJointComponent", "skeltalComponent");
         bossJointComponent->SetRadius(1.0f);
         DirectX::XMFLOAT3 bossJoint = skeltalMeshComponent->model->GetJointLocalPosition("spine2_FK", skeltalMeshComponent->model->GetNodes());
         bossJointComponent->SetRelativeLocationDirect(bossJoint);

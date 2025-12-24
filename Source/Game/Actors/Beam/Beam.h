@@ -27,7 +27,7 @@ public:
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
-        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Models/Beam/beam.gltf");
         //skeletalMeshComponent->model->isModelInMeters = false;
         SetPosition(transform.GetLocation());
@@ -37,7 +37,7 @@ public:
         float s = std::lerp(1.0f, 3.5f, t);
         SetScale(DirectX::XMFLOAT3(s, s, s));
         // 当たり判定球を追加
-        sphereComponent = this->NewSceneComponent<class SphereComponent>("sphereComponent");
+        sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent");
         //float r = std::lerp(0.35f, 1.225f, t);
         float r = std::lerp(0.55f, 1.225f, t);
         sphereComponent->SetRadius(r * 0.5f);
@@ -54,12 +54,12 @@ public:
         //sphereComponent->SetIsVisibleDebugShape(false);
 
         // エフェクトコンポーネントを追加 生成した瞬間からエフェクト出すから
-        effectBeamComponent = this->NewSceneComponent<class EffectComponent>("effectBeamComponet", "skeltalComponent");
+        effectBeamComponent = this->AddComponent<class EffectComponent>("effectBeamComponet", "skeltalComponent");
         effectBeamComponent->SetEffectType(EffectComponent::EffectType::Beam);
         effectBeamComponent->Activate();
 
         // 
-        effectSparkComponent = this->NewSceneComponent<class EffectComponent>("effectSparkComponet", "skeltalComponent");
+        effectSparkComponent = this->AddComponent<class EffectComponent>("effectSparkComponet", "skeltalComponent");
         effectSparkComponent->SetEffectType(EffectComponent::EffectType::Spark);
     }
 

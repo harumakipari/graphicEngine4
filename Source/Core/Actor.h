@@ -1,18 +1,15 @@
-#ifndef ACTOR_H
-#define ACTOR_H
+#pragma once
 
 // C++ 標準ライブラリ
 #include <string>
 #include <DirectXMath.h>
 #include <memory>
-#include <PxPhysics.h>
 #include<assert.h>
 
 #include "Components/Base/Component.h"
 #include "Components/Base/SceneComponent.h"
 #include "Components/CollisionShape/ShapeComponent.h"
 #include "Components/Transform/Transform.h"
-#include "Engine/Utility/Win32Utils.h"
 #include "Engine/Debug/Assert.h"
 #include "Math/MathHelper.h"
 
@@ -33,7 +30,7 @@ public:
 
     void MakeRootComponent()
     {
-        rootComponent_ = NewSceneComponent<SceneComponent>("RootComponent");
+        rootComponent_ = AddComponent<SceneComponent>("RootComponent");
     }
 
     //コピーコンストラクタとコピー代入演算子を禁止にする
@@ -47,7 +44,7 @@ public:
     virtual void Initialize(const Transform& transform) {}
 
     // Initialize の後に呼ばれるべき処理 Transformを更新する　キャッシュしているため一フレーム後のTransformをが呼ばれる可能性を防ぐため
-    virtual void PostInitialize()
+    void UpdateAllComponentTransforms()
     {
         if (rootComponent_)
         {
@@ -79,7 +76,7 @@ public:
 
     //Actor に新しいコンポーネントを作成し、ユニークな名前で登録し、親子関係を設定して返す関数
     template <class T>
-    std::shared_ptr<T> NewSceneComponent(const std::string& name, const std::string& parentName = "")
+    std::shared_ptr<T> AddComponent(const std::string& name, const std::string& parentName = "")
     {
         // 自分自身が shared_ptr で管理されている前提で、それを渡す
         std::shared_ptr<Actor> sharedThis = shared_from_this(); // Actorは std::enable_shared_from_this 継承が必要
@@ -393,7 +390,7 @@ public:
     void SetPosition(const DirectX::XMFLOAT3& position)
     {
         this->rootComponent_->SetRelativeLocationDirect(position);
-        PostInitialize();
+        UpdateAllComponentTransforms();
     }
 
     // クォータニオンを取得する関数
@@ -433,25 +430,27 @@ public:
         this->isActive = isActive;
     }
 
-    bool GetActive()
+    bool IsActive()
     {
         return isActive;
     }
 
-    // これを呼ぶと次のフレームでこの actor は削除される
-    virtual void SetValid(bool isValid)
-    {
-        this->isValid = isValid;
+    //// これを呼ぶと次のフレームでこの actor は削除される
+    //virtual void SetValid(bool isValid)
+    //{
+    //    this->isValid = isValid;
 
-        char buf[256];
-        sprintf_s(buf, "SetValid called: this=%p, isValid=%d\n", this, isValid);
-        OutputDebugStringA(buf);
-    }
+    //    char buf[256];
+    //    sprintf_s(buf, "SetValid called: this=%p, isValid=%d\n", this, isValid);
+    //    OutputDebugStringA(buf);
+    //}
 
-    // 次のフレームでこの actor の Destroy 関数が呼ばれる
-    void SetPendingDestroy()
+    /**
+     * @brief Actor を削除予約状態にする
+     */
+    void MarkPendingKill()
     {
-        isPendingDestroy = true;
+        isPendingKill = true;
     }
 
     bool GetIsValid()
@@ -644,7 +643,7 @@ public:
     bool isValid = true;
 
     // アクターの削除予約
-    bool isPendingDestroy = false;
+    bool isPendingKill = false;
 
 public:
     // rootComponent (Transform) 系
@@ -693,4 +692,3 @@ static inline bool operator==(const std::shared_ptr<Component>& component, const
 {
     return component->name() == name;
 }
-#endif //ACTOR_H

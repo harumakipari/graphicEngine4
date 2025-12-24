@@ -121,7 +121,7 @@ public:
         newActor->SetQuaternionRotation(transform.GetRotation());
         newActor->SetScale(transform.GetScale());
         newActor->Initialize(transform);
-        newActor->PostInitialize();
+        newActor->UpdateAllComponentTransforms();
         return newActor;
     }
 
@@ -205,7 +205,7 @@ public:
             //OutputDebugStringA(buf);
 
             //if (!actor->isValid)
-            if (actor->isPendingDestroy)
+            if (actor->isPendingKill)
             {
                 //char buf[256];
                 //sprintf_s(buf, "actor=%s, isValid=%d, isActive=%d\n ¨ Destroy() ‚ðŒÄ‚ÔI\n", actor->GetName().c_str(), actor->isValid, actor->isActive);

@@ -7,7 +7,7 @@
 void PickUpItem::Initialize(const Transform& transform)
 {
     // 描画用コンポーネントを追加
-    skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
+    skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
     skeltalMeshComponent->SetModel("./Data/Models/Items/PickUpEnergyCore/pick_up_item.gltf");
     //skeletalMeshComponent->model->isModelInMeters = false;
     //skeletalMeshComponent->SetIsVisible(false); // アイテム生成時に一フレーム描画されてしまうから
@@ -21,7 +21,7 @@ void PickUpItem::Initialize(const Transform& transform)
     SetScale(transform.GetScale());
 
     // 当たり判定のコンポーネントを追加
-    sphereComponent = this->NewSceneComponent<class SphereComponent>("sphereComponent", "skeltalComponent");
+    sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", "skeltalComponent");
     sphereComponent->SetRadius(0.4f);
     sphereComponent->SetMass(40.0f);
     sphereComponent->SetModelHeight(0.4f);
@@ -43,7 +43,7 @@ void PickUpItem::Initialize(const Transform& transform)
 void PickUpItem::Initialize()
 {
     // 描画用コンポーネントを追加
-    skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeletalComponent");
+    skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
     skeltalMeshComponent->SetModel("./Data/Models/Items/PickUpEnergyCore/pick_up_item.gltf");
     skeltalMeshComponent->SetIsVisible(false); // アイテム生成時に一フレーム描画されてしまうから
     skeltalMeshComponent->SetIsCastShadow(false);
@@ -54,7 +54,7 @@ void PickUpItem::Initialize()
     SetPosition(tempPosition);    // こっちを使うよーーー
 
     // 当たり判定のコンポーネントを追加
-    sphereComponent = this->NewSceneComponent<class SphereComponent>("sphereComponent", "skeletalComponent");
+    sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", "skeletalComponent");
     sphereComponent->SetRadius(0.4f);
     sphereComponent->SetMass(40.0f);
     sphereComponent->SetModelHeight(0.4f);
@@ -140,7 +140,7 @@ void PickUpItem::Update(float deltaTime)
 
             if (distSq < radiusSq)
             {
-                SetPendingDestroy();
+                MarkPendingKill();
                 // ステージ上に湧かせるアイテムの max の値を決める
                 if (auto itemManager = GameManager::GetItemManager())
                 {

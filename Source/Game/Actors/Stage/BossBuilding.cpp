@@ -62,7 +62,7 @@ void BossBuilding::Update(float deltaTime)
 
         eraseInAreaComponent->EnableCollision();
         {
-            auto lifeComponent = this->NewSceneComponent<LifeTimeComponent>("lifeComponent");
+            auto lifeComponent = this->AddComponent<LifeTimeComponent>("lifeComponent");
             //auto lifeComponent = this->NewLogicComponent<LifeTimeComponent>("lifeComponent");
             lifeComponent->SetLifeTime(1.0f);
         }
@@ -149,7 +149,7 @@ void BossBuilding::Update(float deltaTime)
 
             if (restBeamPower >= 0)
             {
-                auto shockWave = this->NewSceneComponent<ShockWaveCollisionComponent>("shockWave", "preSkeltalMeshComponent");
+                auto shockWave = this->AddComponent<ShockWaveCollisionComponent>("shockWave", "preSkeltalMeshComponent");
                 shockWave->Initialize(0.1f, shockWaveRange, shockWaveTime, beamPower_, restBeamPower);
                 shockWaveMeshComponent->Initialize(0.1f, shockWaveRange, shockWaveTime, beamPower_);
             }
@@ -231,7 +231,7 @@ void BossBuilding::Update(float deltaTime)
             //convexComponent->DisableCollision();
             //this->DestroyComponentByName("convexComponent");
             //this->SetValid(false);
-            this->SetPendingDestroy();
+            this->MarkPendingKill();
             //this->Destroy();
         }
     }
@@ -283,7 +283,7 @@ void BossBuilding::CallHitShockWave(float power, int beamItemCount, const Direct
         itemSpawner->SpawnItems(beamItemCount, true);
 
 
-        auto buildlifeTimeComponent = this->NewSceneComponent<LifeTimeComponent>("lifeTimeComponent");
+        auto buildlifeTimeComponent = this->AddComponent<LifeTimeComponent>("lifeTimeComponent");
         //auto buildlifeTimeComponent = this->NewLogicComponent<LifeTimeComponent>("lifeTimeComponent");
         buildlifeTimeComponent->SetLifeTime(5.0f);
 

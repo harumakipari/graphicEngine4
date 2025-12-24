@@ -35,7 +35,7 @@ public:
     std::shared_ptr<AudioSourceComponent> targetAudioComponent;
     void Initialize(const Transform& transform)override
     {
-        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Models/Stage/Bomb/bomb.gltf");
         skeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
 
@@ -91,7 +91,7 @@ public:
 
         // 爆弾本体の当たり判定
         float radius = 0.3f;
-        sphereComponent = this->NewSceneComponent<class EraseInAreaComponent>("sphereComponent", "skeltalComponent");
+        sphereComponent = this->AddComponent<class EraseInAreaComponent>("sphereComponent", "skeltalComponent");
         sphereComponent->SetRadius(radius);
         sphereComponent->SetMass(40.0f);
         sphereComponent->SetModelHeight(radius * 0.5f);
@@ -108,7 +108,7 @@ public:
         sphereComponent->SetIsVisibleDebugBox(false);
         sphereComponent->SetIsVisibleDebugShape(false);
 
-        eraseInAreaComponent = this->NewSceneComponent<class EraseInAreaComponent>("eraseInAreaComponent", "skeltalComponent");
+        eraseInAreaComponent = this->AddComponent<class EraseInAreaComponent>("eraseInAreaComponent", "skeltalComponent");
         eraseInAreaComponent->SetRadius(1.5f);
         eraseInAreaComponent->SetModelHeight(1.5f * 0.5f);
         eraseInAreaComponent->SetMass(40.0f);
@@ -123,12 +123,12 @@ public:
         eraseInAreaComponent->SetIsVisibleDebugShape(false);
 
         // エフェクトコンポーネントを追加
-        effectExplosionComponent = this->NewSceneComponent<class EffectComponent>("effectExplosionComponet", "skeltalComponent");
+        effectExplosionComponent = this->AddComponent<class EffectComponent>("effectExplosionComponet", "skeltalComponent");
 
         // オーディオコンポーネントを追加
-        //audioComponent = this->NewSceneComponent<AudioSourceComponent>("explosionSoundComponent", "skeltalComponent");
+        //audioComponent = this->AddComponent<AudioSourceComponent>("explosionSoundComponent", "skeltalComponent");
         //audioComponent->SetSource(L"./Data/Sound/SE/missile_explosion.wav");
-        targetAudioComponent = this->NewSceneComponent<AudioSourceComponent>("targetSoundComponent", "skeltalComponent");
+        targetAudioComponent = this->AddComponent<AudioSourceComponent>("targetSoundComponent", "skeltalComponent");
         targetAudioComponent->SetSource(L"./Data/Sound/SE/target.wav");
 
         AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
@@ -224,7 +224,7 @@ public:
             Audio::PlayOneShot(L"./Data/Sound/SE/missile_explosion.wav");
 
             //auto lifeComponent = this->NewLogicComponent<LifeTimeComponent>("lifeComponent");
-            auto lifeComponent = this->NewSceneComponent<LifeTimeComponent>("lifeComponent");
+            auto lifeComponent = this->AddComponent<LifeTimeComponent>("lifeComponent");
             lifeComponent->SetLifeTime(0.1f);
             
             //auto delayComponent = this->NewLogicComponent<TimerActionComponent>("timerComponent");

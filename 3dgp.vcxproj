@@ -261,6 +261,7 @@
     <ClCompile Include="Source\Components\Game\ItemSpawnerComponent.cpp" />
     <ClCompile Include="Source\Components\Game\LifeTimeComponent.cpp" />
     <ClCompile Include="Source\Components\Game\ShockWaveCollisionComponent.cpp" />
+    <ClCompile Include="Source\Core\Actor.cpp" />
     <ClCompile Include="Source\Core\ActorManager.cpp" />
     <ClCompile Include="Source\Core\CoreColor.cpp" />
     <ClCompile Include="Source\Core\Vector.cpp" />

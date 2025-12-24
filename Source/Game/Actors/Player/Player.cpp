@@ -30,7 +30,7 @@
 void Player::Initialize(const Transform& transform)
 {
     // 描画用コンポーネントを追加
-    skeletalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeletalComponent");
+    skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
     skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/idle.gltf");
     //skeletalMeshComponent->SetModel("./Data/Models/Characters/GirlSoldier/idle.gltf");
     //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelCharacterPS.cso", skeletalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
@@ -100,7 +100,7 @@ void Player::Initialize(const Transform& transform)
 
 #if 1
     // 敵からの攻撃を受ける当たり判定用のコンポーネントを追加
-    std::shared_ptr<CapsuleComponent> capsuleComponent = this->NewSceneComponent<class CapsuleComponent>("capsuleComponent", "skeletalComponent");
+    std::shared_ptr<CapsuleComponent> capsuleComponent = this->AddComponent<class CapsuleComponent>("capsuleComponent", "skeletalComponent");
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
     height = size.y;
     radius = size.x * 0.5f;
@@ -124,7 +124,7 @@ void Player::Initialize(const Transform& transform)
     //OutputDebugStringA(debugBuffer);
     capsuleComponent->Initialize();
 #else
-    std::shared_ptr<BoxComponent> boxComponent = this->NewSceneComponent<class BoxComponent>("capsuleComponent", "skeletalComponent");
+    std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("capsuleComponent", "skeletalComponent");
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
     boxComponent->SetBoxExtent({ size.x * 0.5f,size.y * 0.5f,size.z * 0.5f });
     boxComponent->SetModelHeight(size.y * 0.5f);
@@ -137,23 +137,23 @@ void Player::Initialize(const Transform& transform)
 #endif // 0
 
     // ポイントライトコンポーネントを追加
-    auto pointLightComponent = this->NewSceneComponent<PointLightComponent>("pointLightComponent", "skeletalComponent");
+    auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", "skeletalComponent");
     pointLightComponent->SetRelativeLocationDirect({ 0.4f, 2.1f, 0.3f });
     pointLightComponent->SetColor({ 1.0f, 1.0f, 1.0f });
     pointLightComponent->SetRange(1.5f);
     pointLightComponent->SetIntensity(10.0f);
 
     // ビームチャージ音コンポーネントを追加
-    beamChargeAudioComponent = this->NewSceneComponent<AudioSourceComponent>("beamChargeAudioComponent", "skeletalComponent");
+    beamChargeAudioComponent = this->AddComponent<AudioSourceComponent>("beamChargeAudioComponent", "skeletalComponent");
     beamChargeAudioComponent->SetSource(L"./Data/Sound/SE/beam_charge.wav");
     beamChargeAudioComponent->SetLoopOption(1.48f, 0.313f);
     // ビーム発射音コンポーネントを追加
-    beamLaunchAudioComponent = this->NewSceneComponent<AudioSourceComponent>("beamLaunchAudioComponent", "skeletalComponent");
+    beamLaunchAudioComponent = this->AddComponent<AudioSourceComponent>("beamLaunchAudioComponent", "skeletalComponent");
     beamLaunchAudioComponent->SetSource(L"./Data/Sound/SE/beam_launch.wav");
     // エフェクトコンポーネントを追加
-    effectChargeComponent = this->NewSceneComponent<class EffectComponent>("effectChargeComponet", "skeletalComponent");
+    effectChargeComponent = this->AddComponent<class EffectComponent>("effectChargeComponet", "skeletalComponent");
     // アイテム取得音
-    itemAudioComponent = this->NewSceneComponent<AudioSourceComponent>("itemAudioComponent", "skeletalComponent");
+    itemAudioComponent = this->AddComponent<AudioSourceComponent>("itemAudioComponent", "skeletalComponent");
     itemAudioComponent->SetSource(L"./Data/Sound/SE/energy.wav");
     AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
         {
@@ -231,7 +231,7 @@ void Player::Initialize(const Transform& transform)
                     //playerDamageRight->SetRelativeLocationDirect(DirectX::XMFLOAT3(rightFirstPos.x + rightDamageRadius, rightFirstPos.y + rightDamageRadius, rightFirstPos.z));
 
                     //item->SetValid(false);
-                    item->SetPendingDestroy();
+                    item->MarkPendingKill();
 
                     char debugBuffer[128];
                     sprintf_s(debugBuffer, sizeof(debugBuffer),
@@ -282,7 +282,7 @@ void Player::Initialize(const Transform& transform)
                     //playerDamageLeft->SetRelativeLocationDirect(DirectX::XMFLOAT3(-(rightFirstPos.x + leftDamageRadius), rightFirstPos.y + leftDamageRadius, rightFirstPos.z));
 
                     //item->SetValid(false);
-                    item->SetPendingDestroy();
+                    item->MarkPendingKill();
                     char debugBuffer[128];
                     sprintf_s(debugBuffer, sizeof(debugBuffer),
                         "leftItemCount%d\n",
@@ -465,7 +465,7 @@ void Player::Initialize(const Transform& transform)
         });
 
     // 入力用のコンポーネントを追加
-    inputComponent = this->NewSceneComponent<class InputComponent>("inputComponent", "skeletalComponent");
+    inputComponent = this->AddComponent<class InputComponent>("inputComponent", "skeletalComponent");
     //inputComponent->BindAction("Jump", [&]()
     //    {
     //        ChangeState(std::make_shared<JumpStartState>());
@@ -474,10 +474,10 @@ void Player::Initialize(const Transform& transform)
     //inputComponent->BindActionAndButton(GamePad::Button::y, "Jump", TriggerMode::none); //[v]
 
     // 移動用コンポーネントを追加
-    movementComponent = this->NewSceneComponent<class MovementComponent>("movementComponent", "skeletalComponent");
+    movementComponent = this->AddComponent<class MovementComponent>("movementComponent", "skeletalComponent");
     
     // 回転用コンポーネントを追加
-    rotationComponent = this->NewSceneComponent<class RotationComponent>("rotationComponet", "skeletalComponent");
+    rotationComponent = this->AddComponent<class RotationComponent>("rotationComponet", "skeletalComponent");
 
     OutputDebugStringA(("Actor::Initialize called. rootComponent_ use_count = " + std::to_string(rootComponent_.use_count()) + "\n").c_str());
 }
@@ -811,7 +811,7 @@ void Player::FireBeam()
         beam->SetTempPosition(pos);
         beam->SetTempMass(itemPower);
         //beam->Initialize();
-        //beam->PostInitialize();
+        //beam->UpdateAllComponentTransforms();
         beam->SetDirection(dir);
         //auto sphere = std::dynamic_pointer_cast<SphereComponent>(beam->GetSceneComponentByName("sphereComponent"));
         //sphere->SetKinematic(false);

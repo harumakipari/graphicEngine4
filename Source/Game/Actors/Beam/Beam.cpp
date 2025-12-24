@@ -40,7 +40,7 @@ void Beam::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair)
         if (itemCount <= 0)
         {
             this->itemCount = 0;
-            this->SetPendingDestroy();
+            this->MarkPendingKill();
             //effectBeamComponent->Deactivate();
             //this->DestroyComponentByName("effectBeamComponet");
 
@@ -78,7 +78,7 @@ void Beam::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair)
         if (itemCount <= 0)
         {
             this->itemCount = 0;
-            //this->SetPendingDestroy();
+            //this->MarkPendingKill();
 
         //effectBeamComponent->Deactivate();
         //this->DestroyComponentByName("effectBeamComponet");
@@ -89,7 +89,7 @@ void Beam::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair)
             //this->ScheduleDestroyComponentByName("skeltalComponent");
             //this->ScheduleDestroyComponentByName("sphereComponent");
             //this->ScheduleDestroyComponentByName("effectBeamComponet");
-            this->SetPendingDestroy();
+            this->MarkPendingKill();
 
             //auto  lifeTimeComponent = this->NewLogicComponent<LifeTimeComponent>("lifeTimeComponent");
             //lifeTimeComponent->SetLifeTime(3.0f);
@@ -121,7 +121,7 @@ void Beam::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair)
             //    TutorialSystem::SetCurrentStep(TutorialStep::ManyCollect2);
             //}
         }
-        //this->SetPendingDestroy();
+        //this->MarkPendingKill();
         skeltalMeshComponent->SetIsVisible(false);
 
         this->ScheduleDestroyComponentByName("effectBeamComponet");
@@ -130,7 +130,7 @@ void Beam::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair)
         this->ScheduleDestroyComponentByName("skeltalComponent");
         this->ScheduleDestroyComponentByName("sphereComponent");
         //auto  lifeTimeComponent = this->NewLogicComponent<LifeTimeComponent>("lifeTimeComponent");
-        auto  lifeTimeComponent = this->NewSceneComponent<LifeTimeComponent>("lifeTimeComponent");
+        auto  lifeTimeComponent = this->AddComponent<LifeTimeComponent>("lifeTimeComponent");
         lifeTimeComponent->SetLifeTime(3.0f);
 
     }
@@ -151,7 +151,7 @@ void Beam::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair)
             effectSparkComponent->Activate();
             onceSetPosition = true;
         }
-        //this->SetPendingDestroy();
+        //this->MarkPendingKill();
         skeltalMeshComponent->SetIsVisible(false);
 
         this->ScheduleDestroyComponentByName("effectBeamComponet");
@@ -160,13 +160,13 @@ void Beam::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair)
         this->ScheduleDestroyComponentByName("skeltalComponent");
         this->ScheduleDestroyComponentByName("sphereComponent");
         //auto  lifeTimeComponent = this->NewLogicComponent<LifeTimeComponent>("lifeTimeComponent");
-        auto  lifeTimeComponent = this->NewSceneComponent<LifeTimeComponent>("lifeTimeComponent");
+        auto  lifeTimeComponent = this->AddComponent<LifeTimeComponent>("lifeTimeComponent");
         lifeTimeComponent->SetLifeTime(3.0f);
 
     }
     else if (auto stageProps = std::dynamic_pointer_cast<StageProp>(hitPair.second->GetActor()))
     {
-        //this->SetPendingDestroy();
+        //this->MarkPendingKill();
         skeltalMeshComponent->SetIsVisible(false);
 
         this->ScheduleDestroyComponentByName("effectBeamComponet");
@@ -176,7 +176,7 @@ void Beam::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair)
         this->ScheduleDestroyComponentByName("sphereComponent");
 
         //auto  lifeTimeComponent = this->NewLogicComponent<LifeTimeComponent>("lifeTimeComponent");
-        auto  lifeTimeComponent = this->NewSceneComponent<LifeTimeComponent>("lifeTimeComponent");
+        auto  lifeTimeComponent = this->AddComponent<LifeTimeComponent>("lifeTimeComponent");
         lifeTimeComponent->SetLifeTime(3.0f);
     }
     else if (auto stageProps = std::dynamic_pointer_cast<Stage>(hitPair.second->GetActor()))
@@ -196,7 +196,7 @@ void Beam::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair)
         default:
             break;
         }
-        this->SetPendingDestroy();
+        this->MarkPendingKill();
     }
     int a = 0;
 
@@ -224,7 +224,7 @@ void Beam::NotifyHit(/*std::shared_ptr<Component> selfComp, std::shared_ptr<Comp
         this->ScheduleDestroyComponentByName("skeltalComponent");
         this->ScheduleDestroyComponentByName("sphereComponent");
         this->ScheduleDestroyComponentByName("effectBeamComponet");
-        //this->SetPendingDestroy();
+        //this->MarkPendingKill();
 
         auto  lifeTimeComponent = this->NewLogicComponent<LifeTimeComponent>("lifeTimeComponent");
         lifeTimeComponent->SetLifeTime(3.0f);
@@ -232,7 +232,7 @@ void Beam::NotifyHit(/*std::shared_ptr<Component> selfComp, std::shared_ptr<Comp
     }
     else if (auto enemy = dynamic_cast<RiderEnemy*>(otherActor))
     {
-        //this->SetPendingDestroy();
+        //this->MarkPendingKill();
         skeltalMeshComponent->SetIsVisible(false);
 
         this->ScheduleDestroyComponentByName("effectBeamComponet");
@@ -245,7 +245,7 @@ void Beam::NotifyHit(/*std::shared_ptr<Component> selfComp, std::shared_ptr<Comp
     }
     else if (auto stageProps = dynamic_cast<StageProp*>(otherActor))
     {
-        //this->SetPendingDestroy();
+        //this->MarkPendingKill();
         skeltalMeshComponent->SetIsVisible(false);
 
         this->ScheduleDestroyComponentByName("effectBeamComponet");
@@ -259,7 +259,7 @@ void Beam::NotifyHit(/*std::shared_ptr<Component> selfComp, std::shared_ptr<Comp
     }
     else if (auto stage = dynamic_cast<Stage*>(otherActor))
     {
-        this->SetPendingDestroy();
+        this->MarkPendingKill();
     }
     int a = 0;
 #endif // 0

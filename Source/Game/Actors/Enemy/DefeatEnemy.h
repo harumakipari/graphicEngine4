@@ -18,7 +18,7 @@ public:
     std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
     void Initialize(const Transform& transform)override
     {
-        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
         // ƒ‚ƒfƒ‹Šm”F
         skeltalMeshComponent->SetModel("./Data/Models/Characters/Enemy/boss_defeat.gltf");
         skeltalMeshComponent->SetMaterialPS("./Shader/TestPS.cso", "L_emission2");
@@ -45,7 +45,7 @@ public:
         //this->StopAnimation();
         this->PlayAnimation("Defeat", false);
 
-        bossJointComponent = this->NewSceneComponent<SphereComponent>("bossJointComponent", "skeltalComponent");
+        bossJointComponent = this->AddComponent<SphereComponent>("bossJointComponent", "skeltalComponent");
         bossJointComponent->SetRadius(1.0f);
         DirectX::XMFLOAT3 bossJoint = skeltalMeshComponent->model->GetJointLocalPosition("spine2_FK", skeltalMeshComponent->model->GetNodes());
         bossJointComponent->SetRelativeLocationDirect(bossJoint);

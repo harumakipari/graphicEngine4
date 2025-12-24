@@ -28,7 +28,7 @@ public:
     std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
     void Initialize(const Transform& transform)override
     {
-        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
         // ƒ‚ƒfƒ‹Šm”F
         skeltalMeshComponent->SetModel("./Data/Models/Characters/Enemy/boss_idle.gltf");
         skeltalMeshComponent->SetMaterialPS("./Shader/TestPS.cso", "L_emission2");
@@ -54,7 +54,7 @@ public:
         SetQuaternionRotation(transform.GetRotation());
         SetScale(transform.GetScale());
 
-        std::shared_ptr<BoxComponent> boxComponent = this->NewSceneComponent<class BoxComponent>("capsuleComponent", "skeltalComponent");
+        std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("capsuleComponent", "skeltalComponent");
         boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(1.5f, 2.1f, 1.0f));
         boxComponent->SetModelHeight(2.1f * 0.5f);
         //boxComponent->SetMass(40.0f);
@@ -97,7 +97,7 @@ public:
 
         isBuildBoss = false;
 
-        buildAudioComponet = this->NewSceneComponent<AudioSourceComponent>("buildAudioComponet", "skeltalComponent");
+        buildAudioComponet = this->AddComponent<AudioSourceComponent>("buildAudioComponet", "skeltalComponent");
         buildAudioComponet->SetSource(L"./Data/Sound/SE/bill_spawn.wav");
     }
     std::shared_ptr<AudioSourceComponent> buildAudioComponet;

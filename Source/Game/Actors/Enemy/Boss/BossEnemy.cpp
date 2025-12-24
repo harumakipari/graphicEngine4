@@ -4,7 +4,7 @@
 
 void BossEnemy::Initialize(const Transform& transform)
 {
-    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeletalComponent");
+    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
     //skeletalMeshComponent->SetModel("./Data/Models/Characters/Savarog/Idle.gltf");
     skeletalMeshComponent->SetModel("./Data/Models/Characters/SevarogBloodred/Idle.gltf");
     skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
@@ -72,7 +72,7 @@ void BossEnemy::Initialize(const Transform& transform)
 
     // 敵からの攻撃を受ける当たり判定用のコンポーネントを追加
 #if 1
-    std::shared_ptr<CapsuleComponent> capsuleComponent = this->NewSceneComponent<class CapsuleComponent>("capsuleComponent", "skeletalComponent");
+    std::shared_ptr<CapsuleComponent> capsuleComponent = this->AddComponent<class CapsuleComponent>("capsuleComponent", "skeletalComponent");
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
     height = size.y;
     radius = size.x * 0.25f;
@@ -86,7 +86,7 @@ void BossEnemy::Initialize(const Transform& transform)
     capsuleComponent->SetIsVisibleDebugBox(false);
     capsuleComponent->Initialize();
 #else
-    std::shared_ptr<BoxComponent> boxComponent = this->NewSceneComponent<class BoxComponent>("capsuleComponent", "skeletalComponent");
+    std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("capsuleComponent", "skeletalComponent");
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
     boxComponent->SetBoxExtent({ size.x * 0.5f,size.y * 0.5f,size.z * 0.5f });
     boxComponent->SetModelHeight(size.y * 0.5f);

@@ -184,7 +184,7 @@ private:
             auto item = currentScene->GetActorManager()->CreateAndRegisterActorWithTransform<PickUpItem>("item", transform);
             item->SetTempPosition(spawnPos);
             //item->Initialize();
-            //item->PostInitialize();
+            //item->UpdateAllComponentTransforms();
 #if 0
             auto box = item->GetSceneComponentByName("boxComponent");
             if (auto box = std::dynamic_pointer_cast<BoxComponet>(shape))
@@ -214,7 +214,7 @@ private:
             }
 #endif // 0
             //item->SetValid(false);
-            item->SetPendingDestroy();
+            item->MarkPendingKill();
         }
 #else
         SpawnHelper::TrySpawnWithValidation<PickUpItem>(10,
@@ -224,7 +224,7 @@ private:
         //auto item = ActorManager::CreateAndRegisterActor<PickUpItem>("item", false);
         //item->SetTempPosition(spawnPos);
         //item->Initialize();
-        //item->PostInitialize();
+        //item->UpdateAllComponentTransforms();
         //area.currentItemCount++;
     }
 

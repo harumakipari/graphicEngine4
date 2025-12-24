@@ -67,7 +67,7 @@ public:
 
                         // アイテムが出たら、3秒後に削除する
                         //auto lifeTimeComponent =this ->NewLogicComponent<LifeTimeComponent>("lifeTimeComponent");
-                        auto lifeTimeComponent =this ->NewSceneComponent<LifeTimeComponent>("lifeTimeComponent");
+                        auto lifeTimeComponent =this ->AddComponent<LifeTimeComponent>("lifeTimeComponent");
                         lifeTimeComponent->SetLifeTime(3.0f);
 
 #if 0
@@ -110,7 +110,7 @@ public:
     void Initialize(const Transform& transform) override
     {
         // 描画用コンポーネントを追加
-        mesh_ = this->NewSceneComponent<class SkeletalMeshComponent>("model");
+        mesh_ = this->AddComponent<class SkeletalMeshComponent>("model");
         mesh_->SetModel("./Data/Models/Stage/Props/vending_machine.gltf");
 
         SetPosition(transform.GetLocation());
@@ -118,7 +118,7 @@ public:
         SetScale(transform.GetScale());
 
         // 当たり判定コンポーネントを追加
-        box_ = this->NewSceneComponent<class BoxComponent>("box", "model");
+        box_ = this->AddComponent<class BoxComponent>("box", "model");
         box_->SetMass(100.0f);
         box_->SetHalfBoxExtent(boxHalfExtent_);
         box_->SetModelHeight(boxHalfExtent_.y);
@@ -155,7 +155,7 @@ public:
     void Initialize(const Transform& transform) override
     {
         // 描画用コンポーネントを追加
-        mesh_ = this->NewSceneComponent<class SkeletalMeshComponent>("model");
+        mesh_ = this->AddComponent<class SkeletalMeshComponent>("model");
         mesh_->SetModel("./Data/Models/Stage/Props/traffic_light.gltf");
 
         SetPosition(transform.GetLocation());
@@ -163,7 +163,7 @@ public:
         SetScale(transform.GetScale());
 
         // 当たり判定コンポーネントを追加
-        box_ = this->NewSceneComponent<class BoxComponent>("box", "model");
+        box_ = this->AddComponent<class BoxComponent>("box", "model");
         box_->SetStatic(true);
 
         box_->SetHalfBoxExtent(boxHalfExtent_);
@@ -203,7 +203,7 @@ public:
     void Initialize(const Transform& transform) override
     {
         // 描画用コンポーネントを追加
-        mesh_ = this->NewSceneComponent<class SkeletalMeshComponent>("model");
+        mesh_ = this->AddComponent<class SkeletalMeshComponent>("model");
         mesh_->SetModel("./Data/Models/Stage/Props/outdoor_unit.gltf");
 
         SetPosition(transform.GetLocation());
@@ -211,7 +211,7 @@ public:
         SetScale(transform.GetScale());
 
         // 当たり判定コンポーネントを追加
-        box_ = this->NewSceneComponent<class BoxComponent>("box", "model");
+        box_ = this->AddComponent<class BoxComponent>("box", "model");
         box_->SetMass(110.0f);
         box_->SetHalfBoxExtent(boxHalfExtent_);
         box_->SetModelHeight(boxHalfExtent_.y);
@@ -248,7 +248,7 @@ public:
     void Initialize(const Transform& transform) override
     {
         // 描画用コンポーネントを追加
-        mesh_ = this->NewSceneComponent<class SkeletalMeshComponent>("model");
+        mesh_ = this->AddComponent<class SkeletalMeshComponent>("model");
         mesh_->SetModel("./Data/Models/Stage/Props/phone_booth.gltf");
 
         SetPosition(transform.GetLocation());
@@ -256,7 +256,7 @@ public:
         SetScale(transform.GetScale());
 
         // 当たり判定コンポーネントを追加
-        box_ = this->NewSceneComponent<class BoxComponent>("box", "model");
+        box_ = this->AddComponent<class BoxComponent>("box", "model");
         box_->SetStatic(true);
         box_->SetHalfBoxExtent(boxHalfExtent_);
         box_->SetModelHeight(boxHalfExtent_.y);
@@ -293,7 +293,7 @@ public:
     void Initialize(const Transform& transform) override
     {
         // 描画用コンポーネントを追加
-        mesh_ = this->NewSceneComponent<class SkeletalMeshComponent>("model");
+        mesh_ = this->AddComponent<class SkeletalMeshComponent>("model");
         mesh_->SetModel("./Data/Models/Stage/Props/trash_can.gltf");
 
         SetPosition(transform.GetLocation());
@@ -301,7 +301,7 @@ public:
         SetScale(transform.GetScale());
 
         // 当たり判定コンポーネントを追加
-        box_ = this->NewSceneComponent<class BoxComponent>("box", "model");
+        box_ = this->AddComponent<class BoxComponent>("box", "model");
         box_->SetStatic(true);
         box_->SetHalfBoxExtent(boxHalfExtent_);
         box_->SetModelHeight(boxHalfExtent_.y);

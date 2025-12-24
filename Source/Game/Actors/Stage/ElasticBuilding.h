@@ -38,18 +38,18 @@ public:
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
-        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Debug/Primitives/cube.glb");
         //skeltalMeshComponent->SetIsVisible(false);
-        pointComponent = this->NewSceneComponent<class SkeletalMeshComponent>("pointComponent");
+        pointComponent = this->AddComponent<class SkeletalMeshComponent>("pointComponent");
         pointComponent->SetModel("./Data/Debug/Primitives/sphere.glb");
         pointComponent->SetWorldLocationDirect({ 0.0f,5.0f,0.0f });
         pointComponent->SetIsVisible(false);
-        bezierComponent = this->NewSceneComponent<class SkeletalMeshComponent>("bezierComponent");
+        bezierComponent = this->AddComponent<class SkeletalMeshComponent>("bezierComponent");
         bezierComponent->SetModel("./Data/Debug/Primitives/platQube.glb");
         bezierComponent->SetWorldScaleDirect({ 0.2f,0.2f,0.2f });
         bezierComponent->SetIsVisible(false);
-        buildComponent = this->NewSceneComponent<class SkeletalMeshComponent>("buildComponent");
+        buildComponent = this->AddComponent<class SkeletalMeshComponent>("buildComponent");
         //buildComponent->SetModel("./Data/Models/Building/bomb_bill.gltf");
         buildComponent->SetModel("./Data/Models/Characters/GirlSoldier/Idle.gltf");
         //buildComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
@@ -62,7 +62,7 @@ public:
         elasticBuildingCBuffer = std::make_unique<ConstantBuffer<ElasticBuildingConstants>>(Graphics::GetDevice());
         AABB box = buildComponent->model->GetAABB();
         DirectX::XMFLOAT3 size = { box.max.x - box.min.x,box.max.y - box.min.y,box.max.z - box.min.z };
-        boxComponent = this->NewSceneComponent<class BoxComponent>("boxComponent", "skeltalComponent");
+        boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "skeltalComponent");
         //boxComponent->SetModelHeight(size.y);
         boxComponent->SetLayer(CollisionLayer::Projectile);
         //boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
@@ -234,7 +234,7 @@ public:
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
-        pointComponent = this->NewSceneComponent<class SkeletalMeshComponent>("pointComponent");
+        pointComponent = this->AddComponent<class SkeletalMeshComponent>("pointComponent");
         pointComponent->SetModel("./Data/Debug/Primitives/sphere.glb");
 
         SetPosition(transform.GetLocation());

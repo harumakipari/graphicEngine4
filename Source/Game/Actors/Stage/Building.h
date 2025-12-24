@@ -53,7 +53,7 @@ public:
     void Initialize(const Transform& transform)override
     {
         // 最初に描画される壊れる前のモデル
-        preSkeltalMeshComponent = this->NewSceneComponent<class BuildMeshComponent>("preSkeltalMeshComponent");
+        preSkeltalMeshComponent = this->AddComponent<class BuildMeshComponent>("preSkeltalMeshComponent");
         preSkeltalMeshComponent->SetModel("./Data/Models/Building/build_materials.gltf", false);
         preSkeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         HRESULT hr= CreatePsFromCSO(Graphics::GetDevice(), "./Data/Shaders/BuildingPS.cso", preSkeltalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
@@ -78,17 +78,17 @@ public:
         riseEnd = { riseStart.x,0.0f,riseStart.z };
 
         // ビルのがれきに使用するモデル
-        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent", "preSkeltalMeshComponent");
+        skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent", "preSkeltalMeshComponent");
         skeltalMeshComponent->SetModel("./Data/Models/TestCollision/test_hahen1.gltf", true);
         skeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
         skeltalMeshComponent->SetRelativeLocationDirect(riseEnd);
         skeltalMeshComponent->SetIsVisible(false);
 
         // エフェクトコンポーネントを追加
-        effectExplosionComponent = this->NewSceneComponent<class EffectComponent>("effectExplosionComponet", "preSkeltalMeshComponent");
+        effectExplosionComponent = this->AddComponent<class EffectComponent>("effectExplosionComponet", "preSkeltalMeshComponent");
 
         // 最初の壊れる前の箱の当たり判定
-        boxComponent = this->NewSceneComponent<class BoxComponent>("boxComponent", "preSkeltalMeshComponent");
+        boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "preSkeltalMeshComponent");
         boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(0.8f, 1.7f, 0.8f));
         boxComponent->SetModelHeight(height * 0.5f);
         boxComponent->SetStatic(true);
@@ -116,7 +116,7 @@ public:
         ShockWaveTargetRegistry::Register(shared_from_this());
 
         // 瓦礫
-        convexComponent = this->NewSceneComponent<class ConvexCollisionComponent>("convexComponent", "preSkeltalMeshComponent");
+        convexComponent = this->AddComponent<class ConvexCollisionComponent>("convexComponent", "preSkeltalMeshComponent");
         convexComponent->SetLayer(CollisionLayer::Convex);
         convexComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
         convexComponent->SetResponseToLayer(CollisionLayer::PlayerSide, CollisionComponent::CollisionResponse::Block);
@@ -130,7 +130,7 @@ public:
         convexComponent->CreateConvexMeshFromModel(skeltalMeshComponent.get());
 
         //        
-        shockWaveMeshComponent = this->NewSceneComponent<class ShockWaveModelComponent>("shockWaveMeshComponent", "preSkeltalMeshComponent");
+        shockWaveMeshComponent = this->AddComponent<class ShockWaveModelComponent>("shockWaveMeshComponent", "preSkeltalMeshComponent");
         //shockWaveMeshComponent->SetModel("./Data/Effect/Models/blast_effect_test.gltf");  // blend
         shockWaveMeshComponent->SetModel("./Data/Effect/Models/blast_effect_test2.gltf"); // opaque
         //shockWaveMeshComponent->SetModel("./Data/Effect/Models/ring.gltf");
@@ -141,11 +141,11 @@ public:
         // (2.5f, 1.0f, 2.5f)
 
         //// 爆発音オーディオコンポーネント追加
-        //explosionSoundComponent = this->NewSceneComponent<AudioSourceComponent>("explosionSoundComponent", "preSkeltalMeshComponent");
+        //explosionSoundComponent = this->AddComponent<AudioSourceComponent>("explosionSoundComponent", "preSkeltalMeshComponent");
         //explosionSoundComponent->SetSource(L"./Data/Sound/SE/explosion.wav");
 
         // 瓦礫音のオーディオコンポーネント追加
-        debriSoundComponent = this->NewSceneComponent<AudioSourceComponent>("debriSoundComponent", "preSkeltalMeshComponent");
+        debriSoundComponent = this->AddComponent<AudioSourceComponent>("debriSoundComponent", "preSkeltalMeshComponent");
         debriSoundComponent->SetSource(L"./Data/Sound/SE/debri.wav");
     }
     //std::shared_ptr<AudioSourceComponent> explosionSoundComponent;

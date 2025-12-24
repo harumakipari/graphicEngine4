@@ -33,7 +33,7 @@ public:
 
     virtual void Initialize(const Transform& transform)override
     {
-        mainCameraComponent = this->NewSceneComponent<class TPSCameraComponent>("mainCamera");
+        mainCameraComponent = this->AddComponent<class TPSCameraComponent>("mainCamera");
         mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(45), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
     }
 
@@ -68,7 +68,7 @@ public:
     virtual ~DebugCamera() = default;
     void Initialize(const Transform& transform)override
     {
-        debugCameraComponent = this->NewSceneComponent<class DebugCameraComponent>("debugCamera");
+        debugCameraComponent = this->AddComponent<class DebugCameraComponent>("debugCamera");
     }
 
     virtual ViewConstants GetViewConstants() const override
@@ -105,8 +105,8 @@ public:
     {
         Camera::Initialize(transform);
         // 当たり判定のコンポーネントを追加
-        //sphereComponent = this->NewSceneComponent<class SphereComponent>("sphereComponent", "springArm");
-        //sphereComponent = this->NewSceneComponent<class SphereComponent>("sphereComponent", mainCameraComponent->name());
+        //sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", "springArm");
+        //sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", mainCameraComponent->name());
         //sphereComponent->SetRadius(0.2f);
         ////sphereComponent->SetMass(40.0f);
         //sphereComponent->SetLayer(CollisionLayer::Camera);

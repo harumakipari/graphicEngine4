@@ -33,4 +33,11 @@ void Cherry::Update(float deltaTime)
             }
         }
     }
+    else
+    {
+        if (!particleComponent->IsPlaying())
+        {
+            MarkPendingKill();
+        }
+    }
 }

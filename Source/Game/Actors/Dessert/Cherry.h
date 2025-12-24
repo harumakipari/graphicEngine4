@@ -14,10 +14,10 @@ public:
     {
         // 描画用コンポーネントを追加
         std::string parentName = "cherry";
-        cherry = this->NewSceneComponent<SkeletalMeshComponent>(parentName);
+        cherry = this->AddComponent<SkeletalMeshComponent>(parentName);
         cherry->SetModel("./Data/Models/cherry_pudding/cherry_zero.glb");
 
-        std::shared_ptr<SphereComponent> sphereComponent = this->NewSceneComponent<SphereComponent>("sphereComponent", parentName);
+        std::shared_ptr<SphereComponent> sphereComponent = this->AddComponent<SphereComponent>("sphereComponent", parentName);
         DirectX::XMFLOAT3 size = cherry->GetModelSize();
         sphereComponent->SetRadius(size.x * 0.5f);
         sphereComponent->SetMass(40.0f);
@@ -26,8 +26,20 @@ public:
         sphereComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
         sphereComponent->Initialize();
 
-        particleComponent = this->NewSceneComponent<class ParticleComponent>("particleComponent", parentName);
+        particleComponent = this->AddComponent<class ParticleComponent>("particleComponent", parentName);
         particleComponent->Load("./Data/Effect/Files/testEffect.json");
+#if 0
+        // ループ再生設定
+        ParticleComponent::AddSettings settings
+        {
+            .loop = true, // ループ再生
+            .startDelay = 0.5f // 再生開始遅延時間
+        };
+        particleComponent->SetAddSettings(settings);
+
+#endif // 0
+
+
 
         SetPosition(transform.GetLocation());
         SetQuaternionRotation(transform.GetRotation());

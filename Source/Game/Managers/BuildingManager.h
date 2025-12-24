@@ -71,7 +71,7 @@ public:
                     auto pos = building->GetPosition();
                     pos.y -= 10.0f;
                     building->SetPosition(pos);
-                    building->SetPendingDestroy();
+                    building->MarkPendingKill();
                 }
             }
         }
@@ -120,7 +120,7 @@ public:
                 }
                 auto pos = building->GetPosition();
                 building->SetPosition(pos);
-                building->SetPendingDestroy();
+                building->MarkPendingKill();
                 Transform test2Tr(pos, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
                 Scene* currentScene = Scene::GetCurrentScene();
                 if (!currentScene)

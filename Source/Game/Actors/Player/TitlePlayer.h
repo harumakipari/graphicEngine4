@@ -34,7 +34,7 @@ public:
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
-        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
         //skeletalMeshComponent->SetModel("./Data/Models/Characters/Player/chara_animation.gltf");
         //skeletalMeshComponent->SetModel("./Data/Models/Characters/GirlSoldier/Idle.gltf");
         skeltalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/idle.gltf");
@@ -64,13 +64,13 @@ public:
         this->SetAnimationController(controller);
         PlayAnimation("Idle");
 
-        playerJointComponent = this->NewSceneComponent<SphereComponent>("playerJointComponent", "skeltalComponent");
+        playerJointComponent = this->AddComponent<SphereComponent>("playerJointComponent", "skeltalComponent");
         playerJointComponent->SetRadius(1.0f);
         DirectX::XMFLOAT3 playerHead = skeltalMeshComponent->model->GetJointLocalPosition("atama_FK", skeltalMeshComponent->model->GetNodes());
         //playerJointComponent->SetRelativeLocationDirect(playerHead);
         playerJointComponent->Initialize();
 
-        socketNodeComponent = this->NewSceneComponent<SphereComponent>("socketNode", "playerJointComponent");
+        socketNodeComponent = this->AddComponent<SphereComponent>("socketNode", "playerJointComponent");
         socketNodeComponent->SetRadius(1.0f);
 
 

@@ -36,7 +36,7 @@ void Building::Update(float delta_time)
             //convexComponent->DisableCollision();
             //this->DestroyComponentByName("convexComponent");
             //this->SetValid(false);
-            this->SetPendingDestroy();
+            this->MarkPendingKill();
             //this->Destroy();
         }
     }
@@ -176,7 +176,7 @@ void Building::Update(float delta_time)
         else
         {// ƒr[ƒ€‚É‚æ‚Á‚Ä”j‰ó‚µ‚½‚ç
             // ÕŒ‚”g‚ð’Ç‰Á‚·‚é
-            auto shockWave = this->NewSceneComponent<ShockWaveCollisionComponent>("shockWave", "preSkeltalMeshComponent");
+            auto shockWave = this->AddComponent<ShockWaveCollisionComponent>("shockWave", "preSkeltalMeshComponent");
             shockWave->Initialize(0.1f, shockWaveRange, shockWaveTime, beamPower_, restBeamPower);
             shockWaveMeshComponent->Initialize(0.1f, shockWaveRange, shockWaveTime, beamPower_);
             // Œ³X‚Ì” ‚Ì“–‚½‚è”»’è‚ðÁ‚·
@@ -275,7 +275,7 @@ void Building::CallHitShockWave(float power, int beamItemCount, const DirectX::X
         effectExplosionComponent->SetEffectType(EffectComponent::EffectType::Explosion);
         effectExplosionComponent->Activate();
 
-        auto buildlifeTimeComponent = this->NewSceneComponent<LifeTimeComponent>("lifeTimeComponent");
+        auto buildlifeTimeComponent = this->AddComponent<LifeTimeComponent>("lifeTimeComponent");
         //auto buildlifeTimeComponent = this->NewLogicComponent<LifeTimeComponent>("lifeTimeComponent");
         buildlifeTimeComponent->SetLifeTime(5.0f);
     }

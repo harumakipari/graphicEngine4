@@ -212,7 +212,7 @@ void MainScene::Update(float deltaTime)
     //éÄñSèàóù
     if (!isBossDeath && std::dynamic_pointer_cast<RiderEnemy>(enemies[0])->GetHP() <= 0)
     {
-        //enemies[0]->SetPendingDestroy();
+        //enemies[0]->MarkPendingKill();
 
         //stop
         std::dynamic_pointer_cast<RiderEnemy>(GetActorManager()->GetActorByName("enemy"))->rushAudioComponent->Stop();
@@ -1541,7 +1541,7 @@ void MainScene::SetUpActors()
 
     auto debugCameraActor = GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     //auto debugCameraActor = ActorManager::CreateAndRegisterActor<Actor>("debugCam");
-    //auto debugCamera = debugCameraActor->NewSceneComponent<DebugCameraComponent>("debugCamera");
+    //auto debugCamera = debugCameraActor->AddComponent<DebugCameraComponent>("debugCamera");
     CameraManager::SetDebugCamera(debugCameraActor);
 
     //Transform propTr(DirectX::XMFLOAT3{ 1.0f,0.0f,1.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });

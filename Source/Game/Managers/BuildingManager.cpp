@@ -26,7 +26,7 @@ void BuildingManager::SpawnItemArea(Area& area, int col, int row)
         auto building = ActorManager::CreateAndRegisterActorWithTransform<Building>("building", transform);
         //building->SetTempPosition(spawnPos);
         //building->Initialize();
-        //building->PostInitialize();
+        //building->UpdateAllComponentTransforms();
 
         auto shape = building->GetSceneComponentByName("boxComponent");
         if (auto box = std::dynamic_pointer_cast<BoxComponet>(shape))

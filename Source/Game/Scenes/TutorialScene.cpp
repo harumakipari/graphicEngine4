@@ -447,7 +447,7 @@ void TutorialScene::SetUpActors()
 
     auto debugCameraActor = GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     //auto debugCameraActor = ActorManager::CreateAndRegisterActor<Actor>("debugCam");
-    //auto debugCamera = debugCameraActor->NewSceneComponent<DebugCameraComponent>("debugCamera");
+    //auto debugCamera = debugCameraActor->AddComponent<DebugCameraComponent>("debugCamera");
     CameraManager::SetDebugCamera(debugCameraActor);
 
     Transform enemyTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,-1.0f });

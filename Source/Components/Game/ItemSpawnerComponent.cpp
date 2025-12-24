@@ -41,7 +41,7 @@ void ItemSpawnerComponent::SpawnItems(int count/*, float beamPower = 1.0f*/, boo
 
         if (hasLifeTime)
         {// 寿命付きアイテムだったら
-            auto lifeTimeComponent = item->NewSceneComponent<LifeTimeComponent>("lifeTimeComponent");
+            auto lifeTimeComponent = item->AddComponent<LifeTimeComponent>("lifeTimeComponent");
             //auto lifeTimeComponent = item->NewLogicComponent<LifeTimeComponent>("lifeTimeComponent");
             lifeTimeComponent->SetLifeTime(itemLifeTimer);
         }

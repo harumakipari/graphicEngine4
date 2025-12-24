@@ -14,14 +14,14 @@ public:
     std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
     void Initialize(const Transform& transform)override
     {
-        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Effect/Models/ring.gltf");
         skeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
 
         SetPosition(transform.GetLocation());
         SetQuaternionRotation(transform.GetRotation());
         SetScale(transform.GetScale());
-        auto shockWave = this->NewSceneComponent<ShockWaveCollisionComponent>("shockWave", "skeltalComponent");
+        auto shockWave = this->AddComponent<ShockWaveCollisionComponent>("shockWave", "skeltalComponent");
         //shockWave->Initialize(startRadius_, endRadius_, durationSeconds_, power_);
 
     }

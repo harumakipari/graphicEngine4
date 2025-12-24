@@ -40,7 +40,7 @@ public:
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
-        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Debug/Primitives/sphere.glb", false);
 
         SetPosition(transform.GetLocation());
@@ -127,10 +127,10 @@ public:
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
-        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent->SetModel("./Data/Models/TestCloth/cloth1.gltf", false);
 
-        skeltalMeshComponent1 = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent1 = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
         skeltalMeshComponent1->SetModel("./Data/Models/TestCloth/cloth1.gltf", false);
 
         SetPosition(transform.GetLocation());
@@ -623,13 +623,13 @@ public:
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
-        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
         //skeletalMeshComponent->SetModel("./Data/Models/TestCloth/cloth1.gltf", true);
         skeltalMeshComponent->SetModel("./Data/Models/TestCloth/cloth1.gltf", true);
         skeltalMeshComponent->overrideDeferredPipelineName = "cloth";
         //skeletalMeshComponent->SetIsVisible(false);
 
-        //clothMesh = this->NewSceneComponent<class ClothMeshComponent>("clothComponent", "skeltalComponent");
+        //clothMesh = this->AddComponent<class ClothMeshComponent>("clothComponent", "skeltalComponent");
         //clothMesh->SetModel("./Data/Models/TestCloth/cloth1.gltf", true);
         //clothMesh->overrideDeferredPipelineName = "cloth";
 

@@ -19,17 +19,17 @@ public:
     //std::shared_ptr<SkeletalMeshComponent> trafficLight;
     void Initialize(const Transform& transform)override
     {
-        std::shared_ptr<SceneComponent> parent = this->NewSceneComponent<SceneComponent>("empty");
+        std::shared_ptr<SceneComponent> parent = this->AddComponent<SceneComponent>("empty");
         SetPosition(transform.GetLocation());
         SetQuaternionRotation(transform.GetRotation());
         SetScale(transform.GetScale());
 
-        stage = this->NewSceneComponent<StaticMeshComponent>("stageComponent", "empty");
+        stage = this->AddComponent<StaticMeshComponent>("stageComponent", "empty");
         stage->SetModel("./Data/Models/boss_fight_stage/scene.gltf");
         stage->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         stage->SetRelativeLocationDirect({ 0.0f,2.45f,0.0f });
 
-        titleLogo = this->NewSceneComponent<StaticMeshComponent>("logoComponent", "empty");
+        titleLogo = this->AddComponent<StaticMeshComponent>("logoComponent", "empty");
         titleLogo->SetModel("./Data/Models/Title/title_rogo.gltf");
         titleLogo->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         titleLogo->SetRelativeScaleDirect({ -1.0f,1.0f,-1.0f });
@@ -37,13 +37,13 @@ public:
         titleLogo->SetRelativeEulerRotationDirect({ 0.0f,-9.0f,0.0f });
         titleLogo->SetIsVisible(false);
 
-        //build = this->NewSceneComponent<StaticMeshComponent>("buildComponent", "empty");
+        //build = this->AddComponent<StaticMeshComponent>("buildComponent", "empty");
         //build->SetModel("./Data/Models/Title/title_bill.gltf");
         //build->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         //build->SetRelativeScaleDirect({ -1.0f,1.0f,-1.0f });
 
-        //trafficLight = this->NewSceneComponent<SkeletalMeshComponent>("trafficLight", "empty");
-        trafficLight = this->NewSceneComponent<StaticMeshComponent>("trafficLight", "empty");
+        //trafficLight = this->AddComponent<SkeletalMeshComponent>("trafficLight", "empty");
+        trafficLight = this->AddComponent<StaticMeshComponent>("trafficLight", "empty");
         trafficLight->SetModel("./Data/Models/Stage/Props/traffic_light.gltf");
         trafficLight->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         trafficLight->model->emission = 1.0f;

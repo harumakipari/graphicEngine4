@@ -279,7 +279,7 @@ public:
 //            auto actor = ActorManager::CreateAndRegisterActor<ActorT>("spawned", false);
 //            actor->SetTempPosition(pos);
 //            actor->Initialize();
-//            actor->PostInitialize();
+//            actor->UpdateAllComponentTransforms();
 //
 //            auto shape = actor->GetComponent<ShapeComponent>();
 //            if (shape)

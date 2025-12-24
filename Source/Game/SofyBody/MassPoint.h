@@ -147,7 +147,7 @@ public:
             XMFLOAT3 pos = { start.x, start.y - i * REST_LEN, start.z };
             points_.emplace_back(invMass, pos, isKinematic);
 
-            auto mesh = this->NewSceneComponent<SkeletalMeshComponent>("point_" + std::to_string(i));
+            auto mesh = this->AddComponent<SkeletalMeshComponent>("point_" + std::to_string(i));
             mesh->SetModel("./Data/Debug/Primitives/sphere.glb", false);
             mesh->SetWorldLocationDirect(pos);
             meshes_.push_back(mesh.get());

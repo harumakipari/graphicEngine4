@@ -11,7 +11,7 @@ public:
 
     void Initialize(const Transform& transform)override
     {
-        std::shared_ptr<StaticMeshComponent> staticMeshComponent = this->NewSceneComponent<class StaticMeshComponent>("staticMeshComponent");
+        std::shared_ptr<StaticMeshComponent> staticMeshComponent = this->AddComponent<class StaticMeshComponent>("staticMeshComponent");
 #if 0
         staticMeshComponent->SetModel("./Data/Models/Stage/ExampleStage.gltf", true);
 #else
@@ -26,7 +26,7 @@ public:
 #endif // 1
         //staticMeshComponent->SetRelativeLocationDirect({ 0.0f,2.45f,0.0f });
 
-        std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->NewSceneComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent", "staticMeshComponent");
+        std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->AddComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent", "staticMeshComponent");
         triangleMeshComponent->SetLayer(CollisionLayer::WorldStatic);
         triangleMeshComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
         triangleMeshComponent->CreateConvexMeshFromModel(staticMeshComponent.get());

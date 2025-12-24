@@ -62,7 +62,12 @@ void ParticleComponent::Play()
             // 通常の位置でエフェクト再生
             EffectManager::Play(effectHandle, position, rotation);
         }
+        elapsedTimeSincePlay = 0.0f;
+        duration = CalculateDuration();
         isPlaying = true;
+        // 再生開始遅延経過時間リセット
+        elapsedDelayTime = 0.0f;
+
     }
 }
 
@@ -72,18 +77,19 @@ void ParticleComponent::Stop()
     isPlaying = false;
 }
 
-void ParticleComponent::Tick(float elapsedTime)
+void ParticleComponent::Tick(float deltaTime)
 {
     // ループ再生でない場合は何もしない
-    if (effectHandle == -1 || !IsPlaying() || !settings.loop)
+    if (effectHandle == -1 || !IsPlaying() /*|| !settings.loop*/)
     {
         return;
     }
 
+
     // 再生開始遅延時間の処理
     if (elapsedDelayTime < settings.startDelay)
     {
-        elapsedDelayTime += elapsedTime;
+        elapsedDelayTime += deltaTime;
         if (elapsedDelayTime < settings.startDelay)
         {
             // まだ遅延時間内なので再生しない
@@ -98,11 +104,41 @@ void ParticleComponent::Tick(float elapsedTime)
     }
     XMFLOAT3 position = owner_.lock()->GetPosition();
     XMFLOAT3 rotation = owner_.lock()->GetEulerRotation();
-    // エフェクト再生
-    EffectManager::Play(effectHandle, position, rotation);
 
-    // 経過時間リセット
-    elapsedDelayTime = 0.0f;
+    // 再生してからの経過時間更新
+    elapsedTimeSincePlay += deltaTime;
+
+    if (!settings.loop && elapsedTimeSincePlay >= duration)
+    {
+        isPlaying = false;
+    }
+
+    if (settings.loop && elapsedTimeSincePlay >= duration)
+    {
+        elapsedTimeSincePlay = 0.0f;
+        // エフェクト再生
+        EffectManager::Play(effectHandle, position, rotation);
+    }
+
+}
+
+float ParticleComponent::CalculateDuration() const
+{
+    float maxDuration = 0.0f;
+
+    auto& effect = EffectManager::GetEffectData(effectHandle);
+
+    for (auto& emitter : effect.emitters)
+    {
+        float d =
+            emitter.emitData.initialDelay.max +
+            emitter.emitData.emitInterval.max * (emitter.emitData.emitCount.max - 1) +
+            emitter.motionData.lifeTime.max;
+
+        maxDuration = std::max<float>(maxDuration, d);
+    }
+
+    return maxDuration;
 }
 
 void ParticleComponent::DrawImGuiInspector()

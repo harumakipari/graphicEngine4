@@ -18,7 +18,7 @@ void LifeTimeComponent::Tick(float deltaTime)
             //char buf[256];
             //sprintf_s(buf, "LifeTimeComponent::Tick ¨ SetValid(false) ŒÄ‚Ño‚µBowner=%s\n", owner->GetName().c_str());
             //OutputDebugStringA(buf);
-            owner->SetPendingDestroy();
+            owner->MarkPendingKill();
             //owner->SetValid(false);
         }
         else

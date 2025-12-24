@@ -52,7 +52,10 @@ public:
     EffectHandle GetEffectHandle() const { return effectHandle; }
 
     // フレーム更新
-    void Tick(float elapsedTime) override;
+    void Tick(float deltaTime) override;
+
+    // エフェクト全体の寿命時間を計算して取得
+    float CalculateDuration() const;
 
     // デバッグGUI描画
     void DrawImGuiInspector() override;
@@ -61,4 +64,8 @@ private:
     bool isPlaying = false;				// 再生中フラグ
     AddSettings settings; 				// 追加設定
     float elapsedDelayTime = 0.0f;		// 再生開始遅延時間の経過時間
+
+    float elapsedTimeSincePlay = 0.0f;   // 再生開始からの経過時間
+    float duration = 0.0f; // エフェクト全体の寿命時間
+
 };

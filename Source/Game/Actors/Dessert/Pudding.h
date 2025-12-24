@@ -20,13 +20,13 @@ public:
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
-        elasticBuilding = this->NewSceneComponent<ElasticMeshComponent>("elasticBuilding");
+        elasticBuilding = this->AddComponent<ElasticMeshComponent>("elasticBuilding");
         //elasticBuilding->SetModel("./Data/Models/Building/bomb_bill.gltf");
         //elasticBuilding->SetModel("./Data/Models/pink_pudding/scene.gltf");
         //elasticBuilding->SetModel("./Data/Models/cherry_pudding/scene.gltf");
         elasticBuilding->SetModel("./Data/Models/cherry_pudding/pudding.glb");
 
-        std::shared_ptr<BoxComponent> boxComponent = this->NewSceneComponent<class BoxComponent>("boxComponent", "elasticBuilding");
+        std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "elasticBuilding");
         DirectX::XMFLOAT3 size = elasticBuilding->GetModelSize();
         boxComponent->SetBoxExtent({ size.x * 0.5f,size.y * 0.5f,size.z * 0.5f });
         boxComponent->SetMass(40.0f);
@@ -36,15 +36,15 @@ public:
         boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
         boxComponent->Initialize();
 
-        whip = this->NewSceneComponent<SkeletalMeshComponent>("whip", "elasticBuilding");
+        whip = this->AddComponent<SkeletalMeshComponent>("whip", "elasticBuilding");
         whip->SetModel("./Data/Models/cherry_pudding/whip.glb");
         whip->SetRelativeLocationDirect({ 0.0f,size.y,0.0f });
 
-        cherry = this->NewSceneComponent<SkeletalMeshComponent>("cherry", "whip");
+        cherry = this->AddComponent<SkeletalMeshComponent>("cherry", "whip");
         cherry->SetModel("./Data/Models/cherry_pudding/cherry.glb");
 
 
-        particleComponent = this->NewSceneComponent<class ParticleComponent>("particleComponent", "elasticBuilding");
+        particleComponent = this->AddComponent<class ParticleComponent>("particleComponent", "elasticBuilding");
         particleComponent->Load("./Data/Effect/Files/testEffect.json");
 
         SetPosition(transform.GetLocation());

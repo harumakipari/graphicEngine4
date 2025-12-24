@@ -17,7 +17,7 @@ public:
 
     void Initialize(const Transform& transform)override
     {
-        std::shared_ptr<StaticMeshComponent> staticMeshComponent = this->NewSceneComponent<class StaticMeshComponent>("staticMeshComponent");
+        std::shared_ptr<StaticMeshComponent> staticMeshComponent = this->AddComponent<class StaticMeshComponent>("staticMeshComponent");
         staticMeshComponent->SetModel("./Data/Models/Stage/ExampleStage.gltf", true);
         //staticMeshComponent->SetModel("./Data/Models/Stage/stage.gltf", true);
         //staticMeshComponent->model->isModelInMeters = false;
@@ -28,7 +28,7 @@ public:
         staticMeshComponent->SetRelativeScaleDirect(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
         staticMeshComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
         // 当たり判定のコンポーネントを追加
-        std::shared_ptr<BoxComponent> boxComponent = this->NewSceneComponent<class BoxComponent>("boxComponent", "staticMeshComponent");
+        std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "staticMeshComponent");
         boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(20.0f, 0.2f, 20.0f));
         //boxComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(0.0f, 0.2f, 0.0f));
         boxComponent->SetModelHeight(1.0f * 0.5f);
@@ -51,7 +51,7 @@ public:
 
 
         // 手前の壁当たり判定のコンポーネントを追加
-        std::shared_ptr<BoxComponet> wallFrontComponent = this->NewSceneComponent<class BoxComponet>("wallFrontComponent", "staticMeshComponent");
+        std::shared_ptr<BoxComponet> wallFrontComponent = this->AddComponent<class BoxComponet>("wallFrontComponent", "staticMeshComponent");
         wallFrontComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(20.0f, 6.0f, 1.0f));
         wallFrontComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(0.0f, 0.0f, 15.6f));
         wallFrontComponent->SetModelHeight(6.0f * 0.5f);
@@ -67,7 +67,7 @@ public:
         wallFrontComponent->Initialize();
 
         // 奥の壁当たり判定のコンポーネントを追加
-        std::shared_ptr<BoxComponet> wallBackComponent = this->NewSceneComponent<class BoxComponet>("wallBackComponent", "staticMeshComponent");
+        std::shared_ptr<BoxComponet> wallBackComponent = this->AddComponent<class BoxComponet>("wallBackComponent", "staticMeshComponent");
         wallBackComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(20.0f, 6.0f, 1.0f));
         wallBackComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(0.0f, 0.0f, -15.6f));
         wallBackComponent->SetModelHeight(6.0f * 0.5f);
@@ -83,7 +83,7 @@ public:
         wallBackComponent->Initialize();
 
         // 右の壁当たり判定のコンポーネントを追加
-        std::shared_ptr<BoxComponet> rightWallComponent = this->NewSceneComponent<class BoxComponet>("rightWallComponent", "staticMeshComponent");
+        std::shared_ptr<BoxComponet> rightWallComponent = this->AddComponent<class BoxComponet>("rightWallComponent", "staticMeshComponent");
         rightWallComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(1.0f, 6.0f, 16.0f));
         rightWallComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(20.5f, 0.0f, 0.6f));
         rightWallComponent->SetModelHeight(6.0f * 0.5f);
@@ -99,7 +99,7 @@ public:
         rightWallComponent->Initialize();
 
         // 左の壁当たり判定のコンポーネントを追加
-        std::shared_ptr<BoxComponet> leftWallComponent = this->NewSceneComponent<class BoxComponet>("leftWallComponent", "staticMeshComponent");
+        std::shared_ptr<BoxComponet> leftWallComponent = this->AddComponent<class BoxComponet>("leftWallComponent", "staticMeshComponent");
         leftWallComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(1.0f, 6.0f, 16.0f));
         leftWallComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(-20.5f, 0.0f, 0.6f));
         leftWallComponent->SetModelHeight(6.0f * 0.5f);
@@ -118,7 +118,7 @@ public:
 
 #endif // 0
 
-        //std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->NewSceneComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent", "staticMeshComponent");
+        //std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->AddComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent", "staticMeshComponent");
         //triangleMeshComponent->CreateConvexMeshFromModel(staticMeshComponent.get());
     }
 

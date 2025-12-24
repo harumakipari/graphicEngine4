@@ -67,7 +67,7 @@ void EraseInAreaComponent::OnHit(std::pair<CollisionComponent*, CollisionCompone
                 itemManager->DecreaseAreaItemCount(pos);
             }
         }
-        item->SetPendingDestroy();
+        item->MarkPendingKill();
         //item->SetValid(false);
         //std::string a = item->GetName() + "is Hit";
         //OutputDebugStringA(a.c_str());

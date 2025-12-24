@@ -67,7 +67,7 @@ public:
     {
         auto t1 = std::chrono::high_resolution_clock::now();
         // 最初に描画される壊れる前のモデル
-        preSkeltalMeshComponent = this->NewSceneComponent<class BuildMeshComponent>("preSkeltalMeshComponent");
+        preSkeltalMeshComponent = this->AddComponent<class BuildMeshComponent>("preSkeltalMeshComponent");
         preSkeltalMeshComponent->SetModel("./Data/Models/Building/bomb_bill.gltf", false);
         //preSkeltalMeshComponent->SetModel("./Data/Effect/Models/bom_effect_out.gltf", false);
         preSkeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
@@ -91,17 +91,17 @@ public:
         riseEnd = { riseStart.x,0.0f,riseStart.z };
         //auto t3 = std::chrono::high_resolution_clock::now();
         // 瓦礫に使用するモデル
-        skeltalMeshComponent = this->NewSceneComponent<class SkeletalMeshComponent>("skeltalComponent", "preSkeltalMeshComponent");
+        skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent", "preSkeltalMeshComponent");
         skeltalMeshComponent->SetModel("./Data/Models/Building/bomb_bill_hahen3.gltf", true);
         skeltalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
         skeltalMeshComponent->SetRelativeLocationDirect(riseEnd);
         skeltalMeshComponent->SetIsVisible(false);
         auto t4 = std::chrono::high_resolution_clock::now();
         // エフェクトコンポーネントを追加
-        effectExplosionComponent = this->NewSceneComponent<class EffectComponent>("effectExplosionComponet", "preSkeltalMeshComponent");
+        effectExplosionComponent = this->AddComponent<class EffectComponent>("effectExplosionComponet", "preSkeltalMeshComponent");
 
         // 最初の壊れる前の箱の当たり判定
-        boxComponent = this->NewSceneComponent<class BoxComponent>("boxComponent", "preSkeltalMeshComponent");
+        boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "preSkeltalMeshComponent");
         boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(0.8f, 1.7f, 0.8f));
         boxComponent->SetModelHeight(height * 0.5f);
         boxComponent->SetStatic(true);
@@ -127,7 +127,7 @@ public:
         ShockWaveTargetRegistry::Register(shared_from_this());
 
         // 瓦礫
-        convexComponent = this->NewSceneComponent<class ConvexCollisionComponent>("convexComponent", "preSkeltalMeshComponent");
+        convexComponent = this->AddComponent<class ConvexCollisionComponent>("convexComponent", "preSkeltalMeshComponent");
         convexComponent->SetLayer(CollisionLayer::Convex);
         //convexComponent->SetResponseToLayer(CollisionLayer::Player , CollisionComponent::CollisionResponse::Block);
         convexComponent->SetResponseToLayer(CollisionLayer::PlayerSide, CollisionComponent::CollisionResponse::Block);
@@ -142,14 +142,14 @@ public:
         auto t6 = std::chrono::high_resolution_clock::now();
 
         //        
-        shockWaveMeshComponent = this->NewSceneComponent<class ShockWaveModelComponent>("shockWaveMeshComponent", "preSkeltalMeshComponent");
+        shockWaveMeshComponent = this->AddComponent<class ShockWaveModelComponent>("shockWaveMeshComponent", "preSkeltalMeshComponent");
         shockWaveMeshComponent->SetModel("./Data/Effect/Models/blast_effect_test2.gltf");
         shockWaveMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
         shockWaveMeshComponent->SetRelativeScaleDirect(DirectX::XMFLOAT3(0.0f, 0.5f, 0.0f));
         // (2.5f, 1.0f, 2.5f)
 
         // 爆弾機能
-        eraseInAreaComponent = this->NewSceneComponent<class EraseInAreaComponent>("eraseInAreaComponent", "preSkeltalMeshComponent");
+        eraseInAreaComponent = this->AddComponent<class EraseInAreaComponent>("eraseInAreaComponent", "preSkeltalMeshComponent");
         eraseInAreaComponent->SetRadius(2.5f);
         eraseInAreaComponent->SetMass(40.0f);
         eraseInAreaComponent->SetLayer(CollisionLayer::EraseInArea);
@@ -164,7 +164,7 @@ public:
         // 
         auto t7 = std::chrono::high_resolution_clock::now();
 
-        bombTimerMeshComponentUnder = this->NewSceneComponent<class SkeletalMeshComponent>("bombTimerMeshComponentUnder", "preSkeltalMeshComponent");
+        bombTimerMeshComponentUnder = this->AddComponent<class SkeletalMeshComponent>("bombTimerMeshComponentUnder", "preSkeltalMeshComponent");
         bombTimerMeshComponentUnder->SetModel("./Data/Effect/Models/bom_effect_out.gltf", true);
         bombTimerMeshComponentUnder->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
         bombTimerMeshComponentUnder->SetIsCastShadow(false);
@@ -175,7 +175,7 @@ public:
         //explodeTimer = MathHelper::RandomRange(8.0f, 10.0f);
         explodeTimer = MathHelper::RandomRange(3.0f, 5.0f);
 
-        bombTimerMeshComponent= this->NewSceneComponent<class ShockWaveModelComponent>("bombTimerMeshComponent", "preSkeltalMeshComponent");
+        bombTimerMeshComponent= this->AddComponent<class ShockWaveModelComponent>("bombTimerMeshComponent", "preSkeltalMeshComponent");
         bombTimerMeshComponent->SetModel("./Data/Effect/Models/bom_effect_in.gltf");
         bombTimerMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
         bombTimerMeshComponent->SetRelativeScaleDirect(DirectX::XMFLOAT3(0.0f, 0.5f, 0.0f));
@@ -186,7 +186,7 @@ public:
 
 
         //std::shared_ptr<TimerActionComponent> timerActionComponent = this->NewLogicComponent<class TimerActionComponent>("timerActionComponent");
-        std::shared_ptr<TimerActionComponent> timerActionComponent = this->NewSceneComponent<class TimerActionComponent>("timerActionComponent");
+        std::shared_ptr<TimerActionComponent> timerActionComponent = this->AddComponent<class TimerActionComponent>("timerActionComponent");
         timerActionComponent->SetTimer(explodeTimer, [&]()
             {
                 if (state == BuildingState::Idle)
@@ -218,11 +218,11 @@ public:
         //OutputDebugStringA(buf);
 
         // 爆発音オーディオコンポーネント追加
-        explosionSoundComponent = this->NewSceneComponent<AudioSourceComponent>("explosionSoundComponent", "preSkeltalMeshComponent");
+        explosionSoundComponent = this->AddComponent<AudioSourceComponent>("explosionSoundComponent", "preSkeltalMeshComponent");
         explosionSoundComponent->SetSource(L"./Data/Sound/SE/explosion.wav");
 
         // 瓦礫音のオーディオコンポーネント追加
-        debriSoundComponent = this->NewSceneComponent<AudioSourceComponent>("debriSoundComponent", "preSkeltalMeshComponent");
+        debriSoundComponent = this->AddComponent<AudioSourceComponent>("debriSoundComponent", "preSkeltalMeshComponent");
         debriSoundComponent->SetSource(L"./Data/Sound/SE/debri.wav");
 
     }
