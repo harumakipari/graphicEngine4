@@ -21,11 +21,7 @@ class Scene;
 class Actor :public std::enable_shared_from_this <Actor>
 {
 public:
-    Actor()
-    {
-        OutputDebugStringA(("Actor constructor: ownedSceneComponents_ size=" + std::to_string(ownedSceneComponents_.size()) + "\n").c_str());
-        OutputDebugStringA((", capacity=" + std::to_string(ownedSceneComponents_.capacity()) + "\n").c_str());
-    }
+    Actor() = default;
     virtual ~Actor() = default;
 
     //引数付きコンストラクタ
@@ -35,6 +31,11 @@ public:
         OutputDebugStringA((", capacity=" + std::to_string(ownedSceneComponents_.capacity()) + "\n").c_str());
     }
 
+    void MakeRootComponent()
+    {
+        rootComponent_ = NewSceneComponent<SceneComponent>("RootComponent");
+    }
+
     //コピーコンストラクタとコピー代入演算子を禁止にする
     Actor(const Actor&) = delete;
     Actor& operator=(const Actor&) = delete;
@@ -42,8 +43,6 @@ public:
     Actor& operator=(Actor&&) noexcept = delete;
 
     std::string& GetName() { return actorName; }
-
-    //virtual void Initialize() {};
 
     virtual void Initialize(const Transform& transform) {}
 

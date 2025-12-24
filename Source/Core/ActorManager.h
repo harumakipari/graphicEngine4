@@ -116,6 +116,10 @@ public:
         newActor->SetOwnerScene(ownerScene_);
         allActors_.push_back(newActor);
 #endif
+        newActor->MakeRootComponent();
+        newActor->SetPosition(transform.GetLocation());
+        newActor->SetQuaternionRotation(transform.GetRotation());
+        newActor->SetScale(transform.GetScale());
         newActor->Initialize(transform);
         newActor->PostInitialize();
         return newActor;
