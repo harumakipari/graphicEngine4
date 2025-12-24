@@ -53,10 +53,8 @@ namespace CollisionFunction
             RayDir = DirectX::XMVector3Normalize(RayDir);
             DirectX::XMFLOAT3 rayDir;
             DirectX::XMStoreFloat3(&rayDir, RayDir);
-            XMFLOAT3 intersectPos, intersectNormal;
-            DirectX::XMFLOAT3 buildCurveDir;
-
-            if (Physics::Instance().SphereCast(rayStart, rayDir, FLT_MAX, 0.001f, result/*, CollisionHelper::ToBit(collisionLayer)*/))
+            
+            if (Physics::Instance().SphereCast(rayStart, rayDir, FLT_MAX, 0.001f, result, static_cast<uint32_t>(collisionLayer)))
             {
                 return true;
             }
@@ -67,5 +65,25 @@ namespace CollisionFunction
 
         }
         return false;
+    }
+
+    inline XMFLOAT2 GetScreenPositionFromWorldPosition(const XMFLOAT3& worldPosition)
+    {
+        float screenWidth = Graphics::GetScreenWidth();
+        float screenHeight = Graphics::GetScreenHeight();
+        DirectX::XMVECTOR WorldPosition = DirectX::XMLoadFloat3(&worldPosition);
+        auto camera = CameraManager::GetCurrentCamera();
+        ViewConstants data = camera->GetViewConstants();
+        //各行列を取得
+        DirectX::XMMATRIX View = DirectX::XMLoadFloat4x4(&data.view);
+        DirectX::XMMATRIX Projection = DirectX::XMLoadFloat4x4(&data.projection);
+        DirectX::XMMATRIX World = DirectX::XMMatrixIdentity();
+        // ワールド座標をスクリーン座標に変換
+        DirectX::XMVECTOR ScreenPosition = DirectX::XMVector3Project(
+            WorldPosition, 0.0f, 0.0f, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World
+        );
+        DirectX::XMFLOAT3 screenPos;
+        DirectX::XMStoreFloat3(&screenPos, ScreenPosition);
+        return XMFLOAT2(screenPos.x, screenPos.y);
     }
 }

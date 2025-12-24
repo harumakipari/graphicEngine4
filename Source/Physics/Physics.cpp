@@ -804,54 +804,7 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
         physx::PxQueryFlag::ePREFILTER |
         physx::PxQueryFlag::ePOSTFILTER;
 
-    //pxQueryFilterData.data.word0 = 1;
-    //pxQueryFilterData.data.word1 = 1;
-
     pxQueryFilterData.data.word0 = wantToHitLayer;	// NOTE:⑤レイヤーマスク
-    //pxQueryFilterData.data.word1 = 0xFFFFFFFF;	// NOTE:⑤レイヤーマスク
-
-    //--------------------------
-    // NOTE:④シェイプキャスト
-    //--------------------------
-#if 0
-    physx::PxSphereGeometry pxGeometry(50);
-    physx::PxSweepBuffer pxSweepBuffer;
-
-
-
-    physx::PxTransform pxTransform(
-        physx::PxVec3(origin.x, origin.y, origin.z),
-        physx::PxQuat(0, 0, 0, 1));
-    //physx::PxHitFlags hitFlags = physx::PxHitFlag::ePOSITION | physx::PxHitFlag::eNORMAL;
-    physx::PxHitFlags hitFlags = physx::PxHitFlag::eDEFAULT;
-    bool hit = pxScene->sweep(pxGeometry,
-        physx::PxTransform(origin.x, origin.y, origin.z),
-        physx::PxVec3(direction.x, direction.y, direction.z),
-        distance,
-        pxSweepBuffer,
-        hitFlags,
-        pxQueryFilterData,
-        this);
-    if (hit && pxSweepBuffer.hasBlock)
-    {
-        const physx::PxVec3& p = pxSweepBuffer.block.position;
-        const physx::PxVec3& n = pxSweepBuffer.block.normal;
-
-        result.hitPoint = DirectX::XMFLOAT3(p.x, p.y, p.z);
-        result.normal = DirectX::XMFLOAT3(n.x, n.y, n.z);
-        result.distance = pxSweepBuffer.block.distance;
-        if (pxSweepBuffer.block.actor && pxSweepBuffer.block.actor->userData)
-            result.actor = static_cast<Actor*>(pxSweepBuffer.block.actor->userData);
-
-        if (pxSweepBuffer.block.shape && pxSweepBuffer.block.shape->userData)
-            result.component = static_cast<ShapeComponent*>(pxSweepBuffer.block.shape->userData);
-
-        distance = result.distance;
-    }
-    distance += radius;
-
-
-#else
     physx::PxSphereGeometry pxGeometry(radius);
     physx::PxSweepBuffer pxSweepBuffer;
     //physx::PxSweepBufferN<1> pxSweepBuffer;
@@ -887,9 +840,6 @@ bool Physics::SphereCast(const DirectX::XMFLOAT3& origin, const DirectX::XMFLOAT
         distance = result.distance;
     }
     distance += radius;
-#endif // 0
-
-
 
     Line& line = lines.emplace_back();
     line.start = origin;

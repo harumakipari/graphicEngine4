@@ -746,9 +746,6 @@
     <ClInclude Include="Source\Physics\Collider.h">
       <Filter>Sources\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Physics\CollisionEvent.h">
-      <Filter>Sources\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Physics\CollisionMesh.h">
       <Filter>Sources\Physics</Filter>
     </ClInclude>

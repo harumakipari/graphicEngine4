@@ -139,139 +139,96 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
     if (InputSystem::GetInputState("MouseLeft"))
     {// 左ボタンを押している間
         DirectX::XMFLOAT2 cursor = InputSystem::GetMousePosition();
-        float screenWidth = Graphics::GetScreenWidth();
-        float screenHeight = Graphics::GetScreenHeight();
-
-        // スクリーン座標の設定
-        DirectX::XMVECTOR ScreenPosition, WorldPosition;
-        DirectX::XMFLOAT3 screenPosition;
-        screenPosition.x = static_cast<float>(cursor.x);
-        screenPosition.y = static_cast<float>(cursor.y);
-        screenPosition.z = 0.0f;
-        ScreenPosition = DirectX::XMLoadFloat3(&screenPosition);
-
-        auto camera = CameraManager::GetCurrentCamera();
-        ViewConstants data = camera->GetViewConstants();
-
-        if (camera)
+        HitResultWithActor result;
+        XMFLOAT3 intersectPos;
+        XMFLOAT3 buildCurveDir;
+        if (CollisionFunction::RaycastFromMouse(cursor, result))
         {
-            //各行列を取得
-            DirectX::XMMATRIX View = DirectX::XMLoadFloat4x4(&data.view);
-            DirectX::XMMATRIX Projection = DirectX::XMLoadFloat4x4(&data.projection);
-            DirectX::XMMATRIX World = DirectX::XMMatrixIdentity();
-            // スクリーン座標をワールド座標に変換し、レイの始点を求める
-            WorldPosition = DirectX::XMVector3Unproject(ScreenPosition, 0.0f, 0.0f, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World);
+            Graphics::GetShapeRenderer()->DrawSphere(result.hitPoint, 0.03f, { 1, 1, 1, 1 });
 
-            DirectX::XMFLOAT3 rayStart;
-            DirectX::XMStoreFloat3(&rayStart, WorldPosition);
-
-            // スクリーン座標をワールド座標に変換し、レイの終点を求める
-            screenPosition.x = static_cast<float>(cursor.x);
-            screenPosition.y = static_cast<float>(cursor.y);
-            screenPosition.z = 1.0f;
-            ScreenPosition = DirectX::XMLoadFloat3(&screenPosition);
-            WorldPosition = DirectX::XMVector3Unproject(
-                ScreenPosition, 0.0f, 0.0f, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World
-            );
-            DirectX::XMFLOAT3 rayEnd;
-            DirectX::XMStoreFloat3(&rayEnd, WorldPosition);
-            DirectX::XMVECTOR RayDir = DirectX::XMVectorSubtract(XMLoadFloat3(&rayEnd), XMLoadFloat3(&rayStart));
-            float length = DirectX::XMVectorGetX(DirectX::XMVector3Length(RayDir));
-            RayDir = DirectX::XMVector3Normalize(RayDir);
-            DirectX::XMFLOAT3 rayDir;
-            DirectX::XMStoreFloat3(&rayDir, RayDir);
-            XMFLOAT3 intersectPos, intersectNormal;
-            DirectX::XMFLOAT3 buildCurveDir;
-
-            HitResultWithActor result;
-            if (Physics::Instance().SphereCast(rayStart, rayDir, FLT_MAX, 0.001f, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
+            XMFLOAT3 intersectNormal;
+            if (auto stage = dynamic_cast<FightStage*>(result.actor))
             {
-                Graphics::GetShapeRenderer()->DrawSphere(result.hitPoint, 0.03f, { 1, 1, 1, 1 });
-
-                if (auto stage = dynamic_cast<FightStage*>(result.actor))
-                {
-                    intersectPos = result.hitPoint;
-                    intersectNormal = result.normal;
-                }
-                else
-                {
-                    intersectPos = { 0.0f,0.0f,0.0f };
-                    intersectNormal = { 0.0f,0.0f,0.0f };
-                }
-                buildCurveDir = { intersectPos.x - position.x,0.0f,intersectPos.z - position.z };
+                intersectPos = result.hitPoint;
+                intersectNormal = result.normal;
             }
             else
             {
                 intersectPos = { 0.0f,0.0f,0.0f };
-                buildCurveDir = { 0.0f,0.0f,0.0f };
+                intersectNormal = { 0.0f,0.0f,0.0f };
             }
-
-            // これでマウスのpositionによって、建物を曲げる方向を見つける
-            XMVECTOR BuildCurveDir = XMLoadFloat3(&buildCurveDir);
-            BuildCurveDir = XMVector3Normalize(BuildCurveDir);
-            float buildHeight = modelHeight;
-            BuildCurveDir = XMVectorScale(BuildCurveDir, buildHeight);
-            XMStoreFloat3(&buildCurveDir, BuildCurveDir);
-
-            //　建物の一番上からのマウスの移動量によって、建物を曲げる量を決める
-            // ワールド座標からスクリーン座標へ変換
-            DirectX::XMFLOAT3 buildTop = { position.x,position.y + buildHeight,position.z };
-            DirectX::XMVECTOR WorldPostion, ScreenPosition;
-            WorldPostion = DirectX::XMLoadFloat3(&buildTop);
-            ScreenPosition = DirectX::XMVector3Project(WorldPostion, 0.0f, 0.0f, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World);
-            // スクリーン座標
-            DirectX::XMFLOAT2 screenPosition;
-            DirectX::XMStoreFloat2(&screenPosition, ScreenPosition);
-
-            // とりあえずｘだけの移動量
-            float moveAmount = cursor.x - screenPosition.x;
-
-
-            // 建物中心と交点の差ベクトル (水平)
-            DirectX::XMFLOAT3 dirXZ = {
-                intersectPos.x - position.x,
-                0.0f,
-                intersectPos.z - position.z
-            };
-            float angle = 0.0f;
-            DirectX::XMVECTOR dirVec = DirectX::XMLoadFloat3(&dirXZ);
-            if (DirectX::XMVector3LengthSq(dirVec).m128_f32[0] < 1e-6f)
-            {
-                // マウスが真上＝曲げ方向なし
-                angle = 0.0f;
-            }
-            else
-            {
-                // atan2(Z,X) で角度をラジアン取得
-                angle = atan2f(dirXZ.x, dirXZ.z);
-            }
-
-            // 交点ベクトルを正規化＋距離クランプ
-            XMFLOAT3 pos = position;
-            DirectX::XMVECTOR basePos = DirectX::XMLoadFloat3(&pos);
-            DirectX::XMVECTOR intersect = DirectX::XMLoadFloat3(&intersectPos);
-            DirectX::XMVECTOR diff = intersect - basePos;
-            diff = DirectX::XMVectorSetY(diff, 0.0f); // 高さは無視して水平方向だけのベクトルにする
-
-            float dist = DirectX::XMVectorGetX(DirectX::XMVector3Length(diff));
-            float maxDist = buildHeight + elasticParameters.maxDist; // 好みで調整
-            float scale = (dist > maxDist) ? (maxDist / dist) : 1.0f;
-            DirectX::XMVECTOR clampedDir = diff * scale;
-            //DirectX::XMVECTOR clampedDir = diff * moveAmount; // mouse の変化量 を使う場合
-
-            // p3 = 建物の上端＋方向ベクトル
-            DirectX::XMFLOAT3 p3;
-            DirectX::XMStoreFloat3(&p3, basePos + DirectX::XMVectorSet(0, buildHeight, 0, 0) + clampedDir);
-
-
-            float midY = position.y + buildHeight * 0.5f;
-
-
-            elasticConstants.p1 = { position.x,position.y,position.z,1.0f };
-            elasticConstants.p2 = { position.x,midY,position.z ,1.0f };
-            elasticConstants.p3 = { p3.x,p3.y,p3.z,1.0f };
-
+            buildCurveDir = { intersectPos.x - position.x,0.0f,intersectPos.z - position.z };
         }
+        else
+        {
+            intersectPos = { 0.0f,0.0f,0.0f };
+            buildCurveDir = { 0.0f,0.0f,0.0f };
+        }
+
+        // これでマウスのpositionによって、建物を曲げる方向を見つける
+        XMVECTOR BuildCurveDir = XMLoadFloat3(&buildCurveDir);
+        BuildCurveDir = XMVector3Normalize(BuildCurveDir);
+        float buildHeight = modelHeight;
+        BuildCurveDir = XMVectorScale(BuildCurveDir, buildHeight);
+        XMStoreFloat3(&buildCurveDir, BuildCurveDir);
+
+        //　建物の一番上からのマウスの移動量によって、建物を曲げる量を決める
+        // ワールド座標からスクリーン座標へ変換
+        DirectX::XMFLOAT3 buildTop = { position.x,position.y + buildHeight,position.z };
+        DirectX::XMVECTOR WorldPostion;
+        WorldPostion = DirectX::XMLoadFloat3(&buildTop);
+        // スクリーン座標
+        DirectX::XMFLOAT2 screenPosition = CollisionFunction::GetScreenPositionFromWorldPosition(buildTop);
+        
+
+        // とりあえずｘだけの移動量
+        float moveAmount = cursor.x - screenPosition.x;
+
+
+        // 建物中心と交点の差ベクトル (水平)
+        DirectX::XMFLOAT3 dirXZ = {
+            intersectPos.x - position.x,
+            0.0f,
+            intersectPos.z - position.z
+        };
+        float angle = 0.0f;
+        DirectX::XMVECTOR dirVec = DirectX::XMLoadFloat3(&dirXZ);
+        if (DirectX::XMVector3LengthSq(dirVec).m128_f32[0] < 1e-6f)
+        {
+            // マウスが真上＝曲げ方向なし
+            angle = 0.0f;
+        }
+        else
+        {
+            // atan2(Z,X) で角度をラジアン取得
+            angle = atan2f(dirXZ.x, dirXZ.z);
+        }
+
+        // 交点ベクトルを正規化＋距離クランプ
+        XMFLOAT3 pos = position;
+        DirectX::XMVECTOR basePos = DirectX::XMLoadFloat3(&pos);
+        DirectX::XMVECTOR intersect = DirectX::XMLoadFloat3(&intersectPos);
+        DirectX::XMVECTOR diff = intersect - basePos;
+        diff = DirectX::XMVectorSetY(diff, 0.0f); // 高さは無視して水平方向だけのベクトルにする
+
+        float dist = DirectX::XMVectorGetX(DirectX::XMVector3Length(diff));
+        float maxDist = buildHeight + elasticParameters.maxDist; // 好みで調整
+        float scale = (dist > maxDist) ? (maxDist / dist) : 1.0f;
+        DirectX::XMVECTOR clampedDir = diff * scale;
+        //DirectX::XMVECTOR clampedDir = diff * moveAmount; // mouse の変化量 を使う場合
+
+        // p3 = 建物の上端＋方向ベクトル
+        DirectX::XMFLOAT3 p3;
+        DirectX::XMStoreFloat3(&p3, basePos + DirectX::XMVectorSet(0, buildHeight, 0, 0) + clampedDir);
+
+
+        float midY = position.y + buildHeight * 0.5f;
+
+
+        elasticConstants.p1 = { position.x,position.y,position.z,1.0f };
+        elasticConstants.p2 = { position.x,midY,position.z ,1.0f };
+        elasticConstants.p3 = { p3.x,p3.y,p3.z,1.0f };
+
     }
     else
     {// 左ボタンを押していない時
@@ -296,19 +253,19 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
         elasticConstants.p1 = { position.x,position.y,position.z,1.0f };
         elasticConstants.p2 = { position.x,midY,position.z ,1.0f };
         elasticConstants.p3 = { p.x,p.y,p.z,1.0f };
-    }
-    elasticConstants.maxAngleDegree = elasticParameters.maxAngleDegrees;
+        }
+        elasticConstants.maxAngleDegree = elasticParameters.maxAngleDegrees;
 
-    DebugDrawManager::DrawSphere({ elasticConstants.p1.x,elasticConstants.p1.y,elasticConstants.p1.z }, 0.03f, { 1, 0, 0, 1 });
-    DebugDrawManager::DrawSphere({ elasticConstants.p2.x,elasticConstants.p2.y,elasticConstants.p2.z }, 0.03f, { 0, 1, 0, 1 });
-    DebugDrawManager::DrawSphere({ elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z }, 0.03f, { 0, 0, 1, 1 });
+        DebugDrawManager::DrawSphere({ elasticConstants.p1.x,elasticConstants.p1.y,elasticConstants.p1.z }, 0.03f, { 1, 0, 0, 1 });
+        DebugDrawManager::DrawSphere({ elasticConstants.p2.x,elasticConstants.p2.y,elasticConstants.p2.z }, 0.03f, { 0, 1, 0, 1 });
+        DebugDrawManager::DrawSphere({ elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z }, 0.03f, { 0, 0, 1, 1 });
 
 
 #if 0
-    std::wstring msg =
-        L"elastic Constant: " + std::to_wstring(elasticConstants.stretchRate);
+        std::wstring msg =
+            L"elastic Constant: " + std::to_wstring(elasticConstants.stretchRate);
 
-    OutputDebugStringW(msg.c_str());
+        OutputDebugStringW(msg.c_str());
 
 #endif // 0
 }
@@ -324,7 +281,7 @@ void  ElasticMeshComponent::GetSurfacePositionTangent(DirectX::XMFLOAT3& surface
 
     XMVECTOR up = XMVectorSet(0, 1, 0, 0);
     XMVECTOR normal = XMVector3Normalize(XMVector3Cross(Tangent, XMVector3Cross(up, Tangent)));
-     // プリンの半径
+    // プリンの半径
     XMVECTOR surfacePos = p3 + Tangent * cherryOffset;
     DirectX::XMStoreFloat3(&surfacePosition, surfacePos);
 
