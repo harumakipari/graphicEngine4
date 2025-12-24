@@ -22,7 +22,7 @@ public:
     virtual ~Actor() = default;
 
     //引数付きコンストラクタ
-    Actor(std::string actorName) :actorName(actorName)
+    Actor(const std::string& actorName) :actorName(actorName)
     {
         OutputDebugStringA(("Actor constructor: ownedSceneComponents_ size=" + std::to_string(ownedSceneComponents_.size()) + "\n").c_str());
         OutputDebugStringA((", capacity=" + std::to_string(ownedSceneComponents_.capacity()) + "\n").c_str());
@@ -44,7 +44,7 @@ public:
     virtual void Initialize(const Transform& transform) {}
 
     // Initialize の後に呼ばれるべき処理 Transformを更新する　キャッシュしているため一フレーム後のTransformをが呼ばれる可能性を防ぐため
-    void UpdateAllComponentTransforms()
+    void UpdateAllComponentTransforms() const
     {
         if (rootComponent_)
         {
@@ -144,34 +144,6 @@ public:
 
     //    return newComponent;
     //}
-
-    // 他の Actor の Component を親にしたいとき用
-    template <class T>
-    std::shared_ptr<T> NewSceneComponentWithParent(const std::string& name, const std::shared_ptr<SceneComponent> explictParent)
-    {
-        // 自分自身が shared_ptr で管理されている前提で、それを渡す
-        std::shared_ptr<Actor> sharedThis = shared_from_this(); // Actorは std::enable_shared_from_this 継承が必要
-        std::shared_ptr<T> newComponent = std::make_shared<T>(name, sharedThis);
-
-        if (explictParent)
-        {
-            newComponent->AttachTo(explictParent);
-        }
-        else
-        {
-            _ASSERT(" 他の Actor の Component を親にしようとしているけど null です。");
-        }
-
-
-        // 所有リストに追加
-        ownedSceneComponents_.push_back(newComponent);
-
-        // 初期化する
-        newComponent->OnRegister();
-
-        return newComponent;
-    }
-
 
     // 名前からcomponentをゲットする
     //template <class T>
@@ -308,8 +280,7 @@ public:
         components.clear();
         for (auto component : ownedSceneComponents_)
         {
-            T* downCastComponent = dynamic_cast<T*>(component.get());
-            if (downCastComponent)
+            if (T* downCastComponent = dynamic_cast<T*>(component.get()))
             {
                 components.push_back(downCastComponent);
             }
@@ -397,7 +368,7 @@ public:
     const DirectX::XMFLOAT4& GetQuaternionRotation() const { return rootComponent_->GetRelativeRotation(); }
 
     // クォータニオンを設定する関数
-    void SetQuaternionRotation(const DirectX::XMFLOAT4& rotation)
+    void SetQuaternionRotation(const DirectX::XMFLOAT4& rotation) const
     {
         // 明示的に検査を追加
         _ASSERT_EXPR(MathHelper::IsValidQuaternion(rotation), L"SetQuaternionRotation: Invalid quaternion");
@@ -411,7 +382,7 @@ public:
     }
 
     // 角度を設定する関数
-    void SetEulerRotation(const DirectX::XMFLOAT3& eulerRotation)
+    void SetEulerRotation(const DirectX::XMFLOAT3& eulerRotation) const
     {
         this->rootComponent_->SetRelativeEulerRotationDirect(eulerRotation);
     }
@@ -420,7 +391,7 @@ public:
     DirectX::XMFLOAT3 GetScale() const { return rootComponent_->GetRelativeScale(); }
 
     // スケールを設定する関数
-    void SetScale(const DirectX::XMFLOAT3& scale)
+    void SetScale(const DirectX::XMFLOAT3& scale) const
     {
         this->rootComponent_->SetRelativeScaleDirect(scale);
     }
@@ -430,7 +401,7 @@ public:
         this->isActive = isActive;
     }
 
-    bool IsActive()
+    bool IsActive() const
     {
         return isActive;
     }
@@ -446,14 +417,17 @@ public:
     //}
 
     /**
-     * @brief Actor を削除予約状態にする
-     */
+    * @brief Actor を削除予約状態にする
+    *
+    * この関数を呼ぶと、次の Update フレームで
+    * DestroyActor() が実行される。
+    */
     void MarkPendingKill()
     {
         isPendingKill = true;
     }
 
-    bool GetIsValid()
+    bool GetIsValid() const
     {
         return this->isValid;
     }
@@ -531,7 +505,7 @@ public:
     using HitCallBack = std::function<void(std::pair<CollisionComponent*, CollisionComponent*>)>;
 
     // 当たった時に通る関数       // hitShapes.firstが自身 hitShapes.secondが相手
-    void BroadcastHit(std::pair<CollisionComponent*, CollisionComponent*> hitShapes)
+    void BroadcastHit(std::pair<CollisionComponent*, CollisionComponent*> hitShapes) const
     {
         for (auto& callback : hitCallbacks_)
         {
@@ -545,7 +519,7 @@ public:
 
     }
 
-    void AddHitCallback(HitCallBack callback)
+    void AddHitCallback(const HitCallBack& callback)
     {
         hitCallbacks_.push_back(callback);
     }

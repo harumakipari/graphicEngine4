@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "BossBuilding.h"
+
+#include "Components/Game/ItemSpawnerComponent.h"
 #include "Game/Actors/Enemy/RiderEnemy.h"
 #include "Game/Actors/Stage/Bomb.h"
 #include "Game/Managers/GameManager.h"
@@ -103,7 +105,8 @@ void BossBuilding::Update(float deltaTime)
             ScheduleDeactivate(convexTimer);
 
             // ビルからアイテムをドロップする
-            auto itemSpawner = this->NewSceneComponentWithParent<ItemSpawnerComponent>("itemSpawnerComponent", preSkeltalMeshComponent);
+            auto itemSpawner = this->AddComponent<ItemSpawnerComponent>("itemSpawnerComponent");
+            itemSpawner->AttachTo(preSkeltalMeshComponent);
             // ボスに破壊されたときは 5 の固定値とする
             itemSpawner->SpawnItems(5, true);
 
@@ -174,8 +177,9 @@ void BossBuilding::Update(float deltaTime)
             // 何秒後に瓦礫を消すかを設定する
             ScheduleDeactivate(convexTimer);
 
-            auto itemSpawner = this->NewSceneComponentWithParent<ItemSpawnerComponent>("itemSpawnerComponent", preSkeltalMeshComponent);
+            auto itemSpawner = this->AddComponent<ItemSpawnerComponent>("itemSpawnerComponent");
             // beamCount * 2 するかも
+            itemSpawner->AttachTo(preSkeltalMeshComponent);
             int count = static_cast<int>(std::ceil(beamCount * itemPop));
             itemSpawner->SpawnItems(count, true);
 
@@ -206,8 +210,9 @@ void BossBuilding::Update(float deltaTime)
             // 何秒後に瓦礫を消すかを設定する
             ScheduleDeactivate(convexTimer);
 
-            auto itemSpawner = this->NewSceneComponentWithParent<ItemSpawnerComponent>("itemSpawnerComponent", preSkeltalMeshComponent);
+            auto itemSpawner = this->AddComponent<ItemSpawnerComponent>("itemSpawnerComponent");
             // beamCount * 2 するかも
+            itemSpawner->AttachTo(preSkeltalMeshComponent);
             int count = static_cast<int>(std::ceil(beamCount * itemPop));
             itemSpawner->SpawnItems(count, true);
 
@@ -279,7 +284,8 @@ void BossBuilding::CallHitShockWave(float power, int beamItemCount, const Direct
         //buildDroppedItem->skeletalMeshComponent->SetIsVisible(true); // 見えるようにする
 
         // ビルからアイテムをドロップする
-        auto itemSpawner = this->NewSceneComponentWithParent<ItemSpawnerComponent>("itemSpawnerComponent", skeltalMeshComponent);
+        auto itemSpawner = this->AddComponent<ItemSpawnerComponent>("itemSpawnerComponent");
+        itemSpawner->AttachTo(skeltalMeshComponent);
         itemSpawner->SpawnItems(beamItemCount, true);
 
 

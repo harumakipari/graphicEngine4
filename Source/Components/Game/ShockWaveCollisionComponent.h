@@ -8,7 +8,6 @@
 //#include "Components/CollisionShape/ShapeComponent.h"
 #include "Components/Render/MeshComponent.h"
 #include "Core/Actor.h"
-#include "Game/Actors/Stage/Objects/StageProp.h"
 using namespace DirectX;
 
 class ShockWaveModelComponent :public SkeletalMeshComponent

@@ -10,7 +10,6 @@
 #include "Components/Effect/EffectComponent.h"
 
 #include "Game/Actors/Item/PickUpItem.h"
-#include "Game/Actors/Item/HeldEnergyCore.h"
 #include "Game/Actors/Enemy/RiderEnemy.h"
 #include "Game/Managers/GameManager.h"
 #include "Game/Managers/ItemManager.h"

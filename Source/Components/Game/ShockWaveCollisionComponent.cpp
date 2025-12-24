@@ -3,7 +3,6 @@
 
 #include "Core/Actor.h"
 #include "Core/ActorManager.h"
-#include "Game/Actors/Stage/Objects/StageProp.h"
 #include "Game/Actors/Stage/Building.h"
 #include "Game/Actors/Stage/BossBuilding.h"
 
@@ -34,8 +33,8 @@ void ShockWaveCollisionComponent::Tick(float deltaTime)
         }
         auto building = std::dynamic_pointer_cast<Building>(actor);
         auto bossBuilding = std::dynamic_pointer_cast<BossBuilding>(actor);
-        auto stageProp = std::dynamic_pointer_cast<StageProp>(actor);
-        if (!building && !stageProp && !bossBuilding)
+        //auto stageProp = std::dynamic_pointer_cast<StageProp>(actor);
+        if (!building/* && !stageProp */&& !bossBuilding)
         {
             continue;
         }

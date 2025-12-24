@@ -7,7 +7,6 @@
 #include "Game/Actors/Stage/BossBuilding.h"
 #include "Game/Actors/Enemy/RiderEnemy.h"
 #include "Game/Actors/Enemy/TutorialEnemy.h"
-#include "Game/Actors/Stage/Objects/StageProp.h"
 #include "Components/Game/LifeTimeComponent.h"
 
 
@@ -164,21 +163,21 @@ void Beam::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair)
         lifeTimeComponent->SetLifeTime(3.0f);
 
     }
-    else if (auto stageProps = std::dynamic_pointer_cast<StageProp>(hitPair.second->GetActor()))
-    {
-        //this->MarkPendingKill();
-        skeltalMeshComponent->SetIsVisible(false);
+    //else if (auto stageProps = std::dynamic_pointer_cast<StageProp>(hitPair.second->GetActor()))
+    //{
+    //    //this->MarkPendingKill();
+    //    skeltalMeshComponent->SetIsVisible(false);
 
-        this->ScheduleDestroyComponentByName("effectBeamComponet");
+    //    this->ScheduleDestroyComponentByName("effectBeamComponet");
 
-        //effectBeamComponent->Deactivate();
-        this->ScheduleDestroyComponentByName("skeltalComponent");
-        this->ScheduleDestroyComponentByName("sphereComponent");
+    //    //effectBeamComponent->Deactivate();
+    //    this->ScheduleDestroyComponentByName("skeltalComponent");
+    //    this->ScheduleDestroyComponentByName("sphereComponent");
 
-        //auto  lifeTimeComponent = this->NewLogicComponent<LifeTimeComponent>("lifeTimeComponent");
-        auto  lifeTimeComponent = this->AddComponent<LifeTimeComponent>("lifeTimeComponent");
-        lifeTimeComponent->SetLifeTime(3.0f);
-    }
+    //    //auto  lifeTimeComponent = this->NewLogicComponent<LifeTimeComponent>("lifeTimeComponent");
+    //    auto  lifeTimeComponent = this->AddComponent<LifeTimeComponent>("lifeTimeComponent");
+    //    lifeTimeComponent->SetLifeTime(3.0f);
+    //}
     else if (auto stageProps = std::dynamic_pointer_cast<Stage>(hitPair.second->GetActor()))
     {
         TutorialSystem::AchievedAction(TutorialStep::FirstAttack);

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Building.h"
 
+#include "Components/Game/ItemSpawnerComponent.h"
 #include "Game/Actors/Enemy/RiderEnemy.h"
 #include "Game/Actors/Stage/Bomb.h"
 #include "Game/Managers/GameManager.h"
@@ -96,7 +97,8 @@ void Building::Update(float delta_time)
             ScheduleDeactivate(convexTimer);
 
             // ビルからアイテムをドロップする
-            auto itemSpawner = this->NewSceneComponentWithParent<ItemSpawnerComponent>("itemSpawnerComponent", preSkeltalMeshComponent);
+            auto itemSpawner = this->AddComponent<ItemSpawnerComponent>("itemSpawnerComponent");
+            itemSpawner->AttachTo(preSkeltalMeshComponent);
             // ボスに破壊されたときは 5 の固定値とする
             itemSpawner->SpawnItems(itemCountWithBossDestroy, true, itemLifeTimer);
 
@@ -201,7 +203,8 @@ void Building::Update(float delta_time)
             ScheduleDeactivate(convexTimer);
 
             // ビルからアイテムをドロップする
-            auto itemSpawner = this->NewSceneComponentWithParent<ItemSpawnerComponent>("itemSpawnerComponent", preSkeltalMeshComponent);
+            auto itemSpawner = this->AddComponent<ItemSpawnerComponent>("itemSpawnerComponent");
+            itemSpawner->AttachTo(preSkeltalMeshComponent);
             // beamCount * 2 するかも
             int count = static_cast<int>(beamCount * itemPop);
             itemSpawner->SpawnItems(count, true);
@@ -266,7 +269,8 @@ void Building::CallHitShockWave(float power, int beamItemCount, const DirectX::X
         ScheduleDeactivate(4.0f);
 
         // ビルからアイテムをドロップする
-        auto itemSpawner = this->NewSceneComponentWithParent<ItemSpawnerComponent>("itemSpawnerComponent", skeltalMeshComponent);
+        auto itemSpawner = this->AddComponent<ItemSpawnerComponent>("itemSpawnerComponent");
+        itemSpawner->AttachTo(skeltalMeshComponent);
         itemSpawner->SpawnItems(beamItemCount, true);
 
         // エフェクトコンポーネントに伝達
