@@ -142,9 +142,9 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
         HitResultWithActor result;
         XMFLOAT3 intersectPos;
         XMFLOAT3 buildCurveDir;
-        if (CollisionFunction::RaycastFromMouse(cursor, result))
+        if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
         {
-            Graphics::GetShapeRenderer()->DrawSphere(result.hitPoint, 0.03f, { 1, 1, 1, 1 });
+           DebugDrawManager::DrawSphere(result.hitPoint, 1.03f, { 1, 1, 0, 1 });
 
             XMFLOAT3 intersectNormal;
             if (auto stage = dynamic_cast<FightStage*>(result.actor))

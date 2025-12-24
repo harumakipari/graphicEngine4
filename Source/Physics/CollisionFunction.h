@@ -10,7 +10,7 @@
 
 namespace CollisionFunction
 {
-    inline bool RaycastFromMouse(const DirectX::XMFLOAT2& mouseCursor, HitResultWithActor& result, CollisionLayer collisionLayer = CollisionLayer::Everything)
+    inline bool RaycastFromMouse(const DirectX::XMFLOAT2& mouseCursor, HitResultWithActor& result, uint32_t collisionLayer = 0xFFFFFF)
     {
         float screenWidth = Graphics::GetScreenWidth();
         float screenHeight = Graphics::GetScreenHeight();
@@ -54,7 +54,7 @@ namespace CollisionFunction
             DirectX::XMFLOAT3 rayDir;
             DirectX::XMStoreFloat3(&rayDir, RayDir);
             
-            if (Physics::Instance().SphereCast(rayStart, rayDir, FLT_MAX, 0.001f, result, static_cast<uint32_t>(collisionLayer)))
+            if (Physics::Instance().SphereCast(rayStart, rayDir, FLT_MAX, 0.001f, result, collisionLayer))
             {
                 return true;
             }
