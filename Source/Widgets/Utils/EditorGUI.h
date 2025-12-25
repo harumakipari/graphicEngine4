@@ -3,7 +3,7 @@
 #include "../../Engine/Scene/Scene.h"
 
 #include "../GameObject.h"
-#include "Dialog.h"
+#include "Widgets/Utils/Dialog.h"
 #include "stdUtiles.h"
 #include "../UIFactory.h"
 #include "../AudioSource.h"

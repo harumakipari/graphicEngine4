@@ -11,8 +11,8 @@
 
 #ifdef USE_IMGUI
 #include <imgui.h>
-#include "../../Widgets/Utils/Dialog.h"
-#include "../../Widgets/Utils/stdUtiles.h"
+#include "Widgets/Utils/stdUtiles.h"
+#include "Widgets/Utils/Dialog.h"
 #endif // USE_IMGUI
 
 

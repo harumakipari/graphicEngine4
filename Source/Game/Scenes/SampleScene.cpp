@@ -18,7 +18,6 @@
 #include "Game/Actors/Enemy/Boss/BossEnemy.h"
 #include "Game/Actors/Stage/ElasticBuilding.h"
 #include "Game/Actors/Stage/Cloth.h"
-#include "Game/SofyBody/MassPoint.h"
 
 #include "Widgets/ObjectManager.h"
 #include "Widgets/Utils/EditorGUI.h"

@@ -7,7 +7,7 @@
 #endif // USE_IMGUI
 #include "Graphics/Core/Graphics.h"
 #include "Engine/Utility/JsonFileHandler.h"
-#include "Engine/Debug/Dialog.h"
+#include "Widgets/Utils/Dialog.h"
 
 void EffectEditor::Show()
 {

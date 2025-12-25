@@ -2,7 +2,6 @@
 #include <algorithm>
 #include "Engine/Utility/Win32Utils.h"
 #include "Physics.h"
-#include "CollisionEvent.h"
 #include "Graphics/Core/Graphics.h"
 
 #include "Core/Actor.h"
@@ -1117,37 +1116,6 @@ void Physics::onContact(const physx::PxContactPairHeader& pairHeader, const phys
             //}
         }
 
-        if (pair.events & physx::PxPairFlag::eNOTIFY_TOUCH_LOST)
-        {
-            // 接触している状態から離れたとき
-            for (physx::PxU32 j = 0; j < pxContactCount; ++j)
-            {
-                const physx::PxContactPairPoint& pxContactPoint = pxContactPoints[j];
-
-                auto a = static_cast<CollisionEvent*>(pxActorA->userData);
-                if (a != nullptr)
-                {
-                    // NOTE:⑫衝突イベント通知
-                    CollisionContact contact;
-                    contact.pxActor = pxActorB;
-                    contact.pxNormal = pxContactPoint.normal;
-                    contact.pxPoint = pxContactPoint.position;
-                    contact.pxDepth = pxContactPoint.separation;
-                    a->OnContactTouchLost(contact);
-                }
-                auto b = static_cast<CollisionEvent*>(pxActorB->userData);
-                if (b != nullptr)
-                {
-                    // NOTE:⑫衝突イベント通知
-                    CollisionContact contact;
-                    contact.pxActor = pxActorA;
-                    contact.pxNormal = -pxContactPoint.normal;
-                    contact.pxPoint = pxContactPoint.position;
-                    contact.pxDepth = pxContactPoint.separation;
-                    b->OnContactTouchLost(contact);
-                }
-            }
-        }
     }
 }
 
