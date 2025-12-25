@@ -20,7 +20,7 @@ public:
 	static void Error(const char* message,std::source_location location = std::source_location::current());
 	//static void Log(const wchar_t* message);
 
-	static void RenderIMGUI();
+	static void DrawImGui();
 
 private:
 	static Logger& Instance() { static Logger instance; return instance; }

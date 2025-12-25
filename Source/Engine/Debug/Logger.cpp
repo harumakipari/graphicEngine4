@@ -76,7 +76,7 @@ void Logger::Error(const char* message,std::source_location location) {
 	Instance().logQueue.emplace(std::time(nullptr), std::format("[ERROR]\n\n\n ErrorLocation: \n\n\n\t File : {}\n\n\n\t Function : {}\n\n\n\t Line : {}\n\n\n Message :\n\n\n\t {}",location.file_name(),location.function_name(),location.line(), message));
 }
 
-void Logger::RenderIMGUI()
+void Logger::DrawImGui()
 {
 #ifdef USE_IMGUI
 

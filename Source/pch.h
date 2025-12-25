@@ -16,3 +16,5 @@
 
 #include "Engine/Utility/Win32Utils.h"
 #include "Graphics/Core/Shader.h"
+
+#include "Engine/Debug/Logger.h"

@@ -16,6 +16,7 @@
 #include "Components/Audio/AudioSourceComponent.h"
 #include "Engine/Audio/CoreAudio.h"
 #include "Engine/Debug/DebugDrawManager.h"
+#include "Engine/Debug/Logger.h"
 #include "Engine/Effects/EffectEditor.h"
 #include "Engine/Effects/EffectManager.h"
 
@@ -35,8 +36,6 @@ Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fu
 
 bool Framework::Initialize()
 {
-
-
     ////デバイス・デバイスコンテクスト・スワップチェーンの作成
     ID3D11Device* device = Graphics::GetDevice();
     if (!device) {
@@ -64,6 +63,8 @@ bool Framework::Initialize()
     //エフェクトエディタ初期化
     EffectEditor::Initialize();
 
+    // ログ初期化
+    Logger::Initialize();
 
     //プロファイラ初期化
     ProfileInitialize(&isPaused, Framework::SetPause/*, ImGuiControl::Profiler::DefaultMaxThreads*/);
@@ -164,6 +165,7 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
         ProfileScopedSection_2(0, "ImGui", ImGuiControl::Profiler::Yellow);
         ProfileDrawUI();
         Scene::_drawGUI();
+        Logger::DrawImGui();
         ImGui::PopFont();
 
     }

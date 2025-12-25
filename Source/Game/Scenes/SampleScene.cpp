@@ -83,6 +83,8 @@ void SampleScene::Start()
     // ボタンでゲージ減らす
     button->onClick = [gauge]()
         {
+            Logger::Log(U8("ボタンButton Clicked!"));
+
             OutputDebugStringA("Button Clicked!\n");
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
             gauge->value -= 0.1f;
