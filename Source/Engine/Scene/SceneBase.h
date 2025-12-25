@@ -99,6 +99,7 @@ protected:
     std::unique_ptr<FullScreenQuad> fullscreenQuad;
 
     std::unique_ptr<FrameBuffer> frameBuffer;
+    std::unique_ptr<FrameBuffer> imGuiGizmoBuffer;
 
     std::unique_ptr<CascadedShadowMaps> cascadedShadowMaps;
     std::unique_ptr<MultipleRenderTargets> multipleRenderTargets;

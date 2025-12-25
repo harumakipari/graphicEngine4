@@ -56,6 +56,7 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, static_cast<uint32_t>(width), height, 3);
 
     frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
+    imGuiGizmoBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
 
     // GBUFFER
     gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
@@ -161,6 +162,10 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
         sceneRender.UpdateViewConstants(immediateContext, data);
     }
     UpdateConstantBuffer(immediateContext);
+
+    imGuiGizmoBuffer->Clear(immediateContext);
+    imGuiGizmoBuffer->Activate(immediateContext);
+
     if (!useDeferredRendering)
     {// フォワードレンダリング
         ForwardRender(immediateContext);
@@ -171,6 +176,8 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
     }
 
     Draw(immediateContext);
+
+    imGuiGizmoBuffer->Deactivate(immediateContext);
 }
 
 
@@ -390,8 +397,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     // デバック描画
 #if _DEBUG
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-   //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
-   DebugDrawManager::Render(immediateContext);
+    //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+    DebugDrawManager::Render(immediateContext);
 #endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
@@ -457,7 +464,7 @@ void SceneBase::DrawGui()
 #ifdef USE_IMGUI
     SetupImGuiStyle();
     DrawOutliner();
-    // DrawGizmo();// 
+     DrawGizmo();// 
     DrawInspector();
     DrawShortcutInfo();
 #endif
@@ -657,7 +664,7 @@ void SceneBase::DrawGizmo()
 
     // === 3D描画 ===
     ImGui::Image(
-        frameBuffer->shaderResourceViews[0].Get(),
+        imGuiGizmoBuffer->shaderResourceViews[0].Get(),
         ImVec2(VIEW_W, VIEW_H)
     );
 
