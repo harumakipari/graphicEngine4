@@ -62,7 +62,7 @@ class Gamepad :public InputKey
 private:
     GamePadKeyType keyType;
 public:
-    Gamepad(int vkey, GamePadKeyType type = GamePadKeyType::Key) :InputKey(vkey, InputDeviceType::Gamepad),keyType(type) {}
+    Gamepad(int vkey, GamePadKeyType type = GamePadKeyType::Key) :InputKey(vkey, InputDeviceType::Gamepad), keyType(type) {}
     virtual ~Gamepad() override = default;
     Gamepad(Gamepad&) = delete;
     Gamepad& operator=(Gamepad&) = delete;
@@ -92,7 +92,7 @@ public:
     static void Initialize();
 
     //終了化
-    static void Finalize(){}
+    static void Finalize() {}
 
     // 更新処理
     static void Update(float deltaTime);
@@ -114,7 +114,7 @@ public:
 
         return Direction::None;
     }
-    
+
     static DirectX::XMFLOAT2 GetAxisDirectionVector()
     {
         int ax = GetAxisRaw(Side::Left, Axis::X);
@@ -133,12 +133,55 @@ public:
     static int GetMousePositionY() { return mousePositionY[0]; }
 
     // マウスカーソルの位置を取得
-    static DirectX::XMFLOAT2 GetMousePosition()
+    static DirectX::XMFLOAT2 GetMousePositionScreen()
     {
         DirectX::XMFLOAT2 mousePosition;
         mousePosition.x = static_cast<float>(mousePositionX[0]);
         mousePosition.y = static_cast<float>(mousePositionY[0]);
         return mousePosition;
+    }
+
+    static void SetViewportRect(float x, float y, float w, float h)
+    {
+        viewportX = x;
+        viewportY = y;
+        viewportW = w;
+        viewportH = h;
+    }
+
+    static void GetViewportRect(float& x, float& y, float& w, float& h)
+    {
+        x = viewportX;
+        y = viewportY;
+        w = viewportW;
+        h = viewportH;
+    }
+
+
+    // ビューポート内のマウスカーソル位置を取得（ビューポート外ならfalseを返す）
+    static bool GetMousePositionInViewport(DirectX::XMFLOAT2& out)
+    {
+        float mx = static_cast<float>(mousePositionX[0]);
+        float my = static_cast<float>(mousePositionY[0]);
+
+        if (mx < viewportX || my < viewportY ||
+            mx > viewportX + viewportW ||
+            my > viewportY + viewportH)
+        {
+            return false;
+        }
+
+        out.x = mx - viewportX;
+        out.y = my - viewportY;
+        return true;
+    }
+
+    // ビューポート内のマウスカーソル位置を取得（ビューポート外なら0,0を返す）
+    static DirectX::XMFLOAT2 GetMousePositionInViewportOrZero()
+    {
+        DirectX::XMFLOAT2 pos = { 0.0f,0.0f };
+        GetMousePositionInViewport(pos);
+        return pos;
     }
 
     // 前回のマウスカーソルX座標取得
@@ -190,6 +233,10 @@ private:
     static inline bool cursolLock = false;
     static inline bool cursolVisible = true;
 
+    static inline float viewportX = 0;
+    static inline float viewportY = 0;
+    static inline float viewportW = 0;
+    static inline float viewportH = 0;
 };
 
 #endif // INPUT_SYSTEM_H

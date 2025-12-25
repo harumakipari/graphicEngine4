@@ -78,6 +78,22 @@ public:
 
     static HWND GetHwnd() { return hWnd; }
 
+    static void SetViewport(float x, float y, float w, float h)
+    {
+        viewportX = x;
+        viewportY = y;
+        viewportW = w;
+        viewportH = h;
+    }
+
+    static void GetViewport(float& x, float& y, float& w, float& h)
+    {
+        x = viewportX;
+        y = viewportY;
+        w = viewportW;
+        h = viewportH;
+    }
+
 
     static inline BOOL fullscreenMode{ FALSE };// フルスクリーンモードかどうか
 private:
@@ -112,4 +128,8 @@ private:
     static inline std::unique_ptr<PrimitiveRenderer>				primitiveRenderer;
     static inline std::unique_ptr<PrimitiveShapeRenderer>			shapeRenderer;
 
+    static inline float viewportX = 0;
+    static inline float viewportY = 0;
+    static inline float viewportW = 0;
+    static inline float viewportH = 0;
 };

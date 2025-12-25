@@ -87,8 +87,12 @@ public:
 
     void Update(float dt) override
     {
-        DirectX::XMFLOAT2 cursor = InputSystem::GetMousePosition();
-
+        DirectX::XMFLOAT2 cursor = InputSystem::GetMousePositionScreen();
+        if (!InputSystem::GetMousePositionInViewport(cursor))
+        {
+            state = UIButtonState::Normal;
+            return;
+        }
         bool inside = IsInside(cursor);
 
         if (inside)

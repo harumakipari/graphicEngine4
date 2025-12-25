@@ -87,6 +87,7 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     uiManager = std::make_unique<UIManager>();
 
 
+
     return true;
 }
 
@@ -156,16 +157,18 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
 
 void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
 {
+
     if (auto camera = CameraManager::GetCurrentCamera())
     {
         ViewConstants data = camera->GetViewConstants();
         sceneRender.UpdateViewConstants(immediateContext, data);
     }
     UpdateConstantBuffer(immediateContext);
+#ifdef USE_IMGUI
 
     imGuiGizmoBuffer->Clear(immediateContext);
     imGuiGizmoBuffer->Activate(immediateContext);
-
+#endif
     if (!useDeferredRendering)
     {// フォワードレンダリング
         ForwardRender(immediateContext);
@@ -176,8 +179,10 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
     }
 
     Draw(immediateContext);
+#ifdef USE_IMGUI
 
     imGuiGizmoBuffer->Deactivate(immediateContext);
+#endif
 }
 
 
@@ -395,11 +400,11 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
 
     // デバック描画
-#if _DEBUG
+//#if _DEBUG
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
     //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
     DebugDrawManager::Render(immediateContext);
-#endif
+//#endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
     frameBuffer->Deactivate(immediateContext);
@@ -463,11 +468,41 @@ void SceneBase::DrawGui()
 {
 #ifdef USE_IMGUI
     SetupImGuiStyle();
+    DrawDockSpace();
     DrawOutliner();
-     DrawGizmo();// 
+    DrawGizmo();// 
     DrawInspector();
+
     DrawShortcutInfo();
 #endif
+}
+
+void SceneBase::DrawDockSpace()
+{
+    ImGuiWindowFlags window_flags =
+        ImGuiWindowFlags_NoDocking |
+        ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoBringToFrontOnFocus |
+        ImGuiWindowFlags_NoNavFocus;
+
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(viewport->WorkPos);
+    ImGui::SetNextWindowSize(viewport->WorkSize);
+    ImGui::SetNextWindowViewport(viewport->ID);
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+
+    ImGui::Begin("DockSpaceRoot", nullptr, window_flags);
+    ImGui::PopStyleVar(2);
+
+    ImGuiID dockspace_id = ImGui::GetID("MainDockSpace");
+    ImGui::DockSpace(dockspace_id, ImVec2(0, 0));
+
+    ImGui::End();
 }
 
 void SceneBase::DrawShortcutInfo()
@@ -532,9 +567,9 @@ void SceneBase::DrawOutliner()
 {
     ImGuiViewport* viewport = ImGui::GetMainViewport();
     const float left_panel_width = 300.0f;
-    ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x, viewport->WorkPos.y));
-    ImGui::SetNextWindowSize(ImVec2(left_panel_width, viewport->WorkSize.y));
-    ImGui::Begin("Actor Outliner", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    //ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x, viewport->WorkPos.y));
+    //ImGui::SetNextWindowSize(ImVec2(left_panel_width, viewport->WorkSize.y));
+    ImGui::Begin("Actor Outliner", nullptr/*, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove*/);
 
     for (auto& actor : this->GetActorManager()->GetAllActors())
     {
@@ -567,9 +602,9 @@ void SceneBase::DrawInspector()
     // 右側
     ImGuiViewport* viewport = ImGui::GetMainViewport();
     const float right_panel_width = 400.0f;
-    ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x + viewport->WorkSize.x - right_panel_width, viewport->WorkPos.y));
-    ImGui::SetNextWindowSize(ImVec2(right_panel_width, viewport->WorkSize.y));
-    ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    //ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x + viewport->WorkSize.x - right_panel_width, viewport->WorkPos.y));
+    //ImGui::SetNextWindowSize(ImVec2(right_panel_width, viewport->WorkSize.y));
+    ImGui::Begin("Inspector", nullptr/*, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove*/);
 
     if (ImGui::BeginTabBar("InspectorTabs"))
     {
@@ -639,7 +674,7 @@ void SceneBase::DrawGizmo()
 {
     ImGui::Begin("Viewport",
         nullptr,
-        ImGuiWindowFlags_NoMove |
+        /* ImGuiWindowFlags_NoMove |*/
         ImGuiWindowFlags_NoScrollbar |
         ImGuiWindowFlags_NoScrollWithMouse
     );
@@ -699,4 +734,38 @@ void SceneBase::DrawGizmo()
     }
 
     ImGui::End();
+#ifdef USE_IMGUI
+
+    InputSystem::SetViewportRect(
+        imageMin.x,
+        imageMin.y,
+        imageSize.x,
+        imageSize.y
+    );
+    Graphics::SetViewport(
+        imageMin.x,
+        imageMin.y,
+        imageSize.x,
+        imageSize.y
+    );
+#else
+    float screenWidth = static_cast<float>(Graphics::GetScreenWidth());
+    float screenHeight = static_cast<float>(Graphics::GetScreenHeight());
+    DirectX::XMFLOAT2 imageSize = { screenWidth,screenHeight };
+    DirectX::XMFLOAT2 imageMin = { 0.0f,0.0f };
+
+    InputSystem::SetViewportRect(
+        imageMin.x,
+        imageMin.y,
+        imageSize.x,
+        imageSize.y
+    );
+    Graphics::SetViewport(
+        imageMin.x,
+        imageMin.y,
+        imageSize.x,
+        imageSize.y
+    );
+#endif
+
 }

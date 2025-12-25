@@ -12,8 +12,8 @@ namespace CollisionFunction
 {
     inline bool RaycastFromMouse(const DirectX::XMFLOAT2& mouseCursor, HitResultWithActor& result, uint32_t collisionLayer = 0xFFFFFF)
     {
-        float screenWidth = Graphics::GetScreenWidth();
-        float screenHeight = Graphics::GetScreenHeight();
+        float screenWidth, screenHeight, viewportX, viewportY;
+        Graphics::GetViewport(viewportX, viewportY, screenWidth, screenHeight);
 
         // スクリーン座標の設定
         DirectX::XMVECTOR ScreenPosition, WorldPosition;
@@ -33,7 +33,7 @@ namespace CollisionFunction
             DirectX::XMMATRIX Projection = DirectX::XMLoadFloat4x4(&data.projection);
             DirectX::XMMATRIX World = DirectX::XMMatrixIdentity();
             // スクリーン座標をワールド座標に変換し、レイの始点を求める
-            WorldPosition = DirectX::XMVector3Unproject(ScreenPosition, 0.0f, 0.0f, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World);
+            WorldPosition = DirectX::XMVector3Unproject(ScreenPosition, viewportX, viewportY, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World);
 
             DirectX::XMFLOAT3 rayStart;
             DirectX::XMStoreFloat3(&rayStart, WorldPosition);
@@ -69,8 +69,8 @@ namespace CollisionFunction
 
     inline XMFLOAT2 GetScreenPositionFromWorldPosition(const XMFLOAT3& worldPosition)
     {
-        float screenWidth = Graphics::GetScreenWidth();
-        float screenHeight = Graphics::GetScreenHeight();
+        float screenWidth, screenHeight, viewportX, viewportY;
+        Graphics::GetViewport(viewportX, viewportY, screenWidth, screenHeight);
         DirectX::XMVECTOR WorldPosition = DirectX::XMLoadFloat3(&worldPosition);
         auto camera = CameraManager::GetCurrentCamera();
         ViewConstants data = camera->GetViewConstants();
@@ -80,7 +80,7 @@ namespace CollisionFunction
         DirectX::XMMATRIX World = DirectX::XMMatrixIdentity();
         // ワールド座標をスクリーン座標に変換
         DirectX::XMVECTOR ScreenPosition = DirectX::XMVector3Project(
-            WorldPosition, 0.0f, 0.0f, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World
+            WorldPosition, viewportX, viewportY, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World
         );
         DirectX::XMFLOAT3 screenPos;
         DirectX::XMStoreFloat3(&screenPos, ScreenPosition);

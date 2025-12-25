@@ -48,6 +48,7 @@ extern ImWchar glyphRangesJapanese[];
 CONST LONG SCREEN_WIDTH{ 1920 };
 CONST LONG SCREEN_HEIGHT{ 1080 };
 #else
+
 CONST LONG SCREEN_WIDTH{ 1280 };
 CONST LONG SCREEN_HEIGHT{ 720 };
 #endif
@@ -102,7 +103,8 @@ public:
 #if 1
         ImGui_ImplDX11_InvalidateDeviceObjects();
         ImGui_ImplDX11_CreateDeviceObjects();
-
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 #endif // 1
 
         ImGui::StyleColorsDark();

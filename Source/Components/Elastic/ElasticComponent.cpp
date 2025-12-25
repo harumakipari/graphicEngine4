@@ -40,7 +40,12 @@ void ElasticMeshComponent::UpdatePullElastic(float deltaTime)
     // マウスカーソルを取得
     if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
     {// 左ボタンを押した瞬間
-        dragStartMousePos = InputSystem::GetMousePosition();
+        DirectX::XMFLOAT2 mousePos;
+        if (!InputSystem::GetMousePositionInViewport(mousePos))
+        {
+            return;
+        }
+        dragStartMousePos = mousePos;
         baseStretchRate = elasticConstants.stretchRate; // 今の伸び率を保存
         HitResultWithActor result;
         if (CollisionFunction::RaycastFromMouse(dragStartMousePos, result))
@@ -53,7 +58,11 @@ void ElasticMeshComponent::UpdatePullElastic(float deltaTime)
     }
     if (InputSystem::GetInputState("MouseLeft", InputStateMask::None) && hasGrabPoint)
     {// 左ボタンを押している間
-        DirectX::XMFLOAT2 cursor = InputSystem::GetMousePosition();
+        DirectX::XMFLOAT2 cursor;
+        if (!InputSystem::GetMousePositionInViewport(cursor))
+        {
+            return;
+        }
         HitResultWithActor result;
         CollisionFunction::RaycastFromMouse(cursor, result);
 
@@ -138,7 +147,12 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
     // マウスカーソルを取得
     if (InputSystem::GetInputState("MouseLeft"))
     {// 左ボタンを押している間
-        DirectX::XMFLOAT2 cursor = InputSystem::GetMousePosition();
+        DirectX::XMFLOAT2 cursor;
+        if (!InputSystem::GetMousePositionInViewport(cursor))
+        {
+            return;
+        }
+
         HitResultWithActor result;
         XMFLOAT3 intersectPos;
         XMFLOAT3 buildCurveDir;

@@ -59,6 +59,8 @@ private:
 
     void DrawPostEffectTab();
 
+    void DrawDockSpace();
+
     void SetupImGuiStyle();
 
     void DrawGizmo();

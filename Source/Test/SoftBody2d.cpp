@@ -68,7 +68,7 @@ void Engine::Update(float deltaTime)
 
     if (InputSystem::GetInputState("MouseLeft"))
     {
-        DirectX::XMFLOAT2 cursor = InputSystem::GetMousePosition();
+        DirectX::XMFLOAT2 cursor = InputSystem::GetMousePositionScreen();
         for (auto& point : points)
         {
             DirectX::XMFLOAT2 delta = { cursor.x - point.position.x, cursor.y - point.position.y };
@@ -88,7 +88,7 @@ void Engine::Update(float deltaTime)
     }
     if (InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
     {// É}ÉEÉXÇó£ÇµÇΩèuä‘
-        DirectX::XMFLOAT2 cursor = InputSystem::GetMousePosition();
+        DirectX::XMFLOAT2 cursor = InputSystem::GetMousePositionScreen();
         for (auto& point : points)
         {
             DirectX::XMFLOAT2 delta = { cursor.x - point.position.x, cursor.y - point.position.y };

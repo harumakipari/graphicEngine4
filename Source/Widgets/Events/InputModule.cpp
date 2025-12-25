@@ -9,7 +9,7 @@ void InputModule::Process(float deltaTime) {
     //入力情報を更新
     pointerEventData->lastPosition.x = static_cast<float>(InputSystem::GetOldMousePositionX());
     pointerEventData->lastPosition.y = static_cast<float>(InputSystem::GetOldMousePositionY());
-    pointerEventData->position = InputSystem::GetMousePosition();
+    pointerEventData->position = InputSystem::GetMousePositionScreen();
 
     
     //レイキャスト処理
