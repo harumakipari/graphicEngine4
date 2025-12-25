@@ -152,7 +152,7 @@ public:
             }
         }
 
-        Logger::Error(u8"Actor ‚Ì GetComponent ‚ª nullptr ‚ğ•Ô‚µ‚Ä‚¢‚Ü‚·B");
+        Logger::Warning(Logger::LogCategory::System,u8"Actor ‚Ì GetComponent ‚ª nullptr ‚ğ•Ô‚µ‚Ä‚¢‚Ü‚·B");
         _ASSERT(L"Actor ‚Ì GetComponent ‚ª nullptr ‚ğ•Ô‚µ‚Ä‚¢‚Ü‚·B");
         return nullptr;
     }

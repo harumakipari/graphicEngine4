@@ -54,7 +54,7 @@ void Actor::DestroyComponentByName(const std::string& name)
 {
     if (name.empty())
     {
-        Logger::Error(u8"この名前のコンポーネントは存在しないため削除できません。");
+        Logger::Warning(Logger::LogCategory::System, u8"この名前のコンポーネントは存在しないため削除できません。");
         _ASSERT(L"この名前のコンポーネントは存在しないため削除できません。");
         return;
     }
@@ -62,7 +62,7 @@ void Actor::DestroyComponentByName(const std::string& name)
     if (rootComponent_ && rootComponent_->name() == name)
     {
         // rootComponentの削除は禁止
-        Logger::Error(u8"rootComponentは削除できません。");
+        Logger::Warning(Logger::LogCategory::System, u8"rootComponentは削除できません。");
         _ASSERT(L"rootComponentは削除できません。");
         return;
     }
