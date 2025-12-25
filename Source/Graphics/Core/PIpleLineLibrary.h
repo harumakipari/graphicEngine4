@@ -181,7 +181,7 @@ public:
 
         // StaticMesh forward Opaque 用
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTransparencyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
@@ -209,7 +209,7 @@ public:
 
         // StaticMesh forward Mask 用
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTransparencyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
@@ -227,7 +227,7 @@ public:
 
         // StaticMesh forward Blend 用
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTransparencyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
@@ -289,7 +289,7 @@ public:
 
         // SkeltalMesh forward Opaque 用
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTransparencyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
@@ -307,7 +307,7 @@ public:
 
         // SkeltalMesh forward Mask 用
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTransparencyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
@@ -325,7 +325,7 @@ public:
 
         // SkeltalMesh forward Blend 用
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTransparencyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
@@ -345,7 +345,7 @@ public:
         {
             hr = CreateVsFromCSO(device, "./Shader/ElasticBuildsVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTranspacyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTransparencyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
             AddPipeLineState("elasticBuildingForward", desc);

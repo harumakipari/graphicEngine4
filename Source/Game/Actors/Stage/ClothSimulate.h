@@ -573,22 +573,17 @@ public:
 
 
     int a = 0, b = 1;
-
     struct PrimitiveConstants
     {
         DirectX::XMFLOAT4X4 world;
 
-        DirectX::XMFLOAT4 color;
-
         int material{ -1 };
         int hasTangent{ 0 };
         int skin{ -1 };
-        float disolveFactor = 0.0f;
+        int pad;
 
-        float emission = 0.0f;
-        float pads[3];
-
-        DirectX::XMFLOAT4X4 invWorld;
+        //DirectX::XMFLOAT4X4 inverseTransposeWorld;  // ñ@ê¸ïœä∑çsóÒ
+        DirectX::XMFLOAT4X4 invWorld;  
     };
     Microsoft::WRL::ComPtr<ID3D11Buffer> primitiveCbuffer;
 

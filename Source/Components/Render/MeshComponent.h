@@ -77,6 +77,9 @@ public:
         plusAlphaCBuffer->data.hueShift = hueShift;
         plusAlphaCBuffer->data.saturation = saturation;
         plusAlphaCBuffer->data.brightness = brightness;
+        plusAlphaCBuffer->data.dissolve = dissolve;
+        plusAlphaCBuffer->data.cpuColor = cpuColor;
+        plusAlphaCBuffer->data.emissionPower = emissionPower;
         plusAlphaCBuffer->Activate(immediateContext, 7);
     }
 
@@ -91,6 +94,9 @@ public:
             ImGui::SliderFloat("hueShift", &hueShift, 0.0f, +360.0f);
             ImGui::SliderFloat("saturation", &saturation, 0.1f, +2.0f);
             ImGui::SliderFloat("brightness", &brightness, 0.1f, +2.0f);
+            ImGui::SliderFloat("dissolve", &dissolve, 0.0f, 1.0f);
+            ImGui::ColorEdit4("cpuColor", &cpuColor.x);
+            ImGui::SliderFloat("emissionPower", &emissionPower, 0.0f, 10.0f);
             ImGui::TreePop();
         }
 #endif
@@ -111,12 +117,19 @@ public:
         float	hueShift;	// 色相調整
         float	saturation;	// 彩度調整
         float	brightness;	// 明度調整
+        float   dissolve;   // ディゾルブ用
+        DirectX::XMFLOAT4 cpuColor; // 色をCPU側で指定する用　（ダメージ当たったときとか）
+        float emissionPower; // 自己発光の強さ
     };
     std::unique_ptr<ConstantBuffer<PlusAlphaConstants>> plusAlphaCBuffer;
 
     float hueShift = 0.0f;	// 色相調整
     float saturation = 1.0f;	// 彩度調整
     float brightness = 1.0f;	// 明度調整
+    float   dissolve = 0.0f;   // ディゾルブ用
+    DirectX::XMFLOAT4 cpuColor = { 1.0f,1.0f,1.0f,1.0f }; // 色をCPU側で指定する用　（ダメージ当たったときとか）
+    float emissionPower = 1.0f; // 自己発光の強さ
+
 
 protected:
     //描画するかどうか

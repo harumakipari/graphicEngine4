@@ -573,6 +573,9 @@
     <ClCompile Include="Source\Game\Actors\Dessert\Cherry.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core\Actor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -911,9 +914,6 @@
     <ClInclude Include="Source\Game\Managers\TutorialSystem.h">
       <Filter>Sources\Game\Scenes\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Item\HeldEnergyCore.h">
-      <Filter>Sources\Game\Actors\Item</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Utils\SpawnValidator.h">
       <Filter>Sources\Game\Utils</Filter>
     </ClInclude>
@@ -943,9 +943,6 @@
     </ClInclude>
     <ClInclude Include="Source\Game\Actors\Enemy\NodeBase.h">
       <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Stage\Objects\StageProp.h">
-      <Filter>Sources\Game\Actors\Stage\Props</Filter>
     </ClInclude>
     <ClInclude Include="Source\Components\Game\ItemSpawnerComponent.h">
       <Filter>Sources\Components\Game</Filter>
@@ -1222,16 +1219,10 @@
     <FxCompile Include="Shader\GltfModelEmitParticlePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\GltfModelGameCharacter.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\GltfModelInstancedBatchingCsmVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GltfModelInstancedBatchingVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\GltfModelPlayerSidePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GltfModelPS.hlsl">
@@ -1321,9 +1312,6 @@
     <FxCompile Include="Shader\staticMeshVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\TestPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\UniverseWithIn.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -1375,7 +1363,7 @@
     <FxCompile Include="Shader\ScreenSpaceAmbientOcclusionPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\GltfModelForwardTranspacyPS.hlsl">
+    <FxCompile Include="Shader\GltfModelForwardTransparencyPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\SkyMapGBufferPS.hlsl">

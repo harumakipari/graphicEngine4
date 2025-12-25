@@ -107,7 +107,7 @@ void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext) const
         std::vector<MeshComponent*> meshComponents;
         actor->GetComponents<MeshComponent>(meshComponents);
 
-        for ( MeshComponent* meshComponent : meshComponents)
+        for (MeshComponent* meshComponent : meshComponents)
         {
             if (!meshComponent->IsVisible())
             { // 描画フラグが false ならスキップ
@@ -154,7 +154,7 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext) const
         std::vector<MeshComponent*> meshComponents;
         actor->GetComponents<MeshComponent>(meshComponents);
 
-        for ( MeshComponent* meshComponent : meshComponents)
+        for (MeshComponent* meshComponent : meshComponents)
         {
             if (!meshComponent->IsVisible())
             { // 描画フラグが false ならスキップ
@@ -235,9 +235,6 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
     // 各 MeshComponent の model を取り出す
     const InterleavedGltfModel* model = meshComponent->model.get();
     immediateContext->PSSetShaderResources(0, 1, model->materialResourceView.GetAddressOf());
-    //std::string pName = GetPipelineName(currentRenderPath, static_cast<MaterialAlphaMode>(pass), static_cast<ModelMode>(model->mode));
-    //pipeLineStateSet->BindPipeLineState(immediateContext, pName);
-    //pipeLineStateSet->BindPipeLineState(immediateContext, "forwardOpaqueSkeltalMesh");
     std::function<void(int)> traverse = [&](int nodeIndex)->void
         {
             if (nodeIndex < 0 || nodeIndex >= static_cast<int>(animatedNodes.size()))
@@ -277,9 +274,9 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                     primitiveCBuffer->data.material = primitive.material;
                     primitiveCBuffer->data.hasTangent = primitive.has("TANGENT");
                     primitiveCBuffer->data.skin = node.skin;
-                    primitiveCBuffer->data.color = { model->cpuColor.x,model->cpuColor.y,model->cpuColor.z,model->alpha };
-                    primitiveCBuffer->data.emission = model->emission;
-                    primitiveCBuffer->data.dissolveFactor = model->disolveFactor;
+                    //primitiveCBuffer->data.color = { model->cpuColor.x,model->cpuColor.y,model->cpuColor.z,model->alpha };
+                    //primitiveCBuffer->data.emission = model->emission;
+                    //primitiveCBuffer->data.dissolveFactor = model->disolveFactor;
 
                     //座標系の変換を行う
                     const DirectX::XMFLOAT4X4 coordinateSystemTransforms[]
@@ -323,6 +320,8 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                     DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
 
                     DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, DirectX::XMLoadFloat4x4(&node.globalTransform) * C * DirectX::XMLoadFloat4x4(&world));
+                    DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&world))));
+
                     // 0番に定数バッファを送る
                     primitiveCBuffer->Activate(immediateContext, 0);
 
@@ -356,16 +355,6 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                         pipelineName = GetPipelineName(currentRenderPath, static_cast<MaterialAlphaMode>(material.data.alphaMode), static_cast<ModelMode>(model->mode));
                     }
                     pipeLineStateSet->BindPipeLineState(immediateContext, pipelineName);
-                    ////ここで設定
-                    //if (material.replacedPixelShader)
-                    //{
-                    //    immediateContext->PSSetShader(material.replacedPixelShader.Get(), nullptr, 0);
-                    //}
-                    //else
-                    //{
-                    //    immediateContext->PSSetShader(pipeline.pixelShader ? pipeline.pixelShader.Get() : pixelShader.Get(), nullptr, 0);
-                    //}
-                    //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
                     bool passed = false;
                     switch (pass)
@@ -419,34 +408,18 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                     immediateContext->PSSetShaderResources(1, static_cast<UINT>(shaderResourceViews.size()), shaderResourceViews.data());
 
 
-                    //                if (auto cloth = dynamic_cast<const ClothMeshComponent*>(meshComponent))
-                    //                {
-                    //#if 0
-                    //                    immediateContext->IASetIndexBuffer(model->buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
-                    //                    immediateContext->VSSetShaderResources(0, 1, cloth->preVertexSRV.GetAddressOf());
-                    //                    immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / SizeofComponent(primitive.indexBufferView.format), 0, 0);
-                    //#else
-                    //                    immediateContext->IASetIndexBuffer(model->buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
-                    //                    //immediateContext->VSSetShaderResources(0, 1, cloth->currentVertexSRV.GetAddressOf());
-                    //                    immediateContext->VSSetShaderResources(0, 1, cloth->clothSRV[cloth->a].GetAddressOf());
-                    //                    immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / SizeofComponent(primitive.indexBufferView.format), 0, 0);
-                    //#endif // 0
-                    //
-                    //                }
-                    //                else
+                    if (primitive.indexBufferView.buffer > -1)
                     {
-                        if (primitive.indexBufferView.buffer > -1)
-                        {
-                            // INTERLEAVED_GLTF_MODEL
-                            immediateContext->IASetIndexBuffer(model->buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
-                            immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / SizeofComponent(primitive.indexBufferView.format), 0, 0);
-                        }
-                        else
-                        {
-                            // INTERLEAVED_GLTF_MODEL
-                            immediateContext->Draw(primitive.vertexBufferView.sizeInBytes / primitive.vertexBufferView.strideInBytes, 0);
-                        }
+                        // INTERLEAVED_GLTF_MODEL
+                        immediateContext->IASetIndexBuffer(model->buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
+                        immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / SizeofComponent(primitive.indexBufferView.format), 0, 0);
                     }
+                    else
+                    {
+                        // INTERLEAVED_GLTF_MODEL
+                        immediateContext->Draw(primitive.vertexBufferView.sizeInBytes / primitive.vertexBufferView.strideInBytes, 0);
+                    }
+
                 }
             }
             for (std::vector<int>::value_type childIndex : node.children)
@@ -473,13 +446,6 @@ void SceneRenderer::DrawWithStaticBatching(ID3D11DeviceContext* immediateContext
     // 各 MeshComponent の model を取り出す
     const InterleavedGltfModel* model = meshComponent->model.get();
     immediateContext->PSSetShaderResources(0, 1, model->materialResourceView.GetAddressOf());
-
-    //immediateContext->PSSetShaderResources(0, 1, materialResourceView.GetAddressOf());
-
-    //immediateContext->VSSetShader(pipeline.vertexShader ? pipeline.vertexShader.Get() : vertexShader.Get(), nullptr, 0);
-    //immediateContext->PSSetShader(pipeline.pixelShader ? pipeline.pixelShader.Get() : pixelShader.Get(), nullptr, 0);
-    //immediateContext->IASetInputLayout(inputLayout.Get());
-    //immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     for (const InterleavedGltfModel::BatchMesh& batchMesh : model->batchMeshes)
     {
@@ -533,6 +499,7 @@ void SceneRenderer::DrawWithStaticBatching(ID3D11DeviceContext* immediateContext
         DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
 
         DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, C * DirectX::XMLoadFloat4x4(&world));
+        DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&world))));
         // 0番に定数バッファを送る
         primitiveCBuffer->Activate(immediateContext, 0);
 
@@ -694,9 +661,9 @@ void SceneRenderer::CastShadow(ID3D11DeviceContext* immediateContext, const Mesh
                 primitiveCBuffer->data.material = primitive.material;
                 primitiveCBuffer->data.hasTangent = primitive.has("TANGENT");
                 primitiveCBuffer->data.skin = node.skin;
-                primitiveCBuffer->data.color = { model->cpuColor.x,model->cpuColor.y,model->cpuColor.z,model->alpha };
-                primitiveCBuffer->data.emission = model->emission;
-                primitiveCBuffer->data.dissolveFactor = model->disolveFactor;
+                //primitiveCBuffer->data.color = { model->cpuColor.x,model->cpuColor.y,model->cpuColor.z,model->alpha };
+                //primitiveCBuffer->data.emission = model->emission;
+                //primitiveCBuffer->data.dissolveFactor = model->disolveFactor;
 
                 //座標系の変換を行う
                 const DirectX::XMFLOAT4X4 coordinateSystemTransforms[]
@@ -739,6 +706,7 @@ void SceneRenderer::CastShadow(ID3D11DeviceContext* immediateContext, const Mesh
                 }
                 DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
                 DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, DirectX::XMLoadFloat4x4(&node.globalTransform) * C * DirectX::XMLoadFloat4x4(&world));
+                DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&world))));
                 // 0番に定数バッファを送る
                 primitiveCBuffer->Activate(immediateContext, 0);
                 //int materialIndex = primitive.GetCurrentMaterialIndex();
@@ -838,9 +806,9 @@ void SceneRenderer::CastShadowWithStaticBatching(ID3D11DeviceContext* immediateC
         primitiveData.hasTangent = batchMesh.has("TANGENT");
         primitiveData.skin = -1;
         primitiveData.world = world;
-        immediateContext->UpdateSubresource(model->primitiveCbuffer.Get(), 0, 0, &primitiveData, 0, 0);
-        immediateContext->VSSetConstantBuffers(0, 1, model->primitiveCbuffer.GetAddressOf());
-        immediateContext->PSSetConstantBuffers(0, 1, model->primitiveCbuffer.GetAddressOf());
+        DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&world))));
+        primitiveCBuffer->Activate(immediateContext, 0);
+
 
         const InterleavedGltfModel::Material& material = model->materials.at(batchMesh.material);
         const int textureIndices[]

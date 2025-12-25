@@ -56,6 +56,7 @@ public:
 
     void CastShadowWithStaticBatching(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes);
 
+private:
     void Draw(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass) const;
 
     void DrawWithStaticBatching(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass) const;
@@ -80,15 +81,12 @@ private:
     {
         DirectX::XMFLOAT4X4 world;
 
-        DirectX::XMFLOAT4 color{ 1.0f,1.0f,1.0f,1.0f };
-
         int material{ -1 };
         int hasTangent{ 0 };
         int skin{ -1 };
-        float dissolveFactor = 0.0f;
+        int pad;
 
-        float emission = 0.0f;
-        float pads[3];
+        DirectX::XMFLOAT4X4 inverseTransposeWorld;  // ñ@ê¸ïœä∑çsóÒ
     };
     std::unique_ptr<ConstantBuffer<PrimitiveConstants>> primitiveCBuffer;
 

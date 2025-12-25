@@ -138,7 +138,7 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     //specular += IblRadianceGgx(N, V, roughnessFactor, f0);
     specular += IblRadianceGgx(N, V, roughnessFactor, f0) * iblIntensity;
 #endif
-    
+    float emission = 2.0f; // í≤êÆóp
     float3 emmisive = emmisiveFactor * emission;
     diffuse = lerp(diffuse, diffuse * occlusionFactor, occlusionStrength);
     specular = lerp(specular, specular * occlusionFactor, occlusionStrength);

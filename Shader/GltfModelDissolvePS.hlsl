@@ -146,10 +146,9 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     
     //Dissolve
     float maskValue = maskTexture.Sample(samplerStates[ANISOTROPIC], pin.texcoord);
-    //pout.color.a *= maskValue;
-    //step関数を用いて透過値を0/1にする
-    //float dissolve = dissolveValue - 3.0;
-    //dissolve *= 0.5;
+
+    float dissolveValue = 1.0; //　ここをアニメーションさせると良い
+
     float dissolve = saturate((dissolveValue - 0.5) * 2.0);
 #if 1
     float alpha = step(dissolve, maskValue);

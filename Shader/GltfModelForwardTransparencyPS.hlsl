@@ -105,7 +105,7 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
         normalFactor = normalize(normalFactor * float3(m.normalTexture.scale, m.normalTexture.scale, 1.0));
         N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
     }
-    
+    //return float4(N * 0.5 + 0.5, 1);
     float3 diffuse = 0;
     float3 specular = 0;
   

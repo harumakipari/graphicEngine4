@@ -139,16 +139,10 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelFightStagePS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelGameCharacter.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelInstancedBatchingCsmVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelInstancedBatchingVS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelPlayerSidePS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelPS.cso</FullPath>
@@ -193,7 +187,7 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ParticleVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelForwardTranspacyPS.cso</FullPath>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelForwardTransparencyPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\PrimitiveRendererPS.cso</FullPath>
@@ -263,9 +257,6 @@
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\staticMeshVS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\TestPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\UniverseWithIn.cso</FullPath>

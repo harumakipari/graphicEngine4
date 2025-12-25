@@ -29,8 +29,6 @@ cbuffer PRIMITIVE_CONSTANT_BUFFER : register(b0)
     int skin;
     float dissolveValue; //ディゾルブ用
     
-    float emission;
-    float3 pads;
     
     row_major float4x4 invWorld;
 }

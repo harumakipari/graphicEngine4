@@ -118,7 +118,6 @@ void SampleScene::Update(float deltaTime)
     {
         auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
         auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
-        //Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
         Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 1.3f,1.3f,1.3f });
         auto player = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
         mainCameraComponent->target = (player->GetRootComponent());
@@ -133,9 +132,10 @@ void SampleScene::Update(float deltaTime)
         auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
         debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
-        Transform buildTr(DirectX::XMFLOAT3{ -5.0f,-2.45f,3.0 }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
-        auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("building", buildTr);
-        building->AddComponent<SkeletalMeshComponent>("pudding")->SetModel("./Data/Models/cherry_pudding/scene.gltf");
+        Transform buildTr(DirectX::XMFLOAT3{ -5.0f,-2.45f,3.0 }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
+        auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("map", buildTr);
+        building->AddComponent<StaticMeshComponent>("map")->SetModel("./Data/Models/Map/map.gltf");
+        //building->AddComponent<SkeletalMeshComponent>("pudding")->SetModel("./Data/Models/cherry_pudding/scene.gltf");
 
         Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,-2.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
         auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pudding>("building", buildTr2);

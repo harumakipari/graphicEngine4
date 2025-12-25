@@ -95,11 +95,13 @@ public:
     struct PrimitiveConstants
     {
         DirectX::XMFLOAT4X4 world;
-        DirectX::XMFLOAT4 color;
+
         int material{ -1 };
         int hasTangent{ 0 };
         int skin{ -1 };
         int pad;
+
+        DirectX::XMFLOAT4X4 inverseTransposeWorld;  // –@ü•ÏŠ·s—ñ
     };
     Microsoft::WRL::ComPtr<ID3D11Buffer> primitiveCbuffer;
 };

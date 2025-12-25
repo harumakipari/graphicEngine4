@@ -717,8 +717,8 @@ void InterleavedGltfModel::FetchAndBatchMeshes(ID3D11Device* device, const tinyg
                     }
                     else
                     {
-                        //_ASSERT_EXPR(FALSE, L"This attribute is unsupported.");
                         OutputDebugStringA((gltfAttribute.first + " is an unsupported attribute.\n").c_str());
+                        _ASSERT_EXPR(FALSE, L"This attribute is unsupported.");
                     }
                     batchMesh.attributes.emplace(gltfAttribute.first, _DxgiFormat(gltfAccessor));
                 }
@@ -726,15 +726,20 @@ void InterleavedGltfModel::FetchAndBatchMeshes(ID3D11Device* device, const tinyg
                 for (BatchMesh::Vertex& cachedVertex : cachedVertices)
                 {
                     DirectX::XMStoreFloat3(&cachedVertex.position, DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&cachedVertex.position), globalTransform));
-                    DirectX::XMStoreFloat3(&cachedVertex.normal, DirectX::XMVector3Normalize(DirectX::XMVector3TransformNormal(DirectX::XMLoadFloat3(&cachedVertex.normal), globalTransform)));
+
+                    DirectX::XMMATRIX inverseTransposeGlobalTransform = DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&node.globalTransform)));
+
+                    DirectX::XMStoreFloat3(&cachedVertex.normal, DirectX::XMVector3Normalize(DirectX::XMVector3TransformNormal(DirectX::XMLoadFloat3(&cachedVertex.normal), inverseTransposeGlobalTransform)));
+
                     float sigma = cachedVertex.tangent.w;
                     cachedVertex.tangent.w = 0;
-                    DirectX::XMStoreFloat4(&cachedVertex.tangent, DirectX::XMVector3Normalize(DirectX::XMVector3TransformNormal(DirectX::XMLoadFloat4(&cachedVertex.tangent), globalTransform)));
+                    DirectX::XMStoreFloat4(&cachedVertex.tangent, DirectX::XMVector3Normalize(DirectX::XMVector3TransformNormal(DirectX::XMLoadFloat4(&cachedVertex.tangent), inverseTransposeGlobalTransform)));
                     cachedVertex.tangent.w = sigma;
                 }
 
                 batchMesh.cachedVertices.insert(batchMesh.cachedVertices.end(), cachedVertices.begin(), cachedVertices.end());
                 batchMesh.vertexBufferView.sizeInBytes += static_cast<UINT>(cachedVertices.size() * sizeof(BatchMesh::Vertex));
+                batchMesh.vertexBufferView.strideInBytes = static_cast<UINT>(sizeof(BatchMesh::Vertex));
             }
         }
         for (std::vector<int>::value_type childIndex : node.children)
@@ -1341,7 +1346,6 @@ void InterleavedGltfModel::Render(ID3D11DeviceContext* immediateContext, const D
     immediateContext->PSSetShaderResources(0, 1, materialResourceView.GetAddressOf());
 
     immediateContext->VSSetShader(pipeline.vertexShader ? pipeline.vertexShader.Get() : vertexShader.Get(), nullptr, 0);
-    //immediateContext->PSSetShader(pipeline.pixelShader ? pipeline.pixelShader.Get() : pixelShader.Get(), nullptr, 0);
     immediateContext->IASetInputLayout(inputLayout.Get());
     immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -1377,9 +1381,10 @@ void InterleavedGltfModel::Render(ID3D11DeviceContext* immediateContext, const D
                 primitiveData.material = primitive.material;
                 primitiveData.hasTangent = primitive.has("TANGENT");
                 primitiveData.skin = node.skin;
-                primitiveData.color = { cpuColor.x,cpuColor.y,cpuColor.z,alpha };
-                primitiveData.emission = emission;
-                primitiveData.disolveFactor = disolveFactor;
+
+                //primitiveData.color = { cpuColor.x,cpuColor.y,cpuColor.z,alpha };
+                //primitiveData.emission = emission;
+                //primitiveData.disolveFactor = disolveFactor;
                 // ここでモデル座標系を変換する？
                 //座標系の変換を行う
                 const DirectX::XMFLOAT4X4 coordinateSystemTransforms[]
@@ -1423,6 +1428,7 @@ void InterleavedGltfModel::Render(ID3D11DeviceContext* immediateContext, const D
                 DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
 
                 DirectX::XMStoreFloat4x4(&primitiveData.world, DirectX::XMLoadFloat4x4(&node.globalTransform) * C * DirectX::XMLoadFloat4x4(&world));
+                DirectX::XMStoreFloat4x4(&primitiveData.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&world))));
                 immediateContext->UpdateSubresource(primitiveCbuffer.Get(), 0, 0, &primitiveData, 0, 0);
                 immediateContext->VSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
                 immediateContext->PSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
@@ -1573,8 +1579,9 @@ void InterleavedGltfModel::BatchRender(ID3D11DeviceContext* immediateContext, co
             scaleFactor = 0.01f;//㎝単位の時
         }
         DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
-        //primitiveData.world = world;
         DirectX::XMStoreFloat4x4(&primitiveData.world, C * DirectX::XMLoadFloat4x4(&world));
+        DirectX::XMStoreFloat4x4(&primitiveData.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&world))));
+
         immediateContext->UpdateSubresource(primitiveCbuffer.Get(), 0, 0, &primitiveData, 0, 0);
         immediateContext->VSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
         immediateContext->PSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
@@ -1674,7 +1681,7 @@ void InterleavedGltfModel::InstancedStaticBatchRender(ID3D11DeviceContext* immed
         primitiveData.material = batchMesh.material;
         primitiveData.hasTangent = batchMesh.has("TANGENT");
         primitiveData.skin = -1;
-        primitiveData.emission = emission;
+        //primitiveData.emission = emission;
         //primitiveData.world = world;
         immediateContext->UpdateSubresource(primitiveCbuffer.Get(), 0, 0, &primitiveData, 0, 0);
         immediateContext->VSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());

@@ -31,10 +31,11 @@ VS_OUT main(VS_IN vin)
     vout.wPosition = mul(vin.position, world);
     
     vin.normal.w = 0;
-    vout.wNormal = normalize(mul(vin.normal, world));
+    vout.wNormal.xyz = normalize(mul(vin.normal,inverseTransposeWorld).xyz);
+    vout.wNormal.w = 0;
     
     vin.tangent.w = 0;
-    vout.wTangent = normalize(mul(vin.tangent, world));
+    vout.wTangent.xyz = normalize(mul(vin.tangent, inverseTransposeWorld).xyz);
     vout.wTangent.w = sigma;
     
     vout.texcoord = vin.texcoord;

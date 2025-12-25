@@ -690,15 +690,10 @@ public:
     {
         DirectX::XMFLOAT4X4 world;
 
-        DirectX::XMFLOAT4 color;
-
         int material{ -1 };
         int hasTangent{ 0 };
         int skin{ -1 };
-        float disolveFactor = 0.0f;
-
-        float emission = 0.0f;
-        float pads[3];
+        int pad;
 
         DirectX::XMFLOAT4X4 invWorld;
     };

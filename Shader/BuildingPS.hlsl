@@ -41,7 +41,7 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
 
     //if (m.alphaMode == 0 /*OPAQUE*/)
     //{
-        basecolorFactor.a = cpuColor.a;
+        
     //}
     //if (baseColorFactor.a < m.alphaCutoff)
     //{
