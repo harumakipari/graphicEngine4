@@ -48,8 +48,8 @@ VS_OUT main(VS_IN vin)
 
     // デフォルト：回転しない (axisLen が小さい = up と接線が平行)
     float3 rotatedOffset = localOffset;
-    float3 outNormal;
-    float3 outTangent;
+    float3 outNormal = vin.normal.xyz;
+    float3 outTangent = vin.tangent.xyz;
 
     if (axisLen > 1e-5)
     {

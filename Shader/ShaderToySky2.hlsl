@@ -147,7 +147,7 @@ void mainImage(out float4 fragColor, in float2 fragCoord)
     const int NUM_LAYERS = 4;
 
     float2 uv = (fragCoord - iResolution.xy * 0.5) / iResolution.y;
-    float2 M = iMouse / iResolution - 0.5;
+    float2 M = iMouse.xy / iResolution.xy - 0.5;
 
     float t = iTime * 0.1;
     float s = sin(t);

@@ -145,7 +145,7 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     pout.color = float4(diffuse + specular + emmisive, basecolorFactor.a) * basecolorFactor;
     
     //Dissolve
-    float maskValue = maskTexture.Sample(samplerStates[ANISOTROPIC], pin.texcoord);
+    float maskValue = maskTexture.Sample(samplerStates[ANISOTROPIC], pin.texcoord).x;
 
     float dissolveValue = 1.0; //　ここをアニメーションさせると良い
 

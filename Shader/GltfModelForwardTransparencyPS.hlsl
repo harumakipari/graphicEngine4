@@ -33,7 +33,7 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     if (basecolorTexture > -1)
     {
         float4 sampled = materialTextures[BASECOLOR_TEXTURE].Sample(samplerStates[ANISOTROPHIC], pin.texcoord);
-        sampled.rgb = pow(sampled.rgb, GAMMA);
+        sampled.rgb = pow(saturate(sampled.rgb), GAMMA);
         basecolorFactor *= sampled;
     }
     

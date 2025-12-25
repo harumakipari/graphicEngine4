@@ -79,7 +79,7 @@ void EffectEditor::DrawGUI()
 				// クリックしたら現在のエフェクトハンドルを更新
 				if (isClicked)
 				{
-					currentEffectHandle = emitterIndex;
+					currentEffectHandle = static_cast<EffectHandle>(emitterIndex);
 				}
 #if 1
 				// 右クリックで削除メニュー表示

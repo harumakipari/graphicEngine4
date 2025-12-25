@@ -66,12 +66,17 @@ HuskParticles::HuskParticles(ID3D11Device* device, size_t maxParticleCount) : ma
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
 	//TODO: あとで適切なシェーダをセットする(かも)
-	CreateVsFromCSO(device, "./Shader/HuskParticleVS.cso", vertexShader.ReleaseAndGetAddressOf(), nullptr, nullptr, 0);
-	CreatePsFromCSO(device, "./Shader/HuskParticlePS.cso", pixelShader.ReleaseAndGetAddressOf());
-	CreateGsFromCSO(device, "./Shader/HuskParticleGS.cso", geometryShader.ReleaseAndGetAddressOf());
-	CreateCsFromCSO(device, "./Shader/HuskParticleCS.cso", computeShader.ReleaseAndGetAddressOf());
+	hr =CreateVsFromCSO(device, "./Shader/HuskParticleVS.cso", vertexShader.ReleaseAndGetAddressOf(), nullptr, nullptr, 0);
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	hr =CreatePsFromCSO(device, "./Shader/HuskParticlePS.cso", pixelShader.ReleaseAndGetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	hr =CreateGsFromCSO(device, "./Shader/HuskParticleGS.cso", geometryShader.ReleaseAndGetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	hr =CreateCsFromCSO(device, "./Shader/HuskParticleCS.cso", computeShader.ReleaseAndGetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-	CreatePsFromCSO(device, ".Data/Shaders/AccumulateHuskParticlePS.cso", accumlateHuskParticlesPs.ReleaseAndGetAddressOf());
+	hr = CreatePsFromCSO(device, ".Data/Shaders/AccumulateHuskParticlePS.cso", accumlateHuskParticlesPs.ReleaseAndGetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 }
 
 UINT align(UINT num, UINT alignment)

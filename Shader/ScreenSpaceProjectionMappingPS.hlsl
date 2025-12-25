@@ -29,10 +29,14 @@ float4 ProjectionTextureSample(int texture_id, SamplerState samplerState, float2
 {
     switch (texture_id)
     {
-        case 0: return projectionMappingTexture[0].Sample(samplerState, texcoord);
-        case 1: return projectionMappingTexture[1].Sample(samplerState, texcoord);
+        case 0:
+            return projectionMappingTexture[0].Sample(samplerState, texcoord);
+        case 1:
+            return projectionMappingTexture[1].Sample(samplerState, texcoord);
+        default:
+            return float4(0, 0, 0, 0);
     }
-    return 0;
+
 }
 
 float3 ProjectionMapping(float4 worldPosition, row_major float4x4 projectionMappingTransform, SamplerState samplerState, int texture_id)

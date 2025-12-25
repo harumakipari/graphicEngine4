@@ -550,13 +550,13 @@ float4 main(VS_OUT pin) : SV_TARGET
 #if 0
         color.rgb += CalculatedSSRColor(pin);
 #else
-        color.rgb += reflectionTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord);
+        color.rgb += reflectionTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord).rgb;
 #endif
     }
     uint mip_level = 0, number_of_samples;
     uint2 depthDimensions;
     depthTexture.GetDimensions(mip_level, depthDimensions.x, depthDimensions.y, number_of_samples);
-    float depth = depthTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord);
+    float depth = depthTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord).x;
 
     //return color;
 
@@ -630,12 +630,12 @@ float4 main(VS_OUT pin) : SV_TARGET
             float distance = i * i + j * j;
             float domain_gaussian = exp(-distance / sigma);
 			
-            float sample_depth = depthTexture.SampleLevel(linearBorderBlackSamplerState, uv, 0);
+            float sample_depth = depthTexture.SampleLevel(linearBorderBlackSamplerState, uv, 0).x;
             distance = (curr_depth - sample_depth) * (curr_depth - sample_depth);
             float range_gaussian = exp(-distance / sigma2);
 			
 			// Sample occlusion(ambient) factor
-            float sample_occlusion = ambientOcclusionTexture.SampleLevel(linearBorderBlackSamplerState, uv, 0);
+            float sample_occlusion = ambientOcclusionTexture.SampleLevel(linearBorderBlackSamplerState, uv, 0).x;
             accumulated_occlusion += sample_occlusion * domain_gaussian * range_gaussian;
 
             weight += domain_gaussian * range_gaussian;

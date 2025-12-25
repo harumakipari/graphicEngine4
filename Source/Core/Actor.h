@@ -294,8 +294,9 @@ public:
     }
 
 
-    const DirectX::XMFLOAT4X4& GetWorldTransform()
+    DirectX::XMFLOAT4X4 GetWorldTransform() const
     {
+        DirectX::XMFLOAT4X4 worldTransform;
         DirectX::XMMATRIX M = rootComponent_ ? rootComponent_->GetFinalWorldTransform().ToMatrix() : DirectX::XMMatrixIdentity();
         DirectX::XMStoreFloat4x4(&worldTransform, M);
         return worldTransform;
@@ -307,7 +308,7 @@ public:
         {
             return rootComponent_->GetRelativeLocation();
         }
-        return { 0.0f,0.0f,3.0f };
+        return { 0.0f,0.0f,0.0f };
     }
 
     void SetPosition(const DirectX::XMFLOAT3& position) const
@@ -510,12 +511,7 @@ private:
     // アクターの削除予約
     bool isPendingKill = false;
 
-
     std::vector<HitCallBack> hitCallbacks_;
-
-
-    // ワールド変換行列
-    DirectX::XMFLOAT4X4 worldTransform{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
 
     // rootComponent (Transform) 系
     std::shared_ptr<SceneComponent> rootComponent_;

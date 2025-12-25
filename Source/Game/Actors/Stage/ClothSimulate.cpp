@@ -1075,7 +1075,10 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
                     [](auto& a, auto& b) { return a.distance < b.distance; });
 
                 // 
-                for (size_t k = 0; k < std::min<float>(MAX_EDGES, candidates.size()); ++k)
+                const size_t maxEdges =
+                    std::min<size_t>(static_cast<size_t>(MAX_EDGES), candidates.size());
+
+                for (size_t k = 0; k < maxEdges; ++k)
                 {
                     ClothEdge edge;
                     edge.neighbor = candidates[k].neighbor;

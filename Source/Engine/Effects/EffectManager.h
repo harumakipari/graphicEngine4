@@ -18,8 +18,17 @@ struct Range
 	T GetRandom() const
 	{
 		if (min == max) return min;
-		float t = static_cast<float>(rand()) / RAND_MAX;
-		return min + (max - min) * t;
+		if constexpr (std::is_integral_v<T>)
+		{
+			// 整数用（min?max の整数）
+			return min + rand() % (max - min + 1);
+		}
+		else
+		{
+			// 浮動小数・Vector など
+			float t = static_cast<float>(rand()) / RAND_MAX;
+			return min + (max - min) * t;
+		}
 	}
 };
 
@@ -31,7 +40,8 @@ class EffectManager
 public:
 	EffectManager() = default;
 	~EffectManager() = default;
-public:
+
+	struct EmitterShapeData;
 
 	// エフェクトデータクリア
 	static void ClearAll();
@@ -87,7 +97,6 @@ private:
 	static void ReInitializeParticleSystem(); // パーティクルシステム再初期化
 
 	// 形状エミッタ設定適用
-	struct EmitterShapeData;
 	static void ApplyShapeEmitterSettings(const EmitterShapeData& settings, CoreComputeParticleSystem::EmitParticleData& emitData, int index, int emitCount);
 
 

@@ -101,40 +101,14 @@ public:
 #ifdef USE_IMGUI
         inspectorEuler_ = MathHelper::QuaternionToEuler(relativeRotation_);
 
-#if 1
         if (ImGui::TreeNode((name_ + "  Transform").c_str()))
         {
             ImGui::DragFloat3("Relative Location", &relativeLocation_.x, 0.1f);
-#if 0
-            //if (!inspectorEulerInitialized_)
-//{
-//    inspectorEulerInitialized_ = true;
-//}
-//inspectorEuler_ = GetComponentEulerRotation();
-            if (ImGui::DragFloat3("Relative Rotation", &inspectorEuler_.x, 1.0f))
-            {
-                DirectX::XMFLOAT3 eulerRad =
-                {
-                    DirectX::XMConvertToRadians(inspectorEuler_.x),
-                    DirectX::XMConvertToRadians(inspectorEuler_.y),
-                    DirectX::XMConvertToRadians(inspectorEuler_.z)
-                };
-                DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationRollPitchYaw(eulerRad.x, eulerRad.y, eulerRad.z);
-                DirectX::XMFLOAT4 q;
-                DirectX::XMStoreFloat4(&q, quat);
-                //SetWorldRotationDirect(q);
-                SetRelativeRotationDirect(q);
-            }
-
-#endif // 0
-            testAngle = GetRelativeEulerRotation();
+            DirectX::XMFLOAT3 testAngle = GetRelativeEulerRotation();
             testAngle.x = DirectX::XMConvertToDegrees(testAngle.x);
             testAngle.y = DirectX::XMConvertToDegrees(testAngle.y);
             testAngle.z = DirectX::XMConvertToDegrees(testAngle.z);
             ImGui::DragFloat3("RelativeAngle", &testAngle.x, 1.0f);
-            //testAngle.x = MathHelper::ClampAngle(testAngle.x);
-            //testAngle.y = MathHelper::ClampAngle(testAngle.y);
-            //testAngle.z = MathHelper::ClampAngle(testAngle.z);
             DirectX::XMFLOAT3 eulerRadNew =
             {
                 DirectX::XMConvertToRadians(testAngle.x),
@@ -149,25 +123,6 @@ public:
             DirectX::XMFLOAT4 qNew;
             XMStoreFloat4(&qNew, quatNew);
             SetRelativeRotationDirect(qNew);
-            //SetQuaternionRotation(qNew);
-
-            //// UI‚Å‰ñ“]Šp“x•ÏX‚ª‚ ‚Á‚½ê‡‚Í”½‰f
-            //if (ImGui::DragFloat3("Relative Rotation", &inspectorEuler_.x, 1.0f))
-            //{
-            //    DirectX::XMFLOAT3 eulerRadNew = {
-            //        DirectX::XMConvertToRadians(inspectorEuler_.x),
-            //        DirectX::XMConvertToRadians(inspectorEuler_.y),
-            //        DirectX::XMConvertToRadians(inspectorEuler_.z)
-            //    };
-
-            //    DirectX::XMVECTOR quatNew = DirectX::XMQuaternionRotationRollPitchYaw(
-            //        eulerRadNew.x, eulerRadNew.y, eulerRadNew.z
-            //    );
-
-            //    DirectX::XMFLOAT4 qNew;
-            //    XMStoreFloat4(&qNew, quatNew);
-            //    SetRelativeRotationDirect(qNew);
-            //}
             ImGui::DragFloat3("Relative Scale", &relativeScale_.x, 0.01f, 0.01f, 100.0f);
             ImGui::TreePop();
         }
@@ -179,7 +134,6 @@ public:
             ImGui::Text("Parent: %s", attachParent_.lock() ? attachParent_.lock()->name().c_str() : "None");
             ImGui::TreePop();
         }
-#endif
 #endif
     }
 private:
@@ -611,8 +565,6 @@ public:
     float lerpTime = 0.0f;
 
 
-    // ƒeƒXƒg
-    DirectX::XMFLOAT3 testAngle = { 0.0f,0.0f,0.0f };
 };
 
 

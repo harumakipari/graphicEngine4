@@ -392,9 +392,9 @@ void CoreAudioSourceComponent::DrawImGuiInspector()
 	ImGui::SameLine();
 	// 現在のファイルパスを表示
 	std::wstring path = filePath.empty() ? L"No file" : filePath;
-	ImGui::Text(std::string(path.begin(), path.end()).c_str());
-
-	// ソースボイスが設定されていなければ何もしない
+	std::string pathUtf8 = WStringToUTF8(path);
+	ImGui::Text("%s", pathUtf8.c_str());
+    // ソースボイスが設定されていなければ何もしない
 	if (sourceVoice)
 	{
 		// 3D音源関連の設定

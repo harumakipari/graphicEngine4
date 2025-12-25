@@ -633,7 +633,8 @@ void SoftBodySimulate::CreateAndUploadResources(ID3D11Device* device)
                     [](auto& a, auto& b) { return a.distance < b.distance; });
 
                 // 
-                for (size_t k = 0; k < std::min<float>(MAX_EDGES, candidates.size()); ++k)
+                size_t maxEdges = std::min<size_t>(MAX_EDGES, candidates.size());
+                for (size_t k = 0; k < maxEdges; ++k)
                 {
                     ClothEdge edge;
                     edge.neighbor = candidates[k].neighbor;
@@ -671,10 +672,12 @@ void SoftBodySimulate::CreateAndUploadResources(ID3D11Device* device)
         {
             uint32_t offset = prim.clothVertexOffset;
 
-            for (auto& e : prim.finalEdges)
+            for (size_t edgeIndex = 0; edgeIndex < prim.finalEdges.size(); ++edgeIndex)
             {
+                const auto& e = prim.finalEdges[edgeIndex];
+
                 DistanceConstraint c;
-                c.i0 = offset + reinterpret_cast<int>(&e) - reinterpret_cast<int>(&prim.finalEdges[0]);
+                c.i0 = offset + static_cast<uint32_t>(edgeIndex);
                 c.i1 = offset + e.neighbor;
                 c.restLength = e.restLength;
 
@@ -684,7 +687,7 @@ void SoftBodySimulate::CreateAndUploadResources(ID3D11Device* device)
     }
 
     D3D11_BUFFER_DESC desc = {};
-    desc.ByteWidth = sizeof(Particle) * particles.size();
+    desc.ByteWidth = static_cast<UINT>(sizeof(Particle) * particles.size());
     desc.Usage = D3D11_USAGE_DEFAULT;
     desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
     desc.StructureByteStride = sizeof(Particle);
@@ -698,11 +701,11 @@ void SoftBodySimulate::CreateAndUploadResources(ID3D11Device* device)
     D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
     uavDesc.Format = DXGI_FORMAT_UNKNOWN;
     uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-    uavDesc.Buffer.NumElements = particles.size();
+    uavDesc.Buffer.NumElements = static_cast<UINT>(particles.size());
 
     device->CreateUnorderedAccessView(particleBuffer.Get(), &uavDesc, &particleUav);
 
-    desc.ByteWidth = sizeof(DistanceConstraint) * distanceConstraints.size();
+    desc.ByteWidth = static_cast<UINT>(sizeof(DistanceConstraint) * distanceConstraints.size());
     desc.Usage = D3D11_USAGE_DEFAULT;
     desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
     desc.StructureByteStride = sizeof(DistanceConstraint);
@@ -715,7 +718,7 @@ void SoftBodySimulate::CreateAndUploadResources(ID3D11Device* device)
     D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
     srvDesc.Format = DXGI_FORMAT_UNKNOWN;
     srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
-    srvDesc.BufferEx.NumElements = distanceConstraints.size();
+    srvDesc.BufferEx.NumElements = static_cast<UINT>(distanceConstraints.size());
 
     device->CreateShaderResourceView(distanceConstraintBuffer.Get(), &srvDesc, &distanceConstraintSrv);
 

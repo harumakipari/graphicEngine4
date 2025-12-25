@@ -10,7 +10,24 @@ inline LPWSTR hr_trace(HRESULT hr)
 }
 
 #define U8(x) reinterpret_cast<const char*>(u8##x)
-//inline const char* U8(const char8_t* s)
-//{
-//	return reinterpret_cast<const char*>(s);
-//}
+
+inline std::string WStringToUTF8(const std::wstring& wStr)
+{
+    if (wStr.empty()) return {};
+
+    int size = WideCharToMultiByte(
+        CP_UTF8, 0,
+        wStr.data(), static_cast<int>(wStr.size()),
+        nullptr, 0,
+        nullptr, nullptr);
+
+    std::string result(size, 0);
+
+    WideCharToMultiByte(
+        CP_UTF8, 0,
+        wStr.data(), static_cast<int>(wStr.size()),
+        result.data(), size,
+        nullptr, nullptr);
+
+    return result;
+}
