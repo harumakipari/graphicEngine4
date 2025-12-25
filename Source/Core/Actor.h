@@ -59,30 +59,7 @@ public:
     * 全 Component を Destroy し、Scene からも削除される。
     * 通常は MarkPendingKill() 経由で呼ばれる。
     */
-    void DestroyActor()
-    {
-        // ヒットコールバックをクリア
-        RemoveAllHitCallBacks();
-
-        // 全コンポーネントの破棄
-        for (auto& comp : ownedComponents_)
-        {
-            if (comp)
-            {
-                comp->Destroy();          // PhysXからの除去など内部的なクリーンアップ
-                comp->OnUnregister();     // Sceneなどからの登録解除
-            }
-        }
-
-        Finalize();
-
-        ownedComponents_.clear();
-        componentsByName_.clear();
-        rootComponent_ = nullptr;
-
-        isAlive = false;
-    }
-
+    void DestroyActor();
 
     /**
     * @brief Actor を削除予約状態にする
@@ -90,10 +67,7 @@ public:
     * この関数を呼ぶと、次の Update フレームで
     * DestroyActor() が実行される。
     */
-    void MarkPendingKill()
-    {
-        isPendingKill = true;
-    }
+    void MarkPendingKill() { isPendingKill = true; }
 
     //==================================================
     // Component Management
@@ -154,71 +128,15 @@ public:
         return newComponent;
     }
 
-     /**
-     * @brief 名前から Component を取得する
-     * @return 見つからない場合 nullptr
-     */
-    std::shared_ptr<Component> FindComponentByName(const std::string& name)
-    {
-        if (name.empty())
-        {
-            return rootComponent_;
-        }
 
-        decltype(componentsByName_)::const_iterator nameToComponent = componentsByName_.find(name);
-        if (nameToComponent != componentsByName_.end())
-        {
-            return nameToComponent->second;
-        }
-
-        decltype(ownedComponents_)::const_iterator component = std::find(ownedComponents_.begin(), ownedComponents_.end(), name);
-        if (component != ownedComponents_.end())
-        {
-            componentsByName_.emplace(name, *component);
-            return *component;
-        }
-
-
-        return nullptr;
-    }
+    /**
+    * @brief 名前から Component を取得する
+    * @return 見つからない場合 nullptr
+    */
+    std::shared_ptr<Component> FindComponentByName(const std::string& name);
 
     // 名前からcomponentを削除する
-    void DestroyComponentByName(const std::string& name)
-    {
-        if (name.empty())
-        {
-            _ASSERT(L"この名前のコンポーネントは存在しないため削除できません。");
-            return;
-        }
-
-        if (rootComponent_ && rootComponent_->name() == name)
-        {
-            // rootComponentの削除は禁止
-            _ASSERT(L"rootComponentは削除できません。");
-            return;
-        }
-
-        // キャッシュからも探す
-        auto itNameSceneComp = componentsByName_.find(name);
-        if (itNameSceneComp != componentsByName_.end())
-        {
-            componentsByName_.erase(itNameSceneComp);
-        }
-
-        auto it = std::remove_if(ownedComponents_.begin(), ownedComponents_.end(),
-            //[&](const std::shared_ptr<SceneComponent>& comp)
-            [&](const std::shared_ptr<Component>& comp)
-            {
-                if (comp->name() == name) {
-                    comp->Destroy(); // 上で定義した Destroy 呼ぶ
-                    return true;     // erase 対象にする
-                }
-                return false;
-            });
-
-        ownedComponents_.erase(it, ownedComponents_.end());
-        componentsByName_.erase(name);
-    }
+    void DestroyComponentByName(const std::string& name);
 
     template<typename T>
     T* GetComponent()
@@ -234,9 +152,11 @@ public:
             }
         }
 
+        Logger::Error(u8"Actor の GetComponent が nullptr を返しています。");
         _ASSERT(L"Actor の GetComponent が nullptr を返しています。");
         return nullptr;
     }
+
 
     template<class T>       //引数にvectorを入れると、コンポーネントを
     void GetComponents(std::vector<T*>& components)
@@ -260,11 +180,11 @@ public:
         return ownedComponents_;
     }
 
-     /**
-     * @brief Component を削除予約する
-     *
-     * PhysX simulate 中でも安全に削除できる。
-     */
+    /**
+    * @brief Component を削除予約する
+    *
+    * PhysX simulate 中でも安全に削除できる。
+    */
     void RequestDestroyComponent(const std::string& name)
     {
         pendingDestroyComponentNames_.push_back(name);
@@ -344,7 +264,7 @@ public:
     }
 
     //進行方向の単位ベクトルを取得する
-    DirectX::XMFLOAT3 GetForward() const 
+    DirectX::XMFLOAT3 GetForward() const
     {
         DirectX::XMFLOAT3  front;
         // Z軸方向の単位方向ベクトル　デフォルト
@@ -389,7 +309,7 @@ public:
     // Collision / Event
     //==================================================
 
-        //　collisionComponent　が Dynamic の物と当たった時に通る
+    //　collisionComponent　が Dynamic の物と当たった時に通る
     virtual void NotifyHit(/*std::shared_ptr<Component> selfComp, std::shared_ptr<Component> otherComp,*//* std::shared_ptr<Actor> otherActor*/Actor* otherActor, const DirectX::XMFLOAT3& hitPos, const DirectX::XMFLOAT3& normal, const DirectX::XMFLOAT3& impulse) {}
     //　collisionComponent　が Dynamic の物と当たった時に通る
     virtual void NotifyHit(CollisionComponent* selfComp, CollisionComponent* otherComp, Actor* otherActor, const DirectX::XMFLOAT3& hitPos, const DirectX::XMFLOAT3& normal, const DirectX::XMFLOAT3& impulse) {}

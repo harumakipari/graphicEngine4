@@ -5,6 +5,7 @@
 #include <source_location>
 
 
+
 class Logger
 {
 public:
@@ -61,6 +62,7 @@ private:
 		LogCategory category;
 		std::string message;
         std::string timeString;
+
 	};
 	std::queue<LogItem> logQueue;
 	std::mutex mtx;

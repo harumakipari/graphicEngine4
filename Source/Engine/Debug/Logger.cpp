@@ -219,42 +219,6 @@ void Logger::DrawImGui()
         }
 
         ImGui::EndChild();
-#if 0
-        //1行ずつ取得する
-        size_t start = 0, end = 0;
-        while ((end = instance.log.find('\n', start)) != std::string::npos)
-        {
-            std::string_view str(instance.log.c_str() + start, end - start);
-            bool cmd = false;
-            if (str.size() == 0)
-            {
-                if (*str.data() == '\n' && *(str.data() + 1) == '\n')//Error
-                {
-                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.2f, 0.2f, 1.0f));
-                    start = start + 2;//2文字分進める
-                    end = instance.log.find('\n', start);
-                    str = std::string_view(instance.log.c_str() + start, end - start);
-                    cmd = true;
-                }
-                else if (*str.data() == '\n')//Warning
-                {
-                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.8f, 0.2f, 1.0f));
-                    start = start + 1;//1文字分進める
-                    end = instance.log.find('\n', start);
-                    str = std::string_view(instance.log.c_str() + start, end - start);
-                    cmd = true;
-                }
-            }
-
-            ImGui::TextUnformatted(str.data(), str.data() + (end - start));
-
-            if (cmd)ImGui::PopStyleColor();
-            start = end + 1;
-        }
-
-        ImGui::EndChild();
-
-#endif // 0
         ImGui::TreePop();
     }
 #endif
