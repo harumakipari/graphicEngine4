@@ -55,25 +55,22 @@ void SampleScene::Start()
 
 
 
-    std::shared_ptr<Sprite> uiSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/UI/icon_chara.png");
+    //std::shared_ptr<Sprite> uiSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/UI/icon_chara.png");
 
-    std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>();
-    image->texture = uiSprite;
+    std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("./Data/Textures/UI/icon_chara.png","image");
     image->position = { 50, 50 };
     image->size = { 200, 200 };
 
     uiManager->Add(image);
 
 
-    std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>();
-    button->texture = uiSprite;
+    std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/icon_chara.png", "button");
     button->position = { 300, 50 };
     button->size = { 200, 80 };
 
     uiManager->Add(button);
 
-    std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>();
-    gauge->texture = uiSprite;
+    std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/icon_chara.png", "gauge");
     gauge->position = { 50, 300 };
     gauge->size = { 300, 40 };
     gauge->value = 1.0f;

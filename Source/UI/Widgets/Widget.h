@@ -16,14 +16,15 @@
 class UICoreComponent
 {
 public:
-    UICoreComponent(const std::string& filename)
+    UICoreComponent(const std::string& filename, const std::string& name)
     {
+        this->name = name;
         texture = std::make_shared<Sprite>(Graphics::GetDevice(), std::wstring(filename.begin(), filename.end()).c_str());
     }
     UICoreComponent()
     {
         // ダミーテクスチャを設定
-        //texture = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/UI/dummy.png");
+        texture = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/square.png");
     }
 
     virtual ~UICoreComponent() = default;
@@ -34,6 +35,7 @@ public:
     virtual void OnMouseDown() {}
     virtual void OnMouseUp() {}
     virtual void OnClick() {}
+    virtual void DrawImGui();
 
     void SetParent(UICoreComponent* parent);
     const std::vector<UICoreComponent*>& GetChildren() const;
@@ -47,6 +49,7 @@ public:
     std::shared_ptr<Sprite>  texture;
 
 protected:
+    std::string name = "UICoreComponent";
     UICoreComponent* parent = nullptr;
     std::vector<UICoreComponent*> children;
 };
@@ -55,6 +58,10 @@ protected:
 class UIImageComponent : public UICoreComponent
 {
 public:
+    UIImageComponent(const std::string& filename, const std::string& name) :UICoreComponent(filename, name) {}
+
+    UIImageComponent() = default;
+
     CoreColor color = CoreColor::White;
 
     void Draw() override
@@ -81,6 +88,10 @@ enum class UIButtonState
 class UIButtonComponent : public UIImageComponent
 {
 public:
+    UIButtonComponent(const std::string& filename, const std::string& name) :UIImageComponent(filename, name) {}
+
+    UIButtonComponent() = default;
+
     UIButtonState state = UIButtonState::Normal;
 
     std::function<void()> onClick;
@@ -149,6 +160,10 @@ private:
 class UIGaugeComponent : public UIImageComponent
 {
 public:
+    UIGaugeComponent(const std::string& filename, const std::string& name) :UIImageComponent(filename, name) {}
+
+    UIGaugeComponent() = default;
+
     float value = 1.0f;  // 0.0f ~ 1.0f
     bool horizontal = true;
 

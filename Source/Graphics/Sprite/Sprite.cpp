@@ -6,6 +6,7 @@
 
 //モジュール化する
 #include "Engine/Utility/Win32Utils.h"
+#include "Graphics/Core/Graphics.h"
 #include "Graphics/Resource/Texture.h"
 #include "Graphics/Core/Shader.h"
 
@@ -369,9 +370,15 @@ void Sprite::Render(ID3D11DeviceContext* immediate_context,
     float sx, float sy, float sw, float sh)//左上座標とサイズ
 {
     //スクリーン（ビューポート）のサイズを取得する
+#if 0
     D3D11_VIEWPORT viewport{};
     UINT num_viewports{ 1 };
     immediate_context->RSGetViewports(&num_viewports, &viewport);
+#else
+    float viewX, viewY, viewportWidth, viewportHeight;
+    Graphics::GetViewport(viewX, viewY, viewportWidth, viewportHeight);
+
+#endif // 0
 
     //x,yがcx,cyを中心にangleで回転した時の座標を計算する関数
     auto rotate = [](float& x, float& y, float cx, float cy, float angle)
@@ -421,14 +428,14 @@ void Sprite::Render(ID3D11DeviceContext* immediate_context,
     rotate(x3, y3, cx, cy, angle);
 
     //スクリーン座標からNDCへの座標変換を行う
-    x0 = 2.0f * x0 / viewport.Width - 1.0f;
-    y0 = 1.0f - 2.0f * y0 / viewport.Height;
-    x1 = 2.0f * x1 / viewport.Width - 1.0f;
-    y1 = 1.0f - 2.0f * y1 / viewport.Height;
-    x2 = 2.0f * x2 / viewport.Width - 1.0f;
-    y2 = 1.0f - 2.0f * y2 / viewport.Height;
-    x3 = 2.0f * x3 / viewport.Width - 1.0f;
-    y3 = 1.0f - 2.0f * y3 / viewport.Height;
+    x0 = 2.0f * x0 / viewportWidth - 1.0f;
+    y0 = 1.0f - 2.0f * y0 / viewportHeight;
+    x1 = 2.0f * x1 / viewportWidth - 1.0f;
+    y1 = 1.0f - 2.0f * y1 / viewportHeight;
+    x2 = 2.0f * x2 / viewportWidth - 1.0f;
+    y2 = 1.0f - 2.0f * y2 / viewportHeight;
+    x3 = 2.0f * x3 / viewportWidth - 1.0f;
+    y3 = 1.0f - 2.0f * y3 / viewportHeight;
 
     //テクセル座標からUV座標系に変換
     float textureWidth = static_cast<float>(texture2dDesc.Width);

@@ -87,6 +87,23 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     // UIマネージャーを初期化
     uiManager = std::make_unique<UIManager>();
 
+    float screenWidth = static_cast<float>(Graphics::GetScreenWidth());
+    float screenHeight = static_cast<float>(Graphics::GetScreenHeight());
+    XMFLOAT2 imageSize = { screenWidth,screenHeight };
+    XMFLOAT2 imageMin = { 0.0f,0.0f };
+
+    InputSystem::SetViewportRect(
+        imageMin.x,
+        imageMin.y,
+        imageSize.x,
+        imageSize.y
+    );
+    Graphics::SetViewport(
+        imageMin.x,
+        imageMin.y,
+        imageSize.x,
+        imageSize.y
+    );
 
 
     return true;
