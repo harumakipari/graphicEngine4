@@ -71,6 +71,23 @@ bool Framework::Initialize()
     ProfileThreadName(0, "Main Thread");
 
 
+    float screenWidth = static_cast<float>(Graphics::GetScreenWidth());
+    float screenHeight = static_cast<float>(Graphics::GetScreenHeight());
+    XMFLOAT2 imageSize = { screenWidth,screenHeight };
+    XMFLOAT2 imageMin = { 0.0f,0.0f };
+
+    InputSystem::SetViewportRect(
+        imageMin.x,
+        imageMin.y,
+        imageSize.x,
+        imageSize.y
+    );
+    Graphics::SetViewport(
+        imageMin.x,
+        imageMin.y,
+        imageSize.x,
+        imageSize.y
+    );
 
 
     return true;

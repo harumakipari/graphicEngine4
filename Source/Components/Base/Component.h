@@ -1,7 +1,7 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 // 1. 自分自身のヘッダが一番上に来る
- 
+
 // 2. C 標準ライブラリ（あれば）
 
 // C++ 標準ライブラリ
@@ -86,14 +86,14 @@ public:
     Component(Component&&) noexcept = delete;
     Component& operator=(Component&&) noexcept = delete;
 
-    virtual void Initialize() = 0;
+    virtual void Initialize() {};
 
-    virtual void Tick(float deltaTime) = 0;
+    virtual void Tick(float deltaTime) {}
 
     virtual void OnRegister() {} // 派生クラスで override して登録処理を書く
     virtual void OnUnregister() {} // 派生クラスで override して解除処理を書く
 
-    virtual void DrawImGuiInspector(){}
+    virtual void DrawImGuiInspector() {}
 
     const std::string& name() const
     {
@@ -108,7 +108,7 @@ public:
 
     bool GetActive() { return active_; }
 
-    virtual void UpdateComponentToWorld(UpdateTransformFlags update_transform_flags = UpdateTransformFlags::None, TeleportType teleport = TeleportType::None) {}    
+    virtual void UpdateComponentToWorld(UpdateTransformFlags update_transform_flags = UpdateTransformFlags::None, TeleportType teleport = TeleportType::None) {}
 
     virtual void Destroy()
     {

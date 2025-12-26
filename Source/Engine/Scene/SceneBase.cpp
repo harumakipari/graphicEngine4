@@ -402,7 +402,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     // デバック描画
 //#if _DEBUG
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-    //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+    Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
     DebugDrawManager::Render(immediateContext);
 //#endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
@@ -749,23 +749,6 @@ void SceneBase::DrawGizmo()
         imageSize.y
     );
 #else
-    float screenWidth = static_cast<float>(Graphics::GetScreenWidth());
-    float screenHeight = static_cast<float>(Graphics::GetScreenHeight());
-    DirectX::XMFLOAT2 imageSize = { screenWidth,screenHeight };
-    DirectX::XMFLOAT2 imageMin = { 0.0f,0.0f };
-
-    InputSystem::SetViewportRect(
-        imageMin.x,
-        imageMin.y,
-        imageSize.x,
-        imageSize.y
-    );
-    Graphics::SetViewport(
-        imageMin.x,
-        imageMin.y,
-        imageSize.x,
-        imageSize.y
-    );
 #endif
 
 }

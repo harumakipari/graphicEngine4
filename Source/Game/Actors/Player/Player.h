@@ -73,7 +73,8 @@ public:
     std::shared_ptr<EffectComponent> effectChargeComponent;
     std::shared_ptr<InputComponent> inputComponent;
     std::shared_ptr<RotationComponent> rotationComponent;
-    std::shared_ptr<MovementComponent> movementComponent;
+    //std::shared_ptr<MovementComponent> movementComponent;
+    std::shared_ptr<CharacterMovementComponent> characterMovementComponent;
     std::shared_ptr<AudioSourceComponent> beamChargeAudioComponent;
     std::shared_ptr<AudioSourceComponent> beamLaunchAudioComponent;
     std::shared_ptr<AudioSourceComponent> itemAudioComponent;

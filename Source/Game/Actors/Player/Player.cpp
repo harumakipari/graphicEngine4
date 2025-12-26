@@ -473,9 +473,11 @@ void Player::Initialize(const Transform& transform)
     //    });
     //inputComponent->BindActionAndButton(GamePad::Button::y, "Jump", TriggerMode::none); //[v]
 
+    characterMovementComponent = this->AddComponent<CharacterMovementComponent>("movementComponent", "skeletalComponent");
+
     // 移動用コンポーネントを追加
-    movementComponent = this->AddComponent<class MovementComponent>("movementComponent", "skeletalComponent");
-    
+    //movementComponent = this->AddComponent<class MovementComponent>("movementComponent", "skeletalComponent");
+
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponet", "skeletalComponent");
 
@@ -488,6 +490,10 @@ void Player::Update(float elapsedTime)
 {
     // これは絶対入れる　アニメーションの更新をしているから
     Character::Update(elapsedTime);
+
+    auto intent = inputComponent->GetIntent();
+    characterMovementComponent->ApplyIntent(intent);
+    return;
 
     XMFLOAT3 position = GetPosition();
     XMFLOAT3 prevPosition = position;
@@ -541,9 +547,9 @@ void Player::Update(float elapsedTime)
             hit.position, 0.1f, { 1,0,0,1 });
     }
 
-    SetPosition(position);    
-    
-    
+    SetPosition(position);
+
+
     if (Physics::Instance().RayCast(
         DirectX::XMFLOAT3(position.x, position.y + 1.5f, position.z),
         DirectX::XMFLOAT3(sinf(angle.y), 0, cosf(angle.y)),
@@ -960,6 +966,8 @@ void Player::Turn(float elapsedTime)
 #endif
 
 #endif // 0
+    return;
+
     float vx = inputComponent->GetThumbStateRx();
     float vz = inputComponent->GetThumbStateRy();
     float speed = DirectX::XMConvertToRadians(currentTurnSpeed) * elapsedTime;

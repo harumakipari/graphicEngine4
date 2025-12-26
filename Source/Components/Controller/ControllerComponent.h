@@ -17,91 +17,49 @@
 
 class Actor;
 
+struct MoveIntent
+{
+    DirectX::XMFLOAT3 move;
+    bool jump = false;
+};
 
-class InputComponent :public SceneComponent
+class InputComponent :public Component
 {
 public:
-    InputComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner) {}
+    InputComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :Component(name, owner) {}
 
-    void Tick(float deltaTime)override
+    const MoveIntent& GetIntent() const { return intent_; }
+
+    void Tick(float) override
     {
-        static DirectX::XMFLOAT3 position{ 0.0f,0.0f,0.0f };
-        static DirectX::XMFLOAT3 angle{ 0.0f,0.0f,0.0f };
-
-        DirectX::XMFLOAT3 inputDir = { 0.0f,0.0f,0.0f };
-
+        intent_.move = { 0,0,0 };
         if (!CameraManager::IsUseDebug())
         {
             if (InputSystem::GetInputState("W"))
             {
-                inputDir.z += 1.0f;
-                //position.z += 2.0f * deltaTime;
+                intent_.move.z += 1.0f;
             }
             if (InputSystem::GetInputState("S"))
             {
-                inputDir.z -= 1.0f;
-                //position.z -= 2.0f * deltaTime;
+                intent_.move.z -= 1.0f;
             }
             if (InputSystem::GetInputState("D"))
             {
-                inputDir.x += 1.0f;
-                //position.x += 2.0f * deltaTime;
+                intent_.move.x += 1.0f;
             }
             if (InputSystem::GetInputState("A"))
             {
-                inputDir.x -= 1.0f;
-                //position.x -= 2.0f * deltaTime;
-            }
-        }
-
-        moveInput_ = inputDir;
-
-        //attachParent_.lock()->SetLocalPosition(position);
-
-        for (const std::pair<GamePad::Button, ButtonBinding>& binding : buttonToActionMap_)
-        {
-            if (pad.ButtonState(binding.first, binding.second.triggerMode))
-            {
-                Trigger(binding.second.actionName);
+                intent_.move.x -= 1.0f;
             }
         }
     }
 
-    void SetMoveInput(const DirectX::XMFLOAT3& input) { moveInput_ = input; }
+    const DirectX::XMFLOAT3& GetMoveInput() const { return intent_.move; }
 
-    const DirectX::XMFLOAT3& GetMoveInput() const { return moveInput_; }
-
-    // アクション名で起こるイベントを設定
-    //使用例
-    // inputComponent->BindAction("Jump",[](){/*　処理　*/ });
-    void BindAction(const std::string& action, const std::function<void()>& callback)
-    {
-        bindings_[action] = callback;
-    }
-
-    // ボタンとアクションを紐づける
-    //使用例
-    // inputComponent->BindActionAndButton(GamePad::Button::x,"Jump",TriggerMode::fallingEdge);
-    void BindActionAndButton(GamePad::Button button, const std::string& action, TriggerMode triggerMode)
-    {
-        buttonToActionMap_[button] = { action,triggerMode };
-    }
-
-    void Trigger(const std::string& action)
-    {
-        auto it = bindings_.find(action);
-        if (it != bindings_.end())
-        {
-            it->second();
-        }
-    }
-
-    // [←]:-1   [→]:+1
     float GetTumbStateLx()
     {
         return pad.ThumbStateLx();
     }
-    // [↑]:+1  [↓]:-1
     float GetTumbStateLy()
     {
         return pad.ThumbStateLy();
@@ -117,32 +75,47 @@ public:
         return pad.ThumbStateRy();
     }
 
+private:
+    MoveIntent intent_;
+    GamePad pad;
+};
+
+class CharacterMovementComponent : public SceneComponent
+{
+public:
+    CharacterMovementComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner) {}
+
+    void Tick(float dt) override;
+
+    void SetMoveDirection(const DirectX::XMFLOAT3& dir)
+    {
+        inputDir_ = dir;
+    }
+
+    void ApplyIntent(const MoveIntent& intent)
+    {
+        inputDir_ = intent.move;
+    }
 
 private:
-    struct ButtonBinding
-    {
-        std::string actionName;
-        TriggerMode triggerMode;
-    };
+    // 状態
+    DirectX::XMFLOAT3 velocity_{ 0,0,0 };
+    bool isGrounded_ = false;
 
-    // 入力によって起こるイベントを登録する
-    std::unordered_map<std::string, std::function<void()>> bindings_;
+    // 設定値
+    float speed_ = 5.0f;
+    float gravity_ = -4.9f;
+    float groundOffset_ = 1.0f;
+    float radius_ = 0.4f;
 
-    // キー入力によって起こるアクションを設定する
-    std::unordered_map<GamePad::Button, ButtonBinding> buttonToActionMap_;
-
-    GamePad pad;
-
-    DirectX::XMFLOAT3 moveInput_ = { 0.0f,0.0f,0.0f };
-
+    DirectX::XMFLOAT3 inputDir_{ 0,0,0 };
 };
+
 
 class MovementComponent :public SceneComponent
 {
 public:
     MovementComponent(const std::string& name, const std::shared_ptr<Actor>& owner);
-
-
 
     void Tick(float deltaTime)override;
 
