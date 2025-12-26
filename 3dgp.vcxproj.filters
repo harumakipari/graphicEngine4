@@ -531,9 +531,6 @@
     <ClCompile Include="Source\Engine\Effects\EffectManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Debug\Dialog.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\Resources\ResourceManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -574,6 +571,15 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Core\Actor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Debug\SceneEditor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Scenes\PuddingGameScene.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\UIManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1109,7 +1115,6 @@
     <ClInclude Include="Source\Core\CoreColor.h" />
     <ClInclude Include="Source\Engine\Utility\JsonUtils.h" />
     <ClInclude Include="Source\Engine\Utility\JsonFileHandler.h" />
-    <ClInclude Include="Source\Engine\Debug\Dialog.h" />
     <ClInclude Include="Source\Engine\Resources\Resource.h" />
     <ClInclude Include="Source\Engine\Resources\ResourceManager.h" />
     <ClInclude Include="Source\Components\Effect\ParticleComponent.h" />
@@ -1121,12 +1126,14 @@
     <ClInclude Include="Source\Engine\Audio\CoreAudio.h" />
     <ClInclude Include="Source\Engine\Debug\DebugDrawManager.h" />
     <ClInclude Include="Source\Engine\Debug\EditorGizmo.h" />
-    <ClInclude Include="Source\UI\UIManger.h" />
+    <ClInclude Include="Source\UI\UIManager.h" />
     <ClInclude Include="Source\Graphics\Renderer\SpriteRenderer.h" />
     <ClInclude Include="Source\Graphics\Core\PrecomputedNoiseTexture3d.h" />
     <ClInclude Include="Source\UI\Font.h" />
     <ClInclude Include="Source\Game\Actors\Dessert\Cherry.h" />
     <ClInclude Include="Source\Game\Actors\Dessert\Pudding.h" />
+    <ClInclude Include="Source\Engine\Debug\SceneEditor.h" />
+    <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">

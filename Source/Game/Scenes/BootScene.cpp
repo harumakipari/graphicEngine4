@@ -439,6 +439,7 @@ void BootScene::SetUpActors()
 
 bool BootScene::Uninitialize(ID3D11Device* device)
 {
+    SceneBase::Uninitialize(device);
     Physics::Instance().Finalize();
     return true;
 }

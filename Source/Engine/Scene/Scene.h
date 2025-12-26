@@ -234,6 +234,23 @@ public:
     static bool _async_preload_scene(ID3D11Device* device, UINT64 width, UINT height, const std::string& name);
 
 
+    static std::vector<std::string> GetRegisteredSceneNames()
+    {
+        std::vector<std::string> names;
+        for (auto& [name, _] : _reflections())
+        {
+            names.push_back(name);
+        }
+        return names;
+    }
+
+    static const std::string& GetCurrentSceneName()
+    {
+        static std::string empty;
+        if (_current_scene)
+            return typeid(*_current_scene).name(); 
+        return empty;
+    }
 private:
     // ”ñ“¯Šúˆ—‚ÌŠ®—¹‚ğ‘Ò‹@
     static bool _async_wait()

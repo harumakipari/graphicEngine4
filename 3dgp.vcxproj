@@ -271,6 +271,7 @@
     <ClCompile Include="Source\Engine\Debug\DebugDrawManager.cpp" />
     <ClCompile Include="Source\Engine\Debug\EditorGizmo.cpp" />
     <ClCompile Include="Source\Engine\Debug\Logger.cpp" />
+    <ClCompile Include="Source\Engine\Debug\SceneEditor.cpp" />
     <ClCompile Include="Source\Engine\Easing\TestEasingHandler.cpp" />
     <ClCompile Include="Source\Engine\Effects\CoreComputeParticleSystem.cpp" />
     <ClCompile Include="Source\Engine\Effects\EffectEditor.cpp" />
@@ -307,6 +308,7 @@
     <ClCompile Include="Source\Game\Scenes\BootScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\MainScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\LoadingScene.cpp" />
+    <ClCompile Include="Source\Game\Scenes\PuddingGameScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\SampleScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\TutorialScene.cpp" />
     <ClCompile Include="Source\Game\SofyBody\SoftBody.cpp" />
@@ -356,6 +358,7 @@
     <ClCompile Include="Source\Physics\Physics.cpp" />
     <ClCompile Include="Source\Test\SoftBody2d.cpp" />
     <ClCompile Include="Source\UI\Font.cpp" />
+    <ClCompile Include="Source\UI\UIManager.cpp" />
     <ClCompile Include="Source\Utils\EasingHandler.cpp" />
     <ClCompile Include="Source\Widgets\AudioSource.cpp" />
     <ClCompile Include="Source\Widgets\Color.cpp" />
@@ -416,6 +419,7 @@
     <ClInclude Include="Source\Engine\Debug\DebugDrawManager.h" />
     <ClInclude Include="Source\Engine\Debug\EditorGizmo.h" />
     <ClInclude Include="Source\Engine\Debug\Logger.h" />
+    <ClInclude Include="Source\Engine\Debug\SceneEditor.h" />
     <ClInclude Include="Source\Engine\Easing\Easing.h" />
     <ClInclude Include="Source\Engine\Easing\TestEasingHandler.h" />
     <ClInclude Include="Source\Engine\Effects\CoreComputeParticleSystem.h" />
@@ -480,6 +484,7 @@
     <ClInclude Include="Source\Game\Scenes\BootScene.h" />
     <ClInclude Include="Source\Game\Scenes\MainScene.h" />
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
+    <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />
     <ClInclude Include="Source\Game\Scenes\SampleScene.h" />
     <ClInclude Include="Source\Game\Scenes\TutorialScene.h" />
     <ClInclude Include="Source\Game\SofyBody\SoftBody.h" />
@@ -552,7 +557,7 @@
     <ClInclude Include="Source\Physics\PhysicsHelper.h" />
     <ClInclude Include="Source\Test\SoftBody2d.h" />
     <ClInclude Include="Source\UI\Font.h" />
-    <ClInclude Include="Source\UI\UIManger.h" />
+    <ClInclude Include="Source\UI\UIManager.h" />
     <ClInclude Include="Source\UI\Widgets\Widget.h" />
     <ClInclude Include="Source\Utils\easing.h" />
     <ClInclude Include="Source\Utils\EasingHandler.h" />

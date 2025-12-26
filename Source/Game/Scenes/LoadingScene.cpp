@@ -99,6 +99,7 @@ void LoadingScene::Update(float deltaTime)
 
 bool LoadingScene::Uninitialize(ID3D11Device* device)
 {
+    SceneBase::Uninitialize(device);
     return true;
 }
 

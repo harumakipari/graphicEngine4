@@ -31,10 +31,10 @@ public:
         std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "staticMeshComponent");
         boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(20.0f, 0.2f, 20.0f));
         //boxComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(0.0f, 0.2f, 0.0f));
-        boxComponent->SetCollisionOffsetY(1.0f * 0.5f);
         SetPosition(DirectX::XMFLOAT3(0.0f, -0.0f, 0.0f));
         boxComponent->SetStatic(true);
         boxComponent->SetLayer(CollisionLayer::WorldStatic);
+        //boxComponent->SetCollisionOffsetY(-0.4f);
         boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
         boxComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::Block);
         boxComponent->SetResponseToLayer(CollisionLayer::PlayerSide, CollisionComponent::CollisionResponse::Block);

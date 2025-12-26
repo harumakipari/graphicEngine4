@@ -1387,6 +1387,7 @@ bool MainScene::Uninitialize(ID3D11Device* device)
     GameManager::Finalize();
     Physics::Instance().Finalize();
     CollisionSystem::ClearAll();
+    SceneBase::Uninitialize(device);
     //SpawnValidator::Clear();    // “o˜^‚µ‚Ä‚¢‚½ Box ‚ð”jŠü‚·‚é
     return true;
 }

@@ -1,14 +1,14 @@
 #include "pch.h"
-#include "SampleScene.h"
+
 
 #ifdef USE_IMGUI
 #define IMGUI_ENABLE_DOCKING
-#include "imgui.h"
 #endif
+
+#include "PuddingGameScene.h"
 
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Graphics/Core/Graphics.h"
-#include "Graphics/Core/RenderState.h"
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
 
@@ -16,23 +16,20 @@
 #include "Game/Actors/Dessert/Pudding.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"
 #include "Game/Actors/Enemy/Boss/BossEnemy.h"
-#include "Game/Actors/Stage/ElasticBuilding.h"
 #include "Game/Actors/Stage/Cloth.h"
 
 #include "Widgets/ObjectManager.h"
 #include "Widgets/Utils/EditorGUI.h"
 #include "Widgets/Events/EventSystem.h"
-#include "Widgets/TitleUIFactory.h"
 
 #include "Physics/Physics.h"
 #include "Game/Actors/Stage/FightStage.h"
 
-#include "Graphics/PostProcess/BloomEffect.h"
 #include "Physics/CollisionSystem.h"
 #include "UI/UIManager.h"
 
 
-bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
+bool PuddingGameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
     SceneBase::Initialize(device, width, height, props);
 
@@ -44,7 +41,7 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     return true;
 }
 
-void SampleScene::Start()
+void PuddingGameScene::Start()
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
@@ -96,7 +93,7 @@ void SampleScene::Start()
 
 }
 
-void SampleScene::Update(float deltaTime)
+void PuddingGameScene::Update(float deltaTime)
 {
     using namespace DirectX;
     SceneBase::Update(deltaTime);
@@ -117,60 +114,48 @@ void SampleScene::Update(float deltaTime)
 #endif // !_DEBUG
 }
 
-void SampleScene::SetUpActors()
+void PuddingGameScene::SetUpActors()
 {
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
-    Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 1.3f,1.3f,1.3f });
-    auto player = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
-    mainCameraComponent->target = (player->GetRootComponent());
-    mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
-    //mainCameraComponent->followTarget = (titlePlayer->GetRootComponent());
-    //mainCameraComponent->lookAtTarget = (titlePlayer->GetRootComponent());
 
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    //Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
-    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<FightStage>("stage", stageTr); // Œ³‚Ìƒ‚ƒfƒ‹‚Ì scale ‚ð 0.4f
+    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<Stage>("stage", stageTr); // Œ³‚Ìƒ‚ƒfƒ‹‚Ì scale ‚ð 0.4f
 
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
-    Transform buildTr(DirectX::XMFLOAT3{ -5.0f,-2.45f,3.0 }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
-    auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("map", buildTr);
-    building->AddComponent<StaticMeshComponent>("map")->SetModel("./Data/Models/Map/map.gltf");
-    //building->AddComponent<SkeletalMeshComponent>("pudding")->SetModel("./Data/Models/cherry_pudding/scene.gltf");
+    Transform buildTr(DirectX::XMFLOAT3{ -5.0f,0.0f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
+    auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("jerry", buildTr);
+    auto elasticComp = building->AddComponent<ElasticMeshComponent>("jerry");
+    elasticComp->SetModel("./Data/Models/pink_pudding/scene.gltf");
+    elasticComp->Initialize();
 
-    Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,-2.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
-    auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pudding>("building", buildTr2);
+    Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,0.0f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
+    auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pudding>("Pudding", buildTr2);
 
-
-#if 1
     CameraManager::SetGameCamera(mainCameraActor.get());
-#else
-    CameraManager::SetGameCamera(debugCameraActor.get());
-#endif // 0
-    //stageCollisionMesh = std::make_shared<CollisionMesh>(Graphics::GetDevice(), "./Data/Models/Stage/stage.gltf", true);
-
-    Transform enemyTr(DirectX::XMFLOAT3{ 6.7f,-2.45f,5.6f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
-    auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("enemy", enemyTr);
-
 
     CameraManager::SetDebugCamera(debugCameraActor);
+
+    mainCameraComponent->target = (building->GetRootComponent());
+    mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
+
 }
 
-bool SampleScene::Uninitialize(ID3D11Device* device)
+bool PuddingGameScene::Uninitialize(ID3D11Device* device)
 {
     SceneBase::Uninitialize(device);
     Physics::Instance().Finalize();
     return true;
 }
 
-void SampleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
+void PuddingGameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
     SceneBase::Render(immediateContext, deltaTime);
 }
 
-void SampleScene::DrawGui()
+void PuddingGameScene::DrawGui()
 {
     SceneBase::DrawGui();
 }

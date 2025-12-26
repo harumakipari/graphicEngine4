@@ -52,16 +52,16 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
             DebugDrawManager::DrawSphere(result.hitPoint, 1.03f, { 1, 1, 0, 1 });
 
             XMFLOAT3 intersectNormal;
-            if (auto stage = dynamic_cast<FightStage*>(result.actor))
+            //if (auto stage = dynamic_cast<Stage*>(result.actor))
             {
                 intersectPos = result.hitPoint;
                 intersectNormal = result.normal;
             }
-            else
-            {
-                intersectPos = { 0.0f,0.0f,0.0f };
-                intersectNormal = { 0.0f,0.0f,0.0f };
-            }
+            //else
+            //{
+            //    intersectPos = { 0.0f,0.0f,0.0f };
+            //    intersectNormal = { 0.0f,0.0f,0.0f };
+            //}
             buildCurveDir = { intersectPos.x - position.x,0.0f,intersectPos.z - position.z };
         }
         else

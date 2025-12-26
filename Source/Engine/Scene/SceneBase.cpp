@@ -4,6 +4,7 @@
 #include "ImGuizmo.h"
 #include "Engine/Debug/DebugDrawManager.h"
 #include "Engine/Debug/EditorGizmo.h"
+#include "Engine/Debug/SceneEditor.h"
 #include "Engine/Effects/EffectEditor.h"
 #include "Engine/Effects/EffectManager.h"
 
@@ -463,6 +464,12 @@ void SceneBase::Draw(ID3D11DeviceContext* immediateContext)
     }
 }
 
+bool SceneBase::Uninitialize(ID3D11Device* device)
+{
+    uiManager->Clear();
+    return true;
+}
+
 
 void SceneBase::DrawGui()
 {
@@ -472,7 +479,8 @@ void SceneBase::DrawGui()
     DrawOutliner();
     DrawGizmo();// 
     DrawInspector();
-
+    SceneEditor::Draw();
+    uiManager->DrawImGUi();
     DrawShortcutInfo();
 #endif
 }

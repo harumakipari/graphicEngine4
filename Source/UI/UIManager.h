@@ -6,8 +6,10 @@ class UIManager
 public:
     void Update(float deltaTime)
     {
+        if (!enabled) return;
         for (auto ui : rootComponents)
         {
+            if (ui->enabled)
             {
                 ui->Update(deltaTime);
             }
@@ -16,8 +18,10 @@ public:
 
     void Draw()
     {
+        if (!visible) return;
         for (auto ui : rootComponents)
         {
+            if (ui->visible)
             {
                 ui->Draw();
             }
@@ -29,6 +33,14 @@ public:
         rootComponents.push_back(ui);
     }
 
+    void Clear()
+    {
+        rootComponents.clear();
+    }
+
+    void DrawImGUi();
 private:
     std::vector<std::shared_ptr<UICoreComponent>> rootComponents;
+    bool visible = true;
+    bool enabled = true;
 };

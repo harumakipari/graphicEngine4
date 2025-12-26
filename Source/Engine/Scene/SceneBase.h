@@ -18,7 +18,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include "UI/UIManger.h"
+#include "UI/UIManager.h"
 
 
 /// @brief 全シーン共通の基底クラス。描画・定数バッファ・ライト・ポストエフェクトを統一管理する。
@@ -34,7 +34,7 @@ public:
 
     virtual void Render(ID3D11DeviceContext* immediateContext, float delta_time) override;
 
-    virtual bool Uninitialize(ID3D11Device* device) override { return true; }
+    virtual bool Uninitialize(ID3D11Device* device) override;
     virtual bool OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height) override;
     virtual void DrawGui() override;
 
