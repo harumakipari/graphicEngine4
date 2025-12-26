@@ -6,6 +6,7 @@
 #include "Components/Elastic/ElasticComponent.h"
 #include "Engine/Audio/CoreAudio.h"
 #include "Engine/Input/InputSystem.h"
+#include "Physics/CollisionFunction.h"
 
 class Pudding : public Actor
 {
@@ -52,9 +53,21 @@ public:
         SetScale(transform.GetScale());
 
         elasticBuilding->Initialize();
+
+        arrowGauge = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/arrow.png", "arrowGauge");
+        arrowGauge->position = { 50, 300 };
+        arrowGauge->pivot = { 0.5f,0.5f };
+        arrowGauge->size = { 350, 200 };
+        arrowGauge->value = 1.0f;
+
+        GetOwnerScene()->GetUIManager()->Add(arrowGauge);
+
     }
     void Update(float deltaTime)override
     {
+
+        const auto& pull = elasticBuilding->GetPullInfo();
+
         if (InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
         {
             if (particleComponent)
@@ -106,7 +119,7 @@ public:
             XMVector3Normalize(dir + XMVectorSet(0, 0.5f, 0, 0));
 
         // ===== 引っ張り量 =====
-        float pullAmount = elasticBuilding->GetPullAmount();
+        float pullAmount = pull.amount;
         Logger::Log((std::string("サクランボの引っ張った量") + std::to_string(pullAmount)).c_str());
 
 
@@ -130,6 +143,54 @@ public:
             }
         }
 
+        XMFLOAT3 launch;
+        XMStoreFloat3(&launch, launchDir);
+
+        // XZ 平面に落とす
+        XMFLOAT2 dir2D = { launch.x, launch.z };
+
+        // normalize
+        float len = sqrtf(dir2D.x * dir2D.x + dir2D.y * dir2D.y);
+        if (len > 0.0001f)
+        {
+            dir2D.x /= len;
+            dir2D.y /= len;
+        }
+
+        // UI角度（右=0°, 下=+）
+        float angleRad = atan2f(-dir2D.y, dir2D.x);
+        float angleDeg = DirectX::XMConvertToDegrees(angleRad);
+
+
+        if (pull.active)
+        {
+            arrowGauge->visible = true;
+
+            // === ワールド → スクリーン ===
+            XMFLOAT3 worldTop =
+            {
+                GetPosition().x,
+                GetPosition().y + elasticBuilding->GetModelSize().y,
+                GetPosition().z
+            };
+
+            XMFLOAT2 screenPos =
+                CollisionFunction::GetScreenPositionFromWorldPosition(worldTop);
+
+            arrowGauge->position =
+            {
+                screenPos.x,
+                screenPos.y + 20.0f // 少し下にオフセット
+            };
+
+            arrowGauge->angle = angleDeg;
+            arrowGauge->value = pull.amount;
+        }
+        else
+        {
+            arrowGauge->visible = false;
+        }
+
     }
     void DrawImGuiDetails()
     {
@@ -142,4 +203,6 @@ public:
 private:
     float minPower = 2.0f;
     float maxPower = 10.0f;
+
+    std::shared_ptr<UIGaugeComponent> arrowGauge;
 };

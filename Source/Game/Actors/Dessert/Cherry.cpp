@@ -21,9 +21,9 @@ void Cherry::Update(float deltaTime)
         position.z += velocity_.z * deltaTime;
         SetPosition(position);
         // 地面に到達したら停止
-        if (position.y <= -2.45f)
+        if (position.y <= 0.0f)
         {
-            position.y = -2.45f;
+            position.y = 0.0f;
             SetPosition(position);
             isFlying_ = false;
             // エフェクトを再生

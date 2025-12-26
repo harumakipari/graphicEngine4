@@ -16,6 +16,7 @@
 #include "Widgets/Events/EventSystem.h"
 
 #include "Core/ActorManager.h"
+#include "UI/UIManager.h"
 
 //ƒV[ƒ“‚Ìó‘Ô‚ğ•\‚·—ñ‹“Œ^
 enum class SCENE_STATE
@@ -58,6 +59,8 @@ public:
     // ActorManager ‚Ìæ“¾
     const ActorManager* GetActorManager() const { return actorManager_.get(); }
     ActorManager* GetActorManager() { return actorManager_.get(); }
+    const UIManager* GetUIManager() const { return uiManager.get(); }
+    UIManager* GetUIManager() { return uiManager.get(); }
 
     void ClearActorManager()
     {
@@ -248,7 +251,7 @@ public:
     {
         static std::string empty;
         if (_current_scene)
-            return typeid(*_current_scene).name(); 
+            return typeid(*_current_scene).name();
         return empty;
     }
 private:
@@ -306,6 +309,9 @@ protected:
 
 private:
     std::unique_ptr<ActorManager> actorManager_;
+protected:
+    std::unique_ptr<UIManager> uiManager;
+
 };
 
 

@@ -146,5 +146,4 @@ protected:
 
 
     std::unique_ptr<Font>	font;
-    std::unique_ptr<UIManager> uiManager;
 };

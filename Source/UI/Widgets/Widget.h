@@ -45,13 +45,13 @@ public:
     // スクリーン座標
     XMFLOAT2 position;
     XMFLOAT2 size;
+    XMFLOAT2 pivot = { 0.0f,0.0f };
     bool visible = true;
     bool enabled = true;
+    float angle = 0.0f;
 protected:
     SpriteUV uv{ 0,0,100,100 };
-    float pivot[2] = { 0.0f,0.0f };
     XMFLOAT2 scale = { 1.0f,1.0f };
-    float angle = 0.0f;
 
     std::shared_ptr<Sprite>  texture;
 
@@ -82,7 +82,7 @@ public:
             color,
             uv,
             angle,
-            { pivot[0],pivot[1] },
+            pivot,
             scale
         );
     }
@@ -195,7 +195,7 @@ public:
             color,
             uv,
             angle,
-            { pivot[0],pivot[1] },
+            pivot,
             scale
         );
     }

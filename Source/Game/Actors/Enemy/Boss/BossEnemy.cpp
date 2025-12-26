@@ -125,4 +125,6 @@ void BossEnemy::Update(float deltaTime)
 
     characterMovementComponent->SetMoveDirection(direction);
     rotationComponent->SetDirection(direction);
+
+    stateMachine_->ChangeState("Walk");
 }

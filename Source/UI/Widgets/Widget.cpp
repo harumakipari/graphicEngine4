@@ -13,7 +13,7 @@ void UICoreComponent::DrawImGui()
     ImGui::DragFloat2("Size", &size.x, 1.0f);
     ImGui::DragFloat2("Scale", &scale.x, 0.2f);
     ImGui::SliderFloat("angle", &angle,0.0f,360.0f);
-    ImGui::SliderFloat2("pivot", pivot, 0.0f,1.0f);
+    ImGui::SliderFloat2("pivot", &pivot.x, 0.0f,1.0f);
 
 #endif
 }

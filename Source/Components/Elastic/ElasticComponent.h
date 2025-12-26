@@ -48,9 +48,6 @@ public:
         elasticParameters.momentumZ += impulse.z / elasticParameters.mass;
     }
 
-
-    float GetPullAmount();
-
     // サクランボのためにプリンの表面の位置を取得する関数
     void GetSurfacePositionTangent(DirectX::XMFLOAT3& surfacePosition,DirectX::XMFLOAT3& tangent);
 
@@ -139,17 +136,22 @@ public:
         float maxDist = 2.5f;
     };
 
+    struct PullInfo
+    {
+        bool active = false;
+        float amount = 0.0f;   // 0~1
+        float radianAngle = 0.0f;    // rad
+    };
+
+    const PullInfo& GetPullInfo() const { return pullInfo; }
+
+    float GetModelHeight() const { return modelHeight; }
 private:
     void UpdatePushElastic(float deltaTime);
-
-    void UpdateBezierFromPull(const DirectX::XMVECTOR& pullDir, float pullLength);
-    void UpdatePullElastic(float deltaTime);
-
 
     std::unique_ptr<ConstantBuffer<ElasticConstants>> elasticBuildingCBuffer;
     ElasticConstants elasticConstants{};
     ElasticParameters elasticParameters;
-    DirectX::XMFLOAT3 externalForce_{ 0,0,0 };
     float modelHeight = 0.0f;
 
     DirectX::XMFLOAT2 dragStartMousePos = { 0.0f,0.0f };
@@ -160,4 +162,6 @@ private:
     bool hasGrabPoint = false;
 
     float cherryOffset = -0.5f;// サクランボのためのオフセット
+
+    PullInfo pullInfo;
 };
