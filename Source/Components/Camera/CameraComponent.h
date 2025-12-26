@@ -32,7 +32,8 @@ public:
     }
     virtual const DirectX::XMFLOAT4X4& GetView() = 0;
 
-    const DirectX::XMFLOAT4X4& GetProjection() {
+    const DirectX::XMFLOAT4X4& GetProjection()
+    {
         using namespace DirectX;
         XMStoreFloat4x4(&projection, XMMatrixPerspectiveFovLH(fovY, aspect, nearZ, farZ));
         return projection;
@@ -94,7 +95,6 @@ public:
     }
 
 
-    std::weak_ptr<SceneComponent> target;
 
     const DirectX::XMFLOAT4X4& GetView() {
         using namespace DirectX;
@@ -123,21 +123,64 @@ public:
             rot
         );
 
-        XMVECTOR eye = focus + offset;
+        // 理想のカメラ位置
+        XMVECTOR idealEye = focus + offset;
+
+        // 衝突解決後のカメラ位置
+        XMVECTOR finalEye =
+            ResolveCameraCollision(focus, idealEye);
 
         XMStoreFloat4x4(
             &view,
-            XMMatrixLookAtLH(eye, focus, XMVectorSet(0, 1, 0, 0))
+            XMMatrixLookAtLH(finalEye, focus, XMVectorSet(0, 1, 0, 0))
         );
 
         return view;
     }
+
     float yaw = 0.0f;
     float pitch = DirectX::XMConvertToRadians(-12.0f);
     float distance = 4.5f;
     DirectX::XMFLOAT3 targetOffset = { 0.0f, 1.5f, 0.0f };
+    std::weak_ptr<SceneComponent> target;
 
-protected:
+private:
+    DirectX::XMVECTOR ResolveCameraCollision(
+        DirectX::FXMVECTOR focus,
+        DirectX::FXMVECTOR idealEye
+    )
+    {
+        using namespace DirectX;
+
+        XMFLOAT3 f, e;
+        XMStoreFloat3(&f, focus);
+        XMStoreFloat3(&e, idealEye);
+
+        XMFLOAT3 dir = {
+            e.x - f.x,
+            e.y - f.y,
+            e.z - f.z
+        };
+
+        float len = sqrtf(dir.x * dir.x + dir.z * dir.z + dir.y * dir.y);
+        if (len < 0.001f)
+            return idealEye;
+
+        dir.x /= len; dir.y /= len; dir.z /= len;
+
+        HitResult hit;
+        if (Physics::Instance().RayCast(
+            f, dir, len,
+            hit,
+            CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
+        {
+            // 少し手前に出す
+            XMVECTOR h = XMLoadFloat3(&hit.position);
+            return h - XMVectorScale(XMLoadFloat3(&dir), 0.2f);
+        }
+
+        return idealEye;
+    }
 };
 
 //class CameraComponent :public SceneComponent

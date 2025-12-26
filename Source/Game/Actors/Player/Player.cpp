@@ -492,7 +492,9 @@ void Player::Update(float elapsedTime)
     Character::Update(elapsedTime);
 
     auto intent = inputComponent->GetIntent();
+    //characterMovementComponent->SetMoveDirection({ 1,0,0 });
     characterMovementComponent->ApplyIntent(intent);
+    rotationComponent->SetDirection(intent.move);
     return;
 
     XMFLOAT3 position = GetPosition();

@@ -313,12 +313,7 @@ public:
     void DrawImGuiDetails()override
     {
 #ifdef USE_IMGUI
-        ImGui::DragFloat("distanceX", &distanceX, 0.1f);
-        ImGui::DragFloat("distanceY", &distanceY, 0.1f);
-        ImGui::DragFloat("distanceZ", &distanceZ, 0.1f);
-        ImGui::DragFloat3("cameraOffset", &offset.x, 0.3f);
-        ImGui::DragFloat3("cameraMin", &cameraMin.x, 1.0f);
-        ImGui::DragFloat3("cameraMax", &cameraMax.x, 1.0f);
+
 #endif
     }
     // É{ÉXÇ…íçéãì_ÇçáÇÌÇπÇÈÇ©Ç«Ç§Ç©

@@ -35,7 +35,6 @@ public:
     std::shared_ptr<SkeletalMeshComponent> gearInMeshComponent;
     std::shared_ptr<SkeletalMeshComponent> gearOutMeshComponent;
     std::shared_ptr<SphereComponent> bossHandComponent;
-    std::shared_ptr<MovementComponentOutInput> moveComponent;
     std::shared_ptr<AudioSourceComponent> rushAudioComponent;
     std::shared_ptr<AudioSourceComponent> misileAudioComponent;
     std::shared_ptr<AudioSourceComponent> specialAudioComponent;
@@ -112,7 +111,6 @@ public:
         this->SetAnimationController(controller);
         this->PlayAnimation("Walk");
 
-        moveComponent = this->AddComponent<MovementComponentOutInput>("movementComponent", "skeltalComponent");
 
         //std::shared_ptr<CapsuleComponent> capsuleComponent = this->NewComponent<class CapsuleComponent>("capsuleComponent", "skeltalComponent");
         //capsuleComponent->SetRadiusAndHeight(radius, height);
