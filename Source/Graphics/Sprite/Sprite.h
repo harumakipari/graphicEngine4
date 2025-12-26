@@ -51,6 +51,13 @@ public:
     void SoftRender(ID3D11DeviceContext* immediate_context,
         DirectX::XMFLOAT2 leftTop, DirectX::XMFLOAT2 rightTop, DirectX::XMFLOAT2 leftBottom, DirectX::XMFLOAT2 rightBottom,float sx, float sy, float sw, float sh, float r, float g, float b, float a);
 
+    DirectX::XMFLOAT2 GetTextureSize() const
+    {
+        DirectX::XMFLOAT2 size;
+        size.x = static_cast<float>(texture2dDesc.Width);
+        size.y = static_cast<float>(texture2dDesc.Height);
+        return size;
+    }
 private:
     //頂点フォーマット
     struct Vertex

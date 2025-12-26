@@ -20,6 +20,8 @@ public:
     {
         this->name = name;
         texture = std::make_shared<Sprite>(Graphics::GetDevice(), std::wstring(filename.begin(), filename.end()).c_str());
+        uv.w = texture->GetTextureSize().x;
+        uv.h = texture->GetTextureSize().y;
     }
     UICoreComponent()
     {
@@ -45,10 +47,15 @@ public:
     XMFLOAT2 size;
     bool visible = true;
     bool enabled = true;
+protected:
+    SpriteUV uv{ 0,0,100,100 };
+    float pivot[2] = { 0.0f,0.0f };
+    XMFLOAT2 scale = { 1.0f,1.0f };
+    float angle = 0.0f;
 
     std::shared_ptr<Sprite>  texture;
 
-protected:
+
     std::string name = "UICoreComponent";
     UICoreComponent* parent = nullptr;
     std::vector<UICoreComponent*> children;
@@ -72,7 +79,11 @@ public:
             texture.get(),
             position,
             size,
-            color
+            color,
+            uv,
+            angle,
+            { pivot[0],pivot[1] },
+            scale
         );
     }
 };
@@ -181,7 +192,11 @@ public:
             texture.get(),
             position,
             drawSize,
-            color
+            color,
+            uv,
+            angle,
+            { pivot[0],pivot[1] },
+            scale
         );
     }
 };
