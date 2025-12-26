@@ -1,6 +1,9 @@
 #pragma once
 #include "Game/Actors/Enemy/Enemy.h"
 
+class RotationComponent;
+class CharacterMovementComponent;
+
 class BossEnemy :public Enemy
 {
 public:
@@ -14,4 +17,10 @@ public:
     BossEnemy& operator=(const BossEnemy&) = delete;
 
     void Initialize(const Transform& transform)override;
+
+    void Update(float deltaTime) override;
+
+private:
+    std::shared_ptr<CharacterMovementComponent> characterMovementComponent;
+    std::shared_ptr<RotationComponent> rotationComponent;
 };

@@ -2,6 +2,9 @@
 #include "BossEnemy.h"
 #include "BossState.h"
 
+#include "Components/Controller/ControllerComponent.h"
+#include "Engine/Scene/Scene.h"
+
 void BossEnemy::Initialize(const Transform& transform)
 {
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
@@ -97,8 +100,29 @@ void BossEnemy::Initialize(const Transform& transform)
     boxComponent->Initialize();
 
 #endif // 0
+    // キャラクタームーブメントコンポーネント追加
+    characterMovementComponent = AddComponent<CharacterMovementComponent>("characterMovementComponent", "skeletalComponent");
+    // 回転コンポーネント追加
+    rotationComponent = AddComponent<RotationComponent>("rotationComponent", "skeletalComponent");
+
+
     SetPosition(transform.GetLocation());
     SetQuaternionRotation(transform.GetRotation());
     SetScale(transform.GetScale());
 
+}
+
+void BossEnemy::Update(float deltaTime)
+{
+    DirectX::XMFLOAT3 playerPos = GetOwnerScene()->GetActorManager()->GetActorByName("player")->GetPosition();
+    XMVECTOR PlayerPos = XMLoadFloat3(&playerPos);
+    DirectX::XMFLOAT3 enemyPos = GetPosition();
+    XMVECTOR EnemyPos = XMLoadFloat3(&enemyPos);
+
+    DirectX::XMVECTOR  Direction = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(PlayerPos, EnemyPos));
+    XMFLOAT3 direction;
+    XMStoreFloat3(&direction, Direction);
+
+    characterMovementComponent->SetMoveDirection(direction);
+    rotationComponent->SetDirection(direction);
 }
