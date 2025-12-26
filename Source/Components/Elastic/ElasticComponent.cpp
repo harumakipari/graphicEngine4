@@ -24,6 +24,8 @@ void ElasticMeshComponent::Initialize()
         /*stretchRate*/ 1.0f,
     };
     elasticBuildingCBuffer->data = elasticConstants;
+
+    
 }
 
 void ElasticMeshComponent::Tick(float deltaTime)

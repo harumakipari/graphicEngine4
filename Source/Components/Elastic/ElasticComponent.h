@@ -133,7 +133,7 @@ public:
         float momentumX = 0.0f;
         float momentumY = 0.0f;
         float momentumZ = 0.0f;
-        float maxDist = 2.5f;
+        float maxDist = 3.4f;
     };
 
     struct PullInfo

@@ -18,6 +18,8 @@ public:
     std::shared_ptr<SkeletalMeshComponent> cherry;
     std::shared_ptr<SkeletalMeshComponent> whip;
     std::shared_ptr<ParticleComponent> particleComponent;
+    std::shared_ptr<CoreAudioSourceComponent> audioSourceComponent;
+
     void Initialize(const Transform& transform)override
     {
         // 描画用コンポーネントを追加
@@ -62,11 +64,24 @@ public:
 
         GetOwnerScene()->GetUIManager()->Add(arrowGauge);
 
+        audioSourceComponent = AddComponent<CoreAudioSourceComponent>("audioComponent", "elasticBuilding");
+        audioSourceComponent->SetSource(L"./Data/Sound/SE/stretch_long.wav");
+
     }
     void Update(float deltaTime)override
     {
 
         const auto& pull = elasticBuilding->GetPullInfo();
+
+        if (InputSystem::GetInputState("MouseLeft"))
+        {
+            audioSourceComponent->Play();
+            if (audioSourceComponent && !audioSourceComponent->IsPlaying())
+            {
+                audioSourceComponent->Play();
+            }
+
+        }
 
         if (InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
         {
@@ -180,7 +195,7 @@ public:
             arrowGauge->position =
             {
                 screenPos.x,
-                screenPos.y + 20.0f // 少し下にオフセット
+                screenPos.y + 100.0f // 少し下にオフセット
             };
 
             arrowGauge->angle = angleDeg;
