@@ -90,7 +90,7 @@ public:
         // Å‰‚Ì‰ó‚ê‚é‘O‚Ì” ‚Ì“–‚½‚è”»’è
         boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "preSkeltalMeshComponent");
         boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(0.8f, 1.7f, 0.8f));
-        boxComponent->SetModelHeight(height * 0.5f);
+        boxComponent->SetCollisionOffsetY(height * 0.5f);
         boxComponent->SetStatic(true);
         boxComponent->SetLayer(CollisionLayer::Building);
         boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);

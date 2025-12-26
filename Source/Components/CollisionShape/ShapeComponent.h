@@ -138,7 +138,7 @@ public:
 
     const float& GetRadius() const { return radius_; }
 
-    void SetModelHeight(const float modelHeight) { modelHeight_ = modelHeight; }
+    void SetCollisionOffsetY(const float modelHeight) { modelHeight_ = modelHeight; }
 
     const float& GetModelHeight() const { return modelHeight_; }
 

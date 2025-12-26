@@ -20,6 +20,7 @@ public:
         std::shared_ptr<SphereComponent> sphereComponent = this->AddComponent<SphereComponent>("sphereComponent", parentName);
         DirectX::XMFLOAT3 size = cherry->GetModelSize();
         sphereComponent->SetRadius(size.x * 0.5f);
+        sphereComponent->SetCollisionOffsetY(size.y * 0.5f);
         sphereComponent->SetMass(40.0f);
         sphereComponent->SetLayer(CollisionLayer::Enemy);
         sphereComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);

@@ -94,7 +94,7 @@ public:
         sphereComponent = this->AddComponent<class EraseInAreaComponent>("sphereComponent", "skeltalComponent");
         sphereComponent->SetRadius(radius);
         sphereComponent->SetMass(40.0f);
-        sphereComponent->SetModelHeight(radius * 0.5f);
+        sphereComponent->SetCollisionOffsetY(radius * 0.5f);
         sphereComponent->SetLayer(CollisionLayer::Bomb);
         sphereComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::None);
         sphereComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
@@ -110,7 +110,7 @@ public:
 
         eraseInAreaComponent = this->AddComponent<class EraseInAreaComponent>("eraseInAreaComponent", "skeltalComponent");
         eraseInAreaComponent->SetRadius(1.5f);
-        eraseInAreaComponent->SetModelHeight(1.5f * 0.5f);
+        eraseInAreaComponent->SetCollisionOffsetY(1.5f * 0.5f);
         eraseInAreaComponent->SetMass(40.0f);
         eraseInAreaComponent->SetLayer(CollisionLayer::EraseInArea);
         eraseInAreaComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Trigger);

@@ -31,7 +31,7 @@ public:
         std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "staticMeshComponent");
         boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(20.0f, 0.2f, 20.0f));
         //boxComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(0.0f, 0.2f, 0.0f));
-        boxComponent->SetModelHeight(1.0f * 0.5f);
+        boxComponent->SetCollisionOffsetY(1.0f * 0.5f);
         SetPosition(DirectX::XMFLOAT3(0.0f, -0.0f, 0.0f));
         boxComponent->SetStatic(true);
         boxComponent->SetLayer(CollisionLayer::WorldStatic);

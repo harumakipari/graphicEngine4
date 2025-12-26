@@ -48,6 +48,9 @@ public:
         elasticParameters.momentumZ += impulse.z / elasticParameters.mass;
     }
 
+
+    float GetPullAmount();
+
     // サクランボのためにプリンの表面の位置を取得する関数
     void GetSurfacePositionTangent(DirectX::XMFLOAT3& surfacePosition,DirectX::XMFLOAT3& tangent);
 
@@ -133,7 +136,7 @@ public:
         float momentumX = 0.0f;
         float momentumY = 0.0f;
         float momentumZ = 0.0f;
-        float maxDist = 0.0f;
+        float maxDist = 2.5f;
     };
 
 private:

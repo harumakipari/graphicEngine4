@@ -120,7 +120,7 @@ public:
 
         std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("capsuleComponent", "skeltalComponent");
         boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(1.5f, 2.1f, radius));
-        boxComponent->SetModelHeight(2.1f * 0.5f);
+        boxComponent->SetCollisionOffsetY(2.1f * 0.5f);
         boxComponent->SetMass(40.0f);
         //boxComponent->SetStatic(true);
         boxComponent->SetLayer(CollisionLayer::Enemy);

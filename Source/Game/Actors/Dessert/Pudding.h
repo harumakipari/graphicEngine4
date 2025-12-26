@@ -31,7 +31,7 @@ public:
         boxComponent->SetBoxExtent({ size.x * 0.5f,size.y * 0.5f,size.z * 0.5f });
         boxComponent->SetMass(40.0f);
         boxComponent->SetLayer(CollisionLayer::Enemy);
-        //boxComponent->SetModelHeight(size.y * 0.5f);
+        //boxComponent->SetCollisionOffsetY(size.y * 0.5f);
         boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
         boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
         boxComponent->Initialize();
@@ -105,7 +105,14 @@ public:
         XMVECTOR launchDir =
             XMVector3Normalize(dir + XMVectorSet(0, 0.5f, 0, 0));
 
-        float power = 6.0f; // 調整用
+        // ===== 引っ張り量 =====
+        float pullAmount = elasticBuilding->GetPullAmount();
+        Logger::Log((std::string("サクランボの引っ張った量") + std::to_string(pullAmount)).c_str());
+
+
+        // ちょい溜めると一気に強くなる
+        float power = std::lerp(minPower, maxPower, pullAmount);
+
         XMVECTOR velocity = launchDir * power;
 
         XMFLOAT3 vel;
@@ -115,7 +122,7 @@ public:
         {
             cherry->SetIsVisible(false);
             XMFLOAT3 pos = cherry->GetComponentLocation();
-            Transform cherryTr{pos,{0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f}};
+            Transform cherryTr{ pos,{0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f} };
             auto flyingCherry = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<Cherry>("cherry", cherryTr);
             if (flyingCherry.get())
             {
@@ -126,5 +133,13 @@ public:
     }
     void DrawImGuiDetails()
     {
+#ifdef USE_IMGUI
+        ImGui::DragFloat(U8("サクランボの最小速度"), &minPower, 0.02f);
+        ImGui::DragFloat(U8("サクランボの最大速度"), &maxPower, 0.02f);
+#endif
     };
+
+private:
+    float minPower = 2.0f;
+    float maxPower = 10.0f;
 };

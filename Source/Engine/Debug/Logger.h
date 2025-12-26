@@ -27,6 +27,7 @@ public:
 
 	static void Log(const char* message);
 	static void Log(const char8_t* message);
+	static void Log(const std::string& message);
 
 	static void Log(LogCategory category, const char* message);
 	static void Log(LogCategory category, const char8_t* message);

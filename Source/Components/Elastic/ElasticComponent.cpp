@@ -32,115 +32,6 @@ void ElasticMeshComponent::Tick(float deltaTime)
     //UpdatePullElastic(deltaTime);
 }
 
-void ElasticMeshComponent::UpdatePullElastic(float deltaTime)
-{
-    DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
-
-
-    // マウスカーソルを取得
-    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
-    {// 左ボタンを押した瞬間
-        DirectX::XMFLOAT2 mousePos;
-        if (!InputSystem::GetMousePositionInViewport(mousePos))
-        {
-            return;
-        }
-        dragStartMousePos = mousePos;
-        baseStretchRate = elasticConstants.stretchRate; // 今の伸び率を保存
-        HitResultWithActor result;
-        if (CollisionFunction::RaycastFromMouse(dragStartMousePos, result))
-        {
-            // ★ レイキャストして掴み点を1回だけ取得
-            grabPointWorld = result.hitPoint;
-            elasticConstants.grabPoint = { grabPointWorld.x,grabPointWorld.y,grabPointWorld.z };
-            hasGrabPoint = true;
-        }
-    }
-    if (InputSystem::GetInputState("MouseLeft", InputStateMask::None) && hasGrabPoint)
-    {// 左ボタンを押している間
-        DirectX::XMFLOAT2 cursor;
-        if (!InputSystem::GetMousePositionInViewport(cursor))
-        {
-            return;
-        }
-        HitResultWithActor result;
-        CollisionFunction::RaycastFromMouse(cursor, result);
-
-        XMFLOAT3 currentWorldPos = result.hitPoint;
-
-        // 引っ張りベクトル
-        DirectX::XMVECTOR pullVec =
-            XMLoadFloat3(&currentWorldPos) -
-            XMLoadFloat3(&grabPointWorld);
-
-        float pullLength = XMVectorGetX(XMVector3Length(pullVec));
-
-        if (pullLength > 1e-4f)
-        {
-            DirectX::XMVECTOR pullDir = XMVector3Normalize(pullVec);
-
-            UpdateBezierFromPull(pullDir, pullLength);
-        }
-    }
-    else
-    {// 左ボタンを押していない時
-        hasGrabPoint = false;
-        float midY = position.y + modelHeight * 0.5f;
-
-        DirectX::XMFLOAT3 p = { elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z };
-        float buildHeight = modelHeight;
-        float targetX = position.x;
-        float targetY = buildHeight;
-        float targetZ = position.z;
-        float gradX = p.x - targetX;// x - a
-        float gradY = p.y - targetY;// x - a
-        float gradZ = p.z - targetZ;// x - a
-
-        elasticParameters.momentumX = elasticParameters.damping * elasticParameters.momentumX + gradX/*parmator*/;
-        elasticParameters.momentumY = elasticParameters.damping * elasticParameters.momentumY + gradY/*parmator*/;
-        elasticParameters.momentumZ = elasticParameters.damping * elasticParameters.momentumZ + gradZ/*parmator*/;
-        p.x -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumX;
-        p.y -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumY;
-        p.z -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumZ;
-
-        elasticConstants.p1 = { position.x,position.y,position.z,1.0f };
-        elasticConstants.p2 = { position.x,midY,position.z ,1.0f };
-        elasticConstants.p3 = { p.x,p.y,p.z,1.0f };
-    }
-    elasticConstants.maxAngleDegree = elasticParameters.maxAngleDegrees;
-}
-
-void ElasticMeshComponent::UpdateBezierFromPull(const DirectX::XMVECTOR& pullDir/*正規化して入ってくる*/, float pullLength)
-{
-    DirectX::XMFLOAT3 basePos = owner_.lock()->GetPosition();
-
-    elasticConstants.pullDir = { DirectX::XMVectorGetX(pullDir),DirectX::XMVectorGetY(pullDir),DirectX::XMVectorGetZ(pullDir) };
-    elasticConstants.pullLength = pullLength;
-
-    float maxPull = maxPullLength;
-    float clampedLen = std::min<float>(pullLength, maxPull);
-
-    // p1 = 固定
-    elasticConstants.p1 = { basePos.x, basePos.y, basePos.z, 1.0f };
-
-    // p3 = 引っ張り先
-    DirectX::XMVECTOR p3 =
-        XMLoadFloat3(&basePos) +
-        pullDir * clampedLen;
-
-    XMStoreFloat4(&elasticConstants.p3, XMVectorSetW(p3, 1.0f));
-
-    // p2 = 中間（柔らかさ）
-    float softness = 0.3f; // 0.3～0.6
-    DirectX::XMVECTOR p2 =
-        XMLoadFloat3(&basePos) +
-        pullDir * (clampedLen * softness);
-
-    XMStoreFloat4(&elasticConstants.p2, XMVectorSetW(p2, 1.0f));
-
-}
-
-
 void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
 {
     DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
@@ -158,7 +49,7 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
         XMFLOAT3 buildCurveDir;
         if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
         {
-           DebugDrawManager::DrawSphere(result.hitPoint, 1.03f, { 1, 1, 0, 1 });
+            DebugDrawManager::DrawSphere(result.hitPoint, 1.03f, { 1, 1, 0, 1 });
 
             XMFLOAT3 intersectNormal;
             if (auto stage = dynamic_cast<FightStage*>(result.actor))
@@ -193,7 +84,7 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
         WorldPostion = DirectX::XMLoadFloat3(&buildTop);
         // スクリーン座標
         DirectX::XMFLOAT2 screenPosition = CollisionFunction::GetScreenPositionFromWorldPosition(buildTop);
-        
+
 
         // とりあえずｘだけの移動量
         float moveAmount = cursor.x - screenPosition.x;
@@ -267,21 +158,39 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
         elasticConstants.p1 = { position.x,position.y,position.z,1.0f };
         elasticConstants.p2 = { position.x,midY,position.z ,1.0f };
         elasticConstants.p3 = { p.x,p.y,p.z,1.0f };
-        }
-        elasticConstants.maxAngleDegree = elasticParameters.maxAngleDegrees;
+    }
+    elasticConstants.maxAngleDegree = elasticParameters.maxAngleDegrees;
 
-        DebugDrawManager::DrawSphere({ elasticConstants.p1.x,elasticConstants.p1.y,elasticConstants.p1.z }, 0.03f, { 1, 0, 0, 1 });
-        DebugDrawManager::DrawSphere({ elasticConstants.p2.x,elasticConstants.p2.y,elasticConstants.p2.z }, 0.03f, { 0, 1, 0, 1 });
-        DebugDrawManager::DrawSphere({ elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z }, 0.03f, { 0, 0, 1, 1 });
+    DebugDrawManager::DrawSphere({ elasticConstants.p1.x,elasticConstants.p1.y,elasticConstants.p1.z }, 0.03f, { 1, 0, 0, 1 });
+    DebugDrawManager::DrawSphere({ elasticConstants.p2.x,elasticConstants.p2.y,elasticConstants.p2.z }, 0.03f, { 0, 1, 0, 1 });
+    DebugDrawManager::DrawSphere({ elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z }, 0.03f, { 0, 0, 1, 1 });
+}
 
+float ElasticMeshComponent::GetPullAmount()
+{
+    DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
+    XMFLOAT3 restTop =
+    {
+        position.x,
+        position.y + modelHeight,
+        position.z
+    };
+    XMFLOAT3 currentTop =
+    {
+        elasticConstants.p3.x,
+        elasticConstants.p3.y,
+        elasticConstants.p3.z
+    };
+    XMVECTOR rest = XMLoadFloat3(&restTop);
+    XMVECTOR cur = XMLoadFloat3(&currentTop);
 
-#if 0
-        std::wstring msg =
-            L"elastic Constant: " + std::to_wstring(elasticConstants.stretchRate);
-
-        OutputDebugStringW(msg.c_str());
-
-#endif // 0
+    XMVECTOR diff = cur - rest;
+    diff = XMVectorSetY(diff, 0.0f); // 高さ無視
+    float dist = XMVectorGetX(XMVector3Length(diff));
+    float maxPullDist = elasticParameters.maxDist; 
+    float pullAmount = dist / maxPullDist;
+    pullAmount = std::clamp(pullAmount, 0.0f, 1.0f);
+    return pullAmount;
 }
 
 

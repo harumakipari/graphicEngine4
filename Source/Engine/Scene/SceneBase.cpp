@@ -717,6 +717,12 @@ void SceneBase::DrawGizmo()
         CameraProjection = XMLoadFloat4x4(&data.projection);
     }
 
+    if (InputSystem::GetInputState("W"))
+        EditorGizmo::SetOperation(ImGuizmo::TRANSLATE);
+    if (InputSystem::GetInputState("E"))
+        EditorGizmo::SetOperation(ImGuizmo::ROTATE);
+    if (InputSystem::GetInputState("R"))
+        EditorGizmo::SetOperation(ImGuizmo::SCALE);
 
     if (selectedActor_)
     {

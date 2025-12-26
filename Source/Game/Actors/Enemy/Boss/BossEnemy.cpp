@@ -82,14 +82,14 @@ void BossEnemy::Initialize(const Transform& transform)
     capsuleComponent->SetLayer(CollisionLayer::Enemy);
     capsuleComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
     capsuleComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::None);
-    capsuleComponent->SetModelHeight(height * 0.5f);
+    capsuleComponent->SetCollisionOffsetY(height * 0.5f);
     capsuleComponent->SetIsVisibleDebugBox(false);
     capsuleComponent->Initialize();
 #else
     std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("capsuleComponent", "skeletalComponent");
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
     boxComponent->SetBoxExtent({ size.x * 0.5f,size.y * 0.5f,size.z * 0.5f });
-    boxComponent->SetModelHeight(size.y * 0.5f);
+    boxComponent->SetCollisionOffsetY(size.y * 0.5f);
     boxComponent->SetMass(40.0f);
     boxComponent->SetLayer(CollisionLayer::Enemy);
     boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);

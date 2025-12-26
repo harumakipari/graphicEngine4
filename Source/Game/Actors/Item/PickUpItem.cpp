@@ -24,7 +24,7 @@ void PickUpItem::Initialize(const Transform& transform)
     sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", "skeltalComponent");
     sphereComponent->SetRadius(0.4f);
     sphereComponent->SetMass(40.0f);
-    sphereComponent->SetModelHeight(0.4f);
+    sphereComponent->SetCollisionOffsetY(0.4f);
     sphereComponent->SetLayer(CollisionLayer::PickUpItem);
     sphereComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Trigger);
     sphereComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
@@ -57,7 +57,7 @@ void PickUpItem::Initialize()
     sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", "skeletalComponent");
     sphereComponent->SetRadius(0.4f);
     sphereComponent->SetMass(40.0f);
-    sphereComponent->SetModelHeight(0.4f);
+    sphereComponent->SetCollisionOffsetY(0.4f);
     sphereComponent->SetLayer(CollisionLayer::PickUpItem);
     sphereComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Trigger);
     sphereComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);

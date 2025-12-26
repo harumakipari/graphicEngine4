@@ -29,6 +29,11 @@ inline DecomposedTransform DecomposeMatrix(const DirectX::XMMATRIX& m)
     return out;
 }
 
+void EditorGizmo::SetOperation(const ImGuizmo::OPERATION op)
+{
+    operation_ = op;
+}
+
 void EditorGizmo::Draw(
     const std::shared_ptr<SceneComponent>& target,
     const DirectX::XMMATRIX& view,

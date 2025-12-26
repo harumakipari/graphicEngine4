@@ -108,6 +108,11 @@ void Logger::Log(const char8_t* message)
     Log(LogCategory::Gameplay, reinterpret_cast<const char*>(message));
 }
 
+void Logger::Log(const std::string& message)
+{
+    Log(message.c_str());
+}
+
 void Logger::Warning(LogCategory category, const char* message)
 {
     std::lock_guard lock(Instance().mtx);

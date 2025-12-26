@@ -15,6 +15,7 @@ public:
         const DirectX::XMMATRIX& proj, const ImVec2& rectPos,
         const ImVec2& rectSize);
 
+    static void SetOperation(const ImGuizmo::OPERATION op);
 private:
     static inline ImGuizmo::OPERATION operation_ = ImGuizmo::TRANSLATE;
 };
