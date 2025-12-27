@@ -57,22 +57,22 @@ void SampleScene::Start()
 
     //std::shared_ptr<Sprite> uiSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/UI/icon_chara.png");
 
-    std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("./Data/Textures/UI/icon_chara.png","image");
-    image->position = { 50, 50 };
-    image->size = { 200, 200 };
+    std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("./Data/Textures/UI/icon_chara.png", "image");
+    image->SetWorldPosition({ 50, 50 });
+    image->SetSize({ 200, 200 });
 
     uiManager->Add(image);
 
 
     std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/icon_chara.png", "button");
-    button->position = { 300, 50 };
-    button->size = { 200, 80 };
+    button->SetWorldPosition({ 300, 50 });
+    button->SetSize({ 200, 80 });
 
     uiManager->Add(button);
 
     std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/icon_chara.png", "gauge");
-    gauge->position = { 50, 300 };
-    gauge->size = { 300, 40 };
+    gauge->SetWorldPosition({ 50, 300 });
+    gauge->SetSize({ 300, 40 });
     gauge->value = 1.0f;
 
     uiManager->Add(gauge);
@@ -105,13 +105,13 @@ void SampleScene::Update(float deltaTime)
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
     if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
     {
         const char* types[] = { "0", "1" };
-        Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
+        Scene::_transition("LoadingScene", { std::make_pair("preload", "PuddingGameScene"), std::make_pair("type", types[rand() % 2]) });
     }
-#endif // !_DEBUG
+//#endif // !_DEBUG
 }
 
 void SampleScene::SetUpActors()

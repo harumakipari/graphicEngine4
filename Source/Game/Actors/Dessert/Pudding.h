@@ -56,13 +56,20 @@ public:
 
         elasticBuilding->Initialize();
 
+#if 0
         arrowGauge = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/arrow.png", "arrowGauge");
         arrowGauge->position = { 50, 300 };
         arrowGauge->pivot = { 0.5f,0.5f };
         arrowGauge->size = { 350, 200 };
         arrowGauge->value = 1.0f;
+#else
+        arrow = std::make_shared<UIImageComponent>("./Data/Textures/UI/triangle.png", "arrowGauge");
+        arrow->SetWorldPosition({ 50, 300 });
+        arrow->SetPivot({ 0.5f,0.5f });
+        arrow->SetSize({ 50, 50 });
+#endif // 0
 
-        GetOwnerScene()->GetUIManager()->Add(arrowGauge);
+        GetOwnerScene()->GetUIManager()->Add(arrow);
 
         audioSourceComponent = AddComponent<CoreAudioSourceComponent>("audioComponent", "elasticBuilding");
         audioSourceComponent->SetSource(L"./Data/Sound/SE/stretch_long.wav");
@@ -179,31 +186,26 @@ public:
 
         if (pull.active)
         {
-            arrowGauge->visible = true;
+            arrow->SetVisible(true);
 
             // === ワールド → スクリーン ===
-            XMFLOAT3 worldTop =
-            {
-                GetPosition().x,
-                GetPosition().y + elasticBuilding->GetModelSize().y,
-                GetPosition().z
-            };
+            XMFLOAT3 worldTop = surfacePos;
 
             XMFLOAT2 screenPos =
                 CollisionFunction::GetScreenPositionFromWorldPosition(worldTop);
 
-            arrowGauge->position =
-            {
-                screenPos.x,
-                screenPos.y + 100.0f // 少し下にオフセット
-            };
+            arrow->SetWorldPosition(
+                {
+                    screenPos.x,
+                    screenPos.y
+                });
 
-            arrowGauge->angle = angleDeg;
-            arrowGauge->value = pull.amount;
+            arrow->SetWorldAngleDegree(angleDeg);
+            //arrowGauge->value = pull.amount;
         }
         else
         {
-            arrowGauge->visible = false;
+            //arrow->visible = false;
         }
 
     }
@@ -220,4 +222,5 @@ private:
     float maxPower = 10.0f;
 
     std::shared_ptr<UIGaugeComponent> arrowGauge;
+    std::shared_ptr<UIImageComponent> arrow;
 };

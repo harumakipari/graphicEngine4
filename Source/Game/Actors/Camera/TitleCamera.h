@@ -21,7 +21,7 @@ public:
 
     void Initialize(const Transform& transform)override
     {
-        mainCameraComponent = this->AddComponent<class TPSCameraComponent>("mainCamera");
+        mainCameraComponent = this->AddComponent<DebugCameraComponent>("mainCamera");
         mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(35), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
         //SetPosition(DirectX::XMFLOAT3(-0.13f, 1.2f, -4.3f));
         //SetEulerRotation(DirectX::XMFLOAT3(1.4f, 20.6f, 0.0f));

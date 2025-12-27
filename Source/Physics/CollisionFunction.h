@@ -80,7 +80,7 @@ namespace CollisionFunction
         DirectX::XMMATRIX World = DirectX::XMMatrixIdentity();
         // ワールド座標をスクリーン座標に変換
         DirectX::XMVECTOR ScreenPosition = DirectX::XMVector3Project(
-            WorldPosition, viewportX, viewportY, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World
+            WorldPosition, 0,0, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World
         );
         DirectX::XMFLOAT3 screenPos;
         DirectX::XMStoreFloat3(&screenPos, ScreenPosition);

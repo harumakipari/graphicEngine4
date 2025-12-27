@@ -56,7 +56,7 @@ public:
         return viewConstants;
     }
 protected:
-    std::shared_ptr<TPSCameraComponent> mainCameraComponent;
+    std::shared_ptr<CameraComponent> mainCameraComponent;
 };
 
 class DebugCamera :public Camera

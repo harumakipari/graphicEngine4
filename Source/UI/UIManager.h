@@ -4,24 +4,25 @@
 class UIManager
 {
 public:
-    void Update(float deltaTime)
+    void Update(float deltaTime) const
     {
         if (!enabled) return;
         for (auto ui : rootComponents)
         {
-            if (ui->enabled)
+            if (ui->IsEnabled())
             {
+                ui->UpdateTransform();
                 ui->Update(deltaTime);
             }
         }
     }
 
-    void Draw()
+    void Draw() const
     {
         if (!visible) return;
         for (auto ui : rootComponents)
         {
-            if (ui->visible)
+            if (ui->IsVisible())
             {
                 ui->Draw();
             }

@@ -54,21 +54,21 @@ void PuddingGameScene::Start()
 
 
     std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>();
-    image->position = { 50, 50 };
-    image->size = { 200, 200 };
+    image->SetWorldPosition({ 50, 50 });
+    image->SetSize({ 200, 200 });
 
     uiManager->Add(image);
 
 
     std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>();
-    button->position = { 300, 50 };
-    button->size = { 200, 80 };
+    button->SetWorldPosition({ 300, 50 });
+    button->SetSize({ 200, 80 });
 
     uiManager->Add(button);
 
     std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>();
-    gauge->position = { 50, 300 };
-    gauge->size = { 300, 40 };
+    gauge->SetWorldPosition({ 50, 300 });
+    gauge->SetSize({ 300, 40 });
     gauge->value = 1.0f;
 
     uiManager->Add(gauge);
@@ -79,6 +79,9 @@ void PuddingGameScene::Start()
             Logger::Log(u8"ボタンButton Clicked!");
             Logger::Error(u8"ボタンButton Clicked!");
             Logger::Warning(u8"ボタンButton Clicked!");
+
+            const char* types[] = { "0", "1" };
+            Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
 
             OutputDebugStringA("Button Clicked!\n");
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");

@@ -39,19 +39,40 @@ public:
     virtual void OnClick() {}
     virtual void DrawImGui();
 
-    void SetParent(UICoreComponent* parent);
-    const std::vector<UICoreComponent*>& GetChildren() const;
+    void UpdateTransform();
 
+    void SetParent(UICoreComponent* parent);
+    const std::vector<UICoreComponent*>& GetChildren() const { return children; }
+
+    void SetWorldPosition(const XMFLOAT2 worldPos) { this->worldPosition = worldPos; }
+
+    void SetSize(const XMFLOAT2 size) { this->size = size; }
+
+    void SetPivot(const XMFLOAT2 pivot) { this->pivot = pivot; }
+
+    void SetWorldAngleDegree(float angle) { this->worldAngle = worldAngle; }
+
+    bool IsVisible() const { return visible; }
+
+    bool IsEnabled() const { return enabled; }
+
+    void SetVisible(const bool visible) { this->visible = visible; }
+
+    void SetEnable(const bool enabled) { this->enabled = enabled; }
+protected:
     // スクリーン座標
-    XMFLOAT2 position;
+    SpriteUV uv{ 0,0,100,100 };
+    XMFLOAT2 scale = { 1.0f,1.0f };
+    XMFLOAT2 worldPosition;
     XMFLOAT2 size;
     XMFLOAT2 pivot = { 0.0f,0.0f };
     bool visible = true;
     bool enabled = true;
-    float angle = 0.0f;
-protected:
-    SpriteUV uv{ 0,0,100,100 };
-    XMFLOAT2 scale = { 1.0f,1.0f };
+    float worldAngle = 0.0f;
+
+    // ローカル（親基準）
+    XMFLOAT2 localPosition{ 0,0 };
+    float localAngle = 0.0f;
 
     std::shared_ptr<Sprite>  texture;
 
@@ -77,11 +98,11 @@ public:
 
         SpriteRenderer::Draw(
             texture.get(),
-            position,
+            worldPosition,
             size,
             color,
             uv,
-            angle,
+            worldAngle,
             pivot,
             scale
         );
@@ -148,12 +169,12 @@ public:
     }
 
 private:
-    bool IsInside(const DirectX::XMFLOAT2& p)
+    bool IsInside(const DirectX::XMFLOAT2& p) const
     {
-        return p.x >= position.x &&
-            p.x <= position.x + size.x &&
-            p.y >= position.y &&
-            p.y <= position.y + size.y;
+        return p.x >= worldPosition.x &&
+            p.x <= worldPosition.x + size.x &&
+            p.y >= worldPosition.y &&
+            p.y <= worldPosition.y + size.y;
     }
 
     void UpdateVisual()
@@ -190,11 +211,11 @@ public:
 
         SpriteRenderer::Draw(
             texture.get(),
-            position,
+            worldPosition,
             drawSize,
             color,
             uv,
-            angle,
+            worldAngle,
             pivot,
             scale
         );
