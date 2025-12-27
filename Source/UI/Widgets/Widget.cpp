@@ -10,6 +10,7 @@ void UICoreComponent::DrawImGui()
     ImGui::Checkbox("Visible", &visible);
     ImGui::Checkbox("Enabled", &enabled);
     ImGui::DragFloat2("worldPosition", &worldPosition.x, 1.0f);
+    ImGui::DragFloat2("localPosition", &localPosition.x, 1.0f);
     ImGui::DragFloat2("Size", &size.x, 1.0f);
     ImGui::DragFloat2("Scale", &scale.x, 0.2f);
     ImGui::SliderFloat("worldAngle", &worldAngle,0.0f,360.0f);
@@ -38,22 +39,39 @@ void UICoreComponent::SetParent(UICoreComponent* newParent)
     {
         parent->children.push_back(this);
 
-        localPosition.x = worldPosition.x - parent->worldPosition.x;
-        localPosition.y = worldPosition.y - parent->worldPosition.y;
+        //localPosition.x = worldPosition.x - parent->worldPosition.x;
+        //localPosition.y = worldPosition.y - parent->worldPosition.y;
 
-        localAngle = worldAngle - parent->worldAngle;
+        //localAngle = worldAngle - parent->worldAngle;
     }
 }
+
+inline XMFLOAT2 Rotate2D(const XMFLOAT2& v, float rad)
+{
+    float c = cosf(rad);
+    float s = sinf(rad);
+    return {
+        v.x * c - v.y * s,
+        v.x * s + v.y * c
+    };
+}
+
 
 void UICoreComponent::UpdateTransform()
 {
     if (parent)
     {
-        // ˆÊ’u
-        worldPosition.x = parent->worldPosition.x + localPosition.x;
-        worldPosition.y = parent->worldPosition.y + localPosition.y;
+        // e‚Ì‰ñ“]‚ðƒ‰ƒWƒAƒ“‚ÅŽæ“¾
+        float parentRad = DirectX::XMConvertToRadians(parent->worldAngle);
 
-        // ‰ñ“]
+        // localPosition ‚ð‰ñ“]
+        XMFLOAT2 rotatedLocal = Rotate2D(localPosition, parentRad);
+
+        // •½sˆÚ“®
+        worldPosition.x = parent->worldPosition.x + rotatedLocal.x;
+        worldPosition.y = parent->worldPosition.y + rotatedLocal.y;
+
+        // Šp“x‚Í‰ÁŽZ
         worldAngle = parent->worldAngle + localAngle;
     }
 

@@ -56,20 +56,30 @@ public:
 
         elasticBuilding->Initialize();
 
-#if 0
-        arrowGauge = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/arrow.png", "arrowGauge");
-        arrowGauge->position = { 50, 300 };
-        arrowGauge->pivot = { 0.5f,0.5f };
-        arrowGauge->size = { 350, 200 };
-        arrowGauge->value = 1.0f;
-#else
-        arrow = std::make_shared<UIImageComponent>("./Data/Textures/UI/triangle.png", "arrowGauge");
-        arrow->SetWorldPosition({ 50, 300 });
-        arrow->SetPivot({ 0.5f,0.5f });
-        arrow->SetSize({ 50, 50 });
+        {
+            arrowRoot = std::make_shared<UIImageComponent>("./Data/Textures/UI/triangle.png", "arrowGauge");
+            arrowRoot->SetWorldPosition({ 50, 300 });
+            arrowRoot->SetPivot({ 0.5f,0.5f });
+            arrowRoot->SetSize({ 50, 50 });
+            GetOwnerScene()->GetUIManager()->Add(arrowRoot);
+
+#if 1
+            for (int i = 1; i <= 6; ++i)
+            {
+                auto piece = std::make_shared<UIImageComponent>(
+                    "./Data/Textures/UI/triangle.png", "ArrowPiece_" + std::to_string(i));
+
+                piece->SetLocalPosition({ i * 40.0f ,0.0f});
+                piece->SetPivot({ 0.5f,0.5f });
+                piece->SetSize({ 50, 50 });
+                piece->color = CoreColor::White;
+
+                piece->SetParent(arrowRoot.get());
+                GetOwnerScene()->GetUIManager()->Add(piece);
+            }
 #endif // 0
 
-        GetOwnerScene()->GetUIManager()->Add(arrow);
+        }
 
         audioSourceComponent = AddComponent<CoreAudioSourceComponent>("audioComponent", "elasticBuilding");
         audioSourceComponent->SetSource(L"./Data/Sound/SE/stretch_long.wav");
@@ -186,7 +196,7 @@ public:
 
         if (pull.active)
         {
-            arrow->SetVisible(true);
+            arrowRoot->SetVisible(true);
 
             // === ワールド → スクリーン ===
             XMFLOAT3 worldTop = surfacePos;
@@ -194,13 +204,13 @@ public:
             XMFLOAT2 screenPos =
                 CollisionFunction::GetScreenPositionFromWorldPosition(worldTop);
 
-            arrow->SetWorldPosition(
+            arrowRoot->SetWorldPosition(
                 {
                     screenPos.x,
                     screenPos.y
                 });
 
-            arrow->SetWorldAngleDegree(angleDeg);
+            arrowRoot->SetWorldAngleDegree(angleDeg);
             //arrowGauge->value = pull.amount;
         }
         else
@@ -221,6 +231,5 @@ private:
     float minPower = 2.0f;
     float maxPower = 10.0f;
 
-    std::shared_ptr<UIGaugeComponent> arrowGauge;
-    std::shared_ptr<UIImageComponent> arrow;
+    std::shared_ptr<UIImageComponent> arrowRoot;
 };

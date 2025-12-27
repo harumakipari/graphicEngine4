@@ -50,7 +50,7 @@ public:
 
     void SetPivot(const XMFLOAT2 pivot) { this->pivot = pivot; }
 
-    void SetWorldAngleDegree(float angle) { this->worldAngle = worldAngle; }
+    void SetWorldAngleDegree(float angle) { this->worldAngle = angle; }
 
     bool IsVisible() const { return visible; }
 
@@ -59,19 +59,21 @@ public:
     void SetVisible(const bool visible) { this->visible = visible; }
 
     void SetEnable(const bool enabled) { this->enabled = enabled; }
+
+    void SetLocalPosition(const XMFLOAT2 localPos) { this->localPosition = localPos; }
 protected:
     // スクリーン座標
     SpriteUV uv{ 0,0,100,100 };
     XMFLOAT2 scale = { 1.0f,1.0f };
-    XMFLOAT2 worldPosition;
-    XMFLOAT2 size;
+    XMFLOAT2 worldPosition = { 0.0f,0.0f };
+    XMFLOAT2 size = { 1.0f,1.0f };
     XMFLOAT2 pivot = { 0.0f,0.0f };
     bool visible = true;
     bool enabled = true;
     float worldAngle = 0.0f;
 
     // ローカル（親基準）
-    XMFLOAT2 localPosition{ 0,0 };
+    XMFLOAT2 localPosition={ 0.0f,0.0f };
     float localAngle = 0.0f;
 
     std::shared_ptr<Sprite>  texture;
