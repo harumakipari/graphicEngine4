@@ -254,6 +254,7 @@
     <ClCompile Include="Source\Components\CollisionShape\RigidBodyComponent.cpp" />
     <ClCompile Include="Source\Components\CollisionShape\ShapeComponent.cpp" />
     <ClCompile Include="Source\Components\Controller\ControllerComponent.cpp" />
+    <ClCompile Include="Source\Components\Easing\CoreEasingComponent.cpp" />
     <ClCompile Include="Source\Components\Effect\EffectComponent.cpp" />
     <ClCompile Include="Source\Components\Effect\ParticleComponent.cpp" />
     <ClCompile Include="Source\Components\Elastic\ElasticComponent.cpp" />
@@ -395,7 +396,7 @@
     <ClInclude Include="Source\Components\CollisionShape\ShapeComponent.h" />
     <ClInclude Include="Source\Components\CollisionShape\StaticMeshCollisionComponent.h" />
     <ClInclude Include="Source\Components\Controller\ControllerComponent.h" />
-    <ClInclude Include="Source\Components\Easing\TestEasingComponent.h" />
+    <ClInclude Include="Source\Components\Easing\CoreEasingComponent.h" />
     <ClInclude Include="Source\Components\Effect\EffectComponent.h" />
     <ClInclude Include="Source\Components\Effect\ParticleComponent.h" />
     <ClInclude Include="Source\Components\Elastic\ElasticComponent.h" />
@@ -560,7 +561,6 @@
     <ClInclude Include="Source\UI\Font.h" />
     <ClInclude Include="Source\UI\UIManager.h" />
     <ClInclude Include="Source\UI\Widgets\Widget.h" />
-    <ClInclude Include="Source\Utils\easing.h" />
     <ClInclude Include="Source\Utils\EasingHandler.h" />
     <ClInclude Include="Source\Widgets\AudioSource.h" />
     <ClInclude Include="Source\Widgets\BossIndicator.h" />

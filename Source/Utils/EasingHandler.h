@@ -1,5 +1,5 @@
 #pragma once
-#include "easing.h"
+#include "Engine/Easing/Easing.h"
 #include <functional>
 #include <vector>
 

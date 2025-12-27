@@ -582,6 +582,12 @@
     <ClCompile Include="Source\UI\UIManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\UI\Widgets\Widget.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\Easing\CoreEasingComponent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1097,8 +1103,7 @@
     <ClInclude Include="Source\Game\Scenes\SampleScene.h" />
     <ClInclude Include="Source\Engine\Easing\Easing.h" />
     <ClInclude Include="Source\Engine\Easing\TestEasingHandler.h" />
-    <ClInclude Include="Source\Components\Easing\TestEasingComponent.h" />
-    <ClInclude Include="Source\Utils\easing.h" />
+    <ClInclude Include="Source\Components\Easing\CoreEasingComponent.h" />
     <ClInclude Include="Source\Utils\EasingHandler.h" />
     <ClInclude Include="Source\Widgets\EasingComponent.h" />
     <ClInclude Include="Source\Game\State\StateMachine.h" />
