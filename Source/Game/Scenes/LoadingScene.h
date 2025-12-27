@@ -74,8 +74,9 @@ class LoadingScene : public SceneBase
         float iPad0;
         float iPad1;
     };
-    ShaderToyCB shaderToy;
-    Microsoft::WRL::ComPtr<ID3D11Buffer> shaderToyConstantBuffer;
+    ShaderToyCB shaderToyConstant;
+    std::unique_ptr<ConstantBuffer<ShaderToyCB>> shaderToyCBuffer;
+    
 
 public:
     size_t type = 1;

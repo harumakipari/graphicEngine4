@@ -883,7 +883,7 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
 
         // デバック描画
 #if _DEBUG
-        actorColliderManager.DebugRender(immediateContext);
+        
         //PhysicsTest::Instance().DebugRender(immediateContext);
         //GameManager::DebugRender(immediateContext);
 #endif
@@ -1064,8 +1064,8 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
 
         // デバック描画
 #if _DEBUG
-        actorColliderManager.DebugRender(immediateContext);
-        //PhysicsTest::Instance().DebugRender(immediateContext);
+        
+        
         //GameManager::DebugRender(immediateContext);
 #endif
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);

@@ -171,7 +171,6 @@ private:
     DirectX::XMFLOAT3 target = { 0.0f,0.0f,0.0f };
 
     Renderer actorRender;
-    ActorColliderManager actorColliderManager;
 
     // SCREEN_SPACE_AMBIENT_OCCLUSION
     bool enableSSAO = true;

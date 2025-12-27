@@ -47,7 +47,7 @@ cbuffer PRIMITIVE_CONSTANT_BUFFER : register(b0)
 }
 
 
-cbuffer PLUS_ALPHA_CONSTANT_BUFFER : register(b7)
+cbuffer PLUS_ALPHA_CONSTANT_BUFFER : register(b5)
 {
     float hueShift; // êFëäí≤êÆ
     float saturation; // ç ìxí≤êÆ

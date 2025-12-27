@@ -539,17 +539,4 @@ public:
 
 
 
-class ActorColliderManager
-{
-public:
-    ActorColliderManager()
-        = default;
-
-    void DebugRender(ID3D11DeviceContext* immediateContext);
-
-    //デバックを描画
-    //デバックの色を作る
-    DirectX::XMFLOAT4 debugColor = { 1.0f,1.0f,0.0f,1.0f };
-};
-
 

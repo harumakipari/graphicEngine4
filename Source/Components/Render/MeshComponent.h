@@ -80,7 +80,7 @@ public:
         plusAlphaCBuffer->data.dissolve = dissolve;
         plusAlphaCBuffer->data.cpuColor = cpuColor;
         plusAlphaCBuffer->data.emissionPower = emissionPower;
-        plusAlphaCBuffer->Activate(immediateContext, 7);
+        plusAlphaCBuffer->Activate(immediateContext, 5);
     }
 
     virtual void DrawImGuiInspector() override

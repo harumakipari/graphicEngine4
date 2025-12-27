@@ -48,6 +48,7 @@ protected:
     DirectX::XMFLOAT4X4 projection{};
 };
 
+
 // Transformを更新しない三人称視点のカメラ
 class TPSCameraComponent : public CameraComponent
 {
@@ -126,13 +127,13 @@ public:
         // 理想のカメラ位置
         XMVECTOR idealEye = focus + offset;
 
-        // 衝突解決後のカメラ位置
-        XMVECTOR finalEye =
-            ResolveCameraCollision(focus, idealEye);
+        //// 衝突解決後のカメラ位置
+        //XMVECTOR finalEye =
+        //    ResolveCameraCollision(focus, idealEye);
 
         XMStoreFloat4x4(
             &view,
-            XMMatrixLookAtLH(finalEye, focus, XMVectorSet(0, 1, 0, 0))
+            XMMatrixLookAtLH(idealEye, focus, XMVectorSet(0, 1, 0, 0))
         );
 
         return view;

@@ -171,7 +171,6 @@ public:
 
     Renderer render;
 
-    ActorColliderManager actorColliderManager;
 
     // ƒ{ƒX‚ª‰æ–ÊŠO‚©‚Ç‚¤‚©
     bool IsFrameOutEnemy()

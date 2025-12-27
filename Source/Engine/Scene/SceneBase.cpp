@@ -183,7 +183,6 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
     }
     UpdateConstantBuffer(immediateContext);
 #ifdef USE_IMGUI
-
     imGuiGizmoBuffer->Clear(immediateContext);
     imGuiGizmoBuffer->Activate(immediateContext);
 #endif
@@ -195,10 +194,8 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
     {
         DeferredRender(immediateContext);
     }
-
     Draw(immediateContext);
 #ifdef USE_IMGUI
-
     imGuiGizmoBuffer->Deactivate(immediateContext);
 #endif
 }

@@ -574,7 +574,7 @@ void TutorialScene::Render(ID3D11DeviceContext* immediateContext, float delta_ti
 
     // デバック描画
 #if _DEBUG
-    actorColliderManager.DebugRender(immediateContext);
+    
     //PhysicsTest::Instance().DebugRender(immediateContext);
     //GameManager::DebugRender(immediateContext);
 #endif

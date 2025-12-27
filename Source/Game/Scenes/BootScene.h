@@ -23,7 +23,6 @@
 
 class BootScene : public SceneBase
 {
-    ActorColliderManager actorColliderManager;
 
 
 public:
