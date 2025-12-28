@@ -41,7 +41,7 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
     if (InputSystem::GetInputState("MouseLeft"))
     {// ¶ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚Ä‚¢‚éŠÔ
         DirectX::XMFLOAT2 cursor;
-        if (!InputSystem::GetMousePositionInViewport(cursor))
+        if (!InputSystem::GetMousePositionUI(cursor))
         {
             return;
         }

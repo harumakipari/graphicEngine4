@@ -193,6 +193,38 @@ public:
     // カーソルが表示されているか
     static bool IsCursolVisible() { return cursolVisible; }
 
+    static bool GetMousePositionUI(DirectX::XMFLOAT2& out)
+    {
+        DirectX::XMFLOAT2 vp;
+        if (!GetMousePositionInViewport(vp))
+            return false;
+
+        float vx, vy, vw, vh;
+        GetViewportRect(vx, vy, vw, vh);
+
+        constexpr float DESIGN_W = 1920.0f;
+        constexpr float DESIGN_H = 1080.0f;
+
+        float scaleX = vw / DESIGN_W;
+        float scaleY = vh / DESIGN_H;
+        float scale = std::min<float>(scaleX, scaleY);
+
+        // 黒帯補正（今後フルスクリーン対応するなら必須）
+        float offsetX = (vw - DESIGN_W * scale) * 0.5f;
+        float offsetY = (vh - DESIGN_H * scale) * 0.5f;
+
+        out.x = (vp.x - offsetX) / scale;
+        out.y = (vp.y - offsetY) / scale;
+        return true;
+    }
+
+    // UIマウスカーソル位置を取得（ビューポート外なら0,0を返す）
+    static DirectX::XMFLOAT2 GetMousePositionUIOrZero()
+    {
+        DirectX::XMFLOAT2 pos = { 0.0f,0.0f };
+        GetMousePositionUI(pos);
+        return pos;
+    }
 private:
 
     // カーソルの表示非表示を変更

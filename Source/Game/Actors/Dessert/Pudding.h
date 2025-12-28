@@ -204,11 +204,9 @@ public:
             XMFLOAT2 screenPos =
                 CollisionFunction::GetScreenPositionFromWorldPosition(worldTop);
 
-            arrowRoot->SetWorldPosition(
-                {
-                    screenPos.x,
-                    screenPos.y
-                });
+            XMFLOAT2 uiPos = ConvertScreenToUI(screenPos);
+
+            arrowRoot->SetWorldPosition({ uiPos.x, uiPos.y });
 
             arrowRoot->SetWorldAngleDegree(angleDeg);
             //arrowGauge->value = pull.amount;

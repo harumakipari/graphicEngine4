@@ -44,7 +44,7 @@ namespace CollisionFunction
             screenPosition.z = 1.0f;
             ScreenPosition = DirectX::XMLoadFloat3(&screenPosition);
             WorldPosition = DirectX::XMVector3Unproject(
-                ScreenPosition, 0.0f, 0.0f, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World
+                ScreenPosition, viewportX, viewportY, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World
             );
             DirectX::XMFLOAT3 rayEnd;
             DirectX::XMStoreFloat3(&rayEnd, WorldPosition);
@@ -80,10 +80,31 @@ namespace CollisionFunction
         DirectX::XMMATRIX World = DirectX::XMMatrixIdentity();
         // ワールド座標をスクリーン座標に変換
         DirectX::XMVECTOR ScreenPosition = DirectX::XMVector3Project(
-            WorldPosition, 0,0, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World
+            WorldPosition, viewportX, viewportY, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World
         );
         DirectX::XMFLOAT3 screenPos;
         DirectX::XMStoreFloat3(&screenPos, ScreenPosition);
         return XMFLOAT2(screenPos.x, screenPos.y);
     }
+
+}
+inline XMFLOAT2 ConvertScreenToUI(const XMFLOAT2& screen)
+{
+    float vx, vy, vw, vh;
+    Graphics::GetViewport(vx, vy, vw, vh);
+
+    constexpr float DESIGN_W = 1920.0f;
+    constexpr float DESIGN_H = 1080.0f;
+
+    float scaleX = vw / DESIGN_W;
+    float scaleY = vh / DESIGN_H;
+    float scale = std::min<float>(scaleX, scaleY);
+
+    float offsetX = (vw - DESIGN_W * scale) * 0.5f;
+    float offsetY = (vh - DESIGN_H * scale) * 0.5f;
+
+    XMFLOAT2 ui;
+    ui.x = (screen.x - vx - offsetX) / scale;
+    ui.y = (screen.y - vy - offsetY) / scale;
+    return ui;
 }

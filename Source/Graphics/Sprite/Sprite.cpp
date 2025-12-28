@@ -152,10 +152,42 @@ void Sprite::Render(ID3D11DeviceContext* immediate_context,
     float sw, float sh
 )
 {
-    //スクリーンのサイズを取得する
+    //スクリーン（ビューポート）のサイズを取得する
+#if 0
     D3D11_VIEWPORT viewport{};
     UINT num_viewports{ 1 };
     immediate_context->RSGetViewports(&num_viewports, &viewport);
+
+    float viewportWidth, viewportHeight;
+    viewportWidth = viewport.Width;
+    viewportHeight = viewport.Height;
+
+
+#else
+    float viewX, viewY, viewportWidth, viewportHeight;
+    Graphics::GetViewport(viewX, viewY, viewportWidth, viewportHeight);
+
+    // =============================
+    // UI 論理解像度 → 実解像度スケール
+    // =============================
+#ifdef _DEBUG
+    constexpr float DESIGN_W = 1920.0f;
+    constexpr float DESIGN_H = 1080.0f;
+#else
+    constexpr float DESIGN_W = 1920.0f;
+    constexpr float DESIGN_H = 1080.0f;
+#endif
+
+    float scaleX_ui = viewportWidth / DESIGN_W;
+    float scaleY_ui = viewportHeight / DESIGN_H;
+    float scale_ui = std::min<float>(scaleX_ui, scaleY_ui);
+
+    // dx, dy, dw, dh をスケーリング
+    dx *= scale_ui;
+    dy *= scale_ui;
+    dw *= scale_ui;
+    dh *= scale_ui;
+#endif // 0
 
     //引数から矩形の各頂点の位置（スクリーン座標系）を計算する
     // left-top
@@ -186,14 +218,14 @@ void Sprite::Render(ID3D11DeviceContext* immediate_context,
     float ty3{ sy + sh };
 
     //スクリーン座標系からNDCへの座標変換を行う
-    x0 = 2.0f * x0 / viewport.Width - 1.0f;
-    y0 = 1.0f - 2.0f * y0 / viewport.Height;
-    x1 = 2.0f * x1 / viewport.Width - 1.0f;
-    y1 = 1.0f - 2.0f * y1 / viewport.Height;
-    x2 = 2.0f * x2 / viewport.Width - 1.0f;
-    y2 = 1.0f - 2.0f * y2 / viewport.Height;
-    x3 = 2.0f * x3 / viewport.Width - 1.0f;
-    y3 = 1.0f - 2.0f * y3 / viewport.Height;
+    x0 = 2.0f * x0 / viewportWidth - 1.0f;
+    y0 = 1.0f - 2.0f * y0 / viewportHeight;
+    x1 = 2.0f * x1 / viewportWidth - 1.0f;
+    y1 = 1.0f - 2.0f * y1 / viewportHeight;
+    x2 = 2.0f * x2 / viewportWidth - 1.0f;
+    y2 = 1.0f - 2.0f * y2 / viewportHeight;
+    x3 = 2.0f * x3 / viewportWidth - 1.0f;
+    y3 = 1.0f - 2.0f * y3 / viewportHeight;
 
     //計算結果で頂点バッファオブジェクトを更新する
     HRESULT hr{ S_OK };
@@ -265,10 +297,42 @@ void Sprite::Render(ID3D11DeviceContext* immediate_context,
     float scaleX, float scaleY,
     float pivotX, float pivotY)
 {
-    // スクリーンのサイズを取得
+    //スクリーン（ビューポート）のサイズを取得する
+#if 0
     D3D11_VIEWPORT viewport{};
     UINT num_viewports{ 1 };
     immediate_context->RSGetViewports(&num_viewports, &viewport);
+
+    float viewportWidth, viewportHeight;
+    viewportWidth = viewport.Width;
+    viewportHeight = viewport.Height;
+
+
+#else
+    float viewX, viewY, viewportWidth, viewportHeight;
+    Graphics::GetViewport(viewX, viewY, viewportWidth, viewportHeight);
+
+    // =============================
+    // UI 論理解像度 → 実解像度スケール
+    // =============================
+#ifdef _DEBUG
+    constexpr float DESIGN_W = 1920.0f;
+    constexpr float DESIGN_H = 1080.0f;
+#else
+    constexpr float DESIGN_W = 1920.0f;
+    constexpr float DESIGN_H = 1080.0f;
+#endif
+
+    float scaleX_ui = viewportWidth / DESIGN_W;
+    float scaleY_ui = viewportHeight / DESIGN_H;
+    float scale_ui = std::min<float>(scaleX_ui, scaleY_ui);
+
+    // dx, dy, dw, dh をスケーリング
+    dx *= scale_ui;
+    dy *= scale_ui;
+    dw *= scale_ui;
+    dh *= scale_ui;
+#endif // 0
 
     // 無効なスケーリングなら描画しない
     if (scaleX == 0.0f || scaleY == 0.0f) return;
@@ -315,8 +379,8 @@ void Sprite::Render(ID3D11DeviceContext* immediate_context,
 
     // スクリーン座標系 → NDC座標系
     auto toNDC = [&](float& x, float& y) {
-        x = 2.0f * x / viewport.Width - 1.0f;
-        y = 1.0f - 2.0f * y / viewport.Height;
+        x = 2.0f * x / viewportWidth - 1.0f;
+        y = 1.0f - 2.0f * y / viewportHeight;
         };
     toNDC(x0, y0); toNDC(x1, y1); toNDC(x2, y2); toNDC(x3, y3);
 
@@ -374,10 +438,34 @@ void Sprite::Render(ID3D11DeviceContext* immediate_context,
     D3D11_VIEWPORT viewport{};
     UINT num_viewports{ 1 };
     immediate_context->RSGetViewports(&num_viewports, &viewport);
+    float viewportWidth, viewportHeight;
+    viewportWidth = viewport.Width;
+    viewportHeight = viewport.Height;
+
 #else
     float viewX, viewY, viewportWidth, viewportHeight;
     Graphics::GetViewport(viewX, viewY, viewportWidth, viewportHeight);
+    // =============================
+    // UI 論理解像度 → 実解像度スケール
+    // =============================
 
+#ifdef _DEBUG
+    constexpr float DESIGN_W = 1920.0f;
+    constexpr float DESIGN_H = 1080.0f;
+#else
+    constexpr float DESIGN_W = 1920.0f;
+    constexpr float DESIGN_H = 1080.0f;
+#endif
+
+    float scaleX_ui = viewportWidth / DESIGN_W;
+    float scaleY_ui = viewportHeight / DESIGN_H;
+    float scale_ui = std::min<float>(scaleX_ui, scaleY_ui);
+
+    // dx, dy, dw, dh をスケーリング
+    dx *= scale_ui;
+    dy *= scale_ui;
+    dw *= scale_ui;
+    dh *= scale_ui;
 #endif // 0
 
     //x,yがcx,cyを中心にangleで回転した時の座標を計算する関数
@@ -495,8 +583,8 @@ void Sprite::Render(ID3D11DeviceContext* immediate_context,
 }
 
 void Sprite::SoftRender(ID3D11DeviceContext* immediate_context,
- DirectX::XMFLOAT2 leftTop,DirectX::XMFLOAT2 rightTop,DirectX::XMFLOAT2 leftBottom,DirectX::XMFLOAT2 rightBottom,
-    float sx, float sy, float sw, float sh,float r,float g,float b,float a)//左上座標とサイズ
+    DirectX::XMFLOAT2 leftTop, DirectX::XMFLOAT2 rightTop, DirectX::XMFLOAT2 leftBottom, DirectX::XMFLOAT2 rightBottom,
+    float sx, float sy, float sw, float sh, float r, float g, float b, float a)//左上座標とサイズ
 {
     //スクリーン（ビューポート）のサイズを取得する
     D3D11_VIEWPORT viewport{};
@@ -511,7 +599,7 @@ void Sprite::SoftRender(ID3D11DeviceContext* immediate_context,
     float y1{ rightTop.y };
     //leftBottom
     float x2{ leftBottom.x };
-    float y2{ leftBottom.y};
+    float y2{ leftBottom.y };
     //rightBottom
     float x3{ rightBottom.x };
     float y3{ rightBottom.y };

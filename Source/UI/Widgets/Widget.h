@@ -133,7 +133,7 @@ public:
     void Update(float dt) override
     {
         DirectX::XMFLOAT2 cursor = InputSystem::GetMousePositionScreen();
-        if (!InputSystem::GetMousePositionInViewport(cursor))
+        if (!InputSystem::GetMousePositionUI(cursor))
         {
             state = UIButtonState::Normal;
             return;
