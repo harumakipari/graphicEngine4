@@ -166,9 +166,8 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
     {
         ImGui::PushFont(fontJP);
         ProfileScopedSection_2(0, "ImGui", ImGuiControl::Profiler::Yellow);
-        ProfileDrawUI();
         Scene::_drawGUI();
-        Logger::DrawImGui();
+        //Logger::DrawImGui();
         ImGui::PopFont();
 
     }

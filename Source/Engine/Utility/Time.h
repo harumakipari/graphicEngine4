@@ -24,6 +24,8 @@ public:
 
     void Tick(); // Call every frame.
 
+    static void DrawImGui();
+
 public:
     static float DeltaTime()   // in seconds
     {

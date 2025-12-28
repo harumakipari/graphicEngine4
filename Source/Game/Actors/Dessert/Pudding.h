@@ -201,10 +201,7 @@ public:
             // === ワールド → スクリーン ===
             XMFLOAT3 worldTop = surfacePos;
 
-            XMFLOAT2 screenPos =
-                CollisionFunction::GetScreenPositionFromWorldPosition(worldTop);
-
-            XMFLOAT2 uiPos = ConvertScreenToUI(screenPos);
+            XMFLOAT2 uiPos = WorldToUI(worldTop);
 
             arrowRoot->SetWorldPosition({ uiPos.x, uiPos.y });
 

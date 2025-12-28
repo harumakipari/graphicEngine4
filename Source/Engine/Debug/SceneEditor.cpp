@@ -5,7 +5,7 @@
 
 void SceneEditor::Draw()
 {
-    if (!ImGui::Begin("Scene Transition")) return;
+    ImGui::Begin("Scene Transition");
 
     ImGui::Text("Scenes");
     ImGui::Separator();

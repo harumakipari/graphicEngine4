@@ -76,7 +76,7 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
         DirectX::XMVECTOR WorldPostion;
         WorldPostion = DirectX::XMLoadFloat3(&buildTop);
         // スクリーン座標
-        DirectX::XMFLOAT2 screenPosition = CollisionFunction::GetScreenPositionFromWorldPosition(buildTop);
+        DirectX::XMFLOAT2 screenPosition = WorldToUI(buildTop);
 
         // とりあえずｘだけの移動量
         float moveAmount = cursor.x - screenPosition.x;

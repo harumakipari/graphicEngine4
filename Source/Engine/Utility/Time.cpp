@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Time.h"
+#include <imgui.h>
 
 Time::Time()
 {
@@ -104,4 +105,31 @@ float Time::TimeStamp() const  // in seconds
 	{
 		return static_cast<float>(((thisTime - pausedTime) - baseTime) * secondsPerCount);
 	}
+}
+
+void Time::DrawImGui()
+{
+#ifdef USE_IMGUI
+	if (ImGui::Begin("Time"))
+	{
+		ImGui::Text("DeltaTime : %.4f", Time::DeltaTime());
+		ImGui::Text("Unscaled : %.4f", Time::UnscaledDeltaTime());
+
+		ImGui::Separator();
+
+		ImGui::SliderFloat(
+			"Time Scale",
+			&Time::timeScale,
+			0.0f,   // Š®‘S’âŽ~
+			3.0f,   // 3”{‘¬
+			"%.2f"
+		);
+
+		if (ImGui::Button("Reset TimeScale"))
+		{
+			Time::timeScale = 1.0f;
+		}
+	}
+	ImGui::End();
+#endif
 }

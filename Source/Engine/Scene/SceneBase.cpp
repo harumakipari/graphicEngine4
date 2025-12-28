@@ -9,6 +9,7 @@
 #include "Engine/Effects/EffectManager.h"
 
 #include "Engine/Input/InputSystem.h"
+#include "Engine/Utility/Time.h"
 #include "Game/Actors/Camera/Camera.h"
 #include "Graphics/PostProcess/BloomEffect.h"
 #include "Graphics/PostProcess/FogEffect.h"
@@ -491,10 +492,14 @@ void SceneBase::DrawGui()
     SetupImGuiStyle();
     DrawDockSpace();
     DrawOutliner();
-    DrawGizmo();// 
+    DrawGizmo();//
+    Logger::DrawImGui();
+    Time::DrawImGui();
     DrawInspector();
     SceneEditor::Draw();
+    ProfileDrawUI();
     uiManager->DrawImGUi();
+    EffectEditor::DrawGUI();
     DrawShortcutInfo();
 #endif
 }
@@ -522,8 +527,11 @@ void SceneBase::DrawDockSpace()
     ImGui::PopStyleVar(2);
 
     ImGuiID dockspace_id = ImGui::GetID("MainDockSpace");
-    ImGui::DockSpace(dockspace_id, ImVec2(0, 0));
-
+    ImGui::DockSpace(
+        dockspace_id,
+        ImVec2(0.0f, 0.0f),
+        ImGuiDockNodeFlags_PassthruCentralNode
+    );
     ImGui::End();
 }
 
@@ -649,12 +657,6 @@ void SceneBase::DrawInspector()
             ImGui::EndTabItem();
         }
 
-        if (ImGui::BeginTabItem("EffectEditor"))
-        {
-            //エフェクトエディタGUI描画
-            EffectEditor::DrawGUI();
-            ImGui::EndTabItem();
-        }
 
         ImGui::EndTabBar();
     }

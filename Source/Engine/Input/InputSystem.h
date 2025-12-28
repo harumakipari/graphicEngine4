@@ -218,13 +218,6 @@ public:
         return true;
     }
 
-    // UIマウスカーソル位置を取得（ビューポート外なら0,0を返す）
-    static DirectX::XMFLOAT2 GetMousePositionUIOrZero()
-    {
-        DirectX::XMFLOAT2 pos = { 0.0f,0.0f };
-        GetMousePositionUI(pos);
-        return pos;
-    }
 private:
 
     // カーソルの表示非表示を変更

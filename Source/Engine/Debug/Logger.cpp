@@ -158,74 +158,80 @@ void Logger::Error(LogCategory category, const char8_t* message, std::source_loc
 void Logger::DrawImGui()
 {
 #ifdef USE_IMGUI
+    ImGui::Begin(U8("ログ情報"));
 
-    if (ImGui::TreeNode(reinterpret_cast<const char*>(u8"ログ情報")))
+
+    ImGui::Checkbox("Gameplay", &showGameplay);
+    ImGui::SameLine();
+    ImGui::Checkbox("Physics", &showPhysics);
+    ImGui::SameLine();
+    ImGui::Checkbox("UI", &showUI);
+    ImGui::SameLine();
+    ImGui::Checkbox("System", &showSystem);
+
+    ImGui::SameLine();
+    if (ImGui::Button("Clear"))
     {
-        ImGui::Checkbox("Gameplay", &showGameplay);
-        ImGui::SameLine();
-        ImGui::Checkbox("Physics", &showPhysics);
-        ImGui::SameLine();
-        ImGui::Checkbox("UI", &showUI);
-        ImGui::SameLine();
-        ImGui::Checkbox("System", &showSystem);
-        ImGui::SameLine();
-        if (ImGui::Button("Clear"))
-        {
-            auto& instance = Instance();
-            instance.logItems.clear();
-            instance.log.clear();
-        }
-        ImGui::SameLine();
-        ImGui::Checkbox("AutoScroll", &autoScroll);
-        ImGui::Separator();
-
         auto& instance = Instance();
-        ImGui::BeginChild("", ImVec2(), true, ImGuiWindowFlags_::ImGuiWindowFlags_HorizontalScrollbar);
-        for (const auto& item : instance.logItems)
-        {
-            // カテゴリフィルタ
-            if (!IsCategoryVisible(item.category))
-                continue;
-
-            bool colored = false;
-
-            // 色分け
-            if (item.message.find("[ERROR]") != std::string::npos)
-            {
-                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0.2f, 0.2f, 1));
-                colored = true;
-            }
-            else if (item.message.find("[WARNING]") != std::string::npos)
-            {
-                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0.8f, 0.2f, 1));
-                colored = true;
-            }
-
-            // ★ 1行として表示（ここ重要）
-            std::string line = std::format(
-                "{} {} : {}",
-                CategoryToString(item.category),
-                item.timeString,
-                item.message
-            );
-
-            ImGui::TextUnformatted(line.c_str());
-
-            if (colored)
-                ImGui::PopStyleColor();
-        }
-
-        if (autoScroll)
-        {
-            if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
-            {
-                ImGui::SetScrollHereY(1.0f);
-            }
-        }
-
-        ImGui::EndChild();
-        ImGui::TreePop();
+        instance.logItems.clear();
+        instance.log.clear();
     }
+
+    ImGui::SameLine();
+    ImGui::Checkbox("AutoScroll", &autoScroll);
+    ImGui::Separator();
+
+    auto& instance = Instance();
+
+    // ★ 必ずユニークな ID を使う
+    ImGui::BeginChild(
+        "LoggerScroll",
+        ImVec2(0, 0),
+        true,
+        ImGuiWindowFlags_HorizontalScrollbar
+    );
+
+    for (const auto& item : instance.logItems)
+    {
+        if (!IsCategoryVisible(item.category))
+            continue;
+
+        bool colored = false;
+
+        if (item.message.find("[ERROR]") != std::string::npos)
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0.2f, 0.2f, 1));
+            colored = true;
+        }
+        else if (item.message.find("[WARNING]") != std::string::npos)
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0.8f, 0.2f, 1));
+            colored = true;
+        }
+
+        std::string line = std::format(
+            "{} {} : {}",
+            CategoryToString(item.category),
+            item.timeString,
+            item.message
+        );
+
+        ImGui::TextUnformatted(line.c_str());
+
+        if (colored)
+            ImGui::PopStyleColor();
+    }
+
+    if (autoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+    {
+        ImGui::SetScrollHereY(1.0f);
+    }
+
+    // ★ BeginChild に対する EndChild
+    ImGui::EndChild();
+
+    // ★ Begin に対する End
+    ImGui::End();
 #endif
 }
 
@@ -264,7 +270,7 @@ void Logger::LogThreadFunc() {
 
         while (!instance.logQueue.empty())
         {
-            LogItem item = instance.logQueue.front(); 
+            LogItem item = instance.logQueue.front();
             instance.logQueue.pop();
 
             if (currentTime != item.time)
