@@ -69,7 +69,7 @@ public:
                 auto piece = std::make_shared<UIImageComponent>(
                     "./Data/Textures/UI/triangle.png", "ArrowPiece_" + std::to_string(i));
 
-                piece->SetLocalPosition({ i * 40.0f ,0.0f});
+                piece->SetLocalPosition({ i * 40.0f ,0.0f });
                 piece->SetPivot({ 0.5f,0.5f });
                 piece->SetSize({ 50, 50 });
                 piece->color = CoreColor::White;
@@ -152,7 +152,8 @@ public:
 
         // ===== 引っ張り量 =====
         float pullAmount = pull.amount;
-        Logger::Log((std::string("サクランボの引っ張った量") + std::to_string(pullAmount)).c_str());
+        //Logger::Log("cherry pull Amount" + std::to_string(pullAmount));
+        Logger::Log("サクランボ引っ張った量" + std::to_string(pullAmount));
 
 
         // ちょい溜めると一気に強くなる

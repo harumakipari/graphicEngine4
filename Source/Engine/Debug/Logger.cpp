@@ -183,7 +183,6 @@ void Logger::DrawImGui()
 
     auto& instance = Instance();
 
-    // ★ 必ずユニークな ID を使う
     ImGui::BeginChild(
         "LoggerScroll",
         ImVec2(0, 0),
@@ -191,69 +190,46 @@ void Logger::DrawImGui()
         ImGuiWindowFlags_HorizontalScrollbar
     );
 
+    static std::vector<const LogItem*> visibleItems;
+    visibleItems.clear();
+
     for (const auto& item : instance.logItems)
     {
-        if (!IsCategoryVisible(item.category))
-            continue;
-
-        bool colored = false;
-
-        if (item.message.find("[ERROR]") != std::string::npos)
-        {
-            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0.2f, 0.2f, 1));
-            colored = true;
-        }
-        else if (item.message.find("[WARNING]") != std::string::npos)
-        {
-            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0.8f, 0.2f, 1));
-            colored = true;
-        }
-
-        std::string line = std::format(
-            "{} {} : {}",
-            CategoryToString(item.category),
-            item.timeString,
-            item.message
-        );
-
-        ImGui::TextUnformatted(line.c_str());
-
-        if (colored)
-            ImGui::PopStyleColor();
+        if (IsCategoryVisible(item.category))
+            visibleItems.push_back(&item);
     }
 
-    if (autoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+    ImGuiListClipper clipper;
+    clipper.Begin(visibleItems.size());
+
+    while (clipper.Step())
+    {
+        for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; ++i)
+        {
+            const auto& item = *visibleItems[i];
+
+            if (item.severity == 2)
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0.2f, 0.2f, 1));
+            else if (item.severity == 1)
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0.8f, 0.2f, 1));
+
+            ImGui::TextUnformatted(item.drawLine.c_str());
+
+            if (item.severity != 0)
+                ImGui::PopStyleColor();
+        }
+    }
+    if (autoScroll && instance.requestAutoScroll)
     {
         ImGui::SetScrollHereY(1.0f);
+        instance.requestAutoScroll = false;
     }
-
-    // ★ BeginChild に対する EndChild
     ImGui::EndChild();
 
-    // ★ Begin に対する End
     ImGui::End();
 #endif
 }
 
-//void Logger::Log(const wchar_t* message) {
-//	std::ofstream ofs(Instance().logfilePath, std::ios::out | std::ios::app);
-//	if (!ofs.is_open())
-//	{
-//		//ファイルを新規作成
-//		ofs.open(Instance().logfilePath, std::ios::out);
-//		if (!ofs.is_open())throw std::runtime_error("Failed to create log file.");
-//	}
-//
-//	auto now = std::time(nullptr);
-//	auto* localTime = std::localtime(&now);
-//	char timeStr[80];
-//	std::strftime(timeStr, sizeof(timeStr), fmt, localTime);
-//
-//	std::lock_guard lock(Instance().mtx);
-//	ofs << timeStr << " : " << std::string(message, message + wcslen(message)) << std::endl;
-//
-//	ofs.close();
-//}
 
 void Logger::LogThreadFunc() {
     while (logThreadLoop)
@@ -285,16 +261,24 @@ void Logger::LogThreadFunc() {
 
             item.timeString = timeStr;
 
-            std::string str = std::format(
-                "{} {} : {}\n",
+            if (item.message.find("[ERROR]") != std::string::npos)
+                item.severity = 2;
+            else if (item.message.find("[WARNING]") != std::string::npos)
+                item.severity = 1;
+            else
+                item.severity = 0;
+
+            // drawLine をここで作る（超重要）
+            item.drawLine = std::format(
+                "{} {} : {}",
                 CategoryToString(item.category),
-                timeStr,
+                item.timeString,
                 item.message
             );
 
-            ofs << str;
-            instance.log += str;
+            ofs << item.drawLine << '\n';
             instance.logItems.push_back(std::move(item));
+            instance.requestAutoScroll = true;
         }
         ofs.close();
     }

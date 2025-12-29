@@ -64,6 +64,8 @@ private:
 		std::string message;
         std::string timeString;
 
+		std::string drawLine;   // 描画用キャッシュ
+		uint8_t severity;       // 0=Normal 1=Warning 2=Error
 	};
 	std::queue<LogItem> logQueue;
 	std::mutex mtx;
@@ -73,6 +75,8 @@ private:
 
     std::vector<LogItem> logItems; // Logger メンバ
 	inline static bool autoScroll = true;
+
+	bool requestAutoScroll = false;
 public:
 	inline static bool showGameplay = true;
 	inline static bool showPhysics = true;
