@@ -1,6 +1,14 @@
 #pragma once
 #include "Components/Render/MeshComponent.h"
 
+struct ElasticForce
+{
+    DirectX::XMFLOAT3 point;   // 力が加わる位置（例：上端）
+    DirectX::XMFLOAT3 dir;     // 方向
+    float strength;            // 強さ
+};
+
+
 
 class ElasticMeshComponent :public MeshComponent
 {
@@ -41,15 +49,13 @@ public:
 
     void UpdateConstantBuffer(ID3D11DeviceContext* immediateContext) const override;
 
-    void AddImpulse(const DirectX::XMFLOAT3& impulse)
+    void AddForce(const ElasticForce& force)
     {
-        elasticParameters.momentumX += impulse.x / elasticParameters.mass;
-        elasticParameters.momentumY += impulse.y / elasticParameters.mass;
-        elasticParameters.momentumZ += impulse.z / elasticParameters.mass;
+        pendingForces.push_back(force);
     }
 
     // サクランボのためにプリンの表面の位置を取得する関数
-    void GetSurfacePositionTangent(DirectX::XMFLOAT3& surfacePosition,DirectX::XMFLOAT3& tangent);
+    void GetSurfacePositionTangent(DirectX::XMFLOAT3& surfacePosition, DirectX::XMFLOAT3& tangent);
 
     // --- このあたりの関数を使っていないから後程削除する ---
     void RenderOpaque(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world)const override
@@ -149,6 +155,8 @@ public:
 private:
     void UpdatePushElastic(float deltaTime);
 
+    void UpdateElasticFromForces(float deltaTime);
+
     std::unique_ptr<ConstantBuffer<ElasticConstants>> elasticBuildingCBuffer;
     ElasticConstants elasticConstants{};
     ElasticParameters elasticParameters;
@@ -164,4 +172,34 @@ private:
     float cherryOffset = -0.5f;// サクランボのためのオフセット
 
     PullInfo pullInfo;
+
+
+    DirectX::XMFLOAT3 p3Position;   // 現在の p3
+    DirectX::XMFLOAT3 p3RestPosition; // 建物がまっすぐな時の先端
+    DirectX::XMFLOAT3 p3Velocity;   // p3 の速度
+
+    std::vector<ElasticForce> pendingForces;
+};
+
+class ElasticPullController : public Component
+{
+public:
+    ElasticPullController(const std::string& name, const std::shared_ptr<Actor>& owner) :Component(name, owner) {}
+
+    ~ElasticPullController() override = default;
+
+
+    void SetElasticMesh(ElasticMeshComponent* mesh)
+    {
+        elasticMesh = mesh;
+    }
+
+    void Tick(float dt) override;
+
+private:
+    ElasticMeshComponent* elasticMesh = nullptr;
+
+    DirectX::XMFLOAT3 puddingTop{};
+    DirectX::XMFLOAT3 pullDir{};
+    float pullAmount = 0.0f;
 };

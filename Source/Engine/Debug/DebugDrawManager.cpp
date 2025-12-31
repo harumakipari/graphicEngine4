@@ -43,11 +43,8 @@ void DebugDrawManager::DrawCapsule(
     DebugDrawCommand command{};
     command.type = DebugDrawType::Capsule;
     // カプセルの中心位置を計算
-    command.position = DirectX::XMFLOAT3{
-        (startPos.x + endPos.x) * 0.5f,
-        (startPos.y + endPos.y) * 0.5f,
-        (startPos.z + endPos.z) * 0.5f
-    };
+    command.position = startPos;
+    command.endPosition = endPos;
     // size.x に半径、size.y に高さを格納
     DirectX::XMVECTOR startVec = DirectX::XMLoadFloat3(&startPos);
     DirectX::XMVECTOR endVec = DirectX::XMLoadFloat3(&endPos);
@@ -85,7 +82,7 @@ void DebugDrawManager::DrawCylinder(
     float life)
 {
     DebugDrawCommand command{};
-    command.type = DebugDrawType::Capsule;
+    command.type = DebugDrawType::Cylinder;
     command.position = pos;
     command.size = DirectX::XMFLOAT3{ radius, height, 0.0f };
     command.color = color;

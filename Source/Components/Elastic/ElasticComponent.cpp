@@ -25,14 +25,63 @@ void ElasticMeshComponent::Initialize()
     };
     elasticBuildingCBuffer->data = elasticConstants;
 
-    
+    p3RestPosition = {
+    position.x,
+    position.y + modelHeight,
+    position.z
+    };
+    p3Position = p3RestPosition;
+    p3Velocity = { 0,0,0 };
 }
 
 void ElasticMeshComponent::Tick(float deltaTime)
 {
     UpdatePushElastic(deltaTime);
-    //UpdatePullElastic(deltaTime);
+    //UpdateElasticFromForces(deltaTime);
 }
+
+
+void ElasticMeshComponent::UpdateElasticFromForces(float dt)
+{
+    // ===== 外力（引っ張り） =====
+    for (const auto& f : pendingForces)
+    {
+        p3Velocity.x += f.dir.x * f.strength / elasticParameters.mass;
+        p3Velocity.y += f.dir.y * f.strength / elasticParameters.mass;
+        p3Velocity.z += f.dir.z * f.strength / elasticParameters.mass;
+    }
+    pendingForces.clear();
+
+    // ===== 復元力（バネ） =====
+    DirectX::XMFLOAT3 diff = {
+        p3Position.x - p3RestPosition.x,
+        p3Position.y - p3RestPosition.y,
+        p3Position.z - p3RestPosition.z
+    };
+
+    p3Velocity.x += -elasticParameters.stiffness * diff.x * dt;
+    p3Velocity.y += -elasticParameters.stiffness * diff.y * dt;
+    p3Velocity.z += -elasticParameters.stiffness * diff.z * dt;
+
+    // ===== 減衰 =====
+    p3Velocity.x *= elasticParameters.damping;
+    p3Velocity.y *= elasticParameters.damping;
+    p3Velocity.z *= elasticParameters.damping;
+
+    // ===== 積分 =====
+    p3Position.x += p3Velocity.x * dt;
+    p3Position.y += p3Velocity.y * dt;
+    p3Position.z += p3Velocity.z * dt;
+
+    // ===== p1,p2,p3 更新 =====
+    DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
+    float midY = position.y + modelHeight * 0.5f;
+
+    elasticConstants.p1 = { position.x, position.y, position.z, 1 };
+    elasticConstants.p2 = { position.x, midY, position.z, 1 };
+    elasticConstants.p3 = { p3Position.x, p3Position.y, p3Position.z, 1 };
+}
+
 
 void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
 {
@@ -51,7 +100,6 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
         XMFLOAT3 buildCurveDir;
         if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
         {
-            DebugDrawManager::DrawSphere(result.hitPoint, 1.03f, { 1, 1, 0, 1 });
             XMFLOAT3 intersectNormal;
             intersectPos = result.hitPoint;
             intersectNormal = result.normal;
@@ -62,6 +110,10 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
             intersectPos = { 0.0f,0.0f,0.0f };
             buildCurveDir = { 0.0f,0.0f,0.0f };
         }
+        DebugDrawManager::DrawSphere(result.hitPoint, 1.03f, { 1, 1, 0, 1 });
+        //DebugDrawManager::DrawBox(result.hitPoint, { 1.03f,1.03f,1.03f }, { 0, 1, 0, 1 });
+        //DebugDrawManager::DrawCapsule(result.hitPoint, { result.hitPoint.x,result.hitPoint.y + 1.0f,result.hitPoint.z }, 1.03f, { 1, 0, 0, 1 });
+        //DebugDrawManager::DrawCylinder(result.hitPoint, 1.03f,0.5f, { 0, 0, 1, 1 });
 
         // これでマウスのpositionによって、建物を曲げる方向を見つける
         XMVECTOR BuildCurveDir = XMLoadFloat3(&buildCurveDir);
@@ -195,4 +247,41 @@ void ElasticMeshComponent::UpdateConstantBuffer(ID3D11DeviceContext* immediateCo
 {
     elasticBuildingCBuffer->data = elasticConstants;
     elasticBuildingCBuffer->Activate(immediateContext, 6);
+}
+
+void ElasticPullController::Tick(float dt)
+{
+    if (!elasticMesh) return;
+    if (!InputSystem::GetInputState("MouseLeft")) return;
+
+    DirectX::XMFLOAT2 cursor;
+    if (!InputSystem::GetMousePositionUI(cursor)) return;
+
+    HitResultWithActor result;
+    if (!CollisionFunction::RaycastFromMouse(
+        cursor,
+        result,
+        CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
+        return;
+
+    // ===== 引っ張り方向 =====
+    DirectX::XMFLOAT3 meshPos = elasticMesh->GetOwner()->GetPosition();
+    DirectX::XMFLOAT3 dir = {
+        result.hitPoint.x - meshPos.x,
+        0.0f,
+        result.hitPoint.z - meshPos.z
+    };
+
+    DirectX::XMVECTOR v = DirectX::XMLoadFloat3(&dir);
+    float dist = XMVectorGetX(XMVector3Length(v));
+    v = XMVector3Normalize(v);
+    XMStoreFloat3(&dir, v);
+
+    // ===== 力として送る =====
+    ElasticForce f;
+    f.point = result.hitPoint;
+    f.dir = dir;
+    f.strength = std::clamp(dist, 0.0f, 5.0f) * 30.0f;
+
+    elasticMesh->AddForce(f);
 }

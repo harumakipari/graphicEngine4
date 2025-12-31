@@ -58,6 +58,10 @@ public:
 
         elasticBuilding->Initialize();
 
+
+        auto elasticPullController = AddComponent<ElasticPullController>("elasticPullController", "elasticBuilding");
+        elasticPullController->SetElasticMesh(elasticBuilding.get());
+
         {
             arrowRoot = std::make_shared<UIImageComponent>("./Data/Textures/UI/triangle.png", "arrowGauge");
             arrowRoot->SetWorldPosition({ 50, 300 });

@@ -35,7 +35,7 @@ public:
         float life = 0.0f);
 
     static void DrawCapsule(
-        const DirectX::XMFLOAT3& startPos,
+        const DirectX::XMFLOAT3& startPos,// ˆê”Ô‰º‚Ì“_
         const DirectX::XMFLOAT3& endPos,
         float radius,
         const DirectX::XMFLOAT4& color,
@@ -48,7 +48,7 @@ public:
         float life = 0.0f);
 
     static void DrawCylinder(
-        const DirectX::XMFLOAT3& pos,
+        const DirectX::XMFLOAT3& pos,// ˆê”Ô‰º‚Ì“_
         float radius,
         float height,
         const DirectX::XMFLOAT4& color,
