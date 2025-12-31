@@ -24,10 +24,10 @@ public:
     {
         // 描画用コンポーネントを追加
         elasticBuilding = this->AddComponent<ElasticMeshComponent>("elasticBuilding");
-        //elasticBuilding->SetModel("./Data/Models/Building/bomb_bill.gltf");
         //elasticBuilding->SetModel("./Data/Models/pink_pudding/scene.gltf");
         //elasticBuilding->SetModel("./Data/Models/cherry_pudding/scene.gltf");
         elasticBuilding->SetModel("./Data/Models/cherry_pudding/pudding.glb");
+        //elasticBuilding->SetModel("./Data/Models/Pudding/pudding_noCherry.glb");
 
         std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "elasticBuilding");
         DirectX::XMFLOAT3 size = elasticBuilding->GetModelSize();
@@ -40,10 +40,12 @@ public:
         boxComponent->Initialize();
 
         whip = this->AddComponent<SkeletalMeshComponent>("whip", "elasticBuilding");
+        //whip->SetModel("./Data/Models/Pudding/whip.glb");
         whip->SetModel("./Data/Models/cherry_pudding/whip.glb");
         whip->SetRelativeLocationDirect({ 0.0f,size.y,0.0f });
 
         cherry = this->AddComponent<SkeletalMeshComponent>("cherry", "whip");
+        //cherry->SetModel("./Data/Models/Pudding/cherry.glb");
         cherry->SetModel("./Data/Models/cherry_pudding/cherry.glb");
 
 

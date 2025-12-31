@@ -33,7 +33,7 @@ namespace CollisionFunction
             DirectX::XMMATRIX Projection = DirectX::XMLoadFloat4x4(&data.projection);
             DirectX::XMMATRIX World = DirectX::XMMatrixIdentity();
             // スクリーン座標をワールド座標に変換し、レイの始点を求める
-            WorldPosition = DirectX::XMVector3Unproject(ScreenPosition, viewportX, viewportY, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World);
+            WorldPosition = DirectX::XMVector3Unproject(ScreenPosition, 0.0f, 0.0f, 1920.0f,1080.0f, 0.0f, 1.0f, Projection, View, World);
 
             DirectX::XMFLOAT3 rayStart;
             DirectX::XMStoreFloat3(&rayStart, WorldPosition);
@@ -44,7 +44,7 @@ namespace CollisionFunction
             screenPosition.z = 1.0f;
             ScreenPosition = DirectX::XMLoadFloat3(&screenPosition);
             WorldPosition = DirectX::XMVector3Unproject(
-                ScreenPosition, viewportX, viewportY, screenWidth, screenHeight, 0.0f, 1.0f, Projection, View, World
+                ScreenPosition, 0.0f, 0.0f, 1920.0f, 1080.0f, 0.0f, 1.0f, Projection, View, World
             );
             DirectX::XMFLOAT3 rayEnd;
             DirectX::XMStoreFloat3(&rayEnd, WorldPosition);
