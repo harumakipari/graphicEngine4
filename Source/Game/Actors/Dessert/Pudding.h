@@ -226,6 +226,10 @@ public:
 #ifdef USE_IMGUI
         ImGui::DragFloat(U8("サクランボの最小速度"), &minPower, 0.02f);
         ImGui::DragFloat(U8("サクランボの最大速度"), &maxPower, 0.02f);
+        if (ImGui::Button(U8("サクランボが乗った時")))
+        {
+            elasticBuilding->AddCherry();
+        }
 #endif
     };
 

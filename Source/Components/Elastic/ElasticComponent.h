@@ -49,13 +49,11 @@ public:
 
     void UpdateConstantBuffer(ID3D11DeviceContext* immediateContext) const override;
 
-    void AddForce(const ElasticForce& force)
-    {
-        pendingForces.push_back(force);
-    }
-
     // サクランボのためにプリンの表面の位置を取得する関数
     void GetSurfacePositionTangent(DirectX::XMFLOAT3& surfacePosition, DirectX::XMFLOAT3& tangent);
+
+    // サクランボが乗った時
+    void AddCherry();
 
     // --- このあたりの関数を使っていないから後程削除する ---
     void RenderOpaque(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world)const override
@@ -152,6 +150,8 @@ public:
     const PullInfo& GetPullInfo() const { return pullInfo; }
 
     float GetModelHeight() const { return modelHeight; }
+
+
 private:
     void UpdatePushElastic(float deltaTime);
 
@@ -173,12 +173,9 @@ private:
 
     PullInfo pullInfo;
 
+    DirectX::XMFLOAT3 p3Target;   // 入力・外力で決まる目標位置
+    DirectX::XMFLOAT3 p3Current;  // 実際に描画やシェーダに渡す p3（結果）
 
-    DirectX::XMFLOAT3 p3Position;   // 現在の p3
-    DirectX::XMFLOAT3 p3RestPosition; // 建物がまっすぐな時の先端
-    DirectX::XMFLOAT3 p3Velocity;   // p3 の速度
-
-    std::vector<ElasticForce> pendingForces;
 };
 
 class ElasticPullController : public Component
