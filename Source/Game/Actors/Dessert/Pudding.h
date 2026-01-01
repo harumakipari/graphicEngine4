@@ -57,11 +57,6 @@ public:
         SetScale(transform.GetScale());
 
         elasticBuilding->Initialize();
-
-
-        auto elasticPullController = AddComponent<ElasticPullController>("elasticPullController", "elasticBuilding");
-        elasticPullController->SetElasticMesh(elasticBuilding.get());
-
         {
             arrowRoot = std::make_shared<UIImageComponent>("./Data/Textures/UI/triangle.png", "arrowGauge");
             arrowRoot->SetWorldPosition({ 50, 300 });
@@ -98,12 +93,18 @@ public:
 
         if (InputSystem::GetInputState("MouseLeft"))
         {
+#if 0
             audioSourceComponent->Play();
             if (audioSourceComponent && !audioSourceComponent->IsPlaying())
             {
                 audioSourceComponent->Play();
             }
+#else
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/pudding.wav");
 
+
+
+#endif // 0
         }
 
         if (InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
@@ -112,7 +113,6 @@ public:
             {
                 particleComponent->Play();
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE/pudding.wav");
-
             }
         }
         XMFLOAT3 surfacePos, tangent;
@@ -217,7 +217,7 @@ public:
         }
         else
         {
-            //arrow->visible = false;
+            arrowRoot->SetVisible(false);
         }
 
     }

@@ -32,6 +32,7 @@ void Cherry::Update(float deltaTime)
                 particleComponent->Play();
             }
         }
+
     }
     else
     {

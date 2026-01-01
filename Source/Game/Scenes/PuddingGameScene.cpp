@@ -14,6 +14,7 @@
 
 #include "Game/Actors/Camera/TitleCamera.h"
 #include "Game/Actors/Dessert/Pudding.h"
+#include "Game/Actors/Dessert/TargetPudding.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"
 #include "Game/Actors/Enemy/Boss/BossEnemy.h"
 #include "Game/Actors/Stage/Cloth.h"
@@ -77,13 +78,10 @@ void PuddingGameScene::Start()
     button->onClick = [gauge]()
         {
             Logger::Log(u8"ボタンButton Clicked!");
-            Logger::Error(u8"ボタンButton Clicked!");
-            Logger::Warning(u8"ボタンButton Clicked!");
 
             const char* types[] = { "0", "1" };
             Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
 
-            OutputDebugStringA("Button Clicked!\n");
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
             gauge->value -= 0.1f;
             if (gauge->value < 0.0f)
@@ -132,6 +130,10 @@ void PuddingGameScene::SetUpActors()
 
     Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,0.0f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
     auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pudding>("Pudding", buildTr2);
+
+    Transform targetPuddingTr(DirectX::XMFLOAT3{ 0.0f,0.0f,13.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.8f,1.8f,1.8f });
+    auto targetPudding = this->GetActorManager()->CreateAndRegisterActorWithTransform<TargetPudding>("targetPudding", targetPuddingTr);
+
 
     CameraManager::SetGameCamera(mainCameraActor.get());
 

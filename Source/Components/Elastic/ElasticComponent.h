@@ -30,6 +30,7 @@ public:
         int a = 0;
     }
 
+    
     void Initialize() override;
 
     void Tick(float deltaTime)override;
@@ -54,6 +55,15 @@ public:
 
     // サクランボが乗った時
     void AddCherry();
+
+    // 力をリセットする
+    void ClearForce()
+    {
+        mouseForce = { 0.0f,0.0f,0.0f };
+        cherryForce = { 0.0f,0.0f,0.0f };
+    }
+
+    void SetUseMouseInput(const bool useMouseInput) { this->useMouseInput = useMouseInput; }
 
     // --- このあたりの関数を使っていないから後程削除する ---
     void RenderOpaque(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world)const override
@@ -108,7 +118,7 @@ public:
         ImGui::SliderFloat("momentumX", &elasticParameters.momentumX, -10.0f, 10.0f);
         ImGui::SliderFloat("momentumY", &elasticParameters.momentumY, -10.0f, 10.0f);
         ImGui::SliderFloat("momentumZ", &elasticParameters.momentumZ, -10.0f, 10.0f);
-        ImGui::SliderFloat(" maxDist", &elasticParameters.maxDist, -100.0f, 120.0f);
+        ImGui::SliderFloat(U8("サクランボの伸び"), &elasticParameters.maxDist, -5.0f, 10.0f);
         ImGui::SliderFloat(" maxAngleDegrees", &elasticParameters.maxAngleDegrees, 0.0f, 360.0f);
         ImGui::DragFloat(U8("サクランボのオフセット"), &cherryOffset, 0.01f);
 #endif
@@ -121,11 +131,6 @@ public:
         DirectX::XMFLOAT4 p3; // 終点
         float maxAngleDegree; // 度以上曲がらない
         float modelHeight; // モデルの高さ
-        float stretchRate;  // モデルの伸び率
-        float pullLength;
-        DirectX::XMFLOAT3 pullDir;
-        float pad;
-        DirectX::XMFLOAT3 grabPoint;
     };
 
     struct ElasticParameters
@@ -137,7 +142,7 @@ public:
         float momentumX = 0.0f;
         float momentumY = 0.0f;
         float momentumZ = 0.0f;
-        float maxDist = 3.4f;
+        float maxDist = 3.45f;
     };
 
     struct PullInfo
@@ -151,11 +156,10 @@ public:
 
     float GetModelHeight() const { return modelHeight; }
 
-
 private:
     void UpdatePushElastic(float deltaTime);
 
-    void UpdateElasticFromForces(float deltaTime);
+    bool UpdateFromMouse(float deltaTime);
 
     std::unique_ptr<ConstantBuffer<ElasticConstants>> elasticBuildingCBuffer;
     ElasticConstants elasticConstants{};
@@ -175,7 +179,12 @@ private:
 
     DirectX::XMFLOAT3 p3Target;   // 入力・外力で決まる目標位置
     DirectX::XMFLOAT3 p3Current;  // 実際に描画やシェーダに渡す p3（結果）
+    DirectX::XMFLOAT3 p3Base;
 
+    DirectX::XMFLOAT3 mouseForce = { 0.0f,0.0f,0.0f };
+    DirectX::XMFLOAT3 cherryForce = { 0.0f,0.0f,0.0f };
+
+    bool useMouseInput = true;
 };
 
 class ElasticPullController : public Component

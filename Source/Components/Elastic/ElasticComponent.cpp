@@ -21,7 +21,6 @@ void ElasticMeshComponent::Initialize()
         /*p3*/ DirectX::XMFLOAT4(position.x, position.y + modelHeight, position.z, 1.0f),
         /*maxAngleDegree*/ 100.0f, // 度以上は曲がらない
         /*modelHeight*/ modelHeight,
-        /*stretchRate*/ 1.0f,
     };
     elasticBuildingCBuffer->data = elasticConstants;
 
@@ -31,15 +30,80 @@ void ElasticMeshComponent::Initialize()
     position.z
     };
     p3Target = p3Current;
-    ;
 }
 
 void ElasticMeshComponent::Tick(float deltaTime)
 {
+    DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
+
+    p3Base = {
+position.x,
+position.y + modelHeight,
+position.z
+    };
+
     UpdatePushElastic(deltaTime);
 }
 
 void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
+{
+    using namespace DirectX;
+    DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
+    ClearForce();
+    bool hasExternalForce = false;
+    if (useMouseInput)
+    {
+        hasExternalForce = UpdateFromMouse(deltaTime);
+    }
+    p3Target = p3Base;
+    p3Target.x += mouseForce.x;
+    p3Target.y += mouseForce.y;
+    p3Target.z += mouseForce.z;
+    p3Target.x += cherryForce.x;
+    p3Target.y += cherryForce.y;
+    p3Target.z += cherryForce.z;
+
+    //p3Current = p3Target;
+
+    if (!hasExternalForce)
+    {// 左ボタンを押していない時
+        pullInfo.active = false;
+
+        //DirectX::XMFLOAT3 p = { elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z };
+        float targetX = position.x;
+        float targetY = position.y + modelHeight;
+        float targetZ = position.z;
+        //float gradX = p.x - targetX;// x - a
+        //float gradY = p.y - targetY;// x - a
+        //float gradZ = p.z - targetZ;// x - a
+
+        float gradX = p3Current.x - targetX;// x - a
+        float gradY = p3Current.y - targetY;// x - a
+        float gradZ = p3Current.z - targetZ;// x - a
+
+
+        elasticParameters.momentumX = elasticParameters.damping * elasticParameters.momentumX + gradX/*parmator*/;
+        elasticParameters.momentumY = elasticParameters.damping * elasticParameters.momentumY + gradY/*parmator*/;
+        elasticParameters.momentumZ = elasticParameters.damping * elasticParameters.momentumZ + gradZ/*parmator*/;
+        p3Current.x -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumX;
+        p3Current.y -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumY;
+        p3Current.z -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumZ;
+
+    }
+    elasticConstants.maxAngleDegree = elasticParameters.maxAngleDegrees;
+
+    float midY = position.y + modelHeight * 0.5f;
+    elasticConstants.p1 = { position.x,position.y,position.z,1.0f };
+    elasticConstants.p2 = { position.x,midY,position.z ,1.0f };
+    elasticConstants.p3 = { p3Current.x,p3Current.y,p3Current.z,1.0f };
+
+
+    DebugDrawManager::DrawSphere({ elasticConstants.p1.x,elasticConstants.p1.y,elasticConstants.p1.z }, 0.03f, { 1, 0, 0, 1 });
+    DebugDrawManager::DrawSphere({ elasticConstants.p2.x,elasticConstants.p2.y,elasticConstants.p2.z }, 0.03f, { 0, 1, 0, 1 });
+    DebugDrawManager::DrawSphere({ elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z }, 0.03f, { 0, 0, 1, 1 });
+}
+
+bool ElasticMeshComponent::UpdateFromMouse(float deltaTime)
 {
     DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
     // マウスカーソルを取得
@@ -48,7 +112,7 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
         DirectX::XMFLOAT2 cursor;
         if (!InputSystem::GetMousePositionUI(cursor))
         {
-            return;
+            return false;
         }
 
         HitResultWithActor result;
@@ -112,72 +176,32 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
         diff = DirectX::XMVectorSetY(diff, 0.0f); // 高さは無視して水平方向だけのベクトルにする
 
         float dist = DirectX::XMVectorGetX(DirectX::XMVector3Length(diff));
-        float maxDist = modelHeight + elasticParameters.maxDist; // 好みで調整
+        float maxDist = elasticParameters.maxDist; // 好みで調整
         float scale = (dist > maxDist) ? (maxDist / dist) : 1.0f;
         DirectX::XMVECTOR clampedDir = diff * scale;
         //DirectX::XMVECTOR clampedDir = diff * moveAmount; // mouse の変化量 を使う場合
 
         // p3 = 建物の上端＋方向ベクトル
-        DirectX::XMStoreFloat3(&p3Target, basePos + DirectX::XMVectorSet(0, modelHeight, 0, 0) + clampedDir);
         DirectX::XMStoreFloat3(&p3Current, basePos + DirectX::XMVectorSet(0, modelHeight, 0, 0) + clampedDir);
 
-
-
-        //elasticConstants.p3 = { p3.x,p3.y,p3.z,1.0f };
-
+        XMStoreFloat3(&mouseForce, clampedDir);
 
         pullInfo.active = true;
         pullInfo.radianAngle = angle;
         pullInfo.amount = std::clamp(dist / maxDist, 0.0f, 1.0f);
+        return true;
     }
-    else
-    {// 左ボタンを押していない時
-        pullInfo.active = false;
-
-        //DirectX::XMFLOAT3 p = { elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z };
-        float targetX = position.x;
-        float targetY = position.y + modelHeight;
-        float targetZ = position.z;
-        //float gradX = p.x - targetX;// x - a
-        //float gradY = p.y - targetY;// x - a
-        //float gradZ = p.z - targetZ;// x - a
-
-        float gradX = p3Current.x- targetX;// x - a
-        float gradY = p3Current.y- targetY;// x - a
-        float gradZ = p3Current.z- targetZ;// x - a
-
-
-        elasticParameters.momentumX = elasticParameters.damping * elasticParameters.momentumX + gradX/*parmator*/;
-        elasticParameters.momentumY = elasticParameters.damping * elasticParameters.momentumY + gradY/*parmator*/;
-        elasticParameters.momentumZ = elasticParameters.damping * elasticParameters.momentumZ + gradZ/*parmator*/;
-        p3Current.x -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumX;
-        p3Current.y -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumY;
-        p3Current.z -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumZ;
-
-    }
-    elasticConstants.maxAngleDegree = elasticParameters.maxAngleDegrees;
-
-    float midY = position.y + modelHeight * 0.5f;
-    elasticConstants.p1 = { position.x,position.y,position.z,1.0f };
-    elasticConstants.p2 = { position.x,midY,position.z ,1.0f };
-    elasticConstants.p3 = { p3Current.x,p3Current.y,p3Current.z,1.0f };
-
-
-    DebugDrawManager::DrawSphere({ elasticConstants.p1.x,elasticConstants.p1.y,elasticConstants.p1.z }, 0.03f, { 1, 0, 0, 1 });
-    DebugDrawManager::DrawSphere({ elasticConstants.p2.x,elasticConstants.p2.y,elasticConstants.p2.z }, 0.03f, { 0, 1, 0, 1 });
-    DebugDrawManager::DrawSphere({ elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z }, 0.03f, { 0, 0, 1, 1 });
+    return false;
 }
+
 
 void ElasticMeshComponent::AddCherry()
 {
     // 重さ × 重力方向
     DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
     XMFLOAT3 down = { 0.0f, -0.5f, 0.0f };
-    XMFLOAT3 p3Base= {
-    position.x,
-    position.y + modelHeight,
-    position.z
-    };
+
+    cherryForce = down;
 
     p3Target = {
         p3Base.x + down.x,
