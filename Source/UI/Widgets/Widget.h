@@ -132,40 +132,7 @@ public:
 
     std::function<void()> onClick;
 
-    void Update(float dt) override
-    {
-        DirectX::XMFLOAT2 cursor = InputSystem::GetMousePositionScreen();
-        if (!InputSystem::GetMousePositionUI(cursor))
-        {
-            state = UIButtonState::Normal;
-            return;
-        }
-        bool inside = IsInside(cursor);
-
-        if (inside)
-        {
-            // マウスカーソルを取得
-            if (InputSystem::GetInputState("MouseLeft"))
-            {// 左ボタンを押している間
-                state = UIButtonState::Pressed;
-            }
-            else
-            {
-                if (state == UIButtonState::Pressed &&
-                    InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
-                {
-                    OnClick();
-                }
-                state = UIButtonState::Hovered;
-            }
-        }
-        else
-        {
-            state = UIButtonState::Normal;
-        }
-
-        UpdateVisual();
-    }
+    void Update(float dt) override;
 
     void OnClick() override
     {

@@ -47,6 +47,8 @@ position.z
 
 void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
 {
+
+
     using namespace DirectX;
     DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
     ClearForce();
@@ -106,6 +108,13 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
 bool ElasticMeshComponent::UpdateFromMouse(float deltaTime)
 {
     DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
+
+    // UIがマウスを使っているならゲーム操作しない
+    if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
+    {
+        return false;
+    }
+
     // マウスカーソルを取得
     if (InputSystem::GetInputState("MouseLeft"))
     {// 左ボタンを押している間

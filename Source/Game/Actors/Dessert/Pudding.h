@@ -89,6 +89,12 @@ public:
     void Update(float deltaTime)override
     {
 
+        // UIがマウスを使っているならゲーム操作しない
+        if (GetOwnerScene()->GetUIManager()->IsMouseCaptured())
+        {
+            return;
+        }
+
         const auto& pull = elasticBuilding->GetPullInfo();
 
         if (InputSystem::GetInputState("MouseLeft"))
