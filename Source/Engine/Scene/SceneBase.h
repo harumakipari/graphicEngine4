@@ -25,6 +25,19 @@
 class SceneBase : public Scene
 {
 public:
+    enum class RenderPass
+    {
+        Sky,
+        Opaque,
+        Mask,
+        ForwardBlend,
+        Particle,
+        Debug,
+        UI,
+    };
+
+    using RenderHook = std::function<void(ID3D11DeviceContext*)>;
+
     virtual bool Initialize(ID3D11Device* device, UINT64 width, UINT height,
         const std::unordered_map<std::string, std::string>& props) override;
 
@@ -38,9 +51,17 @@ public:
     virtual bool OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height) override;
     virtual void DrawGui() override;
 
-    virtual void SceneDebugRender(ID3D11DeviceContext* immediateContext) {}
+    void RegisterRenderHook(const RenderPass pass, const RenderHook& hook)
+    {
+        renderHooks[pass].push_back(hook);
+    }
 
-    virtual void SceneRender(ID3D11DeviceContext* immediateContext) {}
+    void ExecuteHooks(const RenderPass pass, ID3D11DeviceContext* immediateContext)
+    {
+        for (auto& hook : renderHooks[pass])
+            hook(immediateContext);
+    }
+
 
 private:
     void ForwardRender(ID3D11DeviceContext* immediateContext);
@@ -132,8 +153,6 @@ protected:
 
     SIZE framebufferDimensions = {};
 
-    // UI
-    //UIRoot uiRoot_;
 
     std::shared_ptr<Actor> selectedActor_;  // 選択中のアクターを保持
 
@@ -146,4 +165,6 @@ protected:
 
 
     std::unique_ptr<Font>	font;
+
+    std::unordered_map<RenderPass, std::vector<RenderHook>> renderHooks;
 };

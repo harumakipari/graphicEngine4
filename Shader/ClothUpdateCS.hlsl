@@ -22,16 +22,14 @@ cbuffer PRIMITIVE_CONSTANT_BUFFER : register(b0)
 {
     row_major float4x4 world;
     
-    float4 cpuColor;
-    
     int material;
     bool hasTangent;
     int skin;
-    float dissolveValue; //ディゾルブ用
-    
+    int padding;
     
     row_major float4x4 invWorld;
 }
+
 
 
 StructuredBuffer<ClothVertex> inVertices : register(t0);

@@ -45,3 +45,6 @@ Data/Environment/Sky/Night2/sheen_pmrem.dds
 Data/Environment/Sky/Night2/skybox.dds
 Data/Environment/Sky/Night2/specular_pmrem.dds
 Data/Log/
+Data/Models/ClothFlag/flag_baseColor.png
+Data/Models/ClothFlag/flag_metallicRoughness.png
+Data/Models/ClothFlag/flag_normal.png

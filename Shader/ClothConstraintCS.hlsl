@@ -38,20 +38,18 @@ cbuffer SPHERE_CBUFFER : register(b7)
     row_major float4x4 sphereInvWorld;
 }
 
+
 cbuffer PRIMITIVE_CONSTANT_BUFFER : register(b0)
 {
     row_major float4x4 world;
     
-    float4 cpuColor;
-    
     int material;
     bool hasTangent;
     int skin;
-    float dissolveValue; //ディゾルブ用
-
+    int padding;
+    
     row_major float4x4 invWorld;
 }
-
 
 cbuffer VIEW_CONSTANTS_BUFFER : register(b4)
 {

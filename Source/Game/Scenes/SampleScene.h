@@ -15,6 +15,7 @@
 
 #include "Game/Actors/Player/TitlePlayer.h"
 #include "Game/Actors/Camera/TitleCamera.h"
+#include "Game/Actors/Stage/ClothSimulate.h"
 
 #include "UI/Widgets/Widget.h"
 #include "Physics/CollisionMesh.h"
@@ -29,8 +30,6 @@ public:
     void Start() override;
 
     void Update(float deltaTime) override;
-
-    void Render(ID3D11DeviceContext* immediateContext, float deltaTime) override;
 
     bool Uninitialize(ID3D11Device* device) override;
 
@@ -47,5 +46,8 @@ private:
 
 
     std::unique_ptr<PBD::System> pbd;
+
+    std::unique_ptr<ClothSimulate> clothSimulate;
+
 
 };

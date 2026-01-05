@@ -9,7 +9,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 {
     float4 color = colorMap.Sample(anisotropocSamplerState, pin.texCoord);
     float alpha = color.a;
-#if 1
+#if 0
     //Glitch
     if (enableGlitch)
     {

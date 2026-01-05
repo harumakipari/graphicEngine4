@@ -217,6 +217,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
     skyMap->Blit(immediateContext, data.viewProjection);
+    ExecuteHooks(RenderPass::Sky, immediateContext);
 
     // オブジェクトを描画
     RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
@@ -224,8 +225,13 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Forward;
     sceneRender.RenderOpaque(immediateContext);
+    ExecuteHooks(RenderPass::Opaque, immediateContext);
+
     sceneRender.RenderMask(immediateContext);
+    ExecuteHooks(RenderPass::Mask, immediateContext);
+
     sceneRender.RenderBlend(immediateContext);
+    ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
     // デバック描画
 #if _DEBUG
@@ -233,6 +239,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     //actorColliderManager.DebugRender(immediateContext);
     //Physics::Instance().Render(data.view, data.projection, { lightManager->GetLightDirection().x,lightManager->GetLightDirection().y,lightManager->GetLightDirection().z });
     DebugDrawManager::Render(immediateContext);
+    ExecuteHooks(RenderPass::Debug, immediateContext);
 #endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     // PARTICLES
@@ -244,10 +251,10 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
         //ラスタライザ設定
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
 
-        //定数バッファ更新
-
         // パーティクル描画
         EffectManager::Render(immediateContext);
+
+        ExecuteHooks(RenderPass::Particle, immediateContext);
     }
 
 
@@ -313,7 +320,10 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
     sceneRender.currentRenderPath = RenderPath::Deferred;
     sceneRender.RenderOpaque(immediateContext);
+    ExecuteHooks(RenderPass::Opaque, immediateContext);
+
     sceneRender.RenderMask(immediateContext);
+    ExecuteHooks(RenderPass::Mask, immediateContext);
 
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     gBufferRenderTarget->Deactivate(immediateContext);
@@ -392,10 +402,12 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_FRONT);
     sceneRender.currentRenderPath = RenderPath::Forward;
     sceneRender.RenderBlend(immediateContext); // ここで警告出る
+    ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Forward;
     sceneRender.RenderBlend(immediateContext); // ここで警告出る
+    ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 #endif // 0
 
 
@@ -412,6 +424,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
         // パーティクル描画
         EffectManager::Render(immediateContext);
+
+        ExecuteHooks(RenderPass::Particle, immediateContext);
     }
 
 
@@ -420,6 +434,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
     Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
     DebugDrawManager::Render(immediateContext);
+    ExecuteHooks(RenderPass::Debug, immediateContext);
+
 #endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
@@ -475,7 +491,7 @@ void SceneBase::Draw(ID3D11DeviceContext* immediateContext)
             font->Draw(10, 300, L"色々改造してね。");
             font->End(immediateContext);
         }
-
+        ExecuteHooks(RenderPass::UI, immediateContext);
     }
 }
 

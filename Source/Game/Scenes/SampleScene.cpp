@@ -41,6 +41,19 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     //アクターをセット
     SetUpActors();
     EventSystem::Initialize();//追加 UI
+
+    clothSimulate = std::make_unique<ClothSimulate>(device, "./Data/Models/ClothFlag/cloth.gltf");
+    //clothSimulate = std::make_unique<ClothSimulate>(device, "./Data/Models/TestCloth/cloth1.gltf");
+
+    RegisterRenderHook(RenderPass::Opaque, [&](ID3D11DeviceContext* immediateContext)
+        {
+            auto cloth = GetActorManager()->GetActorByName("cloth");
+            if (cloth)
+            {
+                clothSimulate->Render(immediateContext, cloth->GetWorldTransform());
+            }
+        });
+
     return true;
 }
 
@@ -101,7 +114,7 @@ void SampleScene::Update(float deltaTime)
     Physics::Instance().Update(deltaTime);
     EventSystem::Update(deltaTime);//追加
     objectManager.Update(deltaTime);//追加
-
+    clothSimulate->Update(deltaTime);
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
 
@@ -132,9 +145,9 @@ void SampleScene::SetUpActors()
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
-    Transform buildTr(DirectX::XMFLOAT3{ -5.0f,-2.45f,3.0 }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
-    auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("map", buildTr);
-    building->AddComponent<StaticMeshComponent>("map")->SetModel("./Data/Models/Map/map.gltf");
+    Transform buildTr(DirectX::XMFLOAT3{ -5.0f,-2.45f,3.0 }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cloth", buildTr);
+    building->AddComponent<StaticMeshComponent>("cloth")->SetModel("./Data/Models/ClothFlag/pole.gltf");
     //building->AddComponent<SkeletalMeshComponent>("pudding")->SetModel("./Data/Models/cherry_pudding/scene.gltf");
 
     Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,-2.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
@@ -160,11 +173,6 @@ bool SampleScene::Uninitialize(ID3D11Device* device)
     SceneBase::Uninitialize(device);
     Physics::Instance().Finalize();
     return true;
-}
-
-void SampleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
-{
-    SceneBase::Render(immediateContext, deltaTime);
 }
 
 void SampleScene::DrawGui()
