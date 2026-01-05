@@ -105,6 +105,9 @@ void SampleScene::Start()
                 gauge->value = 0.0f;
         };
 
+    // ƒV[ƒ“‚ªØ‚è‘Ö‚í‚Á‚½‚É
+    SceneTransitionManager::Instance().NotifySceneChanged();
+
 }
 
 void SampleScene::Update(float deltaTime)

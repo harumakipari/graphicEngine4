@@ -62,7 +62,7 @@ void TestEasingHandler::Update(float& value, float deltaTime)
 		progress = item.easeData.timer / item.easeData.totalTime;
 		easedProgress = value / (item.easeData.endValue - item.easeData.startValue);
 
-		if (item.easeData.timer > item.easeData.totalTime)
+		if (item.easeData.timer >= item.easeData.totalTime)
 		{
 			if (item.function != nullptr || item.backFunction != nullptr)
 				value = item.easeData.endValue;

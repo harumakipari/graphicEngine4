@@ -72,3 +72,37 @@ public:
 	std::string test = "test";
 };
 
+
+// Actor‚É‚Â‚¯‚È‚­‚Ä‚àŽg‚¦‚éeasingComponent
+class EasingRunner
+{
+public:
+	void StartHandler(const TestEasingHandler& handler, PropertyAccessor<float> accessor)
+	{
+		handlers.emplace_back(accessor, handler);
+	}
+
+	void Tick(float deltaTime)
+	{
+		for (auto& [accessor, handler] : handlers)
+		{
+			if (!handler.IsCompleted())
+			{
+				float value = accessor.getter ? accessor.getter() : 0.0f;
+				handler.Update(value, deltaTime);
+				if (accessor.setter)
+					accessor.setter(value);
+			}
+		}
+
+		handlers.erase(
+			std::remove_if(handlers.begin(), handlers.end(),
+				[](auto& h) { return h.second.IsCompleted(); }),
+			handlers.end());
+	}
+
+	bool IsFinished() const { return handlers.empty(); }
+
+private:
+	std::vector<std::pair<PropertyAccessor<float>, TestEasingHandler>> handlers;
+};

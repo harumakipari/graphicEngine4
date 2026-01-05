@@ -20,17 +20,23 @@ public:
     );
 
     void Update(float deltaTime);
+
+    // ƒV[ƒ“‚ªØ‚è‘Ö‚í‚Á‚½‚ÉŒÄ‚Î‚ê‚é
+    void NotifySceneChanged();
+
     void Draw(){}
 
-private:
     enum class State :uint8_t
     {
         Idle,
-        Playing,
-        ChangingScene
+        Closing,
+        ChangingScene,
+        Opening
     };
 
-    State state_ = State::Idle;
+private:
+
+    State state_ = State::ChangingScene;
 
     std::string nextScene_;
     SceneTransitionParam param;

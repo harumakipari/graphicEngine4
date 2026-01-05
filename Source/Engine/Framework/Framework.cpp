@@ -46,6 +46,10 @@ bool Framework::Initialize()
     // ShapeRendererを初期化
     ShapeRenderer::Initialize(device);
 
+    // 
+    SceneTransitionManager::Instance().Initialize();
+
+
     // SCENE_TRANSITION
     //Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "BootScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
@@ -67,8 +71,6 @@ bool Framework::Initialize()
     // ログ初期化
     Logger::Initialize();
 
-    // 
-    SceneTransitionManager::Instance().Initialize();
 
 
     //プロファイラ初期化

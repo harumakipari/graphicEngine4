@@ -80,7 +80,8 @@ void PuddingGameScene::Start()
             Logger::Log(u8"ボタンButton Clicked!");
 
             const char* types[] = { "0", "1" };
-            Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
+            //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
 
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
             gauge->value -= 0.1f;
@@ -88,6 +89,9 @@ void PuddingGameScene::Start()
                 gauge->value = 0.0f;
         };
 
+
+    // シーンが切り替わった時に
+    SceneTransitionManager::Instance().NotifySceneChanged();
 }
 
 void PuddingGameScene::Update(float deltaTime)

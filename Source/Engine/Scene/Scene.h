@@ -17,6 +17,7 @@
 
 #include "Core/ActorManager.h"
 #include "UI/UIManager.h"
+#include "UI/Game/SceneTransitionManager.h"
 
 //ƒV[ƒ“‚Ìó‘Ô‚ð•\‚·—ñ‹“Œ^
 enum class SCENE_STATE
@@ -132,6 +133,7 @@ public:
         _current_scene->State(SCENE_STATE::initialized);
         _current_scene->State(SCENE_STATE::active);
         _current_scene->Start();
+        SceneTransitionManager::Instance().NotifySceneChanged();
 
         return true;
     }

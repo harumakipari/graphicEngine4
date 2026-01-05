@@ -4,6 +4,7 @@
 #include <chrono>
 
 #include "Graphics/Resource/Texture.h"
+#include "UI/Game/SceneTransitionManager.h"
 
 bool Scene::_update(ID3D11DeviceContext* immediateContext, float deltaTime)
 {

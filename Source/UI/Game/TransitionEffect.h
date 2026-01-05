@@ -1,22 +1,29 @@
 #pragma once
-#include "Core/Actor.h"
 #include "Components/Easing/CoreEasingComponent.h"
 #include "UI/Widgets/Widget.h"
 
-class ScaleTransitionEffect :public Actor
+enum class TransitionDirection :uint8_t
+{
+    Close,// ‰æ–Ê‚ð•¢‚¤
+    Open, // ‰æ–Ê‚ðŠJ‚­
+};
+
+class ScaleTransitionEffect 
 {
 public:
-    explicit ScaleTransitionEffect(const std::string& actorName) :Actor(actorName) {}
 
-    void Initialize(const Transform& transform)override;
+        void Initialize();
 
-    void Update(float deltaTime)override;
+    void Start(TransitionDirection dir);
+
+    void Update(float deltaTime);
 
     bool IsFinished() const { return isFinishTransitionPerform; }
 
+    void OnSceneChanged() const;
 private:
     std::shared_ptr<UIImageComponent> sprite;
-    std::shared_ptr<CoreEasingComponent> easingComponent;
+    std::shared_ptr<EasingRunner> easingRunner;
     float time = 0.0f;
     float spriteScale = 1.0f;
     bool isFinishTransitionPerform = false;

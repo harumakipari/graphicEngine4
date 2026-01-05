@@ -172,7 +172,6 @@ public:
         // ===== 引っ張り量 =====
         float pullAmount = pull.amount;
         //Logger::Log("cherry pull Amount" + std::to_string(pullAmount));
-        Logger::Log("サクランボ引っ張った量" + std::to_string(pullAmount));
 
 
         // ちょい溜めると一気に強くなる
