@@ -19,6 +19,7 @@
 #include "Engine/Debug/Logger.h"
 #include "Engine/Effects/EffectEditor.h"
 #include "Engine/Effects/EffectManager.h"
+#include "UI/Game/SceneTransitionManager.h"
 
 
 //コンストラクタ：ウィンドウハンドルを受け取って初期化
@@ -66,6 +67,10 @@ bool Framework::Initialize()
     // ログ初期化
     Logger::Initialize();
 
+    // 
+    SceneTransitionManager::Instance().Initialize();
+
+
     //プロファイラ初期化
     ProfileInitialize(&isPaused, Framework::SetPause/*, ImGuiControl::Profiler::DefaultMaxThreads*/);
     ProfileThreadName(0, "Main Thread");
@@ -87,6 +92,8 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
 
     // デバックコマンド更新
     DebugDrawManager::Tick(deltaTime);
+
+    SceneTransitionManager::Instance().Update(deltaTime);
 
     bool skipRendering;
     // SCENE_TRANSITION

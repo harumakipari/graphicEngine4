@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Pause.h"
 
+#include "SceneTransitionManager.h"
 #include "Engine/Audio/CoreAudio.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Utility/Time.h"
@@ -8,6 +9,7 @@
 void Pause::Initialize(const Transform& transform)
 {
     const auto scene = GetOwnerScene();
+
 
     pausePanel = std::make_shared<UIImageComponent>("./Data/Textures/UI/pause_panel.png", "pause_panel");
     pausePanel->SetWorldPosition({ 967, 490 });
@@ -25,7 +27,7 @@ void Pause::Initialize(const Transform& transform)
     //
     menuButton->onClick = [&]()
         {
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/pushButton.wav");
             pausePanel->SetVisible(true);
             pausePanel->SetEnable(true);
 
@@ -52,7 +54,7 @@ void Pause::Initialize(const Transform& transform)
     closeButton->SetEnable(false);
     closeButton->onClick = [&]()
         {
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/pushButton.wav");
             pausePanel->SetVisible(false);
             pausePanel->SetEnable(false);
             closeButton->SetEnable(false);
@@ -60,8 +62,6 @@ void Pause::Initialize(const Transform& transform)
             returnTitleButton->SetEnable(false);
             returnTitleButton->SetVisible(false);
 
-            menuButton->SetEnable(true);
-            menuButton->SetVisible(true);
 
             state = PauseState::ResumeCountdown;
             countdownTime = 3.0f;
@@ -76,13 +76,12 @@ void Pause::Initialize(const Transform& transform)
     returnTitleButton->SetEnable(false);
     returnTitleButton->onClick = [&]()
         {
-
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/pushButton.wav");
             Time::timeScale = 1.0f;
 
             const char* types[] = { "0", "1" };
-            Scene::_transition("LoadingScene", { std::make_pair("preload", "PuddingGameScene"), std::make_pair("type", types[rand() % 2]) });
-
+            //Scene::_transition("LoadingScene", { std::make_pair("preload", "PuddingGameScene"), std::make_pair("type", types[rand() % 2]) });
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "PuddingGameScene"), std::make_pair("type", types[rand() % 2]) });
         };
 
     GetOwnerScene()->GetUIManager()->Add(returnTitleButton);
@@ -140,7 +139,7 @@ void Pause::Update(float deltaTime)
 
         if (current != lastCountdownNumber)
         {
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/countdown.wav");
             lastCountdownNumber = current;
         }
     }
@@ -159,6 +158,9 @@ void Pause::Update(float deltaTime)
         GetOwnerScene()->SetPaused(false);
         state = PauseState::Playing;
         lastCountdownNumber = -1;
+        menuButton->SetEnable(true);
+        menuButton->SetVisible(true);
+
     }
 }
 

@@ -71,10 +71,10 @@ public:
     static void OnSizeChanged(HWND hwnd, UINT64 width, UINT height);
 
     // プリミティブレンダラ取得
-    static PrimitiveRenderer* GetPrimitiveRenderer()  { return primitiveRenderer.get(); }
+    static PrimitiveRenderer* GetPrimitiveRenderer() { return primitiveRenderer.get(); }
 
     // シェイプレンダラ取得
-    static PrimitiveShapeRenderer* GetShapeRenderer()  { return shapeRenderer.get(); }
+    static PrimitiveShapeRenderer* GetShapeRenderer() { return shapeRenderer.get(); }
 
     static HWND GetHwnd() { return hWnd; }
 
@@ -94,6 +94,11 @@ public:
         h = viewportH;
     }
 
+    static void GetScreenSize(float& w, float& h)
+    {
+        w = viewportW;
+        h = viewportH;
+    }
 
     static inline BOOL fullscreenMode{ FALSE };// フルスクリーンモードかどうか
 private:

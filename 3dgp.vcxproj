@@ -361,6 +361,8 @@
     <ClCompile Include="Source\Test\SoftBody2d.cpp" />
     <ClCompile Include="Source\UI\Font.cpp" />
     <ClCompile Include="Source\UI\Game\Pause.cpp" />
+    <ClCompile Include="Source\UI\Game\SceneTransitionManager.cpp" />
+    <ClCompile Include="Source\UI\Game\TransitionEffect.cpp" />
     <ClCompile Include="Source\UI\UIManager.cpp" />
     <ClCompile Include="Source\UI\Widgets\Widget.cpp" />
     <ClCompile Include="Source\Utils\EasingHandler.cpp" />
@@ -563,6 +565,8 @@
     <ClInclude Include="Source\Test\SoftBody2d.h" />
     <ClInclude Include="Source\UI\Font.h" />
     <ClInclude Include="Source\UI\Game\Pause.h" />
+    <ClInclude Include="Source\UI\Game\SceneTransitionManager.h" />
+    <ClInclude Include="Source\UI\Game\TransitionEffect.h" />
     <ClInclude Include="Source\UI\UIManager.h" />
     <ClInclude Include="Source\UI\Widgets\Widget.h" />
     <ClInclude Include="Source\Utils\EasingHandler.h" />
