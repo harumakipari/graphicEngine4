@@ -21,8 +21,8 @@ public:
 
     void Update(float deltaTime);
 
-    // シーンが切り替わった時に呼ばれる
-    void NotifySceneChanged();
+    // シーンが切り替わった時に呼ばれる シーン遷移の演出を入れる
+    void NotifySceneChanged(); 
 
     void Draw(){}
 

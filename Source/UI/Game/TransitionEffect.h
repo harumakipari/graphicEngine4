@@ -8,11 +8,10 @@ enum class TransitionDirection :uint8_t
     Open, // ‰æ–Ê‚ðŠJ‚­
 };
 
-class ScaleTransitionEffect 
+class ScaleTransitionEffect
 {
 public:
-
-        void Initialize();
+    void Initialize();
 
     void Start(TransitionDirection dir);
 

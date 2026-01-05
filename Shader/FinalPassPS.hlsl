@@ -525,6 +525,8 @@ float4 main(VS_OUT pin) : SV_TARGET
         return float4(color.rgb, 1.0);
     }
 
+    
+
     float4 positionNdc;
     // texture space to ndc
     positionNdc.x = pin.texcoord.x * +2 - 1;

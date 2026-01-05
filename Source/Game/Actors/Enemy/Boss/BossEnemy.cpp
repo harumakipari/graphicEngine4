@@ -8,9 +8,11 @@
 void BossEnemy::Initialize(const Transform& transform)
 {
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
-    //skeletalMeshComponent->SetModel("./Data/Models/Characters/Savarog/Idle.gltf");
-    skeletalMeshComponent->SetModel("./Data/Models/Characters/SevarogBloodred/Idle.gltf");
+    skeletalMeshComponent->SetModel("./Data/Models/Characters/Savarog/Idle.gltf");
+    //skeletalMeshComponent->SetModel("./Data/Models/Characters/SevarogBloodred/Idle.gltf");
+    //skeletalMeshComponent->SetModel("./Data/Models/Characters/SevarogBloodred/AnimationCharacters.gltf");
     skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
+#if 1
     const std::vector<std::string> animationFilenames =
     {
         "./Data/Models/Characters/Savarog/Jog_Fwd.glb",
@@ -38,6 +40,8 @@ void BossEnemy::Initialize(const Transform& transform)
         "./Data/Models/Characters/Savarog/Victory_Emote.glb",
     };
     skeletalMeshComponent->AppendAnimations(animationFilenames);
+
+#endif // 0
     // アニメーションコントローラーを作成
     animationController_ = std::make_shared<AnimationController>(skeletalMeshComponent.get());
     animationController_->AddAnimation("Idle", 0);
@@ -67,11 +71,11 @@ void BossEnemy::Initialize(const Transform& transform)
 
     // ステートマシンを作成
     stateMachine_ = std::make_shared<StateMachine>();
-    stateMachine_->RegisterState(std::make_unique<EnemyIdleState>(this));
-    stateMachine_->RegisterState(std::make_unique<EnemyWalkState>(this));
-    stateMachine_->RegisterState(std::make_unique<EnemyAttackState>(this));
-    // 初期ステートを設定
-    stateMachine_->ChangeState("Idle");
+    //stateMachine_->RegisterState(std::make_unique<EnemyIdleState>(this));
+    //stateMachine_->RegisterState(std::make_unique<EnemyWalkState>(this));
+    //stateMachine_->RegisterState(std::make_unique<EnemyAttackState>(this));
+    //// 初期ステートを設定
+    //stateMachine_->ChangeState("Idle");
 
     // 敵からの攻撃を受ける当たり判定用のコンポーネントを追加
 #if 1
@@ -101,11 +105,11 @@ void BossEnemy::Initialize(const Transform& transform)
 
 #endif // 0
     // キャラクタームーブメントコンポーネント追加
-    characterMovementComponent = AddComponent<CharacterMovementComponent>("characterMovementComponent", "skeletalComponent");
+    //characterMovementComponent = AddComponent<CharacterMovementComponent>("characterMovementComponent", "skeletalComponent");
     // 回転コンポーネント追加
     rotationComponent = AddComponent<RotationComponent>("rotationComponent", "skeletalComponent");
 
-
+    PlayAnimation("Idle", false, true, 0.1f);
     SetPosition(transform.GetLocation());
     SetQuaternionRotation(transform.GetRotation());
     SetScale(transform.GetScale());
@@ -114,6 +118,9 @@ void BossEnemy::Initialize(const Transform& transform)
 
 void BossEnemy::Update(float deltaTime)
 {
+    // これは絶対入れる　アニメーションの更新をしているから
+    Character::Update(deltaTime);
+
     DirectX::XMFLOAT3 playerPos = GetOwnerScene()->GetActorManager()->GetActorByName("player")->GetPosition();
     XMVECTOR PlayerPos = XMLoadFloat3(&playerPos);
     DirectX::XMFLOAT3 enemyPos = GetPosition();
@@ -123,8 +130,10 @@ void BossEnemy::Update(float deltaTime)
     XMFLOAT3 direction;
     XMStoreFloat3(&direction, Direction);
 
-    characterMovementComponent->SetMoveDirection(direction);
+    if (characterMovementComponent)
+        characterMovementComponent->SetMoveDirection(direction);
     rotationComponent->SetDirection(direction);
 
-    stateMachine_->ChangeState("Walk");
+    
+    //stateMachine_->ChangeState("Walk");
 }

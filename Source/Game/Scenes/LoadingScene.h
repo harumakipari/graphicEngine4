@@ -98,6 +98,7 @@ public:
 
 private:
     std::shared_ptr<EmptyEnemy> enemy = nullptr;
+    std::shared_ptr<UIImageComponent> sprite = nullptr;
 
     std::shared_ptr<TitleCamera> mainCameraActor = nullptr;
 

@@ -94,7 +94,7 @@ float DitheredRayMarch(float2 screenPos, float3 rayStart, float3 rayDir, float r
     float stepSize = rayLength / stepCount;
     float3 step = rayDir * stepSize;
     
-    float currentPosition = rayStart + step * ditherValue;
+    float3 currentPosition = rayStart + step * ditherValue;
     
     float extinction = 0;
     float accumulatedRadiance = 0;

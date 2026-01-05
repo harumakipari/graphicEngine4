@@ -204,6 +204,18 @@ public:
 #endif
         return false;
     }
+
+    void DrawImGuiDetails()override
+    {
+#ifdef USE_IMGUI
+        if (animationController_)
+        {
+            animationController_->DrawImGui();
+        }
+#endif
+    }
+
+
 public:
     //‚‚³
     float height = 0.0f;    //m’PˆÊ

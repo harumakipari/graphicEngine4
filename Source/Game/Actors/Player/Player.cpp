@@ -835,49 +835,7 @@ void Player::FireBeam()
 void Player::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
-
-    //if (ImGui::TreeNode("Player"))
-    {
-        //PhysicsTest::Instance().DebugShapePosition();
-        // 現在のプレイヤーステートを表示
-        //if (!stateStack.empty())
-        //{
-        //    std::vector<std::shared_ptr<PlayerState>> tempStack;
-        //    std::stack<std::shared_ptr<PlayerState>> copyStack = stateStack; // コピーを作成
-
-        //    // スタックをベクターにコピー
-        //    while (!copyStack.empty())
-        //    {
-        //        tempStack.push_back(copyStack.top());
-        //        copyStack.pop();
-        //    }
-        //    // スタックの順番を逆にして表示（Topが最上位になるように）
-        //    ImGui::Text("Player States:");
-        //    for (auto it = tempStack.rbegin(); it != tempStack.rend(); ++it)
-        //    {
-        //        ImGui::Text("- %s", (*it)->GetStateName().c_str()); // ステート名を表示
-        //    }
-        //}
-        //else
-        //{
-        //    ImGui::Text("No Active State");
-        //}
-        //DirectX::XMFLOAT3 position = GetPosition();
-        //ImGui::DragFloat3("Position", &position.x, 0.5f);
-        //入力情報を取得
-        //float ax = pad.ThumbStateLx();
-        //float ay = pad.ThumbStateLy();
-        ImGui::DragFloat("scaleBigSize", &scaleBigSize, 0.01f);
-        ImGui::DragInt("Hp", &hp);
-        ImGui::DragFloat("currentSpeed", &currentSpeed);
-        ImGui::DragFloat("currentTurnSpeed", &currentTurnSpeed);
-        //ImGui::DragFloat("ThumbStateLx", &ax, 0.5f);
-        //ImGui::DragFloat("ThumbStateLy", &ay, 0.5f);
-        //ImGui::DragFloat3("Velocity", &velocity.x, 0.5f);
-        //ImGui::DragFloat3("intersectStagePosition", &intersectStagePosition.x, 0.5f);
-
-        //ImGui::TreePop();
-    }
+    Character::DrawImGuiDetails();
 #endif
 
 }

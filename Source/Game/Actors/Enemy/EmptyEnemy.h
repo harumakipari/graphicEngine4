@@ -21,11 +21,11 @@ public:
     //コピーコンストラクタとコピー代入演算子を禁止にする
     EmptyEnemy(const EmptyEnemy&) = delete;
     EmptyEnemy& operator=(const EmptyEnemy&) = delete;
-
+    std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent;
 
     void Initialize(const Transform& transform)override
     {
-        std::shared_ptr<SkeletalMeshComponent> skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
+        skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
         // モデル確認
         //skeletalMeshComponent->SetModel("./Data/Models/Characters/Enemy/boss_idle.gltf");
         skeltalMeshComponent->SetModel("./Data/Models/Characters/Savarog/Idle.gltf");

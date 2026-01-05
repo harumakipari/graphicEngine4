@@ -39,95 +39,25 @@ public:
     void SetAnimationClip(const std::string& animationName, const bool loop = false, const bool isBlend = false, const float blendTime = 0.3f)
     {
         this->isAnimationFinished = false;
+        //this->animationTime = 0.0f;
         this->animationNextClip = animationNameToIndex_[animationName];
         this->isAnimationLoop = loop;
         this->currentAnimationName = animationName;
         this->transitionTime = blendTime;
         if (isBlend)
         {
+            isBlendingAnimation = true;
             transitionState = AnimationController::AnimationTransitionState::NotStarted;
         }
         else
         { // ブレンドしないなら現在のアニメーションを次のアニメーションに変更する
             this->animationClip = animationNameToIndex_[animationName];
+            //isBlendingAnimation = false;
             transitionState = AnimationController::AnimationTransitionState::Completed;
         }
     }
 
-    void OnUpdate(const float deltaTime)
-    {
-        animationTime += deltaTime * animationRate;
-
-        if (target_->model->animations.size() == 0)
-        {// アニメーションがないモデルの場合
-            return;
-        }
-
-        if (isBlendingAnimation && transitionTime > 0.0f)
-        {
-
-        }
-
-        switch (transitionState)
-        {
-        case AnimationController::AnimationTransitionState::NotStarted:
-            target_->model->Animate(this->animationClip, animationTime, animationNodes[0]);
-            target_->model->Animate(this->animationNextClip, 0.0f, animationNodes[1]);
-            transitionState = AnimationTransitionState::Inprogress;
-            animationTime = 0.0f;
-            blendFactor = 0.0f;
-            break;
-        case AnimationController::AnimationTransitionState::Inprogress:
-            if (transitionTime > 0.0f)
-            {
-                blendFactor = animationTime / transitionTime;     //ゼロ除算を防ぐため
-            }
-            else
-            {
-                blendFactor = 1.0f;
-            }
-            target_->model->BlendAnimations(animationNodes[0], animationNodes[1], blendFactor, blendAnimationNodes);
-            if (blendFactor >= 1.0f)
-            {
-                // 遷移終了
-                transitionState = AnimationTransitionState::Completed;
-                animationTime = 0.0f;
-                // 現在のアニメーションクリップを次のアニメーションクリップに変更する
-                this->animationClip = this->animationNextClip;
-                //isBlendingAnimation = false;
-            }
-            break;
-        case AnimationController::AnimationTransitionState::Completed:
-            // 終わったら通常時に戻す
-            if (target_->model->animations.at(animationClip).duration < animationTime)
-            {
-                if (isAnimationLoop)
-                {//アニメーションをループするとき
-                    if (requestStopLoop)
-                    {
-                        isAnimationLoop = false;    // ループしないモードにする
-                        animationTime = 0.0f;
-                        requestStopLoop = false;
-                    }
-                    else
-                    {
-                        animationTime = 0;
-                    }
-                }
-                else
-                {
-                    isAnimationFinished = true;
-                }
-            }
-            target_->model->Animate(animationClip, animationTime, blendAnimationNodes);
-            break;
-        default:
-            break;
-        }
-        // 描画に使うノードをブレンドのノードにする
-        //target_->model->nodes = blendAnimationNodes;
-        target_->modelNodes = blendAnimationNodes;
-    }
+    void OnUpdate(const float deltaTime);
 
     // アニメーションの再生倍率を変更する関数
     void SetAnimationRate(const float animationRate) { this->animationRate = animationRate; }
@@ -144,6 +74,8 @@ public:
     {
         requestStopLoop = true;
     }
+
+    void DrawImGui();
 private:
     SkeletalMeshComponent* target_ = nullptr;
 

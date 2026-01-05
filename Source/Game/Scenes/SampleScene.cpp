@@ -67,8 +67,6 @@ void SampleScene::Start()
     audioComp->Play();
     audioComp->SetVolume(0.2f);
 
-
-
     //std::shared_ptr<Sprite> uiSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/UI/icon_chara.png");
 
     std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("./Data/Textures/UI/icon_chara.png", "image");
