@@ -4,6 +4,7 @@
 #include "Engine/Camera/CameraConstants.h"
 #include "Engine/Debug/DebugDrawManager.h"
 #include "Engine/Input/InputSystem.h"
+#include "Engine/Utility/Time.h"
 #include "Game/Actors/Camera/Camera.h"
 #include "Physics/CollisionFunction.h"
 
@@ -47,8 +48,6 @@ position.z
 
 void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
 {
-
-
     using namespace DirectX;
     DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
     ClearForce();
@@ -87,9 +86,9 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
         elasticParameters.momentumX = elasticParameters.damping * elasticParameters.momentumX + gradX/*parmator*/;
         elasticParameters.momentumY = elasticParameters.damping * elasticParameters.momentumY + gradY/*parmator*/;
         elasticParameters.momentumZ = elasticParameters.damping * elasticParameters.momentumZ + gradZ/*parmator*/;
-        p3Current.x -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumX;
-        p3Current.y -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumY;
-        p3Current.z -= deltaTime * elasticParameters.stiffness * elasticParameters.momentumZ;
+        p3Current.x -= Time::UnscaledDeltaTime() * elasticParameters.stiffness * elasticParameters.momentumX;
+        p3Current.y -= Time::UnscaledDeltaTime() * elasticParameters.stiffness * elasticParameters.momentumY;
+        p3Current.z -= Time::UnscaledDeltaTime() * elasticParameters.stiffness * elasticParameters.momentumZ;
 
     }
     elasticConstants.maxAngleDegree = elasticParameters.maxAngleDegrees;
@@ -108,6 +107,13 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
 bool ElasticMeshComponent::UpdateFromMouse(float deltaTime)
 {
     DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
+
+    // ポーズ中はゲーム入力を一切受け付けない
+    if (Scene::GetCurrentScene()->IsPaused())
+    {
+        return false;
+    }
+
 
     // UIがマウスを使っているならゲーム操作しない
     if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())

@@ -88,12 +88,19 @@ public:
     }
     void Update(float deltaTime)override
     {
+        // ポーズ中はゲーム入力を一切受け付けない
+        if (GetOwnerScene()->IsPaused())
+        {
+            return;
+        }
 
         // UIがマウスを使っているならゲーム操作しない
         if (GetOwnerScene()->GetUIManager()->IsMouseCaptured())
         {
             return;
         }
+
+
 
         const auto& pull = elasticBuilding->GetPullInfo();
 

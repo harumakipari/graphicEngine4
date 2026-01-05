@@ -7,20 +7,22 @@
 
 void Pause::Initialize(const Transform& transform)
 {
-    // 
+
+    auto scene = GetOwnerScene();
+
     pausePanel = std::make_shared<UIImageComponent>("./Data/Textures/UI/pause_panel.png", "pause_panel");
     pausePanel->SetWorldPosition({ 967, 490 });
     pausePanel->SetPivot({ 0.5f,0.5f });
     pausePanel->SetScale({ 1.2f,1.2f });
     pausePanel->SetSize({ 741, 483 });
     pausePanel->SetVisible(false);
-    GetOwnerScene()->GetUIManager()->Add(pausePanel);
+    scene->GetUIManager()->Add(pausePanel);
 
     menuButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/menu.png", "menu");
     menuButton->SetWorldPosition({ 100, 85 });
     menuButton->SetPivot({ 0.5f,0.5f });
     menuButton->SetSize({ 140, 140 });
-    GetOwnerScene()->GetUIManager()->Add(menuButton);
+    scene->GetUIManager()->Add(menuButton);
     //
     menuButton->onClick = [&]()
         {
@@ -38,6 +40,8 @@ void Pause::Initialize(const Transform& transform)
             menuButton->SetVisible(false);
 
             Time::timeScale = 0.0f;
+
+            GetOwnerScene()->SetPaused(true);
         };
 
 
@@ -60,6 +64,9 @@ void Pause::Initialize(const Transform& transform)
             menuButton->SetVisible(true);
 
             Time::timeScale = 1.0f;
+
+            GetOwnerScene()->SetPaused(false);
+
         };
     GetOwnerScene()->GetUIManager()->Add(closeButton);
 
@@ -71,7 +78,7 @@ void Pause::Initialize(const Transform& transform)
     returnTitleButton->onClick = [&]()
         {
 
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
             Time::timeScale = 1.0f;
 
             const char* types[] = { "0", "1" };

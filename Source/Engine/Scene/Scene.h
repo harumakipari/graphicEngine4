@@ -66,6 +66,11 @@ public:
     {
         actorManager_->ClearAll();
     }
+
+    bool IsPaused() const { return paused; }
+
+    void SetPaused(const bool p) { paused = p; }
+
     //std::unique_ptr<ActorManager>& GetActorManager() { return actorManager_; }
 private:
     // 純粋仮想関数：シーンの初期化
@@ -95,6 +100,7 @@ private:
     {
         state_ = state;
     }
+
 
     virtual void DrawGui() {}
 
@@ -309,6 +315,8 @@ protected:
 
 private:
     std::unique_ptr<ActorManager> actorManager_;
+    bool paused = false;
+
 protected:
     std::unique_ptr<UIManager> uiManager;
 

@@ -11,6 +11,7 @@
 #include "Graphics/Core/RenderState.h"
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
+#include "Engine/Utility/Time.h"
 
 #include "Game/Actors/Camera/TitleCamera.h"
 #include "Game/Actors/Dessert/Pudding.h"
@@ -111,7 +112,7 @@ void SampleScene::Update(float deltaTime)
     using namespace DirectX;
     SceneBase::Update(deltaTime);
 
-    Physics::Instance().Update(deltaTime);
+    Physics::Instance().Update(Time::UnscaledDeltaTime());
     EventSystem::Update(deltaTime);//’Ç‰Á
     objectManager.Update(deltaTime);//’Ç‰Á
     clothSimulate->Update(deltaTime);
