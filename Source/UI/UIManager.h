@@ -22,7 +22,7 @@ public:
         if (!visible) return;
         for (auto ui : rootComponents)
         {
-            if (ui->IsVisible())
+            if (ui->IsVisible() /*&& ui->IsEnabled()*/)
             {
                 ui->Draw();
             }

@@ -7,7 +7,7 @@
 class FightStage :public Actor
 {
 public:
-    FightStage(std::string modelName) :Actor(modelName) {}
+    FightStage(const std::string& actorName) :Actor(actorName) {}
 
     void Initialize(const Transform& transform)override
     {

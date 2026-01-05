@@ -587,8 +587,8 @@ void ClothSimulate::SetupPinVertices(int curretPinMode)
             }
             else if (curretPinMode == 1)
             {
-                const float yThreshold = 0.001f;
-                //const float yThreshold = 0.1f;
+                //const float yThreshold = 0.001f;
+                const float yThreshold = 0.1f;
                 for (auto& v : primitive.cachedVertices)
                 {
                     if (fabs(v.position.x - min.x) < yThreshold)
@@ -773,8 +773,6 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
     hr = device->CreateBuffer(&bufferDesc, NULL, primitiveJointCbuffer.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    // 各メッシュに対して頂点を固定判定
-    const float pinThreshold = 1.02f; // 近距離判定の閾値
 
     // UAVとSRVを作成
     for (auto& mesh : meshes)
@@ -1033,7 +1031,7 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
     }
 #else
 
-    const float maxDistance = 20.0f;
+    constexpr float maxDistance = 200.0f;
     for (auto& mesh : meshes)
     {
         for (auto& primitive : mesh.primitives)
@@ -1375,8 +1373,8 @@ void ClothSimulate::Render(ID3D11DeviceContext* immediateContext, const DirectX:
 
                 const Material& material = materials.at(primitive.material);
 
-                RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-                //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+                //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
+                RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
 
                 const int textureIndices[] =
                 {

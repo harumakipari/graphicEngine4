@@ -50,6 +50,8 @@ public:
 
     void SetPivot(const XMFLOAT2 pivot) { this->pivot = pivot; }
 
+    void SetScale(const XMFLOAT2 scale) { this->scale = scale; }
+
     void SetWorldAngleDegree(float angle) { this->worldAngle = angle; }
 
     bool IsVisible() const { return visible; }
@@ -73,7 +75,7 @@ protected:
     float worldAngle = 0.0f;
 
     // ローカル（親基準）
-    XMFLOAT2 localPosition={ 0.0f,0.0f };
+    XMFLOAT2 localPosition = { 0.0f,0.0f };
     float localAngle = 0.0f;
 
     std::shared_ptr<Sprite>  texture;
@@ -173,10 +175,15 @@ public:
 private:
     bool IsInside(const DirectX::XMFLOAT2& p) const
     {
-        return p.x >= worldPosition.x &&
-            p.x <= worldPosition.x + size.x &&
-            p.y >= worldPosition.y &&
-            p.y <= worldPosition.y + size.y;
+        // pivot を考慮した左上座標
+        float left = worldPosition.x - size.x * pivot.x;
+        float top = worldPosition.y - size.y * pivot.y;
+
+        float right = left + size.x;
+        float bottom = top + size.y;
+
+        return p.x >= left && p.x <= right &&
+            p.y >= top && p.y <= bottom;
     }
 
     void UpdateVisual()

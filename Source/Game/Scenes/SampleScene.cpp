@@ -30,6 +30,7 @@
 #include "Graphics/PostProcess/BloomEffect.h"
 #include "Physics/CollisionSystem.h"
 #include "UI/UIManager.h"
+#include "UI/Game/Pause.h"
 
 
 bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
@@ -47,8 +48,7 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
 
     RegisterRenderHook(RenderPass::Opaque, [&](ID3D11DeviceContext* immediateContext)
         {
-            auto cloth = GetActorManager()->GetActorByName("cloth");
-            if (cloth)
+            if (const auto cloth = GetActorManager()->GetActorByName("cloth"))
             {
                 clothSimulate->Render(immediateContext, cloth->GetWorldTransform());
             }
@@ -153,6 +153,7 @@ void SampleScene::SetUpActors()
     Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,-2.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
     auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pudding>("building", buildTr2);
 
+    auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor", buildTr2);
 
 #if 1
     CameraManager::SetGameCamera(mainCameraActor.get());

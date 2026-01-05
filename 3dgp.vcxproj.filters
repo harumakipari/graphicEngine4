@@ -591,6 +591,9 @@
     <ClCompile Include="Source\Game\Actors\Dessert\TargetPudding.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\UI\Game\Pause.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1143,6 +1146,7 @@
     <ClInclude Include="Source\Engine\Debug\SceneEditor.h" />
     <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />
     <ClInclude Include="Source\Game\Actors\Dessert\TargetPudding.h" />
+    <ClInclude Include="Source\UI\Game\Pause.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">
