@@ -96,6 +96,8 @@ public:
 
     CoreColor color = CoreColor::White;
 
+    void SetColor(const CoreColor color) { this->color = color; }
+
     void Draw() override
     {
         if (!visible) return;

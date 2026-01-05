@@ -7,8 +7,7 @@
 
 void Pause::Initialize(const Transform& transform)
 {
-
-    auto scene = GetOwnerScene();
+    const auto scene = GetOwnerScene();
 
     pausePanel = std::make_shared<UIImageComponent>("./Data/Textures/UI/pause_panel.png", "pause_panel");
     pausePanel->SetWorldPosition({ 967, 490 });
@@ -50,6 +49,7 @@ void Pause::Initialize(const Transform& transform)
     closeButton->SetPivot({ 0.5f,0.5f });
     closeButton->SetSize({ 140, 140 });
     closeButton->SetVisible(false);
+    closeButton->SetEnable(false);
     closeButton->onClick = [&]()
         {
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
@@ -63,10 +63,8 @@ void Pause::Initialize(const Transform& transform)
             menuButton->SetEnable(true);
             menuButton->SetVisible(true);
 
-            Time::timeScale = 1.0f;
-
-            GetOwnerScene()->SetPaused(false);
-
+            state = PauseState::ResumeCountdown;
+            countdownTime = 3.0f;
         };
     GetOwnerScene()->GetUIManager()->Add(closeButton);
 
@@ -75,6 +73,7 @@ void Pause::Initialize(const Transform& transform)
     returnTitleButton->SetPivot({ 0.5f,0.5f });
     returnTitleButton->SetSize({ 472, 183 });
     returnTitleButton->SetVisible(false);
+    returnTitleButton->SetEnable(false);
     returnTitleButton->onClick = [&]()
         {
 
@@ -86,8 +85,81 @@ void Pause::Initialize(const Transform& transform)
 
         };
 
-
     GetOwnerScene()->GetUIManager()->Add(returnTitleButton);
+
+    for (int i = 0; i < 3; i++)
+    {
+        const int num = 3 - i; // 3,2,1
+        std::string filename = "./Data/Textures/UI/CountDown_" + std::to_string(num) + ".png";
+
+        countDownImages[i] = std::make_shared<UIImageComponent>(filename, "countDown_" + std::to_string(num));
+
+        countDownImages[i]->SetWorldPosition({ 967, 490 });
+        countDownImages[i]->SetPivot({ 0.5f,0.5f });
+        countDownImages[i]->SetScale({ 4.5f,4.5f });
+        countDownImages[i]->SetSize({ 150, 200 });
+        countDownImages[i]->SetVisible(false);
+
+        scene->GetUIManager()->Add(countDownImages[i]);
+    }
+    //pausePanel = std::make_shared<UIImageComponent>("./Data/Textures/UI/CountDown_1.png", "pause_panel");
+    //pausePanel->SetVisible(false);
+    //scene->GetUIManager()->Add(pausePanel);
+
+}
+
+void Pause::Update(float deltaTime)
+{
+    if (state != PauseState::ResumeCountdown)
+        return;
+
+    countdownTime -= Time::UnscaledDeltaTime();
+
+    const int current = static_cast<int>(ceil(countdownTime)); // 3,2,1
+
+    // ‘S•”Á‚·
+    for (auto& img : countDownImages)
+    {
+        img->SetVisible(false);
+        img->SetEnable(false);
+    }
+
+    if (current >= 1 && current <= 3)
+    {
+        int index = 3 - current; // 3¨0, 2¨1, 1¨2
+        countDownImages[index]->SetVisible(true);
+        countDownImages[index]->SetEnable(true);
+
+        float t = countdownTime - floor(countdownTime);
+        float scale = std::lerp(6.0f, 4.5f, t);
+        countDownImages[index]->SetScale({ scale, scale });
+
+        float alpha = std::lerp(0.0f, 1.0f, t);
+        countDownImages[index]->SetColor({ 1,1,1, alpha });
+
+
+        if (current != lastCountdownNumber)
+        {
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
+            lastCountdownNumber = current;
+        }
+    }
+
+
+    if (countdownTime <= 0.0f)
+    {
+        // ‘S•”Á‚·
+        for (auto& img : countDownImages)
+        {
+            img->SetVisible(false);
+            img->SetEnable(false);
+        }
+
+        Time::timeScale = 1.0f;
+        GetOwnerScene()->SetPaused(false);
+        state = PauseState::Playing;
+        lastCountdownNumber = -1;
+    }
 }
 
 
