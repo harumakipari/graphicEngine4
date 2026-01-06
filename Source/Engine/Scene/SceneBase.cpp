@@ -176,7 +176,6 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
 
 void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
 {
-
     if (auto camera = CameraManager::GetCurrentCamera())
     {
         ViewConstants data = camera->GetViewConstants();

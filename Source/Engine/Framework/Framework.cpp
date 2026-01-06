@@ -33,6 +33,8 @@ Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fu
     RenderState::Initialize();
     Audio::Initialize();
     CoreAudio::Initialize();
+    // ログ初期化
+    Logger::Initialize();
 }
 
 bool Framework::Initialize()
@@ -68,8 +70,6 @@ bool Framework::Initialize()
     //エフェクトエディタ初期化
     EffectEditor::Initialize();
 
-    // ログ初期化
-    Logger::Initialize();
 
 
 

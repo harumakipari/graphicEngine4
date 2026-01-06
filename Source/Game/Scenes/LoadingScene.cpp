@@ -21,10 +21,11 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
 {
     SceneBase::Initialize(device, width, height, props);
 
-    mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleCamera>("mainLoadingCameraActor");
-    auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
+    mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainLoadingCameraActor");
+    auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     mainCameraActor->SetPosition({ -4.1f,1.9f,-4.3f });
-    CameraManager::SetGameCamera(mainCameraActor.get());
+    CameraManager::SetGameCamera(mainCameraActor);
+    Logger::Log(U8("ロードシーンのカメラ設定される。"));
 
 
     OutputDebugStringA((std::string("Scene::Initialize this=") + std::to_string(reinterpret_cast<uintptr_t>(this)) + "\n").c_str());

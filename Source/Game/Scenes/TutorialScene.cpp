@@ -443,7 +443,7 @@ void TutorialScene::SetUpActors()
     auto mainCameraActor = GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
 
-    CameraManager::SetGameCamera(mainCameraActor.get());
+    CameraManager::SetGameCamera(mainCameraActor);
 
     auto debugCameraActor = GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     //auto debugCameraActor = ActorManager::CreateAndRegisterActor<Actor>("debugCam");

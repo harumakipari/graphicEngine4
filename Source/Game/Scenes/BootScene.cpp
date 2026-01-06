@@ -424,9 +424,9 @@ void BootScene::SetUpActors()
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
 #if 0
-    CameraManager::SetGameCamera(mainCameraActor.get());
+    CameraManager::SetGameCamera(mainCameraActor);
 #else
-    CameraManager::SetGameCamera(debugCameraActor.get());
+    CameraManager::SetGameCamera(debugCameraActor);
 #endif // 0
     stageCollisionMesh = std::make_shared<CollisionMesh>(Graphics::GetDevice(), "./Data/Models/Stage/stage.gltf", true);
 

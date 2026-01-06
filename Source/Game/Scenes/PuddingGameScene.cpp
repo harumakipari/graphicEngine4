@@ -139,7 +139,8 @@ void PuddingGameScene::SetUpActors()
     auto targetPudding = this->GetActorManager()->CreateAndRegisterActorWithTransform<TargetPudding>("targetPudding", targetPuddingTr);
 
 
-    CameraManager::SetGameCamera(mainCameraActor.get());
+    CameraManager::SetGameCamera(mainCameraActor);
+    Logger::Log(U8("PuddingGameシーンのカメラ設定される。"));
 
     CameraManager::SetDebugCamera(debugCameraActor);
 

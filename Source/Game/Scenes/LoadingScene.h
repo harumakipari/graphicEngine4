@@ -100,7 +100,7 @@ private:
     std::shared_ptr<EmptyEnemy> enemy = nullptr;
     std::shared_ptr<UIImageComponent> sprite = nullptr;
 
-    std::shared_ptr<TitleCamera> mainCameraActor = nullptr;
+    std::shared_ptr<MainCamera> mainCameraActor = nullptr;
 
     // ImGuiで使用する
     std::shared_ptr<Actor> selectedActor_;  // 選択中のアクターを保持

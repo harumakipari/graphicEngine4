@@ -86,6 +86,8 @@ private:
 
     void DrawGizmo();
 
+public:
+    Camera* activeCamera = nullptr;
 
 protected:
     //==============================

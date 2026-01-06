@@ -137,6 +137,14 @@ void SampleScene::SetUpActors()
     auto player = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
     mainCameraComponent->target = (player->GetRootComponent());
     mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
+#if 1
+    CameraManager::SetGameCamera(mainCameraActor);
+#else
+    CameraManager::SetGameCamera(debugCameraActor);
+#endif // 0
+    Logger::Log(U8("sampleシーンのカメラ設定される。"));
+
+
     //mainCameraComponent->followTarget = (titlePlayer->GetRootComponent());
     //mainCameraComponent->lookAtTarget = (titlePlayer->GetRootComponent());
 
@@ -157,11 +165,6 @@ void SampleScene::SetUpActors()
 
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor", buildTr2);
 
-#if 1
-    CameraManager::SetGameCamera(mainCameraActor.get());
-#else
-    CameraManager::SetGameCamera(debugCameraActor.get());
-#endif // 0
     //stageCollisionMesh = std::make_shared<CollisionMesh>(Graphics::GetDevice(), "./Data/Models/Stage/stage.gltf", true);
 
     Transform enemyTr(DirectX::XMFLOAT3{ 6.7f,-2.45f,5.6f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
