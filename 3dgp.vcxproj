@@ -324,7 +324,6 @@
     <ClCompile Include="Source\Graphics\Resource\GlthModel.cpp" />
     <ClCompile Include="Source\Graphics\Resource\InterleavedGltfModel.cpp" />
     <ClCompile Include="Source\Graphics\Resource\ShaderToy.cpp" />
-    <ClCompile Include="Source\Graphics\Resource\staticMesh.cpp" />
     <ClCompile Include="Source\Graphics\Resource\Texture.cpp" />
     <ClCompile Include="Source\Graphics\Shadow\CascadeShadowMap.cpp" />
     <ClCompile Include="Source\Graphics\Shadow\ShadowMap.cpp" />
@@ -480,7 +479,6 @@
     <ClInclude Include="Source\Graphics\Resource\ModelResource.h" />
     <ClInclude Include="Source\Graphics\Resource\PrecomputedNoiseTexture3D.h" />
     <ClInclude Include="Source\Graphics\Resource\ShaderToy.h" />
-    <ClInclude Include="Source\Graphics\Resource\staticMesh.h" />
     <ClInclude Include="Source\Graphics\Resource\Texture.h" />
     <ClInclude Include="Source\Graphics\Shadow\CascadeShadowMap.h" />
     <ClInclude Include="Source\Graphics\Shadow\ShadowMap.h" />
@@ -904,18 +902,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Shader\staticMeshPS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Shader\staticMeshVS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Shader\UniverseWithIn.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
     <FxCompile Include="Shader\VolumetricCloudscapesPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -966,7 +952,6 @@
     <None Include="Shader\SkyMap.hlsli" />
     <None Include="Shader\SolidShapeRenderer.hlsli" />
     <None Include="Shader\sprite.hlsli" />
-    <None Include="Shader\staticMesh.hlsli" />
     <None Include="Shader\WiredShapeRenderer.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
