@@ -519,10 +519,10 @@ float4 main(VS_OUT pin) : SV_TARGET
     float depthNdc = depthTexture.Sample(linearBorderBlackSamplerState, pin.texcoord).x;
 
     // GBuffer‚ð‘‚«ž‚ñ‚Å‚¢‚È‚¢—Ìˆæ‚ÍColor‚»‚Ì‚Ü‚Ü•Ô‚·
-    bool isSky = (depthNdc == 0.0 || depthNdc >= 1.0);
-    if (isSky)
+    //bool isSky = (depthNdc == 0.0 || depthNdc >= 1.0);
+    //if (isSky)
     {
-        return float4(color.rgb, 1.0);
+        //return float4(color.rgb, 1.0);
     }
 
     
@@ -552,9 +552,13 @@ float4 main(VS_OUT pin) : SV_TARGET
 #if 0
         color.rgb += CalculatedSSRColor(pin);
 #else
+        //float3 reflectColor = reflectionTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord).rgb;
+        //return float4(reflectColor.rgb, 1);
+
         color.rgb += reflectionTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord).rgb;
 #endif
     }
+
     uint mip_level = 0, number_of_samples;
     uint2 depthDimensions;
     depthTexture.GetDimensions(mip_level, depthDimensions.x, depthDimensions.y, number_of_samples);
@@ -652,6 +656,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
 
         //return color;
+    //return float4(color.rgb, 1.0);
 
     // CASCADED_SHADOW_MAPS
     float shadowFactor = CalculatedCascadedShadowFactor(pin);
@@ -700,13 +705,13 @@ float4 main(VS_OUT pin) : SV_TARGET
     // FOG
     if (enableFog)
     {
+        //float3 fogFactor = CalculatedFogColor(pin);
         color.rgb += CalculatedFogColor(pin);
+
         //color.rgb = CalculatedFogColor(pin);
     }
 
-    //return float4(color.rgb, 1.0);
     //Šm”F
-    //return float4(fogFacter.xxx, 1);
     
 #if 1
     //BLOOM

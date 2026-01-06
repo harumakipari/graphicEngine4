@@ -71,7 +71,7 @@ float3 main(VS_OUT pin) : SV_TARGET
 
     //float4 startFrag = mul(startWorld, projection); // from view to clipSpace
     float4 startFrag = mul(startWorld, viewProjection); // from world to clipSpace
-    startFrag /= startFrag.w; //from clipSpave to ndc
+    startFrag /= startFrag.w; //from clipSpace to ndc
     startFrag.xy = NdcToUv(startFrag.xy); // from uv to fragment/pixel coordinate
     startFrag.xy *= dimensions;
     
@@ -132,7 +132,7 @@ float3 main(VS_OUT pin) : SV_TARGET
 
         viewDistance = (startWorld.z * endWorld.z) / lerp(endWorld.z, startWorld.z, search1);
         depth = viewDistance - positionTo.z;
-#if 0
+#if 1
         if (depth > 0 && depth < thickness)
         {
             hit0 = 1;
@@ -167,11 +167,13 @@ float3 main(VS_OUT pin) : SV_TARGET
         uv.xy = frag / dimensions;
         
         positionTo = positionTexture.Sample(samplerStates[LINEAR_BORDER_WHITE], uv.xy); //viewSpace
-        float4 positionToClip = mul(float4(positionTo.xyz, 1.0), viewProjection);
+        positionTo = mul(float4(positionTo.xyz, 1.0), view);
+
+        float4 positionToClip = mul(float4(positionTo.xyz, 1.0), projection);
         positionToClip /= positionToClip.w;
         
         // PerspectiveCorrect Interpolation
-#if 0
+#if 1
         viewDistance = (startWorld.z * endWorld.z) / lerp(endWorld.z, startWorld.z, search1);
         depth = viewDistance - positionTo.z;
         
@@ -213,6 +215,6 @@ float3 main(VS_OUT pin) : SV_TARGET
     
     float fresnel = saturate(FSchlick(0.04, max(0, dot(reflection, normal.xyz))));
     float3 reflectionColor = colorTexture.Sample(samplerStates[LINEAR_BORDER_WHITE], uv.xy).rgb;
-    reflectionColor = fresnel * reflectionColor * visibility * reflectionIntensity;
+    reflectionColor =/* fresnel * */reflectionColor * visibility * reflectionIntensity;
     return reflectionColor;
 }

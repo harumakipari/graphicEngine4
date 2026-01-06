@@ -14,7 +14,7 @@ enum class SRV_SLOT :uint8_t
     PBR_VALUE,  // x:metallic y:occlusion z:roughness w:occlusionStrength
     COLOR,
     POSITION,    // world position
-    EMISSIVE,
+    EMISSIVE,      // w 1:skymap 0:objects
 };
 
 class GBuffer

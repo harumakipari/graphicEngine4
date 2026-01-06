@@ -12,9 +12,8 @@ SamplerState linearMirrorSamplerState : register(s6);
 
 SamplerComparisonState comparisonSamplerState : register(s7);
 
-Texture2D colorTexture : register(t0);
-Texture2D depthTexture : register(t1);
-Texture2DArray cascadedShadowMaps : register(t2);
+Texture2D depthTexture : register(t0);
+Texture2DArray cascadedShadowMaps : register(t1);
 
 // NOISE
 Texture3D noise3D : register(t10);
@@ -105,7 +104,7 @@ float DitheredRayMarch(float2 screenPos, float3 rayStart, float3 rayDir, float r
         
         float density = fogDensity;
         
-#if 0
+#if 1
         const float3 noiseVelocity = normalize(float3(1, 0, 0));
         float3 noiseSamplePosition = frac(currentPosition * noiseScale + noiseVelocity * elapsedTime * timeScale);
         float noise = 0.5 * noise3D.Sample(linearSamplerState, noiseSamplePosition);
@@ -147,13 +146,5 @@ float main(VS_OUT pin) : SV_TARGET
     rayLength = min(rayLength, maxRayLength);
 #endif
     
-    //float4 color = colorTexture.Sample(linearBorderBlackSamplerState, pin.texcoord);
-    //float alpha = color.a;
-
-    
-    //float fogFactor = DitheredRayMarch(pin.position.xy, rayStart, rayDir, rayLength, pin);
-    
-    //color.rgb += color.rgb + fogColor.rgb * fogColor.a * fogFactor;
-    //return float4(color.rgb, alpha);
     return DitheredRayMarch(pin.position.xy, rayStart, rayDir, rayLength, pin);
 }

@@ -2157,17 +2157,17 @@ void InterleavedGltfModel::AddAnimation(const std::string& filename)
 {
     std::filesystem::path cerealFilename(filename);
     cerealFilename.replace_extension("animationCereal");
-    if (std::filesystem::exists(cerealFilename.c_str()))
-    {
-        std::ifstream ifs(cerealFilename.c_str(), std::ios::binary);
-        cereal::BinaryInputArchive deserialization(ifs);
-        std::vector<Animation> cerealAnimations;
-        //Å@ì«Ç›çûÇ›éû
-        deserialization(cereal::make_nvp("animations", cerealAnimations));
-        Logger::Log(Logger::LogCategory::System,"animations Count: " + std::to_string(animations.size()));
-        animations.insert(animations.end(), cerealAnimations.begin(), cerealAnimations.end());
-    }
-    else
+    //if (std::filesystem::exists(cerealFilename.c_str()))
+    //{
+    //    std::ifstream ifs(cerealFilename.c_str(), std::ios::binary);
+    //    cereal::BinaryInputArchive deserialization(ifs);
+    //    std::vector<Animation> cerealAnimations;
+    //    //Å@ì«Ç›çûÇ›éû
+    //    deserialization(cereal::make_nvp("animations", cerealAnimations));
+    //    Logger::Log(Logger::LogCategory::System,"animations Count: " + std::to_string(animations.size()));
+    //    animations.insert(animations.end(), cerealAnimations.begin(), cerealAnimations.end());
+    //}
+    //else
     {
         tinygltf::TinyGLTF tinyGltf;
         tinyGltf.SetImageLoader(_NullLoadImageData, nullptr);

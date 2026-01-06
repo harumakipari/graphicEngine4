@@ -58,7 +58,7 @@ void SSAOEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResour
 #endif // 0
     ssaoCBuffer->Activate(immediateContext, 5);
 
-    ssaoBuffer->Clear(immediateContext, 0, 0, 0, 0);
+    ssaoBuffer->Clear(immediateContext, 1, 1, 1, 1);    // SSAO‚Í(1.0f,1.0f,1.0f,1.0f)‚ÅƒNƒŠƒA
     ssaoBuffer->Activate(immediateContext);
 
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);

@@ -145,13 +145,13 @@ protected:
     float iblIntensity_ = 2.0f;
 
     bool useDeferredRendering = true;
-    bool enableSSAO = false;
+    bool enableSSAO = true;
     bool enableCascadedShadowMaps = true;
-    bool enableSSR = false;
-    bool enableFog = false;
-    bool enableBloom = false;
+    bool enableSSR = true;
+    bool enableFog = true;
+    bool enableBloom = true;
 
-    float criticalDepthValue = 62.0f;
+    float criticalDepthValue = 706.0f;
 
     SIZE framebufferDimensions = {};
 

@@ -50,7 +50,6 @@ void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourc
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
     ID3D11ShaderResourceView* shaderResourceViews[]
     {
-        gbufferColor,
         gbufferDepth,       //depthMap
         shadowMap,          //cascadedShadowMaps
     };
