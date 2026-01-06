@@ -70,7 +70,6 @@ void PuddingGameScene::Start()
     std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>();
     gauge->SetWorldPosition({ 50, 300 });
     gauge->SetSize({ 300, 40 });
-    gauge->value = 1.0f;
 
     uiManager->Add(gauge);
 
@@ -78,15 +77,16 @@ void PuddingGameScene::Start()
     button->onClick = [gauge]()
         {
             Logger::Log(u8"ƒ{ƒ^ƒ“Button Clicked!");
-
+            static float  value = 1.0f;
             const char* types[] = { "0", "1" };
             //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
 
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
-            gauge->value -= 0.1f;
-            if (gauge->value < 0.0f)
-                gauge->value = 0.0f;
+            value -= 0.1f;
+            if (value < 0.0f)
+                value = 0.0f;
+            gauge->SetValue(value, 1.0f);
         };
 
 

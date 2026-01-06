@@ -2146,7 +2146,7 @@ DirectX::XMFLOAT3 InterleavedGltfModel::GetJointLocalPosition(/*size_t nodeIndex
 // アニメーションを追加する関数
 void InterleavedGltfModel::AddAnimations(const std::vector<std::string>& filenames)
 {
-    animations.clear();
+    //animations.clear();
     for (std::vector<std::string>::const_reference filename : filenames)
     {
         AddAnimation(filename);

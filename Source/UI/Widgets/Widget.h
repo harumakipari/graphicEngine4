@@ -100,8 +100,6 @@ public:
 
     void Draw() override
     {
-        if (!visible) return;
-
         SpriteRenderer::Draw(
             texture.get(),
             worldPosition,
@@ -170,16 +168,15 @@ private:
 class UIGaugeComponent : public UIImageComponent
 {
 public:
-    UIGaugeComponent(const std::string& filename, const std::string& name) :UIImageComponent(filename, name) {}
+    UIGaugeComponent(const std::string& frameFilename, const std::string& fillFilename, const std::string& name) :UIImageComponent(fillFilename, name)
+    {
+        frameTexture = std::make_unique<Sprite>(Graphics::GetDevice(), std::wstring(frameFilename.begin(), frameFilename.end()).c_str());
+    }
 
     UIGaugeComponent() = default;
 
-    float value = 1.0f;  // 0.0f ~ 1.0f
-    bool horizontal = true;
-
     void Draw() override
     {
-
         XMFLOAT2 drawSize = size;
 
         if (horizontal)
@@ -187,6 +184,20 @@ public:
         else
             drawSize.y *= value;
 
+        // 枠の描画
+        SpriteRenderer::Draw(
+            frameTexture.get(),
+            worldPosition,
+            size,
+            color,
+            uv,
+            worldAngle,
+            pivot,
+            scale
+        );
+
+
+        // ゲージの中身
         SpriteRenderer::Draw(
             texture.get(),
             worldPosition,
@@ -197,5 +208,19 @@ public:
             pivot,
             scale
         );
+
+
     }
+
+
+    void SetValue(const float current, const float max)
+    {
+        value = std::clamp(current / max, 0.0f, 1.0f);
+    }
+
+    bool horizontal = true;
+
+private:
+    float value = 1.0f;  // 0.0f ~ 1.0f
+    std::shared_ptr<Sprite>  frameTexture;  //　枠のテクスチャ
 };

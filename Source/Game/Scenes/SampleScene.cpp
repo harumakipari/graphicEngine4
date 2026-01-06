@@ -82,25 +82,21 @@ void SampleScene::Start()
 
     uiManager->Add(button);
 
-    std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/icon_chara.png", "gauge");
+    std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/boss_hp_frame.png", "./Data/Textures/UI/boss_hp.png", "gauge");
     gauge->SetWorldPosition({ 50, 300 });
     gauge->SetSize({ 300, 40 });
-    gauge->value = 1.0f;
 
     uiManager->Add(gauge);
 
     // ボタンでゲージ減らす
     button->onClick = [gauge]()
         {
-            Logger::Log(u8"ボタンButton Clicked!");
-            Logger::Error(u8"ボタンButton Clicked!");
-            Logger::Warning(u8"ボタンButton Clicked!");
-
-            OutputDebugStringA("Button Clicked!\n");
+            static float value = 1.0f;
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
-            gauge->value -= 0.1f;
-            if (gauge->value < 0.0f)
-                gauge->value = 0.0f;
+            value -= 0.1f;
+            if (value < 0.0f)
+                value = 0.0f;
+            gauge->SetValue(value, 1.0f);
         };
 
     // シーンが切り替わった時に
@@ -120,13 +116,13 @@ void SampleScene::Update(float deltaTime)
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
 
-//#ifdef _DEBUG
+    //#ifdef _DEBUG
     if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
     {
         const char* types[] = { "0", "1" };
         Scene::_transition("LoadingScene", { std::make_pair("preload", "PuddingGameScene"), std::make_pair("type", types[rand() % 2]) });
     }
-//#endif // !_DEBUG
+    //#endif // !_DEBUG
 }
 
 void SampleScene::SetUpActors()
