@@ -115,6 +115,7 @@ InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::stri
         {
             FetchMeshes(device, *gltfModel);
             FetchAnimations(*gltfModel, animations); // 一個目のモデルはアニメーションをそのまま追加
+            //FetchAnimations(*gltfModel);
         }
 
         std::ofstream ofs(cerealFilename.c_str(), std::ios::binary);
@@ -925,6 +926,104 @@ void InterleavedGltfModel::FetchAnimations(const tinygltf::Model& gltfModel, std
     }
     // Find a longest animation duration in timeline of each channel.
     for (decltype(animations)::reference animation : outAnimations)
+    {
+        for (decltype(animation.timelines)::reference timelines : animation.timelines)
+        {
+            animation.duration = std::max<float>(animation.duration, timelines.second.back());
+        }
+    }
+
+}
+void InterleavedGltfModel::FetchAnimations(const tinygltf::Model& gltf_model)
+{
+    for (const tinygltf::Skin& transmission_skin : gltf_model.skins)
+    {
+        Skin& skin = skins.emplace_back();
+        const tinygltf::Accessor& gltf_accessor = gltf_model.accessors.at(transmission_skin.inverseBindMatrices);
+        const tinygltf::BufferView& gltf_buffer_view = gltf_model.bufferViews.at(gltf_accessor.bufferView);
+        _ASSERT_EXPR(gltf_accessor.type == TINYGLTF_TYPE_MAT4, L"");
+
+        skin.inverseBindMatrices.resize(gltf_accessor.count);
+        memcpy(skin.inverseBindMatrices.data(), gltf_model.buffers.at(gltf_buffer_view.buffer).data.data() + gltf_buffer_view.byteOffset + gltf_accessor.byteOffset, gltf_accessor.count * sizeof(DirectX::XMFLOAT4X4));
+
+        skin.joints = transmission_skin.joints;
+    }
+
+    for (const tinygltf::Animation& gltf_animation : gltf_model.animations)
+    {
+        Animation& animation = animations.emplace_back();
+        animation.name = gltf_animation.name;
+        for (const tinygltf::AnimationSampler& gltf_sampler : gltf_animation.samplers)
+        {
+            Animation::Sampler& sampler = animation.samplers.emplace_back();
+            sampler.input = gltf_sampler.input;
+            sampler.output = gltf_sampler.output;
+            sampler.interpolation = gltf_sampler.interpolation;
+
+            const tinygltf::Accessor& gltf_accessor = gltf_model.accessors.at(gltf_sampler.input);
+            const tinygltf::BufferView& gltf_buffer_view = gltf_model.bufferViews.at(gltf_accessor.bufferView);
+            _ASSERT_EXPR(gltf_accessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT, L"");
+            _ASSERT_EXPR(gltf_accessor.type == TINYGLTF_TYPE_SCALAR, L"");
+            const std::pair<std::unordered_map<int, std::vector<float>>::iterator, bool>& timelines = animation.timelines.emplace(gltf_sampler.input, gltf_accessor.count);
+            if (timelines.second)
+            {
+                memcpy(timelines.first->second.data(), gltf_model.buffers.at(gltf_buffer_view.buffer).data.data() + gltf_buffer_view.byteOffset + gltf_accessor.byteOffset, gltf_accessor.count * sizeof(FLOAT));
+            }
+        }
+        for (const tinygltf::AnimationChannel& gltf_channel : gltf_animation.channels)
+        {
+            Animation::Channel& channel = animation.channels.emplace_back();
+            channel.sampler = gltf_channel.sampler;
+            channel.targetNode = gltf_channel.target_node;
+            channel.targetPath = gltf_channel.target_path;
+
+            const tinygltf::AnimationSampler& gltf_sampler = gltf_animation.samplers.at(gltf_channel.sampler);
+            const tinygltf::Accessor& gltf_accessor = gltf_model.accessors.at(gltf_sampler.output);
+            const tinygltf::BufferView& gltf_buffer_view = gltf_model.bufferViews.at(gltf_accessor.bufferView);
+            if (gltf_channel.target_path == "scale")
+            {
+                _ASSERT_EXPR(gltf_accessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT, L"");
+                _ASSERT_EXPR(gltf_accessor.type == TINYGLTF_TYPE_VEC3, L"");
+
+                const std::pair<std::unordered_map<int, std::vector<DirectX::XMFLOAT3>>::iterator, bool>& scales = animation.scales.emplace(gltf_sampler.output, gltf_accessor.count);
+                if (scales.second)
+                {
+                    memcpy(scales.first->second.data(), gltf_model.buffers.at(gltf_buffer_view.buffer).data.data() + gltf_buffer_view.byteOffset + gltf_accessor.byteOffset, gltf_accessor.count * sizeof(DirectX::XMFLOAT3));
+                }
+            }
+            else if (gltf_channel.target_path == "rotation")
+            {
+                _ASSERT_EXPR(gltf_accessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT, L"");
+                _ASSERT_EXPR(gltf_accessor.type == TINYGLTF_TYPE_VEC4, L"");
+
+                const std::pair<std::unordered_map<int, std::vector<DirectX::XMFLOAT4>>::iterator, bool>& rotations = animation.rotations.emplace(gltf_sampler.output, gltf_accessor.count);
+                if (rotations.second)
+                {
+                    memcpy(rotations.first->second.data(), gltf_model.buffers.at(gltf_buffer_view.buffer).data.data() + gltf_buffer_view.byteOffset + gltf_accessor.byteOffset, gltf_accessor.count * sizeof(DirectX::XMFLOAT4));
+                }
+            }
+            else if (gltf_channel.target_path == "translation")
+            {
+                _ASSERT_EXPR(gltf_accessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT, L"");
+                _ASSERT_EXPR(gltf_accessor.type == TINYGLTF_TYPE_VEC3, L"");
+                const std::pair<std::unordered_map<int, std::vector<DirectX::XMFLOAT3>>::iterator, bool>& translations = animation.translations.emplace(gltf_sampler.output, gltf_accessor.count);
+                if (translations.second)
+                {
+                    memcpy(translations.first->second.data(), gltf_model.buffers.at(gltf_buffer_view.buffer).data.data() + gltf_buffer_view.byteOffset + gltf_accessor.byteOffset, gltf_accessor.count * sizeof(DirectX::XMFLOAT3));
+                }
+            }
+            else if (gltf_channel.target_path == "weights")
+            {
+                //_ASSERT_EXPR(FALSE, L"");
+            }
+            else
+            {
+                _ASSERT_EXPR(FALSE, L"");
+            }
+        }
+    }
+    // Find a longest animation duration in timeline of each channel.
+    for (decltype(animations)::reference animation : animations)
     {
         for (decltype(animation.timelines)::reference timelines : animation.timelines)
         {
@@ -2047,6 +2146,7 @@ DirectX::XMFLOAT3 InterleavedGltfModel::GetJointLocalPosition(/*size_t nodeIndex
 // アニメーションを追加する関数
 void InterleavedGltfModel::AddAnimations(const std::vector<std::string>& filenames)
 {
+    animations.clear();
     for (std::vector<std::string>::const_reference filename : filenames)
     {
         AddAnimation(filename);
@@ -2064,6 +2164,7 @@ void InterleavedGltfModel::AddAnimation(const std::string& filename)
         std::vector<Animation> cerealAnimations;
         //　読み込み時
         deserialization(cereal::make_nvp("animations", cerealAnimations));
+        Logger::Log(Logger::LogCategory::System,"animations Count: " + std::to_string(animations.size()));
         animations.insert(animations.end(), cerealAnimations.begin(), cerealAnimations.end());
     }
     else

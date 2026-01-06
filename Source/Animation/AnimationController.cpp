@@ -2,6 +2,7 @@
 #include "AnimationController.h"
 
 #include <imgui.h>
+#include <ranges>
 
 void AnimationController::OnUpdate(const float deltaTime)
 {
@@ -95,7 +96,7 @@ void AnimationController::DrawImGui()
 
     ImGui::Separator();
 
-    for (const auto& [name, index] : animationNameToIndex_)
+    for (const auto& name : animationImGUiOrder)
     {
         if (ImGui::Button(name.c_str()))
         {

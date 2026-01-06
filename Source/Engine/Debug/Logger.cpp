@@ -98,6 +98,11 @@ void Logger::Log(LogCategory category, const char8_t* message)
     Log(category, reinterpret_cast<const char*>(message));
 }
 
+void Logger::Log(LogCategory category, const  std::string& message)
+{
+    Log(category, message.c_str());
+}
+
 void Logger::Log(const char* message)
 {
     Log(LogCategory::Gameplay, message);

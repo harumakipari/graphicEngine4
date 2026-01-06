@@ -617,7 +617,7 @@ public:
 
     void FetchMaterials(ID3D11Device* device, const tinygltf::Model& gltf_model);
     void FetchTextures(ID3D11Device* device, const tinygltf::Model& gltf_model);
-    //void FetchAnimations(const tinygltf::Model& gltf_model);
+    void FetchAnimations(const tinygltf::Model& gltf_model);
     void FetchAnimations(const tinygltf::Model& gltfModel, std::vector<Animation>& outAnimations);
 
     static const size_t PRIMITIVE_MAX_JOINTS = 512;

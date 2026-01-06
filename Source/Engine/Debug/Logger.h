@@ -31,8 +31,9 @@ public:
 
 	static void Log(LogCategory category, const char* message);
 	static void Log(LogCategory category, const char8_t* message);
+    static void Log(LogCategory category, const std::string& message);
 
-	static void Warning(const char* message);
+    static void Warning(const char* message);
 	static void Warning(const char8_t* message);
 
 	static void Warning(LogCategory category, const char* message);

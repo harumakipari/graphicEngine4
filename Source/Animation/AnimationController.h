@@ -26,6 +26,7 @@ public:
     void AddAnimation(const std::string& animationName, const size_t animationClip)
     {
         animationNameToIndex_[animationName] = animationClip;
+        animationImGUiOrder.push_back(animationName);
     }
 
     // アニメーション再生しているかどうか
@@ -126,7 +127,10 @@ private:
     bool requestStopLoop = false; // 切りよくループを終わらせる
 
     // 今再生しているアニメーションの名前
-    std::string currentAnimationName = "";
+    std::string currentAnimationName;
+
+    // ImGuiで表示するための
+    std::vector<std::string> animationImGUiOrder;
 };
 
 #endif  //ANIMATION_CONTROLLER_H
