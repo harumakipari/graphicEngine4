@@ -7,8 +7,6 @@
 #include "Enemy.h"
 #include "Components/Controller/ControllerComponent.h"
 #include "Components/Transform/Transform.h"
-#include "Game/Actors/Beam/Beam.h"
-#include "Game/Managers/TutorialSystem.h"
 
 class EmptyEnemy :public Enemy
 {

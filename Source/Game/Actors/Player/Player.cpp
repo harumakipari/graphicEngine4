@@ -10,22 +10,14 @@
 #include "Graphics/Core/Graphics.h"
 #include "Physics/Physics.h"
 #include "Core/ActorManager.h"
-#include "Game/Actors/Beam/Beam.h"
-#include "Game/Actors/Enemy/RiderEnemy.h"
 
 #include "Components/Render/PointLightComponent.h"
 
 // UIで追加
-#include "Widgets/ObjectManager.h"
-#include "Widgets/GameObject.h"
-#include "Widgets/Mask.h"
-
-
-
 #include "PlayerStateDerived.h"
 // チュートリアルに使用
 #include "Components/Audio/CoreAudioSourceComponent.h"
-#include "Game/Managers/TutorialSystem.h"
+#include "Game/Actors/Stage/Stage.h"
 
 void Player::Initialize(const Transform& transform)
 {
@@ -143,18 +135,6 @@ void Player::Initialize(const Transform& transform)
     pointLightComponent->SetRange(1.5f);
     pointLightComponent->SetIntensity(10.0f);
 
-    // ビームチャージ音コンポーネントを追加
-    beamChargeAudioComponent = this->AddComponent<AudioSourceComponent>("beamChargeAudioComponent", "skeletalComponent");
-    beamChargeAudioComponent->SetSource(L"./Data/Sound/SE/beam_charge.wav");
-    beamChargeAudioComponent->SetLoopOption(1.48f, 0.313f);
-    // ビーム発射音コンポーネントを追加
-    beamLaunchAudioComponent = this->AddComponent<AudioSourceComponent>("beamLaunchAudioComponent", "skeletalComponent");
-    beamLaunchAudioComponent->SetSource(L"./Data/Sound/SE/beam_launch.wav");
-    // エフェクトコンポーネントを追加
-    effectChargeComponent = this->AddComponent<class EffectComponent>("effectChargeComponet", "skeletalComponent");
-    // アイテム取得音
-    itemAudioComponent = this->AddComponent<AudioSourceComponent>("itemAudioComponent", "skeletalComponent");
-    itemAudioComponent->SetSource(L"./Data/Sound/SE/energy.wav");
     AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
         {
             if (auto item = std::dynamic_pointer_cast<Stage>(hitPair.second->GetActor()))
@@ -163,306 +143,8 @@ void Player::Initialize(const Transform& transform)
             }
             //std::string a = hitPair.second->GetActor()->GetName() + "is hit player";
             //OutputDebugStringA(a.c_str());
-            if (auto item = std::dynamic_pointer_cast<PickUpItem>(hitPair.second->GetActor()))
-            {// アイテムと当たったら
-                //if (item.get() == lastHitPickUpItem)
-                //{// 二度ヒットを防ぐため
-                //    return;
-                //}
-
-                if (item->HasAlreadyHit(this))
-                {
-                    return;
-                }
-
-                if (!item->IsAlive())
-                {
-                    return;
-                }
-                DirectX::XMFLOAT3 itemPos = item->GetPosition();
-                DirectX::XMVECTOR ItemPosVec = DirectX::XMLoadFloat3(&itemPos);
-                float leftDisSq = 0.0f;
-                float rightDisSq = 0.0f;
-                if (hitPair.first->name() == "boxHitLeftComponent" || hitPair.first->name() == "boxHitRightComponent")
-                {
-                    //DirectX::XMFLOAT3 leftPos = leftComponent->GetComponentLocation();  // box は基準点がだんだんと変わり不安定だから
-                    //DirectX::XMVECTOR LeftPosVec = DirectX::XMLoadFloat3(&leftPos);
-                    //leftDisSq = DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(ItemPosVec, LeftPosVec)));
-                    //DirectX::XMFLOAT3 rightPos = hitPair.first->GetComponentLocation();
-                    //DirectX::XMFLOAT3 rightPos = rightComponent->GetComponentLocation();  // box は基準点がだんだんと変わり不安定だから
-                    //DirectX::XMVECTOR RightPosVec = DirectX::XMLoadFloat3(&rightPos);
-                    //rightDisSq = DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(ItemPosVec, RightPosVec)));
-                }
-                if (leftDisSq >= rightDisSq)
-                {// 右につく
-                    if (rightItemMax <= rightItemCount)
-                    {// アイテムが
-                        return;
-                    }
-                    // ステージ上に湧かせるアイテムの max の値を決める
-                    if (auto itemManager = GameManager::GetItemManager())
-                    {
-                        const auto& pos = item->GetPosition();
-                        if (item->GetType() == PickUpItem::Type::RandomSpawn)
-                        {// ランダムスポーンのアイテムを拾ったら　エリアに通知する
-                            itemManager->DecreaseAreaItemCount(pos);
-                        }
-                    }
-                    rightItemCount++;
-                    //Transform
-                    // プレイヤーの右側の描画スケールを大きくする
-                    DirectX::XMFLOAT3 rightScale = { 1.0f,1.0f,1.0f };
-                    //rightScale.x += rightItemCount * scaleBigSize;
-                    //rightScale.y += rightItemCount * scaleBigSize;
-                    //rightScale.z += rightItemCount * scaleBigSize;
-                    //rightComponent->SetRelativeScaleDirect(rightScale);
-
-                    //// プレイヤーの右のアイテムの収集の当たり判定を大きくする
-                    ////float rightBoxWidth = rightScale.x * firstPlayerSideSize + radius;
-                    //float rightBoxWidth = rightFirstPos.x + rightScale.x * firstPlayerSideSize;
-                    ////boxRightHitComponent->ResizeBox((rightBoxWidth) * 0.5f, (rightBoxWidth) * 0.5f, (rightBoxWidth) * 0.5f);
-                    //boxRightHitComponent->ResizeBox((rightBoxWidth) * 0.5f, firstHalfBoxExtent.y, firstHalfBoxExtent.z);
-                    //boxRightHitComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3((rightBoxWidth) * 0.5f, firstRightBoxPosition.y, firstRightBoxPosition.z));
-
-                    //// プレイヤーの右のダメージ当たり判定を大きくする
-                    //float rightDamageRadius = (rightScale.x * firstPlayerSideSize) * 0.5f; // player の半径は足さない
-                    //playerDamageRight->ResizeSphere(rightDamageRadius);
-                    ////playerDamageRight->SetRelativeLocationDirect(DirectX::XMFLOAT3((rightDamageRadius + radius), rightDamageRadius, 0.0f));
-                    //playerDamageRight->SetRelativeLocationDirect(DirectX::XMFLOAT3(rightFirstPos.x + rightDamageRadius, rightFirstPos.y + rightDamageRadius, rightFirstPos.z));
-
-                    //item->SetValid(false);
-                    item->MarkPendingKill();
-
-                    char debugBuffer[128];
-                    sprintf_s(debugBuffer, sizeof(debugBuffer),
-                        "rightItemCount%d\n",
-                        rightItemCount);
-                    OutputDebugStringA(debugBuffer);
-
-                    //OutputDebugStringA("rightHit");
-                }
-                else
-                {// 左につく
-                    if (leftItemMax <= leftItemCount)
-                    {// アイテムが
-                        return;
-                    }
-                    // ステージ上に湧かせるアイテムの max の値を決める
-                    if (auto itemManager = GameManager::GetItemManager())
-                    {
-                        if (item->GetType() == PickUpItem::Type::RandomSpawn)
-                        {// ランダムスポーンのアイテムを拾ったら　エリアに通知する
-                            const auto& pos = item->GetPosition();
-                            itemManager->DecreaseAreaItemCount(pos);
-                        }
-                    }
-                    leftItemCount++;
-                    //Transform
-                    // プレイヤーの左側の描画スケールを大きくする
-                    DirectX::XMFLOAT3 leftScale = { 1.0f,1.0f,1.0f };
-                    leftScale.x += leftItemCount * scaleBigSize;
-                    //leftScale.y += leftItemCount * scaleBigSize;
-                    //leftScale.z += leftItemCount * scaleBigSize;
-                    //leftComponent->SetRelativeScaleDirect(leftScale);
-                    //// プレイヤーの左のアイテムの収集の当たり判定を大きくする
-                    //float leftBoxWidth = -leftFirstPos.x + leftScale.x * firstPlayerSideSize;
-                    //boxLeftHitComponent->ResizeBox((leftBoxWidth) * 0.5f, firstHalfBoxExtent.y, firstHalfBoxExtent.z);
-                    //boxLeftHitComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(-(leftBoxWidth) * 0.5f, firstLeftBoxPosition.y, firstLeftBoxPosition.z));
-
-                    ////boxLeftHitComponent->ResizeBox((leftBoxWidth) * 0.5f, (leftBoxWidth) * 0.5f, (leftBoxWidth) * 0.5f);
-                    ////boxLeftHitComponent->ResizeBox((leftBoxWidth) * 0.5f, firstHalfBoxExtent.y, firstHalfBoxExtent.z);
-                    ////boxLeftHitComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(-(leftBoxWidth) * 0.5f, 0.0f, 0.0f));
-                    //// プレイヤーの左のダメージ当たり判定を大きくする
-                    ////float leftDamageRadius = (leftScale.x * firstPlayerSideSize) * 0.5f; // player の半径は足さない
-                    ////playerDamageLeft->ResizeSphere(leftDamageRadius);
-                    ////playerDamageLeft->SetRelativeLocationDirect(DirectX::XMFLOAT3(-(leftDamageRadius + radius), leftDamageRadius, 0.0f));
-                    //float leftDamageRadius = (leftScale.x * firstPlayerSideSize) * 0.5f; // player の半径は足さない
-                    //playerDamageLeft->ResizeSphere(leftDamageRadius);
-                    ////playerDamageRight->SetRelativeLocationDirect(DirectX::XMFLOAT3((rightDamageRadius + radius), rightDamageRadius, 0.0f));
-                    //playerDamageLeft->SetRelativeLocationDirect(DirectX::XMFLOAT3(-(rightFirstPos.x + leftDamageRadius), rightFirstPos.y + leftDamageRadius, rightFirstPos.z));
-
-                    //item->SetValid(false);
-                    item->MarkPendingKill();
-                    char debugBuffer[128];
-                    sprintf_s(debugBuffer, sizeof(debugBuffer),
-                        "leftItemCount%d\n",
-                        leftItemCount);
-                    OutputDebugStringA(debugBuffer);
-
-                    //OutputDebugStringA("leftHit");
-                }
-                // 取ったアイテムを記録しておく
-                lastHitPickUpItem = item.get();
-                // アイテムを取得したら
-                itemAudioComponent->Play();
-                item->RegisterHit(this);
-                TutorialSystem::AchievedAction(TutorialStep::Collect);
-                TutorialSystem::AchievedAction(TutorialStep::ManyCollect);
-                TutorialSystem::AchievedAction(TutorialStep::ManyCollect2);
-            }
-
-            if (auto boss = std::dynamic_pointer_cast<RiderEnemy>(hitPair.second->GetActor()))
-            {// ボスと当たったら
-                if (hitPair.second->name() == "capsuleComponent")
-                {
-                    if (auto node = boss->activeNode)
-                    {
-                        // 無敵時間中かどうか
-                        if (IsBossInvincible())
-                        {
-                            return;
-                        }
-                        int damage = 5; // ボスのダメージゲット
-                        //if (node->GetName() == "Dash"||node->GetName()==
-                        if (boss->GetEnableHit())
-                        {// ボスが回転の突進をしている時　
-#if 0
-                            if (hitPair.first->name() == "playerDamageLeft")
-                            {// 左に当たった時
-                                hitLeftThisFrame = true;
-                                std::string a = hitPair.first->name() + "is Hit";
-                                OutputDebugStringA(a.c_str());
-                            }
-                            else if (hitPair.first->name() == "playerDamageRight")
-                            {// 右に当たった時
-                                hitRightThisFrame = true;
-                                std::string a = hitPair.first->name() + "is Hit";
-                                OutputDebugStringA(a.c_str());
-                            }
-                            else if (hitPair.first->name() == "capsuleComponent")
-                            {// 本体にのみ当たった時
-                                if (!hitLeftThisFrame && !hitRightThisFrame)
-                                {
-                                    ApplyDirectHpDamage(damage);
-                                }
-                                std::string a = hitPair.first->name() + "is Hit";
-                                OutputDebugStringA(a.c_str());
-                            }
-                            else
-                            {// そのほかに当たった時
-                                return;
-                            }
-#else
-                            if (hitPair.first->name() == "boxHitLeftComponent")
-                            {// 左に当たった時
-                                hitLeftThisFrame = true;
-                                std::string a = "boss damage  " + hitPair.first->name() + "is Hit\n";
-                                OutputDebugStringA(a.c_str());
-                            }
-                            else if (hitPair.first->name() == "boxHitRightComponent")
-                            {// 右に当たった時
-                                hitRightThisFrame = true;
-                                std::string a = "boss damage " + hitPair.first->name() + "is Hit\n";
-                                OutputDebugStringA(a.c_str());
-                            }
-                            //else if (hitPair.second->name() == "capsuleComponent")
-                            //{// 本体にのみ当たった時
-                            //    if (!hitLeftThisFrame && !hitRightThisFrame)
-                            //    {
-                            //        ApplyDirectHpDamage(damage);
-                            //    }
-                            //    std::string a = hitPair.second->name() + "is Hit";
-                            //    OutputDebugStringA(a.c_str());
-                            //}
-                            else
-                            {// そのほかに当たった時
-                                return;
-                            }
-#endif // 0
-                            // 初回だけダメージを登録する
-                            if (!hasDamageThisFrame)
-                            {// ダメージ設定をしていなかったら
-                                hasDamageThisFrame = true;
-                                currentFrameDamage = damage;
-                                applyInvincibilityNextFrame = true;
-
-                                // 無敵時間間隔設定
-                                SetBossInvincible();
-                            }
-                        }
-                    }
-                }
-                else if (hitPair.second->name() == "bossHand")
-                {// ボスの手に当たったら
-                    if (auto node = boss->activeNode)
-                    {
-                        // 無敵時間中かどうか
-                        if (IsBossInvincible())
-                        {
-                            return;
-                        }
-                        int damage = 4; // ボスのダメージゲット
-                        if (node->GetName() == "Normal")
-                        {
-#if 0
-                            if (hitPair.first->name() == "playerDamageLeft")
-                            {// 左に当たった時
-                                hitLeftThisFrame = true;
-                                std::string a = hitPair.first->name() + "is Hit";
-                                OutputDebugStringA(a.c_str());
-                            }
-                            else if (hitPair.first->name() == "playerDamageRight")
-                            {// 右に当たった時
-                                hitRightThisFrame = true;
-                                std::string a = hitPair.first->name() + "is Hit";
-                                OutputDebugStringA(a.c_str());
-                            }
-                            else if (hitPair.first->name() == "capsuleComponent")
-                            {// 本体にのみ当たった時
-                                if (!hitLeftThisFrame && !hitRightThisFrame)
-                                {
-                                    ApplyDirectHpDamage(damage);
-                                }
-                                std::string a = hitPair.first->name() + "is Hit";
-                                OutputDebugStringA(a.c_str());
-                            }
-                            else
-                            {// そのほかに当たった時
-                                return;
-                            }
-#else
-
-                            if (hitPair.first->name() == "boxHitLeftComponent")
-                            {// 左に当たった時
-                                hitLeftThisFrame = true;
-                                std::string a = hitPair.first->name() + "is Hit";
-                                OutputDebugStringA(a.c_str());
-                            }
-                            else if (hitPair.first->name() == "boxHitRightComponent")
-                            {// 右に当たった時
-                                hitRightThisFrame = true;
-                                std::string a = hitPair.first->name() + "is Hit";
-                                OutputDebugStringA(a.c_str());
-                            }
-                            //else if (hitPair.second->name() == "capsuleComponent")
-                            //{// 本体にのみ当たった時
-                            //    if (!hitLeftThisFrame && !hitRightThisFrame)
-                            //    {
-                            //        ApplyDirectHpDamage(damage);
-                            //    }
-                            //    std::string a = hitPair.second->name() + "is Hit";
-                            //    OutputDebugStringA(a.c_str());
-                            //}
-                            else
-                            {// そのほかに当たった時
-                                return;
-                            }
-#endif // 0
-                            // 初回だけダメージを登録する
-                            if (!hasDamageThisFrame)
-                            {// ダメージ設定をしていなかったら
-                                hasDamageThisFrame = true;
-                                currentFrameDamage = damage;
-                                applyInvincibilityNextFrame = true;
-
-                                // 無敵時間間隔設定
-                                SetBossInvincible();
-                            }
-                        }
-                    }
-                }
-            }
         });
+
 
     // 入力用のコンポーネントを追加
     inputComponent = this->AddComponent<class InputComponent>("inputComponent", "skeletalComponent");
@@ -591,18 +273,7 @@ void Player::Update(float elapsedTime)
     //boxRightHitComponent->SetRelativeLocationDirect(rightPos);
 
 
-    {// UI
-        if (GameObject* hpGuage = ObjectManager::Find("HPGuage"))
-        {
-            float normalizeHp = static_cast<float>(hp / static_cast<float>(maxHp));
-            hpGuage->GetComponent<Mask>()->valueX = normalizeHp;
 
-            float normalizedLeftItem = static_cast<float>(leftItemCount / static_cast<float>(leftItemMax));
-            ObjectManager::Find("LeftGauge")->GetComponent<Mask>()->valueY = normalizedLeftItem;
-            float normalizedRightItem = static_cast<float>(rightItemCount / static_cast<float>(rightItemMax));
-            ObjectManager::Find("RightGauge")->GetComponent<Mask>()->valueY = normalizedRightItem;
-        }
-    }
     {// 無敵時間の更新
         if (invisibleTime > 0.0f)
         {
@@ -633,9 +304,6 @@ void Player::Update(float elapsedTime)
         }
         break;
     case Player::State::FireBeam:
-        TutorialSystem::AchievedAction(TutorialStep::SecondAttack);
-        TutorialSystem::AchievedAction(TutorialStep::FirstAttack);
-
         FireBeam();
         state = Player::State::Idle;
         break;
@@ -765,7 +433,6 @@ void Player::TryStartCharge()
     if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger) && itemCount > 0)
     {
         // チャージの音を再生する
-        beamChargeAudioComponent->Play(XAUDIO2_LOOP_INFINITE);
 
         DirectX::XMFLOAT3 pos = skeletalMeshComponent->GetJointWorldPosition("beam_FK");
 
@@ -784,10 +451,6 @@ void Player::TryStartCharge()
 // ビームを発射する関数
 void Player::FireBeam()
 {
-    // チャージの音を停止する
-    beamChargeAudioComponent->Stop();
-    // 発射音を再生する
-    beamLaunchAudioComponent->Play();
 
     float beamItemPower = static_cast<float>(rightItemCount + leftItemCount);
     int itemCount = rightItemCount + leftItemCount;
@@ -815,23 +478,6 @@ void Player::FireBeam()
             vel.x, vel.y, vel.z);
         OutputDebugStringA(buf);
         // Beam を生成する
-        Transform trans = { pos ,{0,0,0,1},{1,1,1} };
-        auto beam = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<Beam>("beam", trans);
-        beam->SetItemPower(beamItemPower);
-        float maxPower = static_cast<float>(rightItemMax + leftItemMax);
-        beam->SetItemMaxPower(maxPower);
-        beam->SetItemCount(rightItemCount + leftItemCount);
-        float itemPower = beamItemPower * 10.0f;
-        beam->SetTempMass(itemPower);
-        //beam->Initialize();
-        //beam->UpdateAllComponentTransforms();
-        beam->SetDirection(dir);
-        //auto sphere = std::dynamic_pointer_cast<SphereComponent>(beam->GetSceneComponentByName("sphereComponent"));
-        //sphere->SetKinematic(false);
-        //sphere->SetGravity(false);
-        //sphere->SetMass(itemPower);
-        //sphere->SetIntialVelocity(DirectX::XMFLOAT3(dir.x * itemPower, dir.y * itemPower, dir.z * itemPower));
-        //sphere->SetIntialVelocity(DirectX::XMFLOAT3(dir.x * speed, dir.y * speed, dir.z * speed));
         HasItemReset();
         effectChargeComponent->Deactivate();
     }

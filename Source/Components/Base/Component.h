@@ -5,28 +5,19 @@
 // 2. C 標準ライブラリ（あれば）
 
 // C++ 標準ライブラリ
-#include <algorithm>
 #include <memory>
-#include <optional>
 #include <string>
 
 // 他ライブラリ
-#include <DirectXMath.h>
-#include <PxPhysicsAPI.h>
 
 
 #ifdef USE_IMGUI
 #define IMGUI_ENABLE_DOCKING
-#include "../External/imgui/imgui.h"
 #endif
 
 // プロジェクトの他のヘッダ
-#include "Graphics/Core/Graphics.h"
 #include "Math/MathHelper.h"
-#include "Components/Transform/Transform.h"
-#include "Engine/Camera/CameraManager.h"
 #include "Physics/Physics.h"
-#include "Physics/PhysicsHelper.h"
 
 class Actor;
 

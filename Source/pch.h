@@ -9,7 +9,7 @@
 #include <array>
 
 #include <fbxsdk.h>
-
+#include <PxPhysicsAPI.h>
 
 #include <Windows.h>
 #include <d3d11.h>
@@ -17,6 +17,6 @@
 #include <DirectXMath.h>
 
 #include "Engine/Utility/Win32Utils.h"
-#include "Graphics/Core/Shader.h"
+
 
 #include "Engine/Debug/Logger.h"

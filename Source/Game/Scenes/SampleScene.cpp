@@ -17,13 +17,10 @@
 #include "Game/Actors/Dessert/Pudding.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"
 #include "Game/Actors/Enemy/Boss/BossEnemy.h"
+#include "Game/Actors/Player/Player.h"
 #include "Game/Actors/Stage/ElasticBuilding.h"
 #include "Game/Actors/Stage/Cloth.h"
 
-#include "Widgets/ObjectManager.h"
-#include "Widgets/Utils/EditorGUI.h"
-#include "Widgets/Events/EventSystem.h"
-#include "Widgets/TitleUIFactory.h"
 
 #include "Physics/Physics.h"
 #include "Game/Actors/Stage/FightStage.h"
@@ -42,7 +39,6 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
 
     //アクターをセット
     SetUpActors();
-    EventSystem::Initialize();//追加 UI
 
     clothSimulate = std::make_unique<ClothSimulate>(device, "./Data/Models/ClothFlag/cloth.gltf");
     //clothSimulate = std::make_unique<ClothSimulate>(device, "./Data/Models/TestCloth/cloth1.gltf");
@@ -110,8 +106,6 @@ void SampleScene::Update(float deltaTime)
     SceneBase::Update(deltaTime);
 
     Physics::Instance().Update(Time::UnscaledDeltaTime());
-    EventSystem::Update(deltaTime);//追加
-    objectManager.Update(deltaTime);//追加
     clothSimulate->Update(deltaTime);
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();

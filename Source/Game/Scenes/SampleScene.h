@@ -13,9 +13,9 @@
 
 #include "Graphics/Renderer/SceneRenderer.h"
 
-#include "Game/Actors/Player/TitlePlayer.h"
 #include "Game/Actors/Camera/TitleCamera.h"
 #include "Game/Actors/Stage/ClothSimulate.h"
+#include "Game/Actors/Stage/Stage.h"
 
 #include "UI/Widgets/Widget.h"
 #include "Physics/CollisionMesh.h"

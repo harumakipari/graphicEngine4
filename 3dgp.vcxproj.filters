@@ -207,9 +207,6 @@
     <ClCompile Include="Source\Game\Actors\Player\PlayerState.cpp">
       <Filter>Sources\Game\Actors\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\Actors\Enemy\RiderEnemy.cpp">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Physics\Physics.cpp">
       <Filter>Sources\Physics</Filter>
     </ClCompile>
@@ -279,12 +276,6 @@
     <ClCompile Include="Source\Engine\Scene\Scene.cpp">
       <Filter>Sources\Engine\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\Scenes\BootScene.cpp">
-      <Filter>Sources\Game\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Scenes\MainScene.cpp">
-      <Filter>Sources\Game\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Game\Scenes\LoadingScene.cpp">
       <Filter>Sources\Game\Scenes</Filter>
     </ClCompile>
@@ -342,101 +333,17 @@
     <ClCompile Include="Source\Components\Effect\EffectComponent.cpp">
       <Filter>Sources\Components\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Widgets\RectTransformUtils.cpp">
-      <Filter>Sources\Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Widgets\Events\EventSystem.cpp">
-      <Filter>Sources\Widgets\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Widgets\Events\InputModule.cpp">
-      <Filter>Sources\Widgets\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Widgets\UIComponent.cpp">
-      <Filter>Sources\Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Widgets\Color.cpp">
-      <Filter>Sources\Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Widgets\Utils\Dialog.cpp">
-      <Filter>Sources\Widgets\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Widgets\ObjectManager.cpp">
-      <Filter>Sources\Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Widgets\RectTransform.cpp">
-      <Filter>Sources\Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Widgets\UIFactory.cpp">
-      <Filter>Sources\Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Widgets\AudioSource.cpp">
-      <Filter>Sources\Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Managers\GameManager.cpp">
-      <Filter>Sources\Game\Scenes\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Actors\Beam\Beam.cpp">
-      <Filter>Sources\Game\Actors\Beam</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Actors\Enemy\ActionDerived.cpp">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Actors\Enemy\BehaviorData.cpp">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Actors\Enemy\BehaviorTree.cpp">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Actors\Enemy\EnemyMath.cpp">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Actors\Enemy\JudgmentDerived.cpp">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Actors\Enemy\NodeBase.cpp">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Components\Game\ItemSpawnerComponent.cpp">
-      <Filter>Sources\Components\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Components\Game\LifeTimeComponent.cpp">
-      <Filter>Sources\Components\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Components\Audio\AudioSourceComponent.cpp">
-      <Filter>Sources\Components\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Components\Game\ShockWaveCollisionComponent.cpp">
       <Filter>Sources\Components\Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\Effect\HuskParticle.cpp">
       <Filter>Sources\Graphics\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Actors\Stage\Building.cpp">
-      <Filter>Sources\Game\Actors\Stage</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\Effect\ComputeParticleSystem.cpp">
       <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\Effect\EffectSystem.cpp">
       <Filter>Sources\Graphics\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Components\Game\EraseInAreaComponent.cpp">
-      <Filter>Sources\Components\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Managers\BuildingManager.cpp">
-      <Filter>Sources\Game\Scenes\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Managers\TutorialSystem.cpp">
-      <Filter>Sources\Game\Scenes\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Scenes\TutorialScene.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Actors\Stage\BossBuilding.cpp">
-      <Filter>Sources\Game\Actors\Stage</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Actors\Item\PickUpItem.cpp">
-      <Filter>Sources\Game\Actors\Item</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\Resource\ShaderToy.cpp">
       <Filter>Sources</Filter>
@@ -496,9 +403,6 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Utility\Time.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Utils\EasingHandler.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\State\StateMachine.cpp">
@@ -606,6 +510,9 @@
     <ClCompile Include="Source\Engine\Camera\CameraManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Widgets\Utils\Dialog.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -657,9 +564,6 @@
       <Filter>Sources\Game\Actors\Base</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Actors\Enemy\Enemy.h">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Enemy\RiderEnemy.h">
       <Filter>Sources\Game\Actors\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Source\Physics\Physics.h">
@@ -746,12 +650,6 @@
     <ClInclude Include="Source\Engine\Scene\SceneRegistry.h">
       <Filter>Sources\Engine\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Scenes\BootScene.h">
-      <Filter>Sources\Game\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Scenes\MainScene.h">
-      <Filter>Sources\Game\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h">
       <Filter>Sources\Game\Scenes</Filter>
     </ClInclude>
@@ -818,9 +716,6 @@
     <ClInclude Include="External\imgui\imstb_truetype.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Stage\Building.h">
-      <Filter>Sources\Game\Actors\Stage</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Components\CollisionShape\RigidBodyComponent.h">
       <Filter>Sources\Components\CollisionShape</Filter>
     </ClInclude>
@@ -830,17 +725,11 @@
     <ClInclude Include="Source\Physics\CollisionHelper.h">
       <Filter>Sources\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Item\PickUpItem.h">
-      <Filter>Sources\Game\Actors\Item</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Components\CollisionShape\CollisionComponent.h">
       <Filter>Sources\Components\CollisionShape</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Actors\Camera\Camera.h">
       <Filter>Sources\Game\Actors\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Beam\Beam.h">
-      <Filter>Sources\Game\Actors\Beam</Filter>
     </ClInclude>
     <ClInclude Include="Source\Components\Effect\EffectComponent.h">
       <Filter>Sources\Components\Effect</Filter>
@@ -848,152 +737,14 @@
     <ClInclude Include="Source\Graphics\Effect\EffectSystem.h">
       <Filter>Sources\Graphics\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Widgets\Image.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\RectTransform.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\RectTransformUtils.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Button.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Canvas.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Graphic.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\GraphicRaycaster.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Selectable.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Timer.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\UIComponent.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\UIAnimationController.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Events\AxisEventData.h">
-      <Filter>Sources\Widgets\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Events\BaseEventData.h">
-      <Filter>Sources\Widgets\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Events\EventHandlers.h">
-      <Filter>Sources\Widgets\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Events\EventSystem.h">
-      <Filter>Sources\Widgets\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Events\InputModule.h">
-      <Filter>Sources\Widgets\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Events\PointerEventData.h">
-      <Filter>Sources\Widgets\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Events\RaycastResult.h">
-      <Filter>Sources\Widgets\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Color.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Utils\Dialog.h">
-      <Filter>Sources\Widgets\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Utils\stdUtiles.h">
-      <Filter>Sources\Widgets\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\GameObject.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\ObjectManager.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\UIFactory.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\PauseUIFactory.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\TutorialUIFactory.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\AudioSource.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Utils\EditorGUI.h">
-      <Filter>Sources\Widgets\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Managers\ItemManager.h">
-      <Filter>Sources\Game\Scenes\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Managers\GameManager.h">
-      <Filter>Sources\Game\Scenes\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Managers\BuildingManager.h">
-      <Filter>Sources\Game\Scenes\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Managers\TutorialSystem.h">
-      <Filter>Sources\Game\Scenes\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Utils\SpawnValidator.h">
-      <Filter>Sources\Game\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Graphics\Resource\ModelResource.h">
       <Filter>Sources\Graphics\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Enemy\ActionBase.h">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Enemy\ActionDerived.h">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Enemy\BehaviorData.h">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Enemy\BehaviorTree.h">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Enemy\EnemyMath.h">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Enemy\JudgmentBase.h">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Enemy\JudgmentDerived.h">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Enemy\NodeBase.h">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Components\Game\ItemSpawnerComponent.h">
-      <Filter>Sources\Components\Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\Components\Game\LifeTimeComponent.h">
       <Filter>Sources\Components\Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\Physics\CollisionFunction.h">
       <Filter>Sources\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Components\Audio\AudioSourceComponent.h">
-      <Filter>Sources\Components\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Utils\TiledMapLoader.h">
-      <Filter>Sources\Game\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Components\Game\ShockWaveCollisionComponent.h">
-      <Filter>Sources\Components\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Components\Game\EraseInAreaComponent.h">
-      <Filter>Sources\Components\Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Core\PipelineState.h">
       <Filter>Sources\Graphics\Core</Filter>
@@ -1004,62 +755,14 @@
     <ClInclude Include="Source\Graphics\Effect\ComputeParticleSystem.h">
       <Filter>Sources\Graphics\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Stage\Bomb.h">
-      <Filter>Sources\Game\Actors\Stage</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Components\Game\TimerActionComponent.h">
       <Filter>Sources\Components\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Effect\ShockWave.h" />
-    <ClInclude Include="Source\Game\Utils\ShockWaveTargetRegistry.h" />
-    <ClInclude Include="Source\Widgets\GameUIFactory.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Mask.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\GamePropety.h">
-      <Filter>Sources\Game\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Stage\BossBuilding.h">
-      <Filter>Sources\Game\Actors\Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Player\TitlePlayer.h">
-      <Filter>Sources\Game\Actors\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Scenes\TutorialScene.h" />
-    <ClInclude Include="Source\Game\Actors\Enemy\TutorialEnemy.h">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Enemy\DefeatEnemy.h">
-      <Filter>Sources\Game\Actors\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Actors\Camera\DefeatEnemyCamera.h">
       <Filter>Sources\Game\Actors\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Widgets\EventSequence.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\BossIndicator.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Actors\Camera\TitleCamera.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\EmptyEnemy.h" />
-    <ClInclude Include="Source\Game\Actors\Stage\TitleStage.h">
-      <Filter>Sources\Game\Actors\Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\TitleUIFactory.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\ResultUIFactory.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Text.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Widgets\Counter.h">
-      <Filter>Sources\Widgets</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Graphics\Resource\ShaderToy.h" />
     <ClInclude Include="Source\Graphics\PostProcess\GBuffer.h">
       <Filter>Sources\Graphics\PostProcess</Filter>
@@ -1122,8 +825,6 @@
     <ClInclude Include="Source\Engine\Easing\Easing.h" />
     <ClInclude Include="Source\Engine\Easing\TestEasingHandler.h" />
     <ClInclude Include="Source\Components\Easing\CoreEasingComponent.h" />
-    <ClInclude Include="Source\Utils\EasingHandler.h" />
-    <ClInclude Include="Source\Widgets\EasingComponent.h" />
     <ClInclude Include="Source\Game\State\StateMachine.h" />
     <ClInclude Include="Source\Game\State\StateBase.h" />
     <ClInclude Include="Source\Game\Actors\Player\PlayerStateDerived.h" />
@@ -1161,6 +862,8 @@
     <ClInclude Include="Source\UI\Game\Pause.h" />
     <ClInclude Include="Source\UI\Game\SceneTransitionManager.h" />
     <ClInclude Include="Source\UI\Game\TransitionEffect.h" />
+    <ClInclude Include="Source\Widgets\Utils\Dialog.h" />
+    <ClInclude Include="Source\Widgets\Utils\stdUtiles.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">

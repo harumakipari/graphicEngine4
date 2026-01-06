@@ -11,11 +11,9 @@
 
 #include "Graphics/Resource/Texture.h"
 
-//kuroda
-#include "Widgets/ObjectManager.h"
-#include "Widgets/Events/EventSystem.h"
 
 #include "Core/ActorManager.h"
+#include "Engine/Camera/CameraManager.h"
 #include "UI/UIManager.h"
 #include "UI/Game/SceneTransitionManager.h"
 
@@ -54,8 +52,6 @@ public:
     {
         return _current_scene.get();
     }
-
-    ObjectManager objectManager;//kuroda
 
     // ActorManager の取得
     const ActorManager* GetActorManager() const { return actorManager_.get(); }
@@ -252,9 +248,6 @@ public:
         _next_scene = _reflections().at(name)();
         // シーンに渡すデータ（プロパティ）を設定
         _payload = props;
-
-        //UIの情報初期化（追加）
-        EventSystem::Reset();
 
         return true;// シーン遷移が成功
     }

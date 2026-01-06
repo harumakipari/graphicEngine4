@@ -10,12 +10,6 @@
 #include "Components/CollisionShape/ShapeComponent.h"
 #include "Physics/Physics.h"
 
-#include "Game/Actors/Stage/Building.h"
-#include "Game/Actors/Stage/BossBuilding.h"
-#include "Game/Utils/ShockWaveTargetRegistry.h"
-#include "Game/Actors/Enemy/RiderEnemy.h"
-
-#include "Game/Managers/GameManager.h"
 
 #include "Engine/Camera/CameraConstants.h"
 #include "Game/Actors/Stage/ElasticBuilding.h"
@@ -204,68 +198,15 @@ public:
                 {
                     build->skeltalMeshComponent->SetIsVisible(false);
                 }
-                else if (auto bossBuild = dynamic_cast<BossBuilding*>(result.actor))
-                {
-                    bossBuild->preSkeltalMeshComponent->model->SetAlpha(0.3f);
-                }
             }
             else
             {
-                for (const auto& actor : ShockWaveTargetRegistry::GetTargets())
-                {
-                    if (auto build = dynamic_cast<ElasticBuilding*>(result.actor))
-                    {
-                        build->skeltalMeshComponent->SetIsVisible(true);
-                    }
-                    else if (auto bossBuild = std::dynamic_pointer_cast<BossBuilding>(actor))
-                    {
-                        bossBuild->preSkeltalMeshComponent->model->SetAlpha(1.0f);
-                    }
-                }
             }
         }
         break;
         case MainCamera::State::BossTarget:
         {
-            if (auto enemy = std::dynamic_pointer_cast<RiderEnemy>(GetOwnerScene()->GetActorManager()->GetActorByName("enemy")))
-            {// 敵の位置を取る
-                //mainCameraComponent->customTarget = true;
-                DirectX::XMFLOAT3 targetVec = enemy->bossJointComponent->GetComponentWorldTransform().GetLocation();
-                //mainCameraComponent->_target = targetVec;
-                DirectX::XMFLOAT3 playerFirstPos = { 0.7f,0.8f,-9.5f };
-                playerFirstPos.y += 1.5f;
-                playerFirstPos.x += distanceX;
-                playerFirstPos.y += distanceY;
-                float enemyY = enemy->GetPosition().y;
-                float startY = 2.3f;
-                float endY = 0.8f;
 
-                if (enemyY <= startY)
-                {
-                    float t = std::clamp((startY - enemyY) / (startY - endY), 0.0f, 1.0f);
-                    distanceZ = 3.8f * t;
-
-                    // Y が endY 付近に到達して、shakeしていないとき
-                    if (!didShake && enemyY <= endY - 0.7f)
-                    {
-                        Shake(0.5f, 0.4f);
-                        didShake = true;
-                    }
-
-                }
-                playerFirstPos.z += distanceZ;
-                SetPosition(playerFirstPos); // プレイヤーの位置をEyeにする
-                if (isFinishFirstPerf)
-                {// 最初の演出が終わったら
-                    // その時のカメラの位置
-                    preEye = playerFirstPos;
-                    // その時の focus の位置
-                    preTarget = targetVec;
-                    state = State::Lerp;
-                    elapsedTime = 0.0f;
-                    isFinishFirstPerf = false;
-                }
-            }
         }
         break;
         case MainCamera::State::Lerp:
@@ -290,8 +231,6 @@ public:
             if (t >= 1.0f)
             {// lerp し終わったら
                 state = State::Normal;
-                // ここでカウントがスタートする
-                GameManager::GameCountStart();
             }
         }
         break;

@@ -4,6 +4,7 @@
 #include "Physics.h"
 #include "Engine/Camera/CameraConstants.h"
 #include "Engine/Camera/CameraManager.h"
+#include "Engine/Scene/Scene.h"
 #include "Game/Actors/Camera/Camera.h"
 #include "Graphics/Core/Graphics.h"
 

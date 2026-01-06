@@ -481,7 +481,6 @@ void SceneBase::Draw(ID3D11DeviceContext* immediateContext)
         RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-        objectManager.Draw(immediateContext);
 
         uiManager->Draw();
 

@@ -2,6 +2,7 @@
 #include "PrimitiveShapeRenderer.h"
 
 #include "ShapeRenderer.h"
+#include "Graphics/Core/Shader.h"
 
 // コンストラクタ
 PrimitiveShapeRenderer::PrimitiveShapeRenderer(ID3D11Device* device)

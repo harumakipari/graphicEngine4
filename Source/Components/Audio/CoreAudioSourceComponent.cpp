@@ -3,7 +3,7 @@
 #include "Graphics/Core/Graphics.h"
 
 #include <x3daudio.h>
-
+#include <imgui.h>
 
 void CoreAudioSourceComponent::SetSource(const std::wstring& filePath)
 {

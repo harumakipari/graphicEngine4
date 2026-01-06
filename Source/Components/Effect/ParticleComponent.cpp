@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "ParticleComponent.h"
 #include "Core/Vector.h"
-#include "Widgets/Utils/Dialog.h"
 #include "Core/Actor.h"
 
 //REGISTER_COMPONENT(ParticleComponent, "Effects");

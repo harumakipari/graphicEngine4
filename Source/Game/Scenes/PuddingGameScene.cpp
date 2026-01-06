@@ -19,9 +19,6 @@
 #include "Game/Actors/Enemy/Boss/BossEnemy.h"
 #include "Game/Actors/Stage/Cloth.h"
 
-#include "Widgets/ObjectManager.h"
-#include "Widgets/Utils/EditorGUI.h"
-#include "Widgets/Events/EventSystem.h"
 
 #include "Physics/Physics.h"
 #include "Game/Actors/Stage/FightStage.h"
@@ -38,7 +35,6 @@ bool PuddingGameScene::Initialize(ID3D11Device* device, UINT64 width, UINT heigh
 
     //アクターをセット
     SetUpActors();
-    EventSystem::Initialize();//追加 UI
     return true;
 }
 
@@ -100,8 +96,6 @@ void PuddingGameScene::Update(float deltaTime)
     SceneBase::Update(deltaTime);
 
     Physics::Instance().Update(deltaTime);
-    EventSystem::Update(deltaTime);//追加
-    objectManager.Update(deltaTime);//追加
 
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();

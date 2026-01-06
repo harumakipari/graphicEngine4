@@ -11,7 +11,6 @@
 #include "Graphics/Core/Graphics.h"
 #include "Graphics/Renderer/SpriteRenderer.h"
 #include "Graphics/Sprite/Sprite.h"
-#include "Widgets/Color.h"
 
 class UICoreComponent
 {
@@ -208,8 +207,6 @@ public:
             pivot,
             scale
         );
-
-
     }
 
 

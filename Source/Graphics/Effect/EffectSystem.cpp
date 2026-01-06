@@ -8,6 +8,7 @@
 
 #include "../../Core/ActorManager.h"
 #include "../../Components/Effect/EffectComponent.h"
+#include "Engine/Scene/Scene.h"
 #include "Game/Actors/Player/Player.h"
 
 void EffectSystem::Initialize()

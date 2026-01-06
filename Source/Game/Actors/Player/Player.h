@@ -9,13 +9,7 @@
 #include "Components/Render/MeshComponent.h"
 #include "Components/Effect/EffectComponent.h"
 
-#include "Game/Actors/Item/PickUpItem.h"
-#include "Game/Actors/Enemy/RiderEnemy.h"
-#include "Game/Managers/GameManager.h"
-#include "Game/Managers/ItemManager.h"
-
 #include "Core/ActorManager.h"
-#include "Components/Audio/AudioSourceComponent.h"
 #include "Components/Effect/ParticleComponent.h"
 
 
@@ -75,9 +69,6 @@ public:
     std::shared_ptr<RotationComponent> rotationComponent;
     //std::shared_ptr<MovementComponent> movementComponent;
     std::shared_ptr<CharacterMovementComponent> characterMovementComponent;
-    std::shared_ptr<AudioSourceComponent> beamChargeAudioComponent;
-    std::shared_ptr<AudioSourceComponent> beamLaunchAudioComponent;
-    std::shared_ptr<AudioSourceComponent> itemAudioComponent;
     DirectX::XMFLOAT3 GetVelocity() const { return velocity; }
 
     void Update(float elapsedTime)override;
@@ -169,8 +160,6 @@ public:
             leftItemCount, hp);
         OutputDebugStringA(debugBuffer);
 
-        // リザルト用::プレイヤーの被弾回数
-        GameManager::CallPlayerDamaged();
         BlinkInit();
 
         int leftDamage = damage;
@@ -232,7 +221,6 @@ public:
         OutputDebugStringA(debugBuffer);
 
         // リザルト用::プレイヤーの被弾回数
-        GameManager::CallPlayerDamaged();
         BlinkInit();
         int rightDamage = damage;
         int rightRestDamage = rightDamage - rightItemCount;
@@ -412,8 +400,6 @@ private:
     float maxTurnSpeed = 720.0f;
     // プレイヤーの Min 回転スピード
     float minTurnSpeed = 90.0f;
-    // 既に回収されたアイテム化を確認する
-    PickUpItem* lastHitPickUpItem = nullptr;
     // プレイヤーのマックスHP
     int maxHp = 20;
     bool isIdleEnd = false;

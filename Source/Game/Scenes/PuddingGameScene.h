@@ -9,6 +9,7 @@
 #include "Engine/Scene/SceneBase.h"
 
 #include "Game/Actors/Camera/TitleCamera.h"
+#include "Game/Actors/Stage/Stage.h"
 
 #include "Physics/CollisionMesh.h"
 

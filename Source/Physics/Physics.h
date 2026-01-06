@@ -4,7 +4,6 @@
 #include <set>
 #include <map>
 #include <DirectXMath.h>
-#include <PxPhysicsAPI.h>
 #include <memory>
 
 #include "Graphics/Renderer/ShapeRenderer.h"

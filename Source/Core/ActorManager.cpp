@@ -44,11 +44,6 @@ void Renderer::RenderOpaque(ID3D11DeviceContext* immediateContext)
         std::vector<MeshComponent*> meshComponents;
         actor->GetComponents<MeshComponent>(meshComponents);
 
-        if (auto item = std::dynamic_pointer_cast<PickUpItem>(actor))
-        {// アイテムなら
-            continue;
-        }
-
         for (const MeshComponent* meshComponent : meshComponents)
         {
             //  各 MeshComponent 自身の最新ワールド行列を取り出す
@@ -76,11 +71,6 @@ void Renderer::RenderMask(ID3D11DeviceContext* immediateContext)
         }
         if (!actor->IsActive())
         {// actorが存在していなかったらスキップ
-            continue;
-        }
-
-        if (auto item = std::dynamic_pointer_cast<PickUpItem>(actor))
-        {// アイテムなら
             continue;
         }
 
@@ -133,10 +123,6 @@ void Renderer::RenderBlend(ID3D11DeviceContext* immediateContext)
             continue;
         }
 
-        if (auto item = std::dynamic_pointer_cast<PickUpItem>(actor))
-        {// アイテムなら
-            continue;
-        }
 
         std::vector<MeshComponent*> meshComponents;
         actor->GetComponents<MeshComponent>(meshComponents);
@@ -187,14 +173,6 @@ void Renderer::RenderInstanced(ID3D11DeviceContext* immediateContext)
             continue;
         }
 
-        if (auto item = std::dynamic_pointer_cast<PickUpItem>(actor))
-        {// アイテムなら
-            if (item->skeltalMeshComponent->IsVisible())
-            {// アイテムが描画されるなら
-                DirectX::XMFLOAT4X4 instanceMatrix = item->GetWorldTransform();
-                instanceDatas.push_back(instanceMatrix);
-            }
-        }
     }
     HRESULT hr{ S_OK };
     D3D11_MAPPED_SUBRESOURCE mapped_subresource{};

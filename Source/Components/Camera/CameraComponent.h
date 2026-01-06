@@ -16,7 +16,6 @@
 #include "Components/Base/SceneComponent.h"
 #include "Core/Actor.h"
 #include "Engine/Input/InputSystem.h"
-#include "Utils/EasingHandler.h"
 
 class CameraComponent :public SceneComponent
 {

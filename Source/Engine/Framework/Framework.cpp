@@ -13,7 +13,6 @@
 
 #include "Engine/Input/InputSystem.h"
 #include "Graphics/Renderer/ShapeRenderer.h"
-#include "Components/Audio/AudioSourceComponent.h"
 #include "Engine/Audio/CoreAudio.h"
 #include "Engine/Debug/DebugDrawManager.h"
 #include "Engine/Debug/Logger.h"
@@ -31,7 +30,6 @@ Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fu
     Graphics::Initialize(hwnd, fullscreenMode);
     InputSystem::Initialize();
     RenderState::Initialize();
-    Audio::Initialize();
     CoreAudio::Initialize();
     // ログ初期化
     Logger::Initialize();
@@ -89,7 +87,6 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
     ID3D11DeviceContext* immediateContext = Graphics::GetDeviceContext();
 
     //オーディオ更新
-    Audio::Update(deltaTime);
     CoreAudio::Update(deltaTime);
 
     // デバックコマンド更新
@@ -215,8 +212,6 @@ bool Framework::Uninitialize()
     EffectManager::ClearAll();
 
     CoreAudio::ClearAll();
-
-    Audio::ClearAll();
 
     //gameManager->UninitAll();
     // SCENE_TRANSITION
