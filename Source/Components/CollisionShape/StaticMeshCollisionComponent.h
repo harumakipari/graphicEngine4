@@ -1,8 +1,7 @@
-#ifndef STATIC_MESH_COLLISION_COMPONENT_H
-#define STATIC_MESH_COLLISION_COMPONENT_H
+#pragma once
+
 
 #include <string>
-#include <vector>
 #include <stack>
 #include <functional>
 
@@ -16,7 +15,6 @@
 #include "tiny_gltf.h"
 
 #include <functional>
-#include <fbxsdk.h>
 
 #include "Physics/Physics.h"
 #include "Components/Base/SceneComponent.h"
@@ -344,5 +342,4 @@ private:
     std::vector<physx::PxActor*>		pxActors_;
 
 };
-#endif //STATIC_MESH_COLLISION_COMPONENT_H
 

@@ -50,7 +50,8 @@ public:
 
 
         particleComponent = this->AddComponent<class ParticleComponent>("particleComponent", "elasticBuilding");
-        particleComponent->Load("./Data/Effect/Files/testEffect.json");
+        particleComponent->Load("./Data/Effect/Files/heartTestEffect.json");
+        //particleComponent->Load("./Data/Effect/Files/testEffect.json");
 
         SetPosition(transform.GetLocation());
         SetQuaternionRotation(transform.GetRotation());

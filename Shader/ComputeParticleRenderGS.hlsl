@@ -164,10 +164,10 @@ void main(point GS_IN gin[1], inout TriangleStream<PS_IN> output)
     };
     static const float2 vertexTexcoords[4] =
     {
-        float2(0, 0),
-        float2(1, 0),
         float2(0, 1),
         float2(1, 1),
+        float2(0, 0),
+        float2(1, 0),
     };
     for (uint i = 0; i < 4; i++)
     {

@@ -8,6 +8,8 @@
 #include <functional>
 #include <array>
 
+#include <fbxsdk.h>
+
 
 #include <Windows.h>
 #include <d3d11.h>

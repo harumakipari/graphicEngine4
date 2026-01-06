@@ -205,7 +205,7 @@ void Logger::DrawImGui()
     }
 
     ImGuiListClipper clipper;
-    clipper.Begin(visibleItems.size());
+    clipper.Begin(static_cast<int>(visibleItems.size()));
 
     while (clipper.Step())
     {

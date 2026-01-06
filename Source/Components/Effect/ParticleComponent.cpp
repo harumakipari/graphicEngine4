@@ -29,6 +29,7 @@ void ParticleComponent::Play()
         // 線上にエフェクトを再生する場合
         if (settings.lineData.useLine)
         {
+#if 0
             // 線上に分割してエフェクトを再生
             for (int i = 0; i <= settings.lineData.segments.size(); ++i)
             {
@@ -56,6 +57,8 @@ void ParticleComponent::Play()
                     EffectManager::Play(effectHandle, pos, rotation);
                 }
             }
+#endif // 0
+
         }
         else
         {

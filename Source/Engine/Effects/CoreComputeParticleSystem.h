@@ -4,7 +4,6 @@
 #include <d3d11.h>
 #include <wrl.h>
 #include <DirectXMath.h>
-#include <vector>
 #include <functional>
 
 #include "Engine/Utility/Win32Utils.h"

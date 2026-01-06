@@ -15,9 +15,10 @@ void BossEnemy::Initialize(const Transform& transform)
 #if 1
     const std::vector<std::string> animationFilenames =
     {
-        "./Data/Models/Characters/Savarog/Jog_Fwd.glb",
-        "./Data/Models/Characters/Savarog/Jog_Left.glb",
-        "./Data/Models/Characters/Savarog/Jog_Right.glb",
+        "./Data/Models/Characters/Savarog/Idle.gltf",
+        //"./Data/Models/Characters/Savarog/Jog_Fwd.glb",
+        //"./Data/Models/Characters/Savarog/Jog_Left.glb",
+        //"./Data/Models/Characters/Savarog/Jog_Right.glb",
         //"./Data/Models/Characters/Savarog/LevelStart.glb",
         //"./Data/Models/Characters/Savarog/Recall.glb",
         //"./Data/Models/Characters/Savarog/Emote_Pull_MC_T1.glb",

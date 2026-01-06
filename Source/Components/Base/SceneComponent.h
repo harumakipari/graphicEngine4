@@ -4,7 +4,6 @@
 // C++ 標準ライブラリ
 #include <memory>
 #include <string>
-#include <vector>
 
 // 他ライブラリ
 #include <DirectXMath.h>

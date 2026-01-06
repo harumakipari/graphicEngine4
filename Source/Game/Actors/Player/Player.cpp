@@ -481,6 +481,10 @@ void Player::Initialize(const Transform& transform)
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponet", "skeletalComponent");
 
+    particleComponent=AddComponent<ParticleComponent>("particleComponent", "skeletalComponent");
+    particleComponent->Load("./Data/Effect/Files/heartTestEffect.json");
+    
+
     OutputDebugStringA(("Actor::Initialize called. rootComponent_ use_count = " + std::to_string(GetRootComponent().use_count()) + "\n").c_str());
 }
 
@@ -495,6 +499,8 @@ void Player::Update(float elapsedTime)
     //characterMovementComponent->SetMoveDirection({ 1,0,0 });
     characterMovementComponent->ApplyIntent(intent);
     rotationComponent->SetDirection(intent.move);
+
+    //particleComponent->Play();
     return;
 
     XMFLOAT3 position = GetPosition();
