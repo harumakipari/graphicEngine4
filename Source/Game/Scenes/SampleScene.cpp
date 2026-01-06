@@ -138,9 +138,9 @@ void SampleScene::SetUpActors()
     mainCameraComponent->target = (player->GetRootComponent());
     mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
 #if 1
-    CameraManager::SetGameCamera(mainCameraActor);
+    SetActiveCamera(mainCameraActor);
 #else
-    CameraManager::SetGameCamera(debugCameraActor);
+    SetActiveCamera(debugCameraActor);
 #endif // 0
     Logger::Log(U8("sampleシーンのカメラ設定される。"));
 
@@ -171,7 +171,7 @@ void SampleScene::SetUpActors()
     auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("enemy", enemyTr);
 
 
-    CameraManager::SetDebugCamera(debugCameraActor);
+    cameraManager->SetDebugCamera(debugCameraActor);
 }
 
 bool SampleScene::Uninitialize(ID3D11Device* device)

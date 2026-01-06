@@ -139,10 +139,11 @@ void PuddingGameScene::SetUpActors()
     auto targetPudding = this->GetActorManager()->CreateAndRegisterActorWithTransform<TargetPudding>("targetPudding", targetPuddingTr);
 
 
-    CameraManager::SetGameCamera(mainCameraActor);
+    //CameraManager::SetGameCamera(mainCameraActor);
+    SetActiveCamera(mainCameraActor);
     Logger::Log(U8("PuddingGameシーンのカメラ設定される。"));
 
-    CameraManager::SetDebugCamera(debugCameraActor);
+    cameraManager->SetDebugCamera(debugCameraActor);
 
     mainCameraComponent->target = (building->GetRootComponent());
     mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);

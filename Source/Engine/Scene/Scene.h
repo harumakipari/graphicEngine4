@@ -63,7 +63,10 @@ public:
     const UIManager* GetUIManager() const { return uiManager.get(); }
     UIManager* GetUIManager() { return uiManager.get(); }
 
-    void ClearActorManager()
+    CameraManager* GetCameraManager() const { return cameraManager.get(); }
+    const CameraManager* GetCameraManager() { return cameraManager.get(); }
+
+    void ClearActorManager() const
     {
         actorManager_->ClearAll();
     }
@@ -72,6 +75,20 @@ public:
 
     void SetPaused(const bool p) { paused = p; }
 
+    void SetActiveCamera(const std::shared_ptr<Camera>& camera)
+    {
+        activeCamera = camera;
+    }
+
+    Camera* GetActiveCamera()const
+    {
+        if (activeCamera.expired())
+        {
+            Logger::Error(Logger::LogCategory::System, U8("シーンのアクティブカメラが nullptr を返しています！"));
+            return nullptr;
+        }
+        return activeCamera.lock().get();
+    }
     //std::unique_ptr<ActorManager>& GetActorManager() { return actorManager_; }
 private:
     // 純粋仮想関数：シーンの初期化
@@ -318,10 +335,10 @@ protected:
 private:
     std::unique_ptr<ActorManager> actorManager_;
     bool paused = false;
-
 protected:
     std::unique_ptr<UIManager> uiManager;
-
+    std::unique_ptr<CameraManager> cameraManager;
+    std::weak_ptr<Camera> activeCamera;
 };
 
 

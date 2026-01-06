@@ -443,12 +443,12 @@ void TutorialScene::SetUpActors()
     auto mainCameraActor = GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
 
-    CameraManager::SetGameCamera(mainCameraActor);
+    SetActiveCamera(mainCameraActor);
 
     auto debugCameraActor = GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     //auto debugCameraActor = ActorManager::CreateAndRegisterActor<Actor>("debugCam");
     //auto debugCamera = debugCameraActor->AddComponent<DebugCameraComponent>("debugCamera");
-    CameraManager::SetDebugCamera(debugCameraActor);
+    cameraManager->SetDebugCamera(debugCameraActor);
 
     Transform enemyTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,-1.0f });
     enemy = GetActorManager()->CreateAndRegisterActorWithTransform<TutorialEnemy>("tutorialEnemy", enemyTr);
@@ -485,7 +485,7 @@ void TutorialScene::Render(ID3D11DeviceContext* immediateContext, float delta_ti
 
     float aspect_ratio{ viewport.Width / viewport.Height };
 
-    auto camera = CameraManager::GetCurrentCamera();
+    auto camera = cameraManager->GetRenderCamera(this);
     if (camera)
     {
         ViewConstants data = camera->GetViewConstants();

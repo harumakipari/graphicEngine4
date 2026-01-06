@@ -23,7 +23,13 @@ namespace CollisionFunction
         screenPosition.z = 0.0f;
         ScreenPosition = DirectX::XMLoadFloat3(&screenPosition);
 
-        auto camera = CameraManager::GetCurrentCamera();
+        auto scene = Scene::GetCurrentScene();
+        if (!scene)
+        {
+            Logger::Warning(Logger::LogCategory::System, U8("RaycastFromMouse で　scene が null です！"));
+            return false;
+        }
+        auto camera = scene->GetCameraManager()->GetRenderCamera(scene);
         ViewConstants data = camera->GetViewConstants();
 
         if (camera)
@@ -33,7 +39,7 @@ namespace CollisionFunction
             DirectX::XMMATRIX Projection = DirectX::XMLoadFloat4x4(&data.projection);
             DirectX::XMMATRIX World = DirectX::XMMatrixIdentity();
             // スクリーン座標をワールド座標に変換し、レイの始点を求める
-            WorldPosition = DirectX::XMVector3Unproject(ScreenPosition, 0.0f, 0.0f, 1920.0f,1080.0f, 0.0f, 1.0f, Projection, View, World);
+            WorldPosition = DirectX::XMVector3Unproject(ScreenPosition, 0.0f, 0.0f, 1920.0f, 1080.0f, 0.0f, 1.0f, Projection, View, World);
 
             DirectX::XMFLOAT3 rayStart;
             DirectX::XMStoreFloat3(&rayStart, WorldPosition);
@@ -53,7 +59,7 @@ namespace CollisionFunction
             RayDir = DirectX::XMVector3Normalize(RayDir);
             DirectX::XMFLOAT3 rayDir;
             DirectX::XMStoreFloat3(&rayDir, RayDir);
-            
+
             if (Physics::Instance().SphereCast(rayStart, rayDir, FLT_MAX, 0.001f, result, collisionLayer))
             {
                 return true;
@@ -72,7 +78,15 @@ namespace CollisionFunction
         float screenWidth, screenHeight, viewportX, viewportY;
         Graphics::GetViewport(viewportX, viewportY, screenWidth, screenHeight);
         DirectX::XMVECTOR WorldPosition = DirectX::XMLoadFloat3(&worldPosition);
-        auto camera = CameraManager::GetCurrentCamera();
+        auto scene = Scene::GetCurrentScene();
+        if (!scene)
+        {
+            Logger::Warning(Logger::LogCategory::System, U8("GetScreenPositionFromWorldPosition で　scene が null です！"));
+            return { 0.0f,0.0f };
+        }
+        auto camera = scene->GetCameraManager()->GetRenderCamera(scene);
+
+        //auto camera = CameraManager::GetRenderCamera(dynamic_cast<SceneBase*>(Scene::GetCurrentScene()));
         ViewConstants data = camera->GetViewConstants();
         //各行列を取得
         DirectX::XMMATRIX View = DirectX::XMLoadFloat4x4(&data.view);

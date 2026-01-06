@@ -594,6 +594,18 @@
     <ClCompile Include="Source\UI\Game\Pause.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Animation\AnimationController.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\Game\SceneTransitionManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI\Game\TransitionEffect.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Camera\CameraManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1147,6 +1159,8 @@
     <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />
     <ClInclude Include="Source\Game\Actors\Dessert\TargetPudding.h" />
     <ClInclude Include="Source\UI\Game\Pause.h" />
+    <ClInclude Include="Source\UI\Game\SceneTransitionManager.h" />
+    <ClInclude Include="Source\UI\Game\TransitionEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">

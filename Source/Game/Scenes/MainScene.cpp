@@ -238,7 +238,7 @@ void MainScene::Update(float deltaTime)
             //target.y = 2.0f;
             //defeatCamera->SetTarget(target);
             //CameraManager::SetGameCamera(mainCameraComponent);
-            CameraManager::SetGameCamera(defeatCamera);
+            SetActiveCamera(defeatCamera);
 
             //Œ‚”jSEÄ¶
             Audio::PlayOneShot(L"./Data/Sound/SE/defeat.wav");
@@ -287,7 +287,7 @@ void MainScene::Update(float deltaTime)
 
             auto resultCamera = GetActorManager()->CreateAndRegisterActorWithTransform<TitleCamera>("resultCamera");
             auto mainCameraComponent = resultCamera->GetComponent<CameraComponent>();
-            CameraManager::SetGameCamera(resultCamera);
+            SetActiveCamera(resultCamera);
             //CameraManager::SetGameCamera(mainCameraComponent);
 
             Transform playerTr(DirectX::XMFLOAT3{ -3.0f,0.4f,10.0f }, DirectX::XMFLOAT3{ 0.0f,-6.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -313,7 +313,7 @@ void MainScene::Update(float deltaTime)
     effectSystem->Update(deltaTime);
 
 
-    auto cameraComp = CameraManager::GetCurrentCamera();
+    auto cameraComp = cameraManager->GetRenderCamera(this);
     if (cameraComp && enemies[0] && enemies[0]->GetRootComponent())
     {
         ViewConstants data = cameraComp->GetViewConstants();
@@ -642,7 +642,7 @@ void MainScene::Update(float deltaTime)
 }
 void MainScene::Render(ID3D11DeviceContext* immediateContext, float elapsedTime)
 {
-    auto camera = CameraManager::GetCurrentCamera();
+    auto camera = cameraManager->GetRenderCamera(this);
     if (camera)
     {
         ViewConstants data = camera->GetViewConstants();
@@ -1531,12 +1531,12 @@ void MainScene::SetUpActors()
     //auto mainCameraComponent = mainCameraActor->NewComponent<class CameraComponent>("mainCamera", "springArm");
     //mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(45), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
     //CameraManager::SetGameCamera(mainCameraComponent);
-    CameraManager::SetGameCamera(mainCameraActor);
+    SetActiveCamera(mainCameraActor);
 
     auto debugCameraActor = GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     //auto debugCameraActor = ActorManager::CreateAndRegisterActor<Actor>("debugCam");
     //auto debugCamera = debugCameraActor->AddComponent<DebugCameraComponent>("debugCamera");
-    CameraManager::SetDebugCamera(debugCameraActor);
+    cameraManager->SetDebugCamera(debugCameraActor);
 
     //Transform propTr(DirectX::XMFLOAT3{ 1.0f,0.0f,1.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     //auto props = ActorManager::CreateAndRegisterActorWithTransform<VendingMachineProp>("vendingMachine", propTr);

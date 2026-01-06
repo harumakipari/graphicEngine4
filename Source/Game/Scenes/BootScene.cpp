@@ -424,9 +424,9 @@ void BootScene::SetUpActors()
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
 #if 0
-    CameraManager::SetGameCamera(mainCameraActor);
+    cameraManager->SetGameCamera(mainCameraActor);
 #else
-    CameraManager::SetGameCamera(debugCameraActor);
+    SetActiveCamera(debugCameraActor);
 #endif // 0
     stageCollisionMesh = std::make_shared<CollisionMesh>(Graphics::GetDevice(), "./Data/Models/Stage/stage.gltf", true);
 
@@ -434,7 +434,7 @@ void BootScene::SetUpActors()
     auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<EmptyEnemy>("enemy", enemyTr);
 
 
-    CameraManager::SetDebugCamera(debugCameraActor);
+    cameraManager->SetDebugCamera(debugCameraActor);
 }
 
 bool BootScene::Uninitialize(ID3D11Device* device)

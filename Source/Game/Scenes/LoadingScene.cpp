@@ -24,7 +24,7 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
     mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainLoadingCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     mainCameraActor->SetPosition({ -4.1f,1.9f,-4.3f });
-    CameraManager::SetGameCamera(mainCameraActor);
+    SetActiveCamera(mainCameraActor);
     Logger::Log(U8("ロードシーンのカメラ設定される。"));
 
 

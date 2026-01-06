@@ -270,6 +270,7 @@
     <ClCompile Include="Source\Core\World.cpp" />
     <ClCompile Include="Source\Engine\Audio\Audio.cpp" />
     <ClCompile Include="Source\Engine\Audio\CoreAudio.cpp" />
+    <ClCompile Include="Source\Engine\Camera\CameraManager.cpp" />
     <ClCompile Include="Source\Engine\Debug\DebugDrawManager.cpp" />
     <ClCompile Include="Source\Engine\Debug\EditorGizmo.cpp" />
     <ClCompile Include="Source\Engine\Debug\Logger.cpp" />

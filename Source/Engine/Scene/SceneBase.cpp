@@ -88,6 +88,9 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     // UIマネージャーを初期化
     uiManager = std::make_unique<UIManager>();
 
+    // カメラマネージャー作成
+    cameraManager = std::make_unique<CameraManager>();
+
     float screenWidth = static_cast<float>(Graphics::GetScreenWidth());
     float screenHeight = static_cast<float>(Graphics::GetScreenHeight());
     XMFLOAT2 imageSize = { screenWidth,screenHeight };
@@ -122,7 +125,7 @@ void SceneBase::Update(float deltaTime)
 #ifdef _DEBUG
     if (InputSystem::GetInputState("F8", InputStateMask::Trigger))
     {
-        CameraManager::ToggleCamera();
+        cameraManager->ToggleCamera();
     }
 #endif // !_DEBUG
 }
@@ -176,7 +179,8 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
 
 void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
 {
-    if (auto camera = CameraManager::GetCurrentCamera())
+    //if (auto camera = CameraManager::GetRenderCamera(this))
+    if (auto camera = cameraManager->GetRenderCamera(this))
     {
         ViewConstants data = camera->GetViewConstants();
         sceneRender.UpdateViewConstants(immediateContext, data);
@@ -206,7 +210,8 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     multipleRenderTargets->Clear(immediateContext);
     multipleRenderTargets->Activate(immediateContext);
 
-    auto camera = CameraManager::GetCurrentCamera();
+    //auto camera = CameraManager::GetRenderCamera(this);
+    auto camera = cameraManager->GetRenderCamera(this);
     if (!camera)
         return;
 
@@ -309,7 +314,8 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
 
 void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 {
-    auto camera = CameraManager::GetCurrentCamera();
+    //auto camera = CameraManager::GetRenderCamera(this);
+    auto camera = cameraManager->GetRenderCamera(this);
 
     // ディファードレンダリング
     gBufferRenderTarget->Clear(immediateContext);
@@ -749,7 +755,8 @@ void SceneBase::DrawGizmo()
     DirectX::XMMATRIX CameraView;
     DirectX::XMMATRIX CameraProjection;
 
-    if (auto camera = CameraManager::GetCurrentCamera())
+    //if (auto camera = CameraManager::GetRenderCamera(this))
+    if (auto camera = cameraManager->GetRenderCamera(this))
     {
         ViewConstants data = camera->GetViewConstants();
         CameraView = XMLoadFloat4x4(&data.view);

@@ -30,29 +30,7 @@ public:
 
     const MoveIntent& GetIntent() const { return intent_; }
 
-    void Tick(float) override
-    {
-        intent_.move = { 0,0,0 };
-        if (!CameraManager::IsUseDebug())
-        {
-            if (InputSystem::GetInputState("W"))
-            {
-                intent_.move.z += 1.0f;
-            }
-            if (InputSystem::GetInputState("S"))
-            {
-                intent_.move.z -= 1.0f;
-            }
-            if (InputSystem::GetInputState("D"))
-            {
-                intent_.move.x += 1.0f;
-            }
-            if (InputSystem::GetInputState("A"))
-            {
-                intent_.move.x -= 1.0f;
-            }
-        }
-    }
+    void Tick(float) override;
 
     const DirectX::XMFLOAT3& GetMoveInput() const { return intent_.move; }
 

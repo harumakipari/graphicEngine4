@@ -5,6 +5,7 @@
 
 #include "Core/Actor.h"
 #include "Core/ActorManager.h"
+#include "Engine/Scene/Scene.h"
 #include "Game/Actors/Base/Character.h"
 #include "Engine/Utility/Win32Utils.h"
 #include "Physics/CollisionSystem.h"
@@ -141,4 +142,34 @@ void RotationComponent::Tick(float deltaTime)
 
     auto q = SlerpQuaternion(startRotation_, targetRotation_, t);
     owner_.lock()->SetQuaternionRotation(q);
+}
+
+void InputComponent::Tick(float) 
+{
+    intent_.move = { 0,0,0 };
+    auto scene = Scene::GetCurrentScene();
+    if (!scene)
+    {
+        Logger::Warning(Logger::LogCategory::System, U8("InputComponent ‚Å@scene ‚ª null ‚Å‚·I"));
+    }
+
+    if (!scene->GetCameraManager()->IsUseDebug())
+    {
+        if (InputSystem::GetInputState("W"))
+        {
+            intent_.move.z += 1.0f;
+        }
+        if (InputSystem::GetInputState("S"))
+        {
+            intent_.move.z -= 1.0f;
+        }
+        if (InputSystem::GetInputState("D"))
+        {
+            intent_.move.x += 1.0f;
+        }
+        if (InputSystem::GetInputState("A"))
+        {
+            intent_.move.x -= 1.0f;
+        }
+    }
 }

@@ -63,6 +63,8 @@ public:
     }
 
 
+
+
 private:
     void ForwardRender(ID3D11DeviceContext* immediateContext);
 
@@ -86,10 +88,8 @@ private:
 
     void DrawGizmo();
 
-public:
-    Camera* activeCamera = nullptr;
-
 protected:
+
     //==============================
     // 定数バッファ構造体
     //==============================
@@ -169,4 +169,6 @@ protected:
     std::unique_ptr<Font>	font;
 
     std::unordered_map<RenderPass, std::vector<RenderHook>> renderHooks;
+
+
 };
