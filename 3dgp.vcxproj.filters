@@ -297,9 +297,6 @@
     <ClCompile Include="Source\Graphics\Resource\GeometricPrimitive.cpp">
       <Filter>Sources\Graphics\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\Resource\staticMesh.cpp">
-      <Filter>Sources\Graphics\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="External\imgui\imgui.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
@@ -513,6 +510,12 @@
     <ClCompile Include="Source\Widgets\Utils\Dialog.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Actors\WaterSphere\MorphModel.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Scenes\MorphScene.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -689,9 +692,6 @@
     <ClInclude Include="Source\Graphics\Resource\GeometricPrimitive.h">
       <Filter>Sources\Graphics\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Resource\staticMesh.h">
-      <Filter>Sources\Graphics\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="External\imgui\imconfig.h">
       <Filter>imgui</Filter>
     </ClInclude>
@@ -864,6 +864,9 @@
     <ClInclude Include="Source\UI\Game\TransitionEffect.h" />
     <ClInclude Include="Source\Widgets\Utils\Dialog.h" />
     <ClInclude Include="Source\Widgets\Utils\stdUtiles.h" />
+    <ClInclude Include="Source\Game\Actors\WaterSphere\WaterSphere.h" />
+    <ClInclude Include="Source\Game\Actors\WaterSphere\MorphModel.h" />
+    <ClInclude Include="Source\Game\Scenes\MorphScene.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">
@@ -1043,15 +1046,6 @@
     <FxCompile Include="Shader\sprite_vs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\staticMeshPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\staticMeshVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\UniverseWithIn.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\VolumetricCloudscapesPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -1133,6 +1127,9 @@
     <FxCompile Include="Shader\FontVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\GltfMorphModelVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ComputeParticle.hlsli">
@@ -1181,9 +1178,6 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\sprite.hlsli">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shader\staticMesh.hlsli">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\BidirectionalReflectanceDistributionFunction.hlsli">

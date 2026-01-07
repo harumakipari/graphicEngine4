@@ -10,7 +10,7 @@
 void SSREffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height)
 {
     fullScreenQuad = std::make_unique<FullScreenQuad>(device);
-    ssrBuffer = std::make_unique<FrameBuffer>(device, width, height, true);
+    ssrBuffer = std::make_unique<FrameBuffer>(device, width, height, false);
     ssrCBuffer = std::make_unique<ConstantBuffer<SSRConstantBuffer>>(device);
 
     HRESULT hr = CreatePsFromCSO(device, "./Shader/SSRPS.cso", ssrPS.GetAddressOf());

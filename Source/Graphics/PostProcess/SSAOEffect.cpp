@@ -13,7 +13,7 @@
 void SSAOEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height)
 {
     fullScreenQuad = std::make_unique<FullScreenQuad>(device);
-    ssaoBuffer = std::make_unique<FrameBuffer>(device, width, height, true);
+    ssaoBuffer = std::make_unique<FrameBuffer>(device, width, height, false);
     ssaoCBuffer = std::make_unique<ConstantBuffer<SSAOConstantBuffer>>(device);
 
     //HRESULT hr = CreatePsFromCSO(device, "./Shader/SSAOPS.cso", ssaoPS.GetAddressOf());

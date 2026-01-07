@@ -16,6 +16,18 @@ struct BATCH_VS_IN
     float2 texcoord : TEXCOORD;
 };
 
+struct MORPH_VS_IN
+{
+    float4 position : POSITION;
+    float4 normal : NORMAL;
+    float4 tangent : TANGENT;
+    float2 texcoord : TEXCOORD;
+    uint4 joints[2] : JOINTS;
+    float4 weights[2] : WEIGHTS;
+    float4 morphPosition : MORPH_POSITION;
+    float4 morphNormal : MORPH_NORMAL;
+};
+
 struct INSTANCE_VS_IN
 {
     float4 position : POSITION;
@@ -53,7 +65,9 @@ cbuffer PLUS_ALPHA_CONSTANT_BUFFER : register(b5)
     float saturation; // 彩度調整
     float brightness; // 明度調整
     float dissolve; // ディゾルブ用
+
     float4 cpuColor; // 色をCPU側で指定する用　（ダメージ当たったときとか）
+
     float emissionPower; // 自己発光の強さ
 }
 

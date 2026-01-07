@@ -6,3 +6,4 @@
 #include "Game/Scenes/LoadingScene.h"
 #include "Game/Scenes/SampleScene.h"
 #include "Game/Scenes/PuddingGameScene.h"
+#include "Game/Scenes/MorphScene.h"

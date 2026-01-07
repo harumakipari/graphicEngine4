@@ -291,7 +291,9 @@
     <ClCompile Include="Source\Game\Actors\Player\PlayerStateDerived.cpp" />
     <ClCompile Include="Source\Game\Actors\Stage\ClothSimulate.cpp" />
     <ClCompile Include="Source\Game\Actors\Stage\TestSoftBody.cpp" />
+    <ClCompile Include="Source\Game\Actors\WaterSphere\MorphModel.cpp" />
     <ClCompile Include="Source\Game\Scenes\LoadingScene.cpp" />
+    <ClCompile Include="Source\Game\Scenes\MorphScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\PuddingGameScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\SampleScene.cpp" />
     <ClCompile Include="Source\Game\SofyBody\SoftBody.cpp" />
@@ -430,7 +432,10 @@
     <ClInclude Include="Source\Game\Actors\Stage\FightStage.h" />
     <ClInclude Include="Source\Game\Actors\Stage\TestSoftBody.h" />
     <ClInclude Include="Source\Game\Actors\Stage\Stage.h" />
+    <ClInclude Include="Source\Game\Actors\WaterSphere\MorphModel.h" />
+    <ClInclude Include="Source\Game\Actors\WaterSphere\WaterSphere.h" />
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
+    <ClInclude Include="Source\Game\Scenes\MorphScene.h" />
     <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />
     <ClInclude Include="Source\Game\Scenes\SampleScene.h" />
     <ClInclude Include="Source\Game\SofyBody\SoftBody.h" />
@@ -754,6 +759,12 @@
     </FxCompile>
     <FxCompile Include="Shader\GltfModelVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\GltfMorphModelVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\HighFreqWorleyCS.hlsl">

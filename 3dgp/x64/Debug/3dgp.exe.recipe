@@ -157,6 +157,9 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfMorphModelVS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\HighFreqWorleyCS.cso</FullPath>
     </ContentFile>
     <ContentFile>
