@@ -402,9 +402,6 @@ void Player::Update(float elapsedTime)
         color.y = 1.0f;
         color.z = 1.0f;
     }
-    skeletalMeshComponent->model->cpuColor.x = color.x;
-    skeletalMeshComponent->model->cpuColor.y = color.y;
-    skeletalMeshComponent->model->cpuColor.z = color.z;
 
 #if USE_IMGUI
     ImGui::Begin("Player");

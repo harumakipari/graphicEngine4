@@ -69,21 +69,6 @@ public:
     //モデル固有の座標系 //初期　LH_Y_UP
     CoordinateSystem modelCoordinateSystem = CoordinateSystem::RH_Y_UP;
 
-    // disolve 用
-    float disolveFactor = 0.0f;
-    void SetDisolveFactor(float factor) { this->disolveFactor = factor; }
-
-
-    float alpha = 1.0f;
-    // ビル用の alpha をセットする関数
-    void SetAlpha(float alpha) { this->alpha = alpha; }
-
-    // エミッションをセットする関数
-    float emission = 5.0f;
-
-    // カラーをセットする関数
-    DirectX::XMFLOAT3 cpuColor = { 1.0f,1.0f,1.0f };
-
     InterleavedGltfModel(ID3D11Device* device, const std::string& filename, Mode mode, bool isSaveVerticesData = false);
     virtual ~InterleavedGltfModel() = default;
 
@@ -633,7 +618,12 @@ public:
 
     void AddAnimation(const std::string& filename);
 
+    void ExtractAnimations(const tinygltf::Model& transmission_model);
+
+
 public:
+    void AppendAnimations(const std::vector<std::string>& filenames);
+
     // アニメーションを追加する関数
     void AddAnimations(const std::vector<std::string>& filenames);
 

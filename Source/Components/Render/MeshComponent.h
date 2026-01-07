@@ -156,7 +156,8 @@ public:
 
     void AppendAnimations(const std::vector<std::string>& filenames) const
     {
-        model->AddAnimations(filenames);
+        //model->AddAnimations(filenames);
+        model->AppendAnimations(filenames);
     }
 
     void Tick(float deltaTime)override

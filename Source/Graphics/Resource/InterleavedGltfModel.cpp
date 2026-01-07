@@ -43,6 +43,7 @@ bool _NullLoadImageData(tinygltf::Image*, const int, std::string*, std::string*,
 InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::string& filename, Mode mode, bool isSaveVerticesData) : filename(filename), mode(mode), isSaveVerticesData(isSaveVerticesData)
 {
     std::filesystem::path cerealFilename(filename);
+#if 1
     cerealFilename.replace_extension(mode == Mode::StaticMesh || mode == Mode::InstancedStaticMesh ? "batchCereal" : "cereal");
     if (std::filesystem::exists(cerealFilename.c_str()))
     {
@@ -60,6 +61,7 @@ InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::stri
         deserialization(cereal::make_nvp("skins", skins), cereal::make_nvp("animations", animations));
     }
     else
+#endif
     {
         tinygltf::TinyGLTF tinyGltf;
         tinyGltf.SetImageLoader(_NullLoadImageData, nullptr);
@@ -69,12 +71,14 @@ InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::stri
         std::string error, warning;
         bool succeeded = false;
 
+#if 1
         if (cachedGltfModels.find(filename) != cachedGltfModels.end() && !cachedGltfModels.at(filename).expired())
         {
             //キャッシュされたデータからモデルデータ取得
             gltfModel = cachedGltfModels.at(filename).lock();
         }
         else
+#endif // 0
         {
             gltfModel = std::make_shared<tinygltf::Model>();
 
@@ -95,6 +99,7 @@ InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::stri
             cachedGltfModels[filename] = gltfModel;
         }
 
+
         for (const tinygltf::Scene& gltfScene : gltfModel->scenes)
         {
             Scene& scene = scenes.emplace_back();
@@ -114,7 +119,8 @@ InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::stri
         else
         {
             FetchMeshes(device, *gltfModel);
-            FetchAnimations(*gltfModel, animations); // 一個目のモデルはアニメーションをそのまま追加
+            ExtractAnimations(*gltfModel);
+            //FetchAnimations(*gltfModel, animations); // 一個目のモデルはアニメーションをそのまま追加
             //FetchAnimations(*gltfModel);
         }
 
@@ -2196,6 +2202,142 @@ void InterleavedGltfModel::AddAnimation(const std::string& filename)
         cereal::BinaryOutputArchive serialization(ofs);
         // 書き込み時
         serialization(cereal::make_nvp("animations", newAnimations));
+    }
+}
+
+void InterleavedGltfModel::ExtractAnimations(const tinygltf::Model& transmission_model)
+{
+    for (std::vector<tinygltf::Skin>::const_reference transmission_skin : transmission_model.skins)
+    {
+        Skin& skin = skins.emplace_back();
+        const tinygltf::Accessor& transmission_accessor = transmission_model.accessors.at(transmission_skin.inverseBindMatrices);
+        const tinygltf::BufferView& transmission_buffer_view = transmission_model.bufferViews.at(transmission_accessor.bufferView);
+        _ASSERT_EXPR(transmission_accessor.type == TINYGLTF_TYPE_MAT4, L"");
+
+        skin.inverseBindMatrices.resize(transmission_accessor.count);
+        std::memcpy(skin.inverseBindMatrices.data(), transmission_model.buffers.at(transmission_buffer_view.buffer).data.data() + transmission_buffer_view.byteOffset + transmission_accessor.byteOffset, transmission_accessor.count * sizeof(DirectX::XMFLOAT4X4));
+
+        skin.joints = transmission_skin.joints;
+    }
+
+    for (std::vector<tinygltf::Animation>::const_reference transmission_animation : transmission_model.animations)
+    {
+        std::vector<Animation>::reference animation = animations.emplace_back();
+        animation.name = transmission_animation.name;
+
+        for (std::vector<tinygltf::AnimationSampler>::const_reference transmission_sampler : transmission_animation.samplers)
+        {
+            Animation::Sampler& sampler = animation.samplers.emplace_back();
+            sampler.input = transmission_sampler.input;
+            sampler.output = transmission_sampler.output;
+            sampler.interpolation = transmission_sampler.interpolation;
+
+            const tinygltf::Accessor& transmission_accessor = transmission_model.accessors.at(transmission_sampler.input);
+            const tinygltf::BufferView& transmission_buffer_view = transmission_model.bufferViews.at(transmission_accessor.bufferView);
+            _ASSERT_EXPR(transmission_accessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT, L"");
+            _ASSERT_EXPR(transmission_accessor.type == TINYGLTF_TYPE_SCALAR, L"");
+            const std::pair<std::unordered_map<int, std::vector<FLOAT>>::iterator, bool>& keyframe_timestamps = animation.timelines.emplace(transmission_sampler.input, transmission_accessor.count);
+            if (keyframe_timestamps.second)
+            {
+                std::memcpy(keyframe_timestamps.first->second.data(), transmission_model.buffers.at(transmission_buffer_view.buffer).data.data() + transmission_buffer_view.byteOffset + transmission_accessor.byteOffset, transmission_accessor.count * sizeof(FLOAT));
+            }
+        }
+        for (std::vector<tinygltf::AnimationChannel>::const_reference transmission_channel : transmission_animation.channels)
+        {
+            Animation::Channel& channel = animation.channels.emplace_back();
+            channel.sampler = transmission_channel.sampler;
+            channel.targetNode = transmission_channel.target_node;
+            channel.targetPath = transmission_channel.target_path;
+
+            std::vector<tinygltf::AnimationSampler>::const_reference transmission_sampler = transmission_animation.samplers.at(transmission_channel.sampler);
+
+            const tinygltf::Accessor& transmission_accessor = transmission_model.accessors.at(transmission_sampler.output);
+            const tinygltf::BufferView& transmission_buffer_view = transmission_model.bufferViews.at(transmission_accessor.bufferView);
+            if (transmission_channel.target_path == "scale")
+            {
+                _ASSERT_EXPR(transmission_accessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT, L"");
+                _ASSERT_EXPR(transmission_accessor.type == TINYGLTF_TYPE_VEC3, L"");
+                const std::pair<std::unordered_map<int, std::vector<DirectX::XMFLOAT3>>::iterator, bool>& keyframe_scales = animation.scales.emplace(transmission_sampler.output, transmission_accessor.count);
+                if (keyframe_scales.second)
+                {
+                    std::memcpy(keyframe_scales.first->second.data(), transmission_model.buffers.at(transmission_buffer_view.buffer).data.data() + transmission_buffer_view.byteOffset + transmission_accessor.byteOffset, transmission_accessor.count * sizeof(DirectX::XMFLOAT3));
+                }
+            }
+            else if (transmission_channel.target_path == "rotation")
+            {
+                _ASSERT_EXPR(transmission_accessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT, L"");
+                _ASSERT_EXPR(transmission_accessor.type == TINYGLTF_TYPE_VEC4, L"");
+                const std::pair<std::unordered_map<int, std::vector<DirectX::XMFLOAT4>>::iterator, bool>& keyframe_rotations = animation.rotations.emplace(transmission_sampler.output, transmission_accessor.count);
+                if (keyframe_rotations.second)
+                {
+                    std::memcpy(keyframe_rotations.first->second.data(), transmission_model.buffers.at(transmission_buffer_view.buffer).data.data() + transmission_buffer_view.byteOffset + transmission_accessor.byteOffset, transmission_accessor.count * sizeof(DirectX::XMFLOAT4));
+                }
+            }
+            else if (transmission_channel.target_path == "translation")
+            {
+                _ASSERT_EXPR(transmission_accessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT, L"");
+                _ASSERT_EXPR(transmission_accessor.type == TINYGLTF_TYPE_VEC3, L"");
+                const std::pair<std::unordered_map<int, std::vector<DirectX::XMFLOAT3>>::iterator, bool>& keyframe_translations = animation.translations.emplace(transmission_sampler.output, transmission_accessor.count);
+                if (keyframe_translations.second)
+                {
+                    std::memcpy(keyframe_translations.first->second.data(), transmission_model.buffers.at(transmission_buffer_view.buffer).data.data() + transmission_buffer_view.byteOffset + transmission_accessor.byteOffset, transmission_accessor.count * sizeof(DirectX::XMFLOAT3));
+                }
+            }
+            else if (transmission_channel.target_path == "weights")
+            {
+                //_ASSERT_EXPR(FALSE, L"Weighted animations have not yet been implemented.");
+                OutputDebugStringA("Weighted animations have not yet been implemented.\n");
+
+            }
+            else
+            {
+                _ASSERT_EXPR(FALSE, L"");
+            }
+        }
+    }
+
+    Logger::Log(Logger::LogCategory::System, "animations Before Count: " + std::to_string(animations.size()));
+
+    for (Animation& animation : animations)
+    {
+
+        // Find a longest animation duration in timestamp of each channel.
+        for (decltype(animation.timelines)::value_type& keyframe_timestamps : animation.timelines)
+        {
+            animation.duration = std::max<float>(animation.duration, keyframe_timestamps.second.back());
+        }
+    }
+
+    Logger::Log(Logger::LogCategory::System, "animations After Count: " + std::to_string(animations.size()));
+}
+
+void InterleavedGltfModel::AppendAnimations(const std::vector<std::string>& filenames)
+{
+    for (std::vector<std::string>::const_reference filename : filenames)
+    {
+        tinygltf::TinyGLTF tiny_gltf;
+#if 1
+        tiny_gltf.SetImageLoader(_NullLoadImageData, nullptr);
+#endif
+
+        tinygltf::Model transmission_model;
+        std::string error, warning;
+        bool succeeded = false;
+        if (filename.find(".glb") != std::string::npos)
+        {
+            succeeded = tiny_gltf.LoadBinaryFromFile(&transmission_model, &error, &warning, filename.c_str());
+        }
+        else if (filename.find(".gltf") != std::string::npos)
+        {
+            succeeded = tiny_gltf.LoadASCIIFromFile(&transmission_model, &error, &warning, filename.c_str());
+        }
+        if (!warning.empty())
+        {
+            OutputDebugStringA(warning.c_str());
+        }
+        _ASSERT_EXPR(error.empty() && succeeded, L"Failed to load glTF file");
+
+        ExtractAnimations(transmission_model);
     }
 }
 

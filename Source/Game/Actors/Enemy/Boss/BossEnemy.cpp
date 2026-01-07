@@ -8,11 +8,11 @@
 void BossEnemy::Initialize(const Transform& transform)
 {
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
-    skeletalMeshComponent->SetModel("./Data/Models/Characters/Savarog/Idle.gltf");
+    //skeletalMeshComponent->SetModel("./Data/Models/Characters/Savarog/Idle.gltf");
     //skeletalMeshComponent->SetModel("./Data/Models/Characters/SevarogBloodred/Idle.gltf");
-    //skeletalMeshComponent->SetModel("./Data/Models/Characters/SevarogBloodred/AnimationCharacters.gltf");
+    skeletalMeshComponent->SetModel("./Data/Models/Characters/SevarogBloodred/AnimationCharacters.gltf");
     skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
-#if 1
+#if 0
     const std::vector<std::string> animationFilenames =
     {
         //"./Data/Models/Characters/Savarog/Idle.gltf",
@@ -46,29 +46,34 @@ void BossEnemy::Initialize(const Transform& transform)
     // アニメーションコントローラーを作成
     animationController_ = std::make_shared<AnimationController>(skeletalMeshComponent.get());
     animationController_->AddAnimation("Idle", 0);
-    animationController_->AddAnimation("Jog_Fwd", 1);
-    animationController_->AddAnimation("Jog_Left", 2);
-    animationController_->AddAnimation("Jog_Right", 3);
-    //animationController_->AddAnimation("LevelStart", 4);
-    //animationController_->AddAnimation("Recall", 5);
-    //animationController_->AddAnimation("Emote_Pull_MC_T1", 6);
-    //animationController_->AddAnimation("HitReact_Back", 7);
-    //animationController_->AddAnimation("HitReact_Front", 8);
-    //animationController_->AddAnimation("HitReact_Left", 9);
-    //animationController_->AddAnimation("HitReact_Right", 10);
-    //animationController_->AddAnimation("Soul_Siphon", 11);
-    //animationController_->AddAnimation("Soul_Siphon_Targeting", 12);
-    //animationController_->AddAnimation("Stun_End", 13);
-    //animationController_->AddAnimation("Stun_Start", 14);
-    //animationController_->AddAnimation("Stun_Loop", 15);
-    //animationController_->AddAnimation("Swing1_Medium", 16);
-    //animationController_->AddAnimation("Swing1_Return2Idle", 17);
-    //animationController_->AddAnimation("Swing2_Medium", 18);
-    //animationController_->AddAnimation("Swing2_Return2Idle", 19);
-    //animationController_->AddAnimation("Swing3_Medium", 20);
-    //animationController_->AddAnimation("Swing3_Return2Idle", 21);
-    //animationController_->AddAnimation("Death_front", 22);
-    //animationController_->AddAnimation("Victory_Emote", 23);
+    animationController_->AddAnimation("HitReact_Back", 1);
+    animationController_->AddAnimation("HitReact_Front", 2);
+    animationController_->AddAnimation("HitReact_Left", 3);
+    animationController_->AddAnimation("HitReact_Right", 4);
+    animationController_->AddAnimation("LevelStart_0", 5);
+    animationController_->AddAnimation("Attack_0", 6);
+    animationController_->AddAnimation("Attack_1", 7);
+    animationController_->AddAnimation("Attack_2", 8);
+    animationController_->AddAnimation("Attack_3", 9);
+    animationController_->AddAnimation("Jog_Fwd", 10);
+    animationController_->AddAnimation("Jog_Left", 11);
+    animationController_->AddAnimation("Jog_Right", 12);
+    animationController_->AddAnimation("LevelStart_1", 13);
+    animationController_->AddAnimation("Recall", 14);
+    animationController_->AddAnimation("Soul_Siphon", 15);
+    animationController_->AddAnimation("Soul_Siphon_Targeting", 16);
+    animationController_->AddAnimation("Stun_End", 17);
+    animationController_->AddAnimation("Stun_Loop", 18);
+    animationController_->AddAnimation("Stun_Start", 19);
+    animationController_->AddAnimation("Swing1_Medium", 20);
+    animationController_->AddAnimation("Swing1_Return2Idle", 21);
+    animationController_->AddAnimation("Swing2_Medium", 22);
+    animationController_->AddAnimation("Swing2_Return2Idle", 23);
+    animationController_->AddAnimation("Swing3_Medium", 24);
+    animationController_->AddAnimation("Swing3_Return2Idle", 25);
+    animationController_->AddAnimation("Victory_Emote", 26);
+    animationController_->AddAnimation("Emote_Pull_MC_T1", 27);
+    animationController_->AddAnimation("Death_front", 28);
 
     // ステートマシンを作成
     stateMachine_ = std::make_shared<StateMachine>();
@@ -110,7 +115,7 @@ void BossEnemy::Initialize(const Transform& transform)
     // 回転コンポーネント追加
     rotationComponent = AddComponent<RotationComponent>("rotationComponent", "skeletalComponent");
 
-    PlayAnimation("Idle", true, true, 0.1f);
+    PlayAnimation("Jog_Fwd", true, true, 0.1f);
     SetPosition(transform.GetLocation());
     SetQuaternionRotation(transform.GetRotation());
     SetScale(transform.GetScale());

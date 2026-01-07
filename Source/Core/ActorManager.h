@@ -287,7 +287,6 @@ public:
         itemModel = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/Items/PickUpEnergyCore/pick_up_item.gltf", InterleavedGltfModel::Mode::InstancedStaticMesh);
         HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelEmissionPS.cso", pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-        itemModel->emission = 3.0f;
 
         viewBuffer = std::make_unique<ConstantBuffer<ViewConstants>>(device);
     }

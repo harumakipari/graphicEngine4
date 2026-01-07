@@ -49,5 +49,5 @@ private:
 
     std::unique_ptr<ClothSimulate> clothSimulate;
 
-
+    std::shared_ptr<InterleavedGltfModel> model;
 };
