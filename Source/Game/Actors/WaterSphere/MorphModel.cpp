@@ -484,58 +484,58 @@ void MorphModel::FetchMeshes(ID3D11Device* device, const tinygltf::Model& gltfMo
 
             if (!gltfPrimitive.targets.empty())
             {
-                // ç°âÒÇÕ1 morphÅiWaterÅjëOíÒ
-                const std::map<std::string, int>& target = gltfPrimitive.targets[0];
-
-                // POSITION delta
-                auto posIt = target.find("POSITION");
-                if (posIt != target.end())
+                for (size_t m = 0; m < gltfPrimitive.targets.size(); ++m)
                 {
-                    const tinygltf::Accessor& accessor =
-                        gltfModel.accessors.at(posIt->second);
-                    const tinygltf::BufferView& bufferView =
-                        gltfModel.bufferViews.at(accessor.bufferView);
+                    const auto& target = gltfPrimitive.targets[m];
 
-                    const unsigned char* sData =
-                        gltfModel.buffers.at(bufferView.buffer).data.data() +
-                        bufferView.byteOffset + accessor.byteOffset;
+                    if (target.contains("POSITION"))
+                    {
+                        const auto& accessor =
+                            gltfModel.accessors[target.at("POSITION")];
+                        const auto& bufferView =
+                            gltfModel.bufferViews[accessor.bufferView];
 
-                    const size_t sStride = accessor.ByteStride(bufferView);
-                    const size_t dStride = sizeof(Mesh::Vertex);
+                        const uint8_t* src =
+                            gltfModel.buffers[bufferView.buffer].data.data()
+                            + bufferView.byteOffset + accessor.byteOffset;
 
-                    unsigned char* dData =
-                        reinterpret_cast<unsigned char*>(&primitive.cachedVertices[0].morphPosition);
+                        unsigned char* dData =
+                            reinterpret_cast<unsigned char*>(&primitive.cachedVertices[0].morphPosition[m]);
 
-                    CopyStride<DirectX::XMFLOAT3>(
-                        dData, dStride, sData, sStride, accessor.count);
-                }
+                        CopyStride<DirectX::XMFLOAT3>(
+                            dData,
+                            sizeof(Mesh::Vertex),
+                            src,
+                            accessor.ByteStride(bufferView),
+                            accessor.count
+                        );
+                    }
 
-                // NORMAL delta
-                auto nrmIt = target.find("NORMAL");
-                if (nrmIt != target.end())
-                {
-                    const tinygltf::Accessor& accessor =
-                        gltfModel.accessors.at(nrmIt->second);
-                    const tinygltf::BufferView& bufferView =
-                        gltfModel.bufferViews.at(accessor.bufferView);
+                    if (target.contains("NORMAL"))
+                    {
+                        const auto& accessor =
+                            gltfModel.accessors[target.at("NORMAL")];
+                        const auto& bufferView =
+                            gltfModel.bufferViews[accessor.bufferView];
 
-                    const unsigned char* sData =
-                        gltfModel.buffers.at(bufferView.buffer).data.data() +
-                        bufferView.byteOffset + accessor.byteOffset;
+                        const uint8_t* src =
+                            gltfModel.buffers[bufferView.buffer].data.data()
+                            + bufferView.byteOffset + accessor.byteOffset;
 
-                    const size_t sStride = accessor.ByteStride(bufferView);
-                    const size_t dStride = sizeof(Mesh::Vertex);
+                        unsigned char* dData =
+                            reinterpret_cast<unsigned char*>(&primitive.cachedVertices[0].morphNormal[m]);
 
-                    unsigned char* dData =
-                        reinterpret_cast<unsigned char*>(&primitive.cachedVertices[0].morphNormal);
-
-                    CopyStride<DirectX::XMFLOAT3>(
-                        dData, dStride, sData, sStride, accessor.count);
+                        CopyStride<DirectX::XMFLOAT3>(
+                            dData,
+                            sizeof(Mesh::Vertex),
+                            src,
+                            accessor.ByteStride(bufferView),
+                            accessor.count
+                        );
+                    }
                 }
             }
-
             primitive.vertexBufferView.sizeInBytes = static_cast<UINT>(primitive.cachedVertices.size() * sizeof(Mesh::Vertex));
-
         }
     }
 
@@ -1349,8 +1349,14 @@ void MorphModel::CreateAndUploadResources(ID3D11Device* device)
             { "JOINTS", 1, DXGI_FORMAT_R32G32B32A32_UINT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "WEIGHTS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "WEIGHTS", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "MORPH_POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "MORPH_NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "MORPH_POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "MORPH_POSITION", 1, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "MORPH_POSITION", 2, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "MORPH_POSITION", 3, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "MORPH_NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "MORPH_NORMAL", 1, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "MORPH_NORMAL", 2, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "MORPH_NORMAL", 3, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         };
         hr = CreateVsFromCSO(device, "./Shader/GltfMorphModelVS.cso", vertexShader.ReleaseAndGetAddressOf(), inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));

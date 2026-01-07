@@ -4,9 +4,23 @@ VS_OUT main(MORPH_VS_IN vin)
 {
     float sigma = vin.tangent.w;
 
-    // Morph適用（差分なので add）
-    vin.position.xyz += vin.morphPosition.xyz * morphWeight;
-    vin.normal.xyz += vin.morphNormal.xyz * morphWeight;
+    float3 morphPos = 0;
+    float3 morphNor = 0;
+
+    float m_weights[4]=
+    {
+        morphWeights.x,morphWeights.y,morphWeights.z,morphWeights.w
+    };
+
+    for (int i = 0; i < 4; i++)
+    {
+        morphPos += vin.morphPosition[i].xyz * m_weights[i];
+        morphNor += vin.morphNormal[i].xyz * m_weights[i];
+    }
+
+    vin.position.xyz += morphPos;
+    vin.normal.xyz += morphNor;
+
 
     // 法線は必ず正規化
     vin.normal.xyz = normalize(vin.normal.xyz);

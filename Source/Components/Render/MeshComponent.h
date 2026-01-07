@@ -81,7 +81,6 @@ public:
         plusAlphaCBuffer->data.dissolve = dissolve;
         plusAlphaCBuffer->data.cpuColor = cpuColor;
         plusAlphaCBuffer->data.emissionPower = emissionPower;
-        plusAlphaCBuffer->data.morphWeight = morphWeight;
         plusAlphaCBuffer->Activate(immediateContext, 5);
     }
 
@@ -99,7 +98,7 @@ public:
             ImGui::SliderFloat("dissolve", &dissolve, 0.0f, 1.0f);
             ImGui::ColorEdit4("cpuColor", &cpuColor.x);
             ImGui::SliderFloat("emissionPower", &emissionPower, 0.0f, 10.0f);
-            ImGui::SliderFloat("morphWeight", &morphWeight, 0.0f, 1.0f);
+            ImGui::SliderFloat4("morphWeight", &plusAlphaCBuffer->data.morphWeights.x, 0.0f, 1.0f);
             ImGui::TreePop();
         }
 #endif
@@ -125,8 +124,8 @@ public:
 
         DirectX::XMFLOAT4 cpuColor; // 色をCPU側で指定する用　（ダメージ当たったときとか）
 
+        DirectX::XMFLOAT4 morphWeights = { 0.0f,0.0f,0.0f,0.0f };  // モーフモデルに使用する weight 0.0f ~ 1.0f 
         float emissionPower; // 自己発光の強さ
-        float morphWeight;  // モーフモデルに使用する weight 0.0f ~ 1.0f 
     };
     std::unique_ptr<ConstantBuffer<PlusAlphaConstants>> plusAlphaCBuffer;
 

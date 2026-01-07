@@ -71,8 +71,6 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::v
             auto* convexComponent = actor->GetComponent<MorphMeshComponent>();
             if (convexComponent = dynamic_cast<MorphMeshComponent*>(convexComponent))
             {
-                auto morphModel = dynamic_cast<MorphModel*>(convexComponent->model.get());
-                morphModel->Render(immediateContext, worldMat, {}, InterleavedGltfModel::RenderPass::All);
                 continue;
             }
 
@@ -130,8 +128,6 @@ void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext) const
             auto* convexComponent = actor->GetComponent<MorphMeshComponent>();
             if (convexComponent = dynamic_cast<MorphMeshComponent*>(convexComponent))
             {
-                auto morphModel = dynamic_cast<MorphModel*>(convexComponent->model.get());
-                morphModel->Render(immediateContext, worldMat, {}, InterleavedGltfModel::RenderPass::All);
                 continue;
             }
 
@@ -186,8 +182,8 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext) const
             auto* convexComponent = actor->GetComponent<MorphMeshComponent>();
             if (convexComponent = dynamic_cast<MorphMeshComponent*>(convexComponent))
             {
-                //auto morphModel = dynamic_cast<MorphModel*>(convexComponent->model.get());
-                //morphModel->Render(immediateContext, worldMat, {}, InterleavedGltfModel::RenderPass::All);
+                auto morphModel = dynamic_cast<MorphModel*>(convexComponent->model.get());
+                morphModel->Render(immediateContext, worldMat, {}, InterleavedGltfModel::RenderPass::All);
                 continue;
             }
 

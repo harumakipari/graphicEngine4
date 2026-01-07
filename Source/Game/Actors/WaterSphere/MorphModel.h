@@ -154,8 +154,8 @@ public:
             DirectX::XMFLOAT4 weights0 = { 1, 0, 0, 0 };
             DirectX::XMFLOAT4 weights1 = { 0, 0, 0, 0 };
 
-            DirectX::XMFLOAT3 morphPosition; // delta
-            DirectX::XMFLOAT3 morphNormal;   // delta
+            DirectX::XMFLOAT3 morphPosition[4]; // delta
+            DirectX::XMFLOAT3 morphNormal[4];   // delta
 
             template<class T>
             void serialize(T& archive)

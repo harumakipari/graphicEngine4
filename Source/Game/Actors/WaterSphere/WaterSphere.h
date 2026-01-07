@@ -11,7 +11,8 @@ public:
     void Initialize(const Transform& transform)override
     {
         std::shared_ptr<MorphMeshComponent> skeletalMesh = AddComponent<MorphMeshComponent>("morphMesh");
-        skeletalMesh->SetModel("./Data/Models/Morph/morphSphere.gltf", false);
+        //skeletalMesh->SetModel("./Data/Models/Morph/morphSphere.gltf", false);
+        skeletalMesh->SetModel("./Data/Models/Morph/morphSphere_shape2.gltf", false);
     }
 
     void Update(float elapsedTime)override {}

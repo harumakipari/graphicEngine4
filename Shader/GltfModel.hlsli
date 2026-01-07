@@ -24,8 +24,8 @@ struct MORPH_VS_IN
     float2 texcoord : TEXCOORD;
     uint4 joints[2] : JOINTS;
     float4 weights[2] : WEIGHTS;
-    float4 morphPosition : MORPH_POSITION;
-    float4 morphNormal : MORPH_NORMAL;
+    float4 morphPosition[4] : MORPH_POSITION;
+    float4 morphNormal[4] : MORPH_NORMAL;
 };
 
 struct INSTANCE_VS_IN
@@ -68,8 +68,9 @@ cbuffer PLUS_ALPHA_CONSTANT_BUFFER : register(b5)
 
     float4 cpuColor; // 色をCPU側で指定する用　（ダメージ当たったときとか）
 
+    float4 morphWeights;
+
     float emissionPower; // 自己発光の強さ
-    float morphWeight;
 }
 
 
