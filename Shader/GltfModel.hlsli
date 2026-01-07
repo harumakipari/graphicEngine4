@@ -69,6 +69,7 @@ cbuffer PLUS_ALPHA_CONSTANT_BUFFER : register(b5)
     float4 cpuColor; // 色をCPU側で指定する用　（ダメージ当たったときとか）
 
     float emissionPower; // 自己発光の強さ
+    float morphWeight;
 }
 
 
@@ -151,9 +152,9 @@ struct PS_OUT
 
 struct GBUFFER_PS_OUT
 {
-    float4 normal : SV_TARGET1;     // world normal  w:未使用
-    float4 material : SV_TARGET2;   // x:metallic y:occlusion z:roughness w:occlusionStrength
-    float4 color : SV_TARGET3;      
-    float4 position : SV_TARGET4;   // world position
-    float4 emissive : SV_TARGET5;   // w:何かを書き込んでいたら０にするそれ以外は１　スカイマップなどの時に使用
+    float4 normal : SV_TARGET1; // world normal  w:未使用
+    float4 material : SV_TARGET2; // x:metallic y:occlusion z:roughness w:occlusionStrength
+    float4 color : SV_TARGET3;
+    float4 position : SV_TARGET4; // world position
+    float4 emissive : SV_TARGET5; // w:何かを書き込んでいたら０にするそれ以外は１　スカイマップなどの時に使用
 };

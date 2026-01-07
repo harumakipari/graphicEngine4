@@ -23,11 +23,6 @@ UINT SizeofComponent(DXGI_FORMAT format)
     return 0;
 }
 
-//bool NullLoadImageData(tinygltf::Image*, const int, std::string*, std::string*, int, int, const unsigned char*, int, void*)
-//{
-//    return true;
-//}
-
 void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::vector<std::shared_ptr<Actor>> allActors*/) const
 {
     Scene* currentScene = Scene::GetCurrentScene();  // 現在のシーン取得
@@ -61,14 +56,26 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::v
             // 各 MeshComponent の model を取り出す
             const InterleavedGltfModel* model = meshComponent->model.get();
 
+#if 0
             auto* convexComponent = actor->GetComponent<ConvexCollisionComponent>();
             if (convexComponent = dynamic_cast<ConvexCollisionComponent*>(convexComponent))
             {
                 //meshComponent->model->Render(immediateContext, worldMat, convexComponent->GetAnimatedNodes(), InterleavedGltfModel::RenderPass::Opaque);
             }
+#endif // 0
+
 
             meshComponent->UpdateConstantBuffer(immediateContext);
             meshComponent->UpdatePlusAlphaConstants(immediateContext);
+
+            auto* convexComponent = actor->GetComponent<MorphMeshComponent>();
+            if (convexComponent = dynamic_cast<MorphMeshComponent*>(convexComponent))
+            {
+                auto morphModel = dynamic_cast<MorphModel*>(convexComponent->model.get());
+                morphModel->Render(immediateContext, worldMat, {}, InterleavedGltfModel::RenderPass::All);
+                continue;
+            }
+
 
             if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
             {// 
@@ -120,6 +127,15 @@ void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext) const
             meshComponent->UpdateConstantBuffer(immediateContext);
             meshComponent->UpdatePlusAlphaConstants(immediateContext);
 
+            auto* convexComponent = actor->GetComponent<MorphMeshComponent>();
+            if (convexComponent = dynamic_cast<MorphMeshComponent*>(convexComponent))
+            {
+                auto morphModel = dynamic_cast<MorphModel*>(convexComponent->model.get());
+                morphModel->Render(immediateContext, worldMat, {}, InterleavedGltfModel::RenderPass::All);
+                continue;
+            }
+
+
             if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
             {// 
                 Draw(immediateContext, meshComponent, worldMat, meshComponent->modelNodes, InterleavedGltfModel::RenderPass::Mask);
@@ -166,6 +182,15 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext) const
             const InterleavedGltfModel* model = meshComponent->model.get();
             meshComponent->UpdateConstantBuffer(immediateContext);
             meshComponent->UpdatePlusAlphaConstants(immediateContext);
+
+            auto* convexComponent = actor->GetComponent<MorphMeshComponent>();
+            if (convexComponent = dynamic_cast<MorphMeshComponent*>(convexComponent))
+            {
+                //auto morphModel = dynamic_cast<MorphModel*>(convexComponent->model.get());
+                //morphModel->Render(immediateContext, worldMat, {}, InterleavedGltfModel::RenderPass::All);
+                continue;
+            }
+
 
             if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
             {// 
@@ -215,6 +240,13 @@ void SceneRenderer::CastShadowRender(ID3D11DeviceContext* immediateContext)
             // 各 MeshComponent の model を取り出す
             const InterleavedGltfModel* model = meshComponent->model.get();
             meshComponent->UpdateConstantBuffer(immediateContext);
+            auto* convexComponent = actor->GetComponent<MorphMeshComponent>();
+            if (convexComponent = dynamic_cast<MorphMeshComponent*>(convexComponent))
+            {
+                auto morphModel = dynamic_cast<MorphModel*>(convexComponent->model.get());
+                morphModel->CastShadow(immediateContext, worldMat, {});
+                continue;
+            }
 
             if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
             {// 

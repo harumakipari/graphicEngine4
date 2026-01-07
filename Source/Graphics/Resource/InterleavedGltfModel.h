@@ -69,6 +69,7 @@ public:
     //モデル固有の座標系 //初期　LH_Y_UP
     CoordinateSystem modelCoordinateSystem = CoordinateSystem::RH_Y_UP;
 
+    InterleavedGltfModel() = default;
     InterleavedGltfModel(ID3D11Device* device, const std::string& filename, Mode mode, bool isSaveVerticesData = false);
     virtual ~InterleavedGltfModel() = default;
 

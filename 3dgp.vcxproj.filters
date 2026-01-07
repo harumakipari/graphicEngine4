@@ -1130,6 +1130,9 @@
     <FxCompile Include="Shader\GltfMorphModelVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\GltfMorphModelPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ComputeParticle.hlsli">

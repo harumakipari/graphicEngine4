@@ -4,8 +4,6 @@ VS_OUT main(MORPH_VS_IN vin)
 {
     float sigma = vin.tangent.w;
 
-    float morphWeight = 0.0f;
-
     // Morph適用（差分なので add）
     vin.position.xyz += vin.morphPosition.xyz * morphWeight;
     vin.normal.xyz += vin.morphNormal.xyz * morphWeight;

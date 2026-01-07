@@ -24,6 +24,7 @@
 #include "Components/Base/SceneComponent.h"
 #include "Graphics/Resource/InterleavedGltfModel.h"
 #include "Engine/Utility/Win32Utils.h"
+#include "Game/Actors/WaterSphere/MorphModel.h"
 
 class Actor;
 
@@ -80,6 +81,7 @@ public:
         plusAlphaCBuffer->data.dissolve = dissolve;
         plusAlphaCBuffer->data.cpuColor = cpuColor;
         plusAlphaCBuffer->data.emissionPower = emissionPower;
+        plusAlphaCBuffer->data.morphWeight = morphWeight;
         plusAlphaCBuffer->Activate(immediateContext, 5);
     }
 
@@ -97,6 +99,7 @@ public:
             ImGui::SliderFloat("dissolve", &dissolve, 0.0f, 1.0f);
             ImGui::ColorEdit4("cpuColor", &cpuColor.x);
             ImGui::SliderFloat("emissionPower", &emissionPower, 0.0f, 10.0f);
+            ImGui::SliderFloat("morphWeight", &morphWeight, 0.0f, 1.0f);
             ImGui::TreePop();
         }
 #endif
@@ -110,6 +113,7 @@ public:
 
     virtual bool IsCastShadow() const { return isCastShadow_; }
 
+    virtual void OnRegister() override {}
 
     // モデルごとに更新したいPlusAlpha 用定数バッファ
     struct PlusAlphaConstants
@@ -118,8 +122,11 @@ public:
         float	saturation;	// 彩度調整
         float	brightness;	// 明度調整
         float   dissolve;   // ディゾルブ用
+
         DirectX::XMFLOAT4 cpuColor; // 色をCPU側で指定する用　（ダメージ当たったときとか）
+
         float emissionPower; // 自己発光の強さ
+        float morphWeight;  // モーフモデルに使用する weight 0.0f ~ 1.0f 
     };
     std::unique_ptr<ConstantBuffer<PlusAlphaConstants>> plusAlphaCBuffer;
 
@@ -129,6 +136,7 @@ public:
     float   dissolve = 0.0f;   // ディゾルブ用
     DirectX::XMFLOAT4 cpuColor = { 1.0f,1.0f,1.0f,1.0f }; // 色をCPU側で指定する用　（ダメージ当たったときとか）
     float emissionPower = 1.0f; // 自己発光の強さ
+    float morphWeight = 0.0f;   // モーフモデルに使用する weight  0.0f ~ 1.0f 
 
 
 protected:
@@ -220,6 +228,87 @@ public:
     }
 
 private:
+
+};
+
+
+class MorphMeshComponent :public MeshComponent
+{
+public:
+    MorphMeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :MeshComponent(name, owner) {}
+
+    void SetModel(const std::string& filename, bool isSaveVerticesData = false)override
+    {
+        ID3D11Device* device = Graphics::GetDevice();
+        model = std::make_shared<MorphModel>(device, filename, MorphModel::Mode::SkeltalMesh, isSaveVerticesData);
+        modelNodes = model->GetNodes();
+    }
+
+
+    void AppendAnimations(const std::vector<std::string>& filenames) const
+    {
+        model->AppendAnimations(filenames);
+    }
+
+    void Tick(float deltaTime)override
+    {
+
+    }
+
+    void SetMaterialPS(const std::string& psFilename, const std::string& materialName) const
+    {
+        ID3D11Device* device = Graphics::GetDevice();
+        for (InterleavedGltfModel::Material& material : model->materials)
+        {
+            if (material.name == materialName)
+            {
+                HRESULT hr = CreatePsFromCSO(device, psFilename.c_str(), material.replacedPixelShader.GetAddressOf());
+                _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+            }
+        }
+    }
+
+    void RenderOpaque(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const override
+    {
+        //model->Render(immediateContext, world, model->nodes, InterleavedGltfModel::RenderPass::Opaque, pipeLineState_);
+        model->Render(immediateContext, world, modelNodes, InterleavedGltfModel::RenderPass::Opaque, pipeLineState_);
+    }
+    void RenderMask(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const override
+    {
+        //model->Render(immediateContext, world, model->nodes, InterleavedGltfModel::RenderPass::Mask, pipeLineState_);
+        model->Render(immediateContext, world, modelNodes, InterleavedGltfModel::RenderPass::Mask, pipeLineState_);
+    }
+    void RenderBlend(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const override
+    {
+        //model->Render(immediateContext, world, model->nodes, InterleavedGltfModel::RenderPass::Blend, pipeLineState_);
+        model->Render(immediateContext, world, modelNodes, InterleavedGltfModel::RenderPass::Blend, pipeLineState_);
+    }
+
+    void CastShadow(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const override
+    {
+        //model->CastShadow(immediateContext, world, model->nodes);
+        model->CastShadow(immediateContext, world, modelNodes);
+    }
+
+    DirectX::XMFLOAT3 GetJointWorldPosition(const std::string& name)
+    {
+        if (auto parent = attachParent_.lock())
+        {
+            DirectX::XMFLOAT4X4 parentWorld = parent->GetComponentWorldTransform().ToWorldTransform();
+            //return model->GetJointWorldPosition(name, model->nodes, parentWorld);
+            return model->GetJointWorldPosition(name, modelNodes, parentWorld);
+        }
+        else
+        {
+            DirectX::XMFLOAT4X4 world = GetComponentWorldTransform().ToWorldTransform();
+            //return model->GetJointWorldPosition(name, model->nodes, world);
+            return model->GetJointWorldPosition(name, modelNodes, world);
+        }
+
+        return { 0.0f,0.0f,0.0f };
+    }
+
 
 };
 

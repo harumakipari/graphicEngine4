@@ -25,11 +25,12 @@
 
 #include "Physics/Collider.h"
 #include "Graphics/Core/PipelineState.h"
+#include "Graphics/Resource/InterleavedGltfModel.h"
 
 
 class MeshComponent;
 
-class MorphModel
+class MorphModel :public InterleavedGltfModel
 {
     //リソースキャッシュ
     std::shared_ptr<tinygltf::Model> gltfModel;
@@ -38,37 +39,6 @@ class MorphModel
     MeshComponent* meshComponent;
     std::string filename;
 public:
-    enum class Mode
-    {
-        SkeltalMesh,
-        StaticMesh,
-        InstancedStaticMesh,
-    };
-
-
-    enum class RenderPass
-    {
-        Opaque,// 不透明オブジェクト
-        Mask, // マスク処理
-        Blend,// 半透明オブジェクト
-        All,
-    };
-
-    //モデルの座標系
-    enum class CoordinateSystem
-    {
-        RH_Y_UP,
-        LH_Y_UP,
-        RH_Z_UP,
-        LH_Z_UP
-    };
-
-    //モデルがメートル単位か cm単位の時はfalseにする
-    bool isModelInMeters = true;
-
-    //モデル固有の座標系 //初期　LH_Y_UP
-    CoordinateSystem modelCoordinateSystem = CoordinateSystem::RH_Y_UP;
-
     MorphModel(ID3D11Device* device, const std::string& filename, Mode mode = Mode::SkeltalMesh, bool isSaveVerticesData = false);
     virtual ~MorphModel() = default;
 

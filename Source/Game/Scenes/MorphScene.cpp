@@ -24,6 +24,7 @@
 
 #include "Physics/Physics.h"
 #include "Game/Actors/Stage/FightStage.h"
+#include "Game/Actors/WaterSphere/WaterSphere.h"
 
 #include "Physics/CollisionSystem.h"
 #include "UI/UIManager.h"
@@ -38,6 +39,7 @@ bool MorphScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
     //アクターをセット
     SetUpActors();
 
+#if 0
     morphModel = std::make_unique<MorphModel>(device, "./Data/Models/Morph/morphSphere.gltf");
 
     RegisterRenderHook(RenderPass::Opaque, [&](ID3D11DeviceContext* immediateContext)
@@ -47,6 +49,8 @@ bool MorphScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
                 morphModel->Render(immediateContext, cloth->GetWorldTransform(), {}, MorphModel::RenderPass::All);
             }
         });
+
+#endif // 0
 
 
     return true;
@@ -125,14 +129,14 @@ void MorphScene::SetUpActors()
     Logger::Log(U8("morphシーンのカメラ設定される。"));
 
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<Stage>("stage", stageTr); 
+    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<Stage>("stage", stageTr);
 
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
-    Transform buildTr(DirectX::XMFLOAT3{ -5.0f,-2.45f,3.0 }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cloth", buildTr);
-    building->AddComponent<StaticMeshComponent>("cloth")->SetModel("./Data/Models/ClothFlag/pole.gltf");
+    Transform buildTr(DirectX::XMFLOAT3{ -5.0f,1.0f,3.0 }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaterSphere>("morphModel", buildTr);
+    //building->AddComponent<StaticMeshComponent>("cloth")->SetModel("./Data/Models/ClothFlag/pole.gltf");
 
     Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,-2.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor", buildTr2);

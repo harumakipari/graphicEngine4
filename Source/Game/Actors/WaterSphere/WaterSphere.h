@@ -10,8 +10,8 @@ public:
 
     void Initialize(const Transform& transform)override
     {
-        std::shared_ptr<SkeletalMeshComponent> skeletalMesh = AddComponent<SkeletalMeshComponent>("skeletalMesh");
-        skeletalMesh->SetModel("./Data/Models/Morph/sphere.glb", true);
+        std::shared_ptr<MorphMeshComponent> skeletalMesh = AddComponent<MorphMeshComponent>("morphMesh");
+        skeletalMesh->SetModel("./Data/Models/Morph/morphSphere.gltf", false);
     }
 
     void Update(float elapsedTime)override {}
