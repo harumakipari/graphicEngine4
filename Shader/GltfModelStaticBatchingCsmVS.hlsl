@@ -29,13 +29,9 @@ struct GS_OUTPUT_CSM
 VS_OUT_CSM main(float4 position : POSITION, uint instanceId : SV_INSTANCEID)
 {
     VS_OUT_CSM voutCSM;
-    VS_OUT vout;
     
 #if 1
     position.w = 1;
-    vout.position = mul(position, mul(world, viewProjection));
-    vout.wPosition = mul(position, world);
-
     voutCSM.instanceId = instanceId;
     voutCSM.position = mul(position, mul(world, csmData.cascadedMatrices[instanceId]));
 #endif

@@ -19,6 +19,8 @@ void LightManager::Initialize(ID3D11Device* device)
 
 void LightManager::Update(float deltaTime)
 {
+    SetDirectionalLight(lightDirection, lightColor);
+
     renderPointLights.clear();
 
     // ① デバッグライト

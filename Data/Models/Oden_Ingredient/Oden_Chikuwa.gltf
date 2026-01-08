@@ -1,0 +1,186 @@
+{
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 282,
+      "max": [
+        0.18377846479415894,
+        0.7310579419136047,
+        0.18366768956184387
+      ],
+      "min": [
+        -0.18377846479415894,
+        -0.730890154838562,
+        -0.18366770446300507
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 282,
+      "max": [
+        1.0,
+        0.9999959468841553,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -0.9999959468841553,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 282,
+      "max": [
+        1.0,
+        0.008114081807434559,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -0.008098674938082695,
+        -1.0,
+        1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 282,
+      "max": [
+        1.0,
+        1.0
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5125,
+      "count": 480,
+      "max": [
+        281
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 3384,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 3384,
+      "byteOffset": 3384,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 4512,
+      "byteOffset": 6768,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 2256,
+      "byteOffset": 11280,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 1920,
+      "byteOffset": 13536,
+      "target": 34963
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 15456,
+      "uri": "Oden_Chikuwa.bin"
+    }
+  ],
+  "materials": [
+    {
+      "name": "m_oden",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.9459459185600281,
+          0.9292497038841248,
+          0.8290722966194153,
+          1.0
+        ],
+        "metallicFactor": 0.0
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "Oden_Chikuwa",
+      "rotation": [
+        0.5008933544158936,
+        -0.5008933544158936,
+        0.4991050362586975,
+        0.4991050362586975
+      ],
+      "scale": [
+        2.175204277038574,
+        2.175204277038574,
+        2.175204277038574
+      ],
+      "translation": [
+        0.0,
+        -1.0842021724855044e-19,
+        -1.0762612547608667e-20
+      ]
+    }
+  ],
+  "samplers": [
+    {
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

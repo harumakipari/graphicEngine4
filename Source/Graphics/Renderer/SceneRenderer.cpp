@@ -231,6 +231,10 @@ void SceneRenderer::CastShadowRender(ID3D11DeviceContext* immediateContext)
             { // 描画フラグが false ならスキップ
                 continue;
             }
+            if (!meshComponent->IsCastShadow())
+            {
+                continue;
+            }
             // 各 MeshComponent 自身の最新ワールド行列を取り出す
             const auto& worldMat = meshComponent->GetComponentWorldTransform().ToWorldTransform();
             // 各 MeshComponent の model を取り出す
@@ -689,9 +693,6 @@ void SceneRenderer::CastShadow(ID3D11DeviceContext* immediateContext, const Mesh
                 primitiveCBuffer->data.material = primitive.material;
                 primitiveCBuffer->data.hasTangent = primitive.has("TANGENT");
                 primitiveCBuffer->data.skin = node.skin;
-                //primitiveCBuffer->data.color = { model->cpuColor.x,model->cpuColor.y,model->cpuColor.z,model->alpha };
-                //primitiveCBuffer->data.emission = model->emission;
-                //primitiveCBuffer->data.dissolveFactor = model->disolveFactor;
 
                 //座標系の変換を行う
                 const DirectX::XMFLOAT4X4 coordinateSystemTransforms[]
@@ -829,12 +830,53 @@ void SceneRenderer::CastShadowWithStaticBatching(ID3D11DeviceContext* immediateC
         UINT offset = 0;
         immediateContext->IASetVertexBuffers(0, 1, model->buffers.at(batchMesh.vertexBufferView.buffer).GetAddressOf(), &stride, &offset);
 
-        PrimitiveConstants primitiveData = {};
-        primitiveData.material = batchMesh.material;
-        primitiveData.hasTangent = batchMesh.has("TANGENT");
-        primitiveData.skin = -1;
-        primitiveData.world = world;
+        primitiveCBuffer->data.material = batchMesh.material;
+        primitiveCBuffer->data.hasTangent = batchMesh.has("TANGENT");
+        primitiveCBuffer->data.skin = -1;
+        const DirectX::XMFLOAT4X4 coordinateSystemTransforms[]
+        {
+            {//RHS Y-UP
+                -1,0,0,0,
+                 0,1,0,0,
+                 0,0,1,0,
+                 0,0,0,1,
+            },
+            {//LHS Y-UP
+                1,0,0,0,
+                0,1,0,0,
+                0,0,1,0,
+                0,0,0,1,
+            },
+            {//RHS Z-UP
+                -1,0, 0,0,
+                 0,0,-1,0,
+                 0,1, 0,0,
+                 0,0, 0,1,
+            },
+            {//LHS Z-UP
+                1,0,0,0,
+                0,0,1,0,
+                0,1,0,0,
+                0,0,0,1,
+            },
+        };
+
+        float scaleFactor;
+
+        if (model->isModelInMeters)
+        {
+            scaleFactor = 1.0f;//メートル単位の時
+        }
+        else
+        {
+            scaleFactor = 0.01f;//㎝単位の時
+        }
+
+        DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
+
+        DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, C * DirectX::XMLoadFloat4x4(&world));
         DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&world))));
+        // 0番に定数バッファを送る
         primitiveCBuffer->Activate(immediateContext, 0);
 
 

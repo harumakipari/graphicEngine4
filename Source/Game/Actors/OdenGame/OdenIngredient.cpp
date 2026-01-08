@@ -28,7 +28,7 @@ void OdenDaikonActor::Initialize(const Transform& transform)
     // ƒ‚ƒfƒ‹“o˜^
     std::string parentName = "Daikon_model";
     ingredientModel = AddComponent<SkeletalMeshComponent>(parentName);
-    ingredientModel->SetModel("./Data/Models/Oden_Ingredient/Oden_Daikon.glb");
+    ingredientModel->SetModel("./Data/Models/Oden_Ingredient/Oden_Daikon.gltf");
 
     // ‰Šú‚ÌŠp“x’²®
     SetAngleOffset({ -70.0f,0.0f,0.0f });
