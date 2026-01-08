@@ -60,15 +60,18 @@ CascadedShadowMaps::CascadedShadowMaps(ID3D11Device* device, UINT width, UINT he
     hr = device->CreateDepthStencilView(depthStencilBuffer.Get(), &depthStencilViewDesc, depthStencilView.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViesDesc = {};
-    shaderResourceViesDesc.Format = DXGI_FORMAT_R32_FLOAT; // DXGI_FORMAT_R24_UNORM_X8_TYPELESS : DXGI_FORMAT_R32_FLOAT : DXGI_FORMAT_R16_UNORM
-    shaderResourceViesDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
-    shaderResourceViesDesc.Texture2DArray.ArraySize = static_cast<UINT>(cascadeCount);
-    shaderResourceViesDesc.Texture2DArray.MipLevels = 1;
-    shaderResourceViesDesc.Texture2DArray.FirstArraySlice = 0;
-    shaderResourceViesDesc.Texture2DArray.MostDetailedMip = 0;
-    hr = device->CreateShaderResourceView(depthStencilBuffer.Get(), &shaderResourceViesDesc, shaderResourceView.GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+#if 0
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViesDesc = {};
+	shaderResourceViesDesc.Format = DXGI_FORMAT_R32_FLOAT; // DXGI_FORMAT_R24_UNORM_X8_TYPELESS : DXGI_FORMAT_R32_FLOAT : DXGI_FORMAT_R16_UNORM
+	shaderResourceViesDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+	shaderResourceViesDesc.Texture2DArray.ArraySize = static_cast<UINT>(cascadeCount);
+	shaderResourceViesDesc.Texture2DArray.MipLevels = 1;
+	shaderResourceViesDesc.Texture2DArray.FirstArraySlice = 0;
+	shaderResourceViesDesc.Texture2DArray.MostDetailedMip = 0;
+	hr = device->CreateShaderResourceView(depthStencilBuffer.Get(), &shaderResourceViesDesc, shaderResourceView.GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+#endif // 0
 
     viewport.Width = static_cast<float>(width);
     viewport.Height = static_cast<float>(height);
@@ -77,8 +80,32 @@ CascadedShadowMaps::CascadedShadowMaps(ID3D11Device* device, UINT width, UINT he
     viewport.TopLeftX = 0.0f;
     viewport.TopLeftY = 0.0f;
 
+
+	cascadeSRVs.resize(cascadeCount);
+
+	for (UINT i = 0; i < cascadeCount; ++i)
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
+		desc.Format = DXGI_FORMAT_R32_FLOAT;
+		desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+		desc.Texture2DArray.FirstArraySlice = i;
+		desc.Texture2DArray.ArraySize = 1; 
+		desc.Texture2DArray.MipLevels = 1;
+		desc.Texture2DArray.MostDetailedMip = 0;
+
+		HRESULT hr = device->CreateShaderResourceView(
+			depthStencilBuffer.Get(),
+			&desc,
+			cascadeSRVs[i].GetAddressOf()
+		);
+		_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	}
+
+
+
+
     D3D11_BUFFER_DESC bufferDesc = {};
-    bufferDesc.ByteWidth = (sizeof(Constants) + 0x0f) & ~0x0f;//TODO:01Ç±ÇÍâΩÇ©ÅBÅB
+    bufferDesc.ByteWidth = (sizeof(Constants) + 0x0f) & ~0x0f;
     bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     bufferDesc.MiscFlags = 0;
     bufferDesc.StructureByteStride = 0;

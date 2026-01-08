@@ -23,8 +23,6 @@ void OdenIngredientActor::Update(float elapsedTime)
 
 
 
-
-
 void OdenDaikonActor::Initialize(const Transform& transform)
 {
     // ƒ‚ƒfƒ‹“o˜^

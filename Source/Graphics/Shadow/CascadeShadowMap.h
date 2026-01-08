@@ -26,6 +26,8 @@ private:
 
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView;
 
+    std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> cascadeSRVs;
+
     struct Constants
     {
         DirectX::XMFLOAT4X4 cascadedMatrices[4];
@@ -44,6 +46,12 @@ public:
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& depthMap()
     {
         return shaderResourceView;
+    }
+
+
+    ID3D11ShaderResourceView* GetCascadeSRV(UINT index) const
+    {
+        return cascadeSRVs[index].Get();
     }
 
 public:

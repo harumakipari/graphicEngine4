@@ -2,38 +2,7 @@
 #include "Engine/Audio/CoreAudio.h"
 #include "Components/Base/Component.h"
 
-enum class EOdenType :uint8_t
-{
-    Daikon,
-    Egg,
-    Tsukune,
-    Chikuwa,
-    Konnyaku,
-};
-
-enum class EOdenOrientation :uint8_t
-{
-    Deg0,
-    Deg90,
-    Deg180,
-    Deg270
-};
-
-enum class EOdenOrderShape :uint8_t
-{
-    TriangleLike,
-    SquareLike,
-    LongLike,
-    RoundLike
-};
-
-struct OdenData
-{
-    EOdenType type;
-    EOdenOrientation orientation;
-    EOdenOrderShape shapeTag;
-    int score;
-};
+#include "Game/Actors/OdenGame/OdenDataStruct.h"
 
 
 class OdenDataComponent : public Component
@@ -53,8 +22,14 @@ public:
 
     void UpdateShapeTag();
 
-    void UpdateVisiualRotation();
+    void UpdateVisualRotation();
+
+    EOdenOrderShape GetShapeTag()const
+    {
+        return odenData.shapeTag;
+    }
 
 private:
+    OdenData odenData;
 
 };
