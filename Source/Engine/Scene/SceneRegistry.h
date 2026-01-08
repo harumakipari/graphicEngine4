@@ -7,3 +7,4 @@
 #include "Game/Scenes/SampleScene.h"
 #include "Game/Scenes/PuddingGameScene.h"
 #include "Game/Scenes/MorphScene.h"
+#include "Game/Scenes/MainScene.h"

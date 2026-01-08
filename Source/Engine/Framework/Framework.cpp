@@ -51,7 +51,7 @@ bool Framework::Initialize()
 
 
     // SCENE_TRANSITION
-    Scene::_boot(device, "MorphScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "SampleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
 
 

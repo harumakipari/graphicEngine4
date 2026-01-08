@@ -519,6 +519,9 @@
     <ClCompile Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Scenes\MainScene.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -871,6 +874,9 @@
     <ClInclude Include="Source\Game\Actors\WaterSphere\MorphModel.h" />
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />
     <ClInclude Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.h" />
+    <ClInclude Include="Source\Game\Scenes\MainScene.h" />
+    <ClInclude Include="Source\Game\Actors\OdenGame\OdenIngredient.h" />
+    <ClInclude Include="Source\Components\OdenGame\OdenDataComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">
