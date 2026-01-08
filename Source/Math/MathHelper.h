@@ -40,7 +40,24 @@ namespace MathHelper
         return angle;
     }
 
+    inline float ClampEulerAngle(float eulerAngle)
+    {
+        float angle = DirectX::XMConvertToRadians(eulerAngle);
+        const float PI = 3.14159265f;
+        const float TWO_PI = PI * 2.0f;
 
+        angle = std::fmod(angle, TWO_PI);
+        if (angle > PI)
+        {
+            angle -= TWO_PI;
+        }
+        else if (angle < -PI)
+        {
+            angle += TWO_PI;
+        }
+
+        return DirectX::XMConvertToDegrees(angle);
+    }
 
     inline float RandomRange(float min, float max)
     {

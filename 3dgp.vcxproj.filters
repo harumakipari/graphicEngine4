@@ -522,6 +522,9 @@
     <ClCompile Include="Source\Game\Scenes\MainScene.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Actors\OdenGame\OdenIngredient.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">

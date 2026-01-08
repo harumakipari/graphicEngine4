@@ -42,7 +42,10 @@ public:
     OdenDataComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :Component(name, owner) {}
     ~OdenDataComponent() override;
 
-    void Initialize() override {}
+    void Initialize() override
+    {
+        
+    }
 
     void Tick(float deltaTime) override;
 

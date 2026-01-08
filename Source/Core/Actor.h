@@ -448,7 +448,6 @@ private:
 
 protected:
     // オイラー角を使うかどうか
-    DirectX::XMFLOAT3 angle = { 0.0f,0.0f,0.0f };
 };
 
 static inline bool operator==(const std::shared_ptr<Actor>& actor, const std::string& name)

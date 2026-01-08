@@ -17,28 +17,36 @@ public:
 
     void Initialize(const Transform& transform)override {}
 
-    void Update(float elapsedTime)override {}
+    void Update(float elapsedTime)override;
 
-    //void SetAngleOffset()
+    // ‰Šú‚ÌŠp“xİ’è
+    void SetAngleOffset(const DirectX::XMFLOAT3& angleDegree)
+    {
+        GetRootComponent()->SetRelativeEulerRotationDirect(angleDegree);
+    }
+
+    // ‰¡‰ñ“]‚·‚é‚Æ‚«‚ÉŒÄ‚ÔŠÖ”
+    void RotateHorizontal();
+
+    // c‰ñ“]‚·‚é‚Æ‚«‚ÉŒÄ‚ÔŠÖ”
+    void RotateVertical();
 
 protected:
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // ‹ïŞ
+    std::shared_ptr<ShapeComponent> shapeComponent; // ƒŒƒCƒLƒƒƒXƒg”»’è‚·‚é‚à‚Ì
 
+    DirectX::XMFLOAT3 odeIngredientAngleDegree = { 0.0f,0.0f,0.0f };
 };
 
 
 class OdenDaikonActor : public OdenIngredientActor
 {
 public:
-    OdenDaikonActor(const std::string & actorName) :OdenIngredientActor(actorName) {}
+    OdenDaikonActor(const std::string& actorName) :OdenIngredientActor(actorName) {}
 
-    void Initialize(const Transform & transform)override
-    {
-        std::string parentName = "Daikon_model";
-        ingredientModel = AddComponent<SkeletalMeshComponent>(parentName);
-        ingredientModel->SetModel("./Data/Models/Oden_Ingredient/Oden_Daikon.glb");
+    void Initialize(const Transform& transform)override;
 
-    }
+    void Update(float elapsedTime)override;
 
-    void Update(float elapsedTime)override {}
+    void DrawImGuiDetails() override;
 };

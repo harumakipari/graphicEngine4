@@ -286,6 +286,7 @@
     <ClCompile Include="Source\Game\Actors\Dessert\TargetPudding.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossEnemy.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossState.cpp" />
+    <ClCompile Include="Source\Game\Actors\OdenGame\OdenIngredient.cpp" />
     <ClCompile Include="Source\Game\Actors\Player\Player.cpp" />
     <ClCompile Include="Source\Game\Actors\Player\PlayerState.cpp" />
     <ClCompile Include="Source\Game\Actors\Player\PlayerStateDerived.cpp" />
