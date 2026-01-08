@@ -3,7 +3,22 @@
 
 void OdenStoreActor::Initialize(const Transform& transform)
 {
-    auto staticMeshComponent=AddComponent<StaticMeshComponent>("Oden_Store");
+    std::string parentName = "RootComponent";
+
+
+    auto boxComponent = AddComponent<BoxComponent>("Oden_BoxComponent", parentName);
+    DirectX::XMFLOAT3 size = { 20.0f,1.0f,20.0f };
+    boxComponent->SetBoxExtent(size);
+    boxComponent->SetMass(40.0f);
+    boxComponent->SetLayer(CollisionLayer::WorldStatic);
+    //boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+    boxComponent->SetRelativeLocationDirect({ 6.0f,0.0f,6.0f });
+    boxComponent->Initialize();
+
+
+    auto staticMeshComponent = AddComponent<StaticMeshComponent>("Oden_Store_Model", parentName);
     staticMeshComponent->SetModel("./Data/Models/Oden_Store/Oden_frame.gltf", false);
     staticMeshComponent->SetRelativeScaleDirect({ -1.0f,1.0f,-1.0f });
+
+
 }

@@ -40,6 +40,24 @@ void OdenIngredientActor::Update(float elapsedTime)
         return;
     }
 
+
+    switch (dragState)
+    {
+    case EOdenDragState::InSlot:
+    {// 鍋の中にある時
+
+    }
+    break;
+    case EOdenDragState::Dragging:
+        break;
+    case EOdenDragState::OverOrder:
+        break;
+    case EOdenDragState::OverTrash:
+        break;
+    case EOdenDragState::Released:
+        break;
+    }
+
     // マウスカーソルを取得
     if (InputSystem::GetInputState("MouseLeft"))
     {// 左ボタンを押している間
@@ -51,15 +69,51 @@ void OdenIngredientActor::Update(float elapsedTime)
 
         HitResultWithActor result;
         XMFLOAT3 intersectPos = {};
-        if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::Oden)))
-        {// マウスカーソルがおでんと当たっていたら、
-            intersectPos = result.hitPoint;
-            Logger::Log(U8("おでんとマウスカーソルが当たった！"));
+
+        if (dragState == EOdenDragState::InSlot)
+        {
+            if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::Oden)))
+            {// マウスカーソルがおでんと当たっていたら、
+                intersectPos = result.hitPoint;
+                dragState = EOdenDragState::Dragging;
+                Logger::Log(U8("おでんとマウスカーソルがクリックされた！"));
+            }
         }
+
+        if (dragState==EOdenDragState::Dragging)
+        {
+            if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))  // こっちはドラッグしている時だから、判定を大きく取りたいから、
+            {// マウスカーソルがおでんと当たっていたら、
+                intersectPos = result.hitPoint;
+                intersectPos.y = 0.0f;
+                SetPosition(intersectPos);
+            }
+        }
+
         DebugDrawManager::DrawSphere(intersectPos, 0.5f, { 1, 1, 0, 1 });
+
+        // おでんが今スクリーン上でどの位置か
+        XMFLOAT2 screenPos = WorldToUI(intersectPos);
+        // この position から currentHoverTarget を決定する
     }
+    if (dragState == EOdenDragState::Dragging)
+    {
+        if (InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
+        {//　マウスクリックを離した瞬間
+            OnMouseRelease();
+            Logger::Log(U8("おでんを離した！"));
+        }
+
+    }
+
+
 }
 
+// マウスクリックを離した瞬間に呼ぶ関数
+void OdenIngredientActor::OnMouseRelease()
+{
+
+}
 
 
 void OdenDaikonActor::Initialize(const Transform& transform)
