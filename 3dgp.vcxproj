@@ -292,6 +292,7 @@
     <ClCompile Include="Source\Game\Actors\Stage\ClothSimulate.cpp" />
     <ClCompile Include="Source\Game\Actors\Stage\TestSoftBody.cpp" />
     <ClCompile Include="Source\Game\Actors\WaterSphere\MorphModel.cpp" />
+    <ClCompile Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.cpp" />
     <ClCompile Include="Source\Game\Scenes\LoadingScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\MorphScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\PuddingGameScene.cpp" />
@@ -415,7 +416,7 @@
     <ClInclude Include="Source\Game\Actors\Base\Character.h" />
     <ClInclude Include="Source\Game\Actors\Camera\Camera.h" />
     <ClInclude Include="Source\Game\Actors\Camera\DefeatEnemyCamera.h" />
-    <ClInclude Include="Source\Game\Actors\Camera\TitleCamera.h" />
+    <ClInclude Include="Source\Game\Actors\Camera\LoadingCamera.h" />
     <ClInclude Include="Source\Game\Actors\Dessert\Cherry.h" />
     <ClInclude Include="Source\Game\Actors\Dessert\Pudding.h" />
     <ClInclude Include="Source\Game\Actors\Dessert\TargetPudding.h" />
@@ -433,6 +434,7 @@
     <ClInclude Include="Source\Game\Actors\Stage\TestSoftBody.h" />
     <ClInclude Include="Source\Game\Actors\Stage\Stage.h" />
     <ClInclude Include="Source\Game\Actors\WaterSphere\MorphModel.h" />
+    <ClInclude Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.h" />
     <ClInclude Include="Source\Game\Actors\WaterSphere\WaterSphere.h" />
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />

@@ -12,7 +12,7 @@
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
 
-#include "Game/Actors/Camera/TitleCamera.h"
+#include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Dessert/Pudding.h"
 #include "Game/Actors/Dessert/TargetPudding.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"

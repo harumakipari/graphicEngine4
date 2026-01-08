@@ -23,7 +23,7 @@
 #include "Core/ActorManager.h"
 #include "Engine/Scene/SceneBase.h"
 
-#include "Game/Actors/Camera/TitleCamera.h"
+#include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"
 
 class LoadingScene : public SceneBase

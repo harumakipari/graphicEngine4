@@ -13,7 +13,7 @@
 #include "Core/ActorManager.h"
 #include "Engine/Utility/Time.h"
 
-#include "Game/Actors/Camera/TitleCamera.h"
+#include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Dessert/Pudding.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"
 #include "Game/Actors/Enemy/Boss/BossEnemy.h"
@@ -49,9 +49,16 @@ bool MorphScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
                 morphModel->Render(immediateContext, cloth->GetWorldTransform(), {}, MorphModel::RenderPass::All);
             }
         });
-
 #endif // 0
+    shapeMatchingModel  = std::make_unique<ShapeMatchingModel>(device, "./Data/Models/Morph/sphere.glb");
 
+    RegisterRenderHook(RenderPass::Opaque, [&](ID3D11DeviceContext* immediateContext)
+        {
+            if (const auto cloth = GetActorManager()->GetActorByName("pauseActor"))
+            {
+                shapeMatchingModel->Render(immediateContext, cloth->GetWorldTransform(), {}, ShapeMatchingModel::RenderPass::All);
+            }
+        });
 
     return true;
 }
@@ -106,6 +113,7 @@ void MorphScene::Update(float deltaTime)
 {
     using namespace DirectX;
     SceneBase::Update(deltaTime);
+    shapeMatchingModel->Update(deltaTime);
 
     Physics::Instance().Update(Time::UnscaledDeltaTime());
     CollisionSystem::DetectAndResolveCollisions();
@@ -138,7 +146,7 @@ void MorphScene::SetUpActors()
     auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaterSphere>("morphModel", buildTr);
     //building->AddComponent<StaticMeshComponent>("cloth")->SetModel("./Data/Models/ClothFlag/pole.gltf");
 
-    Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,-2.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
+    Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,0.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor", buildTr2);
 
     cameraManager->SetDebugCamera(debugCameraActor);

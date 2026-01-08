@@ -13,7 +13,7 @@
 
 #include "Graphics/Renderer/SceneRenderer.h"
 
-#include "Game/Actors/Camera/TitleCamera.h"
+#include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Stage/ClothSimulate.h"
 #include "Game/Actors/Stage/Stage.h"
 

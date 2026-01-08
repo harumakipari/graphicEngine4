@@ -516,6 +516,9 @@
     <ClCompile Include="Source\Game\Scenes\MorphScene.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -761,7 +764,7 @@
     <ClInclude Include="Source\Game\Actors\Camera\DefeatEnemyCamera.h">
       <Filter>Sources\Game\Actors\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Camera\TitleCamera.h" />
+    <ClInclude Include="Source\Game\Actors\Camera\LoadingCamera.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\EmptyEnemy.h" />
     <ClInclude Include="Source\Graphics\Resource\ShaderToy.h" />
     <ClInclude Include="Source\Graphics\PostProcess\GBuffer.h">
@@ -867,6 +870,7 @@
     <ClInclude Include="Source\Game\Actors\WaterSphere\WaterSphere.h" />
     <ClInclude Include="Source\Game\Actors\WaterSphere\MorphModel.h" />
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />
+    <ClInclude Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">

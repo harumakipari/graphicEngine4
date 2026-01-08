@@ -10,17 +10,10 @@ class SSAOEffect :public SceneEffectBase
 public:
     struct SSAOConstantBuffer
     {
-#if 0
-        float sigma = 0.3f;
-        float power = 1.0f;
-        bool improvedNormalReconstructionFromDepth = 1;
-        bool bilateralBlur = true;
-#else
         float radius = 1.0f;
         float bias = 0.0f;
         float power = 1.0f;
         float split_u = 0.0f;
-#endif // 0
     };
 
 public:
@@ -55,13 +48,5 @@ private:
     float bias = 0.0f;
     float power = 0.001f;
     float split_u = 0.0f;
-
-
-#if 0
-    float sigma = 0.3f;
-    float power = 1.0f;
-    bool improvedNormalReconstructionFromDepth = 1;
-    bool bilateralBlur = true;
-#endif // 0
 
 };

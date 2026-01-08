@@ -19,9 +19,9 @@
 
 bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
-    SceneBase::Initialize(device, width, height, props);
+    SceneBase::Initialize(device, width, height, props);;
 
-    auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleCamera>("mainLoadingCameraActor");
+    auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<LoadingCamera>("mainLoadingCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
     mainCameraActor->SetPosition({ -4.1f,1.9f,-4.3f });
     SetActiveCamera(mainCameraActor);

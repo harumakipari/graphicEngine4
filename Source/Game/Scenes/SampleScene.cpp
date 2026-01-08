@@ -13,7 +13,7 @@
 #include "Core/ActorManager.h"
 #include "Engine/Utility/Time.h"
 
-#include "Game/Actors/Camera/TitleCamera.h"
+#include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Dessert/Pudding.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"
 #include "Game/Actors/Enemy/Boss/BossEnemy.h"

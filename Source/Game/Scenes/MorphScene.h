@@ -13,10 +13,11 @@
 
 #include "Graphics/Renderer/SceneRenderer.h"
 
-#include "Game/Actors/Camera/TitleCamera.h"
+#include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Stage/ClothSimulate.h"
 #include "Game/Actors/Stage/Stage.h"
 #include "Game/Actors/WaterSphere/MorphModel.h"
+#include "Game/Actors/WaterSphere/ShapeMatchingModel.h"
 
 #include "UI/Widgets/Widget.h"
 #include "Physics/CollisionMesh.h"
@@ -45,5 +46,6 @@ private:
     std::shared_ptr<CollisionMesh> stageCollisionMesh;
 
     std::unique_ptr<MorphModel> morphModel;
+    std::unique_ptr<ShapeMatchingModel > shapeMatchingModel;
 
 };
