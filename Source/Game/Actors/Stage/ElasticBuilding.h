@@ -64,7 +64,7 @@ public:
         DirectX::XMFLOAT3 size = { box.max.x - box.min.x,box.max.y - box.min.y,box.max.z - box.min.z };
         boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "skeltalComponent");
         //boxComponent->SetCollisionOffsetY(size.y);
-        boxComponent->SetLayer(CollisionLayer::Projectile);
+        boxComponent->SetLayer(CollisionLayer::WorldStatic);
         //boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
         boxComponent->SetHalfBoxExtent({ size.x * 0.5f,size.y * 0.5f,size.z * 0.5f });
         boxComponent->Initialize();

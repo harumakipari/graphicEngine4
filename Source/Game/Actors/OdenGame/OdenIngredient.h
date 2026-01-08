@@ -33,9 +33,9 @@ public:
 
 protected:
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
-    std::shared_ptr<ShapeComponent> shapeComponent; // レイキャスト判定するもの
+    std::shared_ptr<BoxComponent> boxComponent; // レイキャスト判定するもの
 
-    DirectX::XMFLOAT3 odeIngredientAngleDegree = { 0.0f,0.0f,0.0f };
+    DirectX::XMFLOAT3 odenIngredientAngleDegree = { 0.0f,0.0f,0.0f };
 };
 
 

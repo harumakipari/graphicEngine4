@@ -59,7 +59,7 @@ public:
         pitch = std::clamp(
             pitch,
             DirectX::XMConvertToRadians(-60.0f),
-            DirectX::XMConvertToRadians(20.0f)
+            DirectX::XMConvertToRadians(80.0f)
         );
     }
 

@@ -525,6 +525,12 @@
     <ClCompile Include="Source\Game\Actors\OdenGame\OdenIngredient.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Actors\OdenGame\OdenSlotActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Actors\OdenGame\OdenStoreActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -880,6 +886,10 @@
     <ClInclude Include="Source\Game\Scenes\MainScene.h" />
     <ClInclude Include="Source\Game\Actors\OdenGame\OdenIngredient.h" />
     <ClInclude Include="Source\Components\OdenGame\OdenDataComponent.h" />
+    <ClInclude Include="Source\Game\Actors\OdenGame\OdenBubbleActor.h" />
+    <ClInclude Include="Source\Game\Actors\OdenGame\OdenDataStruct.h" />
+    <ClInclude Include="Source\Game\Actors\OdenGame\OdenSlotActor.h" />
+    <ClInclude Include="Source\Game\Actors\OdenGame\OdenStoreActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">

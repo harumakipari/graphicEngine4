@@ -100,12 +100,8 @@ void Player::Initialize(const Transform& transform)
     capsuleComponent->SetMass(mass);
     capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
     capsuleComponent->SetLayer(CollisionLayer::Player);
-    capsuleComponent->SetResponseToLayer(CollisionLayer::ShockWave, CollisionComponent::CollisionResponse::None);
-    capsuleComponent->SetResponseToLayer(CollisionLayer::PlayerSide, CollisionComponent::CollisionResponse::None);
-    capsuleComponent->SetResponseToLayer(CollisionLayer::EraseInArea, CollisionComponent::CollisionResponse::Trigger);
     capsuleComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
     capsuleComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::None);
-    capsuleComponent->SetResponseToLayer(CollisionLayer::Building, CollisionComponent::CollisionResponse::Block);
     capsuleComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::None);
     capsuleComponent->SetCollisionOffsetY(height * 0.5f);
     capsuleComponent->SetIsVisibleDebugBox(false);

@@ -7,26 +7,19 @@
 #endif
 
 #include "Components/Audio/CoreAudioSourceComponent.h"
-#include "Graphics/Core/Graphics.h"
-#include "Graphics/Core/RenderState.h"
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
 #include "Engine/Utility/Time.h"
 
-#include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Dessert/Pudding.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"
-#include "Game/Actors/Enemy/Boss/BossEnemy.h"
-#include "Game/Actors/Player/Player.h"
-#include "Game/Actors/Stage/ElasticBuilding.h"
 #include "Game/Actors/Stage/Cloth.h"
 
 
 #include "Physics/Physics.h"
-#include "Game/Actors/Stage/Stage.h"
 #include "Game/Actors/OdenGame/OdenIngredient.h"
+#include "Game/Actors/OdenGame/OdenStoreActor.h"
 
-#include "Graphics/PostProcess/BloomEffect.h"
 #include "Physics/CollisionSystem.h"
 #include "UI/UIManager.h"
 #include "UI/Game/Pause.h"
@@ -124,19 +117,21 @@ void MainScene::Update(float deltaTime)
 void MainScene::SetUpActors()
 {
     // メインカメラのターゲットアクターを生成
-    auto mainCameraTarget = GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("MainCameraActorTarget");
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ 5.4f,0.0f,4.3f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto mainCameraTarget = GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("MainCameraActorTarget", cameraTargetTr);
 
     // メインカメラアクターを生成
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     mainCameraComponent->target = (mainCameraTarget->GetRootComponent());
-    mainCameraComponent->pitch = DirectX::XMConvertToRadians(20.0f);
+    mainCameraComponent->pitch = DirectX::XMConvertToRadians(51.5f);
+    mainCameraComponent->distance = 18.4f;
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("MainSceneのカメラ設定される。"));
 
     // ステージアクターを生成
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<Stage>("stage", stageTr);
+    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenStoreActor>("stage", stageTr);
 
 #ifdef _DEBUG
     // デバックカメラアクターを生成
