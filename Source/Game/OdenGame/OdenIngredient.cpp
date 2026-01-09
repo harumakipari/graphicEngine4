@@ -19,84 +19,34 @@ void OdenIngredientActor::Update(float elapsedTime)
 
     // ポーズ中はゲーム入力を一切受け付けない
     if (Scene::GetCurrentScene()->IsPaused())
-    {
         return;
-    }
 
     // UIがマウスを使っているならゲーム操作しない
     if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
-    {
         return;
-    }
 
+    DirectX::XMFLOAT2 cursor;
+    // ビューポート外だったら、入力しない
+    if (!InputSystem::GetMousePositionUI(cursor))
+        return;
 
-    switch (dragState)
+    // ① 押した瞬間：選択判定
+    if (dragState == EOdenDragState::InSlot &&
+        InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
     {
-    case EOdenDragState::InSlot:
-    {// 鍋の中にある時
-
-    }
-    break;
-    case EOdenDragState::Dragging:
-        break;
-    case EOdenDragState::OverOrder:
-        break;
-    case EOdenDragState::OverTrash:
-        break;
-    case EOdenDragState::Released:
-        break;
-    case EOdenDragState::OverSlot:
-        break;
+        TryBeginDrag(cursor);
     }
 
-    // マウスカーソルを取得
-    if (InputSystem::GetInputState("MouseLeft"))
-    {// 左ボタンを押している間
-        DirectX::XMFLOAT2 cursor;
-        if (!InputSystem::GetMousePositionUI(cursor))
-        {// ビューポート外だったら、入力しない
-            return;
-        }
-
-        HitResultWithActor result;
-        XMFLOAT3 intersectPos = {};
-
-        if (dragState == EOdenDragState::InSlot)
-        {
-            if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::Oden)))
-            {// マウスカーソルがおでんと当たっていたら、
-                intersectPos = result.hitPoint;
-                dragState = EOdenDragState::Dragging;
-                Logger::Log(U8("おでんとマウスカーソルがクリックされた！"));
-            }
-        }
-
-        if (dragState == EOdenDragState::Dragging)
-        {
-            if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))  // こっちはドラッグしている時だから、判定を大きく取りたいから、
-            {// マウスカーソルがおでんと当たっていたら、
-                intersectPos = result.hitPoint;
-                intersectPos.y = 0.0f;
-                SetPosition(intersectPos);
-            }
-        }
-
-        DebugDrawManager::DrawSphere(intersectPos, 0.5f, { 1, 1, 0, 1 });
-
-        // おでんが今スクリーン上でどの位置か
-        XMFLOAT2 screenPos = WorldToUI(intersectPos);
-        // この position から currentHoverTarget を決定する
-    }
+    // ② ドラッグ中：移動
     if (dragState == EOdenDragState::Dragging)
     {
+        UpdateDragging(cursor);
+
         if (InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
-        {//　マウスクリックを離した瞬間
-            OnMouseRelease();
-            Logger::Log(U8("おでんを離した！"));
+        {
+            EndDrag(cursor);
         }
-
     }
-
 
 }
 
@@ -127,6 +77,54 @@ void OdenIngredientActor::OnMouseRelease()
 
 }
 
+void OdenIngredientActor::TryBeginDrag(const DirectX::XMFLOAT2& cursor)
+{
+    HitResultWithActor result;
+    if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::Oden)))
+    {
+        if (result.actor == this)
+        {
+            dragState = EOdenDragState::Dragging;
+            Logger::Log(U8("おでんを掴んだ！"));
+        }
+    }
+}
+
+void OdenIngredientActor::UpdateDragging(const DirectX::XMFLOAT2& cursor)
+{
+    HitResultWithActor result;
+    if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
+    {
+        XMFLOAT3 pos = result.hitPoint;
+        pos.y = 0.0f;
+        SetPosition(pos);
+
+        DebugDrawManager::DrawSphere(pos, 0.5f, { 1,1,0,1 });
+    }
+}
+
+void OdenIngredientActor::EndDrag(const DirectX::XMFLOAT2& cursor)
+{
+    dragState = EOdenDragState::InSlot;
+    switch (EHoverTarget s = DetectHoverTarget(cursor))
+    {
+    case EHoverTarget::OdenSlot:
+        //HandleDropOnSlot();
+        break;
+    case EHoverTarget::OrderBubble:
+        //HandleDropOnOrder();
+        break;
+    case EHoverTarget::TrashBin:
+        //HandleDropOnTrash();
+        break;
+    default:
+        //ReturnToPot();
+        break;
+    }
+
+    Logger::Log(U8("おでんを離した！"));
+}
+
 // マウスを離した時のターゲットを返す
 OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const DirectX::XMFLOAT2& cursor)
 {
@@ -137,7 +135,7 @@ OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const D
         {// おでんの枠モデルに当たっていたら、
             Logger::Log(U8("枠の上でマウスクリックを離した！"));
             return EHoverTarget::OdenSlot;
-            dragState = EOdenDragState::OverSlot;
+            //dragState = EOdenDragState::OverSlot;
             // おでんをスワップする
             odenSlot->SwapOden(); // これどこで呼ぼうかな。。
         }

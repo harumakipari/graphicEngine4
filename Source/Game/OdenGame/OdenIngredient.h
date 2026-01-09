@@ -26,13 +26,8 @@ public:
     // おでんの状態
     enum class EOdenDragState :uint8_t
     {
-        //Idle,       // 待機　まだ並んでいない
         InSlot,     // 鍋の枠にある
         Dragging,   // 掴んでいる
-        OverOrder,  // 吹き出しの上
-        OverTrash,  // ゴミ箱の上
-        OverSlot,   // 枠の上
-        Released    // マウス離した瞬間
     };
 
     // ドラック中にどこにマウスカーソルがあるか
@@ -64,6 +59,15 @@ public:
     void RotateVertical();
 
 private:
+    // ドラック開始処理
+    void TryBeginDrag(const DirectX::XMFLOAT2& cursor);
+
+    // ドラック中の処理
+    void UpdateDragging(const DirectX::XMFLOAT2& cursor);
+
+    // 離した瞬間の処理
+    void EndDrag(const DirectX::XMFLOAT2& cursor);
+
     // マウスクリックを離した瞬間に呼ぶ関数
     void OnMouseRelease();
 
