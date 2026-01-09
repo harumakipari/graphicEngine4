@@ -6,7 +6,6 @@
 #include "OdenData/OdenDataStruct.h"
 #include "OdenData/OdenShapeDataTable.h"
 
-
 // 具材
 // （回る・掴める）
 //
@@ -46,6 +45,8 @@ public:
     void Initialize(const Transform& transform)override {}
 
     void Update(float elapsedTime)override;
+
+    void DrawImGuiDetails() override;
 
     // 初期の角度設定
     void SetAngleOffset(const DirectX::XMFLOAT3& angleDegree)

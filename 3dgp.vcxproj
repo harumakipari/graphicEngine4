@@ -119,7 +119,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;USE_IMGUI;%(PreprocessorDefinitions);_SILENCE_CXX20_CISO646_REMOVED_WARNING;_SILENCE_ALL_CXX23_DEPRECATION_WARNINGS;PX_PHYSX_STATIC_LIB;IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.\External\DirectXTK-main\Inc;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\include;.\External\cereal-master\include;.\External\tinygltf-release;.\External\DirectXTex-main\DirectXTex;.\External\PhysX\include;.\External\imgui;.\Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\External\DirectXTK-main\Inc;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\include;.\External\cereal-master\include;.\External\tinygltf-release;.\External\DirectXTex-main\DirectXTex;.\External\PhysX\include;.\External\imgui;.\Source;.\External\magic_enum</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -130,7 +130,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\External\DirectXTex-main\DirectXTex\Bin\Desktop_2022\x64\$(configuration);C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\lib\vs2019\x64\$(configuration);.\External\DirectXTK-main\Bin\Desktop_2019\x64\$(configuration);.\External\PhysX\bin\win.x86_64.vc143.mt\$(configuration);.\External\imgui</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\External\DirectXTex-main\DirectXTex\Bin\Desktop_2022\x64\$(configuration);C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\lib\vs2019\x64\$(configuration);.\External\DirectXTK-main\Bin\Desktop_2019\x64\$(configuration);.\External\PhysX\bin\win.x86_64.vc143.mt\$(configuration);.\External\imgui;.\External\magic_enum</AdditionalLibraryDirectories>
       <AdditionalDependencies>zlib-mt.lib;libxml2-mt.lib;libfbxsdk-mt.lib;d3d11.lib;dxgi.lib;DirectXTK.lib;DirectXTex.lib;PhysXCooking_static_64.lib;PhysX_static_64.lib;PhysXCharacterKinematic_static_64.lib;PhysXCommon_static_64.lib;PhysXExtensions_static_64.lib;PhysXFoundation_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXVehicle_static_64.lib;PhysXVehicle2_static_64.lib;PVDRuntime_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
@@ -177,7 +177,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.\External\DirectXTK-main\Inc;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\include;.\External\cereal-master\include;.\External\tinygltf-release;.\External\DirectXTex-main\DirectXTex;.\External\PhysX\include;.\External\imgui;.\Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\External\DirectXTK-main\Inc;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\include;.\External\cereal-master\include;.\External\tinygltf-release;.\External\DirectXTex-main\DirectXTex;.\External\PhysX\include;.\External\imgui;.\Source;.\External\magic_enum</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -190,7 +190,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\External\DirectXTex-main\DirectXTex\Bin\Desktop_2022\x64\$(configuration);C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\lib\vs2019\x64\$(configuration);.\External\DirectXTK-main\Bin\Desktop_2019\x64\$(configuration);.\External\PhysX\bin\win.x86_64.vc143.mt\$(configuration);.\External\imgui</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\External\DirectXTex-main\DirectXTex\Bin\Desktop_2022\x64\$(configuration);C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\lib\vs2019\x64\$(configuration);.\External\DirectXTK-main\Bin\Desktop_2019\x64\$(configuration);.\External\PhysX\bin\win.x86_64.vc143.mt\$(configuration);.\External\imgui;.\External\magic_enum</AdditionalLibraryDirectories>
       <AdditionalDependencies>zlib-mt.lib;libxml2-mt.lib;libfbxsdk-mt.lib;d3d11.lib;dxgi.lib;DirectXTK.lib;DirectXTex.lib;PhysXCooking_static_64.lib;PhysX_static_64.lib;PhysXCharacterKinematic_static_64.lib;PhysXCommon_static_64.lib;PhysXExtensions_static_64.lib;PhysXFoundation_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXVehicle_static_64.lib;PhysXVehicle2_static_64.lib;PVDRuntime_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "OdenIngredientActor.h"
 
+#include <magic_enum.hpp>
+
 #include "OdenTrashActor.h"
 #include "Engine/Input/InputSystem.h"
 #include "Engine/Scene/Scene.h"
@@ -52,6 +54,27 @@ void OdenIngredientActor::Update(float elapsedTime)
 
 }
 
+void OdenIngredientActor::DrawImGuiDetails()
+{
+#ifdef USE_IMGUI
+    ImGui::Text("Drag State: %s", magic_enum::enum_name(dragState).data());
+    ImGui::Text("HoverTarget: %s", magic_enum::enum_name(currentHoverTarget).data());
+    ImGui::Text("Front: %s", magic_enum::enum_name(odenOrientation.front).data());
+
+    if (ImGui::Button(U8("â°âÒì]")))
+    {
+        RotateHorizontal();
+    }
+
+    if (ImGui::Button(U8("ècâÒì]")))
+    {
+        RotateVertical();
+    }
+
+#endif
+}
+
+
 // ãÔçﬁÇ™â°âÒì]Ç∑ÇÈÇ∆Ç´Ç…åƒÇ‘ä÷êî
 void OdenIngredientActor::RotateHorizontal()
 {
@@ -98,7 +121,7 @@ void OdenIngredientActor::UpdateDragging(const DirectX::XMFLOAT2& cursor)
     if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
     {
         XMFLOAT3 pos = result.hitPoint;
-        pos.y = 0.0f;
+        pos.y = 1.0f;
         SetPosition(pos);
 
         DebugDrawManager::DrawSphere(pos, 0.5f, { 1,1,0,1 });
@@ -208,15 +231,7 @@ void OdenDaikonActor::Update(float elapsedTime)
 void OdenDaikonActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
-    if (ImGui::Button(U8("â°âÒì]")))
-    {
-        RotateHorizontal();
-    }
-
-    if (ImGui::Button(U8("ècâÒì]")))
-    {
-        RotateVertical();
-    }
+    OdenIngredientActor::DrawImGuiDetails();
 
 #endif
 }
