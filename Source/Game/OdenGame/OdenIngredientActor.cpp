@@ -116,7 +116,6 @@ void OdenIngredientActor::EndDrag(const DirectX::XMFLOAT2& cursor)
         break;
     case EHoverTarget::OrderBubble:
         Logger::Log(U8("お題の上でマウスクリックを離した！"));
-        //HandleDropOnOrder();
         break;
     case EHoverTarget::TrashBin:
         Logger::Log(U8("ゴミ箱の上でマウスクリックを離した！"));
@@ -145,6 +144,7 @@ OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const D
         }
         else if (auto odenBubble = dynamic_cast<OdenBubbleActor*>(result.actor))
         {// お題の上だったら
+            odenBubble->OnIngredientDropped(*this); // これちょっと怖い。。
             return EHoverTarget::OrderBubble;
         }
         else if (auto odenBubble = dynamic_cast<OdenTrashActor*>(result.actor))

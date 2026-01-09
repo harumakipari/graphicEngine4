@@ -2,6 +2,7 @@
 
 enum class EOdenType :uint8_t
 {
+    None,
     Daikon,
     Egg,
     Tsukune,
@@ -58,4 +59,30 @@ enum class EOdenFace :uint8_t
     Right,   // +X
     Top,     // +Y
     Bottom   // -Y
+};
+
+
+//-------- スコアに関係------
+
+// オーダーのタイプ
+enum class EOrderType
+{
+    ShapeOnly,
+    SpecificIngredient
+};
+
+
+struct OrderData
+{
+    EOrderType type;
+
+    // Shape系
+    EOdenShapeCategory requiredCategory;
+    ShapeProperty targetProperty;
+
+    // 具材指定系
+    EOdenType requiredIngredient;
+
+    float timeLimit;
+    float remainingTime;
 };
