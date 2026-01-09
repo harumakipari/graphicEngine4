@@ -531,13 +531,16 @@
     <ClCompile Include="Source\Game\OdenGame\OdenStoreActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenGameManager.cpp">
+    <ClCompile Include="Source\Game\OdenGame\OdenManagers\OdenGameManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\OdenGame\OdenBubbleActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\OdenGame\OdenTrashActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\OdenGame\OdenManagers\OdenSlotManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -899,9 +902,10 @@
     <ClInclude Include="Source\Game\OdenGame\OdenData\OdenDataStruct.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenSlotActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenStoreActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenGameManager.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenManagers\OdenGameManager.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenData\OdenShapeDataTable.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenTrashActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenManagers\OdenSlotManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">

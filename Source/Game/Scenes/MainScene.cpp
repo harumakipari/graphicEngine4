@@ -151,8 +151,8 @@ void MainScene::SetUpActors()
     auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenDaikonActor>("oden_daikon", daikonTr);
 
     // ‚¨‚Å‚ñ‚Ì‚±‚ñ‚É‚á‚­‚ð¶¬
-    Transform daikonTr1(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenDaikon1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenKonnyakuActor>("oden_konnyaku", daikonTr1);
+    Transform konnyakuTr(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenKonnyaku = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenKonnyakuActor>("oden_konnyaku", konnyakuTr);
 
     // ‚¨‘è‚ð¶¬
     Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -176,9 +176,9 @@ void MainScene::SetUpActors()
     // ‚¨‚Å‚ñ‚Ì˜g‚ð¶¬
     Transform odenSlotTr1(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenSlotActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot", odenSlotTr1);
-    odenSlotActor1->SetIngredient(odenDaikon1);
+    odenSlotActor1->SetIngredient(odenKonnyaku);
 
-    odenDaikon1->SetCurrentSlot(odenSlotActor1);
+    odenKonnyaku->SetCurrentSlot(odenSlotActor1);
 }
 
 void MainScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)

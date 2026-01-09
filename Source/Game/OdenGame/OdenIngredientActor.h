@@ -104,7 +104,7 @@ private:
     // 離したときのターゲットのアクターを返す
     std::weak_ptr<Actor> GetHoverSlot(const DirectX::XMFLOAT2& cursor);
 
-    // スロットで入れ替える
+    // スロットで入れ替える（Drag中は呼び出さない)
     void SwapWithSlot(const std::weak_ptr<OdenSlotActor>& targetSlot);
 
     // 元のスロットに戻る

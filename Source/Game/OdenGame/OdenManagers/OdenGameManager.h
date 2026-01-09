@@ -1,5 +1,5 @@
 #pragma once
-#include "OdenData/OdenDataStruct.h"
+#include "Game/OdenGame/OdenData/OdenDataStruct.h"
 
 class OdenSlotActor;
 class OdenBubbleActor;

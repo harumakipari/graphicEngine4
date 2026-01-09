@@ -149,7 +149,7 @@ void OdenIngredientActor::EndDrag(const DirectX::XMFLOAT2& cursor)
         //HandleDropOnTrash();
         break;
     default:
-        //ReturnToPot();
+        ReturnToSlot();
         break;
     }
 
@@ -165,9 +165,6 @@ OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const D
         if (auto odenSlot = dynamic_cast<OdenSlotActor*>(result.actor))
         {// おでんの枠モデルに当たっていたら、
             return EHoverTarget::OdenSlot;
-            //dragState = EOdenDragState::OverSlot;
-            // おでんをスワップする
-            odenSlot->SwapOden(); // これどこで呼ぼうかな。。
         }
         else if (auto odenBubble = dynamic_cast<OdenBubbleActor*>(result.actor))
         {// お題の上だったら
@@ -196,41 +193,49 @@ std::weak_ptr<Actor> OdenIngredientActor::GetHoverSlot(const DirectX::XMFLOAT2& 
     //return ;
 }
 
-// スロットで入れ替える
+// スロットで入れ替える（Drag中は呼び出さない)
 void OdenIngredientActor::SwapWithSlot(const std::weak_ptr<OdenSlotActor>& targetSlot)
 {
-    auto grabbedFromSlotActor = grabbedFromSlot.lock();
-    auto targetSlotActor = targetSlot.lock();
-    if (!grabbedFromSlotActor || !targetSlotActor)
+    auto from = grabbedFromSlot.lock();
+    auto to = targetSlot.lock();
+
+    if (!from || !to)
         return;
 
-    if (grabbedFromSlotActor == targetSlotActor)
+    if (from == to)
     {
         // 同じスロットなら戻すだけ
         ReturnToSlot();
         return;
     }
 
-    auto other = targetSlotActor->GetIngredient();
+    auto other = to->RemoveIngredient();
 
-    // ① targetSlot に自分を置く
-    targetSlotActor->SetIngredient(std::static_pointer_cast<OdenIngredientActor>(shared_from_this()));
-    SetCurrentSlot(targetSlotActor);
-    SetPosition(targetSlotActor->GetPosition());
+    // 自分を target に
+    to->SetIngredient(std::static_pointer_cast<OdenIngredientActor>(shared_from_this()));
+    SetCurrentSlot(to);
+    SetPosition(to->GetPosition());
 
-    // ② 元の slot に相手を戻す
-    grabbedFromSlotActor->SetIngredient(other);
+    // 相手を元スロットに
+    from->SetIngredient(other);
     if (other)
     {
-        other->SetCurrentSlot(grabbedFromSlot);
-        other->SetPosition(grabbedFromSlotActor->GetPosition());
+        other->SetCurrentSlot(from);
+        other->SetPosition(from->GetPosition());
     }
 }
 
 // 元のスロットに戻す
 void OdenIngredientActor::ReturnToSlot()
 {
+    auto slot = grabbedFromSlot.lock();
+    if (!slot)
+        return;
 
+    // スロットに戻す
+    slot->SetIngredient(std::static_pointer_cast<OdenIngredientActor>(shared_from_this()));
+    SetCurrentSlot(slot);
+    SetPosition(slot->GetPosition());
 }
 
 // 横回転時の面の向き状態を更新

@@ -53,9 +53,3 @@ void OdenSlotActor::OnBeat() const
         break;
     }
 }
-
-// HŞ‚ğ“ü‚ê‘Ö‚¦‚é
-void OdenSlotActor::SwapOden()
-{
-    
-}

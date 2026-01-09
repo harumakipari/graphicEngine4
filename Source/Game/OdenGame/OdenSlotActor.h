@@ -41,9 +41,6 @@ public:
     // ビート毎に回転する
     void OnBeat() const;
 
-    // 食材を入れ替える
-    void SwapOden();
-
     ERotationType rotationType = ERotationType::Horizontal;
 
 private:
