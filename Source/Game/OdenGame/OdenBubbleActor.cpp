@@ -15,7 +15,7 @@ void OdenBubbleActor::Initialize(const Transform& transform)
 
     // 当たり判定を登録
     auto boxComponent = AddComponent<BoxComponent>(parentName);
-    DirectX::XMFLOAT3 size = { 5.0f,5.0f,5.0f };
+    DirectX::XMFLOAT3 size = { 2.5f,5.0f,5.0f };
     boxComponent->SetBoxExtent(size);
     boxComponent->SetMass(40.0f);
     boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);// おでんのゲームのカーソルのターゲット
@@ -29,7 +29,7 @@ void OdenBubbleActor::Initialize(const Transform& transform)
     orderUi = std::make_shared<UIImageComponent>(filename, "OdenBubbleUi");
     orderUi->SetWorldPosition({ 50, 300 });
     orderUi->SetPivot({ 0.5f,0.5f });
-    orderUi->SetSize({ 150, 200 });
+    orderUi->SetSize({ 200, 150 });
     GetOwnerScene()->GetUIManager()->Add(orderUi);
 
 }
@@ -86,7 +86,7 @@ void OdenBubbleActor::DrawImGuiDetails()
 // 食材が落とされたら呼ばれる関数
 void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
 {
-    EScore score = JudgeScore(ingredient);
+    float score = JudgeScore(ingredient);
 
     // ここでスコアのフォントを
 
@@ -95,7 +95,7 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
 }
 
 
-EScore OdenBubbleActor::JudgeScore(const OdenIngredientActor& ingredient) const
+float OdenBubbleActor::JudgeScore(const OdenIngredientActor& ingredient) const
 {
     const OrderData& o = orderData;
 
@@ -105,24 +105,57 @@ EScore OdenBubbleActor::JudgeScore(const OdenIngredientActor& ingredient) const
         if (ingredient.GetIngredientType() == o.requiredIngredient)
         {
             Logger::Log(U8("具材指定のお題　パーフェクト！"));
-            return EScore::Perfect;
+            return 100.0f;
         }
         else
         {
             Logger::Log(U8("具材指定のお題　失敗(T_T)"));
-            return EScore::Fail;
+            return 0.0f;
         }
     }
 
     // Shape系お題
     if (o.type == EOrderType::ShapeOnly)
     {
-        return JudgeShapeScore(ingredient.GetCurrentShape());
+        float percent = JudgeShapeScore(ingredient.GetCurrentShape());
+        Logger::Log(U8("あいまいな形指定のお題") + std::to_string(percent) + U8("パーセント！"));
+        return percent;
     }
 
-    return EScore::Fail;
+    Logger::Warning(U8("JudgeScoreに何にも属していないのが来た"));
+    return 0.0f;
 }
 
+#if 1
+float OdenBubbleActor::JudgeShapeScore(const OdenShapeData& shape) const
+{
+    if (shape.category != orderData.requiredCategory)
+    {
+        return 0.0f;
+    }
+
+    // 丸みの違い
+    float dr = fabs(shape.property.roundness - orderData.targetProperty.roundness);
+    // 縦横比の違い
+    float da = fabs(shape.property.aspectRatio - orderData.targetProperty.aspectRatio);
+    // 穴が開いているかどうか
+    float dh = fabs(shape.property.holeNess - orderData.targetProperty.holeNess);
+
+    // 理想の形からどれくらいずれているか
+    float roundValue = 1.0f;
+    float aspectValue = 0.8f;
+    float holeValue = 0.3f;
+
+    float dist = dr * roundValue + da * aspectValue + dh * holeValue;
+
+    const float maxDist = static_cast<float>(1.0f * roundValue + 1.0 * aspectValue + 1.0f * holeValue);
+
+    float matchRate = 1.0f - (dist / maxDist);
+    matchRate = std::clamp(matchRate, 0.0f, 1.0f);
+
+    return matchRate * 100.0f;
+}
+#else
 EScore OdenBubbleActor::JudgeShapeScore(const OdenShapeData& shape) const
 {
     // カテゴリが違うと
@@ -132,10 +165,15 @@ EScore OdenBubbleActor::JudgeShapeScore(const OdenShapeData& shape) const
         return EScore::Fail;
     }
 
+    // 丸みの違い
     float dr = fabs(shape.property.roundness - orderData.targetProperty.roundness);
+    // 縦横比の違い
     float da = fabs(shape.property.aspectRatio - orderData.targetProperty.aspectRatio);
+    // 穴が開いているかどうか
+    float dh = fabs(shape.property.holeNess - orderData.targetProperty.holeNess);
 
-    float dist = dr + da;
+    // 理想の形からどれくらいずれているか
+    float dist = dr * 1.0f + da * 0.8f + dh * 0.3f;
 
     if (dist < 0.1f)
     {
@@ -155,3 +193,5 @@ EScore OdenBubbleActor::JudgeShapeScore(const OdenShapeData& shape) const
     Logger::Log(U8("あいまいな形指定のお題　失敗(T_T)"));
     return EScore::Fail;
 }
+#endif // 0
+

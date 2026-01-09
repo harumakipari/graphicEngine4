@@ -33,10 +33,10 @@ public:
 
 private:
     // スコアを判定する
-    EScore JudgeScore(const OdenIngredientActor& ingredient) const;
+    float JudgeScore(const OdenIngredientActor& ingredient) const;
 
     // 形からスコアを判定する
-    EScore JudgeShapeScore(const OdenShapeData& shape) const;
+    float JudgeShapeScore(const OdenShapeData& shape) const;
 private:
     std::shared_ptr<UIImageComponent> orderUi; // オーダーの吹き出し
     OrderData orderData = {};    // オーダーのデータ

@@ -23,7 +23,7 @@ enum class EOdenShapeCategory :uint8_t
 {
     TriangleLike,// △
     SquareLike, // 四角
-    LongLike,   // 長い
+    LongLike,   // 棒
     RoundLike   // 〇
 };
 
@@ -32,6 +32,7 @@ struct ShapeProperty
 {
     float roundness;   // 丸さ (0.0 ~ 1.0)
     float aspectRatio; // 縦横比（1.0 = 正方形）
+    float holeNess; // 穴が空いているか (0.0 = なし , 1.0 = ドーナツ型)
 };
 
 // おでんの形に関するデータ

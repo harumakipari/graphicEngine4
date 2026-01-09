@@ -22,6 +22,7 @@
 #include "Game/OdenGame/OdenStoreActor.h"
 #include "Game/OdenGame/OdenTrashActor.h"
 #include "Game/OdenGame/OdenBubbleActor.h"
+#include "Game/OdenGame/OdenSlotActor.h"
 
 
 #include "Physics/CollisionSystem.h"
@@ -146,7 +147,7 @@ void MainScene::SetUpActors()
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
 
     // ‚¨‚Å‚ñ‚Ìƒ_ƒCƒRƒ“‚ð¶¬
-    Transform daikonTr(DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenDaikonActor>("oden_daikon", daikonTr);
 
     // ‚¨‘è‚ð¶¬
@@ -160,6 +161,14 @@ void MainScene::SetUpActors()
     // ƒSƒ~” ‚ð¶¬
     Transform odenTrashTr(DirectX::XMFLOAT3{ -5.0f,1.0f,8.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenTrashActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenTrashActor>("odenTrash", odenTrashTr);
+
+    // ‚¨‚Å‚ñ‚Ì˜g‚ð¶¬
+    Transform odenSlotTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenSlotActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot", odenSlotTr);
+
+    // ‚¨‚Å‚ñ‚Ì˜g‚ð¶¬
+    Transform odenSlotTr1(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenSlotActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot", odenSlotTr1);
 
 }
 

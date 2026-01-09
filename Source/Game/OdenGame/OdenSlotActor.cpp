@@ -6,7 +6,7 @@
 void OdenSlotActor::Initialize(const Transform& transform)
 {
     auto boxComponent = AddComponent<BoxComponent>("OdenSlot_BoxComponent");
-    DirectX::XMFLOAT3 size = { 4.0f,1.0f,4.0f }; 
+    DirectX::XMFLOAT3 size = { 3.0f,2.0f,3.0f }; 
     boxComponent->SetBoxExtent(size);
     boxComponent->SetMass(40.0f);
     boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);
