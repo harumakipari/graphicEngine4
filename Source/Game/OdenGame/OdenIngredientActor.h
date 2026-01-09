@@ -1,10 +1,13 @@
 #pragma once
+
 #include "Core/Actor.h"
 #include "Components/Render/MeshComponent.h"
 #include "Components/CollisionShape/StaticMeshCollisionComponent.h"
 #include "Components/CollisionShape/ShapeComponent.h"
 #include "OdenData/OdenDataStruct.h"
 #include "OdenData/OdenShapeDataTable.h"
+
+class OdenSlotActor;
 
 // 具材
 // （回る・掴める）
@@ -72,22 +75,40 @@ public:
         return faceShapeTable.faceShapes.at(odenOrientation.top);
     }
 
+    // 今セットされている枠を設定する
+    void SetCurrentSlot(const std::weak_ptr<OdenSlotActor>& slot)
+    {
+        currentSlot = slot;
+    }
+
+
+    // 今セットされている枠を取得する
+    std::weak_ptr<OdenSlotActor> GetCurrentSlot() const
+    {
+        return currentSlot;
+    }
 
 private:
     // ドラック開始処理
     void TryBeginDrag(const DirectX::XMFLOAT2& cursor);
 
     // ドラック中の処理
-    void UpdateDragging(const DirectX::XMFLOAT2& cursor);
+    void UpdateDragging(const DirectX::XMFLOAT2& cursor) const;
 
     // 離した瞬間の処理
     void EndDrag(const DirectX::XMFLOAT2& cursor);
 
-    // マウスクリックを離した瞬間に呼ぶ関数
-    void OnMouseRelease();
-
     // ドラック中のターゲットを返す
-    EHoverTarget DetectHoverTarget(const DirectX::XMFLOAT2& cursor);
+    EHoverTarget DetectHoverTarget(const DirectX::XMFLOAT2& cursor) const;
+
+    // 離したときのターゲットのアクターを返す
+    std::weak_ptr<Actor> GetHoverSlot(const DirectX::XMFLOAT2& cursor);
+
+    // スロットで入れ替える
+    void SwapWithSlot(const std::weak_ptr<OdenSlotActor>& targetSlot);
+
+    // 元のスロットに戻る
+    void ReturnToSlot();
 
     // 横回転時の面の向き状態を更新
     void RotateHorizontalOrientation(OdenOrientation& o);
@@ -115,6 +136,9 @@ protected:
     EOdenType ingredientType;   // 食材の種類
     OdenFaceShapeTable faceShapeTable;  // 食材ごとの面に対応する形
 
+    std::weak_ptr<OdenSlotActor> currentSlot; // 今の枠
+    std::weak_ptr<OdenSlotActor> grabbedFromSlot; // Drag 開始時のスロット
+
 };
 
 
@@ -122,6 +146,18 @@ class OdenDaikonActor : public OdenIngredientActor
 {
 public:
     OdenDaikonActor(const std::string& actorName) :OdenIngredientActor(actorName) {}
+
+    void Initialize(const Transform& transform)override;
+
+    void Update(float elapsedTime)override;
+
+    void DrawImGuiDetails() override;
+};
+
+class OdenKonnyakuActor : public OdenIngredientActor
+{
+public:
+    OdenKonnyakuActor(const std::string& actorName) :OdenIngredientActor(actorName) {}
 
     void Initialize(const Transform& transform)override;
 

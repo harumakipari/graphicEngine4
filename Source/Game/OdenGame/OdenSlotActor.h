@@ -29,6 +29,15 @@ public:
 
     void Update(float elapsedTime)override {}
 
+    // 食材をセットする
+    void SetIngredient(const std::shared_ptr<OdenIngredientActor>& newIngredient);
+
+    // 食材を外す
+    std::shared_ptr<OdenIngredientActor> RemoveIngredient();
+
+    // 食材の種類を取得する
+    std::shared_ptr<OdenIngredientActor> GetIngredient() const;
+
     // ビート毎に回転する
     void OnBeat() const;
 
@@ -38,5 +47,5 @@ public:
     ERotationType rotationType = ERotationType::Horizontal;
 
 private:
-    std::weak_ptr<OdenIngredientActor> odenIngredientActor; 
+    std::shared_ptr<OdenIngredientActor> odenIngredientActor; 
 };

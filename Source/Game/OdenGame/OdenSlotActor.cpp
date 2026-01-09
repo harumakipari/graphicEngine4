@@ -16,9 +16,30 @@ void OdenSlotActor::Initialize(const Transform& transform)
 }
 
 
+// 食材をセットする
+void OdenSlotActor::SetIngredient(const std::shared_ptr<OdenIngredientActor>& newIngredient)
+{
+    odenIngredientActor = newIngredient;
+}
+
+// 食材を取り除く
+std::shared_ptr<OdenIngredientActor> OdenSlotActor::RemoveIngredient()
+{
+    auto old = odenIngredientActor;
+    odenIngredientActor.reset();
+    return old;
+}
+
+// 食材の種類を取得する
+std::shared_ptr<OdenIngredientActor> OdenSlotActor::GetIngredient() const
+{
+    return odenIngredientActor;
+}
+
+
 void OdenSlotActor::OnBeat() const
 {
-    auto odenActor = odenIngredientActor.lock();
+    auto odenActor = odenIngredientActor;
     if (!odenActor)// おでんの食材が入っていたら、
         return;
 

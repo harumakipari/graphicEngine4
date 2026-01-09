@@ -60,7 +60,7 @@ void MainScene::Start()
     audioComp->SetSource(L"./Data/Sound/BGM/title.wav");
     audioComp->SetLoop(true);
     audioComp->Play();
-    audioComp->SetVolume(0.2f);
+    //audioComp->SetVolume(0.2f);
 
     //std::shared_ptr<Sprite> uiSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/UI/icon_chara.png");
 
@@ -150,6 +150,10 @@ void MainScene::SetUpActors()
     Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenDaikonActor>("oden_daikon", daikonTr);
 
+    // ‚¨‚Å‚ñ‚Ì‚±‚ñ‚É‚á‚­‚ð¶¬
+    Transform daikonTr1(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenDaikon1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenKonnyakuActor>("oden_konnyaku", daikonTr1);
+
     // ‚¨‘è‚ð¶¬
     Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenBubbleActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr);
@@ -165,11 +169,16 @@ void MainScene::SetUpActors()
     // ‚¨‚Å‚ñ‚Ì˜g‚ð¶¬
     Transform odenSlotTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenSlotActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot", odenSlotTr);
+    odenSlotActor->SetIngredient(odenDaikon);
+
+    odenDaikon->SetCurrentSlot(odenSlotActor);
 
     // ‚¨‚Å‚ñ‚Ì˜g‚ð¶¬
     Transform odenSlotTr1(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenSlotActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot", odenSlotTr1);
+    odenSlotActor1->SetIngredient(odenDaikon1);
 
+    odenDaikon1->SetCurrentSlot(odenSlotActor1);
 }
 
 void MainScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)

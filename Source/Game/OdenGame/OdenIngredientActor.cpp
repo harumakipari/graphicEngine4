@@ -97,13 +97,7 @@ void OdenIngredientActor::RotateVertical()
     RotateVerticalOrientation(odenOrientation);
 }
 
-// マウスクリックを離した瞬間に呼ぶ関数
-void OdenIngredientActor::OnMouseRelease()
-{
-    HitResultWithActor result;
-
-}
-
+// ドラック開始処理
 void OdenIngredientActor::TryBeginDrag(const DirectX::XMFLOAT2& cursor)
 {
     HitResultWithActor result;
@@ -112,12 +106,14 @@ void OdenIngredientActor::TryBeginDrag(const DirectX::XMFLOAT2& cursor)
         if (result.actor == this)
         {
             dragState = EOdenDragState::Dragging;
+            grabbedFromSlot = currentSlot;
             Logger::Log(U8("おでんを掴んだ！"));
         }
     }
 }
 
-void OdenIngredientActor::UpdateDragging(const DirectX::XMFLOAT2& cursor)
+// ドラック中の処理
+void OdenIngredientActor::UpdateDragging(const DirectX::XMFLOAT2& cursor) const
 {
     HitResultWithActor result;
     if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
@@ -133,12 +129,18 @@ void OdenIngredientActor::UpdateDragging(const DirectX::XMFLOAT2& cursor)
 void OdenIngredientActor::EndDrag(const DirectX::XMFLOAT2& cursor)
 {
     dragState = EOdenDragState::InSlot;
-    switch (EHoverTarget s = DetectHoverTarget(cursor))
+    switch (DetectHoverTarget(cursor))
     {
     case EHoverTarget::OdenSlot:
-        //HandleDropOnSlot();
+    {
+        auto actor = GetHoverSlot(cursor);
+        if (auto slot = std::static_pointer_cast<OdenSlotActor>(actor.lock()))
+            SwapWithSlot(slot);
+        else
+            ReturnToSlot();
         Logger::Log(U8("枠の上でマウスクリックを離した！"));
         break;
+    }
     case EHoverTarget::OrderBubble:
         Logger::Log(U8("お題の上でマウスクリックを離した！"));
         break;
@@ -155,7 +157,7 @@ void OdenIngredientActor::EndDrag(const DirectX::XMFLOAT2& cursor)
 }
 
 // マウスを離した時のターゲットを返す
-OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const DirectX::XMFLOAT2& cursor)
+OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const DirectX::XMFLOAT2& cursor) const
 {
     HitResultWithActor result;
     if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::OdenHoverTarget)))
@@ -181,6 +183,55 @@ OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const D
     return EHoverTarget::None;
 }
 
+// 離したときのターゲットのアクターを返す
+std::weak_ptr<Actor> OdenIngredientActor::GetHoverSlot(const DirectX::XMFLOAT2& cursor)
+{
+    HitResultWithActor result;
+    if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::OdenHoverTarget)))
+    {// マウスカーソルが
+        return result.actor->shared_from_this();
+    }
+    Logger::Warning(U8("離したときのターゲットのアクターが nullptr です！"));
+
+    //return ;
+}
+
+// スロットで入れ替える
+void OdenIngredientActor::SwapWithSlot(const std::weak_ptr<OdenSlotActor>& targetSlot)
+{
+    auto grabbedFromSlotActor = grabbedFromSlot.lock();
+    auto targetSlotActor = targetSlot.lock();
+    if (!grabbedFromSlotActor || !targetSlotActor)
+        return;
+
+    if (grabbedFromSlotActor == targetSlotActor)
+    {
+        // 同じスロットなら戻すだけ
+        ReturnToSlot();
+        return;
+    }
+
+    auto other = targetSlotActor->GetIngredient();
+
+    // ① targetSlot に自分を置く
+    targetSlotActor->SetIngredient(std::static_pointer_cast<OdenIngredientActor>(shared_from_this()));
+    SetCurrentSlot(targetSlotActor);
+    SetPosition(targetSlotActor->GetPosition());
+
+    // ② 元の slot に相手を戻す
+    grabbedFromSlotActor->SetIngredient(other);
+    if (other)
+    {
+        other->SetCurrentSlot(grabbedFromSlot);
+        other->SetPosition(grabbedFromSlotActor->GetPosition());
+    }
+}
+
+// 元のスロットに戻す
+void OdenIngredientActor::ReturnToSlot()
+{
+
+}
 
 // 横回転時の面の向き状態を更新
 void OdenIngredientActor::RotateHorizontalOrientation(OdenOrientation& o)
@@ -231,6 +282,42 @@ void OdenDaikonActor::Update(float elapsedTime)
 }
 
 void OdenDaikonActor::DrawImGuiDetails()
+{
+#ifdef USE_IMGUI
+    OdenIngredientActor::DrawImGuiDetails();
+
+#endif
+}
+
+
+void OdenKonnyakuActor::Initialize(const Transform& transform)
+{
+    // モデル登録
+    std::string parentName = "Daikon_model";
+    ingredientModel = AddComponent<SkeletalMeshComponent>(parentName);
+    ingredientModel->SetModel("./Data/Models/Oden_Ingredient/Oden_Konnyaku.gltf");
+
+    // 当たり判定を登録
+    boxComponent = AddComponent<BoxComponent>("boxComponent", parentName);
+    DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
+    boxComponent->SetBoxExtent(size);
+    boxComponent->SetMass(40.0f);
+    boxComponent->SetLayer(CollisionLayer::Oden);
+    boxComponent->Initialize();
+
+    // 食材の種類を登録
+    ingredientType = EOdenType::Daikon;
+
+    // 食材の面に対応する形を登録
+    faceShapeTable = odenTypeShapes["Daikon"];
+}
+
+void OdenKonnyakuActor::Update(float elapsedTime)
+{
+    OdenIngredientActor::Update(elapsedTime);
+}
+
+void OdenKonnyakuActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
     OdenIngredientActor::DrawImGuiDetails();
