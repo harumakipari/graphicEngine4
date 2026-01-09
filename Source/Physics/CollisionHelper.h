@@ -12,6 +12,7 @@ enum class CollisionLayer :uint32_t
     Enemy = 1 << 2,
     Oden = 1 << 3,      // おでん
     Convex = 1 << 4,
+    OdenHoverTarget = 1 << 5, // おでんのゲームのカーソルのターゲット
 
     WorldProps = 1 << 10, // stage の object
     Camera = 1 << 12,   // カメラ

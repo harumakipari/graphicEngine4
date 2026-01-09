@@ -5,20 +5,9 @@
 #include "Engine/Scene/Scene.h"
 #include "Physics/CollisionFunction.h"
 
+#include "Game/OdenGame/OdenBubbleActor.h"  
+#include "Game/OdenGame/OdenSlotActor.h"    
 
-// 具材が横回転するときに呼ぶ関数
-void OdenIngredientActor::RotateHorizontal()
-{
-    odenIngredientAngleDegree.x += 90.0f;
-    MathHelper::ClampEulerAngle(odenIngredientAngleDegree.x);
-}
-
-// 具材が縦回転するときに呼ぶ関数
-void OdenIngredientActor::RotateVertical()
-{
-    odenIngredientAngleDegree.z += 90.0f;
-    MathHelper::ClampEulerAngle(odenIngredientAngleDegree.z);
-}
 
 void OdenIngredientActor::Update(float elapsedTime)
 {
@@ -56,6 +45,8 @@ void OdenIngredientActor::Update(float elapsedTime)
         break;
     case EOdenDragState::Released:
         break;
+    case EOdenDragState::OverSlot:
+        break;
     }
 
     // マウスカーソルを取得
@@ -80,7 +71,7 @@ void OdenIngredientActor::Update(float elapsedTime)
             }
         }
 
-        if (dragState==EOdenDragState::Dragging)
+        if (dragState == EOdenDragState::Dragging)
         {
             if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))  // こっちはドラッグしている時だから、判定を大きく取りたいから、
             {// マウスカーソルがおでんと当たっていたら、
@@ -109,10 +100,79 @@ void OdenIngredientActor::Update(float elapsedTime)
 
 }
 
+// 具材が横回転するときに呼ぶ関数
+void OdenIngredientActor::RotateHorizontal()
+{
+    odenIngredientAngleDegree.x += 90.0f;
+    MathHelper::ClampEulerAngle(odenIngredientAngleDegree.x);
+
+    // 内部的に回転する　右に
+    RotateHorizontalOrientation(odenOrientation);
+}
+
+// 具材が縦回転するときに呼ぶ関数
+void OdenIngredientActor::RotateVertical()
+{
+    odenIngredientAngleDegree.z += 90.0f;
+    MathHelper::ClampEulerAngle(odenIngredientAngleDegree.z);
+
+    // 内部的に回転する　奥に
+    RotateVerticalOrientation(odenOrientation);
+}
+
 // マウスクリックを離した瞬間に呼ぶ関数
 void OdenIngredientActor::OnMouseRelease()
 {
+    HitResultWithActor result;
 
+}
+
+// マウスを離した時のターゲットを返す
+OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const DirectX::XMFLOAT2& cursor)
+{
+    HitResultWithActor result;
+    if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::OdenHoverTarget)))
+    {// マウスカーソルが
+        if (auto odenSlot = dynamic_cast<OdenSlotActor*>(result.actor))
+        {// おでんの枠モデルに当たっていたら、
+            Logger::Log(U8("枠の上でマウスクリックを離した！"));
+            return EHoverTarget::OdenSlot;
+            dragState = EOdenDragState::OverSlot;
+            // おでんをスワップする
+            odenSlot->SwapOden(); // これどこで呼ぼうかな。。
+        }
+        else if (auto odenBubble = dynamic_cast<OrderBubbleActor*>(result.actor))
+        {// お題の上だったら
+            return EHoverTarget::OrderBubble;
+        }
+        //else if (auto odenBubble = dynamic_cast<OrderBubbleActor*>(result.actor))
+        {// ゴミ箱の上だったら
+            return EHoverTarget::TrashBin;
+        }
+    }
+    Logger::Log(U8("何もないところでマウスクリックを離した！"));
+    return EHoverTarget::None;
+}
+
+
+// 横回転時の面の向き状態を更新
+void OdenIngredientActor::RotateHorizontalOrientation(OdenOrientation& o)
+{// 右に回転する
+    EOdenFace oldFront = o.front;
+    o.front = o.left;
+    o.left = o.back;
+    o.back = o.right;
+    o.right = oldFront;
+}
+
+// 縦回転時の面の向き状態を更新
+void OdenIngredientActor::RotateVerticalOrientation(OdenOrientation& o)
+{// 奥に向かって回転する
+    EOdenFace oldFront = o.front;
+    o.front = o.bottom;
+    o.bottom = o.back;
+    o.back = o.top;
+    o.top = oldFront;
 }
 
 

@@ -25,12 +25,15 @@ class OdenSlotActor :public Actor
 public:
     OdenSlotActor(const std::string& actorName) :Actor(actorName) {}
 
-    void Initialize(const Transform& transform)override {}
+    void Initialize(const Transform& transform)override;
 
     void Update(float elapsedTime)override {}
 
     // ビート毎に回転する
     void OnBeat() const;
+
+    // 食材を入れ替える
+    void SwapOden();
 
     ERotationType rotationType = ERotationType::Horizontal;
 

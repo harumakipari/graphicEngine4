@@ -24,7 +24,7 @@ public:
 
     void UpdateVisualRotation();
 
-    EOdenOrderShape GetShapeTag()const
+    EOdenShapeCategory GetShapeTag()const
     {
         return odenData.shapeTag;
     }
