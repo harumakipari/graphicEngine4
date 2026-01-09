@@ -14,8 +14,8 @@ static OdenFaceShapeTable DaikonShapeTable =
         { EOdenFace::Back,   {EOdenShapeCategory::SquareLike, {0.2f, 1.0f} } },
         { EOdenFace::Left,   {EOdenShapeCategory::LongLike,   {0.1f, 2.5f} } },
         { EOdenFace::Right,  {EOdenShapeCategory::LongLike,   {0.1f, 2.5f} } },
-        { EOdenFace::Top,    {EOdenShapeCategory::RoundLike,  {0.4f, 1.2f} } },
-        { EOdenFace::Bottom, {EOdenShapeCategory::RoundLike,  {0.4f, 1.2f} } },
+        { EOdenFace::Top,    {EOdenShapeCategory::RoundLike,  {1.0f, 1.2f} } },
+        { EOdenFace::Bottom, {EOdenShapeCategory::RoundLike,  {1.0f, 1.2f} } },
     }
 };
 
@@ -33,6 +33,10 @@ struct OdenOrderDataTable
 static OdenOrderDataTable gameOdenOrderData =
 {
     {
-        {"UI_Order_RoundLike",{EOrderType::ShapeOnly,EOdenShapeCategory::RoundLike,{0.4f, 1.2f},EOdenType::None,3.0f,0.0f}},    // 〇
+        {"UI_Order_CircleLike",{EOrderType::ShapeOnly,EOdenShapeCategory::RoundLike,{1.0f, 1.2f},EOdenType::None,3.0f,0.0f}},    // 〇
+
+
+        // 食材指定　判定時は EOrderType と EOdenType のみ使用
+        {"UI_Order_Daikon",{EOrderType::SpecificIngredient,EOdenShapeCategory::RoundLike,{1.0f, 1.2f},EOdenType::Daikon,3.0f,0.0f}},    // ダイコン
     }
 };

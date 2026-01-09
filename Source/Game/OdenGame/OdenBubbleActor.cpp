@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "OdenBubbleActor.h"
 
+#include <magic_enum.hpp>
+
 #include "Engine/Scene/Scene.h"
 #include "Physics/CollisionFunction.h"
 
 #include "Game/OdenGame/OdenIngredientActor.h"
 #include "OdenData/OdenShapeDataTable.h"
-
 
 void OdenBubbleActor::Initialize(const Transform& transform)
 {
@@ -46,7 +47,39 @@ void OdenBubbleActor::Update(float elapsedTime)
 void OdenBubbleActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
+
+    ImGui::Text("UI File : %s", orderUiFileName.c_str());
+
+    ImGui::Separator();
+    ImGui::Text("== Order Data ==");
+
+    // OrderType
+    ImGui::Text("Order Type : %s",
+        magic_enum::enum_name(orderData.type).data());
+
+    // ShapeOnly
+    if (orderData.type == EOrderType::ShapeOnly)
+    {
+        ImGui::Text("Required Shape Category : %s",
+            magic_enum::enum_name(orderData.requiredCategory).data());
+
+        //DrawShapeProperty(orderData.targetProperty);
+    }
+
+    // SpecificIngredient
+    if (orderData.type == EOrderType::SpecificIngredient)
+    {
+        ImGui::Text("Required Ingredient : %s",
+            magic_enum::enum_name(orderData.requiredIngredient).data());
+    }
+
+    ImGui::Separator();
+    ImGui::Text("== Timer ==");
+    ImGui::Text("Time Limit     : %.1f", orderData.timeLimit);
+    ImGui::Text("Remaining Time : %.1f", orderData.remainingTime);
+
     ImGui::DragFloat3(U8("UIの吹き出し位置のオフセット"), &uiOffset.x, 0.5f);
+
 #endif
 };
 

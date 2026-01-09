@@ -20,7 +20,7 @@ class OdenIngredientActor;
 class OdenBubbleActor :public Actor
 {
 public:
-    explicit OdenBubbleActor(const std::string& actorName, const std::string& orderUiFileName = "UI_Order_RoundLike") :Actor(actorName), orderUiFileName(orderUiFileName) {}
+    explicit OdenBubbleActor(const std::string& actorName, const std::string& orderUiFileName = "UI_Order_CircleLike") :Actor(actorName), orderUiFileName(orderUiFileName) {}
 
     void Initialize(const Transform& transform)override;
 
@@ -30,7 +30,6 @@ public:
 
     // 食材が落とされたら呼ばれる関数
     void OnIngredientDropped(const OdenIngredientActor& ingredient);
-
 
 private:
     // スコアを判定する
