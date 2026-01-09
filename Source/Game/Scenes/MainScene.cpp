@@ -17,8 +17,8 @@
 
 
 #include "Physics/Physics.h"
-#include "Game/Actors/OdenGame/OdenIngredient.h"
-#include "Game/Actors/OdenGame/OdenStoreActor.h"
+#include "Game/OdenGame/OdenIngredient.h"
+#include "Game/OdenGame/OdenStoreActor.h"
 
 #include "Physics/CollisionSystem.h"
 #include "UI/UIManager.h"

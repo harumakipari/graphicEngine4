@@ -315,12 +315,14 @@ namespace PBD
                 XMVECTOR pos = XMLoadFloat3(&particles[i].expectedPosition);
                 XMStoreFloat3(&particles[i].expectedPosition, pos + delta);
             }
+#ifdef USE_IMGUI
             ImGui::Begin("imgui");
             ImGui::Text("Rest volume: %.4f", restVolume);
             ImGui::Text("Current volume: %.4f", currentVolume);
             ImGui::Text("C (constraint value): %.4f", C);
             ImGui::Text("Ratio: %.2f %%", (currentVolume / restVolume) * 100.0f);
             ImGui::End();
+#endif
         }
     };
 

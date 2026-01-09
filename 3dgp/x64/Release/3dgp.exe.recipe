@@ -157,6 +157,12 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfMorphModelPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfMorphModelVS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\HighFreqWorleyCS.cso</FullPath>
     </ContentFile>
     <ContentFile>
@@ -251,15 +257,6 @@
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\SSRPS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\staticMeshPS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\staticMeshVS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\UniverseWithIn.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricCloudscapesPS.cso</FullPath>

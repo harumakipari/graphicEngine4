@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "SceneBase.h"
 #include <profiler.h>
+#ifdef USE_IMGUI
 #include "ImGuizmo.h"
+#endif
 #include "Engine/Debug/DebugDrawManager.h"
 #include "Engine/Debug/EditorGizmo.h"
 #include "Engine/Debug/SceneEditor.h"
