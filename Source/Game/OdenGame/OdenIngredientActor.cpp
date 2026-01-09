@@ -59,7 +59,9 @@ void OdenIngredientActor::DrawImGuiDetails()
 #ifdef USE_IMGUI
     ImGui::Text("Drag State: %s", magic_enum::enum_name(dragState).data());
     ImGui::Text("HoverTarget: %s", magic_enum::enum_name(currentHoverTarget).data());
-    ImGui::Text("Front: %s", magic_enum::enum_name(odenOrientation.front).data());
+    ImGui::Text(U8("Top‚ª’ño‚ÌŒ`: %s"), magic_enum::enum_name(odenOrientation.top).data());
+    const OdenShapeData& shape = faceShapeTable.faceShapes.at(odenOrientation.top);
+    ImGui::Text(U8("Top‚ÌShapeCategory: %s"), magic_enum::enum_name(shape.category).data());
 
     if (ImGui::Button(U8("‰¡‰ñ“]")))
     {
@@ -78,7 +80,7 @@ void OdenIngredientActor::DrawImGuiDetails()
 // ‹ïŞ‚ª‰¡‰ñ“]‚·‚é‚Æ‚«‚ÉŒÄ‚ÔŠÖ”
 void OdenIngredientActor::RotateHorizontal()
 {
-    odenIngredientAngleDegree.x += 90.0f;
+    odenIngredientAngleDegree.z += 90.0f;
     MathHelper::ClampEulerAngle(odenIngredientAngleDegree.x);
 
     // “à•”“I‚É‰ñ“]‚·‚é@‰E‚É
@@ -88,7 +90,7 @@ void OdenIngredientActor::RotateHorizontal()
 // ‹ïŞ‚ªc‰ñ“]‚·‚é‚Æ‚«‚ÉŒÄ‚ÔŠÖ”
 void OdenIngredientActor::RotateVertical()
 {
-    odenIngredientAngleDegree.z += 90.0f;
+    odenIngredientAngleDegree.x += 90.0f;
     MathHelper::ClampEulerAngle(odenIngredientAngleDegree.z);
 
     // “à•”“I‚É‰ñ“]‚·‚é@‰œ‚É
@@ -183,21 +185,21 @@ OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const D
 // ‰¡‰ñ“]‚Ì–Ê‚ÌŒü‚«ó‘Ô‚ğXV
 void OdenIngredientActor::RotateHorizontalOrientation(OdenOrientation& o)
 {// ‰E‚É‰ñ“]‚·‚é
-    EOdenFace oldFront = o.front;
-    o.front = o.left;
-    o.left = o.back;
-    o.back = o.right;
-    o.right = oldFront;
+    OdenOrientation old = o;
+    o.top = old.left;
+    o.left = old.bottom;
+    o.bottom = old.right;
+    o.right = old.top;
 }
 
 // c‰ñ“]‚Ì–Ê‚ÌŒü‚«ó‘Ô‚ğXV
 void OdenIngredientActor::RotateVerticalOrientation(OdenOrientation& o)
 {// ‰œ‚ÉŒü‚©‚Á‚Ä‰ñ“]‚·‚é
-    EOdenFace oldFront = o.front;
-    o.front = o.bottom;
-    o.bottom = o.back;
-    o.back = o.top;
-    o.top = oldFront;
+    OdenOrientation old = o;
+    o.top = old.front;
+    o.front = old.bottom;
+    o.back = old.top;
+    o.bottom = old.back;
 }
 
 
@@ -220,7 +222,7 @@ void OdenDaikonActor::Initialize(const Transform& transform)
     ingredientType = EOdenType::Daikon;
 
     // HŞ‚Ì–Ê‚É‘Î‰‚·‚éŒ`‚ğ“o˜^
-    faceShapeTable = DaikonShapeTable;
+    faceShapeTable = odenTypeShapes["Daikon"];
 }
 
 void OdenDaikonActor::Update(float elapsedTime)

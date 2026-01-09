@@ -19,6 +19,10 @@ static OdenFaceShapeTable DaikonShapeTable =
     }
 };
 
+static inline std::unordered_map<std::string, OdenFaceShapeTable> odenTypeShapes =
+{
+    {"Daikon",DaikonShapeTable}
+};
 
 
 struct OdenOrderDataTable

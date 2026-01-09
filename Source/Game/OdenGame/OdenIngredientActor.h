@@ -63,13 +63,13 @@ public:
     // ¡‚ÌHŞ‚Ìí—Ş‚ğ•Ô‚·
     EOdenType GetIngredientType() const { return ingredientType; }
 
-    // ¡‚Ì³–Ê‚ğ•Ô‚·
-    EOdenFace GetCurrentFrontFace() const { return odenOrientation.front; }
+    // ¡‚Ì³–Ê‚ğ•Ô‚· top‚ª³–Ê‚É‚È‚é
+    EOdenFace GetCurrentFrontFace() const { return odenOrientation.top; }
 
     // ¡Œ©‚¦‚Ä‚¢‚é Œ` ‚ğ•Ô‚·
     OdenShapeData GetCurrentShape() const
     {
-        return faceShapeTable.faceShapes.at(odenOrientation.front);
+        return faceShapeTable.faceShapes.at(odenOrientation.top);
     }
 
 
