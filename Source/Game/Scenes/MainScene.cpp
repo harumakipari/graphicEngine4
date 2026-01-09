@@ -14,16 +14,19 @@
 #include "Game/Actors/Dessert/Pudding.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"
 #include "Game/Actors/Stage/Cloth.h"
+#include "Game/OdenGame/OdenBubbleActor.h"
 
 
 #include "Physics/Physics.h"
-#include "Game/OdenGame/OdenIngredient.h"
+#include "Game/OdenGame/OdenIngredientActor.h"
 #include "Game/OdenGame/OdenStoreActor.h"
+#include "Game/OdenGame/OdenTrashActor.h"
+#include "Game/OdenGame/OdenBubbleActor.h"
+
 
 #include "Physics/CollisionSystem.h"
 #include "UI/UIManager.h"
 #include "UI/Game/Pause.h"
-
 
 
 
@@ -35,7 +38,6 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     //アクターをセット
     SetUpActors();
-
 
     RegisterRenderHook(RenderPass::Opaque, [&](ID3D11DeviceContext* immediateContext)
         {
@@ -145,7 +147,16 @@ void MainScene::SetUpActors()
 
     // おでんのダイコンを生成
     Transform daikonTr(DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto oden_daikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenDaikonActor>("oden_daikon", daikonTr);
+    auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenDaikonActor>("oden_daikon", daikonTr);
+
+    // お題を生成
+    Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenBubbleActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr);
+
+    // ゴミ箱を生成
+    Transform odenTrashTr(DirectX::XMFLOAT3{ -5.0f,1.0f,8.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenTrashActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenTrashActor>("odenTrash", odenTrashTr);
+
 }
 
 void MainScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)

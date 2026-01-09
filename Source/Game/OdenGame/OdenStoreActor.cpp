@@ -7,7 +7,7 @@ void OdenStoreActor::Initialize(const Transform& transform)
 
 
     auto boxComponent = AddComponent<BoxComponent>("Oden_BoxComponent", parentName);
-    DirectX::XMFLOAT3 size = { 20.0f,1.0f,20.0f };
+    DirectX::XMFLOAT3 size = { 40.0f,1.0f,40.0f };
     boxComponent->SetBoxExtent(size);
     boxComponent->SetMass(40.0f);
     boxComponent->SetLayer(CollisionLayer::WorldStatic);

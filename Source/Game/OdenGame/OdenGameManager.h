@@ -2,7 +2,7 @@
 #include "OdenData/OdenDataStruct.h"
 
 class OdenSlotActor;
-class OrderBubbleActor;
+class OdenBubbleActor;
 
 // 全体の管理
 // スコア管理
@@ -16,5 +16,5 @@ public:
     int score;  // ゲーム全体のスコア
     std::queue<EOdenType> nextOdenQueue;
     std::vector<OdenSlotActor*> slots;
-    std::vector<OrderBubbleActor*> orders;
+    std::vector<OdenBubbleActor*> orders;
 };

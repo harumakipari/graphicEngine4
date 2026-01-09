@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "OdenSlotActor.h"
 
-#include "OdenIngredient.h"
+#include "OdenIngredientActor.h"
 
 void OdenSlotActor::Initialize(const Transform& transform)
 {

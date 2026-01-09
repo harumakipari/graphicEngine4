@@ -4,6 +4,7 @@
 #include "Components/CollisionShape/StaticMeshCollisionComponent.h"
 #include "Components/CollisionShape/ShapeComponent.h"
 #include "OdenData/OdenDataStruct.h"
+#include "OdenData/OdenShapeDataTable.h"
 
 
 // 具材
@@ -58,6 +59,19 @@ public:
     // 縦回転するときに呼ぶ関数
     void RotateVertical();
 
+    // 今の食材の種類を返す
+    EOdenType GetIngredientType() const { return ingredientType; }
+
+    // 今の正面を返す
+    EOdenFace GetCurrentFrontFace() const { return odenOrientation.front; }
+
+    // 今見えている 形 を返す
+    OdenShapeData GetCurrentShape() const
+    {
+        return faceShapeTable.faceShapes.at(odenOrientation.front);
+    }
+
+
 private:
     // ドラック開始処理
     void TryBeginDrag(const DirectX::XMFLOAT2& cursor);
@@ -79,6 +93,7 @@ private:
 
     // 縦回転時の面の向き状態を更新
     void RotateVerticalOrientation(OdenOrientation& o);
+
 protected:
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
     std::shared_ptr<BoxComponent> boxComponent; // レイキャスト判定するもの
@@ -95,6 +110,10 @@ protected:
          EOdenFace::Left, EOdenFace::Right,
          EOdenFace::Top, EOdenFace::Bottom
     };
+
+    EOdenType ingredientType;   // 食材の種類
+    OdenFaceShapeTable faceShapeTable;  // 食材ごとの面に対応する形
+
 };
 
 

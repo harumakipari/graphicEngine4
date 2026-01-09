@@ -288,7 +288,7 @@
     <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossState.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenBubbleActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenGameManager.cpp" />
-    <ClCompile Include="Source\Game\OdenGame\OdenIngredient.cpp" />
+    <ClCompile Include="Source\Game\OdenGame\OdenIngredientActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenSlotActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenStoreActor.cpp" />
     <ClCompile Include="Source\Game\Actors\Player\Player.cpp" />
@@ -298,6 +298,7 @@
     <ClCompile Include="Source\Game\Actors\Stage\TestSoftBody.cpp" />
     <ClCompile Include="Source\Game\Actors\WaterSphere\MorphModel.cpp" />
     <ClCompile Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.cpp" />
+    <ClCompile Include="Source\Game\OdenGame\OdenTrashActor.cpp" />
     <ClCompile Include="Source\Game\Scenes\LoadingScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\MainScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\MorphScene.cpp" />
@@ -435,7 +436,7 @@
     <ClInclude Include="Source\Game\OdenGame\OdenData\OdenDataStruct.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenData\OdenShapeDataTable.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenGameManager.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenIngredient.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenIngredientActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenSlotActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenStoreActor.h" />
     <ClInclude Include="Source\Game\Actors\Player\Player.h" />
@@ -450,6 +451,7 @@
     <ClInclude Include="Source\Game\Actors\WaterSphere\MorphModel.h" />
     <ClInclude Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.h" />
     <ClInclude Include="Source\Game\Actors\WaterSphere\WaterSphere.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenTrashActor.h" />
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
     <ClInclude Include="Source\Game\Scenes\MainScene.h" />
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />

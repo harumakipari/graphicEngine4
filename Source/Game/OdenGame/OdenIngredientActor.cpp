@@ -1,12 +1,14 @@
 #include "pch.h"
-#include "OdenIngredient.h"
+#include "OdenIngredientActor.h"
 
+#include "OdenTrashActor.h"
 #include "Engine/Input/InputSystem.h"
 #include "Engine/Scene/Scene.h"
 #include "Physics/CollisionFunction.h"
 
 #include "Game/OdenGame/OdenBubbleActor.h"  
 #include "Game/OdenGame/OdenSlotActor.h"    
+#include "Game/OdenGame/OdenTrashActor.h"    
 
 
 void OdenIngredientActor::Update(float elapsedTime)
@@ -110,11 +112,14 @@ void OdenIngredientActor::EndDrag(const DirectX::XMFLOAT2& cursor)
     {
     case EHoverTarget::OdenSlot:
         //HandleDropOnSlot();
+        Logger::Log(U8("枠の上でマウスクリックを離した！"));
         break;
     case EHoverTarget::OrderBubble:
+        Logger::Log(U8("お題の上でマウスクリックを離した！"));
         //HandleDropOnOrder();
         break;
     case EHoverTarget::TrashBin:
+        Logger::Log(U8("ゴミ箱の上でマウスクリックを離した！"));
         //HandleDropOnTrash();
         break;
     default:
@@ -133,17 +138,16 @@ OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const D
     {// マウスカーソルが
         if (auto odenSlot = dynamic_cast<OdenSlotActor*>(result.actor))
         {// おでんの枠モデルに当たっていたら、
-            Logger::Log(U8("枠の上でマウスクリックを離した！"));
             return EHoverTarget::OdenSlot;
             //dragState = EOdenDragState::OverSlot;
             // おでんをスワップする
             odenSlot->SwapOden(); // これどこで呼ぼうかな。。
         }
-        else if (auto odenBubble = dynamic_cast<OrderBubbleActor*>(result.actor))
+        else if (auto odenBubble = dynamic_cast<OdenBubbleActor*>(result.actor))
         {// お題の上だったら
             return EHoverTarget::OrderBubble;
         }
-        //else if (auto odenBubble = dynamic_cast<OrderBubbleActor*>(result.actor))
+        else if (auto odenBubble = dynamic_cast<OdenTrashActor*>(result.actor))
         {// ゴミ箱の上だったら
             return EHoverTarget::TrashBin;
         }
@@ -181,17 +185,19 @@ void OdenDaikonActor::Initialize(const Transform& transform)
     ingredientModel = AddComponent<SkeletalMeshComponent>(parentName);
     ingredientModel->SetModel("./Data/Models/Oden_Ingredient/Oden_Daikon.gltf");
 
-    // 初期の角度調整
-    //SetAngleOffset({ -70.0f,0.0f,0.0f });
-
+    // 当たり判定を登録
     boxComponent = AddComponent<BoxComponent>("boxComponent", parentName);
     DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
     boxComponent->SetBoxExtent(size);
     boxComponent->SetMass(40.0f);
     boxComponent->SetLayer(CollisionLayer::Oden);
-    //boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
     boxComponent->Initialize();
 
+    // 食材の種類を登録
+    ingredientType = EOdenType::Daikon;
+
+    // 食材の面に対応する形を登録
+    faceShapeTable = DaikonShapeTable;
 }
 
 void OdenDaikonActor::Update(float elapsedTime)

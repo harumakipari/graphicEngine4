@@ -34,20 +34,26 @@ enum class EScore :uint8_t
     Fail,
 };
 
+class OdenIngredientActor;
+
 // 　お題
 // 　ふきだし
 //
-class OrderBubbleActor :public Actor
+class OdenBubbleActor :public Actor
 {
 public:
-    explicit OrderBubbleActor(const std::string& actorName) :Actor(actorName) {}
+    explicit OdenBubbleActor(const std::string& actorName) :Actor(actorName) {}
 
-    void Initialize(const Transform& transform)override {}
+    void Initialize(const Transform& transform)override;
 
     void Update(float elapsedTime)override {}
 
     // スコアを判定する
-    //EScore JudgeScore()
+    EScore JudgeScore(const OdenIngredientActor& ingredient) const;
+
+private:
+    // 形からスコアを判定する
+    EScore JudgeShapeScore(const OdenShapeData& shape) const;
 private:
     std::shared_ptr<UIImageComponent> orderUi; // オーダーの吹き出し
     OrderData order;    // オーダーのデータ
