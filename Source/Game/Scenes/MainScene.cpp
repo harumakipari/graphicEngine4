@@ -56,9 +56,6 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
 void MainScene::Start()
 {
-
-
-
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
     audioComp->SetSource(L"./Data/Sound/BGM/title.wav");

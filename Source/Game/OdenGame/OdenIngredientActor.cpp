@@ -13,8 +13,17 @@
 #include "Game/OdenGame/OdenTrashActor.h"    
 
 
-void OdenIngredientActor::Update(float elapsedTime)
+void OdenIngredientActor::Initialize(const Transform& transform)
 {
+    // イージングコンポーネントを追加
+    easingRunner = std::make_unique<EasingRunner>();
+}
+
+void OdenIngredientActor::Update(float deltaTime)
+{
+    // イージングコンポーネントの更新
+    easingRunner->Tick(deltaTime);
+
     // おでんを回転させる
     ingredientModel->SetRelativeEulerRotationDirect(odenIngredientAngleDegree);
 
@@ -80,21 +89,74 @@ void OdenIngredientActor::DrawImGuiDetails()
 // 具材が横回転するときに呼ぶ関数
 void OdenIngredientActor::RotateHorizontal()
 {
-    odenIngredientAngleDegree.z += 90.0f;
-    MathHelper::ClampEulerAngle(odenIngredientAngleDegree.x);
+    float startAngle = odenIngredientAngleDegree.z;
+    float targetAngle = startAngle - 90.0f;
 
-    // 内部的に回転する　右に
-    RotateHorizontalOrientation(odenOrientation);
+    MathHelper::ClampEulerAngle(targetAngle);
+
+    // 内部向き更新
+    RotateVerticalOrientation(odenOrientation);
+
+    TestEasingHandler handler;
+    handler.AddEasing(
+        TestEaseType::OutCubic,  // くるっと感が出る
+        startAngle,
+        targetAngle,
+        0.25f                   // 回転時間（秒）
+    );
+
+    handler.SetCompletedFunction([this, targetAngle]()
+        {
+            // 最終値を保証
+            odenIngredientAngleDegree.z = targetAngle;
+
+        });
+
+    PropertyAccessor<float> accessor;
+    accessor.getter = [this]() { return odenIngredientAngleDegree.z; };
+    accessor.setter = [this](float v)
+        {
+            odenIngredientAngleDegree.z = v;
+        };
+
+    easingRunner->StartHandler(handler, accessor);
+
 }
 
 // 具材が縦回転するときに呼ぶ関数
 void OdenIngredientActor::RotateVertical()
 {
-    odenIngredientAngleDegree.x += 90.0f;
-    MathHelper::ClampEulerAngle(odenIngredientAngleDegree.z);
+    float startAngle = odenIngredientAngleDegree.x;
+    float targetAngle = startAngle + 90.0f;
+
+    MathHelper::ClampEulerAngle(targetAngle);
 
     // 内部的に回転する　奥に
     RotateVerticalOrientation(odenOrientation);
+
+    TestEasingHandler handler;
+    handler.AddEasing(
+        TestEaseType::OutCubic,  // くるっと感が出る
+        startAngle,
+        targetAngle,
+        0.25f                   // 回転時間（秒）
+    );
+
+    handler.SetCompletedFunction([this, targetAngle]()
+        {
+            // 最終値を保証
+            odenIngredientAngleDegree.x = targetAngle;
+
+        });
+
+    PropertyAccessor<float> accessor;
+    accessor.getter = [this]() { return odenIngredientAngleDegree.x; };
+    accessor.setter = [this](float v)
+        {
+            odenIngredientAngleDegree.x = v;
+        };
+
+    easingRunner->StartHandler(handler, accessor);
 }
 
 // ドラック開始処理
@@ -261,6 +323,8 @@ void OdenIngredientActor::RotateVerticalOrientation(OdenOrientation& o)
 
 void OdenDaikonActor::Initialize(const Transform& transform)
 {
+    OdenIngredientActor::Initialize(transform);
+
     // モデル登録
     std::string parentName = "Daikon_model";
     ingredientModel = AddComponent<SkeletalMeshComponent>(parentName);
@@ -297,6 +361,8 @@ void OdenDaikonActor::DrawImGuiDetails()
 
 void OdenKonnyakuActor::Initialize(const Transform& transform)
 {
+    OdenIngredientActor::Initialize(transform);
+
     // モデル登録
     std::string parentName = "Daikon_model";
     ingredientModel = AddComponent<SkeletalMeshComponent>(parentName);

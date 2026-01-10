@@ -4,6 +4,7 @@
 #include "Components/Render/MeshComponent.h"
 #include "Components/CollisionShape/StaticMeshCollisionComponent.h"
 #include "Components/CollisionShape/ShapeComponent.h"
+#include "Components/Easing/CoreEasingComponent.h"
 #include "OdenData/OdenDataStruct.h"
 #include "OdenData/OdenShapeDataTable.h"
 
@@ -45,9 +46,9 @@ public:
 public:
     OdenIngredientActor(const std::string& actorName) :Actor(actorName) {}
 
-    void Initialize(const Transform& transform)override {}
+    void Initialize(const Transform& transform)override;
 
-    void Update(float elapsedTime)override;
+    void Update(float deltaTime)override;
 
     void DrawImGuiDetails() override;
 
@@ -139,6 +140,7 @@ protected:
     std::weak_ptr<OdenSlotActor> currentSlot; // 今の枠
     std::weak_ptr<OdenSlotActor> grabbedFromSlot; // Drag 開始時のスロット
 
+    std::shared_ptr<EasingRunner> easingRunner; // 角度を easing させるのに使う
 };
 
 
