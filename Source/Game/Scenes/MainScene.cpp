@@ -23,6 +23,7 @@
 #include "Game/OdenGame/OdenTrashActor.h"
 #include "Game/OdenGame/OdenBubbleActor.h"
 #include "Game/OdenGame/OdenSlotActor.h"
+#include "Game/OdenGame/OdenManagers/OdenOrderManager.h"
 
 
 #include "Physics/CollisionSystem.h"
@@ -30,6 +31,24 @@
 #include "UI/Game/Pause.h"
 #include "Game/OdenGame/OdenManagers/OdenSlotManager.h"
 
+
+
+#ifdef _DEBUG
+const OrderEntry* FindOrderByUIName(const std::string& uiName)
+{
+    for (const auto& o : OrderDB.shapeOrders)
+    {
+        if (o.uiName == uiName)
+            return &o;
+    }
+    for (const auto& o : OrderDB.ingredientOrders)
+    {
+        if (o.uiName == uiName)
+            return &o;
+    }
+    return nullptr;
+}
+#endif // _DEBUG
 
 
 bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
@@ -147,7 +166,8 @@ void MainScene::SetUpActors()
     // ポーズアクターを生成
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
 
-#if 0   // デバック時に使用
+#if 1
+    // デバック時に使用
     // おでんのダイコンを生成
     Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenDaikonActor>("oden_daikon", daikonTr);
@@ -169,20 +189,7 @@ void MainScene::SetUpActors()
     odenSlotActor1->SetIngredient(odenKonnyaku);
 
     odenKonnyaku->SetCurrentSlot(odenSlotActor1);
-
-#endif // 0
-
-    // お題を生成
-    Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenBubbleActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr);
-
-    // お題を生成
-    Transform odenBubbleTr1(DirectX::XMFLOAT3{ 5.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenBubbleActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr1, "UI_Order_Daikon");
-
-    // ゴミ箱を生成
-    Transform odenTrashTr(DirectX::XMFLOAT3{ -5.0f,1.0f,8.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenTrashActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenTrashActor>("odenTrash", odenTrashTr);
+#else
 
     // スロットマネージャー作成 
     auto slotManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotManager>("slotManager");
@@ -205,7 +212,7 @@ void MainScene::SetUpActors()
     }
 
     // 上4段  縦回転
-    for (int i = 0; i < 0; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         // おでんのこんにゃくを生成
         Transform konnyakuTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -220,6 +227,33 @@ void MainScene::SetUpActors()
 
         slotManager->RegisterSlot(slot);
     }
+
+
+#endif // 0
+
+#if 0
+    // デバック時に使用
+    // お題を生成
+    Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenBubbleActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr);
+    auto order = FindOrderByUIName("UI_Order_Daikon");
+    odenBubbleActor->SetOrder(order->data, order->uiName);
+
+    // お題を生成
+    Transform odenBubbleTr1(DirectX::XMFLOAT3{ 5.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenBubbleActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr1);
+    order = FindOrderByUIName("UI_Order_CircleLike");
+    odenBubbleActor1->SetOrder(order->data, order->uiName);
+
+#else
+    // お題マネージャー作成 
+    auto orderManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenOrderManager>("orderManager");
+#endif
+
+    // ゴミ箱を生成
+    Transform odenTrashTr(DirectX::XMFLOAT3{ -5.0f,1.0f,8.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenTrashActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenTrashActor>("odenTrash", odenTrashTr);
+
 
 
 }

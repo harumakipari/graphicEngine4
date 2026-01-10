@@ -35,7 +35,7 @@ public:
     };
 
     // ドラック中にどこにマウスカーソルがあるか
-    enum class EHoverTarget
+    enum class EHoverTarget :uint8_t
     {
         None,
         OrderBubble,    // お題
@@ -43,6 +43,11 @@ public:
         OdenSlot        // スワップする枠
     };
 
+    enum class ERotateType:uint8_t
+    {
+        Vertical,   // 縦回転
+        Horizontal  // 横回転
+    };
 public:
     OdenIngredientActor(const std::string& actorName) :Actor(actorName) {}
 
@@ -63,6 +68,9 @@ public:
 
     // 縦回転するときに呼ぶ関数
     void RotateVertical();
+
+    // 回転軸を更新
+    void UpdateRotation();
 
     // 今の食材の種類を返す
     EOdenType GetIngredientType() const { return ingredientType; }
@@ -119,11 +127,24 @@ private:
 
     // 食材を破棄した時に呼ぶ関数
     void TrashSelf();
+
+    // 現在の上の向きに向く？
+    DirectX::XMVECTOR OrientationToQuat(const OdenOrientation& o) const
+    {
+        return FaceToQuat(o.top);
+    }
+
+    // 食材の向きから角度を求める
+    DirectX::XMVECTOR FaceToQuat(const EOdenFace face) const;
+
+    // 回転を始める
+    void StartRotationAnim(ERotateType rotateType);
 protected:
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
     std::shared_ptr<BoxComponent> boxComponent; // レイキャスト判定するもの
 
-    DirectX::XMFLOAT3 odenIngredientAngleDegree = { 0.0f,0.0f,0.0f };
+    //DirectX::XMFLOAT3 odenIngredientAngleDegree = { 0.0f,0.0f,0.0f };
+    DirectX::XMFLOAT4 visualRotationQuat = { 0.0f,0.0f,0.0f,1.0f };
 
     EOdenDragState dragState = EOdenDragState::InSlot;   // おでんの状態
 
@@ -143,6 +164,12 @@ protected:
     std::weak_ptr<OdenSlotActor> grabbedFromSlot; // Drag 開始時のスロット
 
     std::shared_ptr<EasingRunner> easingRunner; // 角度を easing させるのに使う
+
+    DirectX::XMVECTOR startQ;
+    DirectX::XMVECTOR targetQ;
+    float orientationSlerpValue = 0.0f;
+
+    
 };
 
 

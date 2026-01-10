@@ -21,17 +21,6 @@ void OdenBubbleActor::Initialize(const Transform& transform)
     boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);// おでんのゲームのカーソルのターゲット
     boxComponent->Initialize();
 
-    // ここでお題のデータを入れる
-    orderData = gameOdenOrderData.odenOrders[orderUiFileName];
-
-    // お題のUIコンポーネントを作成する
-    std::string filename = "./Data/Textures/UI/" + orderUiFileName + ".png";
-    orderUi = std::make_shared<UIImageComponent>(filename, "OdenBubbleUi");
-    orderUi->SetWorldPosition({ 50, 300 });
-    orderUi->SetPivot({ 0.5f,0.5f });
-    orderUi->SetSize({ 200, 150 });
-    GetOwnerScene()->GetUIManager()->Add(orderUi);
-
 }
 
 void OdenBubbleActor::Update(float elapsedTime)
@@ -83,8 +72,24 @@ void OdenBubbleActor::DrawImGuiDetails()
 #endif
 };
 
+// お題を設定する
+void OdenBubbleActor::SetOrder(const OrderData& orderData, const std::string& orderUiFileName)
+{
+    // ここでお題のデータを入れる
+    this->orderData = orderData;
+
+    // お題のUIコンポーネントを作成する
+    std::string filename = "./Data/Textures/UI/" + orderUiFileName + ".png";
+    orderUi = std::make_shared<UIImageComponent>(filename, "OdenBubbleUi");
+    orderUi->SetWorldPosition({ 50, 300 });
+    orderUi->SetPivot({ 0.5f,0.5f });
+    orderUi->SetSize({ 200, 150 });
+    GetOwnerScene()->GetUIManager()->Add(orderUi);
+
+}
+
 // 食材が落とされたら呼ばれる関数
-void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
+void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient) const
 {
     float score = JudgeScore(ingredient);
 

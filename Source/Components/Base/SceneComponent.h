@@ -103,6 +103,39 @@ public:
         if (ImGui::TreeNode((name_ + "  Transform").c_str()))
         {
             ImGui::DragFloat3("Relative Location", &relativeLocation_.x, 0.1f);
+#if 0
+            // --- Quaternion → Euler（初回 or 外部変更時のみ） ---
+            if (eulerDirty_)
+            {
+                auto eulerRad = MathHelper::QuaternionToEuler(relativeRotation_);
+                editorEulerDeg_.x = DirectX::XMConvertToDegrees(eulerRad.x);
+                editorEulerDeg_.y = DirectX::XMConvertToDegrees(eulerRad.y);
+                editorEulerDeg_.z = DirectX::XMConvertToDegrees(eulerRad.z);
+                eulerDirty_ = false;
+            }
+
+            // --- ImGuiで編集 ---
+            if (ImGui::DragFloat3("Relative Angle", &editorEulerDeg_.x, 1.0f))
+            {
+                DirectX::XMFLOAT3 eulerRad =
+                {
+                    DirectX::XMConvertToRadians(editorEulerDeg_.x),
+                    DirectX::XMConvertToRadians(editorEulerDeg_.y),
+                    DirectX::XMConvertToRadians(editorEulerDeg_.z)
+                };
+
+                auto quat = DirectX::XMQuaternionRotationRollPitchYaw(
+                    eulerRad.x,
+                    eulerRad.y,
+                    eulerRad.z
+                );
+
+                DirectX::XMFLOAT4 q;
+                XMStoreFloat4(&q, quat);
+                SetRelativeRotationDirect(q);
+            }
+#else
+
             DirectX::XMFLOAT3 testAngle = GetRelativeEulerRotation();
             testAngle.x = DirectX::XMConvertToDegrees(testAngle.x);
             testAngle.y = DirectX::XMConvertToDegrees(testAngle.y);
@@ -122,6 +155,8 @@ public:
             DirectX::XMFLOAT4 qNew;
             XMStoreFloat4(&qNew, quatNew);
             SetRelativeRotationDirect(qNew);
+
+#endif // 1
             ImGui::DragFloat3("Relative Scale", &relativeScale_.x, 0.01f, 0.01f, 100.0f);
             ImGui::TreePop();
         }
@@ -146,7 +181,13 @@ private:
     // 親からの相対的なスケール
     DirectX::XMFLOAT3 relativeScale_ = { 1.0f,1.0f,1.0f };
 
+    // ImGui編集専用（度）
+    DirectX::XMFLOAT3 editorEulerDeg_{ 0,0,0 };
+    bool eulerDirty_ = true;
 private:
+
+
+
     // 0はfalse 1はtrue 符号なし8ビット整数
 
     // 相対的な位置、回転、スケールに基づいて worldTransform　を更新したことがあれば true

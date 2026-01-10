@@ -6,7 +6,7 @@ struct OdenFaceShapeTable
     std::unordered_map<EOdenFace, OdenShapeData> faceShapes;
 };
 
-
+// aspectRatio について
 /*
     完全に正方形	1.0
     まあ正方形	0.8
@@ -14,7 +14,7 @@ struct OdenFaceShapeTable
     明らかに長い	0.0
  */
 
- // 仮のダイコンデータ
+ // ダイコンの形と面のデータ
 static OdenFaceShapeTable DaikonShapeTable =
 {
     // ダイコン
@@ -28,25 +28,52 @@ static OdenFaceShapeTable DaikonShapeTable =
     }
 };
 
+// それぞれの食材の名前と形と面のデータ
 static inline std::unordered_map<std::string, OdenFaceShapeTable> odenTypeShapes =
 {
     {"Daikon",DaikonShapeTable}
 };
 
-
-struct OdenOrderDataTable
+struct OrderEntry
 {
-    std::unordered_map<std::string, OrderData> odenOrders;
+    std::string uiName;
+    OrderData data;
 };
 
-static OdenOrderDataTable gameOdenOrderData =
+struct OdenOrderDatabase
 {
+    std::vector<OrderEntry> shapeOrders;
+    std::vector<OrderEntry> ingredientOrders;
+};
+
+static OdenOrderDatabase OrderDB =
+{
+    // ShapeOnly
     {
-        {"UI_Order_CircleLike",{EOrderType::ShapeOnly,EOdenShapeCategory::RoundLike,{1.0f, 1.0f,0.0f},EOdenType::None,3.0f,0.0f}},    // 〇
-        //{"UI_Order_CircleLike",{EOrderType::ShapeOnly,EOdenShapeCategory::RoundLike,{1.0f, 1.0f,0.0f},EOdenType::None,3.0f,0.0f}},    // 〇
+        {
+            "UI_Order_CircleLike",
+            {EOrderType::ShapeOnly, EOdenShapeCategory::RoundLike,{1,1,0}, EOdenType::None,3,0}
+        },
+        {
+            "UI_Order_SquareLike",
+            {EOrderType::ShapeOnly, EOdenShapeCategory::SquareLike,{0.3f,0.8f,0}, EOdenType::None,3,0}
+        },
+        {
+            "UI_Order_TriangleLike",
+            {EOrderType::ShapeOnly, EOdenShapeCategory::TriangleLike,{0,0,0}, EOdenType::None,3,0}
+        },
+    },
 
-
-        // 食材指定　判定時は EOrderType と EOdenType のみ使用
-        {"UI_Order_Daikon",{EOrderType::SpecificIngredient,EOdenShapeCategory::RoundLike,{1.0f, 1.2f,0.0f},EOdenType::Daikon,3.0f,0.0f}},    // ダイコン
+    // Ingredient
+    {
+        {
+            "UI_Order_Daikon",
+            {EOrderType::SpecificIngredient, EOdenShapeCategory::None,{0,0,0}, EOdenType::Daikon,3,0}
+        },
+        {
+            "UI_Order_Egg",
+            {EOrderType::SpecificIngredient, EOdenShapeCategory::None,{0,0,0}, EOdenType::Egg,3,0}
+        },
     }
 };
+

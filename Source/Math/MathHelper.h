@@ -72,6 +72,19 @@ namespace MathHelper
         return dist(gen);
     }
 
+    inline int RandomRange(int min, int max)
+    {
+        if (min >= max)
+        {
+            std::swap(min, max);
+        }
+
+        static std::random_device rd;
+        static std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dist(min, max);
+        return dist(gen);
+    }
+
     enum class RotationSequence 
     {
         zyx, zxy, xyz, xzy, yxz, yzx 

@@ -289,6 +289,7 @@
     <ClCompile Include="Source\Game\OdenGame\OdenBubbleActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenManagers\OdenGameManager.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenIngredientActor.cpp" />
+    <ClCompile Include="Source\Game\OdenGame\OdenManagers\OdenOrderManager.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenManagers\OdenSlotManager.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenSlotActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenStoreActor.cpp" />
@@ -438,6 +439,7 @@
     <ClInclude Include="Source\Game\OdenGame\OdenData\OdenShapeDataTable.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenManagers\OdenGameManager.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenIngredientActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenManagers\OdenOrderManager.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenManagers\OdenSlotManager.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenSlotActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenStoreActor.h" />
@@ -530,6 +532,7 @@
     <ClInclude Include="Source\UI\Game\TransitionEffect.h" />
     <ClInclude Include="Source\UI\UIManager.h" />
     <ClInclude Include="Source\UI\Widgets\Widget.h" />
+    <ClInclude Include="Source\Utility\GameUtility.h" />
     <ClInclude Include="Source\Widgets\Utils\Dialog.h" />
     <ClInclude Include="Source\Widgets\Utils\stdUtiles.h" />
   </ItemGroup>

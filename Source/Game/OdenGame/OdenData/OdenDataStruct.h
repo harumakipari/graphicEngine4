@@ -21,6 +21,7 @@ enum class EOdenOrientation :uint8_t
 // おでんの形のカテゴリー分け
 enum class EOdenShapeCategory :uint8_t
 {
+    None,
     TriangleLike,// △
     SquareLike, // 四角
     LongLike,   // 棒

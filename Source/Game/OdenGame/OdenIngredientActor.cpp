@@ -25,7 +25,9 @@ void OdenIngredientActor::Update(float deltaTime)
     easingRunner->Tick(deltaTime);
 
     // おでんを回転させる
-    ingredientModel->SetRelativeEulerRotationDirect(odenIngredientAngleDegree);
+    //ingredientModel->SetRelativeEulerRotationDirect(odenIngredientAngleDegree);
+    //ingredientModel->SetRelativeRotationDirect(visualRotationQuat);
+
 
     // 位置を取得
     DirectX::XMFLOAT3 position = GetPosition();
@@ -68,6 +70,7 @@ void OdenIngredientActor::DrawImGuiDetails()
 #ifdef USE_IMGUI
     ImGui::Text("Drag State: %s", magic_enum::enum_name(dragState).data());
     ImGui::Text("HoverTarget: %s", magic_enum::enum_name(currentHoverTarget).data());
+
     ImGui::Text(U8("Topが提出の形: %s"), magic_enum::enum_name(odenOrientation.top).data());
     const OdenShapeData& shape = faceShapeTable.faceShapes.at(odenOrientation.top);
     ImGui::Text(U8("TopのShapeCategory: %s"), magic_enum::enum_name(shape.category).data());
@@ -85,18 +88,20 @@ void OdenIngredientActor::DrawImGuiDetails()
 #endif
 }
 
-
 // 具材が横回転するときに呼ぶ関数
 void OdenIngredientActor::RotateHorizontal()
 {
-    float startAngle = odenIngredientAngleDegree.z;
-    float targetAngle = startAngle - 90.0f;
+    if (dragState == EOdenDragState::Dragging) // ドラック中は
+        return;
 
-    MathHelper::ClampEulerAngle(targetAngle);
 
     // 内部向き更新
-    RotateVerticalOrientation(odenOrientation);
+    RotateHorizontalOrientation(odenOrientation);
 
+    //// 見た目の回転
+    StartRotationAnim(ERotateType::Horizontal);
+
+#if 0
     TestEasingHandler handler;
     handler.AddEasing(
         TestEaseType::OutCubic,  // くるっと感が出る
@@ -120,19 +125,28 @@ void OdenIngredientActor::RotateHorizontal()
         };
 
     easingRunner->StartHandler(handler, accessor);
+#endif // 0
 
 }
 
 // 具材が縦回転するときに呼ぶ関数
 void OdenIngredientActor::RotateVertical()
 {
+    if (dragState == EOdenDragState::Dragging) // ドラック中は
+        return;
+
+    // 内部的に回転する　奥に
+    RotateVerticalOrientation(odenOrientation);
+
+    // 見た目の回転
+    StartRotationAnim(ERotateType::Vertical);
+
+#if 0
     float startAngle = odenIngredientAngleDegree.x;
     float targetAngle = startAngle + 90.0f;
 
     MathHelper::ClampEulerAngle(targetAngle);
 
-    // 内部的に回転する　奥に
-    RotateVerticalOrientation(odenOrientation);
 
     TestEasingHandler handler;
     handler.AddEasing(
@@ -157,6 +171,8 @@ void OdenIngredientActor::RotateVertical()
         };
 
     easingRunner->StartHandler(handler, accessor);
+
+#endif // 0
 }
 
 // ドラック開始処理
@@ -330,6 +346,75 @@ void OdenIngredientActor::TrashSelf()
     MarkPendingKill();
 }
 
+// 食材の向きからクォータニオンを求める
+XMVECTOR OdenIngredientActor::FaceToQuat(const EOdenFace face) const
+{
+    using namespace DirectX;
+
+    switch (face)
+    {
+    case EOdenFace::Top:    return XMVectorSet(0, 1, 0, 0);
+    case EOdenFace::Bottom: return XMVectorSet(0, -1, 0, 0);
+    case EOdenFace::Right:  return XMVectorSet(1, 0, 0, 0);
+    case EOdenFace::Left:   return XMVectorSet(-1, 0, 0, 0);
+    case EOdenFace::Front:  return XMVectorSet(0, 0, -1, 0);
+    case EOdenFace::Back:   return XMVectorSet(0, 0, 1, 0);
+    }
+
+    return XMVectorZero();
+}
+
+// 回転を始める
+void OdenIngredientActor::StartRotationAnim(const ERotateType rotateType)
+{
+    using namespace DirectX;
+
+    startQ = XMLoadFloat4(&visualRotationQuat);
+    static float verticalAngle = 0.0f;
+    static float horizontalAngle = 0.0f;
+
+    switch (rotateType)
+    {
+    case ERotateType::Vertical:
+        verticalAngle += 90.0f;
+        targetQ = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), XMConvertToRadians(verticalAngle));
+        break;
+    case ERotateType::Horizontal:
+        horizontalAngle += 90.0f;
+        targetQ = XMQuaternionRotationAxis(XMVectorSet(0, 0, 1, 0), XMConvertToRadians(horizontalAngle));
+        break;
+    }
+    XMVECTOR target = OrientationToQuat(odenOrientation);
+
+    TestEasingHandler handler;
+    handler.AddEasing(TestEaseType::OutCubic, 0.f, 1.0f, 0.25f);
+
+    handler.SetCompletedFunction([this, target]()
+        {
+            XMStoreFloat4(&visualRotationQuat, target);
+            //ingredientModel->SetRelativeRotationDirect(visualRotationQuat);
+            ingredientModel->SetWorldRotationDirect(visualRotationQuat);
+        });
+
+    PropertyAccessor<float> accessor;
+    accessor.getter = [this]() { return 1.0f; };
+    accessor.setter = [this](float t)
+        {
+            XMVECTOR q = XMQuaternionSlerp(startQ, targetQ, t);
+            Logger::Log(U8("t の値") + std::to_string(t));
+            q = XMQuaternionNormalize(q);
+            XMStoreFloat4(&visualRotationQuat, q);
+
+            //ingredientModel->SetRelativeRotationDirect(visualRotationQuat);
+            ingredientModel->SetWorldRotationDirect(visualRotationQuat);
+        
+        };
+
+    easingRunner->StartHandler(handler, accessor);
+
+}
+
+
 void OdenDaikonActor::Initialize(const Transform& transform)
 {
     OdenIngredientActor::Initialize(transform);
@@ -380,7 +465,7 @@ void OdenKonnyakuActor::Initialize(const Transform& transform)
     // 当たり判定を登録
     boxComponent = AddComponent<BoxComponent>("boxComponent", parentName);
     DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
-    boxComponent->SetBoxExtent(size);
+    boxComponent->SetBoxExtent({ size.x,size.x,size.z });
     boxComponent->SetMass(40.0f);
     boxComponent->SetLayer(CollisionLayer::Oden);
     boxComponent->Initialize();
