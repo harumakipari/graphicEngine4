@@ -9,7 +9,6 @@
 #include "Engine/Scene/SceneBase.h"
 
 #include "Game/Actors/Camera/LoadingCamera.h"
-#include "Game/Actors/Stage/Stage.h"
 
 
 class MainScene : public SceneBase

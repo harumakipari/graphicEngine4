@@ -1,20 +1,43 @@
 #pragma once
+#include "Core/Actor.h"
 
 class OdenSlotActor;
 class OdenIngredientActor;
 
-class OdenSlotManager
+
+
+class OdenSlotManager :public Actor
 {
 public:
-    
-    void Initialize();
+    // ビートパターン
+    struct BeatPattern
+    {
+        float interval;   // 拍の間隔（秒）
+        bool strong;      // 強拍かどうか
+    };
+public:
+    OdenSlotManager(const std::string& actorName) :Actor(actorName) {}
 
-    void RegisterSlot(const std::shared_ptr<OdenSlotActor>& slot);
+    void Initialize(const Transform& transform)override;
 
-    void RegisterIngredient(const std::shared_ptr<OdenIngredientActor>& ingredient);
+    // スロットの回転関数を呼ぶ
+    void Update(float deltaTime)override;
 
-    void OnBeat();
-
+    void RegisterSlot(const std::shared_ptr<OdenSlotActor>& slot)
+    {
+        slots.push_back(slot);
+    }
 private:
-    std::vector<std::shared_ptr<OdenSlotActor>> slots;
+    static constexpr BeatPattern BeatTable[4] =
+    {
+        { 1.4f, false }, // ったーん
+        { 1.4f, false }, // ったーん
+        { 1.4f, false }, // ったーん
+        { 1.6f, true  }, // ターン！
+    };
+
+    float beatTimer = 0.0f;
+    int beatIndex = 0;
+
+    std::vector<std::weak_ptr<OdenSlotActor>> slots;
 };

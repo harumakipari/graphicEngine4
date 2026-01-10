@@ -10,13 +10,6 @@ enum class ERotationType :uint8_t
     Vertical
 };
 
-
-struct SlotData 
-{
-    ERotationType rotationType;
-    float rotateInterval; // リズム用
-};
-
 // 　枠組
 // 　回転・配置
 //
@@ -44,5 +37,5 @@ public:
     ERotationType rotationType = ERotationType::Horizontal;
 
 private:
-    std::shared_ptr<OdenIngredientActor> odenIngredientActor; 
+    std::shared_ptr<OdenIngredientActor> odenIngredientActor;
 };

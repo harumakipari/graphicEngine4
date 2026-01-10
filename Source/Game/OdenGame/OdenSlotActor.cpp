@@ -15,7 +15,6 @@ void OdenSlotActor::Initialize(const Transform& transform)
     boxComponent->Initialize();
 }
 
-
 // 食材をセットする
 void OdenSlotActor::SetIngredient(const std::shared_ptr<OdenIngredientActor>& newIngredient)
 {

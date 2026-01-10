@@ -28,6 +28,7 @@
 #include "Physics/CollisionSystem.h"
 #include "UI/UIManager.h"
 #include "UI/Game/Pause.h"
+#include "Game/OdenGame/OdenManagers/OdenSlotManager.h"
 
 
 
@@ -55,6 +56,9 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
 void MainScene::Start()
 {
+
+
+
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
     audioComp->SetSource(L"./Data/Sound/BGM/title.wav");
@@ -146,6 +150,7 @@ void MainScene::SetUpActors()
     // ポーズアクターを生成
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
 
+#if 0   // デバック時に使用
     // おでんのダイコンを生成
     Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenDaikonActor>("oden_daikon", daikonTr);
@@ -153,18 +158,6 @@ void MainScene::SetUpActors()
     // おでんのこんにゃくを生成
     Transform konnyakuTr(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenKonnyaku = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenKonnyakuActor>("oden_konnyaku", konnyakuTr);
-
-    // お題を生成
-    Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenBubbleActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr);
-
-    // お題を生成
-    Transform odenBubbleTr1(DirectX::XMFLOAT3{ 5.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenBubbleActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr1, "UI_Order_Daikon");
-
-    // ゴミ箱を生成
-    Transform odenTrashTr(DirectX::XMFLOAT3{ -5.0f,1.0f,8.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenTrashActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenTrashActor>("odenTrash", odenTrashTr);
 
     // おでんの枠を生成
     Transform odenSlotTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -179,6 +172,59 @@ void MainScene::SetUpActors()
     odenSlotActor1->SetIngredient(odenKonnyaku);
 
     odenKonnyaku->SetCurrentSlot(odenSlotActor1);
+
+#endif // 0
+
+    // お題を生成
+    Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenBubbleActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr);
+
+    // お題を生成
+    Transform odenBubbleTr1(DirectX::XMFLOAT3{ 5.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenBubbleActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr1, "UI_Order_Daikon");
+
+    // ゴミ箱を生成
+    Transform odenTrashTr(DirectX::XMFLOAT3{ -5.0f,1.0f,8.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenTrashActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenTrashActor>("odenTrash", odenTrashTr);
+
+    // スロットマネージャー作成 
+    auto slotManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotManager>("slotManager");
+
+    // 下4段  横回転
+    for (int i = 0; i < 2; ++i)
+    {
+        // おでんのダイコンを生成
+        Transform daikonTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        auto ingredient = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenDaikonActor>("Daikon", daikonTr);
+
+        // スロット生成
+        Transform odenSlotTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        auto slot = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot_Horizontal", odenSlotTr);
+        slot->rotationType = ERotationType::Horizontal;
+        slot->SetIngredient(ingredient);
+        ingredient->SetCurrentSlot(slot);
+
+        slotManager->RegisterSlot(slot);
+    }
+
+    // 上4段  縦回転
+    for (int i = 0; i < 2; ++i)
+    {
+        // おでんのこんにゃくを生成
+        Transform konnyakuTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        auto ingredient = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenKonnyakuActor>("Daikon", konnyakuTr);
+
+        // スロット生成
+        Transform odenSlotTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        auto slot = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot_Vertical", odenSlotTr);
+        slot->rotationType = ERotationType::Vertical;
+        slot->SetIngredient(ingredient);
+        ingredient->SetCurrentSlot(slot);
+
+        slotManager->RegisterSlot(slot);
+    }
+
+
 }
 
 void MainScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
