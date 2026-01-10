@@ -200,7 +200,7 @@ void OdenIngredientActor::UpdateDragging(const DirectX::XMFLOAT2& cursor) const
         pos.y = 1.0f;
         SetPosition(pos);
 
-        DebugDrawManager::DrawSphere(pos, 0.5f, { 1,1,0,1 });
+        //DebugDrawManager::DrawSphere(pos, 0.5f, { 1,1,0,1 });
     }
 }
 
@@ -221,10 +221,12 @@ void OdenIngredientActor::EndDrag(const DirectX::XMFLOAT2& cursor)
     }
     case EHoverTarget::OrderBubble:
         TrashSelf();
+        //DebugDrawManager::DrawSphere({ 0, 0, 0 }, 13.5f, { 1,0,1,1 });
         Logger::Log(U8("お題の上でマウスクリックを離した！"));
         break;
     case EHoverTarget::TrashBin:
         // 食材を破棄した時に呼ぶ関数
+        DebugDrawManager::DrawSphere({ 0, 0, 0 }, 13.5f, { 1,0,1,1 });
         TrashSelf();
         Logger::Log(U8("ゴミ箱の上でマウスクリックを離した！"));
         //HandleDropOnTrash();
@@ -256,7 +258,11 @@ OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const D
         {// ゴミ箱の上だったら
             return EHoverTarget::TrashBin;
         }
+
+        //DebugDrawManager::DrawSphere({ 0, 0, 0 }, 13.5f, { 1,0,1,1 });
+
     }
+    //DebugDrawManager::DrawSphere({ 0, 0, 0 }, 13.5f, { 1,0,1,1 });
     Logger::Log(U8("何もないところでマウスクリックを離した！"));
     return EHoverTarget::None;
 }
@@ -271,7 +277,7 @@ std::weak_ptr<Actor> OdenIngredientActor::GetHoverSlot(const DirectX::XMFLOAT2& 
     }
     Logger::Warning(U8("離したときのターゲットのアクターが nullptr です！"));
 
-    //return ;
+    return std::weak_ptr<Actor>(); // ← 空の weak_ptr
 }
 
 // スロットで入れ替える（Drag中は呼び出さない)
@@ -401,13 +407,13 @@ void OdenIngredientActor::StartRotationAnim(const ERotateType rotateType)
     accessor.setter = [this](float t)
         {
             XMVECTOR q = XMQuaternionSlerp(startQ, targetQ, t);
-            Logger::Log(U8("t の値") + std::to_string(t));
+            //Logger::Log(U8("t の値") + std::to_string(t));
             q = XMQuaternionNormalize(q);
             XMStoreFloat4(&visualRotationQuat, q);
 
             //ingredientModel->SetRelativeRotationDirect(visualRotationQuat);
             ingredientModel->SetWorldRotationDirect(visualRotationQuat);
-        
+
         };
 
     easingRunner->StartHandler(handler, accessor);

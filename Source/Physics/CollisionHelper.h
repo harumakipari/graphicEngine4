@@ -7,15 +7,15 @@
 enum class CollisionLayer :uint32_t
 {
     None = 0,
-    WorldStatic = 1 << 0,
-    Player = 1 << 1,
-    Enemy = 1 << 2,
-    Oden = 1 << 3,      // おでん
-    Convex = 1 << 4,
-    OdenHoverTarget = 1 << 5, // おでんのゲームのカーソルのターゲット
+    WorldStatic ,
+    Player ,
+    Enemy ,
+    Oden ,      // おでん
+    Convex ,
+    OdenHoverTarget , // おでんのゲームのカーソルのターゲット
 
-    WorldProps = 1 << 10, // stage の object
-    Camera = 1 << 12,   // カメラ
+    WorldProps , // stage の object
+    Camera ,   // カメラ
 
     Everything = 0xFFFFFF,
 };

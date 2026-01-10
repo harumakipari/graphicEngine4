@@ -166,7 +166,7 @@ void MainScene::SetUpActors()
     // ポーズアクターを生成
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
 
-#if 1
+#if 0
     // デバック時に使用
     // おでんのダイコンを生成
     Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });

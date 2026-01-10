@@ -5,14 +5,17 @@
 
 void OdenSlotActor::Initialize(const Transform& transform)
 {
-    auto boxComponent = AddComponent<BoxComponent>("OdenSlot_BoxComponent");
+    std::string parentName = "OdenSlot_BoxComponent";
+    auto boxComponent = AddComponent<BoxComponent>(parentName);
     DirectX::XMFLOAT3 size = { 3.0f,2.0f,3.0f }; 
     boxComponent->SetBoxExtent(size);
     boxComponent->SetMass(40.0f);
     boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);
-    //boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-    //boxComponent->SetRelativeLocationDirect({ 6.0f,0.0f,6.0f });
     boxComponent->Initialize();
+
+    auto soupModelComponent = AddComponent<StaticMeshComponent>("Oden_Soup_Model", parentName);
+    soupModelComponent->SetModel("./Data/Models/Oden_Store/Oden_SoupSurface.gltf", false);
+    soupModelComponent->SetRelativeLocationDirect({ 0.0f,-0.1f,0.0f });
 }
 
 // 食材をセットする

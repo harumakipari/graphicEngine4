@@ -5,7 +5,6 @@ void OdenStoreActor::Initialize(const Transform& transform)
 {
     std::string parentName = "RootComponent";
 
-
     auto boxComponent = AddComponent<BoxComponent>("Oden_BoxComponent", parentName);
     DirectX::XMFLOAT3 size = { 40.0f,1.0f,40.0f };
     boxComponent->SetBoxExtent(size);
@@ -15,10 +14,9 @@ void OdenStoreActor::Initialize(const Transform& transform)
     boxComponent->SetRelativeLocationDirect({ 6.0f,0.0f,6.0f });
     boxComponent->Initialize();
 
-
-    auto staticMeshComponent = AddComponent<StaticMeshComponent>("Oden_Store_Model", parentName);
-    staticMeshComponent->SetModel("./Data/Models/Oden_Store/Oden_frame.gltf", false);
-    staticMeshComponent->SetRelativeScaleDirect({ -1.0f,1.0f,-1.0f });
+    auto storeModelComponent = AddComponent<StaticMeshComponent>("Oden_Store_Model", parentName);
+    storeModelComponent->SetModel("./Data/Models/Oden_Store/Oden_frame.gltf", false);
+    storeModelComponent->SetRelativeScaleDirect({ -1.0f,1.0f,-1.0f });
 
 
 }
