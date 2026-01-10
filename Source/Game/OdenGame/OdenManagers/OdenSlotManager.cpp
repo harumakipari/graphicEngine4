@@ -47,8 +47,17 @@ void OdenSlotManager::Initialize(const Transform& transform)
 }
 
 
-// スロットの回転関数を呼ぶ
 void OdenSlotManager::Update(float deltaTime)
+{
+    // ビート処理
+    UpdateBeat(deltaTime);
+
+    // 空スロットを見つけたら、食材を補充する
+    TrySupplyIngredients();
+}
+
+// スロットの回転関数を呼ぶ
+void OdenSlotManager::UpdateBeat(float deltaTime)
 {
     beatTimer += deltaTime;
 
@@ -69,4 +78,34 @@ void OdenSlotManager::Update(float deltaTime)
 
         beatIndex = (beatIndex + 1) % 4;
     }
+}
+
+// 空スロットを見つけたら、食材を補充する
+void OdenSlotManager::TrySupplyIngredients()
+{
+    // ビート
+    for (auto& slot : slots)
+    {
+        auto slotActor = slot.lock();
+        if (!slotActor)
+            continue;
+
+        if (!slotActor->GetIngredient())
+        {
+            SupplyIngredientTo(slotActor);
+        }
+    }
+}
+
+// 食材を補充する
+void OdenSlotManager::SupplyIngredientTo(const std::shared_ptr<OdenSlotActor>& slot)
+{
+    auto actorManager = Scene::GetCurrentScene()->GetActorManager();
+
+    // おでんのダイコンを生成
+    Transform ingredientTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto ingredient = actorManager->CreateAndRegisterActorWithTransform<OdenKonnyakuActor>("OdenIngredient", ingredientTr);
+    ingredient->SetPosition(slot->GetPosition());
+    ingredient->SetCurrentSlot(slot);
+    slot->SetIngredient(ingredient);
 }

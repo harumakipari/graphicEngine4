@@ -117,6 +117,8 @@ private:
     // 縦回転時の面の向き状態を更新
     void RotateVerticalOrientation(OdenOrientation& o);
 
+    // 食材を破棄した時に呼ぶ関数
+    void TrashSelf();
 protected:
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
     std::shared_ptr<BoxComponent> boxComponent; // レイキャスト判定するもの

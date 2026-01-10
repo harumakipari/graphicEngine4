@@ -20,13 +20,23 @@ public:
 
     void Initialize(const Transform& transform)override;
 
-    // スロットの回転関数を呼ぶ
     void Update(float deltaTime)override;
 
+    // スロットを登録する
     void RegisterSlot(const std::shared_ptr<OdenSlotActor>& slot)
     {
         slots.push_back(slot);
     }
+
+private:
+    // スロットの回転関数を呼ぶ
+    void UpdateBeat(float deltaTime);
+
+    // 空スロットを見つけたら、食材を補充する
+    void TrySupplyIngredients();
+
+    // 食材を補充する
+    void SupplyIngredientTo(const std::shared_ptr<OdenSlotActor>& slot);
 private:
     static constexpr BeatPattern BeatTable[4] =
     {

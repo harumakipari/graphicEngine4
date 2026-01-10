@@ -188,7 +188,7 @@ void MainScene::SetUpActors()
     auto slotManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotManager>("slotManager");
 
     // ‰º4’i  ‰¡‰ñ“]
-    for (int i = 0; i < 2; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         // ‚¨‚Å‚ñ‚Ìƒ_ƒCƒRƒ“‚ð¶¬
         Transform daikonTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -205,7 +205,7 @@ void MainScene::SetUpActors()
     }
 
     // ã4’i  c‰ñ“]
-    for (int i = 0; i < 2; ++i)
+    for (int i = 0; i < 0; ++i)
     {
         // ‚¨‚Å‚ñ‚Ì‚±‚ñ‚É‚á‚­‚ð¶¬
         Transform konnyakuTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });

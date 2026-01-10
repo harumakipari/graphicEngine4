@@ -204,9 +204,12 @@ void OdenIngredientActor::EndDrag(const DirectX::XMFLOAT2& cursor)
         break;
     }
     case EHoverTarget::OrderBubble:
+        TrashSelf();
         Logger::Log(U8("お題の上でマウスクリックを離した！"));
         break;
     case EHoverTarget::TrashBin:
+        // 食材を破棄した時に呼ぶ関数
+        TrashSelf();
         Logger::Log(U8("ゴミ箱の上でマウスクリックを離した！"));
         //HandleDropOnTrash();
         break;
@@ -233,7 +236,7 @@ OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const D
             odenBubble->OnIngredientDropped(*this); // これちょっと怖い。。
             return EHoverTarget::OrderBubble;
         }
-        else if (auto odenBubble = dynamic_cast<OdenTrashActor*>(result.actor))
+        else if (auto odenTrash = dynamic_cast<OdenTrashActor*>(result.actor))
         {// ゴミ箱の上だったら
             return EHoverTarget::TrashBin;
         }
@@ -320,6 +323,12 @@ void OdenIngredientActor::RotateVerticalOrientation(OdenOrientation& o)
     o.bottom = old.back;
 }
 
+// 食材を破棄した時に呼ぶ関数
+void OdenIngredientActor::TrashSelf()
+{
+    currentSlot.lock()->RemoveIngredient();
+    MarkPendingKill();
+}
 
 void OdenDaikonActor::Initialize(const Transform& transform)
 {
@@ -333,7 +342,7 @@ void OdenDaikonActor::Initialize(const Transform& transform)
     // 当たり判定を登録
     boxComponent = AddComponent<BoxComponent>("boxComponent", parentName);
     DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
-    boxComponent->SetBoxExtent(size);
+    boxComponent->SetBoxExtent({ size.x,size.x,size.z });
     boxComponent->SetMass(40.0f);
     boxComponent->SetLayer(CollisionLayer::Oden);
     boxComponent->Initialize();
