@@ -62,6 +62,14 @@ public:
     void SetEnable(const bool enabled) { this->enabled = enabled; }
 
     void SetLocalPosition(const XMFLOAT2 localPos) { this->localPosition = localPos; }
+
+    void MarkPendingKill() { isPendingKill = true; }
+
+    bool IsPendingKill() const  { return isPendingKill; }
+
+public:
+    int zOrder = 0; // 値が大きいほど手前に描画される
+
 protected:
     // スクリーン座標
     SpriteUV uv{ 0,0,100,100 };
@@ -83,6 +91,10 @@ protected:
     std::string name = "UICoreComponent";
     UICoreComponent* parent = nullptr;
     std::vector<UICoreComponent*> children;
+
+    // アクターの削除予約
+    bool isPendingKill = false;
+
 };
 
 

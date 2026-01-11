@@ -39,6 +39,7 @@ void ScaleTransitionEffect::Initialize()
     sprite->SetPivot({ 0.5f,0.5f });
     sprite->SetScale({ startScale,startScale });
     sprite->SetSize({ width, height });
+    sprite->zOrder = 1000;
     //scene->GetUIManager()->Add(sprite);
 }
 

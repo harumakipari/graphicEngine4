@@ -2,6 +2,25 @@
 #include "UIManager.h"
 #include <imgui.h>
 
+
+void UIManager::Update(float deltaTime)
+{
+    if (!enabled) return;
+    mouseCaptured = false;
+    for (auto ui : rootComponents)
+    {
+        if (ui->IsEnabled())
+        {
+            ui->UpdateTransform();
+            ui->Update(deltaTime);
+        }
+    }
+
+    // íœˆ—
+    Cleanup();
+}
+
+
 void UIManager::DrawImGUi()
 {
 

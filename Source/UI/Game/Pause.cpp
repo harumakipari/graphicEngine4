@@ -17,14 +17,15 @@ void Pause::Initialize(const Transform& transform)
     pausePanel->SetScale({ 1.2f,1.2f });
     pausePanel->SetSize({ 741, 483 });
     pausePanel->SetVisible(false);
+    pausePanel->zOrder = 100; // Žè‘O‚É•`‰æ‚·‚é
     scene->GetUIManager()->Add(pausePanel);
 
     menuButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/menu.png", "menu");
     menuButton->SetWorldPosition({ 100, 85 });
     menuButton->SetPivot({ 0.5f,0.5f });
     menuButton->SetSize({ 140, 140 });
+    menuButton->zOrder = 100; // Žè‘O‚É•`‰æ‚·‚é
     scene->GetUIManager()->Add(menuButton);
-    //
     menuButton->onClick = [&]()
         {
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/pushButton.wav");
@@ -52,6 +53,8 @@ void Pause::Initialize(const Transform& transform)
     closeButton->SetSize({ 140, 140 });
     closeButton->SetVisible(false);
     closeButton->SetEnable(false);
+    closeButton->zOrder = 100; // Žè‘O‚É•`‰æ‚·‚é
+
     closeButton->onClick = [&]()
         {
             //CoreAudio::PlayOneShot(L"./Data/Sound/SE/pushButton.wav");
@@ -74,6 +77,7 @@ void Pause::Initialize(const Transform& transform)
     returnTitleButton->SetSize({ 472, 183 });
     returnTitleButton->SetVisible(false);
     returnTitleButton->SetEnable(false);
+    returnTitleButton->zOrder = 100; // Žè‘O‚É•`‰æ‚·‚é
     returnTitleButton->onClick = [&]()
         {
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/pushButton.wav");
@@ -98,6 +102,7 @@ void Pause::Initialize(const Transform& transform)
         countDownImages[i]->SetScale({ 4.5f,4.5f });
         countDownImages[i]->SetSize({ 150, 200 });
         countDownImages[i]->SetVisible(false);
+        countDownImages[i]->zOrder = 110; // Žè‘O‚É•`‰æ‚·‚é
 
         scene->GetUIManager()->Add(countDownImages[i]);
     }

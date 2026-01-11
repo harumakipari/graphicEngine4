@@ -94,7 +94,6 @@ void OdenIngredientActor::RotateHorizontal()
     if (dragState == EOdenDragState::Dragging) // ドラック中は
         return;
 
-
     // 内部向き更新
     RotateHorizontalOrientation(odenOrientation);
 

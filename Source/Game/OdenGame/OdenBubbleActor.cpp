@@ -23,14 +23,40 @@ void OdenBubbleActor::Initialize(const Transform& transform)
 
 }
 
+void OdenBubbleActor::Finalize()
+{
+    if (orderUi)
+    {// 削除通知を出す
+        orderUi->MarkPendingKill();
+    }
+}
+
 void OdenBubbleActor::Update(float elapsedTime)
 {
     DirectX::XMFLOAT3 position = GetPosition();
     DirectX::XMFLOAT3 bubbleWorldPos = { position.x + uiOffset.x, position.y + uiOffset.y, position.z + uiOffset.z };
     // ワールド座標からUI座標系に変換する
     XMFLOAT2 uiPos = WorldToUI(bubbleWorldPos);
-    orderUi->SetWorldPosition({ uiPos.x, uiPos.y });
+    if (orderUi)
+        orderUi->SetWorldPosition({ uiPos.x, uiPos.y });
 
+    // 画面外になる位置
+    constexpr XMFLOAT3 screenOutPos = { -2.0f,3.0f,9.0f };
+
+    // 注文を終えたら
+    if (state == EBubbleState::Leaving)
+    {
+        Logger::Log(U8("お客さんが去っていく"));
+        auto pos = GetPosition();
+        pos.x += screenOutPos.x * elapsedTime;   // 左へ退場
+        SetPosition(pos);
+
+        if (pos.x > screenOutPos.x)
+        {
+            MarkPendingKill(); // 削除通知を出す
+        }
+        return;
+    }
 }
 
 void OdenBubbleActor::DrawImGuiDetails()
@@ -89,9 +115,21 @@ void OdenBubbleActor::SetOrder(const OrderData& orderData, const std::string& or
 }
 
 // 食材が落とされたら呼ばれる関数
-void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient) const
+void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
 {
+    if (state != EBubbleState::Waiting) // 状態が待機じゃなかったら
+        return;
+
+    // スコアを計算する
     float score = JudgeScore(ingredient);
+
+    // 状態を去るに変更
+    state = EBubbleState::Leaving;
+
+    if (onCompleted)
+    {// 提出した後に
+        onCompleted(*this, score);
+    }
 
     // ここでスコアのフォントを
 

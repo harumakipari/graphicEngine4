@@ -4,7 +4,6 @@
 #include "Game/OdenGame/OdenData/OdenShapeDataTable.h"
 
 class OdenBubbleActor;
-class OdenIngredientActor;
 
 // ‚¨‹q‚³‚ñ‚ğ•À‚×‚é
 class OdenOrderManager :public Actor
@@ -26,9 +25,15 @@ private:
     // ‡”Ô‚©‚çˆÊ’u‚ğæ“¾‚·‚é
     DirectX::XMFLOAT3 GetBubblePosition(const int index);
 
+    // ’•¶‚ªŠ®—¹‚µ‚½‚ÉŒÄ‚Î‚ê‚éŠÖ”
+    void OnBubbleCompleted(const OdenBubbleActor& bubble, float score);
 
+    // •À‚Ñ‚ğ‹l‚ß‚é
+    void RearrangeBubbles();
+private:
     std::vector<std::weak_ptr<OdenBubbleActor>> bubbles;
 
+    // Å‘å‚Ì’•¶‚ğ•·‚¯‚él”
     static constexpr int MaxOrders = 3;
     DirectX::XMFLOAT3 basePos = { 2.0f,3.0f,9.0f };
     float spacing = 3.0f;

@@ -4,35 +4,50 @@
 class UIManager
 {
 public:
-    void Update(float deltaTime)
-    {
-        if (!enabled) return;
-        mouseCaptured = false;
-        for (auto ui : rootComponents)
-        {
-            if (ui->IsEnabled())
-            {
-                ui->UpdateTransform();
-                ui->Update(deltaTime);
-            }
-        }
-    }
+    // 更新処理
+    void Update(float deltaTime);
 
+    
     void Draw() const
     {
         if (!visible) return;
-        for (auto ui : rootComponents)
+
+        // 描画順にソート zOrderが大きいほど後に描画される
+        std::vector<std::shared_ptr<UICoreComponent>> sortedComponents = rootComponents;
+        std::sort(sortedComponents.begin(), sortedComponents.end(),
+            [](const std::shared_ptr<UICoreComponent>& a, const std::shared_ptr<UICoreComponent>& b)
+            {
+                return a->zOrder < b->zOrder;
+            });
+
+        for (auto& ui : sortedComponents)
         {
-            if (ui->IsVisible() /*&& ui->IsEnabled()*/)
+            if (ui->IsVisible())
             {
                 ui->Draw();
             }
         }
     }
 
-    void Add(std::shared_ptr<UICoreComponent> ui)
+
+    void Add(const std::shared_ptr<UICoreComponent>& ui)
     {
         rootComponents.push_back(ui);
+    }
+
+    void Cleanup()
+    {
+        rootComponents.erase(
+            std::remove_if(
+                rootComponents.begin(),
+                rootComponents.end(),
+                [](const std::shared_ptr<UICoreComponent>& ui)
+                {
+                    return ui->IsPendingKill();
+                }
+            ),
+            rootComponents.end()
+        );
     }
 
     void Clear()
@@ -41,7 +56,6 @@ public:
     }
 
     void DrawImGUi();
-
 
     bool IsMouseCaptured() const { return mouseCaptured; }
     void SetMouseCaptured(const bool v) { mouseCaptured = v; }

@@ -32,6 +32,8 @@ public:
 
     void Initialize(const Transform& transform)override;
 
+    void Finalize() override;
+
     void Update(float elapsedTime)override;
 
     void DrawImGuiDetails() override;
@@ -40,7 +42,7 @@ public:
     void SetOrder(const OrderData& orderData, const std::string& orderUiFileName);
 
     // 食材が落とされたら呼ばれる関数
-    void OnIngredientDropped(const OdenIngredientActor& ingredient) const;
+    void OnIngredientDropped(const OdenIngredientActor& ingredient);
 
 private:
     // スコアを判定する
@@ -48,10 +50,15 @@ private:
 
     // 形からスコアを判定する
     float JudgeShapeScore(const OdenShapeData& shape) const;
+public:
+    std::function<void(OdenBubbleActor&, float score)> onCompleted;     // コールバック関数
+
 private:
     std::shared_ptr<UIImageComponent> orderUi; // オーダーの吹き出し
     OrderData orderData = {};    // オーダーのデータ
     std::string orderUiFileName;  // オーダーの名前のUIの.pngの名前
 
     DirectX::XMFLOAT3 uiOffset = { 0.0f,0.0f,0.0f };   // UIの吹き出し位置のオフセット
+
+    EBubbleState state = EBubbleState::Waiting; // 状態
 };
