@@ -21,22 +21,24 @@ public:
         float normalScale = 7.36f;
         float normalStrength = 2.11f;
         float normalSpeed = 0.56f;
-        float specularSmoothness = 0.229f;
+        float specularSmoothness = 0.174f;
 
-        DirectX::XMFLOAT3 mainLightColor = { 0.3f, 0.3f, 0.3f };
-        float specularHardness = 0.215f; // 0..1 slider to blend soft->hard
+        DirectX::XMFLOAT3 mainLightColor = { 0.8f, 0.8f, 0.8f };
+        float specularHardness = 0.062f; // 0..1 slider to blend soft->hard
 
-        DirectX::XMFLOAT3 specularColor = { 0.3f, 0.3f, 0.3f };
+        DirectX::XMFLOAT3 specularColor = { 0.8f, 0.8f, 0.8f };
         float waterAlpha = 0.8f;
 
-        DirectX::XMFLOAT3 horizonColor = { 0.75f, 0.90f, 1.0f };
-        float specularIntensity = 5.74f; // 全体スケール
+        DirectX::XMFLOAT4 shallowColor = { 0.898f, 0.764f, 0.288f, 1.0f };
 
-        DirectX::XMFLOAT4 shallowColor = { 0.70f, 0.90f, 1.00f, 1.0f }; // 明るい浅瀬
+        DirectX::XMFLOAT4 deepColor = { 1.0f, 0.72f, 0.1f, 1.0f };
 
-        DirectX::XMFLOAT4 deepColor = {0.05f, 0.28f, 0.65f, 1.0f};
+        float specularIntensity = 3.1f; // 全体スケール
+        float turbidity = 0.5f; // 濁り
+        float oilStrength = 0.5f; // 油膜
+
     };
-    
+
 
 public:
     bool Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props) override;

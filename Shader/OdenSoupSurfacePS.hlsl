@@ -221,30 +221,27 @@ cbuffer ODEN_SOUP_CONSTANTS_BUFFER : register(b12)
     float3 specularColor = { 0.3, 0.3, 0.3 };
     float waterAlpha = 0.8;
 
-    float3 horizonColor = float3(0.75, 0.90, 1.0);
-    float specularIntensity = 5.74f; // 全体スケール
-
     float4 shallowColor = float4(0.70, 0.90, 1.00, 1.0); // 明るい浅瀬
 
     float4 deepColor = float4(0.05, 0.28, 0.65, 1.0);
+
+    float specularIntensity = 5.74f; // 全体スケール
+    float turbidity; // 濁り
+    float oilStrength; // 油膜
 }
 
 
 float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 {
-    float waterDepth = pin.wPosition.y - 1.0;
-    float depthFade = saturate(waterDepth / 2.0);
-    depthFade = 1.0 - depthFade;
+   // 鍋の液面Y world space
+    float soupSurfaceY = 0.9;
 
-    //float alphaSteps = 5.0;
-    //float alphaStep = floor(depthFade * alphaSteps) / (alphaSteps - 1.0);
+    // 深さ（0 = 表面）
+    float soupDepth = saturate((soupSurfaceY - pin.wPosition.y) / 5.0);
 
-    // 透明度：浅いほど透明、深いほど不透明
-    //float waterAlphaFinal = lerp(0.05, waterAlpha, depthFade);
+    float depthFade = soupDepth;
 
-    depthFade = saturate(waterDepth / 10.0);
-
-    float3 normalColor = normalTexture.Sample(samplerStates[ANISOTROPIC], pin.texcoord);
+    //return float4(depthFade.xxx, 1.0);
 
     float2 screenSize = (1920, 1080);
     float2 uv = pin.position.xy / screenSize;
@@ -259,7 +256,6 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     T = normalize(T - N * dot(N, T));
     float3 B = normalize(cross(N, T) * sigma);
     float3x3 TBN = float3x3(T, B, N);
-    //float3 blendNormal = GetBlendedWaterNormal(uv, normalScale, normalSpeed, normalStrength, TBN);
     float3 blendNormal = GetBlendedWaterNormal(uv, normalScale, normalSpeed, normalStrength, TBN, true, 0.04, 1.0);
 
     float3 worldPos = pin.wPosition.xyz;
@@ -280,11 +276,6 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     float3 totalSpecular = (mainSpecCombined * mainLightColor /*.xxx*/) + addSpec; // mainLightColor は float3
     float3 specularTerm = specularColor * totalSpecular * specularIntensity;
 
-    //return float4(blendNormal, 1.0);
-
-    // ===== ④ 水色（浅瀬/深い） + HSV posterize（アニメ寄せ） + Fresnel horizon =====
-    float steps = 5.0;
-    float depthStep = floor(depthFade * steps) / (steps - 1.0);
 
     float4 waterColor = HSVLerp_half(deepColor, shallowColor, depthFade);
     float alphaRaw = depthFade;
@@ -292,14 +283,10 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 
     //waterColor.a = waterAlpha; // 透明度（調整）
 
-    V = normalize(cameraPositon.xyz - worldPos);
-    float fresnel = pow(1.0 - saturate(dot(N, V)), 3.0);
-    float3 colorWithHorizon = lerp(waterColor.rgb, horizonColor, fresnel * 2.5);
 
     // 最終色に加算（「水色に足す」方式）         ここに反射の
-    float3 litColor = colorWithHorizon + specularTerm;
+    float3 litColor = waterColor.rgb + specularTerm;
 
     return float4(litColor, waterAlpha);
 
-    return float4(normalColor, 1.0f);
 }

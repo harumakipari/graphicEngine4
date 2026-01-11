@@ -310,7 +310,6 @@ void MainScene::DrawGui()
 
     ImGui::ColorEdit4("shallowColor", &odenSoupConstantBuffer.shallowColor.x);
     ImGui::ColorEdit4("deepColor", &odenSoupConstantBuffer.deepColor.x);
-    ImGui::ColorEdit3("horizonColor", &odenSoupConstantBuffer.horizonColor.x);
     ImGui::SliderFloat("waterAlpha", &odenSoupConstantBuffer.waterAlpha, 0.0f, 1.0f);
 
     ImGui::DragFloat("normalScale", &odenSoupConstantBuffer.normalScale, 0.01f);
@@ -323,6 +322,8 @@ void MainScene::DrawGui()
     ImGui::ColorEdit3("specularColor", &odenSoupConstantBuffer.specularColor.x);
     ImGui::ColorEdit3("mainLightColor", &odenSoupConstantBuffer.mainLightColor.x);
 
+    ImGui::DragFloat(U8("‘÷‚è"), &odenSoupConstantBuffer.turbidity, 0.01f);
+    ImGui::DragFloat(U8("–û–Œ"), &odenSoupConstantBuffer.oilStrength, 0.01f);
 
     ImGui::End();
 #endif

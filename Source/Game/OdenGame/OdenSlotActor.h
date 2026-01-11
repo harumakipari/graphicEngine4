@@ -1,4 +1,5 @@
 #pragma once
+#include "Components/Effect/ParticleComponent.h"
 #include "Core/Actor.h"
 
 class OdenIngredientActor;
@@ -20,7 +21,7 @@ public:
 
     void Initialize(const Transform& transform)override;
 
-    void Update(float elapsedTime)override {}
+    void Update(float elapsedTime)override;
 
     // 食材をセットする
     void SetIngredient(const std::shared_ptr<OdenIngredientActor>& newIngredient);
@@ -37,5 +38,6 @@ public:
     ERotationType rotationType = ERotationType::Horizontal;
 
 private:
-    std::shared_ptr<OdenIngredientActor> odenIngredientActor;
+    std::shared_ptr<OdenIngredientActor> odenIngredientActor;   // スロットの中のおでんの食材
+    std::shared_ptr<ParticleComponent> particleComponent;   // 湯気のエフェクト
 };
