@@ -117,12 +117,12 @@ public:
     // モデルごとに更新したいPlusAlpha 用定数バッファ
     struct PlusAlphaConstants
     {
+        DirectX::XMFLOAT4 cpuColor; // 色をCPU側で指定する用　（ダメージ当たったときとか）
+
         float	hueShift;	// 色相調整
         float	saturation;	// 彩度調整
         float	brightness;	// 明度調整
         float   dissolve;   // ディゾルブ用
-
-        DirectX::XMFLOAT4 cpuColor; // 色をCPU側で指定する用　（ダメージ当たったときとか）
 
         DirectX::XMFLOAT4 morphWeights = { 0.0f,0.0f,0.0f,0.0f };  // モーフモデルに使用する weight 0.0f ~ 1.0f
         float emissionPower; // 自己発光の強さ

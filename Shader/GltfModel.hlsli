@@ -61,12 +61,12 @@ cbuffer PRIMITIVE_CONSTANT_BUFFER : register(b0)
 
 cbuffer PLUS_ALPHA_CONSTANT_BUFFER : register(b5)
 {
+    float4 cpuColor; // 色をCPU側で指定する用　（ダメージ当たったときとか）
+
     float hueShift; // 色相調整
     float saturation; // 彩度調整
     float brightness; // 明度調整
     float dissolve; // ディゾルブ用
-
-    float4 cpuColor; // 色をCPU側で指定する用　（ダメージ当たったときとか）
 
     float4 morphWeights;
 

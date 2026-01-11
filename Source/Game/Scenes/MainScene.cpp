@@ -113,6 +113,10 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     // 暖簾のモデルを作成
     clothSimulate = std::make_unique<ClothSimulate>(device, "./Data/Models/Oden_Store/cloth1.gltf");
 
+    // おでんの汁の定数バッファを作成
+    odenSoupCBuffer = std::make_unique<ConstantBuffer<OdenSoupConstantBuffer>>(Graphics::GetDevice());
+
+    // ここで布を描画する
     RegisterRenderHook(RenderPass::Opaque, [&](ID3D11DeviceContext* immediateContext)
         {
             if (const auto cloth = GetActorManager()->GetActorByName("cloth"))
@@ -284,6 +288,8 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
     // 水のノーマルテクスチャを送る
     immediateContext->PSSetShaderResources(12, 1, waterNormalTexture.GetAddressOf());
+    odenSoupCBuffer->data=odenSoupConstantBuffer;
+    odenSoupCBuffer->Activate(immediateContext, 12);
 
     SceneBase::Render(immediateContext, deltaTime);
 }
@@ -298,5 +304,26 @@ bool MainScene::Uninitialize(ID3D11Device* device)
 
 void MainScene::DrawGui()
 {
+#ifdef USE_IMGUI
     SceneBase::DrawGui();
+    ImGui::Begin("OdenSoupBuffer");
+
+    ImGui::ColorEdit4("shallowColor", &odenSoupConstantBuffer.shallowColor.x);
+    ImGui::ColorEdit4("deepColor", &odenSoupConstantBuffer.deepColor.x);
+    ImGui::ColorEdit3("horizonColor", &odenSoupConstantBuffer.horizonColor.x);
+    ImGui::SliderFloat("waterAlpha", &odenSoupConstantBuffer.waterAlpha, 0.0f, 1.0f);
+
+    ImGui::DragFloat("normalScale", &odenSoupConstantBuffer.normalScale, 0.01f);
+    ImGui::DragFloat("normalStrength", &odenSoupConstantBuffer.normalStrength, 0.01f);
+    ImGui::DragFloat("normalSpeed", &odenSoupConstantBuffer.normalSpeed, 0.01f);
+    ImGui::SliderFloat("specularSmoothness", &odenSoupConstantBuffer.specularSmoothness, 0.0f, 1.0f);
+
+    ImGui::SliderFloat("specularHardness", &odenSoupConstantBuffer.specularHardness, 0.0f, 1.0f);
+    ImGui::DragFloat("specularIntensity", &odenSoupConstantBuffer.specularIntensity, 0.01f);
+    ImGui::ColorEdit3("specularColor", &odenSoupConstantBuffer.specularColor.x);
+    ImGui::ColorEdit3("mainLightColor", &odenSoupConstantBuffer.mainLightColor.x);
+
+
+    ImGui::End();
+#endif
 }

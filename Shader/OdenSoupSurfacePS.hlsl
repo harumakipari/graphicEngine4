@@ -208,20 +208,30 @@ float3 GetAdditionalSpecular(float3 normalWS, float3 positionWS, float3 viewWS, 
     return accum;
 }
 
-
-float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
+cbuffer ODEN_SOUP_CONSTANTS_BUFFER : register(b12)
 {
     float normalScale = 7.36f;
     float normalStrength = 2.11f;
     float normalSpeed = 0.56f;
     float specularSmoothness = 0.229f;
-    float specularHardness = 0.215f; // 0..1 slider to blend soft->hard
+
     float3 mainLightColor = { 0.3, 0.3, 0.3 };
+    float specularHardness = 0.215f; // 0..1 slider to blend soft->hard
+
     float3 specularColor = { 0.3, 0.3, 0.3 };
     float waterAlpha = 0.8;
+
+    float3 horizonColor = float3(0.75, 0.90, 1.0);
     float specularIntensity = 5.74f; // 全体スケール
 
+    float4 shallowColor = float4(0.70, 0.90, 1.00, 1.0); // 明るい浅瀬
 
+    float4 deepColor = float4(0.05, 0.28, 0.65, 1.0);
+}
+
+
+float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
+{
     float waterDepth = pin.wPosition.y - 1.0;
     float depthFade = saturate(waterDepth / 2.0);
     depthFade = 1.0 - depthFade;
@@ -276,8 +286,6 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     float steps = 5.0;
     float depthStep = floor(depthFade * steps) / (steps - 1.0);
 
-    float4 shallowColor = float4(0.70, 0.90, 1.00, 1.0); // 明るい浅瀬
-    float4 deepColor = float4(0.05, 0.28, 0.65, 1.0); 
     float4 waterColor = HSVLerp_half(deepColor, shallowColor, depthFade);
     float alphaRaw = depthFade;
     waterColor.a = lerp(0.3, waterAlpha, alphaRaw);
@@ -286,7 +294,6 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 
     V = normalize(cameraPositon.xyz - worldPos);
     float fresnel = pow(1.0 - saturate(dot(N, V)), 3.0);
-    float3 horizonColor = float3(0.75, 0.90, 1.0);
     float3 colorWithHorizon = lerp(waterColor.rgb, horizonColor, fresnel * 2.5);
 
     // 最終色に加算（「水色に足す」方式）         ここに反射の

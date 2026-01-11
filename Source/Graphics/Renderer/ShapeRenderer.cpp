@@ -18,14 +18,7 @@ void ShapeRenderer::Initialize(ID3D11Device* device)
     hr = device->CreateBuffer(&bufferDesc, NULL, vertexBuffer.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-
-    bufferDesc.ByteWidth = sizeof(DebugConstants);
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = 0;
-    hr = device->CreateBuffer(&bufferDesc, nullptr, constantBuffer[1].GetAddressOf());
+    debugConstantCBuffer = std::make_unique<ConstantBuffer<DebugConstants>>(device);
 
     D3D11_INPUT_ELEMENT_DESC inputElementDesc[]
     {
@@ -91,10 +84,10 @@ void ShapeRenderer::DrawSphere(ID3D11DeviceContext* immediateContext, const Dire
 {
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
 
-    DebugConstants data1{ color };
-    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
-    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
-    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    debugConstants.cpuColor = color;
+    debugConstantCBuffer->data = debugConstants;
+
+    debugConstantCBuffer->Activate(immediateContext, 5);
 
     constexpr DirectX::XMFLOAT4X4 coordinateSystemTransforms[]
     {
@@ -122,10 +115,10 @@ void ShapeRenderer::DrawSphere(ID3D11DeviceContext* immediateContext, const Dire
 // ƒJƒvƒZƒ‹•`‰æ
 void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color)
 {
-    DebugConstants data1{ color };
-    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
-    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
-    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    debugConstants.cpuColor = color;
+    debugConstantCBuffer->data = debugConstants;
+
+    debugConstantCBuffer->Activate(immediateContext, 5);
 
     const DirectX::XMFLOAT4X4 coordinate_system_transforms[]{
 { -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },	// 0:RHS Y-UP
@@ -172,10 +165,10 @@ void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext, const Dir
 
 void ShapeRenderer::DrawCylinder(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color)
 {
-    DebugConstants data1{ color };
-    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
-    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
-    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    debugConstants.cpuColor = color;
+    debugConstantCBuffer->data = debugConstants;
+
+    debugConstantCBuffer->Activate(immediateContext, 5);
 
     DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
 
@@ -197,10 +190,10 @@ void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext,
     float radius, float height,
     const DirectX::XMFLOAT4& color)
 {
-    DebugConstants data1{ color };
-    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
-    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
-    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    debugConstants.cpuColor = color;
+    debugConstantCBuffer->data = debugConstants;
+
+    debugConstantCBuffer->Activate(immediateContext, 5);
 
     const float cylinderHeight = height - 2.0f * radius;  // —¼’[”¼‹…•ª‚ðœ‚­
     const float halfCylinderHeight = cylinderHeight * 0.5f;
@@ -249,10 +242,10 @@ void ShapeRenderer::DrawCapsule(
     float height,
     const DirectX::XMFLOAT4& color)
 {
-    DebugConstants data1{ color };
-    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
-    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
-    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    debugConstants.cpuColor = color;
+    debugConstantCBuffer->data = debugConstants;
+
+    debugConstantCBuffer->Activate(immediateContext, 5);
 
     const DirectX::XMFLOAT4X4 coordinate_system_transforms[]{
 { -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },	// 0:RHS Y-UP
@@ -303,10 +296,10 @@ void ShapeRenderer::DrawCapsule(
 
 void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& startPosition, const DirectX::XMFLOAT3& endPosition, float radius, const DirectX::XMFLOAT4& color)
 {
-    DebugConstants data1{ color };
-    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
-    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
-    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    debugConstants.cpuColor = color;
+    debugConstantCBuffer->data = debugConstants;
+
+    debugConstantCBuffer->Activate(immediateContext, 5);
 
     using namespace DirectX;
 
@@ -362,10 +355,10 @@ void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext, const Dir
 // ” •`‰æ
 void ShapeRenderer::DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color)
 {
-    DebugConstants data1{ color };
-    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
-    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
-    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    debugConstants.cpuColor = color;
+    debugConstantCBuffer->data = debugConstants;
+
+    debugConstantCBuffer->Activate(immediateContext, 5);
 
     const DirectX::XMFLOAT4X4 coordinate_system_transforms[]{
 { -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },	// 0:RHS Y-UP
@@ -393,10 +386,10 @@ void ShapeRenderer::DrawBox(ID3D11DeviceContext* immediateContext, const DirectX
 // ” •`‰æ
 void ShapeRenderer::DrawBoxCenter(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color)
 {
-    DebugConstants data1{ color };
-    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
-    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
-    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    debugConstants.cpuColor = color;
+    debugConstantCBuffer->data = debugConstants;
+
+    debugConstantCBuffer->Activate(immediateContext, 5);
 
     const DirectX::XMFLOAT4X4 coordinate_system_transforms[]{
 { -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },	// 0:RHS Y-UP
@@ -423,10 +416,10 @@ void ShapeRenderer::DrawBoxCenter(ID3D11DeviceContext* immediateContext, const D
 
 void ShapeRenderer::DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& transform, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color)
 {
-    DebugConstants data1{ color };
-    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
-    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
-    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    debugConstants.cpuColor = color;
+    debugConstantCBuffer->data = debugConstants;
+
+    debugConstantCBuffer->Activate(immediateContext, 5);
 
     DirectX::XMMATRIX Transform = DirectX::XMLoadFloat4x4(&transform);
     Transform.r[0] = DirectX::XMVectorScale(Transform.r[0], size.x);
@@ -471,10 +464,10 @@ void ShapeRenderer::DrawSegment(ID3D11DeviceContext* immediateContext, const Dir
     immediateContext->PSSetShader(pixelShader.Get(), NULL, 0);
     immediateContext->IASetInputLayout(inputLayout.Get());
 
-    DebugConstants data1{ color };
-    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
-    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
-    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    debugConstants.cpuColor = color;
+    debugConstantCBuffer->data = debugConstants;
+
+    debugConstantCBuffer->Activate(immediateContext, 5);
 
     immediateContext->Draw(static_cast<UINT>(points.size()), 0);
 }
@@ -547,10 +540,10 @@ void ShapeRenderer::DrawPoint(ID3D11DeviceContext* immediateContext, const Direc
     immediateContext->PSSetShader(pixelShader.Get(), NULL, 0);
     immediateContext->IASetInputLayout(inputLayout.Get());
 
-    DebugConstants data1{ color };
-    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
-    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
-    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    debugConstants.cpuColor = color;
+    debugConstantCBuffer->data = debugConstants;
+
+    debugConstantCBuffer->Activate(immediateContext, 5);
 
     immediateContext->Draw(1, 0);
 }
@@ -577,10 +570,10 @@ void ShapeRenderer::DrawLineSegment(ID3D11DeviceContext* immediateContext, const
     immediateContext->PSSetShader(pixelShader.Get(), NULL, 0);
     immediateContext->IASetInputLayout(inputLayout.Get());
 
-    DebugConstants data1{ color };
-    immediateContext->UpdateSubresource(constantBuffer[1].Get(), 0, 0, &data1, 0, 0);
-    immediateContext->VSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
-    immediateContext->PSSetConstantBuffers(12, 1, constantBuffer[1].GetAddressOf());
+    debugConstants.cpuColor = color;
+    debugConstantCBuffer->data = debugConstants;
+
+    debugConstantCBuffer->Activate(immediateContext, 5);
 
     immediateContext->Draw(2, 0);
 }
