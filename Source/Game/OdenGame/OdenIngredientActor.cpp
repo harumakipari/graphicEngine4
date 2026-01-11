@@ -174,6 +174,37 @@ void OdenIngredientActor::RotateVertical()
 #endif // 0
 }
 
+void OdenIngredientActor::InitParam(const std::string& ingredientName)
+{
+    // ƒ‚ƒfƒ‹“o˜^
+    std::string parentName = ingredientName + "_model";
+    ingredientModel = AddComponent<SkeletalMeshComponent>(parentName);
+    std::string modelFileName = "./Data/Models/Oden_Ingredient/Oden_" + ingredientName + ".gltf";
+    ingredientModel->SetModel(modelFileName.c_str());
+
+    // “–‚½‚è”»’è‚ğ“o˜^
+    boxComponent = AddComponent<BoxComponent>("boxComponent", parentName);
+    DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
+    boxComponent->SetBoxExtent({ size.x,size.x,size.z });
+    boxComponent->SetMass(40.0f);
+    boxComponent->SetLayer(CollisionLayer::Oden);
+    boxComponent->Initialize();
+
+    // HŞ‚Ìí—Ş‚ğ“o˜^
+    auto maybeEnum = magic_enum::enum_cast<EOdenType>(ingredientName);
+    if (maybeEnum.has_value())
+    {
+        ingredientType = maybeEnum.value();
+    }
+    else
+    {
+        Logger::Error(U8("‚¨‚Å‚ñ‚Ì‹ïŞ‚Ì–¼‘O‚ÌEOdenType‚ª“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñI"));
+        ingredientType = EOdenType::None; // ‚½‚Æ‚¦‚ÎƒfƒtƒHƒ‹ƒg
+    }
+    // HŞ‚Ì–Ê‚É‘Î‰‚·‚éŒ`‚ğ“o˜^
+    faceShapeTable = odenTypeShapes[ingredientName];
+}
+
 // ƒhƒ‰ƒbƒNŠJnˆ—
 void OdenIngredientActor::TryBeginDrag(const DirectX::XMFLOAT2& cursor)
 {
@@ -420,77 +451,3 @@ void OdenIngredientActor::StartRotationAnim(const ERotateType rotateType)
 }
 
 
-void OdenDaikonActor::Initialize(const Transform& transform)
-{
-    OdenIngredientActor::Initialize(transform);
-
-    // ƒ‚ƒfƒ‹“o˜^
-    std::string parentName = "Daikon_model";
-    ingredientModel = AddComponent<SkeletalMeshComponent>(parentName);
-    ingredientModel->SetModel("./Data/Models/Oden_Ingredient/Oden_Daikon.gltf");
-
-    // “–‚½‚è”»’è‚ğ“o˜^
-    boxComponent = AddComponent<BoxComponent>("boxComponent", parentName);
-    DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
-    boxComponent->SetBoxExtent({ size.x,size.x,size.z });
-    boxComponent->SetMass(40.0f);
-    boxComponent->SetLayer(CollisionLayer::Oden);
-    boxComponent->Initialize();
-
-    // HŞ‚Ìí—Ş‚ğ“o˜^
-    ingredientType = EOdenType::Daikon;
-
-    // HŞ‚Ì–Ê‚É‘Î‰‚·‚éŒ`‚ğ“o˜^
-    faceShapeTable = odenTypeShapes["Daikon"];
-}
-
-void OdenDaikonActor::Update(float elapsedTime)
-{
-    OdenIngredientActor::Update(elapsedTime);
-}
-
-void OdenDaikonActor::DrawImGuiDetails()
-{
-#ifdef USE_IMGUI
-    OdenIngredientActor::DrawImGuiDetails();
-
-#endif
-}
-
-
-void OdenKonnyakuActor::Initialize(const Transform& transform)
-{
-    OdenIngredientActor::Initialize(transform);
-
-    // ƒ‚ƒfƒ‹“o˜^
-    std::string parentName = "Daikon_model";
-    ingredientModel = AddComponent<SkeletalMeshComponent>(parentName);
-    ingredientModel->SetModel("./Data/Models/Oden_Ingredient/Oden_Konnyaku.gltf");
-
-    // “–‚½‚è”»’è‚ğ“o˜^
-    boxComponent = AddComponent<BoxComponent>("boxComponent", parentName);
-    DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
-    boxComponent->SetBoxExtent({ size.x,size.x,size.z });
-    boxComponent->SetMass(40.0f);
-    boxComponent->SetLayer(CollisionLayer::Oden);
-    boxComponent->Initialize();
-
-    // HŞ‚Ìí—Ş‚ğ“o˜^
-    ingredientType = EOdenType::Daikon;
-
-    // HŞ‚Ì–Ê‚É‘Î‰‚·‚éŒ`‚ğ“o˜^
-    faceShapeTable = odenTypeShapes["Daikon"];
-}
-
-void OdenKonnyakuActor::Update(float elapsedTime)
-{
-    OdenIngredientActor::Update(elapsedTime);
-}
-
-void OdenKonnyakuActor::DrawImGuiDetails()
-{
-#ifdef USE_IMGUI
-    OdenIngredientActor::DrawImGuiDetails();
-
-#endif
-}

@@ -30,6 +30,7 @@
 #include "UI/UIManager.h"
 #include "UI/Game/Pause.h"
 #include "Game/OdenGame/OdenManagers/OdenSlotManager.h"
+#include "Game/OdenGame/OdenDetailIngredientsActors.h"
 
 
 
@@ -68,8 +69,6 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
             }
         });
-
-
     return true;
 }
 

@@ -77,7 +77,7 @@ void OdenBubbleActor::Update(float elapsedTime)
     {
         Logger::Log(U8("‚¨‹q‚³‚ñ‚ª‹Ž‚Á‚Ä‚¢‚­"));
         auto pos = GetPosition();
-        pos.x += screenOutPos.x * elapsedTime;   // ¶‚Ö‘Þê
+        pos.x -= 1.0f* elapsedTime;   // ¶‚Ö‘Þê
         SetPosition(pos);
 
         if (pos.x > screenOutPos.x)

@@ -3,7 +3,7 @@
 
 #include "Engine/Scene/Scene.h"
 #include "Game/OdenGame/OdenSlotActor.h"
-#include "Game/OdenGame/OdenIngredientActor.h"
+#include "Game/OdenGame/OdenDetailIngredientsActors.h"
 
 // ‰Šú‰»
 void OdenSlotManager::Initialize(const Transform& transform)

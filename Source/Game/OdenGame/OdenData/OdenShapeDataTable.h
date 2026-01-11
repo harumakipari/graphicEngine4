@@ -21,17 +21,33 @@ static OdenFaceShapeTable DaikonShapeTable =
     {
         { EOdenFace::Front,  {EOdenShapeCategory::SquareLike, {0.3f, 0.5f,0.0f} } },
         { EOdenFace::Back,   {EOdenShapeCategory::SquareLike, {0.3f, 0.5f,0.0f} } },
-        { EOdenFace::Left,   {EOdenShapeCategory::LongLike,   {0.3f, 0.5f,0.0f} } },
-        { EOdenFace::Right,  {EOdenShapeCategory::LongLike,   {0.3f, 0.5f,0.0f} } },
+        { EOdenFace::Left,   {EOdenShapeCategory::SquareLike,   {0.3f, 0.5f,0.0f} } },
+        { EOdenFace::Right,  {EOdenShapeCategory::SquareLike,   {0.3f, 0.5f,0.0f} } },
         { EOdenFace::Top,    {EOdenShapeCategory::RoundLike,  {1.0f, 1.0f,0.0f} } },
         { EOdenFace::Bottom, {EOdenShapeCategory::RoundLike,  {1.0f, 1.0f,0.0f} } },
     }
 };
 
+// こんにゃくの形と面のデータ
+static OdenFaceShapeTable KonnyakuShapeTable =
+{
+    // こんにゃく
+    {
+        { EOdenFace::Front,  {EOdenShapeCategory::SquareLike, {0.3f, 0.5f,0.0f} } },
+        { EOdenFace::Back,   {EOdenShapeCategory::SquareLike, {0.3f, 0.5f,0.0f} } },
+        { EOdenFace::Left,   {EOdenShapeCategory::SquareLike,   {0.3f, 0.5f,0.0f} } },
+        { EOdenFace::Right,  {EOdenShapeCategory::SquareLike,   {0.3f, 0.5f,0.0f} } },
+        { EOdenFace::Top,    {EOdenShapeCategory::TriangleLike,  {0.0f, 0.0f,0.0f} } },
+        { EOdenFace::Bottom, {EOdenShapeCategory::TriangleLike,  {0.0f, 0.0f,0.0f} } },
+    }
+};
+
+
 // それぞれの食材の名前と形と面のデータ
 static inline std::unordered_map<std::string, OdenFaceShapeTable> odenTypeShapes =
 {
-    {"Daikon",DaikonShapeTable}
+    {"Daikon",DaikonShapeTable},
+    {"Konnyaku",KonnyakuShapeTable}
 };
 
 struct OrderEntry
@@ -56,7 +72,7 @@ static OdenOrderDatabase OrderDB =
         },
         {
             "UI_Order_SquareLike",
-            {EOrderType::ShapeOnly, EOdenShapeCategory::SquareLike,{0.3f,0.8f,0}, EOdenType::None}
+            {EOrderType::ShapeOnly, EOdenShapeCategory::SquareLike,{0.3f,0.5f,0}, EOdenType::None}
         },
         {
             "UI_Order_TriangleLike",
@@ -73,6 +89,10 @@ static OdenOrderDatabase OrderDB =
         {
             "UI_Order_Egg",
             {EOrderType::SpecificIngredient, EOdenShapeCategory::None,{0,0,0}, EOdenType::Egg}
+        },
+        {
+            "UI_Order_Konnyaku",
+            {EOrderType::SpecificIngredient, EOdenShapeCategory::None,{0,0,0}, EOdenType::Konnyaku}
         },
     }
 };

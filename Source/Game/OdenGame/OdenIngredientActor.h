@@ -69,9 +69,6 @@ public:
     // 縦回転するときに呼ぶ関数
     void RotateVertical();
 
-    // 回転軸を更新
-    void UpdateRotation();
-
     // 今の食材の種類を返す
     EOdenType GetIngredientType() const { return ingredientType; }
 
@@ -96,6 +93,9 @@ public:
     {
         return currentSlot;
     }
+protected:
+    // 具材の名前からモデルやデータを設定する
+    void InitParam(const std::string& ingredientName);
 
 private:
     // ドラック開始処理
@@ -173,26 +173,3 @@ protected:
 };
 
 
-class OdenDaikonActor : public OdenIngredientActor
-{
-public:
-    OdenDaikonActor(const std::string& actorName) :OdenIngredientActor(actorName) {}
-
-    void Initialize(const Transform& transform)override;
-
-    void Update(float elapsedTime)override;
-
-    void DrawImGuiDetails() override;
-};
-
-class OdenKonnyakuActor : public OdenIngredientActor
-{
-public:
-    OdenKonnyakuActor(const std::string& actorName) :OdenIngredientActor(actorName) {}
-
-    void Initialize(const Transform& transform)override;
-
-    void Update(float elapsedTime)override;
-
-    void DrawImGuiDetails() override;
-};
