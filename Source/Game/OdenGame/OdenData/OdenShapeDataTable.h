@@ -52,15 +52,15 @@ static OdenOrderDatabase OrderDB =
     {
         {
             "UI_Order_CircleLike",
-            {EOrderType::ShapeOnly, EOdenShapeCategory::RoundLike,{1,1,0}, EOdenType::None,3,0}
+            {EOrderType::ShapeOnly, EOdenShapeCategory::RoundLike,{1,1,0}, EOdenType::None}
         },
         {
             "UI_Order_SquareLike",
-            {EOrderType::ShapeOnly, EOdenShapeCategory::SquareLike,{0.3f,0.8f,0}, EOdenType::None,3,0}
+            {EOrderType::ShapeOnly, EOdenShapeCategory::SquareLike,{0.3f,0.8f,0}, EOdenType::None}
         },
         {
             "UI_Order_TriangleLike",
-            {EOrderType::ShapeOnly, EOdenShapeCategory::TriangleLike,{0,0,0}, EOdenType::None,3,0}
+            {EOrderType::ShapeOnly, EOdenShapeCategory::TriangleLike,{0,0,0}, EOdenType::None}
         },
     },
 
@@ -68,11 +68,11 @@ static OdenOrderDatabase OrderDB =
     {
         {
             "UI_Order_Daikon",
-            {EOrderType::SpecificIngredient, EOdenShapeCategory::None,{0,0,0}, EOdenType::Daikon,3,0}
+            {EOrderType::SpecificIngredient, EOdenShapeCategory::None,{0,0,0}, EOdenType::Daikon}
         },
         {
             "UI_Order_Egg",
-            {EOrderType::SpecificIngredient, EOdenShapeCategory::None,{0,0,0}, EOdenType::Egg,3,0}
+            {EOrderType::SpecificIngredient, EOdenShapeCategory::None,{0,0,0}, EOdenType::Egg}
         },
     }
 };

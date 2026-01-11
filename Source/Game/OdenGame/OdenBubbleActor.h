@@ -38,8 +38,8 @@ public:
 
     void DrawImGuiDetails() override;
 
-    // お題を設定する
-    void SetOrder(const OrderData& orderData, const std::string& orderUiFileName);
+    // お題を設定する　Uiを生成する
+    void SetOrderAndMakeUi(const OrderData& orderData, const std::string& orderUiFileName);
 
     // 食材が落とされたら呼ばれる関数
     void OnIngredientDropped(const OdenIngredientActor& ingredient);
@@ -58,7 +58,16 @@ private:
     OrderData orderData = {};    // オーダーのデータ
     std::string orderUiFileName;  // オーダーの名前のUIの.pngの名前
 
-    DirectX::XMFLOAT3 uiOffset = { 0.0f,0.0f,0.0f };   // UIの吹き出し位置のオフセット
+    DirectX::XMFLOAT2 uiOffset = { 0.0f,-2.0f };   // UIのゲージ位置のオフセット
 
     EBubbleState state = EBubbleState::Waiting; // 状態
+
+    float remainingTime = 0.0f; // この Bubble の残り時間
+    float timeLimit = 0.0f;     // この Bubble の制限時間
+    std::shared_ptr<UIGaugeComponent> gaugeUi; // 残り時間のゲージUI
+        
+        
+        
+
+
 };

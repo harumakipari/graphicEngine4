@@ -33,12 +33,41 @@ void OdenBubbleActor::Finalize()
 
 void OdenBubbleActor::Update(float elapsedTime)
 {
+    // UIの位置
     DirectX::XMFLOAT3 position = GetPosition();
-    DirectX::XMFLOAT3 bubbleWorldPos = { position.x + uiOffset.x, position.y + uiOffset.y, position.z + uiOffset.z };
+    DirectX::XMFLOAT3 bubbleWorldPos = { position.x , position.y, position.z };
     // ワールド座標からUI座標系に変換する
     XMFLOAT2 uiPos = WorldToUI(bubbleWorldPos);
     if (orderUi)
         orderUi->SetWorldPosition({ uiPos.x, uiPos.y });
+
+    XMFLOAT2 gaugeUiPos = { uiPos.x + uiOffset.x,uiPos.y + uiOffset.y };
+
+    if (gaugeUi)
+    {
+        gaugeUi->SetValue(remainingTime, timeLimit);
+        gaugeUi->SetWorldPosition({ gaugeUiPos.x, gaugeUiPos.y });
+    }
+
+    // 待機
+    if (state == EBubbleState::Waiting)
+    {
+        // 残り時間を減らす
+        remainingTime -= elapsedTime;
+
+        if (remainingTime <= 0.0f)
+        {
+            remainingTime = 0.0f;
+            state = EBubbleState::Leaving;
+
+            Logger::Log(U8("時間切れで自動失敗"));
+
+            // スコア 0 で通知
+            if (onCompleted)
+                onCompleted(*this, 0.0f);
+        }
+    }
+
 
     // 画面外になる位置
     constexpr XMFLOAT3 screenOutPos = { -2.0f,3.0f,9.0f };
@@ -90,19 +119,21 @@ void OdenBubbleActor::DrawImGuiDetails()
 
     ImGui::Separator();
     ImGui::Text("== Timer ==");
-    ImGui::Text("Time Limit     : %.1f", orderData.timeLimit);
-    ImGui::Text("Remaining Time : %.1f", orderData.remainingTime);
+    ImGui::Text("Time Limit     : %.1f", timeLimit);
+    ImGui::Text("Remaining Time : %.1f", remainingTime);
 
-    ImGui::DragFloat3(U8("UIの吹き出し位置のオフセット"), &uiOffset.x, 0.5f);
+    ImGui::DragFloat2(U8("UIの吹き出し位置のオフセット"), &uiOffset.x, 0.5f);
 
 #endif
 };
 
 // お題を設定する
-void OdenBubbleActor::SetOrder(const OrderData& orderData, const std::string& orderUiFileName)
+void OdenBubbleActor::SetOrderAndMakeUi(const OrderData& orderData, const std::string& orderUiFileName)
 {
     // ここでお題のデータを入れる
     this->orderData = orderData;
+
+    auto uiManager = GetOwnerScene()->GetUIManager();
 
     // お題のUIコンポーネントを作成する
     std::string filename = "./Data/Textures/UI/" + orderUiFileName + ".png";
@@ -110,7 +141,18 @@ void OdenBubbleActor::SetOrder(const OrderData& orderData, const std::string& or
     orderUi->SetWorldPosition({ 50, 300 });
     orderUi->SetPivot({ 0.5f,0.5f });
     orderUi->SetSize({ 200, 150 });
-    GetOwnerScene()->GetUIManager()->Add(orderUi);
+    uiManager->Add(orderUi);
+
+    // 制限時間を設定する
+    timeLimit = MathHelper::RandomRange(4.0f, 6.0f); // 4.0f ~ 6.0f で去る
+    remainingTime = timeLimit;
+
+    // 制限時間のゲージのUIを作成する
+    gaugeUi = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/boss_hp_frame.png", "./Data/Textures/UI/boss_hp.png", "gauge");
+    gaugeUi->SetWorldPosition({ 50, 300 });
+    gaugeUi->SetSize({ 300, 40 });
+
+    uiManager->Add(gaugeUi);
 
 }
 

@@ -34,13 +34,14 @@ void OdenOrderManager::SpawnOrderBubble(int index)
     OrderEntry randomOrder = PickRandomOrder();
 
     // ‚¨‘è‚ğİ’è‚·‚é
-    bubble->SetOrder(randomOrder.data, randomOrder.uiName);
+    bubble->SetOrderAndMakeUi(randomOrder.data, randomOrder.uiName);
 
     bubble->onCompleted = [this](const OdenBubbleActor& bubble, const float score)
         {
             //@Š®—¹‚Ìˆ—
             OnBubbleCompleted(bubble, score);
         };
+
 
     bubbles.push_back(bubble);
 }

@@ -84,7 +84,5 @@ struct OrderData
 
     // ‹ïŞw’èŒn
     EOdenType requiredIngredient;
-
-    float timeLimit;
-    float remainingTime;
 };
+ 

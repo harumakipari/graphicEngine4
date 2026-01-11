@@ -237,13 +237,13 @@ void MainScene::SetUpActors()
     Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenBubbleActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr);
     auto order = FindOrderByUIName("UI_Order_Daikon");
-    odenBubbleActor->SetOrder(order->data, order->uiName);
+    odenBubbleActor->SetOrderAndMakeUi(order->data, order->uiName);
 
     // お題を生成
     Transform odenBubbleTr1(DirectX::XMFLOAT3{ 5.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenBubbleActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr1);
     order = FindOrderByUIName("UI_Order_CircleLike");
-    odenBubbleActor1->SetOrder(order->data, order->uiName);
+    odenBubbleActor1->SetOrderAndMakeUi(order->data, order->uiName);
 
 #else
     // お題マネージャー作成 
