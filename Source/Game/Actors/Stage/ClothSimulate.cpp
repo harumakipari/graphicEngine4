@@ -798,7 +798,7 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
             }
 
             // Žl‹÷‚Ì”»’è
-#if 1
+#if 0
             for (auto& v : primitive.cachedVertices)
             {
                 bool isCorner =
@@ -830,11 +830,11 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
             //}
 #else
 
-            //const float yThreshold = 0.001f;
-            const float yThreshold = 10.5f;
+            const float yThreshold = 0.1f;
+            //const float yThreshold = 10.5f;
             for (auto& v : primitive.cachedVertices)
             {
-                if (fabs(v.position.y - min.y) < yThreshold)
+                if (fabs(v.position.z - min.z) < yThreshold)
                 {
                     v.isPinned = 1;
                 }

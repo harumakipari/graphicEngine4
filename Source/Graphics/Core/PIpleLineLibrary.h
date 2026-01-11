@@ -341,6 +341,15 @@ public:
             AddPipeLineState("defferdBlendSkeltalMesh", desc);
         }
 
+        // Oden Soup Blend —p
+        {
+            hr = CreatePsFromCSO(device, "./Shader/OdenSoupSurfacePS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
+            desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_NONE;
+            AddPipeLineState("OdenSoupSurfaceMesh", desc);
+        }
+
         // elasticBuilding forward Blend —p
         {
             hr = CreateVsFromCSO(device, "./Shader/ElasticBuildsVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
@@ -361,6 +370,7 @@ public:
             desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_NONE;
             AddPipeLineState("elasticBuildingDeferred", desc);
         }
+
 
 
         // SkeltalMesh Cascade ShadowMap —p

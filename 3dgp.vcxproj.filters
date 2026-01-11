@@ -549,6 +549,9 @@
     <ClCompile Include="Source\Game\OdenGame\OdenDetailIngredientsActors.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\OdenGame\OdenData\OdenGameParameter.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -915,6 +918,7 @@
     <ClInclude Include="Source\Game\OdenGame\OdenManagers\OdenOrderManager.h" />
     <ClInclude Include="Source\Utility\GameUtility.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenDetailIngredientsActors.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenData\OdenGameParameter.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">
@@ -1179,6 +1183,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GltfMorphModelPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\OdenSoupSurfacePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

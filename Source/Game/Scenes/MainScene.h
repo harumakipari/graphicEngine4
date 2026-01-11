@@ -33,6 +33,10 @@ public:
     static inline Scene::Autoenrollment<MainScene> _autoenrollment;
 
 private:
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> waterNormalTexture; // ノーマルテクスチャ
+
+
+private:
     std::unique_ptr<ClothSimulate> clothSimulate;
 
 };

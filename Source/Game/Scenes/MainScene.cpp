@@ -110,6 +110,7 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     //アクターをセット
     SetUpActors();
 
+    // 暖簾のモデルを作成
     clothSimulate = std::make_unique<ClothSimulate>(device, "./Data/Models/Oden_Store/cloth1.gltf");
 
     RegisterRenderHook(RenderPass::Opaque, [&](ID3D11DeviceContext* immediateContext)
@@ -120,7 +121,10 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
             }
         });
 
-
+    // 水のノーマルテクスチャを追加
+    D3D11_TEXTURE2D_DESC texture2dDesc;
+    HRESULT hr=LoadTextureFromFile(device, L"./Data/ShaderTextures/waterNormal.png", waterNormalTexture.GetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     return true;
 }
 
@@ -272,12 +276,15 @@ void MainScene::SetUpActors()
     auto odenTrashActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenTrashActor>("odenTrash", odenTrashTr);
 
     // 暖簾を生成
-    Transform clothTr(DirectX::XMFLOAT3{ 0.0f,3.0f,6.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform clothTr(DirectX::XMFLOAT3{ 1.0f,9.0f,6.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto clothActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cloth", clothTr);
 }
 
 void MainScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
+    // 水のノーマルテクスチャを送る
+    immediateContext->PSSetShaderResources(12, 1, waterNormalTexture.GetAddressOf());
+
     SceneBase::Render(immediateContext, deltaTime);
 }
 

@@ -16,6 +16,8 @@ void OdenSlotActor::Initialize(const Transform& transform)
     auto soupModelComponent = AddComponent<StaticMeshComponent>("Oden_Soup_Model", parentName);
     soupModelComponent->SetModel("./Data/Models/Oden_Store/Oden_SoupSurface.gltf", false);
     soupModelComponent->SetRelativeLocationDirect({ 0.0f,-0.1f,0.0f });
+    soupModelComponent->overrideForwardPipelineName = "OdenSoupSurfaceMesh";
+    soupModelComponent->overrideDeferredPipelineName = "OdenSoupSurfaceMesh";
 }
 
 // 食材をセットする

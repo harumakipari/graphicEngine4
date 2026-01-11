@@ -237,20 +237,20 @@ void main(uint3 id : SV_DispatchThreadID)
     {
         // 運動方程式 重力 × 質量
         //float4 forceWorld = float4(0, 0, 0, 0);
-        float4 forceWorld = float4(0, -9.8 * MASS, 0, 0);
+        float4 forceWorld = float4(0, -4.9 * MASS, 0, 0);
         // 重力をモデル空間に変換する
         float4 forceLocal4 = mul(forceWorld, invWorld);
         force += forceLocal4.xyz;
         float3 currentVelocity = inVertex.velocity;
-#if 0
+#if 1
         // 風の影響
         float4 windDirWorld = normalize(float4(0, 0, 1, 0)); // Z軸方向
         float4 windDirLocal4 = mul(windDirWorld, invWorld);
-        float windBase = 5.0f;
+        float windBase = 3.0f;
         float windVariation = 15.0f;
 
         // 時間と位置によるゆらぎ
-        float w = sin(time * 2.0f + id.x * 0.1f) * 0.5f + 0.5f;
+        float w = sin(elapsedTime * 2.0f + id.x * 0.1f) * 0.5f + 0.5f;
         float strength = windBase + windVariation * w;
 
         // 局所風速（ちょっとゆらぐ）
