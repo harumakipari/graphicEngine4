@@ -169,7 +169,9 @@ protected:
     DirectX::XMVECTOR targetQ;
     float orientationSlerpValue = 0.0f;
 
-    
+    float verticalAngle = 0.0f;
+    float horizontalAngle = 0.0f;
+
 };
 
 

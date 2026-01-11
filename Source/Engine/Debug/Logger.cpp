@@ -160,6 +160,12 @@ void Logger::Error(LogCategory category, const char8_t* message, std::source_loc
     Error(category, reinterpret_cast<const char*>(message), location);
 }
 
+void Logger::Error(const std::string& message)
+{
+    Error(LogCategory::Gameplay, message.c_str());
+}
+
+
 void Logger::DrawImGui()
 {
 #ifdef USE_IMGUI

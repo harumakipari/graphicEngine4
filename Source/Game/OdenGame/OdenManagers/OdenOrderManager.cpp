@@ -3,6 +3,7 @@
 
 #include "Engine/Scene/Scene.h"
 #include "Game/OdenGame/OdenBubbleActor.h"
+#include "Game/OdenGame/OdenData/OdenGameParameter.h"
 #include "Utility/GameUtility.h"
 
 
@@ -57,10 +58,10 @@ OrderEntry OdenOrderManager::PickRandomOrder()
     if (random < shapeOrderRate)
     {
         // 形指定お題
-        return GameHelper::PickRandom(OrderDB.shapeOrders);
+        return GameHelper::PickRandom(OdenGameParameter::orderDB.shapeOrders);
     }
     // 食材指定お題
-    return GameHelper::PickRandom(OrderDB.ingredientOrders);
+    return GameHelper::PickRandom(OdenGameParameter::orderDB.ingredientOrders);
 }
 
 // 順番から位置を取得する

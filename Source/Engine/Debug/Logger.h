@@ -44,8 +44,9 @@ public:
 
     static void Error(LogCategory category, const char* message,std::source_location location = std::source_location::current());
 	static void Error(LogCategory category, const char8_t* message,std::source_location location = std::source_location::current());
+	static void Error(const std::string& message);
 
-	//static void Log(const wchar_t* message);
+    //static void Log(const wchar_t* message);
 
 	static void DrawImGui();
 

@@ -11,6 +11,7 @@
 #include "Game/OdenGame/OdenBubbleActor.h"  
 #include "Game/OdenGame/OdenSlotActor.h"    
 #include "Game/OdenGame/OdenTrashActor.h"    
+#include "OdenData/OdenGameParameter.h"
 
 
 void OdenIngredientActor::Initialize(const Transform& transform)
@@ -202,7 +203,16 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
         ingredientType = EOdenType::None; // たとえばデフォルト
     }
     // 食材の面に対応する形を登録
-    faceShapeTable = odenTypeShapes[ingredientName];
+    auto it = OdenGameParameter::odenTypeShapes.find(ingredientName);
+    if (it != OdenGameParameter::odenTypeShapes.end())
+    {
+        faceShapeTable = it->second;
+    }
+    else
+    {
+        Logger::Error(U8("OdenFaceShapeTable が見つかりません: ") + ingredientName);
+        faceShapeTable = {}; // 空で初期化
+    }
 }
 
 // ドラック開始処理
@@ -406,17 +416,17 @@ void OdenIngredientActor::StartRotationAnim(const ERotateType rotateType)
     using namespace DirectX;
 
     startQ = XMLoadFloat4(&visualRotationQuat);
-    static float verticalAngle = 0.0f;
-    static float horizontalAngle = 0.0f;
 
     switch (rotateType)
     {
     case ERotateType::Vertical:
         verticalAngle += 90.0f;
+        MathHelper::ClampEulerAngle(verticalAngle);
         targetQ = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), XMConvertToRadians(verticalAngle));
         break;
     case ERotateType::Horizontal:
-        horizontalAngle += 90.0f;
+        horizontalAngle -= 90.0f;
+        MathHelper::ClampEulerAngle(horizontalAngle);
         targetQ = XMQuaternionRotationAxis(XMVectorSet(0, 0, 1, 0), XMConvertToRadians(horizontalAngle));
         break;
     }

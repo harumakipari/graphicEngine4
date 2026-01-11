@@ -1,0 +1,13 @@
+﻿Name,Face,Category,Roundness,AspectRatio,HoleNess
+Daikon,Front,SquareLike,0.3,0.5,0
+Daikon,Back,SquareLike,0.3,0.5,0
+Daikon,Left,SquareLike,0.3,0.5,0
+Daikon,Right,SquareLike,0.3,0.5,0
+Daikon,Top,RoundLike,1,1,0
+Daikon,Bottom,RoundLike,1,1,0
+Konnyaku,Front,SquareLike,0.3,0.5,0
+Konnyaku,Back,SquareLike,0.3,0.5,0
+Konnyaku,Left,SquareLike,0.3,0.5,0
+Konnyaku,Right,SquareLike,0.3,0.5,0
+Konnyaku,Top,TriangleLike,0,0,0
+Konnyaku,Bottom,TriangleLike,0,0,0

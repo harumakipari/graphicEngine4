@@ -49,6 +49,7 @@ void OdenBubbleActor::Update(float elapsedTime)
         gaugeUi->SetWorldPosition({ gaugeUiPos.x, gaugeUiPos.y });
     }
 
+#if 0 // ゲージで去っていく処理　デバック中やりにくいから一旦コメントアウト
     // 待機
     if (state == EBubbleState::Waiting)
     {
@@ -67,6 +68,8 @@ void OdenBubbleActor::Update(float elapsedTime)
                 onCompleted(*this, 0.0f);
         }
     }
+
+#endif // 0 // ゲージで去っていく処理　デバック中やりにくいから一旦コメントアウト
 
 
     // 画面外になる位置

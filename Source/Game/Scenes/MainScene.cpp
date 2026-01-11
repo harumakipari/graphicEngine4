@@ -6,6 +6,8 @@
 #include "imgui.h"
 #endif
 
+#include <magic_enum.hpp>
+
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
@@ -31,18 +33,18 @@
 #include "UI/Game/Pause.h"
 #include "Game/OdenGame/OdenManagers/OdenSlotManager.h"
 #include "Game/OdenGame/OdenDetailIngredientsActors.h"
-
+#include "Game/OdenGame/OdenData/OdenGameParameter.h"
 
 
 #ifdef _DEBUG
 const OrderEntry* FindOrderByUIName(const std::string& uiName)
 {
-    for (const auto& o : OrderDB.shapeOrders)
+    for (const auto& o : OdenGameParameter::orderDB.shapeOrders)
     {
         if (o.uiName == uiName)
             return &o;
     }
-    for (const auto& o : OrderDB.ingredientOrders)
+    for (const auto& o : OdenGameParameter::orderDB.ingredientOrders)
     {
         if (o.uiName == uiName)
             return &o;
@@ -58,6 +60,53 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     Physics::Instance().Initialize();
 
+    // 具材のそれぞれの面のデータをロード
+    OdenGameParameter::LoadOdenFaceShapeTableFromCSV("./Data/Game/OdenGameData.csv");
+
+    // オーダーのデータをロード
+    OdenGameParameter::LoadOrderDBFromCSV("./Data/Game/OdenOrderData.csv");
+
+#if 0
+    // 確認
+    for (auto& [name, table] : OdenGameParameter::odenTypeShapes)
+    {
+        Logger::Log("Ingredient: " + name);
+        for (auto& [face, data] : table.faceShapes)
+        {
+            auto faceName = std::string(magic_enum::enum_name(face));
+            auto categoryName = std::string(magic_enum::enum_name(data.category));
+
+            std::string logStr =
+                "Face: " + faceName + "  Category:" + categoryName +
+                " Roundness: " + std::to_string(data.property.roundness) +
+                " Aspect: " + std::to_string(data.property.aspectRatio) +
+                " Hole: " + std::to_string(data.property.holeNess);
+
+            Logger::Log(logStr.c_str());
+        }
+
+        Logger::Log("--- OrderDB ---");
+        Logger::Log("ShapeOrders: " + name);
+        for (auto& entry : OrderDB.shapeOrders)
+        {
+            auto categoryName = std::string(magic_enum::enum_name(entry.data.requiredCategory));
+
+            std::string logStr =
+                "UI: " + entry.uiName + "  Category:" + categoryName;
+            Logger::Log(logStr.c_str());
+        }
+
+        Logger::Log("IngredientOrders:");
+        for (auto& entry : OrderDB.ingredientOrders)
+        {
+            auto ingredientName = std::string(magic_enum::enum_name(entry.data.requiredIngredient));
+            std::string logStr =
+                "UI: " + entry.uiName + "  Category:" + ingredientName;
+            Logger::Log(logStr.c_str());
+        }
+    }
+#endif // 0
+
     //アクターをセット
     SetUpActors();
 
@@ -69,6 +118,8 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
             }
         });
+
+
     return true;
 }
 
@@ -165,7 +216,7 @@ void MainScene::SetUpActors()
     // ポーズアクターを生成
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
 
-#if 0
+#if 1
     // デバック時に使用
     // おでんのダイコンを生成
     Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
