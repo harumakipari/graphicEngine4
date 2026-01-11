@@ -9,6 +9,7 @@
 #include "Engine/Scene/SceneBase.h"
 
 #include "Game/Actors/Camera/LoadingCamera.h"
+#include "Game/Actors/Stage/ClothSimulate.h"
 
 
 class MainScene : public SceneBase
@@ -32,5 +33,6 @@ public:
     static inline Scene::Autoenrollment<MainScene> _autoenrollment;
 
 private:
+    std::unique_ptr<ClothSimulate> clothSimulate;
 
 };

@@ -43,7 +43,6 @@ public:
         LH_Z_UP
     };
 
-
     //モデルがメートル単位か cm単位の時はfalseにする
     bool isModelInMeters = true;
 

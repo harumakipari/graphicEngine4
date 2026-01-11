@@ -28,6 +28,8 @@ public:
         slots.push_back(slot);
     }
 
+    // ゲーム開始時に呼ぶ関数
+    void StartGame();
 private:
     // スロットの回転関数を呼ぶ
     void UpdateBeat(float deltaTime);

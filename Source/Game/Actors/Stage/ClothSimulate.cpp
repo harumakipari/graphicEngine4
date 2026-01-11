@@ -591,7 +591,7 @@ void ClothSimulate::SetupPinVertices(int curretPinMode)
                 const float yThreshold = 0.1f;
                 for (auto& v : primitive.cachedVertices)
                 {
-                    if (fabs(v.position.x - min.x) < yThreshold)
+                    if (fabs(v.position.z - min.z) < yThreshold)
                     {
                         v.isPinned = 1;
                     }

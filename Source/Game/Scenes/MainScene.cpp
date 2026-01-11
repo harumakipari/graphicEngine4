@@ -110,12 +110,13 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     //アクターをセット
     SetUpActors();
 
+    clothSimulate = std::make_unique<ClothSimulate>(device, "./Data/Models/Oden_Store/cloth1.gltf");
+
     RegisterRenderHook(RenderPass::Opaque, [&](ID3D11DeviceContext* immediateContext)
         {
             if (const auto cloth = GetActorManager()->GetActorByName("cloth"))
             {
-                //clothSimulate->Render(immediateContext, cloth->GetWorldTransform());
-
+                clothSimulate->Render(immediateContext, cloth->GetWorldTransform());
             }
         });
 
@@ -173,7 +174,7 @@ void MainScene::Update(float deltaTime)
 {
     using namespace DirectX;
     SceneBase::Update(deltaTime);
-
+    clothSimulate->Update(deltaTime);
     Physics::Instance().Update(Time::UnscaledDeltaTime());
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
@@ -243,41 +244,7 @@ void MainScene::SetUpActors()
 
     // スロットマネージャー作成 
     auto slotManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotManager>("slotManager");
-
-    // 下4段  横回転
-    for (int i = 0; i < 4; ++i)
-    {
-        // おでんのダイコンを生成
-        Transform daikonTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-        auto ingredient = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("Daikon", daikonTr, "Daikon");
-
-        // スロット生成
-        Transform odenSlotTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-        auto slot = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot_Horizontal", odenSlotTr);
-        slot->rotationType = ERotationType::Horizontal;
-        slot->SetIngredient(ingredient);
-        ingredient->SetCurrentSlot(slot);
-
-        slotManager->RegisterSlot(slot);
-    }
-
-    // 上4段  縦回転
-    for (int i = 0; i < 4; ++i)
-    {
-        // おでんのこんにゃくを生成
-        Transform konnyakuTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-        auto ingredient = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("Konnyaku", konnyakuTr,"Konnyaku");
-
-        // スロット生成
-        Transform odenSlotTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-        auto slot = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot_Vertical", odenSlotTr);
-        slot->rotationType = ERotationType::Vertical;
-        slot->SetIngredient(ingredient);
-        ingredient->SetCurrentSlot(slot);
-
-        slotManager->RegisterSlot(slot);
-    }
-
+    slotManager->StartGame();
 
 #endif // 0
 
@@ -304,8 +271,9 @@ void MainScene::SetUpActors()
     Transform odenTrashTr(DirectX::XMFLOAT3{ -5.0f,1.0f,8.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenTrashActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenTrashActor>("odenTrash", odenTrashTr);
 
-
-
+    // 暖簾を生成
+    Transform clothTr(DirectX::XMFLOAT3{ 0.0f,3.0f,6.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto clothActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cloth", clothTr);
 }
 
 void MainScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
