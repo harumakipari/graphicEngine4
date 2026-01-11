@@ -4,6 +4,7 @@
 #include "Engine/Scene/Scene.h"
 #include "Game/OdenGame/OdenSlotActor.h"
 #include "Game/OdenGame/OdenDetailIngredientsActors.h"
+#include "Utility/GameUtility.h"
 
 // 初期化
 void OdenSlotManager::Initialize(const Transform& transform)
@@ -102,10 +103,33 @@ void OdenSlotManager::SupplyIngredientTo(const std::shared_ptr<OdenSlotActor>& s
 {
     auto actorManager = Scene::GetCurrentScene()->GetActorManager();
 
-    // おでんのダイコンを生成
+
+    // ランダムに名前を選択
+    const std::string& selectedName = MakeRandomIngredientName();
+
+    // おでんの具材を生成
     Transform ingredientTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto ingredient = actorManager->CreateAndRegisterActorWithTransform<OdenKonnyakuActor>("OdenIngredient", ingredientTr);
+    auto ingredient = actorManager->CreateAndRegisterActorWithTransform<OdenIngredientActor>("OdenIngredient", ingredientTr, selectedName);
     ingredient->SetPosition(slot->GetPosition());
     ingredient->SetCurrentSlot(slot);
     slot->SetIngredient(ingredient);
+}
+
+// ランダムな具材の名前を生成する
+std::string OdenSlotManager::MakeRandomIngredientName()
+{
+    // 生成可能な具材名のリスト
+    static const std::vector<std::string> ingredientNames = {
+        "Daikon",
+        "Egg",
+        "Tsukune",
+        "Chikuwa",
+        "Konnyaku"
+        // ここに追加していく
+    };
+
+    // ランダムに選択
+    const std::string& selectedName = GameHelper::PickRandom(ingredientNames);
+
+    return selectedName;
 }

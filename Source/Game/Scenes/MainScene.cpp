@@ -216,15 +216,15 @@ void MainScene::SetUpActors()
     // ポーズアクターを生成
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
 
-#if 1
+#if 0
     // デバック時に使用
     // おでんのダイコンを生成
     Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenDaikonActor>("oden_daikon", daikonTr);
+    auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Chikuwa", daikonTr,"Chikuwa");
 
     // おでんのこんにゃくを生成
     Transform konnyakuTr(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenKonnyaku = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenKonnyakuActor>("oden_konnyaku", konnyakuTr);
+    auto odenKonnyaku = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Egg", konnyakuTr,"Egg");
 
     // おでんの枠を生成
     Transform odenSlotTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -245,11 +245,11 @@ void MainScene::SetUpActors()
     auto slotManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotManager>("slotManager");
 
     // 下4段  横回転
-    for (int i = 0; i < 1; ++i)
+    for (int i = 0; i < 4; ++i)
     {
         // おでんのダイコンを生成
         Transform daikonTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-        auto ingredient = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenDaikonActor>("Daikon", daikonTr);
+        auto ingredient = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("Daikon", daikonTr, "Daikon");
 
         // スロット生成
         Transform odenSlotTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -262,11 +262,11 @@ void MainScene::SetUpActors()
     }
 
     // 上4段  縦回転
-    for (int i = 0; i < 1; ++i)
+    for (int i = 0; i < 4; ++i)
     {
         // おでんのこんにゃくを生成
         Transform konnyakuTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-        auto ingredient = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenKonnyakuActor>("Daikon", konnyakuTr);
+        auto ingredient = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("Konnyaku", konnyakuTr,"Konnyaku");
 
         // スロット生成
         Transform odenSlotTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });

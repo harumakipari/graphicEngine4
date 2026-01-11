@@ -37,6 +37,9 @@ private:
 
     // HŞ‚ğ•â[‚·‚é
     void SupplyIngredientTo(const std::shared_ptr<OdenSlotActor>& slot);
+
+    // ƒ‰ƒ“ƒ_ƒ€‚È‹ïŞ‚Ì–¼‘O‚ğ¶¬‚·‚é
+    std::string MakeRandomIngredientName();
 private:
     static constexpr BeatPattern BeatTable[4] =
     {

@@ -18,6 +18,8 @@ void OdenIngredientActor::Initialize(const Transform& transform)
 {
     // イージングコンポーネントを追加
     easingRunner = std::make_unique<EasingRunner>();
+
+    InitParam(ingredientName);
 }
 
 void OdenIngredientActor::Update(float deltaTime)
@@ -186,7 +188,7 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
     // 当たり判定を登録
     boxComponent = AddComponent<BoxComponent>("boxComponent", parentName);
     DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
-    boxComponent->SetBoxExtent({ size.x,size.x,size.z });
+    boxComponent->SetBoxExtent({ size.x * 1.2f,size.y * 1.2f,size.z * 1.2f });
     boxComponent->SetMass(40.0f);
     boxComponent->SetLayer(CollisionLayer::Oden);
     boxComponent->Initialize();

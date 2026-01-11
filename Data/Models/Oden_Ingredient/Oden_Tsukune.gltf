@@ -114,7 +114,7 @@
   "buffers": [
     {
       "byteLength": 30192,
-      "uri": "Oden_Tukune.bin"
+      "uri": "Oden_Tsukune.bin"
     }
   ],
   "materials": [
@@ -122,9 +122,9 @@
       "name": "m_oden",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.8996139168739319,
-          0.7706617712974548,
-          0.5557460784912109,
+          0.7335907220840454,
+          0.6958922743797302,
+          0.586306095123291,
           1.0
         ],
         "metallicFactor": 0.0

@@ -43,13 +43,13 @@ public:
         OdenSlot        // ƒXƒƒbƒv‚·‚é˜g
     };
 
-    enum class ERotateType:uint8_t
+    enum class ERotateType :uint8_t
     {
         Vertical,   // c‰ñ“]
         Horizontal  // ‰¡‰ñ“]
     };
 public:
-    OdenIngredientActor(const std::string& actorName) :Actor(actorName) {}
+    OdenIngredientActor(const std::string& actorName, const std::string& ingredientName) :Actor(actorName), ingredientName(ingredientName) {}
 
     void Initialize(const Transform& transform)override;
 
@@ -171,6 +171,8 @@ protected:
 
     float verticalAngle = 0.0f;
     float horizontalAngle = 0.0f;
+
+    std::string ingredientName; // HŞ‚Ì–¼‘O
 
 };
 
