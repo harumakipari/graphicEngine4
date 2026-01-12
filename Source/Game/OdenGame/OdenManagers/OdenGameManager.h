@@ -8,7 +8,7 @@
 // ビート管理
 // ゲーム進行
 
-class OdenGameManager:public Actor
+class OdenGameManager :public Actor
 {
 public:
     OdenGameManager(const std::string& actorName) :Actor(actorName) {}
@@ -16,6 +16,9 @@ public:
     void Initialize(const Transform& transform)override;
 
     void Update(float deltaTime)override;
+
+    // 総スコアを取得する
+    float GetTotalScore()const { return totalScore; }
 
     // ゲームのステートをリセットする
     void Reset();

@@ -5,32 +5,26 @@
 #include <vector>
 #include <functional>
 
+#include "Components/Easing/CoreEasingComponent.h"
 #include "Core/CoreColor.h"
 #include "Core/Vector.h"
 #include "Engine/Input/InputSystem.h"
 #include "Graphics/Core/Graphics.h"
 #include "Graphics/Renderer/SpriteRenderer.h"
 #include "Graphics/Sprite/Sprite.h"
+#include "UI/Font.h"
 
 class UICoreComponent
 {
 public:
-    UICoreComponent(const std::string& filename, const std::string& name)
+    UICoreComponent(const std::string& name)
     {
         this->name = name;
-        texture = std::make_shared<Sprite>(Graphics::GetDevice(), std::wstring(filename.begin(), filename.end()).c_str());
-        uv.w = texture->GetTextureSize().x;
-        uv.h = texture->GetTextureSize().y;
-    }
-    UICoreComponent()
-    {
-        // ダミーテクスチャを設定
-        texture = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/square.png");
     }
 
     virtual ~UICoreComponent() = default;
     virtual void Update(float dt) {}
-    virtual void Draw() {}
+    virtual void Draw(ID3D11DeviceContext* immediateContext) {}
     virtual void OnMouseEnter() {}
     virtual void OnMouseLeave() {}
     virtual void OnMouseDown() {}
@@ -65,7 +59,7 @@ public:
 
     void MarkPendingKill() { isPendingKill = true; }
 
-    bool IsPendingKill() const  { return isPendingKill; }
+    bool IsPendingKill() const { return isPendingKill; }
 
 public:
     int zOrder = 0; // 値が大きいほど手前に描画される
@@ -85,7 +79,6 @@ protected:
     XMFLOAT2 localPosition = { 0.0f,0.0f };
     float localAngle = 0.0f;
 
-    std::shared_ptr<Sprite>  texture;
 
 
     std::string name = "UICoreComponent";
@@ -101,7 +94,20 @@ protected:
 class UIImageComponent : public UICoreComponent
 {
 public:
-    UIImageComponent(const std::string& filename, const std::string& name) :UICoreComponent(filename, name) {}
+    UIImageComponent(const std::string& filename, const std::string& name) :UICoreComponent(name)
+    {
+        texture = std::make_shared<Sprite>(Graphics::GetDevice(), std::wstring(filename.begin(), filename.end()).c_str());
+        uv.w = texture->GetTextureSize().x;
+        uv.h = texture->GetTextureSize().y;
+    }
+
+    UIImageComponent(const std::string& name) :UICoreComponent(name)
+    {
+        // ダミーテクスチャを設定
+        texture = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/square.png");
+        uv.w = texture->GetTextureSize().x;
+        uv.h = texture->GetTextureSize().y;
+    }
 
     UIImageComponent() = default;
 
@@ -109,7 +115,7 @@ public:
 
     void SetColor(const CoreColor color) { this->color = color; }
 
-    void Draw() override
+    void Draw(ID3D11DeviceContext* immediateContext) override
     {
         SpriteRenderer::Draw(
             texture.get(),
@@ -122,10 +128,13 @@ public:
             scale
         );
     }
+protected:
+    std::shared_ptr<Sprite>  texture;
+
 };
 
 
-enum class UIButtonState
+enum class UIButtonState :uint8_t
 {
     Normal,
     Hovered,
@@ -137,7 +146,7 @@ class UIButtonComponent : public UIImageComponent
 public:
     UIButtonComponent(const std::string& filename, const std::string& name) :UIImageComponent(filename, name) {}
 
-    UIButtonComponent() = default;
+    UIButtonComponent(const std::string& name) :UIImageComponent(name) {}
 
     UIButtonState state = UIButtonState::Normal;
 
@@ -184,9 +193,12 @@ public:
         frameTexture = std::make_unique<Sprite>(Graphics::GetDevice(), std::wstring(frameFilename.begin(), frameFilename.end()).c_str());
     }
 
-    UIGaugeComponent() = default;
+    UIGaugeComponent(const std::string& name) :UIImageComponent(name)
+    {
+        frameTexture = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/square.png");
+    }
 
-    void Draw() override
+    void Draw(ID3D11DeviceContext* immediateContext) override
     {
         XMFLOAT2 drawSize = size;
 
@@ -232,4 +244,87 @@ public:
 private:
     float value = 1.0f;  // 0.0f ~ 1.0f
     std::shared_ptr<Sprite>  frameTexture;  //　枠のテクスチャ
+};
+
+class UITextComponent : public UICoreComponent
+{
+public:
+    explicit UITextComponent(const std::string& name) : UICoreComponent(name)
+    {
+        zOrder = 10;
+    }
+
+    void SetFont(Font* font) { this->font = font; }
+    void SetText(const std::wstring& text) { this->text = text; }
+
+    void Draw(ID3D11DeviceContext* immediateContext) override
+    {
+        if (!visible || !font) return;
+
+        font->Begin(immediateContext);
+        font->Draw(worldPosition.x, worldPosition.y, text.c_str(), { 1,1,0,1 }, fontScale);
+        font->End(immediateContext);
+    }
+
+
+    void SetColor(const CoreColor color) { this->color = color; }
+
+    void SetFontScale(const float s) { this->fontScale = s; }
+
+protected:
+    float fontScale = 1.0f;
+    Font* font = nullptr;
+    std::wstring text;
+    CoreColor color = CoreColor::White;
+
+};
+
+class UITextPopup :public UITextComponent
+{
+public:
+    explicit UITextPopup(const std::string& name) : UITextComponent(name)
+    {
+        easingRunner = std::make_unique<EasingRunner>();
+    }
+
+    void Update(float dt) override;
+
+    void Play(const std::wstring& text/*, const DirectX::XMFLOAT2& startPos*/)
+    {
+        SetText(text);
+        //worldPosition = startPos;
+
+        TestEasingHandler handler;
+        handler.AddEasing(TestEaseType::OutExp, 0.0f, 1.0f, 0.8f);
+
+
+        handler.SetCompletedFunction([this]()
+            {
+                MarkPendingKill();
+            });
+
+        PropertyAccessor<float> accessor;
+        accessor.getter = [this]() { return 1.0f; };
+        accessor.setter = [this](float v)
+            {
+                // 位置を動かす
+                float endPos = worldPosition.y + 20.0f;
+                worldPosition.y = std::lerp(worldPosition.y, endPos, v);
+
+                // フェードアウト
+                color.a = 1.0f - v;
+
+                // スケール
+                fontScale = std::lerp(0.8f, 1.2f, v);
+            };
+
+        easingRunner->StartHandler(handler, accessor);
+
+    }
+
+private:
+    std::shared_ptr<EasingRunner> easingRunner;
+    float elapsedTime = 0.0f;
+    float lifetime = 1.0f;
+    float startY = 0.0f;
 };

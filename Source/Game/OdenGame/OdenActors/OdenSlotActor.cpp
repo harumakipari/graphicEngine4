@@ -40,7 +40,7 @@ void OdenSlotActor::Update(float elapsedTime)
 {
     if (particleComponent)
     {
-        //if (!particleComponent->IsPlaying())
+        if (!particleComponent->IsPlaying())
         {
             particleComponent->Play();
         }

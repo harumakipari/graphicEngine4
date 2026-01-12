@@ -50,20 +50,20 @@ void PuddingGameScene::Start()
 
 
 
-    std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>();
+    std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("image");
     image->SetWorldPosition({ 50, 50 });
     image->SetSize({ 200, 200 });
 
     uiManager->Add(image);
 
 
-    std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>();
+    std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("button");
     button->SetWorldPosition({ 300, 50 });
     button->SetSize({ 200, 80 });
 
     uiManager->Add(button);
 
-    std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>();
+    std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>("gauge");
     gauge->SetWorldPosition({ 50, 300 });
     gauge->SetSize({ 300, 40 });
 

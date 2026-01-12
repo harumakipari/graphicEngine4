@@ -69,9 +69,6 @@ private:
     float remainingTime = 0.0f; // この Bubble の残り時間
     float timeLimit = 0.0f;     // この Bubble の制限時間
     std::shared_ptr<UIGaugeComponent> gaugeUi; // 残り時間のゲージUI
-        
-        
-        
-
+    std::shared_ptr<UITextPopup> scorePopupUi; // 取得したスコアを表示するUI
 
 };

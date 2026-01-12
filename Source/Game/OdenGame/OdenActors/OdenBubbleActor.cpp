@@ -21,6 +21,15 @@ void OdenBubbleActor::Initialize(const Transform& transform)
     boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);// おでんのゲームのカーソルのターゲット
     boxComponent->Initialize();
 
+#if 0
+    // 取得したスコアを表示するUI
+    scorePopupUi = std::make_shared<UITextPopup>("OdenScorePopupUi");
+    scorePopupUi->SetWorldPosition({ 50, 300 });
+    scorePopupUi->SetVisible(false);
+    GetOwnerScene()->GetUIManager()->Add(scorePopupUi);
+
+#endif // 0
+
 }
 
 void OdenBubbleActor::Finalize()
@@ -38,8 +47,12 @@ void OdenBubbleActor::Update(float elapsedTime)
     DirectX::XMFLOAT3 bubbleWorldPos = { position.x , position.y, position.z };
     // ワールド座標からUI座標系に変換する
     XMFLOAT2 uiPos = WorldToUI(bubbleWorldPos);
+
     if (orderUi)
         orderUi->SetWorldPosition({ uiPos.x, uiPos.y });
+
+    if (scorePopupUi)
+        scorePopupUi->SetWorldPosition({ uiPos.x, uiPos.y });
 
     XMFLOAT2 gaugeUiPos = { uiPos.x + uiOffset.x,uiPos.y + uiOffset.y };
 
@@ -77,15 +90,18 @@ void OdenBubbleActor::Update(float elapsedTime)
     // 注文を終えたら
     if (state == EBubbleState::Leaving)
     {
+#if 0
         Logger::Log(U8("お客さんが去っていく"));
         auto pos = GetPosition();
-        pos.x -= 1.0f* elapsedTime;   // 左へ退場
+        pos.x -= 1.0f * elapsedTime;   // 左へ退場
         SetPosition(pos);
 
         if (pos.x > screenOutPos.x)
         {
             MarkPendingKill(); // 削除通知を出す
         }
+
+#endif // 0
         return;
     }
 }
@@ -177,10 +193,12 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
         onCompleted(*this, score);
     }
 
-    // ここでスコアのフォントを
-
-    // ゲーム全体へ通知
-
+    if (scorePopupUi)
+    {
+        // スコアを表示
+        scorePopupUi->Play(L"+" + std::to_wstring(static_cast<int>(score)));
+        scorePopupUi->SetVisible(true);
+    }
 }
 
 

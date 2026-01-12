@@ -82,7 +82,7 @@ void LoadingScene::Start()
 #else
     RegisterRenderHook(RenderPass::Sky, [&](ID3D11DeviceContext* immediateContext)
         {
-            sprite->Draw();
+            sprite->Draw(immediateContext);
         });
 #endif // 0
 }

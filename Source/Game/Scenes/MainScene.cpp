@@ -16,6 +16,7 @@
 #include "Game/Actors/Dessert/Pudding.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"
 #include "Game/Actors/Stage/Cloth.h"
+#include "Game/OdenGame/OdenUIScoreViewActor.h"
 #include "Game/OdenGame/OdenActors/OdenBubbleActor.h"
 
 
@@ -257,7 +258,7 @@ void MainScene::SetUpActors()
 
 #endif // 0
 
-#if 0
+#if 1
     // デバック時に使用
     // お題を生成
     Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -287,6 +288,13 @@ void MainScene::SetUpActors()
     // ゲームマネージャーを生成
     auto gameManager = GetActorManager()->CreateAndRegisterActorWithTransform<OdenGameManager>("odenGameManager");
     gameManager->Reset();
+
+#if 0
+    // スコアを表示するアクターを生成
+    auto uiScoreViewActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUIScoreViewActor>("OdenUIScoreViewActor");
+    uiScoreViewActor->SetFontAndMakeTextComponent();
+
+#endif // 0
 }
 
 void MainScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)

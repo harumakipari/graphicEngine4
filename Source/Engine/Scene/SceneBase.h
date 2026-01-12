@@ -165,10 +165,5 @@ protected:
     //==============================
     virtual void DrawSceneGui() {}///< 各シーン固有のImGui描画フック
 
-
-    std::unique_ptr<Font>	font;
-
     std::unordered_map<RenderPass, std::vector<RenderHook>> renderHooks;
-
-
 };

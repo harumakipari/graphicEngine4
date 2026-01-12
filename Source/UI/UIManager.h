@@ -8,7 +8,7 @@ public:
     void Update(float deltaTime);
 
     
-    void Draw() const
+    void Draw(ID3D11DeviceContext* immediateContext) const
     {
         if (!visible) return;
 
@@ -24,7 +24,7 @@ public:
         {
             if (ui->IsVisible())
             {
-                ui->Draw();
+                ui->Draw(immediateContext);
             }
         }
     }

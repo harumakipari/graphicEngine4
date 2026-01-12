@@ -119,3 +119,8 @@ void UIButtonComponent::Update(float dt)
 
     UpdateVisual();
 }
+
+void UITextPopup::Update(float dt)
+{
+    easingRunner->Tick(dt);
+}

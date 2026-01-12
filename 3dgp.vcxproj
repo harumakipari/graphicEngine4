@@ -303,6 +303,7 @@
     <ClCompile Include="Source\Game\Actors\WaterSphere\MorphModel.cpp" />
     <ClCompile Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenTrashActor.cpp" />
+    <ClCompile Include="Source\Game\OdenGame\OdenUIScoreViewActor.cpp" />
     <ClCompile Include="Source\Game\Scenes\LoadingScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\MainScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\MorphScene.cpp" />
@@ -460,6 +461,7 @@
     <ClInclude Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.h" />
     <ClInclude Include="Source\Game\Actors\WaterSphere\WaterSphere.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenTrashActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenUIScoreViewActor.h" />
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
     <ClInclude Include="Source\Game\Scenes\MainScene.h" />
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />
@@ -531,6 +533,7 @@
     <ClInclude Include="Source\Physics\PhysicsHelper.h" />
     <ClInclude Include="Source\Test\SoftBody2d.h" />
     <ClInclude Include="Source\UI\Font.h" />
+    <ClInclude Include="Source\UI\FontManager.h" />
     <ClInclude Include="Source\UI\Game\Pause.h" />
     <ClInclude Include="Source\UI\Game\SceneTransitionManager.h" />
     <ClInclude Include="Source\UI\Game\TransitionEffect.h" />

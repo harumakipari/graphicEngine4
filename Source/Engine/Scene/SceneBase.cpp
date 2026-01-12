@@ -17,6 +17,7 @@
 #include "Graphics/PostProcess/FogEffect.h"
 #include "Graphics/PostProcess/SSAOEffect.h"
 #include "Graphics/PostProcess/SSREffect.h"
+#include "UI/FontManager.h"
 
 
 bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
@@ -24,7 +25,6 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     sceneCBuffer = std::make_unique<ConstantBuffer<FrameConstants>>(device);
     shaderCBuffer = std::make_unique<ConstantBuffer<ShaderConstants>>(device);
     sceneCBuffer->data.elapsedTime = 0;//開始時に０にしておく
-
 
     // ライト
     {
@@ -85,8 +85,8 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     // フォントを初期化
-    font = std::make_unique<Font>(device, "./Data/Font/miniDragon.fnt", 1024);
-    //font = std::make_unique<Font>(device, "./Data/Font/MS Gothic.fnt", 1024);
+    FontManager::Initialize(device, "./Data/Font/HatotoBurikiFont.fnt");
+    
     // UIマネージャーを初期化
     uiManager = std::make_unique<UIManager>();
 
@@ -437,12 +437,12 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
 
     // デバック描画
-//#if _DEBUG
+#if _DEBUG
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
     Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
     DebugDrawManager::Render(immediateContext);
     ExecuteHooks(RenderPass::Debug, immediateContext);
-//#endif
+#endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
     frameBuffer->Deactivate(immediateContext);
@@ -483,19 +483,7 @@ void SceneBase::Draw(ID3D11DeviceContext* immediateContext)
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
 
-        uiManager->Draw();
-
-        // フォントの描画
-        {
-            font->Begin(immediateContext);
-            font->Draw(10, 0, L"abcdefg");
-            font->Draw(10, 50, L"あいうえお");
-            font->Draw(10, 100, L"カキクケコ");
-            font->Draw(10, 150, L"漢字最高！");
-            font->Draw(10, 200, L"改行が\nできるよ");
-            font->Draw(10, 300, L"色々改造してね。");
-            font->End(immediateContext);
-        }
+        uiManager->Draw(immediateContext);
         ExecuteHooks(RenderPass::UI, immediateContext);
     }
 }
