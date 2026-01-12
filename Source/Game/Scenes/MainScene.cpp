@@ -16,23 +16,24 @@
 #include "Game/Actors/Dessert/Pudding.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"
 #include "Game/Actors/Stage/Cloth.h"
-#include "Game/OdenGame/OdenBubbleActor.h"
+#include "Game/OdenGame/OdenActors/OdenBubbleActor.h"
 
 
 #include "Physics/Physics.h"
-#include "Game/OdenGame/OdenIngredientActor.h"
-#include "Game/OdenGame/OdenStoreActor.h"
-#include "Game/OdenGame/OdenTrashActor.h"
-#include "Game/OdenGame/OdenBubbleActor.h"
-#include "Game/OdenGame/OdenSlotActor.h"
-#include "Game/OdenGame/OdenManagers/OdenOrderManager.h"
+#include "Game/OdenGame/OdenActors/OdenIngredientActor.h"
+#include "Game/OdenGame/OdenActors/OdenStoreActor.h"
+#include "Game/OdenGame/OdenActors/OdenTrashActor.h"
+#include "Game/OdenGame/OdenActors/OdenBubbleActor.h"
+#include "Game/OdenGame/OdenActors/OdenSlotActor.h"
+#include "Game/OdenGame/OdenActors/OdenDetailIngredientsActors.h"
 
 
 #include "Physics/CollisionSystem.h"
 #include "UI/UIManager.h"
 #include "UI/Game/Pause.h"
 #include "Game/OdenGame/OdenManagers/OdenSlotManager.h"
-#include "Game/OdenGame/OdenDetailIngredientsActors.h"
+#include "Game/OdenGame/OdenManagers/OdenOrderManager.h"
+#include "Game/OdenGame/OdenManagers/OdenGameManager.h"
 #include "Game/OdenGame/OdenData/OdenGameParameter.h"
 
 
@@ -280,8 +281,12 @@ void MainScene::SetUpActors()
     auto odenTrashActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenTrashActor>("odenTrash", odenTrashTr);
 
     // 暖簾を生成
-    Transform clothTr(DirectX::XMFLOAT3{ 1.0f,9.0f,6.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform clothTr(DirectX::XMFLOAT3{ 1.0f,9.0f,6.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
     auto clothActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cloth", clothTr);
+
+    // ゲームマネージャーを生成
+    auto gameManager = GetActorManager()->CreateAndRegisterActorWithTransform<OdenGameManager>("odenGameManager");
+    gameManager->Reset();
 }
 
 void MainScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)

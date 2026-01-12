@@ -45,11 +45,15 @@ public:
     void OnIngredientDropped(const OdenIngredientActor& ingredient);
 
 private:
-    // スコアを判定する
-    float JudgeScore(const OdenIngredientActor& ingredient) const;
+    // 判定を判定する
+    float JudgeMatchShapeRate(const OdenIngredientActor& ingredient) const;
 
     // 形からスコアを判定する
     float JudgeShapeScore(const OdenShapeData& shape) const;
+
+    // 値段と合わせたスコアを計算する
+    float CalculateOrderScore(const OdenIngredientActor& ingredient, float matchRate, float multiplier);
+
 public:
     std::function<void(OdenBubbleActor&, float score)> onCompleted;     // コールバック関数
 

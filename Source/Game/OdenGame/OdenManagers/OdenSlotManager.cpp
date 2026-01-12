@@ -2,8 +2,8 @@
 #include "OdenSlotManager.h"
 
 #include "Engine/Scene/Scene.h"
-#include "Game/OdenGame/OdenSlotActor.h"
-#include "Game/OdenGame/OdenDetailIngredientsActors.h"
+#include "Game/OdenGame/OdenActors/OdenSlotActor.h"
+#include "Game/OdenGame/OdenActors/OdenDetailIngredientsActors.h"
 #include "Utility/GameUtility.h"
 
 // èâä˙âª

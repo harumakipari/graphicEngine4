@@ -10,14 +10,6 @@ enum class EOdenType :uint8_t
     Konnyaku,
 };
 
-enum class EOdenOrientation :uint8_t
-{
-    Deg0,
-    Deg90,
-    Deg180,
-    Deg270
-};
-
 // おでんの形のカテゴリー分け
 enum class EOdenShapeCategory :uint8_t
 {
@@ -47,10 +39,19 @@ struct OdenShapeData
 struct OdenData
 {
     EOdenType type;
-    EOdenOrientation orientation;
-    OdenShapeData shapeTag;
     int score;
 };
+
+// 具材の価格データ
+static  std::unordered_map<EOdenType, float> ingredientPriceTable =
+{
+    { EOdenType::Daikon, 100.0f },
+    { EOdenType::Egg, 120.0f },
+    { EOdenType::Chikuwa, 80.0f },
+    { EOdenType::Konnyaku, 90.0f },
+    { EOdenType::Tsukune, 90.0f },
+};
+
 
 // おでんの面の向き　
 enum class EOdenFace :uint8_t

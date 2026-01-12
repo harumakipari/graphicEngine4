@@ -6,8 +6,8 @@
 #include "Engine/Scene/Scene.h"
 #include "Physics/CollisionFunction.h"
 
-#include "Game/OdenGame/OdenIngredientActor.h"
-#include "OdenData/OdenShapeDataTable.h"
+#include "Game/OdenGame/OdenActors/OdenIngredientActor.h"
+#include "Game/OdenGame/OdenData/OdenShapeDataTable.h"
 
 void OdenBubbleActor::Initialize(const Transform& transform)
 {
@@ -70,7 +70,6 @@ void OdenBubbleActor::Update(float elapsedTime)
     }
 
 #endif // 0 // ゲージで去っていく処理　デバック中やりにくいから一旦コメントアウト
-
 
     // 画面外になる位置
     constexpr XMFLOAT3 screenOutPos = { -2.0f,3.0f,9.0f };
@@ -166,7 +165,9 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
         return;
 
     // スコアを計算する
-    float score = JudgeScore(ingredient);
+    float mathcRate = JudgeMatchShapeRate(ingredient);
+
+    float score = CalculateOrderScore(ingredient, mathcRate, 1.0f); // 今は 1.0fだけど、倍率で変える
 
     // 状態を去るに変更
     state = EBubbleState::Leaving;
@@ -183,7 +184,7 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
 }
 
 
-float OdenBubbleActor::JudgeScore(const OdenIngredientActor& ingredient) const
+float OdenBubbleActor::JudgeMatchShapeRate(const OdenIngredientActor& ingredient) const
 {
     const OrderData& o = orderData;
 
@@ -283,3 +284,13 @@ EScore OdenBubbleActor::JudgeShapeScore(const OdenShapeData& shape) const
 }
 #endif // 0
 
+// 値段と合わせたスコアを計算する
+float OdenBubbleActor::CalculateOrderScore(const OdenIngredientActor& ingredient, float matchRate, float multiplier)
+{
+    float basePrice = ingredient.GetPrice();
+    Logger::Log(U8("食材の値段 = ") + std::to_string(basePrice));
+
+    const float rate = matchRate / 100.0f;
+
+    return basePrice * rate * multiplier;
+}

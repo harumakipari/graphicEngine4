@@ -8,10 +8,10 @@
 #include "Engine/Scene/Scene.h"
 #include "Physics/CollisionFunction.h"
 
-#include "Game/OdenGame/OdenBubbleActor.h"  
-#include "Game/OdenGame/OdenSlotActor.h"    
-#include "Game/OdenGame/OdenTrashActor.h"    
-#include "OdenData/OdenGameParameter.h"
+#include "Game/OdenGame/OdenActors/OdenBubbleActor.h"  
+#include "Game/OdenGame/OdenActors/OdenSlotActor.h"    
+#include "Game/OdenGame/OdenActors/OdenTrashActor.h"    
+#include "Game/OdenGame/OdenData/OdenGameParameter.h"
 
 
 void OdenIngredientActor::Initialize(const Transform& transform)
@@ -215,6 +215,9 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
         Logger::Error(U8("OdenFaceShapeTable が見つかりません: ") + ingredientName);
         faceShapeTable = {}; // 空で初期化
     }
+
+    // 値段を設定する
+    price = ingredientPriceTable[ingredientType];
 }
 
 // ドラック開始処理

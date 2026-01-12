@@ -2,7 +2,7 @@
 #include "Engine/Audio/CoreAudio.h"
 #include "Components/Base/Component.h"
 
-#include "Game/Actors/OdenGame/OdenDataStruct.h"
+#include "Game/OdenGame/OdenData/OdenDataStruct.h"
 
 
 class OdenDataComponent : public Component
@@ -24,10 +24,6 @@ public:
 
     void UpdateVisualRotation();
 
-    EOdenShapeCategory GetShapeTag()const
-    {
-        return odenData.shapeTag;
-    }
 
 private:
     OdenData odenData;

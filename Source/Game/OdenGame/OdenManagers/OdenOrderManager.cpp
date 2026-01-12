@@ -2,9 +2,10 @@
 #include "OdenOrderManager.h"
 
 #include "Engine/Scene/Scene.h"
-#include "Game/OdenGame/OdenBubbleActor.h"
+#include "Game/OdenGame/OdenActors/OdenBubbleActor.h"
 #include "Game/OdenGame/OdenData/OdenGameParameter.h"
 #include "Utility/GameUtility.h"
+#include "OdenGameManager.h"
 
 
 void OdenOrderManager::Initialize(const Transform& transform)
@@ -79,6 +80,15 @@ DirectX::XMFLOAT3 OdenOrderManager::GetBubblePosition(const int index)
 void OdenOrderManager::OnBubbleCompleted(const OdenBubbleActor& bubble, const float score)
 {
     Logger::Log(U8("オーダー完了時のスコア = ") + std::to_string(score));
+
+    // 総合スコアを加算する
+    if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+    {
+        if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+        {
+            gameManager->AddScore(score);
+        }
+    }
 
     // 列から外す
     auto it = std::remove_if(bubbles.begin(), bubbles.end(), [&](const std::weak_ptr<OdenBubbleActor>& w)

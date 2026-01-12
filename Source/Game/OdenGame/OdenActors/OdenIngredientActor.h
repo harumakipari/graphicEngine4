@@ -5,8 +5,8 @@
 #include "Components/CollisionShape/StaticMeshCollisionComponent.h"
 #include "Components/CollisionShape/ShapeComponent.h"
 #include "Components/Easing/CoreEasingComponent.h"
-#include "OdenData/OdenDataStruct.h"
-#include "OdenData/OdenShapeDataTable.h"
+#include "Game/OdenGame/OdenData/OdenDataStruct.h"
+#include "Game/OdenGame/OdenData/OdenShapeDataTable.h"
 
 class OdenSlotActor;
 
@@ -87,12 +87,15 @@ public:
         currentSlot = slot;
     }
 
-
     // 今セットされている枠を取得する
     std::weak_ptr<OdenSlotActor> GetCurrentSlot() const
     {
         return currentSlot;
     }
+
+    // 食材の値段を取得する
+    float GetPrice()const { return price; }
+
 protected:
     // 具材の名前からモデルやデータを設定する
     void InitParam(const std::string& ingredientName);
@@ -173,7 +176,7 @@ protected:
     float horizontalAngle = 0.0f;
 
     std::string ingredientName; // 食材の名前
-
+    float price = 0.0f; // 食材の値段
 };
 
 
