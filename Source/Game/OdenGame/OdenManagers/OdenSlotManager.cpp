@@ -65,6 +65,15 @@ void OdenSlotManager::StartGame()
     }
 }
 
+// 次に来る具材名を取得（UI用）
+std::string OdenSlotManager::GetPreviewIngredient(const int index) const
+{
+    if (index < 0 || index >= ingredientQueue.size())
+        return "";
+
+    return ingredientQueue[index];
+}
+
 // スロットの回転関数を呼ぶ
 void OdenSlotManager::UpdateBeat(float deltaTime)
 {
@@ -107,24 +116,32 @@ void OdenSlotManager::TrySupplyIngredients()
 }
 
 // 食材を補充する
-void OdenSlotManager::SupplyIngredientTo(const std::shared_ptr<OdenSlotActor>& slot)
+void OdenSlotManager::SupplyIngredientTo(const std::shared_ptr<OdenSlotActor>& slot) 
 {
+    if (ingredientQueue.empty())
+        FillIngredientQueue();
+
+    // 先頭を取り出す
+    std::string ingredientName = ingredientQueue.front();
+    ingredientQueue.pop_front();
     auto actorManager = Scene::GetCurrentScene()->GetActorManager();
 
-
     // ランダムに名前を選択
-    const std::string& selectedName = MakeRandomIngredientName();
+    //const std::string& selectedName = MakeRandomIngredientName();
 
     // おでんの具材を生成
     Transform ingredientTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto ingredient = actorManager->CreateAndRegisterActorWithTransform<OdenIngredientActor>("OdenIngredient", ingredientTr, selectedName);
+    auto ingredient = actorManager->CreateAndRegisterActorWithTransform<OdenIngredientActor>("OdenIngredient", ingredientTr, ingredientName);
     ingredient->SetPosition(slot->GetPosition());
     ingredient->SetCurrentSlot(slot);
     slot->SetIngredient(ingredient);
+
+    // 次のために補充
+    FillIngredientQueue();
 }
 
 // ランダムな具材の名前を生成する
-std::string OdenSlotManager::MakeRandomIngredientName()
+std::string OdenSlotManager::MakeRandomIngredientName() const
 {
     // 生成可能な具材名のリスト
     static const std::vector<std::string> ingredientNames = {
@@ -137,7 +154,21 @@ std::string OdenSlotManager::MakeRandomIngredientName()
     };
 
     // ランダムに選択
-    const std::string& selectedName = GameHelper::PickRandom(ingredientNames);
+    std::string candidate;
+    do
+    {
+        candidate = GameHelper::PickRandom(ingredientNames);
+    } while (!ingredientQueue.empty() &&
+        ingredientQueue.back() == candidate);
 
-    return selectedName;
+    return candidate;
+}
+
+// 先にキューを満たす
+void OdenSlotManager::FillIngredientQueue()
+{
+    while (ingredientQueue.size() < previewCount + 8) // 余裕を持つ
+    {
+        ingredientQueue.push_back(MakeRandomIngredientName());
+    }
 }

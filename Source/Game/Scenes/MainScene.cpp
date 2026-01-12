@@ -16,6 +16,7 @@
 #include "Game/Actors/Dessert/Pudding.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"
 #include "Game/Actors/Stage/Cloth.h"
+#include "Game/OdenGame/OdenNextViewActor.h"
 #include "Game/OdenGame/OdenUIScoreViewActor.h"
 #include "Game/OdenGame/OdenActors/OdenBubbleActor.h"
 
@@ -255,6 +256,9 @@ void MainScene::SetUpActors()
     // スロットマネージャー作成 
     auto slotManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotManager>("slotManager");
     slotManager->StartGame();
+
+    // 右上に表示する次来る食材を表示する
+    auto odenNextViewActor= this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenNextViewActor>("odenNextViewActor");
 
 #endif // 0
 

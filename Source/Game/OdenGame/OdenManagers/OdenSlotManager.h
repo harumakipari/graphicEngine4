@@ -30,6 +30,10 @@ public:
 
     // ゲーム開始時に呼ぶ関数
     void StartGame();
+
+    // 次に来る具材名を取得（UI用）
+    std::string GetPreviewIngredient(int index) const;
+
 private:
     // スロットの回転関数を呼ぶ
     void UpdateBeat(float deltaTime);
@@ -38,10 +42,15 @@ private:
     void TrySupplyIngredients();
 
     // 食材を補充する
-    void SupplyIngredientTo(const std::shared_ptr<OdenSlotActor>& slot);
+    void SupplyIngredientTo(const std::shared_ptr<OdenSlotActor>& slot) ;
 
     // ランダムな具材の名前を生成する
-    std::string MakeRandomIngredientName();
+    std::string MakeRandomIngredientName() const;
+
+    // 先にキューを満たす
+    void FillIngredientQueue();
+
+
 private:
     static constexpr BeatPattern BeatTable[4] =
     {
@@ -55,4 +64,9 @@ private:
     int beatIndex = 0;
 
     std::vector<std::weak_ptr<OdenSlotActor>> slots;
+
+    std::deque<std::string> ingredientQueue; // 追加される待ちの食材
+
+    static constexpr int previewCount = 3;// 表示用
+
 };
