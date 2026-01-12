@@ -19,7 +19,7 @@
 
 bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
-    SceneBase::Initialize(device, width, height, props);;
+    SceneBase::Initialize(device, width, height, props);
 
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<LoadingCamera>("mainLoadingCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
@@ -80,7 +80,7 @@ void LoadingScene::Start()
 #if 0
     GetUIManager()->Add(sprite);
 #else
-    RegisterRenderHook(RenderPass::Sky, [&](ID3D11DeviceContext* immediateContext)
+    RegisterRenderHook(RenderPass::UI, [&](ID3D11DeviceContext* immediateContext)
         {
             sprite->Draw(immediateContext);
         });
@@ -89,9 +89,9 @@ void LoadingScene::Start()
 
 void LoadingScene::SetUpActors()
 {
-    Transform enemyTr(DirectX::XMFLOAT3{ 5.0f,-6.0f,16.5f }, DirectX::XMFLOAT3{ 0.0f,35.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
-    enemy = GetActorManager()->CreateAndRegisterActorWithTransform<EmptyEnemy>("LoadingEnemy", enemyTr);
-    enemy->PlayAnimation("Idle", false);
+    //Transform enemyTr(DirectX::XMFLOAT3{ 5.0f,-6.0f,16.5f }, DirectX::XMFLOAT3{ 0.0f,35.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
+    //enemy = GetActorManager()->CreateAndRegisterActorWithTransform<EmptyEnemy>("LoadingEnemy", enemyTr);
+    //enemy->PlayAnimation("Idle", false);
 }
 
 void LoadingScene::Update(float deltaTime)
@@ -102,7 +102,7 @@ void LoadingScene::Update(float deltaTime)
     shaderToyConstant.iResolution.x = Graphics::GetScreenWidth();
     shaderToyConstant.iResolution.y = Graphics::GetScreenHeight();
 
-    if (_has_finished_preloading() && !enemy->GetAnimationController()->IsPlayAnimation())
+    if (_has_finished_preloading()/* && !enemy->GetAnimationController()->IsPlayAnimation()*/)
     {
         _transition(preload_scene, {});
     }

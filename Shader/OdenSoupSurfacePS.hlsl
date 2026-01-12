@@ -281,12 +281,12 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     float alphaRaw = depthFade;
     waterColor.a = lerp(0.3, waterAlpha, alphaRaw);
 
-    //waterColor.a = waterAlpha; // 透明度（調整）
+    waterColor.a = waterAlpha; // 透明度（調整）
 
 
     // 最終色に加算（「水色に足す」方式）         ここに反射の
     float3 litColor = waterColor.rgb + specularTerm;
 
-    return float4(litColor, waterAlpha);
+    return float4(litColor, waterColor.a);
 
 }

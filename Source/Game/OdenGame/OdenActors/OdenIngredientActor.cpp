@@ -218,6 +218,9 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
 
     // 値段を設定する
     price = ingredientPriceTable[ingredientType];
+
+    //
+    
 }
 
 // ドラック開始処理
@@ -289,17 +292,18 @@ OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const D
 {
     HitResultWithActor result;
     if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::OdenHoverTarget)))
-    {// マウスカーソルが
+    {
+        // マウスカーソルが
         if (auto odenSlot = dynamic_cast<OdenSlotActor*>(result.actor))
         {// おでんの枠モデルに当たっていたら、
             return EHoverTarget::OdenSlot;
         }
-        else if (auto odenBubble = dynamic_cast<OdenBubbleActor*>(result.actor))
+        if (auto odenBubble = dynamic_cast<OdenBubbleActor*>(result.actor))
         {// お題の上だったら
             odenBubble->OnIngredientDropped(*this); // これちょっと怖い。。
             return EHoverTarget::OrderBubble;
         }
-        else if (auto odenTrash = dynamic_cast<OdenTrashActor*>(result.actor))
+        if (auto odenTrash = dynamic_cast<OdenTrashActor*>(result.actor))
         {// ゴミ箱の上だったら
             return EHoverTarget::TrashBin;
         }

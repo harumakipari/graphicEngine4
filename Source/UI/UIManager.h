@@ -8,27 +8,9 @@ public:
     void Update(float deltaTime);
 
     
-    void Draw(ID3D11DeviceContext* immediateContext) const
-    {
-        if (!visible) return;
+    void Draw(ID3D11DeviceContext* immediateContext) const;
 
-        // •`‰æ‡‚Éƒ\[ƒg zOrder‚ª‘å‚«‚¢‚Ù‚ÇŒã‚É•`‰æ‚³‚ê‚é
-        std::vector<std::shared_ptr<UICoreComponent>> sortedComponents = rootComponents;
-        std::sort(sortedComponents.begin(), sortedComponents.end(),
-            [](const std::shared_ptr<UICoreComponent>& a, const std::shared_ptr<UICoreComponent>& b)
-            {
-                return a->zOrder < b->zOrder;
-            });
-
-        for (auto& ui : sortedComponents)
-        {
-            if (ui->IsVisible())
-            {
-                ui->Draw(immediateContext);
-            }
-        }
-    }
-
+    void DrawFont(ID3D11DeviceContext* immediateContext) const;
 
     void Add(const std::shared_ptr<UICoreComponent>& ui)
     {
@@ -62,6 +44,7 @@ public:
 
 private:
     std::vector<std::shared_ptr<UICoreComponent>> rootComponents;
+    
     bool visible = true;
     bool enabled = true;
     bool mouseCaptured = false;

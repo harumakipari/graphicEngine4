@@ -552,6 +552,15 @@
     <ClCompile Include="Source\Game\OdenGame\OdenData\OdenGameParameter.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\OdenGame\OdenNextViewActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\OdenGame\OdenUIScoreViewActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Scenes\TitleScene.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -919,6 +928,10 @@
     <ClInclude Include="Source\Utility\GameUtility.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenDetailIngredientsActors.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenData\OdenGameParameter.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenNextViewActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenUIScoreViewActor.h" />
+    <ClInclude Include="Source\UI\FontManager.h" />
+    <ClInclude Include="Source\Game\Scenes\TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BuildingPS.hlsl">
@@ -1186,6 +1199,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\OdenSoupSurfacePS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FinalPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

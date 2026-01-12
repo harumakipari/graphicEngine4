@@ -9,32 +9,47 @@
 
 void OdenNextViewActor::Initialize(const Transform& transform)
 {
-    struct IngredientUIInfo
+    struct IngredientInfo
     {
         std::string name;
         std::string texturePath;
     };
 
-    const std::vector<IngredientUIInfo> ingredientList =
+    const std::vector<IngredientInfo> list =
     {
-        { "Daikon",    "./Data/Textures/UI/Ingredients/Daikon.png" },
-        { "Egg",       "./Data/Textures/UI/Ingredients/Egg.png" },
-        { "Tsukune",   "./Data/Textures/UI/Ingredients/Tsukune.png" },
-        { "Chikuwa",   "./Data/Textures/UI/Ingredients/Chikuwa.png" },
-        { "Konnyaku",  "./Data/Textures/UI/Ingredients/Konnyaku.png" },
+        { "Daikon", "./Data/Textures/UI/Ingredients/Daikon.png" },
+        { "Egg", "./Data/Textures/UI/Ingredients/Egg.png" },
+        { "Tsukune", "./Data/Textures/UI/Ingredients/Tsukune.png" },
+        { "Chikuwa", "./Data/Textures/UI/Ingredients/Chikuwa.png" },
+        { "Konnyaku", "./Data/Textures/UI/Ingredients/Konnyaku.png" },
     };
 
-    for (const auto& info : ingredientList)
+    for (const auto& info : list)
     {
-        auto ui = std::make_shared<UIImageComponent>(info.texturePath, "nextViewUi");
+        ingredientTextures[info.name] =
+            std::make_shared<Sprite>(
+                Graphics::GetDevice(),
+                std::wstring(info.texturePath.begin(), info.texturePath.end()).c_str()
+            );
+    }
+
+    for (int i = 0; i < 3; ++i)
+    {
+        auto ui = std::make_shared<UIImageComponent>("nextViewUi");
 
         ui->SetVisible(false);
         ui->SetPivot({ 0.5f, 0.5f });
         ui->SetSize({ 128.0f, 128.0f });
 
+        // 位置は固定でOK
+        ui->SetWorldPosition({
+            1600.0f,
+            200.0f + i * 80.0f
+            });
+
         GetOwnerScene()->GetUIManager()->Add(ui);
 
-        ingredients.emplace(info.name, ui);
+        nextSlots[i] = ui;
     }
 }
 
@@ -47,12 +62,13 @@ void OdenNextViewActor::Update(float elapsedTime)
 
     auto slotManager = std::dynamic_pointer_cast<OdenSlotManager>(slotManagerActor);
 
-    for (auto& ui : ingredients | std::views::values)
+    // 全スロットOFF
+    for (auto& slot : nextSlots)
     {
-        ui->SetVisible(false);
+        slot->SetVisible(false);
     }
 
-    // 次の3つをON
+    // 次の3つを表示
     for (int i = 0; i < 3; ++i)
     {
         std::string ingredientName =
@@ -61,15 +77,12 @@ void OdenNextViewActor::Update(float elapsedTime)
         if (ingredientName.empty())
             continue;
 
-        auto it = ingredients.find(ingredientName);
-        if (it == ingredients.end())
-            continue;
+        auto& slot = nextSlots[i];
 
-        auto& ui = it->second;
+        slot->SetTexture(
+            ingredientTextures[ingredientName]
+        );
 
-        ui->SetVisible(true);
-
-        // 縦に並べる（右上）
-        ui->SetWorldPosition({ 1600.0f,200.0f + i * 80.0f });
+        slot->SetVisible(true);
     }
 }

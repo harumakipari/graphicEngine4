@@ -142,39 +142,72 @@ void MainScene::Start()
     audioComp->SetSource(L"./Data/Sound/BGM/title.wav");
     audioComp->SetLoop(true);
     audioComp->Play();
-    //audioComp->SetVolume(0.2f);
-
-    //std::shared_ptr<Sprite> uiSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/UI/icon_chara.png");
-
-    std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("./Data/Textures/UI/icon_chara.png", "image");
-    image->SetWorldPosition({ 50, 50 });
-    image->SetSize({ 200, 200 });
-
-    uiManager->Add(image);
 
 
-    std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/icon_chara.png", "button");
-    button->SetWorldPosition({ 300, 50 });
-    button->SetSize({ 200, 80 });
+#if 0
+    // デバック時に使用
+    // お題を生成
+    Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenBubbleActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr);
+    auto order = FindOrderByUIName("UI_Order_Daikon");
+    odenBubbleActor->SetOrderAndMakeUi(order->data, order->uiName);
 
-    uiManager->Add(button);
+    // お題を生成
+    Transform odenBubbleTr1(DirectX::XMFLOAT3{ 5.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenBubbleActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr1);
+    order = FindOrderByUIName("UI_Order_CircleLike");
+    odenBubbleActor1->SetOrderAndMakeUi(order->data, order->uiName);
 
-    std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/boss_hp_frame.png", "./Data/Textures/UI/boss_hp.png", "gauge");
-    gauge->SetWorldPosition({ 50, 300 });
-    gauge->SetSize({ 300, 40 });
+#else
+    // お題マネージャー作成 
+    auto orderManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenOrderManager>("orderManager");
+#endif
 
-    uiManager->Add(gauge);
+#if 0
+    // デバック時に使用
+    // おでんのダイコンを生成
+    Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Chikuwa", daikonTr, "Chikuwa");
 
-    // ボタンでゲージ減らす
-    button->onClick = [gauge]()
-        {
-            static float value = 1.0f;
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
-            value -= 0.1f;
-            if (value < 0.0f)
-                value = 0.0f;
-            gauge->SetValue(value, 1.0f);
-        };
+    // おでんのこんにゃくを生成
+    Transform konnyakuTr(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenKonnyaku = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Egg", konnyakuTr, "Egg");
+
+    // おでんの枠を生成
+    Transform odenSlotTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenSlotActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot", odenSlotTr);
+    odenSlotActor->SetIngredient(odenDaikon);
+
+    odenDaikon->SetCurrentSlot(odenSlotActor);
+
+    // おでんの枠を生成
+    Transform odenSlotTr1(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto odenSlotActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot", odenSlotTr1);
+    odenSlotActor1->SetIngredient(odenKonnyaku);
+
+    odenKonnyaku->SetCurrentSlot(odenSlotActor1);
+#else
+
+    // スロットマネージャー作成 
+    auto slotManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotManager>("slotManager");
+    slotManager->StartGame();
+
+    // 右上に表示する次来る食材を表示する
+    auto odenNextViewActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenNextViewActor>("odenNextViewActor");
+
+#endif // 0
+
+
+
+    // ゲームマネージャーを生成
+    auto gameManager = GetActorManager()->CreateAndRegisterActorWithTransform<OdenGameManager>("odenGameManager");
+    gameManager->Reset();
+
+#if 1
+    // スコアを表示するアクターを生成
+    auto uiScoreViewActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUIScoreViewActor>("OdenUIScoreViewActor");
+    uiScoreViewActor->SetFontAndMakeTextComponent();
+#endif // 0
 
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
@@ -228,58 +261,6 @@ void MainScene::SetUpActors()
     // ポーズアクターを生成
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
 
-#if 0
-    // デバック時に使用
-    // おでんのダイコンを生成
-    Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Chikuwa", daikonTr,"Chikuwa");
-
-    // おでんのこんにゃくを生成
-    Transform konnyakuTr(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenKonnyaku = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Egg", konnyakuTr,"Egg");
-
-    // おでんの枠を生成
-    Transform odenSlotTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenSlotActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot", odenSlotTr);
-    odenSlotActor->SetIngredient(odenDaikon);
-
-    odenDaikon->SetCurrentSlot(odenSlotActor);
-
-    // おでんの枠を生成
-    Transform odenSlotTr1(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenSlotActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot", odenSlotTr1);
-    odenSlotActor1->SetIngredient(odenKonnyaku);
-
-    odenKonnyaku->SetCurrentSlot(odenSlotActor1);
-#else
-
-    // スロットマネージャー作成 
-    auto slotManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotManager>("slotManager");
-    slotManager->StartGame();
-
-    // 右上に表示する次来る食材を表示する
-    auto odenNextViewActor= this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenNextViewActor>("odenNextViewActor");
-
-#endif // 0
-
-#if 1
-    // デバック時に使用
-    // お題を生成
-    Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenBubbleActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr);
-    auto order = FindOrderByUIName("UI_Order_Daikon");
-    odenBubbleActor->SetOrderAndMakeUi(order->data, order->uiName);
-
-    // お題を生成
-    Transform odenBubbleTr1(DirectX::XMFLOAT3{ 5.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenBubbleActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr1);
-    order = FindOrderByUIName("UI_Order_CircleLike");
-    odenBubbleActor1->SetOrderAndMakeUi(order->data, order->uiName);
-
-#else
-    // お題マネージャー作成 
-    auto orderManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenOrderManager>("orderManager");
-#endif
 
     // ゴミ箱を生成
     Transform odenTrashTr(DirectX::XMFLOAT3{ -5.0f,1.0f,8.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -289,16 +270,7 @@ void MainScene::SetUpActors()
     Transform clothTr(DirectX::XMFLOAT3{ 1.0f,9.0f,6.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
     auto clothActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cloth", clothTr);
 
-    // ゲームマネージャーを生成
-    auto gameManager = GetActorManager()->CreateAndRegisterActorWithTransform<OdenGameManager>("odenGameManager");
-    gameManager->Reset();
 
-#if 0
-    // スコアを表示するアクターを生成
-    auto uiScoreViewActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUIScoreViewActor>("OdenUIScoreViewActor");
-    uiScoreViewActor->SetFontAndMakeTextComponent();
-
-#endif // 0
 }
 
 void MainScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)

@@ -17,6 +17,7 @@ void OdenOrderManager::Initialize(const Transform& transform)
     }
 }
 
+
 // ‚¨‹q‚³‚ñ‚ğoŒ»‚³‚¹‚é
 void OdenOrderManager::SpawnOrderBubble(int index)
 {

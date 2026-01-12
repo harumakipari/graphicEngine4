@@ -31,10 +31,12 @@ namespace CollisionFunction
             return false;
         }
         auto camera = scene->GetCameraManager()->GetRenderCamera(scene);
-        ViewConstants data = camera->GetViewConstants();
+        ViewConstants data;
+        
 
         if (camera)
         {
+            data = camera->GetViewConstants();
             //各行列を取得
             DirectX::XMMATRIX View = DirectX::XMLoadFloat4x4(&data.view);
             DirectX::XMMATRIX Projection = DirectX::XMLoadFloat4x4(&data.projection);
@@ -88,7 +90,10 @@ namespace CollisionFunction
         auto camera = scene->GetCameraManager()->GetRenderCamera(scene);
 
         //auto camera = CameraManager::GetRenderCamera(dynamic_cast<SceneBase*>(Scene::GetCurrentScene()));
-        ViewConstants data = camera->GetViewConstants();
+
+        ViewConstants data;
+        if (camera)
+            data= camera->GetViewConstants();
         //各行列を取得
         DirectX::XMMATRIX View = DirectX::XMLoadFloat4x4(&data.view);
         DirectX::XMMATRIX Projection = DirectX::XMLoadFloat4x4(&data.projection);

@@ -13,6 +13,7 @@
 #include "Graphics/Renderer/SpriteRenderer.h"
 #include "Graphics/Sprite/Sprite.h"
 #include "UI/Font.h"
+#include "UI/FontManager.h"
 
 class UICoreComponent
 {
@@ -25,6 +26,7 @@ public:
     virtual ~UICoreComponent() = default;
     virtual void Update(float dt) {}
     virtual void Draw(ID3D11DeviceContext* immediateContext) {}
+    virtual void DrawTexts(ID3D11DeviceContext* immediateContext) {}
     virtual void OnMouseEnter() {}
     virtual void OnMouseLeave() {}
     virtual void OnMouseDown() {}
@@ -61,8 +63,14 @@ public:
 
     bool IsPendingKill() const { return isPendingKill; }
 
+    // テキスト描画コンポーネントに使用している　テキストが更新された時に呼ばれる
+    bool IsDirty() const { return dirty; }
+    void ClearDirty() { dirty = false; }
+
 public:
     int zOrder = 0; // 値が大きいほど手前に描画される
+    
+    bool dirty = true;// テキスト描画コンポーネントに使用している
 
 protected:
     // スクリーン座標
@@ -114,6 +122,13 @@ public:
     CoreColor color = CoreColor::White;
 
     void SetColor(const CoreColor color) { this->color = color; }
+
+    void SetTexture(const std::shared_ptr<Sprite>& sprite)
+    {
+        texture = sprite;
+        uv.w = texture->GetTextureSize().x;
+        uv.h = texture->GetTextureSize().y;
+    }
 
     void Draw(ID3D11DeviceContext* immediateContext) override
     {
@@ -255,15 +270,19 @@ public:
     }
 
     void SetFont(Font* font) { this->font = font; }
-    void SetText(const std::wstring& text) { this->text = text; }
-
-    void Draw(ID3D11DeviceContext* immediateContext) override
+    void SetText(const std::wstring& t)
     {
-        if (!visible || !font) return;
+        //if (text == t)
+        //    return;
+        this->text = t;
+        //dirty = true;
+    }
 
-        font->Begin(immediateContext);
-        font->Draw(worldPosition.x, worldPosition.y, text.c_str(), { 1,1,0,1 }, fontScale);
-        font->End(immediateContext);
+    void DrawTexts(ID3D11DeviceContext* immediateContext) override
+    {
+        if (!visible ) return;
+
+        FontManager::GetUIFont()->Draw(worldPosition.x, worldPosition.y, text.c_str(), { 1,1,0,1 }, fontScale);
     }
 
 
@@ -271,12 +290,12 @@ public:
 
     void SetFontScale(const float s) { this->fontScale = s; }
 
+
 protected:
     float fontScale = 1.0f;
     Font* font = nullptr;
     std::wstring text;
     CoreColor color = CoreColor::White;
-
 };
 
 class UITextPopup :public UITextComponent
@@ -307,9 +326,10 @@ public:
         accessor.getter = [this]() { return 1.0f; };
         accessor.setter = [this](float v)
             {
+                float startPos = worldPosition.y;
                 // 位置を動かす
-                float endPos = worldPosition.y + 20.0f;
-                worldPosition.y = std::lerp(worldPosition.y, endPos, v);
+                float endPos = worldPosition.y + 10.0f;
+                worldPosition.y = std::lerp(startPos, endPos, v);
 
                 // フェードアウト
                 color.a = 1.0f - v;

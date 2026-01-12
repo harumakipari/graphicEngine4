@@ -19,6 +19,10 @@ public:
     void DrawImGuiDetails() override {}
 
 private:
-    std::unordered_map<std::string,std::shared_ptr<UIImageComponent>> ingredients;
+    // 表示枠（3つ）
+    std::array<std::shared_ptr<UIImageComponent>, 3> nextSlots;
+
+    // 名前 → テクスチャ
+    std::unordered_map<std::string, std::shared_ptr<Sprite>> ingredientTextures;
 
 };

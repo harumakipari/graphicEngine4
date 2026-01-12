@@ -56,6 +56,8 @@ void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourc
     fullScreenQuad->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), fogPS.Get());
 
     fogBuffer->Deactivate(immediateContext);
+
+
 }
 
 void FogEffect::DrawDebugUI()

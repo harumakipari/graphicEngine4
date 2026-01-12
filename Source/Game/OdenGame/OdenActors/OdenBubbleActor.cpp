@@ -21,7 +21,7 @@ void OdenBubbleActor::Initialize(const Transform& transform)
     boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);// おでんのゲームのカーソルのターゲット
     boxComponent->Initialize();
 
-#if 0
+#if 1
     // 取得したスコアを表示するUI
     scorePopupUi = std::make_shared<UITextPopup>("OdenScorePopupUi");
     scorePopupUi->SetWorldPosition({ 50, 300 });
@@ -29,7 +29,7 @@ void OdenBubbleActor::Initialize(const Transform& transform)
     GetOwnerScene()->GetUIManager()->Add(scorePopupUi);
 
 #endif // 0
-
+    state = EBubbleState::Waiting;
 }
 
 void OdenBubbleActor::Finalize()
@@ -90,7 +90,7 @@ void OdenBubbleActor::Update(float elapsedTime)
     // 注文を終えたら
     if (state == EBubbleState::Leaving)
     {
-#if 0
+#if 1
         Logger::Log(U8("お客さんが去っていく"));
         auto pos = GetPosition();
         pos.x -= 1.0f * elapsedTime;   // 左へ退場
@@ -191,6 +191,10 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
     if (onCompleted)
     {// 提出した後に
         onCompleted(*this, score);
+    }
+    else
+    {
+        Logger::Warning(U8("提出した時のスコアができていない！"));
     }
 
     if (scorePopupUi)

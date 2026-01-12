@@ -24,6 +24,10 @@ void OdenSlotManager::Update(float deltaTime)
 // ゲーム開始時に呼ぶ関数
 void OdenSlotManager::StartGame()
 {
+    // 最初にキューを作成
+    FillIngredientQueue();
+
+
     // 下4段  横回転
     for (int i = 0; i < 4; ++i)
     {

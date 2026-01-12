@@ -542,6 +542,9 @@ void Font::End(ID3D11DeviceContext* context)
     // 頂点編集終了
     context->Unmap(vertexBuffer.Get(), 0);
 
+    if (subsets.empty())
+        return;
+
     // サブセット調整
     size_t size = subsets.size();
     for (size_t i = 1; i < size; ++i)

@@ -7,6 +7,8 @@
 
 void OdenGameParameter::LoadOdenFaceShapeTableFromCSV(const std::string& filePath)
 {
+    odenTypeShapes.clear();
+
     std::ifstream file(filePath);
     if (!file.is_open())
     {
@@ -52,6 +54,9 @@ void OdenGameParameter::LoadOdenFaceShapeTableFromCSV(const std::string& filePat
 // オ－ダーのデータ
 void OdenGameParameter::LoadOrderDBFromCSV(const std::string& filePath)
 {
+    orderDB.shapeOrders.clear();
+    orderDB.ingredientOrders.clear();
+
     std::ifstream file(filePath);
     if (!file.is_open()) 
     {

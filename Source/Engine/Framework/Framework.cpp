@@ -33,6 +33,7 @@ Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fu
     CoreAudio::Initialize();
     // ログ初期化
     Logger::Initialize();
+
 }
 
 bool Framework::Initialize()
@@ -51,7 +52,8 @@ bool Framework::Initialize()
 
 
     // SCENE_TRANSITION
-    Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    //Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "SampleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
 
 
@@ -67,8 +69,8 @@ bool Framework::Initialize()
     //エフェクトエディタ初期化
     EffectEditor::Initialize();
 
-
-
+    // フォントを初期化
+    FontManager::Initialize(Graphics::GetDevice(), "./Data/Font/HatotoBurikiFont.fnt");
 
     //プロファイラ初期化
     ProfileInitialize(&isPaused, Framework::SetPause/*, ImGuiControl::Profiler::DefaultMaxThreads*/);
@@ -110,6 +112,9 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
     //    Graphics& graphics = Graphics::Instance();
     //    graphics.StylizeWindow(hwnd, !graphics.fullscreenMode);
     //}
+
+
+
     {
         ProfileScopedSection_2(0, "InputUpdate", ImGuiControl::Profiler::Green);
         //入力システム更新
