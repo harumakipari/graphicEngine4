@@ -36,9 +36,7 @@ private:
         std::weak_ptr<OdenBubbleActor> bubble;
         int slotIndex;   // ˜_—“I‚È•À‚Ñ‡
     };
-    std::vector<BubbleSlot> bubbleSlots;
-
-    std::vector<std::weak_ptr<OdenBubbleActor>> bubbles;
+    std::vector<BubbleSlot> slots;
 
     // Å‘å‚Ì’•¶‚ğ•·‚¯‚él”
     static constexpr int MaxOrders = 3;

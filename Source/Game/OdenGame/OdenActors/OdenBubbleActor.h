@@ -45,6 +45,19 @@ public:
     // 食材が落とされたら呼ばれる関数
     void OnIngredientDropped(const OdenIngredientActor& ingredient);
 
+    // 目標位置に向かって動く
+    void SetTargetPosition(const XMFLOAT3& pos)
+    {
+        targetPos = pos;
+        state = EBubbleState::QueuingMove;
+    }
+
+    // 
+    void SetLeaving()
+    {
+        state = EBubbleState::Leaving;
+    }
+
 private:
     // 判定を判定する
     float JudgeMatchShapeRate(const OdenIngredientActor& ingredient) const;
@@ -72,4 +85,6 @@ private:
     std::shared_ptr<UIGaugeComponent> gaugeUi; // 残り時間のゲージUI
     std::shared_ptr<UITextPopup> scorePopupUi; // 取得したスコアを表示するUI
 
+    DirectX::XMFLOAT3 targetPos;
+    float moveSpeed = 4.0f;
 };

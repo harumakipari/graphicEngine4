@@ -10,8 +10,10 @@
 
 void OdenOrderManager::Initialize(const Transform& transform)
 {
+    slots.clear();
+
     // お題を生成
-    for (int i = 0; i < MaxOrders; i++)
+    for (int i = 0; i < MaxOrders + 2; i++) // 奥に見える分
     {
         SpawnOrderBubble(i);
     }
@@ -45,8 +47,11 @@ void OdenOrderManager::SpawnOrderBubble(int index)
             OnBubbleCompleted(bubble, score);
         };
 
+    BubbleSlot slot;
+    slot.bubble = bubble;
+    slot.slotIndex = index;
 
-    bubbles.push_back(bubble);
+    slots.push_back(slot);
 }
 
 // ランダムにお題を生成する
@@ -92,30 +97,44 @@ void OdenOrderManager::OnBubbleCompleted(const OdenBubbleActor& bubble, const fl
     }
 
     // 列から外す
-    auto it = std::remove_if(bubbles.begin(), bubbles.end(), [&](const std::weak_ptr<OdenBubbleActor>& w)
+    for (auto& s : slots)
+    {
+        if (auto b = s.bubble.lock())
         {
-            auto b = w.lock();
-            return !b || b.get() == &bubble;
-        });
+            if (b.get() == &bubble)
+            {
+                b->SetLeaving();
+                s.bubble.reset(); // スロットは空に
+                break;
+            }
+        }
+    }
 
-    bubbles.erase(it, bubbles.end());
-
-    // 並びを詰める
+    // スロット再配置（詰める）
     RearrangeBubbles();
-
-    // 新しい客を最後尾に生成する
-    SpawnOrderBubble(static_cast<int>(bubbles.size()));
 }
 
 // 並びを詰める
 void OdenOrderManager::RearrangeBubbles()
 {
-    for (int i = 0; i < bubbles.size(); ++i)
+    int newIndex = 0;
+
+    for (auto& s : slots)
     {
-        if (auto bubble = bubbles[i].lock())
+        if (auto b = s.bubble.lock())
         {
-            // 一旦瞬間移動
-            bubble->SetPosition(GetBubblePosition(i));
+            s.slotIndex = newIndex;
+
+            b->SetTargetPosition(GetBubblePosition(newIndex));
+
+            newIndex++;
         }
+    }
+
+    // 後ろに新しい客を補充
+    while (newIndex < MaxOrders + 2) // 奥に見える分
+    {
+        SpawnOrderBubble(newIndex);
+        newIndex++;
     }
 }

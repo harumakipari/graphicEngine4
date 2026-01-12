@@ -38,6 +38,10 @@ void OdenBubbleActor::Finalize()
     {// 削除通知を出す
         orderUi->MarkPendingKill();
     }
+    if (gaugeUi)
+    {
+        gaugeUi->MarkPendingKill();
+    }
 }
 
 void OdenBubbleActor::Update(float elapsedTime)
@@ -85,25 +89,31 @@ void OdenBubbleActor::Update(float elapsedTime)
 #endif // 0 // ゲージで去っていく処理　デバック中やりにくいから一旦コメントアウト
 
     // 画面外になる位置
-    constexpr XMFLOAT3 screenOutPos = { -2.0f,3.0f,9.0f };
-
-    // 注文を終えたら
-    if (state == EBubbleState::Leaving)
+    if (state == EBubbleState::QueuingMove)
     {
-#if 1
-        Logger::Log(U8("お客さんが去っていく"));
         auto pos = GetPosition();
-        pos.x -= 1.0f * elapsedTime;   // 左へ退場
+        pos = MathHelper::Lerp(pos, targetPos, elapsedTime * moveSpeed);
+
         SetPosition(pos);
 
-        if (pos.x > screenOutPos.x)
+        if (MathHelper::Distance(pos, targetPos) < 0.05f)
         {
-            MarkPendingKill(); // 削除通知を出す
+            SetPosition(targetPos);
+            state = EBubbleState::Waiting;
         }
-
-#endif // 0
-        return;
     }
+
+    if (state == EBubbleState::Leaving)
+    {
+        auto pos = GetPosition();
+        pos.x -= elapsedTime * 2.0f;
+        SetPosition(pos);
+
+        if (pos.x < -5.0f)
+            MarkPendingKill();
+    }
+    Logger::Log(U8("お客さんが去っていく"));
+
 }
 
 void OdenBubbleActor::DrawImGuiDetails()
@@ -153,10 +163,15 @@ void OdenBubbleActor::SetOrderAndMakeUi(const OrderData& orderData, const std::s
 
     auto uiManager = GetOwnerScene()->GetUIManager();
 
+    // UIの位置
+    DirectX::XMFLOAT3 position = GetPosition();
+    // ワールド座標からUI座標系に変換する
+    XMFLOAT2 uiPos = WorldToUI(position);
+
     // お題のUIコンポーネントを作成する
     std::string filename = "./Data/Textures/UI/" + orderUiFileName + ".png";
     orderUi = std::make_shared<UIImageComponent>(filename, "OdenBubbleUi");
-    orderUi->SetWorldPosition({ 50, 300 });
+    orderUi->SetWorldPosition({ uiPos.x, uiPos.y });
     orderUi->SetPivot({ 0.5f,0.5f });
     orderUi->SetSize({ 200, 150 });
     uiManager->Add(orderUi);
@@ -167,7 +182,7 @@ void OdenBubbleActor::SetOrderAndMakeUi(const OrderData& orderData, const std::s
 
     // 制限時間のゲージのUIを作成する
     gaugeUi = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/boss_hp_frame.png", "./Data/Textures/UI/boss_hp.png", "gauge");
-    gaugeUi->SetWorldPosition({ 50, 300 });
+    gaugeUi->SetWorldPosition({ uiPos.x, uiPos.y });
     gaugeUi->SetSize({ 300, 40 });
 
     uiManager->Add(gaugeUi);

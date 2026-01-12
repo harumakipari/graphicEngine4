@@ -251,6 +251,37 @@ namespace MathHelper
         return Quaternion;
     }
 
+    // 線形補間（Vector3）
+    inline DirectX::XMFLOAT3 Lerp(
+        const DirectX::XMFLOAT3& a,
+        const DirectX::XMFLOAT3& b,
+        float t
+    )
+    {
+        // 念のため clamp
+        t = std::clamp(t, 0.0f, 1.0f);
+
+        return DirectX::XMFLOAT3(
+            a.x + (b.x - a.x) * t,
+            a.y + (b.y - a.y) * t,
+            a.z + (b.z - a.z) * t
+        );
+    }
+
+    // 距離計算（Vector3）
+    inline float Distance(
+        const DirectX::XMFLOAT3& a,
+        const DirectX::XMFLOAT3& b
+    )
+    {
+        const float dx = a.x - b.x;
+        const float dy = a.y - b.y;
+        const float dz = a.z - b.z;
+
+        return std::sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+
 }
 
 #endif //MATH_HELPER_H
