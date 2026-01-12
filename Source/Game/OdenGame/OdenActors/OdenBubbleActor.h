@@ -24,7 +24,8 @@ public:
     enum class EBubbleState :uint8_t
     {
         Waiting, // ‘Ò‚Á‚Ä‚¢‚é
-        Leaving,  // ‹‚Á‚Ä‚¢‚­
+        LeavingBack,   // ­‚µŒã‚ë‚É‰º‚ª‚é
+        LeavingLeft,    // ¶‚É‘Şê
         QueuingMove     // —ñ‚Ì‹l‚ß“®ì’†
     };
 
@@ -46,18 +47,27 @@ public:
     void OnIngredientDropped(const OdenIngredientActor& ingredient);
 
     // –Ú•WˆÊ’u‚ÉŒü‚©‚Á‚Ä“®‚­
-    void SetTargetPosition(const XMFLOAT3& pos)
+    void SetTargetPosition(const XMFLOAT3& pos, bool acceptOrder)
     {
         targetPos = pos;
+        canAcceptOrder = acceptOrder;
         state = EBubbleState::QueuingMove;
     }
 
-    // 
+    // ’•¶‚ğŠ®—¹‚µ‚Ä—£‚ê‚é
     void SetLeaving()
     {
-        state = EBubbleState::Leaving;
+        // ­‚µŒã‚ë‚É‰º‚ª‚é
+        targetPos = GetPosition();
+        targetPos.z += 1.0f;   // ‰œ•ûŒü
+        state = EBubbleState::LeavingBack;
     }
 
+    // ’•¶‚Å‚«‚é‚©‚Ç‚¤‚©
+    bool CanAcceptOrder() const
+    {
+        return canAcceptOrder;
+    }
 private:
     // ”»’è‚ğ”»’è‚·‚é
     float JudgeMatchShapeRate(const OdenIngredientActor& ingredient) const;
@@ -87,4 +97,6 @@ private:
 
     DirectX::XMFLOAT3 targetPos;
     float moveSpeed = 4.0f;
+
+    bool canAcceptOrder = false; // ’•¶‚ª‚Å‚«‚é‚©‚Ç‚¤‚©
 };

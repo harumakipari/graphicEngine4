@@ -46,7 +46,7 @@ private:
 
     float radius = 1.0f;
     float bias = 0.0f;
-    float power = 0.001f;
+    float power = 0.00f;
     float split_u = 0.0f;
 
 };

@@ -282,17 +282,13 @@ public:
     {
         if (!visible ) return;
 
-        FontManager::GetUIFont()->Draw(worldPosition.x, worldPosition.y, text.c_str(), { 1,1,0,1 }, fontScale);
+        FontManager::GetUIFont()->Draw(worldPosition.x, worldPosition.y, text.c_str(), { 1,1,0,1 }, scale.x);
     }
 
 
     void SetColor(const CoreColor color) { this->color = color; }
 
-    void SetFontScale(const float s) { this->fontScale = s; }
-
-
 protected:
-    float fontScale = 1.0f;
     Font* font = nullptr;
     std::wstring text;
     CoreColor color = CoreColor::White;
@@ -335,7 +331,7 @@ public:
                 color.a = 1.0f - v;
 
                 // ƒXƒP[ƒ‹
-                fontScale = std::lerp(0.8f, 1.2f, v);
+                scale.x = std::lerp(0.8f, 1.2f, v);
             };
 
         easingRunner->StartHandler(handler, accessor);
@@ -344,7 +340,4 @@ public:
 
 private:
     std::shared_ptr<EasingRunner> easingRunner;
-    float elapsedTime = 0.0f;
-    float lifetime = 1.0f;
-    float startY = 0.0f;
 };

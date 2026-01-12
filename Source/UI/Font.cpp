@@ -410,7 +410,7 @@ void Font::Begin(ID3D11DeviceContext* context)
     screenWidth = viewport.Width;
     screenHeight = viewport.Height;
 #else
-    float viewX, viewY, viewportWidth, viewportHeight;
+    float viewX, viewY;
     Graphics::GetViewport(viewX, viewY, screenWidth, screenHeight);
 #endif // 0
 
@@ -428,9 +428,19 @@ void Font::Draw(float x, float y, const wchar_t* string, DirectX::XMFLOAT4 color
 {
     size_t length = ::wcslen(string);
 
+    constexpr float DESIGN_W = 1920.0f;
+    constexpr float DESIGN_H = 1080.0f;
+
+    float scale_ui = std::min<float>(screenWidth / DESIGN_W, screenHeight / DESIGN_H);
+
+    x *= scale_ui;
+    y *= scale_ui;
+    scale *= scale_ui;
+
     float start_x = x;
     float start_y = y;
-    float space = fontWidth;
+    float space = fontWidth * scale;
+
 
     for (size_t i = 0; i < length; ++i)
     {
@@ -446,7 +456,7 @@ void Font::Draw(float x, float y, const wchar_t* string, DirectX::XMFLOAT4 color
         else if (code == CharacterInfo::ReturnCode)
         {
             x = start_x;
-            y += fontHeight;
+            y += fontHeight * scale;
             continue;
         }
         else if (code == CharacterInfo::TabCode)
@@ -487,30 +497,30 @@ void Font::Draw(float x, float y, const wchar_t* string, DirectX::XMFLOAT4 color
         currentVertex[1].position.z = 0.0f;
         currentVertex[1].texcoord.x = info.right;
         currentVertex[1].texcoord.y = info.top;
-        currentVertex[1].color.x =color.x;
-        currentVertex[1].color.y =color.y;
-        currentVertex[1].color.z =color.z;
-        currentVertex[1].color.w =color.w;
+        currentVertex[1].color.x = color.x;
+        currentVertex[1].color.y = color.y;
+        currentVertex[1].color.z = color.z;
+        currentVertex[1].color.w = color.w;
 
         currentVertex[2].position.x = positionX;
         currentVertex[2].position.y = positionY + h;
         currentVertex[2].position.z = 0.0f;
         currentVertex[2].texcoord.x = info.left;
         currentVertex[2].texcoord.y = info.bottom;
-        currentVertex[2].color.x =color.x;
-        currentVertex[2].color.y =color.y;
-        currentVertex[2].color.z =color.z;
-        currentVertex[2].color.w =color.w;
+        currentVertex[2].color.x = color.x;
+        currentVertex[2].color.y = color.y;
+        currentVertex[2].color.z = color.z;
+        currentVertex[2].color.w = color.w;
 
         currentVertex[3].position.x = positionX + w;
         currentVertex[3].position.y = positionY + h;
         currentVertex[3].position.z = 0.0f;
         currentVertex[3].texcoord.x = info.right;
         currentVertex[3].texcoord.y = info.bottom;
-        currentVertex[3].color.x =color.x;
-        currentVertex[3].color.y =color.y;
-        currentVertex[3].color.z =color.z;
-        currentVertex[3].color.w =color.w;
+        currentVertex[3].color.x = color.x;
+        currentVertex[3].color.y = color.y;
+        currentVertex[3].color.z = color.z;
+        currentVertex[3].color.w = color.w;
 
         // NDCÀ•W•ÏŠ·
         for (int j = 0; j < 4; ++j)

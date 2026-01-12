@@ -88,31 +88,42 @@ void OdenBubbleActor::Update(float elapsedTime)
 
 #endif // 0 // ゲージで去っていく処理　デバック中やりにくいから一旦コメントアウト
 
-    // 画面外になる位置
-    if (state == EBubbleState::QueuingMove)
+    switch (state)
     {
-        auto pos = GetPosition();
-        pos = MathHelper::Lerp(pos, targetPos, elapsedTime * moveSpeed);
+    case EBubbleState::QueuingMove:
+        position = MathHelper::Lerp(position, targetPos, elapsedTime * moveSpeed);
+        SetPosition(position);
 
-        SetPosition(pos);
-
-        if (MathHelper::Distance(pos, targetPos) < 0.05f)
+        if (MathHelper::Distance(position, targetPos) < 0.05f)
         {
             SetPosition(targetPos);
             state = EBubbleState::Waiting;
         }
-    }
+        break;
 
-    if (state == EBubbleState::Leaving)
-    {
-        auto pos = GetPosition();
-        pos.x -= elapsedTime * 2.0f;
-        SetPosition(pos);
+    case EBubbleState::LeavingBack:
+        position = MathHelper::Lerp(position, targetPos, elapsedTime * moveSpeed);
+        SetPosition(position);
 
-        if (pos.x < -5.0f)
+        if (MathHelper::Distance(position, targetPos) < 0.05f)
+        {
+            // 左に退場
+            targetPos = position;
+            targetPos.x -= 6.0f;   // 左に消える
+            state = EBubbleState::LeavingLeft;
+        }
+        break;
+
+    case EBubbleState::LeavingLeft:
+        position = MathHelper::Lerp(position, targetPos, elapsedTime * moveSpeed);
+        SetPosition(position);
+
+        if (MathHelper::Distance(position, targetPos) < 0.05f)
+        {
             MarkPendingKill();
+        }
+        break;
     }
-    Logger::Log(U8("お客さんが去っていく"));
 
 }
 
@@ -201,7 +212,7 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
     float score = CalculateOrderScore(ingredient, mathcRate, 1.0f); // 今は 1.0fだけど、倍率で変える
 
     // 状態を去るに変更
-    state = EBubbleState::Leaving;
+    state = EBubbleState::LeavingBack;
 
     if (onCompleted)
     {// 提出した後に

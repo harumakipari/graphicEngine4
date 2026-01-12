@@ -220,7 +220,7 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
     price = ingredientPriceTable[ingredientType];
 
     //
-    
+
 }
 
 // ドラック開始処理
@@ -300,8 +300,12 @@ OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const D
         }
         if (auto odenBubble = dynamic_cast<OdenBubbleActor*>(result.actor))
         {// お題の上だったら
-            odenBubble->OnIngredientDropped(*this); // これちょっと怖い。。
-            return EHoverTarget::OrderBubble;
+            if (odenBubble->CanAcceptOrder())
+            {// オーダー可能な時
+                odenBubble->OnIngredientDropped(*this); // これちょっと怖い。。
+                return EHoverTarget::OrderBubble;
+            }
+            return EHoverTarget::None;
         }
         if (auto odenTrash = dynamic_cast<OdenTrashActor*>(result.actor))
         {// ゴミ箱の上だったら

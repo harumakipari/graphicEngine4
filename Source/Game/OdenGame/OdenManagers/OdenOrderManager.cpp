@@ -17,6 +17,8 @@ void OdenOrderManager::Initialize(const Transform& transform)
     {
         SpawnOrderBubble(i);
     }
+
+    RearrangeBubbles();
 }
 
 
@@ -125,7 +127,8 @@ void OdenOrderManager::RearrangeBubbles()
         {
             s.slotIndex = newIndex;
 
-            b->SetTargetPosition(GetBubblePosition(newIndex));
+            const bool canOrder = (newIndex < MaxOrders); // © 3l‚¾‚¯
+            b->SetTargetPosition(GetBubblePosition(newIndex), canOrder);
 
             newIndex++;
         }
