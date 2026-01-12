@@ -21,30 +21,30 @@ void OdenSlotActor::Initialize(const Transform& transform)
     soupModelComponent->overrideForwardPipelineName = "OdenSoupSurfaceMesh";
     soupModelComponent->overrideDeferredPipelineName = "OdenSoupSurfaceMesh";
 
-    //// 湯気のコンポーネントを追加
-    //particleComponent = this->AddComponent<class ParticleComponent>("particleComponent", parentName);
-    //particleComponent->Load("./Data/Effect/Files/SteamEffect.json");
-    //particleComponent->SetRelativeLocationDirect({ 0.0f,0.5f,0.0f });
+    // 湯気のコンポーネントを追加
+    particleComponent = this->AddComponent<class ParticleComponent>("particleComponent", parentName);
+    particleComponent->Load("./Data/Effect/Files/SteamEffect.json");
+    particleComponent->SetRelativeLocationDirect({ 0.0f,0.5f,0.0f });
 
-    //// ループ再生設定
-    //ParticleComponent::AddSettings settings
-    //{
-    //    .loop = true, // ループ再生
-    //    .startDelay = 0.5f // 再生開始遅延時間
-    //};
-    //particleComponent->SetAddSettings(settings);
-    //particleComponent->Play();
+    // ループ再生設定
+    ParticleComponent::AddSettings settings
+    {
+        .loop = true, // ループ再生
+        .startDelay = 0.5f // 再生開始遅延時間
+    };
+    particleComponent->SetAddSettings(settings);
+    particleComponent->Play();
 }
 
 void OdenSlotActor::Update(float elapsedTime)
 {
-    //if (particleComponent)
-    //{
-    //    if (!particleComponent->IsPlaying())
-    //    {
-    //        particleComponent->Play();
-    //    }
-    //}
+    if (particleComponent)
+    {
+        if (!particleComponent->IsPlaying())
+        {
+            particleComponent->Play();
+        }
+    }
 }
 
 // 食材をセットする

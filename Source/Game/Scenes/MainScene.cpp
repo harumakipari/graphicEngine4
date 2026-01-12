@@ -141,7 +141,14 @@ void MainScene::Start()
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
     audioComp->SetSource(L"./Data/Sound/BGM/title.wav");
     audioComp->SetLoop(true);
+    audioComp->SetVolume(0.8f);
     audioComp->Play();
+
+    auto audioComp1 = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
+    audioComp1->SetSource(L"./Data/Sound/BGM/pot_bgm.wav");
+    audioComp1->SetLoop(true);
+    audioComp1->SetVolume(2.5f);
+    audioComp1->Play();
 
 
 #if 0

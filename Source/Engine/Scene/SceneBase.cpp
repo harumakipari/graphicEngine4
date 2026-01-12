@@ -67,8 +67,8 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = CreatePsFromCSO(device, "./Shader/DeferredPS.cso", deferredPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    //hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
-    hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
+    //hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //CascadedShadowMaps
@@ -459,14 +459,14 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
         ID3D11ShaderResourceView* shader_resource_views[]
         {
             frameBuffer->shaderResourceViews[0].Get(),//colorMap
-            //gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
-            //gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
-            //gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
-            //postEffectManager->GetOutput("BloomEffect"),
-            //sceneEffectManager->GetOutput("FogEffect"),
-            //sceneEffectManager->GetOutput("SSAOEffect"),
-            //sceneEffectManager->GetOutput("SSREffect"),
-            //cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
+            gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
+            postEffectManager->GetOutput("BloomEffect"),
+            sceneEffectManager->GetOutput("FogEffect"),
+            sceneEffectManager->GetOutput("SSAOEffect"),
+            sceneEffectManager->GetOutput("SSREffect"),
+            cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
         };
         // メインフレームバッファとブルームエフェクトを組み合わせて描画
         fullscreenQuad->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());

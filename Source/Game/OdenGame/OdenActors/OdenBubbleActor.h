@@ -24,7 +24,8 @@ public:
     enum class EBubbleState :uint8_t
     {
         Waiting, // ‘Ò‚Á‚Ä‚¢‚é
-        Leaving  // ‹‚Á‚Ä‚¢‚­
+        Leaving,  // ‹‚Á‚Ä‚¢‚­
+        QueuingMove     // —ñ‚Ì‹l‚ß“®ì’†
     };
 
 public:

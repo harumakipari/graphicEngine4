@@ -31,6 +31,13 @@ private:
     // •À‚Ñ‚ğ‹l‚ß‚é
     void RearrangeBubbles();
 private:
+    struct BubbleSlot
+    {
+        std::weak_ptr<OdenBubbleActor> bubble;
+        int slotIndex;   // ˜_—“I‚È•À‚Ñ‡
+    };
+    std::vector<BubbleSlot> bubbleSlots;
+
     std::vector<std::weak_ptr<OdenBubbleActor>> bubbles;
 
     // Å‘å‚Ì’•¶‚ğ•·‚¯‚él”
