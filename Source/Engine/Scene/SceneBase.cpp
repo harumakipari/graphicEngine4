@@ -67,8 +67,8 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = CreatePsFromCSO(device, "./Shader/DeferredPS.cso", deferredPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
-    //hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
+    //hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //CascadedShadowMaps
@@ -85,7 +85,7 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_sheen_e.dds", environmentTextures[3].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    
+
     // UIマネージャーを初期化
     uiManager = std::make_unique<UIManager>();
 
@@ -386,6 +386,11 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
         frameBuffer->Deactivate(immediateContext);
     }
 
+    // 今回のゲームで追加
+    {
+        //ID3D11ShaderResourceView* shaderResourceView[] = { frameBuffer->shaderResourceViews[0].Get() };
+        //immediateContext->PSSetShaderResources(25, 1, shaderResourceView /*colorMap*/); // 
+    }
 
 
     postEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get());
@@ -396,6 +401,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     // フォーワードの透明描画
     frameBuffer->Activate(immediateContext, gBufferRenderTarget->depthStencilView);
 
+
 #if 0
     RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
@@ -403,6 +409,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     sceneRender.currentRenderPath = RenderPath::Forward;
     sceneRender.RenderBlend(immediateContext); // ここで警告出る
 #else
+
     RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_FRONT);
@@ -415,7 +422,10 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     sceneRender.RenderBlend(immediateContext); // ここで警告出る
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 #endif // 0
-
+    {
+        //ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+        //immediateContext->PSSetShaderResources(25, 1, nullSRV);
+    }
 
     // PARTICLES
     {
@@ -490,7 +500,7 @@ void SceneBase::Draw(ID3D11DeviceContext* immediateContext)
         RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-        
+
         ExecuteHooks(RenderPass::UI, immediateContext);
     }
 }

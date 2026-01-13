@@ -934,12 +934,6 @@
     <ClInclude Include="Source\Game\Scenes\TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shader\BuildingPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\CascadedShadowPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>

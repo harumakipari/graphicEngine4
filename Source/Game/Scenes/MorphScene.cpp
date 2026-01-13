@@ -56,7 +56,7 @@ bool MorphScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
         {
             if (const auto cloth = GetActorManager()->GetActorByName("pauseActor"))
             {
-                shapeMatchingModel->Render(immediateContext, cloth->GetWorldTransform(), {}, ShapeMatchingModel::RenderPass::All);
+                //shapeMatchingModel->Render(immediateContext, cloth->GetWorldTransform(), {}, ShapeMatchingModel::RenderPass::Opaque);
             }
         });
 
@@ -113,7 +113,7 @@ void MorphScene::Update(float deltaTime)
 {
     using namespace DirectX;
     SceneBase::Update(deltaTime);
-    shapeMatchingModel->Update(deltaTime);
+    //shapeMatchingModel->Update(deltaTime);
 
     Physics::Instance().Update(Time::UnscaledDeltaTime());
     CollisionSystem::DetectAndResolveCollisions();
@@ -143,7 +143,11 @@ void MorphScene::SetUpActors()
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
     Transform buildTr(DirectX::XMFLOAT3{ -5.0f,1.0f,3.0 }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaterSphere>("morphModel", buildTr);
+    //auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaterSphere>("morphModel", buildTr);
+    auto sphere = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("sphere", buildTr);
+    auto model=sphere->AddComponent<SkeletalMeshComponent>("skeletalMesh");
+    model->SetModel("./Data/Debug/Primitives/sphere.glb");
+    
     //building->AddComponent<StaticMeshComponent>("cloth")->SetModel("./Data/Models/ClothFlag/pole.gltf");
 
     Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,0.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });

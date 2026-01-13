@@ -1,12 +1,9 @@
 #include "GltfModel.hlsli"
 #include "Lights.hlsli"
+#include "Sampler.hlsli"
 
 Texture2D<float3> normalTexture : register(t12); // 水面法線マップ
-
-#define POINT 0
-#define LINEAR 1
-#define ANISOTROPIC 2
-SamplerState samplerStates[5] : register(s0);
+Texture2D sceneColorTexture : register(t25); // 透明以外のライティング後のテクスチャ
 
 float3 SafeNormalize(float3 v)
 {
@@ -233,6 +230,10 @@ cbuffer ODEN_SOUP_CONSTANTS_BUFFER : register(b12)
 
 float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 {
+    float2 screenSize;
+    sceneColorTexture.GetDimensions(screenSize.x, screenSize.y);
+    float2 uv = pin.position.xy / screenSize;
+
    // 鍋の液面Y world space
     float soupSurfaceY = 0.9;
 
@@ -243,8 +244,9 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 
     //return float4(depthFade.xxx, 1.0);
 
-    float2 screenSize = (1920, 1080);
-    float2 uv = pin.position.xy / screenSize;
+    // シーンカラー取得
+    float3 sceneColor = sceneColorTexture.Sample(samplerStates[LINEAR_BORDER_WHITE], uv).rgb;
+
 
     // ===== 水面法線取得 =====
     float3 N = normalize(pin.wNormal.xyz);
@@ -287,6 +289,9 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     // 最終色に加算（「水色に足す」方式）         ここに反射の
     float3 litColor = waterColor.rgb + specularTerm;
 
+    float3 baseColor = sceneColor * (1.0 - waterColor.a) + litColor * waterColor.a; 
+
+    return float4(baseColor, 1.0);
     return float4(litColor, waterColor.a);
 
 }

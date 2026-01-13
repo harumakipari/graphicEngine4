@@ -2,14 +2,6 @@
 #include "Constants.hlsli"
 #include "Sampler.hlsli"
 
-SamplerState pointSamplerState : register(s0);
-SamplerState linearSamplerState : register(s1);
-SamplerState anisotropicSamplerState : register(s2);
-SamplerState linearBorderBlackSamplerState : register(s3);
-SamplerState linearBorderWhiteSamplerState : register(s4);
-SamplerState linearClampSamplerState : register(s5);
-
-SamplerComparisonState comparisonSamplerState : register(s7);
 
 Texture2D colorTexture : register(t0);
 Texture2D positionTexture : register(t1);
@@ -154,7 +146,7 @@ float3 reinhard_tone_mapping(float3 color)
 
 float4 CalculatedPositionNDC(VS_OUT pin)
 {
-    float depthNdc = depthTexture.Sample(linearBorderBlackSamplerState, pin.texcoord).x;
+    float depthNdc = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).x;
     float4 positionNdc;
     // texture space to ndc
     positionNdc.x = pin.texcoord.x * +2 - 1;
@@ -202,8 +194,8 @@ float CalculatedCascadedShadowFactor(VS_OUT pin)
         // ndc to texture space
         positionLightSpace.x = positionLightSpace.x * +0.5 + 0.5;
         positionLightSpace.y = positionLightSpace.y * -0.5 + 0.5;
-        
-        shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(comparisonSamplerState, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
+        shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
+        //shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
         
         return shadowFactor;
         float3 layerColor = 1;
@@ -412,8 +404,8 @@ float3 CalculatedSSRColor(VS_OUT pin)
 
 float CalculatedSSAOColor(VS_OUT pin)
 {
-    float4 position = positionTexture.Sample(linearBorderWhiteSamplerState, pin.texcoord); //worldSpace
-    float3 normal = normalTexture.Sample(linearBorderBlackSamplerState, pin.texcoord).xyz; //worldSpace
+    float4 position = positionTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord); //worldSpace
+    float3 normal = normalTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).xyz; //worldSpace
     //float4 position = positionTexture.Sample(linearBorderWhiteSamplerState, pin.texcoord); //viewSpace
     //float3 normal = normalTexture.Sample(linearBorderBlackSamplerState, pin.texcoord).xyz; //viewSpace
 
@@ -436,7 +428,7 @@ float CalculatedSSAOColor(VS_OUT pin)
         //float4 intersection = mul(float4(samplePosition, 1.0), projection); // from view to clip-space
         float4 intersection = mul(float4(samplePosition, 1.0), viewProjection); // from world to clip-space
         intersection /= intersection.w; // from clip-space to ndc
-        intersection.z = depthTexture.SampleLevel(linearBorderWhiteSamplerState, NdcToUv(intersection.xy), 0).x;
+        intersection.z = depthTexture.SampleLevel(samplerStates[LINEAR_BORDER_WHITE], NdcToUv(intersection.xy), 0).x;
         //intersection = mul(intersection, inverseProjection); // from ndc to view-space
         intersection = mul(intersection, inverseViewProjection); // from ndc to world-space
         intersection /= intersection.w; // perspective divide
@@ -465,7 +457,7 @@ float3 CalculatedFogColor(VS_OUT pin)
     float fogFacter = 0;
     if (enableBlur)
     {
-        float depth = depthTexture.Sample(linearBorderBlackSamplerState, pin.texcoord).x;
+        float depth = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).x;
     
         float accumulatedRadiance = 0.0;
         float accumulatedWeight = 0.0;
@@ -477,13 +469,13 @@ float3 CalculatedFogColor(VS_OUT pin)
                 float2 offset = float2(x, y) / depthMapDimensions;
                 float2 texcoord = pin.texcoord + offset;
                 
-                float sampledRadiance = fogTexture.Sample(linearBorderBlackSamplerState, texcoord).x;
+                float sampledRadiance = fogTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord).x;
 
                 float distance = x * x + y * y;
                 const float sigma = 2.0 * radius * radius;
                 float domainGaussian = exp(-distance / sigma);
                 
-                float sampledDepth = depthTexture.Sample(linearBorderBlackSamplerState, texcoord).x;
+                float sampledDepth = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord).x;
                 distance = (depth - sampledDepth) * (depth - sampledDepth);
                 const float sigma2 = 0.0001;
                 float rangeGaussian = exp(-distance / sigma2);
@@ -496,7 +488,7 @@ float3 CalculatedFogColor(VS_OUT pin)
     }
     else
     {
-        fogFacter = fogTexture.Sample(linearBorderBlackSamplerState, pin.texcoord).x;
+        fogFacter = fogTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).x;
     }
 
     float3 fogColor_ = fogColor.rgb * fogColor.a * max(0, fogFacter);
@@ -514,9 +506,9 @@ float4 main(VS_OUT pin) : SV_TARGET
     uint mipLevel = 0, width, height, number_of_level;
     colorTexture.GetDimensions(mipLevel, width, height, number_of_level);
 
-    float4 color = colorTexture.Sample(linearBorderBlackSamplerState, pin.texcoord);
+    float4 color = colorTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
     float alpha = color.a;
-    float depthNdc = depthTexture.Sample(linearBorderBlackSamplerState, pin.texcoord).x;
+    float depthNdc = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).x;
 
     // GBuffer‚ð‘‚«ž‚ñ‚Å‚¢‚È‚¢—Ìˆæ‚ÍColor‚»‚Ì‚Ü‚Ü•Ô‚·
     //bool isSky = (depthNdc == 0.0 || depthNdc >= 1.0);
@@ -636,12 +628,12 @@ float4 main(VS_OUT pin) : SV_TARGET
             float distance = i * i + j * j;
             float domain_gaussian = exp(-distance / sigma);
 			
-            float sample_depth = depthTexture.SampleLevel(linearBorderBlackSamplerState, uv, 0).x;
+            float sample_depth = depthTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], uv, 0).x;
             distance = (curr_depth - sample_depth) * (curr_depth - sample_depth);
             float range_gaussian = exp(-distance / sigma2);
 			
 			// Sample occlusion(ambient) factor
-            float sample_occlusion = ambientOcclusionTexture.SampleLevel(linearBorderBlackSamplerState, uv, 0).x;
+            float sample_occlusion = ambientOcclusionTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], uv, 0).x;
             accumulated_occlusion += sample_occlusion * domain_gaussian * range_gaussian;
 
             weight += domain_gaussian * range_gaussian;
@@ -717,7 +709,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     //BLOOM
     if (enableBloom)
     {
-        float4 bloom = bloomTexture.Sample(pointSamplerState, pin.texcoord);
+        float4 bloom = bloomTexture.Sample(samplerStates[POINT], pin.texcoord);
         color.rgb += bloom.rgb;
     }
     

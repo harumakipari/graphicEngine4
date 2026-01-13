@@ -7,4 +7,5 @@ SamplerState samplerStates[8] : register(s0);
 #define LINEAR_BORDER_WHITE 4
 #define LINEAR_CLAMP 5
 #define LINEAR_MIRROR 6
-#define COMPARISON_LINEAR_BORDER_WHITE 7
+
+SamplerComparisonState comparisionSamplerState : register(s7);

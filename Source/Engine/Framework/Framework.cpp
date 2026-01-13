@@ -70,7 +70,7 @@ bool Framework::Initialize()
     EffectEditor::Initialize();
 
     // フォントを初期化
-    FontManager::Initialize(Graphics::GetDevice(), "./Data/Font/HatotoBurikiFont.fnt");
+    FontManager::Initialize(Graphics::GetDevice(), "./Data/Font/BuildFont.fnt");
 
     //プロファイラ初期化
     ProfileInitialize(&isPaused, Framework::SetPause/*, ImGuiControl::Profiler::DefaultMaxThreads*/);
