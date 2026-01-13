@@ -153,7 +153,8 @@ protected:
     std::shared_ptr<BoxComponent> boxComponent; // レイキャスト判定するもの
 
     //DirectX::XMFLOAT3 odenIngredientAngleDegree = { 0.0f,0.0f,0.0f };
-    DirectX::XMFLOAT4 visualRotationQuat = { 0.0f,0.0f,0.0f,1.0f };
+    // 姿勢　
+    DirectX::XMFLOAT4 visualOrientation = { 0.0f,0.0f,0.0f,1.0f };
 
     EOdenDragState dragState = EOdenDragState::InSlot;   // おでんの状態
 
@@ -174,8 +175,8 @@ protected:
 
     std::shared_ptr<EasingRunner> easingRunner; // 角度を easing させるのに使う
 
-    DirectX::XMVECTOR startQ;
-    DirectX::XMVECTOR targetQ;
+    DirectX::XMVECTOR startOrientation;  // 最初の姿勢
+    DirectX::XMVECTOR targetRotation; // 差分
     float orientationSlerpValue = 0.0f;
 
     float verticalAngle = 0.0f;

@@ -132,7 +132,7 @@ protected:
     std::unique_ptr<SkyMap> skyMap;
     std::unique_ptr<LightManager> lightManager;
     std::unique_ptr<PostEffectManager> postEffectManager;
-    std::unique_ptr<SceneEffectManager> sceneEffectManager;
+    static inline std::unique_ptr<SceneEffectManager> sceneEffectManager;
     std::unique_ptr<SceneRenderer> sceneRenderer_;
 
     Microsoft::WRL::ComPtr<ID3D11PixelShader> finalPs;

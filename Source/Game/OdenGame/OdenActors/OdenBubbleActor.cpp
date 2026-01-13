@@ -102,6 +102,7 @@ void OdenBubbleActor::Update(float elapsedTime)
         break;
 
     case EBubbleState::LeavingBack:
+#if 0
         position = MathHelper::Lerp(position, targetPos, elapsedTime * moveSpeed);
         SetPosition(position);
 
@@ -112,9 +113,18 @@ void OdenBubbleActor::Update(float elapsedTime)
             targetPos.x -= 6.0f;   // 左に消える
             state = EBubbleState::LeavingLeft;
         }
+#else
+        if (MoveTowards(targetPos, moveSpeed, elapsedTime))
+        {
+            // 次は「斜め後ろの共通退場地点」へ
+            targetPos = { -14.0f, 0.0f, 23.0f };
+            state = EBubbleState::LeavingLeft;
+        }
+#endif // 0
         break;
 
     case EBubbleState::LeavingLeft:
+#if 0
         position = MathHelper::Lerp(position, targetPos, elapsedTime * moveSpeed);
         SetPosition(position);
 
@@ -122,6 +132,12 @@ void OdenBubbleActor::Update(float elapsedTime)
         {
             MarkPendingKill();
         }
+#else
+        if (MoveTowards(targetPos, moveSpeed, elapsedTime))
+        {
+            MarkPendingKill();
+        }
+#endif // 0
         break;
     }
 
@@ -341,4 +357,38 @@ float OdenBubbleActor::CalculateOrderScore(const OdenIngredientActor& ingredient
     const float rate = matchRate / 100.0f;
 
     return basePrice * rate * multiplier;
+}
+
+// ターゲットへ同じ速度で移動する関数
+bool OdenBubbleActor::MoveTowards(const XMFLOAT3& target, float speed, float deltaTime)
+{
+    using namespace DirectX;
+    XMFLOAT3 position = GetPosition();
+    XMVECTOR p = XMLoadFloat3(&position);
+    XMVECTOR t = XMLoadFloat3(&target);
+
+    XMVECTOR dir = t - p;
+    float dist = XMVectorGetX(XMVector3Length(dir));
+
+    if (dist < 0.01f)
+    {
+        SetPosition(target);
+        return true; // 到着
+    }
+
+    XMVECTOR dirN = XMVector3Normalize(dir);
+    float move = speed * deltaTime;
+
+    if (move >= dist)
+    {
+        SetPosition(target);
+        return true;
+    }
+
+    p += dirN * move;
+    XMFLOAT3 newPos;
+    XMStoreFloat3(&newPos, p);
+    SetPosition(newPos);
+
+    return false;
 }

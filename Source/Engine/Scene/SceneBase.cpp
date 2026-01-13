@@ -35,18 +35,26 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     // ポストエフェクト
     {
-        postEffectManager = std::make_unique<PostEffectManager>();
-        postEffectManager->AddEffect(std::make_unique<BloomEffect>());
-        postEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
+        //if (!postEffectManager.get())
+        {
+            Logger::Log(U8("ポストエフェクトを作成しました！"));
+            postEffectManager = std::make_unique<PostEffectManager>();
+            postEffectManager->AddEffect(std::make_unique<BloomEffect>());
+            postEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
+        }
     }
 
     // シーンエフェクト
     {
-        sceneEffectManager = std::make_unique<SceneEffectManager>();
-        sceneEffectManager->AddEffect(std::make_unique<FogEffect>());
-        sceneEffectManager->AddEffect(std::make_unique<SSAOEffect>());
-        sceneEffectManager->AddEffect(std::make_unique<SSREffect>());
-        sceneEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
+        if (!sceneEffectManager.get())
+        {
+            Logger::Log(U8("シーンエフェクトを作成しました！"));
+            sceneEffectManager = std::make_unique<SceneEffectManager>();
+            sceneEffectManager->AddEffect(std::make_unique<FogEffect>());
+            sceneEffectManager->AddEffect(std::make_unique<SSAOEffect>());
+            sceneEffectManager->AddEffect(std::make_unique<SSREffect>());
+            sceneEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
+        }
     }
 
     HRESULT hr = { S_OK };
@@ -518,6 +526,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
             sceneEffectManager->GetOutput("SSREffect"),
             cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
         };
+        immediateContext->PSSetShaderResources(8, 1, cascadedShadowMaps->depthMap().GetAddressOf());
+
         // メインフレームバッファとブルームエフェクトを組み合わせて描画
         fullscreenQuad->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());
     }

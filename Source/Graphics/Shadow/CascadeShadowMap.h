@@ -26,7 +26,6 @@ private:
 
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView;
 
-    std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> cascadeSRVs;
 
     struct Constants
     {
@@ -49,10 +48,6 @@ public:
     }
 
 
-    ID3D11ShaderResourceView* GetCascadeSRV(UINT index) const
-    {
-        return cascadeSRVs[index].Get();
-    }
 
 public:
     const UINT cascadeCount;

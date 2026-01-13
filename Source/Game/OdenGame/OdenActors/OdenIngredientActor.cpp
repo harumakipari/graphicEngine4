@@ -29,7 +29,7 @@ void OdenIngredientActor::Update(float deltaTime)
 
     // ‚¨‚Å‚ñ‚ð‰ñ“]‚³‚¹‚é
     //ingredientModel->SetRelativeEulerRotationDirect(odenIngredientAngleDegree);
-    //ingredientModel->SetRelativeRotationDirect(visualRotationQuat);
+    //ingredientModel->SetRelativeRotationDirect(visualOrientation);
 
 
     // ˆÊ’u‚ðŽæ“¾
@@ -429,19 +429,19 @@ void OdenIngredientActor::StartRotationAnim(const ERotateType rotateType)
 {
     using namespace DirectX;
 
-    startQ = XMLoadFloat4(&visualRotationQuat);
+    startOrientation = XMLoadFloat4(&visualOrientation);
 
     switch (rotateType)
     {
     case ERotateType::Vertical:
-        verticalAngle += 90.0f;
+        verticalAngle = 90.0f;
         MathHelper::ClampEulerAngle(verticalAngle);
-        targetQ = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), XMConvertToRadians(verticalAngle));
+        targetRotation = XMQuaternionRotationAxis(XMVectorSet(1, 0, 0, 0), XMConvertToRadians(verticalAngle));
         break;
     case ERotateType::Horizontal:
-        horizontalAngle -= 90.0f;
+        horizontalAngle = -90.0f;
         MathHelper::ClampEulerAngle(horizontalAngle);
-        targetQ = XMQuaternionRotationAxis(XMVectorSet(0, 0, 1, 0), XMConvertToRadians(horizontalAngle));
+        targetRotation = XMQuaternionRotationAxis(XMVectorSet(0, 0, 1, 0), XMConvertToRadians(horizontalAngle));
         break;
     }
     XMVECTOR target = OrientationToQuat(odenOrientation);
@@ -451,22 +451,22 @@ void OdenIngredientActor::StartRotationAnim(const ERotateType rotateType)
 
     handler.SetCompletedFunction([this, target]()
         {
-            XMStoreFloat4(&visualRotationQuat, target);
-            //ingredientModel->SetRelativeRotationDirect(visualRotationQuat);
-            ingredientModel->SetWorldRotationDirect(visualRotationQuat);
+            XMStoreFloat4(&visualOrientation, target);
+            //ingredientModel->SetRelativeRotationDirect(visualOrientation);
+            ingredientModel->SetWorldRotationDirect(visualOrientation);
         });
 
     PropertyAccessor<float> accessor;
     accessor.getter = [this]() { return 1.0f; };
     accessor.setter = [this](float t)
         {
-            XMVECTOR q = XMQuaternionSlerp(startQ, targetQ, t);
+            XMVECTOR q = XMQuaternionSlerp(startOrientation, XMQuaternionMultiply(startOrientation, targetRotation), t);
             //Logger::Log(U8("t ‚Ì’l") + std::to_string(t));
             q = XMQuaternionNormalize(q);
-            XMStoreFloat4(&visualRotationQuat, q);
+            XMStoreFloat4(&visualOrientation, q);
 
-            //ingredientModel->SetRelativeRotationDirect(visualRotationQuat);
-            ingredientModel->SetWorldRotationDirect(visualRotationQuat);
+            //ingredientModel->SetRelativeRotationDirect(visualOrientation);
+            ingredientModel->SetWorldRotationDirect(visualOrientation);
 
         };
 

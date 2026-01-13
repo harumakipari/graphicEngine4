@@ -59,7 +59,7 @@ public:
     {
         // 少し後ろに下がる
         targetPos = GetPosition();
-        targetPos.z += 1.0f;   // 奥方向
+        targetPos.z += 2.0f;   // 奥方向  ここでターゲットを設定
         state = EBubbleState::LeavingBack;
     }
 
@@ -77,6 +77,9 @@ private:
 
     // 値段と合わせたスコアを計算する
     float CalculateOrderScore(const OdenIngredientActor& ingredient, float matchRate, float multiplier);
+
+    // ターゲットへ同じ速度で移動する関数
+    bool MoveTowards(const XMFLOAT3& target, float speed, float deltaTime);
 
 public:
     std::function<void(OdenBubbleActor&, float score)> onCompleted;     // コールバック関数
@@ -99,4 +102,6 @@ private:
     float moveSpeed = 4.0f;
 
     bool canAcceptOrder = false; // 注文ができるかどうか
+
+    DirectX::XMFLOAT3 leaveFinalPos; // 最終的に消える位置
 };

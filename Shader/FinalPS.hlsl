@@ -61,7 +61,7 @@ float CalculatedCascadedShadowFactor(VS_OUT pin)
         shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
         //shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
         
-        return shadowFactor;
+        //return shadowFactor;
         float3 layerColor = 1;
 #if 1
         if (colorizeCascadedLayer)
