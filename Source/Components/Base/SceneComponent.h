@@ -31,9 +31,9 @@ public:
     virtual ~SceneComponent() {}
 
     // 押し出された Transform を保存
-    void SetPhysicalTransform(const Transform& t) 
+    void SetPhysicalTransform(const Transform& t)
     {
-        physicalTransform_ = t; 
+        physicalTransform_ = t;
         hasPhysicalCorrection_ = true;
     }
 
@@ -98,65 +98,28 @@ public:
     void DrawImGuiInspector() override
     {
 #ifdef USE_IMGUI
-        inspectorEuler_ = MathHelper::QuaternionToEuler(relativeRotation_);
 
         if (ImGui::TreeNode((name_ + "  Transform").c_str()))
         {
             ImGui::DragFloat3("Relative Location", &relativeLocation_.x, 0.1f);
-#if 0
-            // --- Quaternion → Euler（初回 or 外部変更時のみ） ---
-            if (eulerDirty_)
-            {
-                auto eulerRad = MathHelper::QuaternionToEuler(relativeRotation_);
-                editorEulerDeg_.x = DirectX::XMConvertToDegrees(eulerRad.x);
-                editorEulerDeg_.y = DirectX::XMConvertToDegrees(eulerRad.y);
-                editorEulerDeg_.z = DirectX::XMConvertToDegrees(eulerRad.z);
-                eulerDirty_ = false;
-            }
 
-            // --- ImGuiで編集 ---
-            if (ImGui::DragFloat3("Relative Angle", &editorEulerDeg_.x, 1.0f))
-            {
-                DirectX::XMFLOAT3 eulerRad =
-                {
-                    DirectX::XMConvertToRadians(editorEulerDeg_.x),
-                    DirectX::XMConvertToRadians(editorEulerDeg_.y),
-                    DirectX::XMConvertToRadians(editorEulerDeg_.z)
-                };
+            ImGui::DragFloat3("RelativeAngle", &inspectorEuler_.x, 1.0f);
+            inspectorEuler_.x = MathHelper::ClampEulerAngle(inspectorEuler_.x);
+            inspectorEuler_.y = MathHelper::ClampEulerAngle(inspectorEuler_.y);
+            inspectorEuler_.z = MathHelper::ClampEulerAngle(inspectorEuler_.z);
 
-                auto quat = DirectX::XMQuaternionRotationRollPitchYaw(
-                    eulerRad.x,
-                    eulerRad.y,
-                    eulerRad.z
-                );
-
-                DirectX::XMFLOAT4 q;
-                XMStoreFloat4(&q, quat);
-                SetRelativeRotationDirect(q);
-            }
-#else
-
-            DirectX::XMFLOAT3 testAngle = GetRelativeEulerRotation();
-            testAngle.x = DirectX::XMConvertToDegrees(testAngle.x);
-            testAngle.y = DirectX::XMConvertToDegrees(testAngle.y);
-            testAngle.z = DirectX::XMConvertToDegrees(testAngle.z);
-            ImGui::DragFloat3("RelativeAngle", &testAngle.x, 1.0f);
             DirectX::XMFLOAT3 eulerRadNew =
             {
-                DirectX::XMConvertToRadians(testAngle.x),
-                DirectX::XMConvertToRadians(testAngle.y),
-                DirectX::XMConvertToRadians(testAngle.z)
+                DirectX::XMConvertToRadians(inspectorEuler_.x),
+                DirectX::XMConvertToRadians(inspectorEuler_.y),
+                DirectX::XMConvertToRadians(inspectorEuler_.z)
             };
 
-            DirectX::XMVECTOR quatNew = DirectX::XMQuaternionRotationRollPitchYaw(
-                eulerRadNew.x, eulerRadNew.y, eulerRadNew.z
-            );
-
-            DirectX::XMFLOAT4 qNew;
-            XMStoreFloat4(&qNew, quatNew);
-            SetRelativeRotationDirect(qNew);
-
-#endif // 1
+            DirectX::XMVECTOR rotationVec = DirectX::XMQuaternionRotationRollPitchYaw(eulerRadNew.x, eulerRadNew.y, eulerRadNew.z);
+            DirectX::XMFLOAT4 orientation = GetRelativeRotation();
+            DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
+            DirectX::XMStoreFloat4(&orientation, rotationVec);
+            SetRelativeRotationDirect(orientation);
             ImGui::DragFloat3("Relative Scale", &relativeScale_.x, 0.01f, 0.01f, 100.0f);
             ImGui::TreePop();
         }
@@ -181,9 +144,6 @@ private:
     // 親からの相対的なスケール
     DirectX::XMFLOAT3 relativeScale_ = { 1.0f,1.0f,1.0f };
 
-    // ImGui編集専用（度）
-    DirectX::XMFLOAT3 editorEulerDeg_{ 0,0,0 };
-    bool eulerDirty_ = true;
 private:
 
 
@@ -265,7 +225,7 @@ public:
     // 相対的な角度を取得
     DirectX::XMFLOAT3 GetRelativeEulerRotation()const
     {
-        DirectX::XMFLOAT3 angle= MathHelper::QuaternionToEuler(relativeRotation_);
+        DirectX::XMFLOAT3 angle = MathHelper::QuaternionToEuler(relativeRotation_);
         return angle;
     }
     DirectX::XMFLOAT4 QuaternionFromEulerYXZ(const DirectX::XMFLOAT3& eulerRadians)
