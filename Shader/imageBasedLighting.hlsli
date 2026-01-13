@@ -1,11 +1,7 @@
 #ifndef __IMAGE_BASED_LIGHTING__
 #define __IMAGE_BASED_LIGHTING__ 
+#include "Sampler.hlsli"
 
-#define POINT 0
-#define LINEAR 1
-#define ANISOTROPHIC 2
-
-SamplerState samplerStates[3] : register(s0);
 Texture2D textureMaps[4] : register(t0);
 
 Texture2D skybox : register(t32);

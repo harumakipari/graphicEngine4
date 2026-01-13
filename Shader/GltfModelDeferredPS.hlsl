@@ -50,7 +50,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     if (metallicRoughnessTexture > -1)
     {
         float4 sampled = materialTextures[METALLIC_ROUGHNESS_TEXTURE].Sample(samplerStates[LINEAR], pin.texcoord);
-        roughnessFactor *= sampled.g + 0.3f;
+        roughnessFactor *= sampled.g;
         metallicFactor *= sampled.b;
     }
     
@@ -63,21 +63,13 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     }
     const float occlusionStrength = m.occlusionTexture.strength;
 
-    const float3 f0 = lerp(0.04, baseColorFactor.rgb, metallicFactor);
-    const float3 f90 = 1.0;
-    const float alphaRoughness = roughnessFactor * roughnessFactor;
-    const float3 cDiff = lerp(baseColorFactor.rgb, 0.0, metallicFactor);
-    
-    const float3 P = pin.wPosition.xyz;
-    const float3 V = normalize(cameraPositon.xyz - pin.wPosition.xyz);
-    
     float3 N = normalize(pin.wNormal.xyz);
-    float3 T = hasTangent ? normalize(pin.wTangent.xyz) : float3(1, 0, 0);
+    float3 T = hasTangent ? normalize(pin.wTangent.xyz) : float3(1, 0, 0.0001);
     float sigma = hasTangent ? pin.wTangent.w : 1.0;
     T = normalize(T - N * dot(N, T));
     float3 B = normalize(cross(N, T) * sigma);
     
-    //For a back-facing surface, the tangential basis vectors are negated.
+    //背面については、接線方向の基底ベクトルは符号が反転する。
     if (isFrontFace == false)
     {
         T = -T;
@@ -94,14 +86,15 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         normalFactor = normalize(normalFactor * float3(m.normalTexture.scale, m.normalTexture.scale, 1.0));
         N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
     }
-    
-    //pout.color = baseColorFactor;
-    pout.color = baseColorFactor;
-    //pout.position = mul(pin.wPosition, view); // to viewSpace
-    //pout.normal = mul(float4(N.xyz, 0), view); //to viewSpace;
-    pout.position = pin.wPosition; // to viewSpace
-    pout.normal = float4(N.xyz, 0); //to viewSpace;
+
+    pout.gbuffer1Normal = float4(N.xyz, 0);  // world space
+
+    pout.gbuffer3Color = baseColorFactor;
+
+    pout.position = pin.wPosition; // world space 
+
     pout.emissive = float4(emissiveFactor, 0); // 元々wは１だったがスカイマップなどの時に使用するため０に変更
+
     pout.material = float4(metallicFactor, occlusionFactor, roughnessFactor, occlusionStrength);
     
     return pout;

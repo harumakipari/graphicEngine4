@@ -55,7 +55,7 @@ public:
 private:
     DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
     DirectX::XMFLOAT4 lightColor{ 1.0f,1.0f,1.0f,4.1f };
-    float iblIntensity = 2.0f;  //Image Basesd Lighting‚Ì‹­“x
+    float iblIntensity = 0.8f;  //Image Basesd Lighting‚Ì‹­“x
 
     DirectX::XMFLOAT4 pointLightPosition[8] =
     {

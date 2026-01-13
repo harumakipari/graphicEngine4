@@ -79,7 +79,7 @@ VS_OUT main(VS_IN vin)
         // 法線／接線も同じ回転を適用する（まずワールドに変換しておく）
         outNormal = normalize(mul(vin.normal.xyz, (float3x3) world));
         outTangent = normalize(mul(vin.tangent.xyz, (float3x3) world));
-        //outNormal = normalize(mul((float3x3) world, vin.normal.xyz));
+        //outNormal = normalize(mul((float3x3) world, vin.gbuffer1Normal.xyz));
         //outTangent = normalize(mul((float3x3) world, vin.tangent.xyz));
 
         outNormal = RodriguesRotate(outNormal, rotAxis, cosAngle, sinAngle);

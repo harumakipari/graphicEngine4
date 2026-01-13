@@ -53,7 +53,7 @@ VS_OUT main(VS_ClOTH_IN vin)
     tangent = RotateByQuaternion(tangent, vin.rotation);
 #endif
     vin.normal.w = 0;
-    //vout.wNormal = normalize(mul(vin.normal, world));
+    //vout.wNormal = normalize(mul(vin.gbuffer1Normal, world));
     vout.wNormal = normalize(mul(float4(normal, 0.0), world));
     
     vin.tangent.w = 0;

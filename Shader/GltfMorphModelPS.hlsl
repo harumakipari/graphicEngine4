@@ -11,10 +11,6 @@
 Texture2D<float4> materialTextures[5] : register(t1);
 
 
-#define POINT 0
-#define LINEAR 1
-#define ANISOTROPIC 2
-SamplerState sampler_states[5] : register(s0);
 
 // SHADOW
 SamplerComparisonState comparisonSamplerState : register(s7);
@@ -32,7 +28,7 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     
     if (basecolorTexture > -1)
     {
-        float4 sampled = materialTextures[BASECOLOR_TEXTURE].Sample(samplerStates[ANISOTROPHIC], pin.texcoord);
+        float4 sampled = materialTextures[BASECOLOR_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(saturate(sampled.rgb), GAMMA);
         basecolorFactor *= sampled;
     }
@@ -50,7 +46,7 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     const int emissiveTexture = m.emissiveTexture.index;
     if (emissiveTexture > -1)
     {
-        float4 sampled = materialTextures[EMISSIVE_TEXTURE].Sample(samplerStates[ANISOTROPHIC], pin.texcoord);
+        float4 sampled = materialTextures[EMISSIVE_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(sampled.rgb, GAMMA);
         emmisiveFactor *= sampled.rgb;
     }
@@ -192,9 +188,9 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     return float4(color, 1.0);
 
 
-    //float4 color = float4(diffuse + specular + emmisive, basecolorFactor.a) * basecolorFactor;
-    //float4 color = float4(diffuse + specular + emmisive, basecolorFactor.a) * float4(finalColor.rgb, 1.0);
-    //return color;
+    //float4 gbuffer3Color = float4(diffuse + specular + emmisive, basecolorFactor.a) * basecolorFactor;
+    //float4 gbuffer3Color = float4(diffuse + specular + emmisive, basecolorFactor.a) * float4(finalColor.rgb, 1.0);
+    //return gbuffer3Color;
 
     
     //return float4(Lo , baseColorFactor.a);

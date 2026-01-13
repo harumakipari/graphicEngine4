@@ -80,7 +80,7 @@ float2 RandomizeUV(float2 uv, float strength, float speed)
     return uv + (n - 0.5) * strength;
 }
 
-// Tangent-space normal map (0..1) -> -1..1 and normalized
+// Tangent-space gbuffer1Normal map (0..1) -> -1..1 and normalized
 float3 DecodeNormal(float3 n)
 {
     return SafeNormalize(n * 2.0 - 1.0);
@@ -156,7 +156,7 @@ float3 GetBlendedWaterNormal(
     float3 weights = float3(0.45, 0.35, 0.20);
     float3 blendedTS = BlendThreeNormals(n1, n2, n3, weights);
 
-    // --- 6) 強さを適用（0 -> flat, 1 -> full normal） ---
+    // --- 6) 強さを適用（0 -> flat, 1 -> full gbuffer1Normal） ---
     blendedTS = SafeNormalize(lerp(float3(0, 0, 1), blendedTS, saturate(normalStrength)));
 
     // --- 7) Tangent->World へ変換して返す ---
@@ -179,7 +179,7 @@ float3 GetAdditionalSpecular(float3 normalWS, float3 positionWS, float3 viewWS, 
     //for (int i = 0; i < pixelLightCount; ++i) {
     //    Light light = GetAdditionalLight(i, positionWS);
     //    float3 L = normalize(light.direction);
-    //    float3 atten = light.color * light.distanceAttenuation * light.shadowAttenuation;
+    //    float3 atten = light.gbuffer3Color * light.distanceAttenuation * light.shadowAttenuation;
     //    float spec_soft = LightingSpecular(L, Nn, Vn, s);
     //    float spec_hard = smoothstep(0.005, 0.01, spec_soft);
     //    float spec_term = lerp(spec_soft, spec_hard, hardness);

@@ -38,7 +38,6 @@ void LightManager::Update(float deltaTime)
     }
 
     constants.pointLightCount = static_cast<int>(renderPointLights.size());
-
     constants.iblIntensity = iblIntensity;
     constants.directionalLightEnable = directionalLightEnable;
     constants.pointLightCount = pointLightCount;

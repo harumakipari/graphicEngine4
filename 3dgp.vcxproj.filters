@@ -1145,7 +1145,7 @@
     <FxCompile Include="Shader\GlowExtractionPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\DeferredPS.hlsl">
+    <FxCompile Include="Shader\DeferredLightingPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\SSAOPS.hlsl">

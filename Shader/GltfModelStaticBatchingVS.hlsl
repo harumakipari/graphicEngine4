@@ -10,7 +10,7 @@ VS_OUT main(float4 position : POSITION, float4 normal : NORMAL, float4 tangent :
 
     normal.w = 0;
     vout.wNormal = normalize(mul(normal, world));
-    //vout.wNormal.xyz = normalize(mul(normal, inverseTransposeWorld).xyz);
+    //vout.wNormal.xyz = normalize(mul(gbuffer1Normal, inverseTransposeWorld).xyz);
     vout.wNormal.w = 0;
 
     float sigma = tangent.w;

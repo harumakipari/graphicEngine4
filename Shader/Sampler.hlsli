@@ -1,3 +1,7 @@
+#ifndef _SAMPLER_STATE
+#define _SAMPLER_STATE
+
+
 SamplerState samplerStates[8] : register(s0);
 
 #define POINT 0
@@ -9,3 +13,5 @@ SamplerState samplerStates[8] : register(s0);
 #define LINEAR_MIRROR 6
 
 SamplerComparisonState comparisionSamplerState : register(s7);
+
+#endif

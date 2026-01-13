@@ -114,8 +114,8 @@ void SampleScene::SetUpActors()
 
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
 
-    Transform enemyTr(DirectX::XMFLOAT3{ 6.7f,-2.45f,5.6f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
-    auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("enemy", enemyTr);
+    //Transform enemyTr(DirectX::XMFLOAT3{ 6.7f,-2.45f,5.6f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
+    //auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("enemy", enemyTr);
 
     cameraManager->SetDebugCamera(debugCameraActor);
 }

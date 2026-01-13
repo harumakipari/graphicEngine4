@@ -119,6 +119,7 @@ void Player::Initialize(const Transform& transform)
 
 #endif // 0
 
+#if 0
     // ポイントライトコンポーネントを追加
     auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", "skeletalComponent");
     pointLightComponent->SetRelativeLocationDirect({ 0.4f, 2.1f, 0.3f });
@@ -126,6 +127,7 @@ void Player::Initialize(const Transform& transform)
     pointLightComponent->SetRange(1.5f);
     pointLightComponent->SetIntensity(10.0f);
 
+#endif // 0
     AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
         {
             if (auto item = std::dynamic_pointer_cast<Stage>(hitPair.second->GetActor()))
