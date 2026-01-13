@@ -101,7 +101,11 @@ void OdenOrderManager::OnBubbleCompleted(const OdenBubbleActor& bubble, const fl
     {
         if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
         {
+            // スコアを加算する
             gameManager->AddScore(score);
+
+            // リザルト画面のために実際に提出された食材の種類とスコアを記録する
+            gameManager->AddSubmitLog(bubble.GetIngredientType(), score);
         }
     }
 

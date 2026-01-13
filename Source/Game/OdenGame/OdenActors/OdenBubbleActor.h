@@ -76,9 +76,14 @@ public:
     // 毎フレーム呼ばれる (0 ~ 1)
     void OnBeatPhase(float phase) override;
 
+    // 実際に提出された食材の種類を取得する
+    EOdenType GetIngredientType()const
+    {
+        return submittedIngredientType;
+    }
 private:
     // 判定を判定する
-    float JudgeMatchShapeRate(const OdenIngredientActor& ingredient) const;
+    float JudgeMatchShapeRate(const OdenIngredientActor& ingredient);
 
     // 形からスコアを判定する
     float JudgeShapeScore(const OdenShapeData& shape) const;
@@ -112,4 +117,6 @@ private:
     bool canAcceptOrder = false; // 注文ができるかどうか
 
     DirectX::XMFLOAT3 leaveFinalPos; // 最終的に消える位置
+
+    EOdenType submittedIngredientType = EOdenType::None;// 実際に提出された食材の種類
 };

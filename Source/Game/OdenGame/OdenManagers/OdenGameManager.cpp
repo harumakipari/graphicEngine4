@@ -23,3 +23,13 @@ void OdenGameManager::Reset()
     remainingTime = maxTime;
 }
 
+// ’ñoƒƒO‚ğ’Ç‰Á
+void OdenGameManager::AddSubmitLog(EOdenType type, float score)
+{
+    OdenSubmitLog log;
+    log.type = type;
+    log.score = score;
+    submitLogs.push_back(log);
+
+    ingredientCount[type]++;
+}

@@ -257,9 +257,13 @@ void OdenBubbleActor::OnBeatPhase(float phase)
         orderUi->SetScale({ scale, scale });
 }
 
-float OdenBubbleActor::JudgeMatchShapeRate(const OdenIngredientActor& ingredient) const
+
+float OdenBubbleActor::JudgeMatchShapeRate(const OdenIngredientActor& ingredient)
 {
     const OrderData& o = orderData;
+
+    // ’ño‚³‚ê‚½HŞ‚Ìí—Ş‚ğ“ü‚ê‚é
+    submittedIngredientType = o.requiredIngredient;
 
     // ‹ïŞw’è‚Ì‚¨‘è
     if (o.type == EOrderType::SpecificIngredient)

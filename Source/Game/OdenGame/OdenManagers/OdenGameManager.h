@@ -4,12 +4,19 @@
 
 // 全体の管理
 // スコア管理
-// 次のおでん補充
-// ビート管理
 // ゲーム進行
 
 class OdenGameManager :public Actor
 {
+public:
+    struct OdenSubmitLog
+    {
+        EOdenType type; // 具材の種類
+        int count = 1;             // 基本1だが拡張用
+        float score = 0.0f;
+                            // 後々Great　Goodとか
+    };
+
 public:
     OdenGameManager(const std::string& actorName) :Actor(actorName) {}
 
@@ -19,6 +26,12 @@ public:
 
     // 総スコアを取得する
     float GetTotalScore()const { return totalScore; }
+
+    // 残り時間を取得する
+    float GetRemainingTime() const { return remainingTime; }
+
+    // 設定時間
+    float GetMaxTime() const { return maxTime; }
 
     // ゲームのステートをリセットする
     void Reset();
@@ -54,10 +67,28 @@ public:
     {
         // OrderManager を止める
     }
+
+    // 提出ログを追加
+    void AddSubmitLog(EOdenType type, float score);
+
+    // リザルト用
+    const std::vector<OdenSubmitLog>& GetSubmitLogs() const
+    {
+        return submitLogs;
+    }
+
+    // 提出した食材の種類と数を取得する関数
+    const std::unordered_map<EOdenType, int>& GetIngredientCount() const
+    {
+        return ingredientCount;
+    }
 private:
     float totalScore = 0.0f;
     int   combo = 0;
 
     float maxTime = 50.0f;      // 50秒
     float remainingTime = 50.0f;
+
+    std::vector<OdenSubmitLog> submitLogs; // 時系列（伝票）
+    std::unordered_map<EOdenType, int> ingredientCount; // 集計
 };
