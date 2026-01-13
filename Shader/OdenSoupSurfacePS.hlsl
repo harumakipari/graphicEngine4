@@ -247,7 +247,6 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     // シーンカラー取得
     float3 sceneColor = sceneColorTexture.Sample(samplerStates[LINEAR_BORDER_WHITE], uv).rgb;
 
-
     // ===== 水面法線取得 =====
     float3 N = normalize(pin.wNormal.xyz);
     float3 V = normalize(cameraPositon.xyz - pin.wPosition.xyz);

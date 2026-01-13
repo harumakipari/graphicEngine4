@@ -167,5 +167,8 @@ protected:
 
     std::unordered_map<RenderPass, std::vector<RenderHook>> renderHooks;
 
-
+    // シーンのカラーを途中で送る時に使用
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> sceneColorBuffer;
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> sceneColorSRV;
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> sceneColorStencilBuffer;
 };

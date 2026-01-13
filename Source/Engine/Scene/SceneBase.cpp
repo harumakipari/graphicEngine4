@@ -111,6 +111,43 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     );
 
 
+    // シーンカラーテクスチャを送るのに使用する
+    {
+        D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc{};
+
+        // シーンカラー用
+        Microsoft::WRL::ComPtr<ID3D11Resource> colorResource;
+        frameBuffer->shaderResourceViews[0]->GetResource(colorResource.GetAddressOf());
+
+        hr = colorResource->QueryInterface<ID3D11Texture2D>(sceneColorBuffer.GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+        sceneColorBuffer->GetDesc(&texture2dDesc);
+        _ASSERT_EXPR(
+            texture2dDesc.Format == DXGI_FORMAT_R8G8B8A8_UNORM ||
+            texture2dDesc.Format == DXGI_FORMAT_B8G8R8A8_UNORM ||
+            texture2dDesc.Format == DXGI_FORMAT_R16G16B16A16_FLOAT,
+            "scene color must be a color format"
+        );
+
+        texture2dDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+        texture2dDesc.CPUAccessFlags = 0;
+        texture2dDesc.MiscFlags = 0;
+
+        hr = device->CreateTexture2D(&texture2dDesc, nullptr, sceneColorStencilBuffer.GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+        shaderResourceViewDesc.Format = texture2dDesc.Format;
+        shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+        shaderResourceViewDesc.Texture2D.MipLevels = 1;
+
+        hr = device->CreateShaderResourceView(
+            sceneColorStencilBuffer.Get(),
+            &shaderResourceViewDesc,
+            sceneColorSRV.GetAddressOf()
+        );
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
+
     return true;
 }
 
@@ -388,6 +425,9 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
     // 今回のゲームで追加
     {
+        immediateContext->CopyResource(sceneColorStencilBuffer.Get(), sceneColorBuffer.Get());
+        immediateContext->PSSetShaderResources(25, 1, sceneColorSRV.GetAddressOf());
+
         //ID3D11ShaderResourceView* shaderResourceView[] = { frameBuffer->shaderResourceViews[0].Get() };
         //immediateContext->PSSetShaderResources(25, 1, shaderResourceView /*colorMap*/); // 
     }
