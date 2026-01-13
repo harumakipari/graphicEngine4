@@ -35,6 +35,9 @@ public:
     // ビート毎に回転する
     void OnBeat() const;
 
+    // ビートに合わせてスケールを変える
+    void SetVisualScale(float scale);
+
     ERotationType rotationType = ERotationType::Horizontal;
 
 private:

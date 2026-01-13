@@ -84,3 +84,13 @@ void OdenSlotActor::OnBeat() const
         break;
     }
 }
+
+// ビートに合わせてスケールを変える
+void OdenSlotActor::SetVisualScale(float scale)
+{
+    auto odenActor = odenIngredientActor;
+    if (!odenActor)// おでんの食材が入っていたら、
+        return;
+
+    odenActor->SetIngredientScale(scale);
+}

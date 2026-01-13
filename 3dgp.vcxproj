@@ -286,6 +286,7 @@
     <ClCompile Include="Source\Game\Actors\Dessert\TargetPudding.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossEnemy.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossState.cpp" />
+    <ClCompile Include="Source\Game\OdenGame\BeatClockActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenBubbleActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenData\OdenGameParameter.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenDetailIngredientsActors.cpp" />
@@ -439,6 +440,7 @@
     <ClInclude Include="Source\Game\Actors\Enemy\Boss\BossState.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\EmptyEnemy.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\Enemy.h" />
+    <ClInclude Include="Source\Game\OdenGame\BeatClockActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenBubbleActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenData\OdenDataStruct.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenData\OdenGameParameter.h" />

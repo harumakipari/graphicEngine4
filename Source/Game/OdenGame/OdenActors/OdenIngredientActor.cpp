@@ -177,6 +177,7 @@ void OdenIngredientActor::RotateVertical()
 #endif // 0
 }
 
+
 void OdenIngredientActor::InitParam(const std::string& ingredientName)
 {
     // ƒ‚ƒfƒ‹“o˜^

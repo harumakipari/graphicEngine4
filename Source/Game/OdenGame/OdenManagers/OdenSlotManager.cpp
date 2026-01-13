@@ -4,6 +4,7 @@
 #include "Engine/Scene/Scene.h"
 #include "Game/OdenGame/OdenActors/OdenSlotActor.h"
 #include "Game/OdenGame/OdenActors/OdenDetailIngredientsActors.h"
+#include "Game/OdenGame/BeatClockActor.h"
 #include "Utility/GameUtility.h"
 
 // 初期化
@@ -81,6 +82,29 @@ std::string OdenSlotManager::GetPreviewIngredient(const int index) const
 // スロットの回転関数を呼ぶ
 void OdenSlotManager::UpdateBeat(float deltaTime)
 {
+#if 1
+    auto clock = beatClockWeak.lock();
+    if (!clock)
+        return;
+
+    // 拍が切り替わった瞬間
+    if (clock->ConsumeBeatJustChanged())
+    {
+        const auto& beat = clock->GetCurrentBeat();
+
+        for (auto& slot : slots)
+        {
+            if (auto slotActor = slot.lock())
+            {
+                slotActor->OnBeat(/*beat.isStrong*/);
+            }
+        }
+    }
+
+    // 毎フレームのリズム処理
+    ApplyBeatScaling(clock->GetBeatPhase());
+
+#else
     beatTimer += deltaTime;
 
     const auto& beat = BeatTable[beatIndex];
@@ -100,6 +124,8 @@ void OdenSlotManager::UpdateBeat(float deltaTime)
 
         beatIndex = (beatIndex + 1) % 4;
     }
+#endif // 0
+
 }
 
 // 空スロットを見つけたら、食材を補充する
@@ -174,5 +200,20 @@ void OdenSlotManager::FillIngredientQueue()
     while (ingredientQueue.size() < previewCount + 8) // 余裕を持つ
     {
         ingredientQueue.push_back(MakeRandomIngredientName());
+    }
+}
+
+// ビートに合わせてスケールを変更する
+void OdenSlotManager::ApplyBeatScaling(float beatPhase)
+{
+    float pulse = sinf(beatPhase * DirectX::XM_2PI);
+    float scale = 1.0f + pulse * 0.1f;
+
+    for (auto& slot : slots)
+    {
+        if (auto slotActor = slot.lock())
+        {
+            slotActor->SetVisualScale(scale);
+        }
     }
 }

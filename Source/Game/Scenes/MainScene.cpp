@@ -28,6 +28,7 @@
 #include "Game/OdenGame/OdenActors/OdenBubbleActor.h"
 #include "Game/OdenGame/OdenActors/OdenSlotActor.h"
 #include "Game/OdenGame/OdenActors/OdenDetailIngredientsActors.h"
+#include "Game/OdenGame/BeatClockActor.h"
 
 
 #include "Physics/CollisionSystem.h"
@@ -138,18 +139,17 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 void MainScene::Start()
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
-    auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
-    audioComp->SetSource(L"./Data/Sound/BGM/title.wav");
-    audioComp->SetLoop(true);
-    audioComp->SetVolume(0.8f);
-    audioComp->Play();
+    auto audioBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
+    audioBgmComponent->SetSource(L"./Data/Sound/BGM/title.wav");
+    audioBgmComponent->SetLoop(true);
+    audioBgmComponent->SetVolume(0.8f);
+    audioBgmComponent->Play();
 
-    auto audioComp1 = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
-    audioComp1->SetSource(L"./Data/Sound/BGM/pot_bgm.wav");
-    audioComp1->SetLoop(true);
-    audioComp1->SetVolume(2.5f);
-    audioComp1->Play();
-
+    auto audioPotBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
+    audioPotBgmComponent->SetSource(L"./Data/Sound/BGM/pot_bgm.wav");
+    audioPotBgmComponent->SetLoop(true);
+    audioPotBgmComponent->SetVolume(2.5f);
+    audioPotBgmComponent->Play();
 
 #if 0
     // デバック時に使用
@@ -202,9 +202,12 @@ void MainScene::Start()
     // 右上に表示する次来る食材を表示する
     auto odenNextViewActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenNextViewActor>("odenNextViewActor");
 
+    // ビートを設定する関数
+    auto beatClockActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<BeatClockActor>("beatClockActor");
+    slotManager->SetBeatActor(beatClockActor);
+    beatClockActor->SetBpm(60.0f);
+
 #endif // 0
-
-
 
     // ゲームマネージャーを生成
     auto gameManager = GetActorManager()->CreateAndRegisterActorWithTransform<OdenGameManager>("odenGameManager");

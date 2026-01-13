@@ -96,6 +96,12 @@ public:
     // 食材の値段を取得する
     float GetPrice()const { return price; }
 
+    // 食材のスケールを変更する関数
+    void SetIngredientScale(float scale) const
+    {
+        ingredientModel->SetRelativeScaleDirect({ scale,scale,scale });
+    }
+
 protected:
     // 具材の名前からモデルやデータを設定する
     void InitParam(const std::string& ingredientName);

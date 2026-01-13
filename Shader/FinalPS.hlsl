@@ -94,7 +94,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     // シーンからライティング済みのカラーテクスチャ
     float4 color = colorTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
 
-    return float4(color);
+    //return float4(color);
 
     // uv -> ndc 
     float4 positionNdc = CalculatedPositionNDC(pin);
@@ -135,7 +135,9 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
         if (enableCascadedShadowMaps)
         {
-            color.rgb *= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
+            //color.rgb *= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
+            float3 shadow= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
+            return float4(shadow, 1);
         }
     }
     

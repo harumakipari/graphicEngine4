@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/Actor.h"
 
+class BeatClockActor;
 class OdenSlotActor;
 class OdenIngredientActor;
 
@@ -34,6 +35,12 @@ public:
     // 次に来る具材名を取得（UI用）
     std::string GetPreviewIngredient(int index) const;
 
+    // ビートアクターを設定する
+    void SetBeatActor(const std::shared_ptr<BeatClockActor>& beatClockActor)
+    {
+        beatClockWeak = beatClockActor;
+    }
+
 private:
     // スロットの回転関数を呼ぶ
     void UpdateBeat(float deltaTime);
@@ -50,7 +57,8 @@ private:
     // 先にキューを満たす
     void FillIngredientQueue();
 
-
+    // ビートに合わせてスケールを変更する
+    void ApplyBeatScaling(float beatPhase);
 private:
     static constexpr BeatPattern BeatTable[4] =
     {
@@ -68,5 +76,7 @@ private:
     std::deque<std::string> ingredientQueue; // 追加される待ちの食材
 
     static constexpr int previewCount = 3;// 表示用
+
+    std::weak_ptr<BeatClockActor> beatClockWeak;
 
 };
