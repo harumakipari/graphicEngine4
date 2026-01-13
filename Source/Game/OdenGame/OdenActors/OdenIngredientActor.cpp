@@ -452,8 +452,8 @@ void OdenIngredientActor::StartRotationAnim(const ERotateType rotateType)
     handler.SetCompletedFunction([this, target]()
         {
             XMStoreFloat4(&visualOrientation, target);
-            //ingredientModel->SetRelativeRotationDirect(visualOrientation);
-            ingredientModel->SetWorldRotationDirect(visualOrientation);
+            ingredientModel->SetRelativeRotationDirect(visualOrientation);
+            //ingredientModel->SetWorldRotationDirect(visualOrientation);
         });
 
     PropertyAccessor<float> accessor;
@@ -465,8 +465,8 @@ void OdenIngredientActor::StartRotationAnim(const ERotateType rotateType)
             q = XMQuaternionNormalize(q);
             XMStoreFloat4(&visualOrientation, q);
 
-            //ingredientModel->SetRelativeRotationDirect(visualOrientation);
-            ingredientModel->SetWorldRotationDirect(visualOrientation);
+            ingredientModel->SetRelativeRotationDirect(visualOrientation);
+            //ingredientModel->SetWorldRotationDirect(visualOrientation);
 
         };
 
