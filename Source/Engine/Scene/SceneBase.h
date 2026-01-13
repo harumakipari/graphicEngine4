@@ -151,6 +151,8 @@ protected:
     bool enableFog = true;
     bool enableBloom = true;
 
+    bool useDrawDebug = true;
+
     float criticalDepthValue = 706.0f;
 
     SIZE framebufferDimensions = {};

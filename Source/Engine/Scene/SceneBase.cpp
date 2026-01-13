@@ -75,8 +75,8 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = CreatePsFromCSO(device, "./Shader/DeferredPS.cso", deferredPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
-    //hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
+    //hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //CascadedShadowMaps
@@ -285,11 +285,13 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
 
     // デバック描画
 #if _DEBUG
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-    //actorColliderManager.DebugRender(immediateContext);
-    //Physics::Instance().Render(data.view, data.projection, { lightManager->GetLightDirection().x,lightManager->GetLightDirection().y,lightManager->GetLightDirection().z });
-    DebugDrawManager::Render(immediateContext);
-    ExecuteHooks(RenderPass::Debug, immediateContext);
+    if (useDrawDebug)
+    {
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
+        Physics::Instance().Render(data.view, data.projection, { lightManager->GetLightDirection().x,lightManager->GetLightDirection().y,lightManager->GetLightDirection().z });
+        DebugDrawManager::Render(immediateContext);
+        ExecuteHooks(RenderPass::Debug, immediateContext);
+    }
 #endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     // PARTICLES
@@ -495,10 +497,13 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
     // デバック描画
 #if _DEBUG
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-    Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
-    DebugDrawManager::Render(immediateContext);
-    ExecuteHooks(RenderPass::Debug, immediateContext);
+    if (useDrawDebug)
+    {
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
+        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        DebugDrawManager::Render(immediateContext);
+        ExecuteHooks(RenderPass::Debug, immediateContext);
+    }
 #endif
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
@@ -697,7 +702,10 @@ void SceneBase::DrawSceneSettingsTab()
     if (ImGui::CollapsingHeader("Light Settings", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Checkbox("useDeferredRendering", &useDeferredRendering);
+        ImGui::Checkbox("useDrawDebug", &useDrawDebug);
         lightManager->DrawGUI();
+
+
     }
 
 }

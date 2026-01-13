@@ -40,19 +40,6 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     //アクターをセット
     SetUpActors();
 
-    clothSimulate = std::make_unique<ClothSimulate>(device, "./Data/Models/ClothFlag/cloth.gltf");
-    //clothSimulate = std::make_unique<ClothSimulate>(device, "./Data/Models/TestCloth/cloth1.gltf");
-
-    RegisterRenderHook(RenderPass::Opaque, [&](ID3D11DeviceContext* immediateContext)
-        {
-            if (const auto cloth = GetActorManager()->GetActorByName("cloth"))
-            {
-                //clothSimulate->Render(immediateContext, cloth->GetWorldTransform());
-                
-            }
-        });
-
-
     return true;
 }
 
@@ -64,8 +51,6 @@ void SampleScene::Start()
     audioComp->SetLoop(true);
     audioComp->Play();
     audioComp->SetVolume(0.2f);
-
-    //std::shared_ptr<Sprite> uiSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/UI/icon_chara.png");
 
     std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("./Data/Textures/UI/icon_chara.png", "image");
     image->SetWorldPosition({ 50, 50 });
@@ -85,17 +70,6 @@ void SampleScene::Start()
     gauge->SetSize({ 300, 40 });
 
     uiManager->Add(gauge);
-
-    // ボタンでゲージ減らす
-    button->onClick = [gauge]()
-        {
-            static float value = 1.0f;
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
-            value -= 0.1f;
-            if (value < 0.0f)
-                value = 0.0f;
-            gauge->SetValue(value, 1.0f);
-        };
 
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
@@ -129,39 +103,19 @@ void SampleScene::SetUpActors()
     auto player = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
     mainCameraComponent->target = (player->GetRootComponent());
     mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
-#if 1
     SetActiveCamera(mainCameraActor);
-#else
-    SetActiveCamera(debugCameraActor);
-#endif // 0
     Logger::Log(U8("sampleシーンのカメラ設定される。"));
 
-
-    //mainCameraComponent->followTarget = (titlePlayer->GetRootComponent());
-    //mainCameraComponent->lookAtTarget = (titlePlayer->GetRootComponent());
-
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    //Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
     auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<FightStage>("stage", stageTr); // 元のモデルの scale を 0.4f
 
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
-    Transform buildTr(DirectX::XMFLOAT3{ -5.0f,-2.45f,3.0 }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cloth", buildTr);
-    building->AddComponent<StaticMeshComponent>("cloth")->SetModel("./Data/Models/ClothFlag/pole.gltf");
-    //building->AddComponent<SkeletalMeshComponent>("pudding")->SetModel("./Data/Models/cherry_pudding/scene.gltf");
-
-    Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,-2.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
-    auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pudding>("building", buildTr2);
-
-    auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor", buildTr2);
-
-    //stageCollisionMesh = std::make_shared<CollisionMesh>(Graphics::GetDevice(), "./Data/Models/Stage/stage.gltf", true);
+    auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
 
     Transform enemyTr(DirectX::XMFLOAT3{ 6.7f,-2.45f,5.6f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
     auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("enemy", enemyTr);
-
 
     cameraManager->SetDebugCamera(debugCameraActor);
 }

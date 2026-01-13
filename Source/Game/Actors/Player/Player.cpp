@@ -105,11 +105,6 @@ void Player::Initialize(const Transform& transform)
     capsuleComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::None);
     capsuleComponent->SetCollisionOffsetY(height * 0.5f);
     capsuleComponent->SetIsVisibleDebugBox(false);
-    //char debugBuffer[128];
-    //sprintf_s(debugBuffer, sizeof(debugBuffer),
-    //    "CapsuleComponent Layer: 0x%X, Mask: 0x%X\n",
-    //    capsuleComponent->GetCollisionLayer(), capsuleComponent->GetCollisionMask());
-    //OutputDebugStringA(debugBuffer);
     capsuleComponent->Initialize();
 #else
     std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("capsuleComponent", "skeletalComponent");
@@ -144,20 +139,12 @@ void Player::Initialize(const Transform& transform)
 
     // 入力用のコンポーネントを追加
     inputComponent = this->AddComponent<class InputComponent>("inputComponent", "skeletalComponent");
-    //inputComponent->BindAction("Jump", [&]()
-    //    {
-    //        ChangeState(std::make_shared<JumpStartState>());
-    //        dynamic_cast<SkeletalMeshComponent*>(GetComponentByName("skeltalComponent").get())->SetAnimationClip(3);
-    //    });
-    //inputComponent->BindActionAndButton(GamePad::Button::y, "Jump", TriggerMode::none); //[v]
-
-    characterMovementComponent = this->AddComponent<CharacterMovementComponent>("movementComponent", "skeletalComponent");
 
     // 移動用コンポーネントを追加
-    //movementComponent = this->AddComponent<class MovementComponent>("movementComponent", "skeletalComponent");
+    characterMovementComponent = this->AddComponent<CharacterMovementComponent>("movementComponent", "skeletalComponent");
 
     // 回転用コンポーネントを追加
-    rotationComponent = this->AddComponent<class RotationComponent>("rotationComponet", "skeletalComponent");
+    rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", "skeletalComponent");
 
     particleComponent=AddComponent<ParticleComponent>("particleComponent", "skeletalComponent");
     particleComponent->Load("./Data/Effect/Files/heartTestEffect.json");

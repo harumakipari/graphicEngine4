@@ -11,7 +11,9 @@ class PostEffectBase
 public:
     PostEffectBase(std::string className) :name(std::move(className)) {}
 
-    virtual ~PostEffectBase() = default;
+    virtual ~PostEffectBase()
+    {
+    }
 
     // ポストエフェクト生成（リソース作成） 
     virtual void Initialize(ID3D11Device* device, uint32_t width, uint32_t height) = 0;

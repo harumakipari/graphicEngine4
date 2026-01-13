@@ -26,10 +26,24 @@ public:
 #endif // 1
         //staticMeshComponent->SetRelativeLocationDirect({ 0.0f,2.45f,0.0f });
 
+#if 0 // “–‚½‚è”»’è
+        // ƒƒbƒVƒ…
         std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->AddComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent", "staticMeshComponent");
         triangleMeshComponent->SetLayer(CollisionLayer::WorldStatic);
         triangleMeshComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
         triangleMeshComponent->CreateConvexMeshFromModel(staticMeshComponent.get());
+#else
+
+        std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "staticMeshComponent");
+        boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(40.0f, 0.2f, 40.0f));
+        boxComponent->SetCollisionOffsetY(-4.5f);
+        boxComponent->SetStatic(true);
+        boxComponent->SetLayer(CollisionLayer::WorldStatic);
+        boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        boxComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
+        boxComponent->Initialize();
+
+#endif // 0 // “–‚½‚è”»’è
 
         SetPosition(transform.GetLocation());
         SetQuaternionRotation(transform.GetRotation());

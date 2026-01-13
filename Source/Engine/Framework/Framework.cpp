@@ -55,6 +55,7 @@ bool Framework::Initialize()
     //Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     Scene::_boot(device, "MorphScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    //Scene::_boot(device, "SampleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
 
 
     //パーティクルシステム
@@ -75,8 +76,6 @@ bool Framework::Initialize()
     //プロファイラ初期化
     ProfileInitialize(&isPaused, Framework::SetPause/*, ImGuiControl::Profiler::DefaultMaxThreads*/);
     ProfileThreadName(0, "Main Thread");
-
-
 
 
     return true;
@@ -172,7 +171,6 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
     }
 
 #ifdef USE_IMGUI
-    //ImGui::Begin("ImGUI");
     {
         ImGui::PushFont(fontJP);
         ProfileScopedSection_2(0, "ImGui", ImGuiControl::Profiler::Yellow);
@@ -181,14 +179,15 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
         ImGui::PopFont();
 
     }
+    ImGui::Begin("ImGUI");
 
-    /*ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-#if 0
-    ImGui::Text("Video memory usage %d MB", video_memory_usage());
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+#if 1
+    ImGui::Text("Video memory usage %d MB", Graphics::VideoMemoryUsage());
 #endif
     ImGui::Text("ALT+ENTER to change window mode");
 
-    ImGui::End();*/
+    ImGui::End();
 #endif
 
 

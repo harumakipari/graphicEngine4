@@ -61,7 +61,7 @@ float CalculatedCascadedShadowFactor(VS_OUT pin)
         shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
         //shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
         
-        //return shadowFactor;
+        return shadowFactor;
         float3 layerColor = 1;
 #if 1
         if (colorizeCascadedLayer)
@@ -135,12 +135,11 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
         if (enableCascadedShadowMaps)
         {
-            //color.rgb *= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
+            color.rgb *= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
             float3 shadow= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
-            return float4(shadow, 1);
+            //return float4(shadow, 1);
         }
     }
-    
 
     return color;
 }

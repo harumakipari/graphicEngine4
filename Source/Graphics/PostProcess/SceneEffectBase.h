@@ -7,7 +7,9 @@ class SceneEffectBase
 {
 public:
     SceneEffectBase(std::string className) :name(className) {}
-    virtual ~SceneEffectBase() = default;
+    virtual ~SceneEffectBase()
+    {
+    }
 
     virtual void Initialize(ID3D11Device* device, uint32_t width, uint32_t height) = 0;
     virtual void Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal,
