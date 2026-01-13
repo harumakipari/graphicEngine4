@@ -9,7 +9,7 @@ class OdenBubbleActor;
 class OdenOrderManager :public Actor
 {
 public:
-    OdenOrderManager(const std::string& actorName) :Actor(actorName) {}
+    explicit OdenOrderManager(const std::string& actorName) :Actor(actorName) {}
 
     void Initialize(const Transform& transform)override;
 

@@ -15,7 +15,7 @@ void OdenSlotActor::Initialize(const Transform& transform)
     boxComponent->Initialize();
 
     // 汁のモデルを追加
-    auto soupModelComponent = AddComponent<StaticMeshComponent>("Oden_Soup_Model", parentName);
+    soupModelComponent = AddComponent<StaticMeshComponent>("Oden_Soup_Model", parentName);
     soupModelComponent->SetModel("./Data/Models/Oden_Store/Oden_SoupSurface.gltf", false);
     soupModelComponent->SetRelativeLocationDirect({ 0.0f,-0.1f,0.0f });
     soupModelComponent->overrideForwardPipelineName = "OdenSoupSurfaceMesh";
@@ -85,12 +85,14 @@ void OdenSlotActor::OnBeat() const
     }
 }
 
-// ビートに合わせてスケールを変える
-void OdenSlotActor::SetVisualScale(float scale)
+// ビートに合わせて食材と汁モデルスケールを変える
+void OdenSlotActor::SetVisualScale(float scale) const
 {
     auto odenActor = odenIngredientActor;
     if (!odenActor)// おでんの食材が入っていたら、
         return;
 
     odenActor->SetIngredientScale(scale);
+
+    soupModelComponent->SetRelativeScaleDirect({ scale,scale,scale });
 }

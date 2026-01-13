@@ -116,8 +116,8 @@ float4 main(VS_OUT pin) : SV_TARGET
     totalDiffuse = totalDiffuse * occlusionFactor;
     totalSpecular = totalSpecular * occlusionFactor;
 
-//    diffuse = lerp(totalDiffuse, totalDiffuse * occlusionFactor, occlusionStrength);
-  //  specular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
+    //    diffuse = lerp(totalDiffuse, totalDiffuse * occlusionFactor, occlusionStrength);
+    //  specular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
     float3 Lo = totalDiffuse + totalSpecular + emissive;
 
     return float4(Lo, 1.0f);

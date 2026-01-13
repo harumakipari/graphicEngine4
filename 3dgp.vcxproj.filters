@@ -936,6 +936,7 @@
     <ClInclude Include="Source\UI\FontManager.h" />
     <ClInclude Include="Source\Game\Scenes\TitleScene.h" />
     <ClInclude Include="Source\Game\OdenGame\BeatClockActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenActors\BeatReactive.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

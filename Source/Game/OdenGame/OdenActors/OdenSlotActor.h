@@ -35,12 +35,13 @@ public:
     // ビート毎に回転する
     void OnBeat() const;
 
-    // ビートに合わせてスケールを変える
-    void SetVisualScale(float scale);
+    // ビートに合わせて食材と汁モデルのスケールを変える
+    void SetVisualScale(float scale) const;
 
     ERotationType rotationType = ERotationType::Horizontal;
 
 private:
     std::shared_ptr<OdenIngredientActor> odenIngredientActor;   // スロットの中のおでんの食材
     std::shared_ptr<ParticleComponent> particleComponent;   // 湯気のエフェクト
+    std::shared_ptr<StaticMeshComponent> soupModelComponent; // 汁のモデル
 };

@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/Actor.h"
 #include "Game/OdenGame/OdenData/OdenDataStruct.h"
+#include "Game/OdenGame/OdenActors/BeatReactive.h"
 #include "UI/Widgets/Widget.h"
 
 
@@ -17,7 +18,7 @@ class OdenIngredientActor;
 // 　お題
 // 　ふきだし
 //
-class OdenBubbleActor :public Actor
+class OdenBubbleActor :public Actor, public IBeatReactive
 {
 public:
     // お題の状態
@@ -68,6 +69,13 @@ public:
     {
         return canAcceptOrder;
     }
+
+    // 拍が来た瞬間の処理
+    void OnBeat(bool isStrong) override {}
+
+    // 毎フレーム呼ばれる (0 ~ 1)
+    void OnBeatPhase(float phase) override;
+
 private:
     // 判定を判定する
     float JudgeMatchShapeRate(const OdenIngredientActor& ingredient) const;

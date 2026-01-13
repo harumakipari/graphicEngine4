@@ -3,23 +3,15 @@
 #include "BidirectionalReflectanceDistributionFunction.hlsli"
 #include "Lights.hlsli"
 
-#define BASECOLOR_TEXTURE 0 
+#define BASE_COLOR_TEXTURE 0 
 #define METALLIC_ROUGHNESS_TEXTURE 1 
 #define NORMAL_TEXTURE 2 
 #define EMISSIVE_TEXTURE 3
 #define OCCLUSION_TEXTURE 4 
 Texture2D<float4> materialTextures[5] : register(t1);
 
-
-
-// SHADOW
-SamplerComparisonState comparisonSamplerState : register(s7);
-//Texture2D shadowMap : register(t8);
-
-
 float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 {
-    //return float4(1, 1, 1, 1);
     const float GAMMA = 2.2;
     const MaterialConstants m = materials[material];
     
@@ -28,7 +20,7 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     
     if (basecolorTexture > -1)
     {
-        float4 sampled = materialTextures[BASECOLOR_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
+        float4 sampled = materialTextures[BASE_COLOR_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(saturate(sampled.rgb), GAMMA);
         basecolorFactor *= sampled;
     }

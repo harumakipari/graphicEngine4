@@ -14,8 +14,7 @@ Texture2D<float4> materialTextures[5] : register(t1);
 
 // SHADOW
 SamplerComparisonState comparisonSamplerState : register(s7);
-//Texture2D shadowMap : register(t8);
-
+//Texture2D shadowMap : register(t8)
 
 float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 {

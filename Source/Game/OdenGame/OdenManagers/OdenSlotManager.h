@@ -4,7 +4,7 @@
 class BeatClockActor;
 class OdenSlotActor;
 class OdenIngredientActor;
-
+class IBeatReactive;
 
 
 class OdenSlotManager :public Actor
@@ -41,6 +41,11 @@ public:
         beatClockWeak = beatClockActor;
     }
 
+    // ビート反応リストを登録する
+    void RegisterBeatReactives(const std::shared_ptr<IBeatReactive>& obj)
+    {
+        beatReactives.push_back(obj);
+    }
 private:
     // スロットの回転関数を呼ぶ
     void UpdateBeat(float deltaTime);
@@ -58,7 +63,7 @@ private:
     void FillIngredientQueue();
 
     // ビートに合わせてスケールを変更する
-    void ApplyBeatScaling(float beatPhase);
+    void ApplyBeatScaling(float beatPhase) const;
 private:
     static constexpr BeatPattern BeatTable[4] =
     {
@@ -77,6 +82,8 @@ private:
 
     static constexpr int previewCount = 3;// 表示用
 
-    std::weak_ptr<BeatClockActor> beatClockWeak;
+    std::weak_ptr<BeatClockActor> beatClockWeak; // ビートを刻むアクター
+
+    std::vector<std::weak_ptr<IBeatReactive>> beatReactives; // ビート反応リスト
 
 };

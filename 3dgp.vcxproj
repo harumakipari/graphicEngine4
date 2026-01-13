@@ -441,6 +441,7 @@
     <ClInclude Include="Source\Game\Actors\Enemy\EmptyEnemy.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\Enemy.h" />
     <ClInclude Include="Source\Game\OdenGame\BeatClockActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenActors\BeatReactive.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenBubbleActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenData\OdenDataStruct.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenData\OdenGameParameter.h" />

@@ -247,6 +247,15 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
     }
 }
 
+// –ˆƒtƒŒ[ƒ€ŒÄ‚Î‚ê‚é (0 ~ 1)
+void OdenBubbleActor::OnBeatPhase(float phase)
+{
+    float pulse = sinf(phase * DirectX::XM_2PI);
+    float scale = 1.0f + pulse * 0.08f;
+
+    if (orderUi)
+        orderUi->SetScale({ scale, scale });
+}
 
 float OdenBubbleActor::JudgeMatchShapeRate(const OdenIngredientActor& ingredient) const
 {

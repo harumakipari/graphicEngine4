@@ -6,6 +6,7 @@
 #include "Game/OdenGame/OdenData/OdenGameParameter.h"
 #include "Utility/GameUtility.h"
 #include "OdenGameManager.h"
+#include "OdenSlotManager.h"
 
 
 void OdenOrderManager::Initialize(const Transform& transform)
@@ -54,6 +55,12 @@ void OdenOrderManager::SpawnOrderBubble(int index)
     slot.slotIndex = index;
 
     slots.push_back(slot);
+
+
+    // スロットマネージャーに吹き出しを登録する　これで吹き出しがビートに乗る
+    auto slotManagerActor = GetOwnerScene()->GetActorManager()->GetActorByName("slotManager");
+    auto slotManager = std::dynamic_pointer_cast<OdenSlotManager>(slotManagerActor);
+    slotManager->RegisterBeatReactives(bubble);
 }
 
 // ランダムにお題を生成する

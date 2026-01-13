@@ -5,6 +5,7 @@
 #include "Game/OdenGame/OdenActors/OdenSlotActor.h"
 #include "Game/OdenGame/OdenActors/OdenDetailIngredientsActors.h"
 #include "Game/OdenGame/BeatClockActor.h"
+#include "Game/OdenGame/OdenActors/BeatReactive.h"
 #include "Utility/GameUtility.h"
 
 // 初期化
@@ -92,6 +93,7 @@ void OdenSlotManager::UpdateBeat(float deltaTime)
     {
         const auto& beat = clock->GetCurrentBeat();
 
+        // スロットの食材回転処理
         for (auto& slot : slots)
         {
             if (auto slotActor = slot.lock())
@@ -99,10 +101,29 @@ void OdenSlotManager::UpdateBeat(float deltaTime)
                 slotActor->OnBeat(/*beat.isStrong*/);
             }
         }
+
+        // 拍が切り替わった時の処理
+        for (auto& beatReact : beatReactives)
+        {
+            if (auto r = beatReact.lock())
+            {
+                r->OnBeat(beat.isStrong);
+            }
+        }
     }
 
-    // 毎フレームのリズム処理
-    ApplyBeatScaling(clock->GetBeatPhase());
+    // ビートに合わせて0~1の数値を送る
+    float phase = clock->GetBeatPhase();
+    for (auto& beatReact : beatReactives)
+    {
+        if (auto r = beatReact.lock())
+        {
+            r->OnBeatPhase(phase);
+        }
+    }
+
+    // ビートに合わせたスケール処理
+    ApplyBeatScaling(phase);
 
 #else
     beatTimer += deltaTime;
@@ -204,7 +225,7 @@ void OdenSlotManager::FillIngredientQueue()
 }
 
 // ビートに合わせてスケールを変更する
-void OdenSlotManager::ApplyBeatScaling(float beatPhase)
+void OdenSlotManager::ApplyBeatScaling(float beatPhase) const
 {
     float pulse = sinf(beatPhase * DirectX::XM_2PI);
     float scale = 1.0f + pulse * 0.1f;
