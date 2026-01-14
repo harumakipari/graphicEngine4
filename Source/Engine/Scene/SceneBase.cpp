@@ -75,8 +75,8 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = CreatePsFromCSO(device, "./Shader/DeferredLightingPS.cso", deferredPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
-    //hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
+    //hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //CascadedShadowMaps
@@ -238,7 +238,7 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
 #endif
     if (!useDeferredRendering)
     {// フォワードレンダリング
-        ForwardRender(immediateContext);
+       // ForwardRender(immediateContext);
     }
     else
     {
@@ -437,9 +437,6 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     {
         immediateContext->CopyResource(sceneColorStencilBuffer.Get(), sceneColorBuffer.Get());
         immediateContext->PSSetShaderResources(25, 1, sceneColorSRV.GetAddressOf());
-
-        //ID3D11ShaderResourceView* shaderResourceView[] = { frameBuffer->shaderResourceViews[0].Get() };
-        //immediateContext->PSSetShaderResources(25, 1, shaderResourceView /*colorMap*/); // 
     }
 
 
@@ -452,7 +449,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     frameBuffer->Activate(immediateContext, gBufferRenderTarget->depthStencilView);
 
 
-#if 0
+#if 1
     RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
@@ -521,15 +518,16 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
         ID3D11ShaderResourceView* shader_resource_views[]
         {
-            frameBuffer->shaderResourceViews[0].Get(),//colorMap
-            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
-            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
-            gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
-            postEffectManager->GetOutput("BloomEffect"),
-            sceneEffectManager->GetOutput("FogEffect"),
-            sceneEffectManager->GetOutput("SSAOEffect"),
-            sceneEffectManager->GetOutput("SSREffect"),
-            cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
+            //   gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],   // colorMap
+              frameBuffer->shaderResourceViews[0].Get(),//colorMap
+               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
+               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
+               gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
+               postEffectManager->GetOutput("BloomEffect"),
+               sceneEffectManager->GetOutput("FogEffect"),
+               sceneEffectManager->GetOutput("SSAOEffect"),
+               sceneEffectManager->GetOutput("SSREffect"),
+               cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
         };
         immediateContext->PSSetShaderResources(8, 1, cascadedShadowMaps->depthMap().GetAddressOf());
 

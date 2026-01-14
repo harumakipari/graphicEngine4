@@ -6,7 +6,7 @@
 class FrameBuffer
 {
 public:
-    FrameBuffer(ID3D11Device* device, uint32_t width, uint32_t height, bool withDepthStencil = true);
+    FrameBuffer(ID3D11Device* device, uint32_t width, uint32_t height,  bool withDepthStencil = true, DXGI_FORMAT format = DXGI_FORMAT_R16G16B16A16_FLOAT);
     virtual ~FrameBuffer() = default;
         
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTargetView;

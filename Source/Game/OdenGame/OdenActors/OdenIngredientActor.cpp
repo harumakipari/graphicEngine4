@@ -43,6 +43,18 @@ void OdenIngredientActor::Update(float deltaTime)
     if (!InputSystem::GetMousePositionUI(cursor))
         return;
 
+    // •‚‚¢‚Ä‚­‚éˆ—
+    if (position.y <= 0.95f)
+    {
+        constexpr float targetY = 1.0f;
+        constexpr float speed = 3.0f; // ‘å‚«‚¢‚Ù‚Ç‘¬‚­•‚‚­
+
+        float t = std::clamp(deltaTime * speed, 0.0f, 1.0f);
+        Logger::Log("position y:" + std::to_string(position.y));
+        position.y = std::lerp(position.y, targetY, t);
+        SetPosition(position);
+    }
+
     // ‡@ ‰Ÿ‚µ‚½uŠÔF‘I‘ğ”»’è
     if (dragState == EOdenDragState::InSlot &&
         InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
@@ -175,6 +187,8 @@ void OdenIngredientActor::RotateVertical()
 
 void OdenIngredientActor::InitParam(const std::string& ingredientName)
 {
+    GetRootComponent()->SetRelativeEulerRotationDirect({ -25.0f,0.0f,0.0f });
+
     // ƒ‚ƒfƒ‹“o˜^
     std::string parentName = ingredientName + "_model";
     ingredientModel = AddComponent<SkeletalMeshComponent>(parentName);
@@ -184,11 +198,12 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
     // “–‚½‚è”»’è‚ğ“o˜^
     boxComponent = AddComponent<BoxComponent>("boxComponent", parentName);
     DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
-    boxComponent->SetBoxExtent({ size.x * 1.2f,size.y * 1.2f,size.z * 1.2f });
+    //boxComponent->SetBoxExtent({ size.x * 1.2f,size.y * 1.2f,size.z * 1.2f });
+    boxComponent->SetBoxExtent({2.5f, 1.5f, 2.5f});
     boxComponent->SetMass(40.0f);
     boxComponent->SetLayer(CollisionLayer::Oden);
     boxComponent->Initialize();
-
+   
     // HŞ‚Ìí—Ş‚ğ“o˜^
     auto maybeEnum = magic_enum::enum_cast<EOdenType>(ingredientName);
     if (maybeEnum.has_value())
@@ -221,7 +236,6 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
     dotLineModel->SetRelativeLocationDirect({ 0.0f,0.001f,0.0f });
     std::string modelDotLineFileName = "./Data/Models/Oden_DotLine/Oden_DotLine_Triangle.gltf";
     dotLineModel->SetModel(modelDotLineFileName.c_str());
-    dotLineModel->SetOpaqueTexture(L"./Data/Models/Oden_DotLine/m_oden_Opacity.png");
     dotLineModel->overrideDeferredPipelineName = "OdenDotLineMesh";
     dotLineModel->overrideForwardPipelineName = "OdenDotLineMesh";
 }

@@ -24,15 +24,17 @@
 //コンストラクタ：ウィンドウハンドルを受け取って初期化
 Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fullscreen), windowed_style(static_cast<DWORD>(GetWindowLongPtrW(hwnd, GWL_STYLE)))
 {
-//#ifndef _DEBUG
+    //#ifndef _DEBUG
     fullscreenMode = true;
-//#endif
+    //#endif
     Graphics::Initialize(hwnd, fullscreenMode);
     InputSystem::Initialize();
     RenderState::Initialize();
     CoreAudio::Initialize();
     // ログ初期化
+#ifndef _DEBUG
     Logger::Initialize();
+#endif
 
 }
 
@@ -97,8 +99,10 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
     // SCENE_TRANSITION
     {
         ProfileScopedSection_2(0, "SceneUpdate", ImGuiControl::Profiler::Blue);
-        skipRendering = Scene::_update(immediateContext, deltaTime);
+       skipRendering = Scene::_update(immediateContext, deltaTime);
     }
+
+
 
 #ifdef USE_IMGUI
     ProfileNewFrame();
@@ -164,7 +168,7 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
     {
         {
             ProfileScopedSection_2(0, "Render", ImGuiControl::Profiler::Red);
-            Scene::_render(immediateContext, elapsed_time);
+            Scene::_render(immediateContext, elapsed_time);//
         }
         //gameManager->GenerateOutputAll();
     }
@@ -174,7 +178,6 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
         ImGui::PushFont(fontJP);
         ProfileScopedSection_2(0, "ImGui", ImGuiControl::Profiler::Yellow);
         Scene::_drawGUI();
-        //Logger::DrawImGui();
         ImGui::PopFont();
 
     }
@@ -207,6 +210,8 @@ bool Framework::Uninitialize()
 {
     //プロファイラ終了
     ProfileShutdown();
+    // ログ初期化
+
 
     ID3D11Device* device = Graphics::GetDevice();
 

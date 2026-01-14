@@ -42,7 +42,7 @@ public:
     }
 
     // ビート反応リストを登録する
-    void RegisterBeatReactives(const std::shared_ptr<IBeatReactive>& obj)
+    void RegisterBeatReactive(const std::shared_ptr<IBeatReactive>& obj)
     {
         beatReactives.push_back(obj);
     }

@@ -16,7 +16,7 @@
 static constexpr const char* fmt = "%Y-%m-%d__%H-%M-%S";
 
 using namespace std::chrono;
-
+#ifdef ENABLE_LOGGER
 
 const char* CategoryToString(Logger::LogCategory c)
 {
@@ -294,3 +294,5 @@ void Logger::LogThreadFunc() {
         ofs.close();
     }
 }
+
+#endif

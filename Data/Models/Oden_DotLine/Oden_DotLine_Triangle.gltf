@@ -120,12 +120,18 @@
   "images": [
     {
       "uri": "m_oden_BaseColo.png"
+    },
+    {
+      "uri": "m_oden_Opacity.png"
     }
   ],
   "materials": [
     {
       "alphaMode": "BLEND",
       "name": "m_oden",
+      "normalTexture": {
+        "index": 1
+      },
       "pbrMetallicRoughness": {
         "baseColorTexture": {
           "index": 0
@@ -190,6 +196,10 @@
     {
       "sampler": 0,
       "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
     }
   ]
 }

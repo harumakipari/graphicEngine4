@@ -60,7 +60,7 @@ void OdenOrderManager::SpawnOrderBubble(int index)
     // スロットマネージャーに吹き出しを登録する　これで吹き出しがビートに乗る
     auto slotManagerActor = GetOwnerScene()->GetActorManager()->GetActorByName("slotManager");
     auto slotManager = std::dynamic_pointer_cast<OdenSlotManager>(slotManagerActor);
-    slotManager->RegisterBeatReactives(bubble);
+    slotManager->RegisterBeatReactive(bubble);
 }
 
 // ランダムにお題を生成する

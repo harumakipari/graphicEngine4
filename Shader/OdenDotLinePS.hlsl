@@ -5,7 +5,8 @@
 
 #define BASE_COLOR_TEXTURE 0 
 #define METALLIC_ROUGHNESS_TEXTURE 1 
-#define NORMAL_TEXTURE 2 
+//#define NORMAL_TEXTURE 2 
+#define OPAQUE_TEXTURE 2 
 #define EMISSIVE_TEXTURE 3
 #define OCCLUSION_TEXTURE 4 
 Texture2D<float4> materialTextures[5] : register(t1);
@@ -28,7 +29,7 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 
     if (m.alphaMode == 2 /*BLEND*/)
     {
-        float opacity = materialOpacityTex.Sample(samplerStates[LINEAR], pin.texcoord).r;
+        float opacity = materialTextures[OPAQUE_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord).r;
         baseColorFactor.a = opacity;
     }
     float alpha_cutoff = 0.5;
@@ -90,11 +91,11 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     const int normalTexture = m.normalTexture.index;
     if (normalTexture > -1)
     {
-        float4 sampled = materialTextures[NORMAL_TEXTURE].Sample(samplerStates[LINEAR], pin.texcoord);
-        float3 normalFactor = sampled.xyz;
-        normalFactor = (normalFactor * 2.0) - 1.0;
-        normalFactor = normalize(normalFactor * float3(m.normalTexture.scale, m.normalTexture.scale, 1.0));
-        N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
+        //float4 sampled = materialTextures[NORMAL_TEXTURE].Sample(samplerStates[LINEAR], pin.texcoord);
+        //float3 normalFactor = sampled.xyz;
+        //normalFactor = (normalFactor * 2.0) - 1.0;
+        //normalFactor = normalize(normalFactor * float3(m.normalTexture.scale, m.normalTexture.scale, 1.0));
+        //N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
     }
 
   

@@ -6,7 +6,7 @@
 class SceneEffectBase
 {
 public:
-    SceneEffectBase(std::string className) :name(className) {}
+    explicit SceneEffectBase(std::string className) :name(className) {}
     virtual ~SceneEffectBase()
     {
     }

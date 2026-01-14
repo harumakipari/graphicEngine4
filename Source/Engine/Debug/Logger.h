@@ -3,8 +3,7 @@
 #include <mutex>
 #include <queue>
 #include <source_location>
-
-
+#include "LoggerConfig.h"
 
 class Logger
 {
@@ -18,6 +17,7 @@ public:
 		UI,
 		System,
 	};
+#ifdef ENABLE_LOGGER
 
 public:
 	Logger();
@@ -84,4 +84,11 @@ public:
 	inline static bool showPhysics = true;
 	inline static bool showUI = true;
 	inline static bool showSystem = true;
+#else
+	static void Initialize() {}
+	template<class... T> static void Log(T&&...) {}
+	template<class... T> static void Warning(T&&...) {}
+	template<class... T> static void Error(T&&...) {}
+	static void DrawImGui() {}
+#endif
 };

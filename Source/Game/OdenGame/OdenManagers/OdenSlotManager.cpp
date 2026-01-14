@@ -38,7 +38,7 @@ void OdenSlotManager::StartGame()
         const std::string& selectedName = "Konnyaku";
 
         // おでんの具材を生成
-        Transform downIngredientTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        Transform downIngredientTr(DirectX::XMFLOAT3{ i * 4.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
         auto ingredient = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("OdenIngredient", downIngredientTr, selectedName);
 
         // スロット生成
@@ -55,10 +55,11 @@ void OdenSlotManager::StartGame()
     for (int i = 0; i < 4; ++i)
     {
         // ランダムに名前を選択
-        const std::string& selectedName = MakeRandomIngredientName();
+        //const std::string& selectedName = MakeRandomIngredientName();
+        const std::string& selectedName = "Konnyaku";
 
         // おでんの具材を生成
-        Transform odenUpIngredient(DirectX::XMFLOAT3{ i * 4.0f,1.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        Transform odenUpIngredient(DirectX::XMFLOAT3{ i * 4.0f,0.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
         auto ingredient = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("OdenIngredient", odenUpIngredient, selectedName);
 
         // スロット生成
@@ -179,13 +180,14 @@ void OdenSlotManager::SupplyIngredientTo(const std::shared_ptr<OdenSlotActor>& s
     ingredientQueue.pop_front();
     auto actorManager = Scene::GetCurrentScene()->GetActorManager();
 
-    // ランダムに名前を選択
-    //const std::string& selectedName = MakeRandomIngredientName();
 
     // おでんの具材を生成
-    Transform ingredientTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform ingredientTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto ingredient = actorManager->CreateAndRegisterActorWithTransform<OdenIngredientActor>("OdenIngredient", ingredientTr, ingredientName);
-    ingredient->SetPosition(slot->GetPosition());
+    XMFLOAT3 slotPosition = slot->GetPosition();
+    slotPosition.y -= 1.0f;
+    ingredient->SetPosition(slotPosition);
+
     ingredient->SetCurrentSlot(slot);
     slot->SetIngredient(ingredient);
 

@@ -97,7 +97,7 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GaussianBlurVerticalPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\DeferredPS.cso</FullPath>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\DeferredLightingPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\geometricPrimitivePS.cso</FullPath>
@@ -179,6 +179,9 @@
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\LuminanceExtranctionPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\OdenDotLinePS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\OdenSoupSurfacePS.cso</FullPath>
