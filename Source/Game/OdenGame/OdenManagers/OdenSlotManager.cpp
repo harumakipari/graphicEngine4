@@ -56,7 +56,7 @@ void OdenSlotManager::StartGame()
     {
         // ƒ‰ƒ“ƒ_ƒ€‚É–¼‘O‚ğ‘I‘ğ
         //const std::string& selectedName = MakeRandomIngredientName();
-        const std::string& selectedName = "Konnyaku";
+        const std::string& selectedName = "Daikon";
 
         // ‚¨‚Å‚ñ‚Ì‹ïŞ‚ğ¶¬
         Transform odenUpIngredient(DirectX::XMFLOAT3{ i * 4.0f,0.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
