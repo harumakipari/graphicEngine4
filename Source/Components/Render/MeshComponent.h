@@ -25,6 +25,7 @@
 #include "Graphics/Resource/InterleavedGltfModel.h"
 #include "Engine/Utility/Win32Utils.h"
 #include "Game/Actors/WaterSphere/MorphModel.h"
+#include "Graphics/Resource/Texture.h"
 
 class Actor;
 
@@ -52,7 +53,7 @@ public:
     {
     }
 
-    DirectX::XMFLOAT3 GetModelSize()
+    DirectX::XMFLOAT3 GetModelSize() const
     {
         AABB aabb = model->GetAABB();
         return{ aabb.max.x - aabb.min.x,aabb.max.y - aabb.min.y,aabb.max.z - aabb.min.z };
@@ -82,6 +83,7 @@ public:
         plusAlphaCBuffer->data.cpuColor = cpuColor;
         plusAlphaCBuffer->data.emissionPower = emissionPower;
         plusAlphaCBuffer->Activate(immediateContext, 5);
+
     }
 
     virtual void DrawImGuiInspector() override
@@ -114,6 +116,7 @@ public:
 
     virtual void OnRegister() override {}
 
+
     // モデルごとに更新したいPlusAlpha 用定数バッファ
     struct PlusAlphaConstants
     {
@@ -143,6 +146,8 @@ protected:
     bool isVisible_ = true;
     // 影をつけるかどうか
     bool isCastShadow_ = true;
+
+
 
 };
 
@@ -230,6 +235,94 @@ private:
 
 };
 
+// 
+class DotLineMeshComponent :public SkeletalMeshComponent
+{
+public:
+    DotLineMeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SkeletalMeshComponent(name, owner) {}
+
+    void SetModel(const std::string& filename, bool isSaveVerticesData = false)override
+    {
+        ID3D11Device* device = Graphics::GetDevice();
+        model = std::make_shared<InterleavedGltfModel>(device, filename, InterleavedGltfModel::Mode::SkeltalMesh, isSaveVerticesData);
+        modelNodes = model->GetNodes();
+    }
+
+    void Tick(float deltaTime)override
+    {
+
+    }
+
+    void SetOpaqueTexture(const wchar_t* filename)
+    {
+        D3D11_TEXTURE2D_DESC texture2D;
+        HRESULT hr = LoadTextureFromFile(Graphics::GetDevice(), filename, opaqueTexture.GetAddressOf(), &texture2D);
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
+
+    void UpdateConstantBuffer(ID3D11DeviceContext* immediateContext) const override
+    {
+        immediateContext->PSSetShaderResources(31, 1, opaqueTexture.GetAddressOf());
+    }
+
+    void SetMaterialPS(const std::string& psFilename, const std::string& materialName) const
+    {
+        ID3D11Device* device = Graphics::GetDevice();
+        for (InterleavedGltfModel::Material& material : model->materials)
+        {
+            if (material.name == materialName)
+            {
+                HRESULT hr = CreatePsFromCSO(device, psFilename.c_str(), material.replacedPixelShader.GetAddressOf());
+                _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+            }
+        }
+    }
+
+    void RenderOpaque(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const override
+    {
+        //model->Render(immediateContext, world, model->nodes, InterleavedGltfModel::RenderPass::Opaque, pipeLineState_);
+        model->Render(immediateContext, world, modelNodes, InterleavedGltfModel::RenderPass::Opaque, pipeLineState_);
+    }
+    void RenderMask(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const override
+    {
+        //model->Render(immediateContext, world, model->nodes, InterleavedGltfModel::RenderPass::Mask, pipeLineState_);
+        model->Render(immediateContext, world, modelNodes, InterleavedGltfModel::RenderPass::Mask, pipeLineState_);
+    }
+    void RenderBlend(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const override
+    {
+        //model->Render(immediateContext, world, model->nodes, InterleavedGltfModel::RenderPass::Blend, pipeLineState_);
+        model->Render(immediateContext, world, modelNodes, InterleavedGltfModel::RenderPass::Blend, pipeLineState_);
+    }
+
+    void CastShadow(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const override
+    {
+        //model->CastShadow(immediateContext, world, model->nodes);
+        model->CastShadow(immediateContext, world, modelNodes);
+    }
+
+    DirectX::XMFLOAT3 GetJointWorldPosition(const std::string& name)
+    {
+        if (auto parent = attachParent_.lock())
+        {
+            DirectX::XMFLOAT4X4 parentWorld = parent->GetComponentWorldTransform().ToWorldTransform();
+            //return model->GetJointWorldPosition(name, model->nodes, parentWorld);
+            return model->GetJointWorldPosition(name, modelNodes, parentWorld);
+        }
+        else
+        {
+            DirectX::XMFLOAT4X4 world = GetComponentWorldTransform().ToWorldTransform();
+            //return model->GetJointWorldPosition(name, model->nodes, world);
+            return model->GetJointWorldPosition(name, modelNodes, world);
+        }
+
+        return { 0.0f,0.0f,0.0f };
+    }
+
+private:
+    // 透明度のテクスチャ
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> opaqueTexture;
+
+};
 
 class MorphMeshComponent :public MeshComponent
 {
@@ -468,6 +561,7 @@ public:
         model->CastShadow(immediateContext, world, modelNodes);
     }
 };
+
 
 
 class InstancedStaticMeshComponent :public StaticMeshComponent

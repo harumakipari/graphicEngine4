@@ -345,9 +345,18 @@ public:
         {
             hr = CreatePsFromCSO(device, "./Shader/OdenSoupSurfacePS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
+            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
             desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_NONE;
             AddPipeLineState("OdenSoupSurfaceMesh", desc);
+        }
+
+        // Oden Dot Line  —p
+        {
+            hr = CreatePsFromCSO(device, "./Shader/OdenDotLinePS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
+            desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_NONE;
+            AddPipeLineState("OdenDotLineMesh", desc);
         }
 
         // elasticBuilding forward Blend —p

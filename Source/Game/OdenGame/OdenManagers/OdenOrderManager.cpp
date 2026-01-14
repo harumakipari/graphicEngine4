@@ -14,7 +14,7 @@ void OdenOrderManager::Initialize(const Transform& transform)
     slots.clear();
 
     // ‚¨‘è‚ğ¶¬
-    for (int i = 0; i < MaxOrders + 2; i++) // ‰œ‚ÉŒ©‚¦‚é•ª
+    for (int i = 0; i < MaxOrders + arrangeOrder; i++) // ‰œ‚ÉŒ©‚¦‚é•ª
     {
         SpawnOrderBubble(i);
     }
@@ -67,7 +67,7 @@ void OdenOrderManager::SpawnOrderBubble(int index)
 OrderEntry OdenOrderManager::PickRandomOrder()
 {
     // ‚ ‚¢‚Ü‚¢‚ÈŒ`‚Ì‚¨‘è‚ÌŠ„‡
-    constexpr float shapeOrderRate = 0.6f;   // 60%
+    constexpr float shapeOrderRate = 0.8f;   // 60%
 
     float random = MathHelper::RandomRange(0.0f, 1.0f);
 
@@ -146,7 +146,7 @@ void OdenOrderManager::RearrangeBubbles()
     }
 
     // Œã‚ë‚ÉV‚µ‚¢‹q‚ğ•â[
-    while (newIndex < MaxOrders + 2) // ‰œ‚ÉŒ©‚¦‚é•ª
+    while (newIndex < MaxOrders + arrangeOrder) // ‰œ‚ÉŒ©‚¦‚é•ª
     {
         SpawnOrderBubble(newIndex);
         newIndex++;

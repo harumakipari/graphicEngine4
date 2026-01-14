@@ -9,6 +9,7 @@
 #define EMISSIVE_TEXTURE 3
 #define OCCLUSION_TEXTURE 4 
 Texture2D<float4> materialTextures[5] : register(t1);
+Texture2D materialOpacityTex : register(t31);
 
 float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 {
@@ -24,6 +25,18 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
         sampled.rgb = pow(saturate(sampled.rgb), GAMMA);
         baseColorFactor *= sampled;
     }
+
+    if (m.alphaMode == 2 /*BLEND*/)
+    {
+        float opacity = materialOpacityTex.Sample(samplerStates[LINEAR], pin.texcoord).r;
+        baseColorFactor.a = opacity;
+    }
+    float alpha_cutoff = 0.5;
+    if (baseColorFactor.a < alpha_cutoff)
+    {
+        discard;
+    }
+
 
     float3 emissiveFactor = m.emissiveFactor;
     const int emissiveTexture = m.emissiveTexture.index;

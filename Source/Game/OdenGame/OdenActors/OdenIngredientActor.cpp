@@ -27,11 +27,6 @@ void OdenIngredientActor::Update(float deltaTime)
     // イージングコンポーネントの更新
     easingRunner->Tick(deltaTime);
 
-    // おでんを回転させる
-    //ingredientModel->SetRelativeEulerRotationDirect(odenIngredientAngleDegree);
-    //ingredientModel->SetRelativeRotationDirect(visualOrientation);
-
-
     // 位置を取得
     DirectX::XMFLOAT3 position = GetPosition();
 
@@ -205,6 +200,7 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
         Logger::Error(U8("おでんの具材の名前のEOdenTypeが登録されていません！"));
         ingredientType = EOdenType::None; // たとえばデフォルト
     }
+
     // 食材の面に対応する形を登録
     auto it = OdenGameParameter::odenTypeShapes.find(ingredientName);
     if (it != OdenGameParameter::odenTypeShapes.end())
@@ -220,8 +216,14 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
     // 値段を設定する
     price = ingredientPriceTable[ingredientType];
 
-    //
-
+    // 点線のモデルを追加
+    dotLineModel = AddComponent<DotLineMeshComponent>("dotLineModel", parentName);
+    dotLineModel->SetRelativeLocationDirect({ 0.0f,0.001f,0.0f });
+    std::string modelDotLineFileName = "./Data/Models/Oden_DotLine/Oden_DotLine_Triangle.gltf";
+    dotLineModel->SetModel(modelDotLineFileName.c_str());
+    dotLineModel->SetOpaqueTexture(L"./Data/Models/Oden_DotLine/m_oden_Opacity.png");
+    dotLineModel->overrideDeferredPipelineName = "OdenDotLineMesh";
+    dotLineModel->overrideForwardPipelineName = "OdenDotLineMesh";
 }
 
 // ドラック開始処理
@@ -474,4 +476,8 @@ void OdenIngredientActor::StartRotationAnim(const ERotateType rotateType)
 
 }
 
+// お題出現時の動き
+void OdenIngredientActor::AppearIngredient()
+{
 
+}

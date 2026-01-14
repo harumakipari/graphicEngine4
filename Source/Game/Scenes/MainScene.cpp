@@ -151,15 +151,15 @@ void MainScene::Start()
     audioPotBgmComponent->SetVolume(2.5f);
     audioPotBgmComponent->Play();
 
-#if 0
+#if 1
     // デバック時に使用
     // おでんのダイコンを生成
     Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Chikuwa", daikonTr, "Chikuwa");
+    auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Chikuwa", daikonTr, "Konnyaku");
 
     // おでんのこんにゃくを生成
     Transform konnyakuTr(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenKonnyaku = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Egg", konnyakuTr, "Egg");
+    auto odenKonnyaku = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Egg", konnyakuTr, "Konnyaku");
 
     // おでんの枠を生成
     Transform odenSlotTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -195,7 +195,7 @@ void MainScene::Start()
 
 #endif // 0
 
-#if 0
+#if 1
     // デバック時に使用
     // お題を生成
     Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });

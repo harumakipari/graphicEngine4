@@ -17,6 +17,7 @@ void OdenStoreActor::Initialize(const Transform& transform)
     storeModelComponent = AddComponent<StaticMeshComponent>("Oden_Store_Model", parentName);
     storeModelComponent->SetModel("./Data/Models/Oden_Store/Oden_frame.gltf", false);
     storeModelComponent->SetRelativeScaleDirect({ -1.0f,1.0f,-1.0f });
+    storeModelComponent->SetRelativeLocationDirect({ 6.0f,0.0f,2.0f });
 }
 
 

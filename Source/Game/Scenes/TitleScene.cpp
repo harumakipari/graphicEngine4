@@ -41,10 +41,8 @@ void TitleScene::Start()
     audioComp->SetLoop(true);
     audioComp->Play();
 
-
     // ƒV[ƒ“‚ªØ‚è‘Ö‚í‚Á‚½Žž‚É
     SceneTransitionManager::Instance().NotifySceneChanged();
-
 }
 
 void TitleScene::Update(float deltaTime)
@@ -54,14 +52,6 @@ void TitleScene::Update(float deltaTime)
     Physics::Instance().Update(Time::UnscaledDeltaTime());
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
-
-    //#ifdef _DEBUG
-    if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
-    {
-        const char* types[] = { "0", "1" };
-        Scene::_transition("LoadingScene", { std::make_pair("preload", "PuddingGameScene"), std::make_pair("type", types[rand() % 2]) });
-    }
-    //#endif // !_DEBUG
 }
 
 void TitleScene::SetUpActors()
@@ -85,9 +75,6 @@ void TitleScene::SetUpActors()
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
     cameraManager->SetDebugCamera(debugCameraActor);
 #endif // !_DEBUG
-
-
-
 }
 
 void TitleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)

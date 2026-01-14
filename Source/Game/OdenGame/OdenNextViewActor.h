@@ -2,8 +2,6 @@
 #include "Core/Actor.h"
 #include "UI/Widgets/Widget.h"
 
-
-
 // 　
 // 　次の食材の表示
 //

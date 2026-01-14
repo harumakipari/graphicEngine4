@@ -148,9 +148,13 @@ private:
 
     // 回転を始める
     void StartRotationAnim(ERotateType rotateType);
+
+    // お題出現時の動き
+    void AppearIngredient();
 protected:
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
     std::shared_ptr<BoxComponent> boxComponent; // レイキャスト判定するもの
+    std::shared_ptr<DotLineMeshComponent> dotLineModel; // 点線のモデル
 
     //DirectX::XMFLOAT3 odenIngredientAngleDegree = { 0.0f,0.0f,0.0f };
     // 姿勢　

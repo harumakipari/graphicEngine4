@@ -43,7 +43,7 @@ void OdenNextViewActor::Initialize(const Transform& transform)
 
         // ˆÊ’u‚ÍŒÅ’è‚ÅOK
         ui->SetWorldPosition({
-            1600.0f,
+            1800.0f,
             200.0f + i * 80.0f
             });
 
