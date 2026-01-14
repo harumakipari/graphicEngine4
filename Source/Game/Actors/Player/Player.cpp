@@ -419,14 +419,6 @@ void Player::TryStartCharge()
         DirectX::XMFLOAT3 pos = skeletalMeshComponent->GetJointWorldPosition("beam_FK");
 
         // エフェクトコンポーネントに伝達
-        effectChargeComponent->SetWorldLocationDirect(pos);
-        effectChargeComponent->SetEffectType(EffectComponent::EffectType::BeamCharge);
-        effectChargeComponent->SetEffectPower(itemCount);
-        DirectX::XMFLOAT3 dir = GetForward();
-        effectChargeComponent->SetEffectForward(dir);
-        //effectChargeComponent->SetEffectDuration(1.5f);
-        effectChargeComponent->Activate();
-        state = State::StartCharge;
     }
 }
 
@@ -461,7 +453,6 @@ void Player::FireBeam()
         OutputDebugStringA(buf);
         // Beam を生成する
         HasItemReset();
-        effectChargeComponent->Deactivate();
     }
 }
 

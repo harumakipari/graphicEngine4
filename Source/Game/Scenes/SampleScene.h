@@ -9,7 +9,6 @@
 #include "Core/ActorManager.h"
 #include "Engine/Scene/SceneBase.h"
 
-#include "Graphics/Effect/EffectSystem.h"
 
 #include "Graphics/Renderer/SceneRenderer.h"
 

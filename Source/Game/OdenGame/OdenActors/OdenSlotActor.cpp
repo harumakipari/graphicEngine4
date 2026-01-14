@@ -23,14 +23,14 @@ void OdenSlotActor::Initialize(const Transform& transform)
 
     // 湯気のコンポーネントを追加
     particleComponent = this->AddComponent<class ParticleComponent>("particleComponent", parentName);
-    particleComponent->Load("./Data/Effect/Files/SteamEffect.json");
-    particleComponent->SetRelativeLocationDirect({ 0.0f,0.5f,0.0f });
+    particleComponent->Load("./Data/Effect/Files/SteamEffect2.json");
+    particleComponent->SetRelativeLocationDirect({ 0.0f,1.5f,0.0f });
 
     // ループ再生設定
     ParticleComponent::AddSettings settings
     {
         .loop = true, // ループ再生
-        .startDelay = 0.5f // 再生開始遅延時間
+        //.startDelay = 0.5f // 再生開始遅延時間
     };
     particleComponent->SetAddSettings(settings);
     particleComponent->Play();

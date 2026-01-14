@@ -179,10 +179,9 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
         ProfileScopedSection_2(0, "ImGui", ImGuiControl::Profiler::Yellow);
         Scene::_drawGUI();
         ImGui::PopFont();
-
+        
     }
     ImGui::Begin("ImGUI");
-
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 #if 1
     ImGui::Text("Video memory usage %d MB", Graphics::VideoMemoryUsage());

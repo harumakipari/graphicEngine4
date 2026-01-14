@@ -9,7 +9,6 @@
 
 #include "Components/CollisionShape/ShapeComponent.h"
 #include "Components/Render/MeshComponent.h"
-#include "Components/Effect/EffectComponent.h"
 
 #include "Engine/Camera/CameraConstants.h"
 

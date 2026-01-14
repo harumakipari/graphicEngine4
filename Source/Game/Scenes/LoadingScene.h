@@ -17,7 +17,6 @@
 #include "Graphics/Environment/SkyMap.h"
 #include "Graphics/Shadow/CascadeShadowMap.h"
 #include "Graphics/PostProcess/MultipleRenderTargets.h"
-#include "Graphics/Effect/EffectSystem.h"
 
 #include "Core/Actor.h"
 #include "Core/ActorManager.h"

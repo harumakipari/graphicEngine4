@@ -444,7 +444,7 @@ void CoreComputeParticleSystem::Render(ID3D11DeviceContext* immediateContext)
     immediateContext->CSSetShaderResources(0, 2, clearShaderResourceViews);
 }
 
-void CoreComputeParticleSystem::DrawGUI()
+void CoreComputeParticleSystem::DrawGUI() const
 {
 #ifdef USE_IMGUI
     ImGui::Text("EmitParticles:%d", numEmitParticles);

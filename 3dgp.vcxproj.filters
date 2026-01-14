@@ -327,19 +327,10 @@
     <ClCompile Include="Source\Components\CollisionShape\CollisionComponent.cpp">
       <Filter>Sources\Components\CollisionShape</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Components\Effect\EffectComponent.cpp">
-      <Filter>Sources\Components\Effect</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Components\Game\LifeTimeComponent.cpp">
       <Filter>Sources\Components\Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\Effect\HuskParticle.cpp">
-      <Filter>Sources\Graphics\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\Effect\ComputeParticleSystem.cpp">
-      <Filter>Sources\Graphics\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\Effect\EffectSystem.cpp">
       <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\Resource\ShaderToy.cpp">
@@ -779,12 +770,6 @@
     <ClInclude Include="Source\Game\Actors\Camera\Camera.h">
       <Filter>Sources\Game\Actors\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Components\Effect\EffectComponent.h">
-      <Filter>Sources\Components\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\Effect\EffectSystem.h">
-      <Filter>Sources\Graphics\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Graphics\Resource\ModelResource.h">
       <Filter>Sources\Graphics\Resource</Filter>
     </ClInclude>
@@ -798,9 +783,6 @@
       <Filter>Sources\Graphics\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Effect\HuskParticle.h">
-      <Filter>Sources\Graphics\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\Effect\ComputeParticleSystem.h">
       <Filter>Sources\Graphics\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Source\Components\Game\TimerActionComponent.h">
@@ -937,6 +919,7 @@
     <ClInclude Include="Source\Game\Scenes\TitleScene.h" />
     <ClInclude Include="Source\Game\OdenGame\BeatClockActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\BeatReactive.h" />
+    <ClInclude Include="Source\Engine\Debug\LoggerConfig.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

@@ -101,7 +101,7 @@ public:
 	void Update(ID3D11DeviceContext* immediateContext, float deltaTime);
 	void Render(ID3D11DeviceContext* immediateContext);
 
-	void DrawGUI();
+	void DrawGUI() const;
 
 private:
 	UINT numParticles;//パーティクル総数

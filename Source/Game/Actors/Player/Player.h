@@ -7,7 +7,6 @@
 
 #include "Components/Controller/ControllerComponent.h"
 #include "Components/Render/MeshComponent.h"
-#include "Components/Effect/EffectComponent.h"
 
 #include "Core/ActorManager.h"
 #include "Components/Effect/ParticleComponent.h"
@@ -64,7 +63,6 @@ public:
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
     void Initialize(const Transform& transform)override;
     std::shared_ptr<ParticleComponent> particleComponent;
-    std::shared_ptr<EffectComponent> effectChargeComponent;
     std::shared_ptr<InputComponent> inputComponent;
     std::shared_ptr<RotationComponent> rotationComponent;
     //std::shared_ptr<MovementComponent> movementComponent;

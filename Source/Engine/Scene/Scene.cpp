@@ -3,6 +3,7 @@
 
 #include <chrono>
 
+#include "Engine/Effects/EffectManager.h"
 #include "Graphics/Resource/Texture.h"
 #include "UI/Game/SceneTransitionManager.h"
 
@@ -23,6 +24,7 @@ bool Scene::_update(ID3D11DeviceContext* immediateContext, float deltaTime)
         // Direct3D11 のデバイスオブジェクトを取得
         Microsoft::WRL::ComPtr<ID3D11Device> device;
         immediateContext->GetDevice(device.GetAddressOf());
+
 
         // 現在のシーンを「終了処理中」に変更
         _current_scene->State(SCENE_STATE::uninitializing);

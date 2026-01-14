@@ -255,7 +255,6 @@
     <ClCompile Include="Source\Components\CollisionShape\ShapeComponent.cpp" />
     <ClCompile Include="Source\Components\Controller\ControllerComponent.cpp" />
     <ClCompile Include="Source\Components\Easing\CoreEasingComponent.cpp" />
-    <ClCompile Include="Source\Components\Effect\EffectComponent.cpp" />
     <ClCompile Include="Source\Components\Effect\ParticleComponent.cpp" />
     <ClCompile Include="Source\Components\Elastic\ElasticComponent.cpp" />
     <ClCompile Include="Source\Components\Game\LifeTimeComponent.cpp" />
@@ -319,8 +318,6 @@
     <ClCompile Include="Source\Graphics\Core\LightManager.cpp" />
     <ClCompile Include="Source\Graphics\Core\RenderState.cpp" />
     <ClCompile Include="Source\Graphics\Core\Shader.cpp" />
-    <ClCompile Include="Source\Graphics\Effect\ComputeParticleSystem.cpp" />
-    <ClCompile Include="Source\Graphics\Effect\EffectSystem.cpp" />
     <ClCompile Include="Source\Graphics\Effect\HuskParticle.cpp" />
     <ClCompile Include="Source\Graphics\Effect\Particles.cpp" />
     <ClCompile Include="Source\Graphics\Environment\SkyMap.cpp" />
@@ -388,7 +385,6 @@
     <ClInclude Include="Source\Components\CollisionShape\StaticMeshCollisionComponent.h" />
     <ClInclude Include="Source\Components\Controller\ControllerComponent.h" />
     <ClInclude Include="Source\Components\Easing\CoreEasingComponent.h" />
-    <ClInclude Include="Source\Components\Effect\EffectComponent.h" />
     <ClInclude Include="Source\Components\Effect\ParticleComponent.h" />
     <ClInclude Include="Source\Components\Elastic\ElasticComponent.h" />
     <ClInclude Include="Source\Components\Game\LifeTimeComponent.h" />
@@ -489,8 +485,6 @@
     <ClInclude Include="Source\Graphics\Core\RenderState.h" />
     <ClInclude Include="Source\Graphics\Core\SceneRenderContext.h" />
     <ClInclude Include="Source\Graphics\Core\Shader.h" />
-    <ClInclude Include="Source\Graphics\Effect\ComputeParticleSystem.h" />
-    <ClInclude Include="Source\Graphics\Effect\EffectSystem.h" />
     <ClInclude Include="Source\Graphics\Effect\HuskParticle.h" />
     <ClInclude Include="Source\Graphics\Effect\Particles.h" />
     <ClInclude Include="Source\Graphics\Environment\SkyMap.h" />

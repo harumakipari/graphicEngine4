@@ -20,12 +20,6 @@ void Renderer::RenderParticle(ID3D11DeviceContext* immediateContext)
             continue;
         }
 
-        std::vector<EffectComponent*> effectComponents;
-        actor->GetComponents<EffectComponent>(effectComponents);
-
-        for (const EffectComponent* effectComponent : effectComponents)
-        {
-        }
     }
 }
 

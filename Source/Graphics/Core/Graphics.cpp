@@ -113,7 +113,7 @@ void Graphics::SetRenderTargets()
 // 画面表示
 void Graphics::Present(UINT syncInterval)
 {
-    swapChain->Present(syncInterval, 0);// フレームをスクリーンに表示
+    swapChain->Present(syncInterval, DXGI_PRESENT_ALLOW_TEARING);// フレームをスクリーンに表示
 }
 
 

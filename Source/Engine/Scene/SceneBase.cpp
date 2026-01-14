@@ -561,6 +561,9 @@ void SceneBase::Draw(ID3D11DeviceContext* immediateContext)
 bool SceneBase::Uninitialize(ID3D11Device* device)
 {
     uiManager->Clear();
+    // エフェクトを全停止
+    EffectManager::StopAll();
+
     return true;
 }
 

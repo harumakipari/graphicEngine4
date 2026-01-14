@@ -7,6 +7,7 @@
 #include "Widgets/Utils/Dialog.h"
 #include "Engine/Utility/JsonUtils.h"
 #include "Graphics/Resource/Texture.h"
+#include "Math/MathHelper.h"
 
 void EffectManager::ClearAll()
 {
@@ -625,7 +626,8 @@ void EffectManager::ApplyShapeEmitterSettings(const EmitterShapeData& s, CoreCom
 float EffectManager::Random(float min, float max)
 {
 	// min‚©‚çmax‚Ü‚Å‚Ìƒ‰ƒ“ƒ_ƒ€‚È•‚“®¬”“_”‚ğ¶¬
-	return min + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (max - min)));
+	//return min + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (max - min)));
+	return MathHelper::RandomRange(min, max);
 }
 
 Vector3 EffectManager::RandomBoxPosition(const Vector3& size)
