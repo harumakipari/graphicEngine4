@@ -46,6 +46,7 @@ void SSREffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourc
 void SSREffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
+    ImGui::Checkbox("enable", &enabled);
     ImGui::SliderFloat("Reflection Intensity", &reflectionIntensity, 0.0f, 1.0f);
     ImGui::SliderFloat("Max Distance", &maxDistance, 0.0f, 30.0f);
     ImGui::SliderFloat("Resolution", &resolution, 0.0f, 1.0f);

@@ -63,6 +63,7 @@ void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourc
 void FogEffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
+    ImGui::Checkbox("enable", &enabled);
     ImGui::ColorEdit3("Fog Color", fogCBuffer->data.fogColor);
     ImGui::SliderFloat("Intensity", &(fogCBuffer->data.fogColor[3]), 0.0f, 10.0f);
     ImGui::SliderFloat("Density", &fogCBuffer->data.fogDensity, 0.0f, 0.05f, "%.6f");

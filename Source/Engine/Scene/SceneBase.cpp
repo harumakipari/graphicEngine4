@@ -33,6 +33,7 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         lightManager->SetDirectionalLight(lightDirection, lightColor);
     }
 
+#if 1
     // ポストエフェクト
     {
         //if (!postEffectManager.get())
@@ -57,6 +58,8 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         }
     }
 
+#endif // 0
+
     HRESULT hr = { S_OK };
 
     //スカイマップ
@@ -75,8 +78,8 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = CreatePsFromCSO(device, "./Shader/DeferredLightingPS.cso", deferredPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    //hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
-    hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
+    //hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //CascadedShadowMaps
@@ -439,11 +442,11 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
         immediateContext->PSSetShaderResources(25, 1, sceneColorSRV.GetAddressOf());
     }
 
-
+#if 1
     postEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get());
     sceneEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get(), gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
         gBufferRenderTarget->depthStencilShaderResourceView, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)], cascadedShadowMaps->depthMap().Get());
-
+#endif
 
     // フォーワードの透明描画
     frameBuffer->Activate(immediateContext, gBufferRenderTarget->depthStencilView);
@@ -518,7 +521,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
         ID3D11ShaderResourceView* shader_resource_views[]
         {
-            //   gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],   // colorMap
+             //  gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],   // colorMap
               frameBuffer->shaderResourceViews[0].Get(),//colorMap
                gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
                gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
@@ -550,9 +553,6 @@ void SceneBase::Draw(ID3D11DeviceContext* immediateContext)
         // フォントを表示
         uiManager->DrawFont(immediateContext);
 
-        RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
 
         ExecuteHooks(RenderPass::UI, immediateContext);
     }

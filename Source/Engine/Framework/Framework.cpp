@@ -32,7 +32,7 @@ Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fu
     RenderState::Initialize();
     CoreAudio::Initialize();
     // ログ初期化
-#ifndef _DEBUG
+#ifdef _DEBUG
     Logger::Initialize();
 #endif
 
@@ -210,8 +210,6 @@ bool Framework::Uninitialize()
 {
     //プロファイラ終了
     ProfileShutdown();
-    // ログ初期化
-
 
     ID3D11Device* device = Graphics::GetDevice();
 

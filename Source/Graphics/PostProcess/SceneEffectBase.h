@@ -22,6 +22,9 @@ public:
     // UI Т▓Ро (ImGui)
     virtual void DrawDebugUI() {}
 
+    bool IsEnabled() const { return enabled; }
+protected:
+    bool enabled = true;
 private:
     std::string name;
 };

@@ -6,6 +6,7 @@
 //#include "Logger.h"
 #include "Engine/Debug/Assert.h"
 #include "Graphics/Core/Graphics.h"
+#include "Graphics/Core/RenderState.h"
 
 Font::Font(ID3D11Device* device, const char* filename, int maxSpriteCount)
 {
@@ -577,6 +578,9 @@ void Font::End(ID3D11DeviceContext* context)
     context->OMSetDepthStencilState(depthStencilState.Get(), 0);
     context->RSSetState(rasterizerState.Get());
     context->PSSetSamplers(0, 1, samplerState.GetAddressOf());
+    RenderState::BindBlendState(Graphics::GetDeviceContext(), BLEND_STATE::ALPHA);
+    RenderState::BindRasterizerState(Graphics::GetDeviceContext(), RASTERRIZER_STATE::SOLID_CULL_NONE);
+    RenderState::BindDepthStencilState(Graphics::GetDeviceContext(), DEPTH_STATE::ZT_OFF_ZW_OFF);
 
     // 頂点バッファ設定
     UINT stride = sizeof(Vertex);

@@ -92,6 +92,7 @@ void SSAOEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResour
 void SSAOEffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
+    ImGui::Checkbox("enable", &enabled);
     ImGui::SliderFloat("radius", &radius, 0.0f, +1.0f);
     ImGui::SliderFloat("bias", &bias, 0.0f, +1.0f);
     ImGui::SliderFloat("power", &power, 0.0f, +1.0f);

@@ -18,8 +18,11 @@ void OdenUIScoreViewActor::Update(float elapsedTime)
     {
         if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
         {
-            scoreTextUi->SetText(L"Score : " + std::to_wstring(static_cast<int>(gameManager->GetTotalScore())));
+            scoreTextUi->SetText(L"Score:" + std::to_wstring(static_cast<int>(gameManager->GetTotalScore())));
         }
+
+        //scoreTextUi->SetText(L"Ç†Ç¢Ç§Ç¶Ç®Ç®\n");
+        //scoreTextUi->SetText(L"sss\nÇ†Ç¢Ç§Ç¶Ç®Ç©Ç≠Ç≠ÇØ\nGreatÅI");
     }
 }
 

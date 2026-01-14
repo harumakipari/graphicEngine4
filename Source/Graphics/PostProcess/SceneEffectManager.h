@@ -20,7 +20,8 @@ public:
     {
         for (auto& effect : effects | std::views::values)
         {
-            effect->Apply(immediateContext, gbufferColor, gbufferNormal, gbufferDepth, gBufferPosition, shadowMap);
+            if (effect->IsEnabled())
+                effect->Apply(immediateContext, gbufferColor, gbufferNormal, gbufferDepth, gBufferPosition, shadowMap);
         }
     }
 

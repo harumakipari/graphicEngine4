@@ -46,6 +46,6 @@ private:
     float reflectionIntensity = 0.1f;
     float maxDistance = 15.0f;
     float resolution = 0.3f;
-    int steps = 10;
+    int steps = 5;
     float thickness = 0.5f;
 };
