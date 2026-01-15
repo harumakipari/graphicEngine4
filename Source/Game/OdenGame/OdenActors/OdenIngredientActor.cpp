@@ -199,11 +199,11 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
     boxComponent = AddComponent<BoxComponent>("boxComponent", parentName);
     DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
     //boxComponent->SetBoxExtent({ size.x * 1.2f,size.y * 1.2f,size.z * 1.2f });
-    boxComponent->SetBoxExtent({2.5f, 1.5f, 2.5f});
+    boxComponent->SetBoxExtent({ 2.5f, 1.5f, 2.5f });
     boxComponent->SetMass(40.0f);
     boxComponent->SetLayer(CollisionLayer::Oden);
     boxComponent->Initialize();
-   
+
     // 食材の種類を登録
     auto maybeEnum = magic_enum::enum_cast<EOdenType>(ingredientName);
     if (maybeEnum.has_value())
@@ -231,13 +231,59 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
     // 値段を設定する
     price = ingredientPriceTable[ingredientType];
 
-    // 点線のモデルを追加
-    dotLineModel = AddComponent<DotLineMeshComponent>("dotLineModel", parentName);
-    dotLineModel->SetRelativeLocationDirect({ 0.0f,0.001f,0.0f });
-    std::string modelDotLineFileName = "./Data/Models/Oden_DotLine/Oden_DotLine_Triangle.gltf";
-    dotLineModel->SetModel(modelDotLineFileName.c_str());
-    dotLineModel->overrideDeferredPipelineName = "OdenDotLineMesh";
-    dotLineModel->overrideForwardPipelineName = "OdenDotLineMesh";
+#if 0
+    struct FaceTransform
+    {
+        DirectX::XMFLOAT3 localOffset;
+        DirectX::XMFLOAT3 localEuler; // 面の法線方向を向く回転
+    };
+
+    float halfX = size.x + 0.001f;
+    float halfY = size.y + 0.001f;
+    float halfZ = size.z + 0.001f;
+
+    // 点線のモデルを置く場所と角度を設定する
+    std::unordered_map<EOdenFace, FaceTransform> faceTransformTable =
+    {
+        { EOdenFace::Front,  {{ 0, 0, -halfZ }, { -90,   0, 0 }} },
+        { EOdenFace::Back,   {{ 0, 0,  halfZ }, { 90, 0, 0 }} },
+
+        { EOdenFace::Left,   {{ -halfX, 0, 0 }, { 0, 0, 90 }} },
+        { EOdenFace::Right,  {{  halfX, 0, 0 }, { 0,  0, -90 }} },
+
+        { EOdenFace::Top,    {{ 0,  halfY, 0 }, { 0, 0, 0 }} },
+        { EOdenFace::Bottom, {{ 0, -halfY, 0 }, {  0, 0, 180 }} },
+    };
+
+    for (auto& [face, shapeData] : faceShapeTable.faceShapes)
+    {
+        if (face != EOdenFace::Top)
+        {
+            continue;
+        }
+
+        auto dot = AddComponent<DotLineMeshComponent>("dotLine_" + std::to_string(static_cast<int>(face)), parentName);
+
+        const FaceTransform& ft = faceTransformTable[face];
+        //dot->SetRelativeLocationDirect(ft.localOffset);
+        dot->SetRelativeEulerRotationDirect(ft.localEuler);
+
+        std::string shapeName = GetDotLineModelPath(shapeData);
+        std::string modelDotLineFileName = "./Data/Models/Oden_DotLine/" + shapeName;
+
+        dot->SetModel(modelDotLineFileName);
+        dot->SetIsCastShadow(false);
+    }
+
+#endif // 0
+
+    // 点線のモデルを追加 食材の子供とする。
+    //dotLineModel = AddComponent<DotLineMeshComponent>("dotLineModel", parentName);
+    //dotLineModel->SetRelativeLocationDirect({ 0.0f,0.001f,0.0f });
+    //std::string modelDotLineFileName = "./Data/Models/Oden_DotLine/Oden_DotLine_Triangle.gltf";
+    //dotLineModel->SetModel(modelDotLineFileName.c_str());
+    //dotLineModel->overrideDeferredPipelineName = "OdenDotLineMesh";
+    //dotLineModel->overrideForwardPipelineName = "OdenDotLineMesh";
 }
 
 // ドラック開始処理
@@ -494,4 +540,27 @@ void OdenIngredientActor::StartRotationAnim(const ERotateType rotateType)
 void OdenIngredientActor::AppearIngredient()
 {
 
+}
+
+// 点線のモデルパスを取得する関数
+std::string OdenIngredientActor::GetDotLineModelPath(const OdenShapeData shapeData)
+{
+    std::string modelPath;
+    switch (shapeData.category)
+    {
+    case EOdenShapeCategory::TriangleLike:
+        modelPath = "Oden_DotLine_Triangle.gltf";
+        break;
+
+    case EOdenShapeCategory::RoundLike:
+        modelPath = "Oden_DotLine_Circle.gltf";
+        break;
+
+    case EOdenShapeCategory::SquareLike:
+        modelPath = "Oden_DotLine_Rect.gltf";
+        break;
+    default:;
+    }
+
+    return modelPath;
 }

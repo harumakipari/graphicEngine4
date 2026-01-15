@@ -140,7 +140,7 @@ void MainScene::Start()
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
-    audioBgmComponent->SetSource(L"./Data/Sound/BGM/title.wav");
+    audioBgmComponent->SetSource(L"./Data/Sound/BGM/game.wav");
     audioBgmComponent->SetLoop(true);
     audioBgmComponent->SetVolume(0.8f);
     audioBgmComponent->Play();
@@ -152,10 +152,11 @@ void MainScene::Start()
     audioPotBgmComponent->Play();
 
 #if 0
+
     // デバック時に使用
     // おでんのダイコンを生成
     Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Chikuwa", daikonTr, "Daikon");
+    auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Chikuwa", daikonTr, "Konnyaku");
 
     // おでんのこんにゃくを生成
     Transform konnyakuTr(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });

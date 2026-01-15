@@ -68,6 +68,12 @@ public:
         // OrderManager を止める
     }
 
+    // 満足度加算
+    void AddSatisfaction(const float value)
+    {
+        satisfaction = std::clamp(satisfaction + value, 0.0f, 100.0f);
+    }
+
     // 提出ログを追加
     void AddSubmitLog(EOdenType type, float score);
 
@@ -91,4 +97,6 @@ private:
 
     std::vector<OdenSubmitLog> submitLogs; // 時系列（伝票）
     std::unordered_map<EOdenType, int> ingredientCount; // 集計
+
+    float satisfaction = 0.0f;  // 満足度
 };

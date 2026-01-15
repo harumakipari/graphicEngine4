@@ -1,4 +1,5 @@
 #pragma once
+#include "Components/Effect/ParticleComponent.h"
 #include "Core/Actor.h"
 #include "Game/OdenGame/OdenData/OdenDataStruct.h"
 #include "Game/OdenGame/OdenActors/BeatReactive.h"
@@ -8,9 +9,14 @@
 enum class EScore :uint8_t
 {
     Perfect,
-    Great,
     Good,
     Fail,
+};
+
+struct OdenResult
+{
+    float price = 0.0f;
+    float satisfaction = 0.0f;
 };
 
 class OdenIngredientActor;
@@ -29,6 +35,7 @@ public:
         LeavingLeft,    // 左に退場
         QueuingMove     // 列の詰め動作中
     };
+
 
 public:
     explicit OdenBubbleActor(const std::string& actorName) :Actor(actorName) {}
@@ -82,20 +89,26 @@ public:
         return submittedIngredientType;
     }
 private:
+    // マッチ率をスコアに変換する
+    EScore JudgeScoreFromRate(float matchRate) const;
+
     // 判定を判定する
     float JudgeMatchShapeRate(const OdenIngredientActor& ingredient);
 
+    // 元々の売り上げ
+    float CalculateSales(const OdenIngredientActor& ingredient, EScore score);
+
+    // 満足度の計算
+    float GetSatisfactionValue(EScore score) const;
+
     // 形からスコアを判定する
     float JudgeShapeScore(const OdenShapeData& shape) const;
-
-    // 値段と合わせたスコアを計算する
-    float CalculateOrderScore(const OdenIngredientActor& ingredient, float matchRate, float multiplier);
 
     // ターゲットへ同じ速度で移動する関数
     bool MoveTowards(const XMFLOAT3& target, float speed, float deltaTime);
 
 public:
-    std::function<void(OdenBubbleActor&, float score)> onCompleted;     // コールバック関数
+    std::function<void(OdenBubbleActor&, OdenResult score)> onCompleted;     // コールバック関数
 
 private:
     std::shared_ptr<UIImageComponent> orderUi; // オーダーの吹き出し
@@ -119,4 +132,6 @@ private:
     DirectX::XMFLOAT3 leaveFinalPos; // 最終的に消える位置
 
     EOdenType submittedIngredientType = EOdenType::None;// 実際に提出された食材の種類
+
+    std::shared_ptr<ParticleComponent> particleComponent;   // 星のエフェクト
 };

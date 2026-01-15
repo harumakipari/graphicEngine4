@@ -30,6 +30,12 @@ void OdenBubbleActor::Initialize(const Transform& transform)
 
 #endif // 0
     state = EBubbleState::Waiting;
+
+    // 星のコンポーネントを追加
+    particleComponent = this->AddComponent<class ParticleComponent>("particleComponent", parentName);
+    particleComponent->Load("./Data/Effect/Files/starEffect.json");
+    particleComponent->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
+
 }
 
 void OdenBubbleActor::Finalize()
@@ -222,29 +228,42 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
     if (state != EBubbleState::Waiting) // 状態が待機じゃなかったら
         return;
 
-    // スコアを計算する
-    float mathcRate = JudgeMatchShapeRate(ingredient);
+    // エフェクトを出す
+    particleComponent->Play();
 
-    float score = CalculateOrderScore(ingredient, mathcRate, 1.0f); // 今は 1.0fだけど、倍率で変える
+    // スコアを計算する
+    float matchRate = JudgeMatchShapeRate(ingredient);
+    EScore score = JudgeScoreFromRate(matchRate);
+
+    float sales = CalculateSales(ingredient, score);
+    float satisfaction = GetSatisfactionValue(score);
 
     // 状態を去るに変更
     state = EBubbleState::LeavingBack;
 
     if (onCompleted)
     {// 提出した後に
-        onCompleted(*this, score);
+        onCompleted(*this, { sales,satisfaction });
     }
     else
     {
         Logger::Warning(U8("提出した時のスコアができていない！"));
     }
 
+    // 表示系
     if (scorePopupUi)
     {
-        // スコアを表示
-        scorePopupUi->Play(L"+" + std::to_wstring(static_cast<int>(score)));
+        if (score == EScore::Perfect)
+            scorePopupUi->Play(L"Perfect!");
+        else if (score == EScore::Good)
+            scorePopupUi->Play(L"Good!");
+        else
+            scorePopupUi->Play(L"Fail");
+
         scorePopupUi->SetVisible(true);
     }
+
+
 }
 
 // 毎フレーム呼ばれる (0 ~ 1)
@@ -257,6 +276,17 @@ void OdenBubbleActor::OnBeatPhase(float phase)
         orderUi->SetScale({ scale, scale });
 }
 
+
+EScore OdenBubbleActor::JudgeScoreFromRate(const float matchRate) const
+{
+    if (matchRate >= 100.0f)
+        return EScore::Perfect;
+
+    if (matchRate <= 0.0f)
+        return EScore::Fail;
+
+    return EScore::Good;
+}
 
 float OdenBubbleActor::JudgeMatchShapeRate(const OdenIngredientActor& ingredient)
 {
@@ -292,7 +322,26 @@ float OdenBubbleActor::JudgeMatchShapeRate(const OdenIngredientActor& ingredient
     return 0.0f;
 }
 
-#if 1
+float OdenBubbleActor::CalculateSales(const OdenIngredientActor& ingredient, const EScore score)
+{
+    if (score == EScore::Fail)
+        return 0.0f;
+
+    return ingredient.GetPrice();
+}
+
+// 満足度の計算
+float OdenBubbleActor::GetSatisfactionValue(EScore score) const
+{
+    switch (score)
+    {
+    case EScore::Perfect: return 1.0f; // 大きく増える
+    case EScore::Good:    return 0.4f; // 少し増える
+    case EScore::Fail:    return 0.0f; // 増えない or 減らす
+    }
+    return 0.0f;
+}
+
 float OdenBubbleActor::JudgeShapeScore(const OdenShapeData& shape) const
 {
     if (shape.category != orderData.requiredCategory)
@@ -320,56 +369,6 @@ float OdenBubbleActor::JudgeShapeScore(const OdenShapeData& shape) const
     matchRate = std::clamp(matchRate, 0.0f, 1.0f);
 
     return matchRate * 100.0f;
-}
-#else
-EScore OdenBubbleActor::JudgeShapeScore(const OdenShapeData& shape) const
-{
-    // カテゴリが違うと
-    if (shape.category != orderData.requiredCategory)
-    {
-        Logger::Log(U8("あいまいな形指定のお題　失敗(T_T)"));
-        return EScore::Fail;
-    }
-
-    // 丸みの違い
-    float dr = fabs(shape.property.roundness - orderData.targetProperty.roundness);
-    // 縦横比の違い
-    float da = fabs(shape.property.aspectRatio - orderData.targetProperty.aspectRatio);
-    // 穴が開いているかどうか
-    float dh = fabs(shape.property.holeNess - orderData.targetProperty.holeNess);
-
-    // 理想の形からどれくらいずれているか
-    float dist = dr * 1.0f + da * 0.8f + dh * 0.3f;
-
-    if (dist < 0.1f)
-    {
-        Logger::Log(U8("あいまいな形指定のお題　パーフェクト！"));
-        return EScore::Perfect;
-    }
-    if (dist < 0.3f)
-    {
-        Logger::Log(U8("あいまいな形指定のお題　Great！"));
-        return EScore::Great;
-    }
-    if (dist < 0.6f)
-    {
-        Logger::Log(U8("あいまいな形指定のお題　Good！"));
-        return EScore::Good;
-    }
-    Logger::Log(U8("あいまいな形指定のお題　失敗(T_T)"));
-    return EScore::Fail;
-}
-#endif // 0
-
-// 値段と合わせたスコアを計算する
-float OdenBubbleActor::CalculateOrderScore(const OdenIngredientActor& ingredient, float matchRate, float multiplier)
-{
-    float basePrice = ingredient.GetPrice();
-    Logger::Log(U8("食材の値段 = ") + std::to_string(basePrice));
-
-    const float rate = matchRate / 100.0f;
-
-    return basePrice * rate * multiplier;
 }
 
 // ターゲットへ同じ速度で移動する関数

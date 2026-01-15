@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/Actor.h"
+#include "Game/OdenGame/OdenActors/OdenBubbleActor.h"
 #include "Game/OdenGame/OdenData/OdenDataStruct.h"
 #include "Game/OdenGame/OdenData/OdenShapeDataTable.h"
 
@@ -26,7 +27,7 @@ private:
     DirectX::XMFLOAT3 GetBubblePosition(const int index);
 
     // ’•¶‚ªŠ®—¹‚µ‚½‚ÉŒÄ‚Î‚ê‚éŠÖ”
-    void OnBubbleCompleted(const OdenBubbleActor& bubble, float score);
+    void OnBubbleCompleted(const OdenBubbleActor& bubble, OdenResult score);
 
     // •À‚Ñ‚ğ‹l‚ß‚é
     void RearrangeBubbles();

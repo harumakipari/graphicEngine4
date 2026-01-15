@@ -12,7 +12,6 @@ void OdenGameManager::Update(float deltaTime)
     remainingTime -= deltaTime;
     remainingTime = std::max<float>(remainingTime, 0.0f);
 
-
 }
 
 // ゲームのステートをリセットする

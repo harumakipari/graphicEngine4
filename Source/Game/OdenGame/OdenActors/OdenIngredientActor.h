@@ -151,6 +151,10 @@ private:
 
     // お題出現時の動き
     void AppearIngredient();
+
+    // 点線のモデルパスを取得する関数
+    std::string GetDotLineModelPath(const OdenShapeData shapeData);
+
 protected:
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
     std::shared_ptr<BoxComponent> boxComponent; // レイキャスト判定するもの

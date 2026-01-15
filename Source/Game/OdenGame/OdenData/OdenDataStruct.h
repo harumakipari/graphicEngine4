@@ -16,7 +16,6 @@ enum class EOdenShapeCategory :uint8_t
     None,
     TriangleLike,// Å¢
     SquareLike, // éläp
-    LongLike,   // ñ_
     RoundLike   // ÅZ
 };
 

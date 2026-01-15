@@ -44,7 +44,7 @@ void OdenOrderManager::SpawnOrderBubble(int index)
     // お題を設定する
     bubble->SetOrderAndMakeUi(randomOrder.data, randomOrder.uiName);
 
-    bubble->onCompleted = [this](const OdenBubbleActor& bubble, const float score)
+    bubble->onCompleted = [this](const OdenBubbleActor& bubble, const OdenResult score)
         {
             //　完了時の処理
             OnBubbleCompleted(bubble, score);
@@ -92,9 +92,9 @@ DirectX::XMFLOAT3 OdenOrderManager::GetBubblePosition(const int index)
 }
 
 // 注文が完了した時に呼ばれる関数
-void OdenOrderManager::OnBubbleCompleted(const OdenBubbleActor& bubble, const float score)
+void OdenOrderManager::OnBubbleCompleted(const OdenBubbleActor& bubble, const OdenResult score)
 {
-    Logger::Log(U8("オーダー完了時のスコア = ") + std::to_string(score));
+    Logger::Log(U8("オーダー完了時のスコア = ") + std::to_string(score.price));
 
     // 総合スコアを加算する
     if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
@@ -102,10 +102,12 @@ void OdenOrderManager::OnBubbleCompleted(const OdenBubbleActor& bubble, const fl
         if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
         {
             // スコアを加算する
-            gameManager->AddScore(score);
+            gameManager->AddScore(score.price);
 
+            // 満足度を加算する
+            gameManager->AddSatisfaction(score.satisfaction);
             // リザルト画面のために実際に提出された食材の種類とスコアを記録する
-            gameManager->AddSubmitLog(bubble.GetIngredientType(), score);
+            gameManager->AddSubmitLog(bubble.GetIngredientType(), score.price);
         }
     }
 
