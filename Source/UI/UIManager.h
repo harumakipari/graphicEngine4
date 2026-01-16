@@ -7,14 +7,14 @@ public:
     // XVˆ—
     void Update(float deltaTime);
 
-    
     void Draw(ID3D11DeviceContext* immediateContext) const;
 
     void DrawFont(ID3D11DeviceContext* immediateContext) const;
 
     void Add(const std::shared_ptr<UICoreComponent>& ui)
     {
-        rootComponents.push_back(ui);
+        if (!ui) return;
+        pendingAdd.push_back(ui);
     }
 
     void Cleanup()
@@ -44,7 +44,8 @@ public:
 
 private:
     std::vector<std::shared_ptr<UICoreComponent>> rootComponents;
-    
+    std::vector<std::shared_ptr<UICoreComponent>> pendingAdd; // š’Ç‰Á‘Ò‚¿
+
     bool visible = true;
     bool enabled = true;
     bool mouseCaptured = false;

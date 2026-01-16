@@ -1,0 +1,201 @@
+{
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 21,
+      "max": [
+        1.0,
+        0.28500163555145264,
+        1.0000001192092896
+      ],
+      "min": [
+        -1.000000238418579,
+        0.28500136733055115,
+        -1.0000004768371582
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 21,
+      "max": [
+        2.622604142743512e-07,
+        1.0,
+        3.0524012117894017e-07
+      ],
+      "min": [
+        -2.6226035743093234e-07,
+        1.0,
+        -3.086152560172195e-07
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 21,
+      "max": [
+        -0.7072079181671143,
+        3.073107563977828e-07,
+        -0.707004964351654,
+        1.0
+      ],
+      "min": [
+        -0.7072085738182068,
+        -3.272107846896688e-07,
+        -0.7070056200027466,
+        1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 21,
+      "max": [
+        0.9773464798927307,
+        0.781417727470398
+      ],
+      "min": [
+        0.5014529824256897,
+        0.30552423000335693
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5125,
+      "count": 60,
+      "max": [
+        20
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 252,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 252,
+      "byteOffset": 252,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 336,
+      "byteOffset": 504,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 168,
+      "byteOffset": 840,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 240,
+      "byteOffset": 1008,
+      "target": 34963
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1248,
+      "uri": "data:application/octet-stream;base64,AACAP7PrkT4V4boje3hzP7PrkT6AN56+exQuo7zrkT6XwvUhxxtPP7PrkT4feRa/H3kWP7PrkT7FG0+/fzeePrPrkT56eHO/8XokpLPrkT4EAIC/fzeevrPrkT54eHO/HHkWv7PrkT7CG0+/whtPv7PrkT4beRa/dXhzv7PrkT58N56+AgCAv7PrkT4npHAidXhzv7PrkT58N54+wBtPv7PrkT4aeRY/GnkWv7PrkT6/G08/fDeevrPrkT5zeHM/AAAAs7PrkT4BAIA/eTeePrPrkT5yeHM/GHkWP7PrkT6/G08/vRtPP7PrkT4ZeRY/cnhzP7PrkT56N54+zMyMNAAAgD+AzK+pouiFNAAAgD+bjAS0giZ9JwAAgD+J4TwxrdFjNAAAgD+XjAS0KoUlNAAAgD/h0ka0yAmuMwAAgD+YjIS0ta3eqAAAgD+ZjIS01wmuswAAgD/Ar6W0NIUltAAAgD/Cr6W0stFjtAAAgD/r0ka0ouiFtAAAgD+ejISzysyMtAAAgD8AAAAAo+iFtAAAgD+fjAQ0stFjtAAAgD/t0kY0M4UltAAAgD/u0kY0zgmuswAAgD81HpU0wq3eKAAAgD/i36M0zwmuMwAAgD+6vII0NoUlNAAAgD/LryU0u9FjNAAAgD/z0kY0pOiFNAAAgD/00kY0nAs1v1omRzRK/jS/AACAP5wLNb8lYb8zSv40vwAAgD+bCzW/QIoFMUz+NL8AAIA/ngs1vybOhjNI/jS/AACAP5wLNb/iGLyySv40vwAAgD+bCzW/R8X7s0v+NL8AAIA/mgs1vw5tO7RM/jS/AACAP5cLNb9g6ZO0UP40vwAAgD+YCzW/gquvtE7+NL8AAIA/mQs1v7LXlrRO/jS/AACAP5gLNb9cQmy0Tv40vwAAgD+aCzW/WCZHtEz+NL8AAIA/lAs1vwxhv7NS/jS/AACAP5YLNb8MXqSyUP40vwAAgD+eCzW/3hi8Mkj+NL8AAIA/mgs1v1JQFTRM/jS/AACAP5wLNb9muGc0Sv40vwAAgD+fCzW/iGd2NEf+NL8AAIA/nQs1v+AyajRJ/jS/AACAP5sLNb+415Y0TP40vwAAgD+cCzW/ePykNEv+NL8AAIA/06sRPy27Nj+gRyE/MBNCP05JPT/qIAs/QaEzP0gKSD/e7EY//gpIP+9GWT8+FUI/kuNoP2S+Nj+UO3Q/lCInP6syej/0yBQ/YTN6P1h9AT+iPXQ/kEbePsbmaD9IDb8++UpZP0ZdqD5Y8UY/GG+cPr2lMz+sbZw+rEshPypZqD4IrxE/4Aa/PghXBj98Pt4+718AP954AT85XwA/esQUP/hUBj+JHic/AAAAAAEAAAACAAAAAQAAAAMAAAACAAAAAwAAAAQAAAACAAAABAAAAAUAAAACAAAABQAAAAYAAAACAAAABgAAAAcAAAACAAAABwAAAAgAAAACAAAACAAAAAkAAAACAAAACQAAAAoAAAACAAAACgAAAAsAAAACAAAACwAAAAwAAAACAAAADAAAAA0AAAACAAAADQAAAA4AAAACAAAADgAAAA8AAAACAAAADwAAABAAAAACAAAAEAAAABEAAAACAAAAEQAAABIAAAACAAAAEgAAABMAAAACAAAAEwAAABQAAAACAAAAFAAAAAAAAAACAAAA"
+    }
+  ],
+  "images": [
+    {
+      "uri": "m_dotine_BaseColo.png"
+    }
+  ],
+  "materials": [
+    {
+      "alphaMode": "BLEND",
+      "name": "m_dotine",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.5764706134796143
+        ],
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "Oden_DotLine_Circle",
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "samplers": [
+    {
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    }
+  ]
+}

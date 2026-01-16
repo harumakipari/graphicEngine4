@@ -228,8 +228,6 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
     if (state != EBubbleState::Waiting) // 状態が待機じゃなかったら
         return;
 
-    // エフェクトを出す
-    particleComponent->Play();
 
     // スコアを計算する
     float matchRate = JudgeMatchShapeRate(ingredient);
@@ -261,6 +259,23 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
             scorePopupUi->Play(L"Fail");
 
         scorePopupUi->SetVisible(true);
+    }
+
+    // エフェクトを出す
+    if (particleComponent)
+    {
+        if (score == EScore::Perfect)
+        {
+            particleComponent->Play();
+        }
+        else if (score == EScore::Good)
+        {
+            //particleComponent->Play();
+        }
+        else
+        {
+            //particleComponent->Play();
+        }
     }
 
 
@@ -309,7 +324,7 @@ float OdenBubbleActor::JudgeMatchShapeRate(const OdenIngredientActor& ingredient
             return 0.0f;
         }
     }
-    
+
     // Shape系お題
     if (o.type == EOrderType::ShapeOnly)
     {

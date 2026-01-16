@@ -57,7 +57,7 @@ void PuddingGameScene::Start()
     uiManager->Add(image);
 
 
-    std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("button");
+    std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/start_button.png","button");
     button->SetWorldPosition({ 300, 50 });
     button->SetSize({ 200, 80 });
 
@@ -76,7 +76,7 @@ void PuddingGameScene::Start()
             static float  value = 1.0f;
             const char* types[] = { "0", "1" };
             //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
 
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
             value -= 0.1f;
@@ -114,23 +114,23 @@ void PuddingGameScene::SetUpActors()
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
 
-    Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<Stage>("stage", stageTr); // Œ³‚Ìƒ‚ƒfƒ‹‚Ì scale ‚ð 0.4f
+    //Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    //auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<Stage>("stage", stageTr); // Œ³‚Ìƒ‚ƒfƒ‹‚Ì scale ‚ð 0.4f
 
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
-    Transform buildTr(DirectX::XMFLOAT3{ -5.0f,0.0f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
-    auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("jerry", buildTr);
-    auto elasticComp = building->AddComponent<ElasticMeshComponent>("jerry");
-    elasticComp->SetModel("./Data/Models/pink_pudding/scene.gltf");
-    elasticComp->Initialize();
+    //Transform buildTr(DirectX::XMFLOAT3{ -5.0f,0.0f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
+    //auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("jerry", buildTr);
+    //auto elasticComp = building->AddComponent<ElasticMeshComponent>("jerry");
+    //elasticComp->SetModel("./Data/Models/pink_pudding/scene.gltf");
+    //elasticComp->Initialize();
 
-    Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,0.0f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
-    auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pudding>("Pudding", buildTr2);
+    //Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,0.0f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
+    //auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pudding>("Pudding", buildTr2);
 
-    Transform targetPuddingTr(DirectX::XMFLOAT3{ 0.0f,0.0f,13.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.8f,1.8f,1.8f });
-    auto targetPudding = this->GetActorManager()->CreateAndRegisterActorWithTransform<TargetPudding>("targetPudding", targetPuddingTr);
+    //Transform targetPuddingTr(DirectX::XMFLOAT3{ 0.0f,0.0f,13.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.8f,1.8f,1.8f });
+    //auto targetPudding = this->GetActorManager()->CreateAndRegisterActorWithTransform<TargetPudding>("targetPudding", targetPuddingTr);
 
 
     //CameraManager::SetGameCamera(mainCameraActor);
@@ -139,8 +139,8 @@ void PuddingGameScene::SetUpActors()
 
     cameraManager->SetDebugCamera(debugCameraActor);
 
-    mainCameraComponent->target = (building->GetRootComponent());
-    mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
+    //mainCameraComponent->target = (building->GetRootComponent());
+    //mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
 
 }
 

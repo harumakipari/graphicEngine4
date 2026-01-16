@@ -5,14 +5,14 @@
       "componentType": 5126,
       "count": 4,
       "max": [
-        1.600000023841858,
-        0.3995113968849182,
-        0.4000000059604645
+        0.9999999403953552,
+        0.30000001192092896,
+        0.30000001192092896
       ],
       "min": [
-        -1.600000023841858,
-        0.3995113968849182,
-        -0.4000000059604645
+        -0.9999999403953552,
+        0.30000001192092896,
+        -0.30000001192092896
       ],
       "type": "VEC3"
     },
@@ -37,15 +37,15 @@
       "componentType": 5126,
       "count": 4,
       "max": [
-        1.0,
+        0.9999999403953552,
         0.0,
-        -5.0797891162801534e-05,
+        -0.0003831258218269795,
         1.0
       ],
       "min": [
-        1.0,
+        0.9999999403953552,
         0.0,
-        -5.0797891162801534e-05,
+        -0.00038337355363182724,
         1.0
       ],
       "type": "VEC4"
@@ -55,12 +55,12 @@
       "componentType": 5126,
       "count": 4,
       "max": [
-        0.78214031457901,
-        0.9912295341491699
+        0.49409055709838867,
+        0.7876518368721008
       ],
       "min": [
-        0.011227339506149292,
-        0.7984646558761597
+        0.012220978736877441,
+        0.6429228782653809
       ],
       "type": "VEC2"
     },
@@ -114,7 +114,7 @@
   "buffers": [
     {
       "byteLength": 216,
-      "uri": "data:application/octet-stream;base64,zczMP8KMzD7NzMw+zczMv8KMzD7NzMy+zczMv8KMzD7NzMw+zczMP8KMzD7NzMy+AAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAACAPwAAAADSD1W4AACAPwAAgD8AAAAA0g9VuAAAgD8AAIA/AAAAANIPVbgAAIA/AACAPwAAAADSD1W4AACAP7U5SD84wX0/4Bs4PC5oTD/g8jc8qL59P1k6SD++akw/AAAAAAEAAAACAAAAAQAAAAAAAAADAAAA"
+      "uri": "data:application/octet-stream;base64,//9/P5qZmT6amZm+//9/v5qZmT6amZk+//9/P5qZmT6amZk+//9/v5qZmT6amZm+AAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAA//9/PwAAAADn7si5AACAP///fz8AAAAAh//IuQAAgD///38/AAAAAOfuyLkAAIA///9/PwAAAABH3si5AACAP3D5/D6xoiQ/gDpIPHKXST8q8vw+jaNJP8AiSTyYliQ/AAAAAAEAAAACAAAAAQAAAAAAAAADAAAA"
     }
   ],
   "images": [
@@ -131,7 +131,7 @@
           0.800000011920929,
           0.800000011920929,
           0.800000011920929,
-          0.5686274766921997
+          0.6000000238418579
         ],
         "baseColorTexture": {
           "index": 0
@@ -160,7 +160,7 @@
   "nodes": [
     {
       "mesh": 0,
-      "name": "Oden_DotLine_LongRect",
+      "name": "Oden_DotLine_Rect",
       "rotation": [
         0.0,
         0.0,

@@ -47,7 +47,7 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::v
 
         for (MeshComponent* meshComponent : meshComponents)
         {
-            if (!meshComponent->IsVisible())
+            if (!meshComponent->IsVisible() || !meshComponent)
             { // 描画フラグが false ならスキップ
                 continue;
             }

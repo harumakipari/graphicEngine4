@@ -231,7 +231,7 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
     // ílíiÇê›íËÇ∑ÇÈ
     price = ingredientPriceTable[ingredientType];
 
-#if 0
+#if 1
     struct FaceTransform
     {
         DirectX::XMFLOAT3 localOffset;
@@ -257,7 +257,15 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
 
     for (auto& [face, shapeData] : faceShapeTable.faceShapes)
     {
-        if (face != EOdenFace::Top)
+        if (face != EOdenFace::Bottom)
+        {
+            continue;
+        }
+
+        std::string shapeName = GetDotLineModelPath(shapeData);
+        std::string modelDotLineFileName = "./Data/Models/Oden_DotLine/" + shapeName;
+
+        if (shapeName == "")
         {
             continue;
         }
@@ -265,12 +273,8 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
         auto dot = AddComponent<DotLineMeshComponent>("dotLine_" + std::to_string(static_cast<int>(face)), parentName);
 
         const FaceTransform& ft = faceTransformTable[face];
-        //dot->SetRelativeLocationDirect(ft.localOffset);
+        dot->SetRelativeLocationDirect({ 0.0f,0.03f,0.0f });
         dot->SetRelativeEulerRotationDirect(ft.localEuler);
-
-        std::string shapeName = GetDotLineModelPath(shapeData);
-        std::string modelDotLineFileName = "./Data/Models/Oden_DotLine/" + shapeName;
-
         dot->SetModel(modelDotLineFileName);
         dot->SetIsCastShadow(false);
     }
@@ -559,7 +563,9 @@ std::string OdenIngredientActor::GetDotLineModelPath(const OdenShapeData shapeDa
     case EOdenShapeCategory::SquareLike:
         modelPath = "Oden_DotLine_Rect.gltf";
         break;
-    default:;
+    default:
+        modelPath = "";
+        break;
     }
 
     return modelPath;

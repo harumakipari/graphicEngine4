@@ -8,9 +8,20 @@
 void UIManager::Update(float deltaTime)
 {
     if (!enabled) return;
-    mouseCaptured = false;
-    for (auto ui : rootComponents)
+
+    if (!pendingAdd.empty())
     {
+        for (auto& ui : pendingAdd)
+        {
+            rootComponents.push_back(ui);
+        }
+        pendingAdd.clear();
+    }
+
+    mouseCaptured = false;
+    for (auto& ui : rootComponents)
+    {
+        if (!ui) continue;
         if (ui->IsEnabled())
         {
             ui->UpdateTransform();

@@ -41,6 +41,42 @@ void TitleScene::Start()
     audioComp->SetLoop(true);
     audioComp->Play();
 
+
+    std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("image");
+    image->SetWorldPosition({ 50, 50 });
+    image->SetSize({ 200, 200 });
+
+    uiManager->Add(image);
+
+
+    std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/start_button.png", "button");
+    button->SetWorldPosition({ 300, 50 });
+    button->SetSize({ 200, 80 });
+
+    uiManager->Add(button);
+
+    std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>("gauge");
+    gauge->SetWorldPosition({ 50, 300 });
+    gauge->SetSize({ 300, 40 });
+
+    uiManager->Add(gauge);
+
+    // ボタンでゲージ減らす
+    button->onClick = [gauge]()
+        {
+            Logger::Log(u8"ボタンButton Clicked!");
+            static float  value = 1.0f;
+            const char* types[] = { "0", "1" };
+            //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
+
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
+            value -= 0.1f;
+            if (value < 0.0f)
+                value = 0.0f;
+            gauge->SetValue(value, 1.0f);
+        };
+
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
 }
@@ -52,6 +88,15 @@ void TitleScene::Update(float deltaTime)
     Physics::Instance().Update(Time::UnscaledDeltaTime());
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
+#ifdef _DEBUG
+
+    if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
+    {
+        const char* types[] = { "0", "1" };
+        Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
+    }
+#endif // !_DEBUG
+
 }
 
 void TitleScene::SetUpActors()
