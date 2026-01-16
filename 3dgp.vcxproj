@@ -309,6 +309,7 @@
     <ClCompile Include="Source\Game\Scenes\MainScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\MorphScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\PuddingGameScene.cpp" />
+    <ClCompile Include="Source\Game\Scenes\ResultScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\SampleScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\TitleScene.cpp" />
     <ClCompile Include="Source\Game\SofyBody\SoftBody.cpp" />
@@ -469,6 +470,7 @@
     <ClInclude Include="Source\Game\Scenes\MainScene.h" />
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />
     <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />
+    <ClInclude Include="Source\Game\Scenes\ResultScene.h" />
     <ClInclude Include="Source\Game\Scenes\SampleScene.h" />
     <ClInclude Include="Source\Game\Scenes\TitleScene.h" />
     <ClInclude Include="Source\Game\SofyBody\SoftBody.h" />

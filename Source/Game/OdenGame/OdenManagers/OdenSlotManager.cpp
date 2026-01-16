@@ -34,8 +34,8 @@ void OdenSlotManager::StartGame()
     for (int i = 0; i < 4; ++i)
     {
         // ランダムに名前を選択
-        //const std::string& selectedName = MakeRandomIngredientName();
-        const std::string& selectedName = "Konnyaku";
+        const std::string& selectedName = MakeRandomIngredientName();
+        //const std::string& selectedName = "Konnyaku";
 
         // おでんの具材を生成
         Transform downIngredientTr(DirectX::XMFLOAT3{ i * 4.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -55,8 +55,8 @@ void OdenSlotManager::StartGame()
     for (int i = 0; i < 4; ++i)
     {
         // ランダムに名前を選択
-        //const std::string& selectedName = MakeRandomIngredientName();
-        const std::string& selectedName = "Daikon";
+        const std::string& selectedName = MakeRandomIngredientName();
+        //const std::string& selectedName = "Daikon";
 
         // おでんの具材を生成
         Transform odenUpIngredient(DirectX::XMFLOAT3{ i * 4.0f,0.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });

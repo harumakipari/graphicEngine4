@@ -30,6 +30,7 @@ public:
     // お題の状態
     enum class EBubbleState :uint8_t
     {
+        PreOrder,    // お題が来る前
         Waiting, // 待っている
         LeavingBack,   // 少し後ろに下がる
         LeavingLeft,    // 左に退場
@@ -134,4 +135,6 @@ private:
     EOdenType submittedIngredientType = EOdenType::None;// 実際に提出された食材の種類
 
     std::shared_ptr<ParticleComponent> particleComponent;   // 星のエフェクト
+
+    float shakeTimer = 0.0f;    // シェイクタイマー
 };

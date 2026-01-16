@@ -72,8 +72,10 @@ void OdenBubbleActor::Update(float elapsedTime)
         gaugeUi->SetWorldPosition({ gaugeUiPos.x, gaugeUiPos.y });
     }
 
-#if 0 // ゲージで去っていく処理　デバック中やりにくいから一旦コメントアウト
+#if 1
+    // ゲージで去っていく処理　デバック中やりにくいから一旦コメントアウト
     // 待機
+
     if (state == EBubbleState::Waiting)
     {
         // 残り時間を減らす
@@ -82,15 +84,44 @@ void OdenBubbleActor::Update(float elapsedTime)
         if (remainingTime <= 0.0f)
         {
             remainingTime = 0.0f;
-            state = EBubbleState::Leaving;
+            state = EBubbleState::LeavingBack;
 
             Logger::Log(U8("時間切れで自動失敗"));
 
             // スコア 0 で通知
             if (onCompleted)
-                onCompleted(*this, 0.0f);
+                onCompleted(*this, { 0.0f,0.0f });
         }
     }
+
+    // 焦り度
+    float timeRate = remainingTime / timeLimit; // 1.0->0.0
+    if (orderUi && timeRate < 0.3f && state == EBubbleState::Waiting | state == EBubbleState::QueuingMove)
+    {// 揺らす
+        shakeTimer += elapsedTime;
+
+        float panic = (0.4f - timeRate) / 0.4f; // 0~1.0
+        panic = std::clamp(panic, 0.0f, 1.0f);
+
+        float shakePower = 6.0f * panic;      // 揺れ幅
+        float shakeSpeed = 25.0f + 40.0f * panic;
+
+        float shakeX = sinf(shakeTimer * shakeSpeed) * shakePower;
+
+        orderUi->SetWorldPosition({
+            uiPos.x + shakeX,
+            uiPos.y
+            });
+
+        float rot = sinf(shakeTimer * 35.0f) * 8.0f * panic;
+        orderUi->SetWorldAngleDegree(rot);
+    }
+    else
+    {
+        shakeTimer = 0.0f;
+        orderUi->SetWorldAngleDegree(0.0f);
+    }
+
 
 #endif // 0 // ゲージで去っていく処理　デバック中やりにくいから一旦コメントアウト
 
@@ -210,7 +241,7 @@ void OdenBubbleActor::SetOrderAndMakeUi(const OrderData& orderData, const std::s
     uiManager->Add(orderUi);
 
     // 制限時間を設定する
-    timeLimit = MathHelper::RandomRange(4.0f, 6.0f); // 4.0f ~ 6.0f で去る
+    timeLimit = MathHelper::RandomRange(5.0f, 10.0f); // 4.0f ~ 6.0f で去る
     remainingTime = timeLimit;
 
     // 制限時間のゲージのUIを作成する
@@ -285,7 +316,7 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
 void OdenBubbleActor::OnBeatPhase(float phase)
 {
     float pulse = sinf(phase * DirectX::XM_2PI);
-    float scale = 1.0f + pulse * 0.08f;
+    float scale = 1.0f + pulse * 0.001f;
 
     if (orderUi)
         orderUi->SetScale({ scale, scale });
