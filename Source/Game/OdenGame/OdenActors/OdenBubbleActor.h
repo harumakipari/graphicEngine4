@@ -34,7 +34,8 @@ public:
         Waiting, // 待っている
         LeavingBack,   // 少し後ろに下がる
         LeavingLeft,    // 左に退場
-        QueuingMove     // 列の詰め動作中
+        QueuingMove,     // 列の詰め動作中
+        Completed,    // 注文完了して去った
     };
 
 
@@ -137,4 +138,6 @@ private:
     std::shared_ptr<ParticleComponent> particleComponent;   // 星のエフェクト
 
     float shakeTimer = 0.0f;    // シェイクタイマー
+
+    bool isCompeted = false;    // 提出完了したかどうか
 };

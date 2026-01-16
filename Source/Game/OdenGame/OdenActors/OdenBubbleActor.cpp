@@ -76,7 +76,7 @@ void OdenBubbleActor::Update(float elapsedTime)
     // ゲージで去っていく処理　デバック中やりにくいから一旦コメントアウト
     // 待機
 
-    if (state == EBubbleState::Waiting)
+    if (state == EBubbleState::Waiting || state == EBubbleState::QueuingMove && !isCompeted)
     {
         // 残り時間を減らす
         remainingTime -= elapsedTime;
@@ -96,7 +96,7 @@ void OdenBubbleActor::Update(float elapsedTime)
 
     // 焦り度
     float timeRate = remainingTime / timeLimit; // 1.0->0.0
-    if (orderUi && timeRate < 0.3f && state == EBubbleState::Waiting | state == EBubbleState::QueuingMove)
+    if (orderUi && timeRate < 0.3f && state == EBubbleState::Waiting || state == EBubbleState::QueuingMove)
     {// 揺らす
         shakeTimer += elapsedTime;
 
@@ -309,7 +309,7 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
         }
     }
 
-
+    isCompeted = true;
 }
 
 // 毎フレーム呼ばれる (0 ~ 1)

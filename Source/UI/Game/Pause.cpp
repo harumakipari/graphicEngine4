@@ -53,7 +53,7 @@ void Pause::Initialize(const Transform& transform)
     closeButton->SetSize({ 140, 140 });
     closeButton->SetVisible(false);
     closeButton->SetEnable(false);
-    closeButton->zOrder = 100; // Žè‘O‚É•`‰æ‚·‚é
+    closeButton->zOrder = 105; // Žè‘O‚É•`‰æ‚·‚é
 
     closeButton->onClick = [&]()
         {
@@ -77,7 +77,7 @@ void Pause::Initialize(const Transform& transform)
     returnTitleButton->SetSize({ 472, 183 });
     returnTitleButton->SetVisible(false);
     returnTitleButton->SetEnable(false);
-    returnTitleButton->zOrder = 100; // Žè‘O‚É•`‰æ‚·‚é
+    returnTitleButton->zOrder = 105; // Žè‘O‚É•`‰æ‚·‚é
     returnTitleButton->onClick = [&]()
         {
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/pushButton.wav");

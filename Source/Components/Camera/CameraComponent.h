@@ -38,6 +38,20 @@ public:
         return projection;
     }
 
+    const DirectX::XMFLOAT4X4& GetOrthographicProjection()
+    {
+        using namespace DirectX;
+        XMStoreFloat4x4(&projection, XMMatrixOrthographicLH(15 * aspect, 15, nearZ, farZ));
+        return projection;
+    }
+
+    const DirectX::XMFLOAT4X4& GetProjectionWithOrthographic()
+    {
+        using namespace DirectX;
+        XMStoreFloat4x4(&projection, XMMatrixPerspectiveLH(15 * aspect, 15, nearZ, farZ));
+        return projection;
+    }
+
 protected:
     float fovY = DirectX::XMConvertToRadians(60.0f);
     float aspect = 1280.f / 720.f;

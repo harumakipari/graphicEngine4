@@ -43,6 +43,7 @@ void OdenIngredientActor::Update(float deltaTime)
     if (!InputSystem::GetMousePositionUI(cursor))
         return;
 
+#if 0
     // •‚‚¢‚Ä‚­‚éˆ—
     if (position.y <= 0.95f)
     {
@@ -50,10 +51,25 @@ void OdenIngredientActor::Update(float deltaTime)
         constexpr float speed = 3.0f; // ‘å‚«‚¢‚Ù‚Ç‘¬‚­•‚‚­
 
         float t = std::clamp(deltaTime * speed, 0.0f, 1.0f);
-        Logger::Log("position y:" + std::to_string(position.y));
+        //Logger::Log("position y:" + std::to_string(position.y));
         position.y = std::lerp(position.y, targetY, t);
         SetPosition(position);
     }
+#else
+    constexpr float targetY = 1.0f;
+    constexpr float speed = 3.0f;
+
+    float t = std::clamp(deltaTime * speed, 0.0f, 1.0f);
+
+    position.y = std::lerp(position.y, targetY, t);
+
+    // s‚«‰ß‚¬–h~i•ÛŒ¯j
+    if (position.y > targetY)
+        position.y = targetY;
+
+    SetPosition(position);
+
+#endif // 0
 
     // ‡@ ‰Ÿ‚µ‚½uŠÔF‘I‘ğ”»’è
     if (dragState == EOdenDragState::InSlot &&
