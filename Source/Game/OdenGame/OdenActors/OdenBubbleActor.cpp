@@ -309,7 +309,7 @@ float OdenBubbleActor::JudgeMatchShapeRate(const OdenIngredientActor& ingredient
             return 0.0f;
         }
     }
-
+    
     // ShapeŒn‚¨‘è
     if (o.type == EOrderType::ShapeOnly)
     {

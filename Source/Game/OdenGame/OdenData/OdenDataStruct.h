@@ -8,6 +8,12 @@ enum class EOdenType :uint8_t
     Tsukune,
     Chikuwa,
     Konnyaku,
+    Hanpen,
+    Goboten,
+    Cake,
+    Donut,
+    Shirataki,
+    Kobumusubi,
 };
 
 // おでんの形のカテゴリー分け
@@ -16,7 +22,8 @@ enum class EOdenShapeCategory :uint8_t
     None,
     TriangleLike,// △
     SquareLike, // 四角
-    RoundLike   // 〇
+    RoundLike,   // 〇
+    RibbonLike   // リボン型
 };
 
 // 形の近さを判定する用

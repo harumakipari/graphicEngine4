@@ -17,11 +17,17 @@ void OdenNextViewActor::Initialize(const Transform& transform)
 
     const std::vector<IngredientInfo> list =
     {
-        { "Daikon", "./Data/Textures/UI/Ingredients/Daikon.png" },
-        { "Egg", "./Data/Textures/UI/Ingredients/Egg.png" },
-        { "Tsukune", "./Data/Textures/UI/Ingredients/Tsukune.png" },
-        { "Chikuwa", "./Data/Textures/UI/Ingredients/Chikuwa.png" },
-        { "Konnyaku", "./Data/Textures/UI/Ingredients/Konnyaku.png" },
+        { "Daikon", "./Data/Textures/UI/NextViewIngredients/Daikon.png" },
+        { "Egg", "./Data/Textures/UI/NextViewIngredients/Egg.png" },
+        { "Tsukune", "./Data/Textures/UI/NextViewIngredients/Tsukune.png" },
+        { "Chikuwa", "./Data/Textures/UI/NextViewIngredients/Chikuwa.png" },
+        { "Konnyaku", "./Data/Textures/UI/NextViewIngredients/Konnyaku.png" },
+        { "Cake", "./Data/Textures/UI/NextViewIngredients/Cake.png" },
+        { "Donut", "./Data/Textures/UI/NextViewIngredients/Donut.png" },
+        { "Goboten", "./Data/Textures/UI/NextViewIngredients/Goboten.png" },
+        { "Hanpen", "./Data/Textures/UI/NextViewIngredients/Hanpen.png" },
+        { "Kobumusubi", "./Data/Textures/UI/NextViewIngredients/Kobumusubi.png" },
+        { "Shirataki", "./Data/Textures/UI/NextViewIngredients/Shirataki.png" },
     };
 
     for (const auto& info : list)

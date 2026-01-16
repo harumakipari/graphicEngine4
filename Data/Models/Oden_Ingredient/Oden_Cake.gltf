@@ -1,0 +1,186 @@
+{
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 22,
+      "max": [
+        0.10000000149011612,
+        0.04620816186070442,
+        0.08010973781347275
+      ],
+      "min": [
+        -0.10000000149011612,
+        -0.04620816186070442,
+        -0.08010973781347275
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 22,
+      "max": [
+        0.3718297481536865,
+        1.0,
+        0.9283009767532349
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -0.9283009767532349
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 22,
+      "max": [
+        0.9943645596504211,
+        0.07494869828224182,
+        1.0,
+        1.0
+      ],
+      "min": [
+        0.0,
+        -0.29775211215019226,
+        -0.3718297481536865,
+        1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 22,
+      "max": [
+        0.7499960660934448,
+        1.0
+      ],
+      "min": [
+        0.125,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5125,
+      "count": 36,
+      "max": [
+        21
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 264,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 264,
+      "byteOffset": 264,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 352,
+      "byteOffset": 528,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 176,
+      "byteOffset": 880,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 144,
+      "byteOffset": 1056,
+      "target": 34963
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1200,
+      "uri": "data:application/octet-stream;base64,zczMPcVEPT0AAAAAzczMvcVEPT2TEKQ9zczMvcVEPb2TEKQ9zczMPcVEPb0AAAAAzczMvcVEPT2TEKQ9zczMPcVEPT0AAAAAzczMvcVEPT0AAAAAzczMPcVEPb0AAAAAzczMvcVEPb2TEKS9zczMvcVEPT2TEKS9zczMPcVEPT0AAAAAzczMvcVEPb0AAAAAzczMPcVEPb0AAAAAzczMvcVEPb2TEKQ9zczMvcVEPb2TEKQ9zczMvcVEPT2TEKQ9zczMvcVEPT0AAAAAzczMvcVEPb0AAAAAzczMvcVEPb2TEKS9zczMvcVEPT2TEKS9zczMvcVEPb2TEKS9zczMvcVEPT2TEKS9eGC+PgAAAAAipW0/eGC+PgAAAAAipW0/eGC+PgAAAAAipW0/eGC+PgAAAAAipW0/AAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAeGC+PgAAAAAipW2/eGC+PgAAAAAipW2/eGC+PgAAAAAipW2/eGC+PgAAAAAipW2/AAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAf6VsP7CMu72vk72+AACAPyZlbT+kzju9Ny2+vgAAgD8hpW0/vkr3t3hgvr4AAIA/JmVtP6TOO703Lb6+AACAP3Tdez8AAAAAhU03vgAAgD903Xs/AAAAAIVNN74AAIA/dN17PwAAAACFTTe+AACAPwX6bD+0fpk9ZNe9PgAAgD+ZHGw/2UXovQMmvT4AAIA/wd1iP/dymL7xvbU+AACAP5kcbD/ZRei9Aya9PgAAgD+tjn4/AAAAACse2T0AAIA/rY5+PwAAAAArHtk9AACAP62Ofj8AAAAAKx7ZPQAAgD8AAAAAAAAAAAAAgD8AAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAgD+tjn4/AAAAACse2T0AAIA/dN17PwAAAACFTTe+AACAP9P+Lz8kiS4/AADAPgAAQD8AAMA+AACAP77/Pz/g/n8/AADAPgAAQD/T/i8/JIkuPwAAwD4AACA/E/8fP/gRIj4AAMA+AACAPgAAwD4AAAA/0/4vPySJLj8AAMA+AAAAPhP/Hz/4ESI+AADAPgAAAAAAAMA+AACAPwAAwD4AAEA/AACAPgAAQD8AAIA+AACAPwAAAD4AAIA/AAAAPgAAQD8AAMA+AACAPgAAwD4AAAA/AAAAAAEAAAACAAAAAAAAAAIAAAADAAAABAAAAAUAAAAGAAAABwAAAAgAAAAJAAAABwAAAAkAAAAKAAAACwAAAAwAAAANAAAADgAAAA8AAAAQAAAADgAAABAAAAARAAAAEAAAABIAAAARAAAAEgAAABAAAAATAAAAFAAAAAwAAAALAAAABgAAAAUAAAAVAAAA"
+    }
+  ],
+  "materials": [
+    {
+      "name": "m_oden2",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.9503397345542908,
+          0.9575289487838745,
+          0.5693415403366089,
+          1.0
+        ],
+        "metallicFactor": 0.0
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "Oden_Cake",
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        9.649849891662598,
+        9.649849891662598,
+        9.649849891662598
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "samplers": [
+    {
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

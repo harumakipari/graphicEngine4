@@ -204,7 +204,13 @@ std::string OdenSlotManager::MakeRandomIngredientName() const
         "Egg",
         "Tsukune",
         "Chikuwa",
-        "Konnyaku"
+        "Konnyaku",
+        "Hanpen",
+        "Goboten",
+        "Cake",
+        "Donut",
+        "Shirataki",
+        "Kobumusubi"
         // ‚±‚±‚É’Ç‰Á‚µ‚Ä‚¢‚­
     };
 
