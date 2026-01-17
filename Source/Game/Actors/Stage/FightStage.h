@@ -15,7 +15,8 @@ public:
 #if 0
         staticMeshComponent->SetModel("./Data/Models/Stage/ExampleStage.gltf", true);
 #else
-        staticMeshComponent->SetModel("./Data/Models/boss_fight_stage/scene.gltf", true);
+        staticMeshComponent->SetModel("./Data/Models/Dark_Stage/untitled.gltf", true);
+        //staticMeshComponent->SetModel("./Data/Models/boss_fight_stage/scene.gltf", true);
         staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         staticMeshComponent->overrideDeferredPipelineName = "deferredFightStage";
         staticMeshComponent->hueShift = 191.8f;
