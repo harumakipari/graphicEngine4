@@ -12,7 +12,7 @@
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
 #include "Engine/Utility/Time.h"
-
+#include "Game/OdenGame/OdenResultScoreActor.h"
 
 
 #include "Physics/Physics.h"
@@ -68,12 +68,16 @@ void ResultScene::Start()
             //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
 
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
             value -= 0.1f;
             if (value < 0.0f)
                 value = 0.0f;
             gauge->SetValue(value, 1.0f);
         };
+
+    // 結果スコア表示アクターを生成
+    auto resultActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultScoreActor>("resultActor");
+    resultActor->SetFontAndMakeTextComponent();
 
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
@@ -118,6 +122,8 @@ void ResultScene::SetUpActors()
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
     cameraManager->SetDebugCamera(debugCameraActor);
 #endif // !_DEBUG
+
+
 }
 
 void ResultScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)

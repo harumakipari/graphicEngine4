@@ -70,7 +70,7 @@ void TitleScene::Start()
             //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
 
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
             value -= 0.1f;
             if (value < 0.0f)
                 value = 0.0f;

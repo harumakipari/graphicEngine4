@@ -31,7 +31,6 @@ void OdenUIScoreViewActor::SetFontAndMakeTextComponent()
 {
     // スコアテキストのUIコンポーネントを作成する
     scoreTextUi = std::make_shared<UITextComponent>("scoreFont");
-    scoreTextUi->SetFont(FontManager::GetUIFont());
     scoreTextUi->SetWorldPosition({ 1550, 20 });
     scoreTextUi->SetScale({ 1.0f, 1.0f });
 

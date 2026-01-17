@@ -9,15 +9,6 @@
 class OdenGameManager :public Actor
 {
 public:
-    struct OdenSubmitLog
-    {
-        EOdenType type; // 具材の種類
-        int count = 1;             // 基本1だが拡張用
-        float score = 0.0f;
-                            // 後々Great　Goodとか
-    };
-
-public:
     OdenGameManager(const std::string& actorName) :Actor(actorName) {}
 
     void Initialize(const Transform& transform)override;
@@ -37,12 +28,7 @@ public:
     void Reset();
 
     // スコアを加算する
-    void AddScore(float score)
-    {
-        //if (IsTimeUp()) return;
-        totalScore += score;
-        Logger::Log(U8("今の総スコア") + std::to_string(totalScore));
-    }
+    void AddScore(float score);
 
     // コンボを加算する
     void AddCombo()
@@ -63,10 +49,8 @@ public:
     }
 
     // ゲーム終了処理
-    void EndGame()
-    {
-        // OrderManager を止める
-    }
+    void EndGame();
+
 
     // 満足度加算
     void AddSatisfaction(const float value)
@@ -77,26 +61,18 @@ public:
     // 提出ログを追加
     void AddSubmitLog(EOdenType type, float score);
 
-    // リザルト用
-    const std::vector<OdenSubmitLog>& GetSubmitLogs() const
-    {
-        return submitLogs;
-    }
 
-    // 提出した食材の種類と数を取得する関数
-    const std::unordered_map<EOdenType, int>& GetIngredientCount() const
-    {
-        return ingredientCount;
-    }
 private:
+    //std::vector<OdenSubmitLog> submitLogs; 
+    //std::array<int, static_cast<size_t>(EOdenType::Count)> ingredientCount{};
     float totalScore = 0.0f;
     int   combo = 0;
 
-    float maxTime = 50.0f;      // 50秒
+    float maxTime = 35.0f;      // 50秒
     float remainingTime = 50.0f;
 
-    std::vector<OdenSubmitLog> submitLogs; // 時系列（伝票）
-    std::unordered_map<EOdenType, int> ingredientCount; // 集計
 
     float satisfaction = 0.0f;  // 満足度
+
+    bool isGameEnded = false; // ゲームが終わったかどうか
 };

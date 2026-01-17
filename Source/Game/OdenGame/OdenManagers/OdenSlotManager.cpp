@@ -96,8 +96,8 @@ void OdenSlotManager::UpdateBeat(float deltaTime)
     {
         const auto& beat = clock->GetCurrentBeat();
 
-        // 回転音再生
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE/turing.wav", 1.0f);
+        // 回転音　SE再生
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/turning.wav", 0.8f);
         // スロットの食材回転処理
         for (auto& slot : slots)
         {

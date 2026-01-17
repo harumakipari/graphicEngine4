@@ -304,6 +304,7 @@
     <ClCompile Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenTrashActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenNextViewActor.cpp" />
+    <ClCompile Include="Source\Game\OdenGame\OdenResultScoreActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenUIScoreViewActor.cpp" />
     <ClCompile Include="Source\Game\Scenes\LoadingScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\MainScene.cpp" />
@@ -445,6 +446,7 @@
     <ClInclude Include="Source\Game\OdenGame\OdenData\OdenGameParameter.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenData\OdenShapeDataTable.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenDetailIngredientsActors.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenGameSession.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenManagers\OdenGameManager.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenIngredientActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenManagers\OdenOrderManager.h" />
@@ -465,6 +467,7 @@
     <ClInclude Include="Source\Game\Actors\WaterSphere\WaterSphere.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenTrashActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenNextViewActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenResultScoreActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenUIScoreViewActor.h" />
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
     <ClInclude Include="Source\Game\Scenes\MainScene.h" />

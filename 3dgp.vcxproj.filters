@@ -558,6 +558,9 @@
     <ClCompile Include="Source\Game\Scenes\ResultScene.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\OdenGame\OdenResultScoreActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -924,6 +927,8 @@
     <ClInclude Include="Source\Game\OdenGame\OdenActors\BeatReactive.h" />
     <ClInclude Include="Source\Engine\Debug\LoggerConfig.h" />
     <ClInclude Include="Source\Game\Scenes\ResultScene.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenGameSession.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenResultScoreActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

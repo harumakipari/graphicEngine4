@@ -14,6 +14,7 @@ enum class EOdenType :uint8_t
     Donut,
     Shirataki,
     Kobumusubi,
+    Count,
 };
 
 // おでんの形のカテゴリー分け
@@ -92,4 +93,16 @@ struct OrderData
     // 具材指定系
     EOdenType requiredIngredient;
 };
- 
+
+
+struct OdenSubmitLog
+{
+    EOdenType type; // 具材の種類
+    int count = 1;             // 基本1だが拡張用
+    float score = 0.0f;
+    // 後々Great　Goodとか
+
+    //OdenSubmitLog(EOdenType t, int c, float s)
+    //    : type(t), count(c), score(s) {
+    //}
+};

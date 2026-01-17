@@ -7,6 +7,7 @@
 #include "Utility/GameUtility.h"
 #include "OdenGameManager.h"
 #include "OdenSlotManager.h"
+#include "Game/OdenGame/OdenGameSession.h"
 
 
 void OdenOrderManager::Initialize(const Transform& transform)
@@ -99,11 +100,14 @@ void OdenOrderManager::OnBubbleCompleted(int slotIndex,  OdenBubbleActor& bubble
         {
             // スコアを加算する
             gameManager->AddScore(score.price);
+            OdenGameSession::Instance().totalScore += score.price;
 
             // 満足度を加算する
             gameManager->AddSatisfaction(score.satisfaction);
             // リザルト画面のために実際に提出された食材の種類とスコアを記録する
-            gameManager->AddSubmitLog(bubble.GetIngredientType(), score.price);
+
+            OdenGameSession::Instance().submitLogs.emplace_back(bubble.GetIngredientType(), 1, 0.0f);
+            //gameManager->AddSubmitLog(bubble.GetIngredientType(), score.price);
         }
     }
 

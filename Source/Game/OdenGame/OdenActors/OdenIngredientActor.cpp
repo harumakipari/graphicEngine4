@@ -316,6 +316,8 @@ void OdenIngredientActor::TryBeginDrag(const DirectX::XMFLOAT2& cursor)
         {
             dragState = EOdenDragState::Dragging;
             grabbedFromSlot = currentSlot;
+            // ‚¨‚Å‚ñ‚ğ‚Â‚©‚Ş‰¹@SEÄ¶
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/grab_ingredient.wav", 1.0f);
             Logger::Log(U8("‚¨‚Å‚ñ‚ğ’Í‚ñ‚¾I"));
         }
     }

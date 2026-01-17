@@ -27,7 +27,6 @@ void SceneTransitionManager::RequestTransition(
     const std::string& nextScene,
     const SceneTransitionParam& param)
 {
-
     if (state_ != State::Idle)
     {
         Logger::Warning((ToString(state_)));
@@ -57,6 +56,7 @@ void SceneTransitionManager::Update(float deltaTime)
         {
             state_ = State::ChangingScene;
             Scene::_transition(nextScene_, param);
+            Logger::Log(U8("Closion ‚ð’Ê‚Á‚½"));
         }
         break;
 

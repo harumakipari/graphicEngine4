@@ -269,7 +269,6 @@ public:
         zOrder = 10;
     }
 
-    void SetFont(Font* font) { this->font = font; }
     void SetText(const std::wstring& t)
     {
         //if (text == t)
@@ -289,7 +288,6 @@ public:
     void SetColor(const CoreColor color) { this->color = color; }
 
 protected:
-    Font* font = nullptr;
     std::wstring text;
     CoreColor color = CoreColor::White;
 };
