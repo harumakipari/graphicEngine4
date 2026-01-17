@@ -553,6 +553,8 @@ void SceneBase::Draw(ID3D11DeviceContext* immediateContext)
         // フォントを表示
         uiManager->DrawFont(immediateContext);
 
+        // シーン遷移用のUIを表示
+        uiManager->DrawSceneChangeSprite(immediateContext);
 
         ExecuteHooks(RenderPass::UI, immediateContext);
     }

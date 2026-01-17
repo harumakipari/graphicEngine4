@@ -27,6 +27,7 @@ public:
     virtual void Update(float dt) {}
     virtual void Draw(ID3D11DeviceContext* immediateContext) {}
     virtual void DrawTexts(ID3D11DeviceContext* immediateContext) {}
+    virtual void DrawSceneChangeSprite(ID3D11DeviceContext* immediateContext) {}
     virtual void OnMouseEnter() {}
     virtual void OnMouseLeave() {}
     virtual void OnMouseDown() {}
@@ -143,6 +144,7 @@ public:
             scale
         );
     }
+
 protected:
     std::shared_ptr<Sprite>  texture;
 
@@ -259,6 +261,58 @@ public:
 private:
     float value = 1.0f;  // 0.0f ~ 1.0f
     std::shared_ptr<Sprite>  frameTexture;  //　枠のテクスチャ
+};
+
+class UISceneChangeComponent : public UICoreComponent
+{
+public:
+    UISceneChangeComponent(const std::string& filename, const std::string& name) :UICoreComponent(name)
+    {
+        texture = std::make_shared<Sprite>(Graphics::GetDevice(), std::wstring(filename.begin(), filename.end()).c_str());
+        uv.w = texture->GetTextureSize().x;
+        uv.h = texture->GetTextureSize().y;
+    }
+
+    UISceneChangeComponent(const std::string& name) :UICoreComponent(name)
+    {
+        // ダミーテクスチャを設定
+        texture = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/square.png");
+        uv.w = texture->GetTextureSize().x;
+        uv.h = texture->GetTextureSize().y;
+    }
+
+    UISceneChangeComponent() = default;
+
+    CoreColor color = CoreColor::White;
+
+    void SetColor(const CoreColor color) { this->color = color; }
+
+    void SetTexture(const std::shared_ptr<Sprite>& sprite)
+    {
+        texture = sprite;
+        uv.w = texture->GetTextureSize().x;
+        uv.h = texture->GetTextureSize().y;
+    }
+
+
+
+    void DrawSceneChangeSprite(ID3D11DeviceContext* immediateContext) override
+    {
+        SpriteRenderer::Draw(
+            texture.get(),
+            worldPosition,
+            size,
+            color,
+            uv,
+            worldAngle,
+            pivot,
+            scale
+        );
+    }
+
+private:
+    std::shared_ptr<Sprite>  texture;
+
 };
 
 class UITextComponent : public UICoreComponent

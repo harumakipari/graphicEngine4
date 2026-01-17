@@ -199,7 +199,7 @@ void OdenBubbleActor::SetOrderAndMakeUi(const OrderData& orderData, const std::s
     XMFLOAT2 uiPos = WorldToUI(position);
 
     // お題のUIコンポーネントを作成する
-    std::string filename = "./Data/Textures/UI/" + orderUiFileName + ".png";
+    std::string filename = "./Data/Textures/UI/UI_Order/" + orderUiFileName + ".png";
     orderUi = std::make_shared<UIImageComponent>(filename, "OdenBubbleUi");
     orderUi->SetWorldPosition({ uiPos.x, uiPos.y });
     orderUi->SetPivot({ 0.5f,0.5f });
@@ -211,11 +211,14 @@ void OdenBubbleActor::SetOrderAndMakeUi(const OrderData& orderData, const std::s
     remainingTime = timeLimit;
 
     // 制限時間のゲージのUIを作成する
+#if 0
     gaugeUi = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/boss_hp_frame.png", "./Data/Textures/UI/boss_hp.png", "gauge");
     gaugeUi->SetWorldPosition({ uiPos.x, uiPos.y });
     gaugeUi->SetSize({ 300, 40 });
 
     uiManager->Add(gaugeUi);
+
+#endif // 0
 }
 
 // 食材が落とされたら呼ばれる関数

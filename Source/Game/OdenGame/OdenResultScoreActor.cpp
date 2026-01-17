@@ -8,6 +8,7 @@
 
 void OdenResultScoreActor::Initialize(const Transform& transform)
 {
+
 }
 
 void OdenResultScoreActor::Update(float elapsedTime)
@@ -20,7 +21,8 @@ void OdenResultScoreActor::Update(float elapsedTime)
 
 
     // 総合スコアを表示する
-    scoreTextUi->SetText(L"Score:" + std::to_wstring(static_cast<int>(score)));
+    if (scoreTextUi)
+        scoreTextUi->SetText(L"ResultScore:" + std::to_wstring(static_cast<int>(score)));
 }
 
 // フォントをセットする

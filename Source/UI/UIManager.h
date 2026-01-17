@@ -11,6 +11,8 @@ public:
 
     void DrawFont(ID3D11DeviceContext* immediateContext) const;
 
+    void DrawSceneChangeSprite(ID3D11DeviceContext* immediateContext) const;
+
     void Add(const std::shared_ptr<UICoreComponent>& ui)
     {
         if (!ui) return;

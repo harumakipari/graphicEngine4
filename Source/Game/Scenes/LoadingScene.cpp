@@ -73,11 +73,13 @@ void LoadingScene::Start()
     float width = 1920.0f;
     float height = 1080.0f;
 
-    sprite = std::make_shared<UIImageComponent>("./Data/Textures/UI/scene_change_blue.png", "sceneChange");
+    sprite = std::make_shared<UISceneChangeComponent>("./Data/Textures/UI/scene_change_blue.png", "sceneChange");
     sprite->SetWorldPosition({ width * 0.5f, height * 0.5f });
     sprite->SetPivot({ 0.5f,0.5f });
     sprite->SetSize({ width, height });
-#if 0
+    sprite->zOrder = 1000;
+
+#if 1
     GetUIManager()->Add(sprite);
 #else
     RegisterRenderHook(RenderPass::UI, [&](ID3D11DeviceContext* immediateContext)

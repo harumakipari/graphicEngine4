@@ -91,6 +91,34 @@ void UIManager::DrawFont(ID3D11DeviceContext* immediateContext)const
 
 }
 
+void UIManager::DrawSceneChangeSprite(ID3D11DeviceContext* immediateContext)const
+{
+    if (!visible) return;
+
+    // •`‰æ‡‚Éƒ\[ƒg zOrder‚ª‘å‚«‚¢‚Ù‚ÇŒã‚É•`‰æ‚³‚ê‚é
+    std::vector<std::shared_ptr<UICoreComponent>> sortedComponents = rootComponents;
+    std::sort(sortedComponents.begin(), sortedComponents.end(),
+        [](const std::shared_ptr<UICoreComponent>& a, const std::shared_ptr<UICoreComponent>& b)
+        {
+            return a->zOrder < b->zOrder;
+        });
+
+
+    FontManager::GetUIFont()->Begin(immediateContext);
+    for (auto& ui : sortedComponents)
+    {
+        if (ui->IsVisible())
+        {
+            if (ui->IsVisible())
+            {
+                ui->DrawSceneChangeSprite(immediateContext);
+                //ui->ClearDirty();
+            }
+        }
+    }
+    FontManager::GetUIFont()->End(immediateContext);
+
+}
 
 void UIManager::DrawImGUi()
 {

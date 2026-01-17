@@ -35,45 +35,51 @@ bool ResultScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
 
 void ResultScene::Start()
 {
+    // BGM再生
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
     audioComp->SetSource(L"./Data/Sound/BGM/result.wav");
     audioComp->SetLoop(true);
     audioComp->Play();
 
-    std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("image");
-    image->SetWorldPosition({ 50, 50 });
-    image->SetSize({ 200, 200 });
+    // タイトルへ戻るボタンを生成
+    {
+        std::shared_ptr<UIButtonComponent> backToTitleButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/Result/back_to_title.png", "backToTitleButton");
+        backToTitleButton->SetWorldPosition({ 300, 50 });
+        backToTitleButton->SetSize({ 200, 80 });
 
-    uiManager->Add(image);
+        uiManager->Add(backToTitleButton);
 
-    std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/start_button.png", "button");
-    button->SetWorldPosition({ 300, 50 });
-    button->SetSize({ 200, 80 });
-
-    uiManager->Add(button);
-
-    std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>("gauge");
-    gauge->SetWorldPosition({ 50, 300 });
-    gauge->SetSize({ 300, 40 });
-
-    uiManager->Add(gauge);
-
-    // ボタンでゲージ減らす
-    button->onClick = [gauge]()
+        // タイトルへ戻るボタンがクリックされたときの処理
+        backToTitleButton->onClick = []()
         {
-            Logger::Log(u8"ボタンButton Clicked!");
+            Logger::Log(u8"BackToTitleボタンButton Clicked!");
             static float  value = 1.0f;
             const char* types[] = { "0", "1" };
-            //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
-
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
             //CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
-            value -= 0.1f;
-            if (value < 0.0f)
-                value = 0.0f;
-            gauge->SetValue(value, 1.0f);
         };
+    }
+
+
+    // リトライボタンを生成
+    {
+        std::shared_ptr<UIButtonComponent> retryButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/Result/retry.png", "retryButton");
+        retryButton->SetWorldPosition({ 300, 250 });
+        retryButton->SetSize({ 200, 80 });
+
+        uiManager->Add(retryButton);
+
+        // タイトルへ戻るボタンがクリックされたときの処理
+        retryButton->onClick = []()
+        {
+            Logger::Log(u8"retryButton Clicked!");
+            const char* types[] = { "0", "1" };
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
+        };
+    }
+
 
     // 結果スコア表示アクターを生成
     auto resultActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultScoreActor>("resultActor");

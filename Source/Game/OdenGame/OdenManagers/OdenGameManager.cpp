@@ -10,8 +10,8 @@ void OdenGameManager::Initialize(const Transform& transform)
     // タイマーやスコアをリセットする
     Reset();
 
-    //// セッションもリセット
-    //OdenGameSession::Instance().Reset();
+    // セッションもリセット
+    OdenGameSession::Instance().Reset();
 }
 
 void OdenGameManager::Update(float deltaTime)

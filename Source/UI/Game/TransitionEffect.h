@@ -21,7 +21,7 @@ public:
 
     void OnSceneChanged() const;
 private:
-    std::shared_ptr<UIImageComponent> sprite;
+    std::shared_ptr<UISceneChangeComponent> sprite;
     std::shared_ptr<EasingRunner> easingRunner;
     float time = 0.0f;
     float spriteScale = 1.0f;
