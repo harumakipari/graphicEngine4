@@ -18,8 +18,14 @@
 class Camera :public Actor
 {
 public:
+    enum class EProjectionType :uint8_t
+    {
+        Perspective,
+        Orthographic
+    };
+public:
     //引数付きコンストラクタ
-    Camera(std::string actorName) :Actor(actorName) 
+    Camera(std::string actorName) :Actor(actorName)
     {
     }
 
@@ -31,14 +37,14 @@ public:
         mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(45), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
     }
 
-    virtual ViewConstants GetViewConstants() const
+    virtual ViewConstants GetViewConstants(/*EProjectionType type = EProjectionType::Perspective*/) const
     {
         ViewConstants viewConstants;
         DirectX::XMFLOAT3 cameraPosition = GetPosition();
-        viewConstants.cameraPosition={ cameraPosition.x,cameraPosition.y,cameraPosition.z,1.0f };
+        viewConstants.cameraPosition = { cameraPosition.x,cameraPosition.y,cameraPosition.z,1.0f };
         viewConstants.view = mainCameraComponent->GetView();
         viewConstants.projection = mainCameraComponent->GetProjection();
-       
+
         DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&mainCameraComponent->GetProjection());
         DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&mainCameraComponent->GetView());
         DirectX::XMStoreFloat4x4(&viewConstants.viewProjection, V * P);

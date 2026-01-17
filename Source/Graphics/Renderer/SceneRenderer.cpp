@@ -63,8 +63,6 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::v
                 //meshComponent->model->Render(immediateContext, worldMat, convexComponent->GetAnimatedNodes(), InterleavedGltfModel::RenderPass::Opaque);
             }
 #endif // 0
-
-
             meshComponent->UpdateConstantBuffer(immediateContext);
             meshComponent->UpdatePlusAlphaConstants(immediateContext);
 

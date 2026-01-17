@@ -2,6 +2,7 @@
 #include "OdenSlotActor.h"
 
 #include "OdenIngredientActor.h"
+#include "Engine/Audio/CoreAudio.h"
 
 void OdenSlotActor::Initialize(const Transform& transform)
 {

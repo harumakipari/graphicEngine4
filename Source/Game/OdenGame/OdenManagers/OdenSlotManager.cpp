@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "OdenSlotManager.h"
 
+#include "Engine/Audio/CoreAudio.h"
 #include "Engine/Scene/Scene.h"
 #include "Game/OdenGame/OdenActors/OdenSlotActor.h"
 #include "Game/OdenGame/OdenActors/OdenDetailIngredientsActors.h"
@@ -95,6 +96,8 @@ void OdenSlotManager::UpdateBeat(float deltaTime)
     {
         const auto& beat = clock->GetCurrentBeat();
 
+        // 回転音再生
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/turing.wav", 1.0f);
         // スロットの食材回転処理
         for (auto& slot : slots)
         {

@@ -285,11 +285,11 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
         {
             continue;
         }
-
-        auto dot = AddComponent<DotLineMeshComponent>("dotLine_" + std::to_string(static_cast<int>(face)), parentName);
+        std::string dotLineName = "dot_line" + std::string(magic_enum::enum_name(odenOrientation.bottom));
+        auto dot = AddComponent<DotLineMeshComponent>(dotLineName, parentName);
 
         const FaceTransform& ft = faceTransformTable[face];
-        dot->SetRelativeLocationDirect({ 0.0f,0.03f,0.0f });
+        dot->SetRelativeLocationDirect({ 0.0f,-0.03f,0.0f });
         dot->SetRelativeEulerRotationDirect(ft.localEuler);
         dot->SetModel(modelDotLineFileName);
         dot->SetIsCastShadow(false);
