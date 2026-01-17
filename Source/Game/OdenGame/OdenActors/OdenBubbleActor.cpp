@@ -76,7 +76,7 @@ void OdenBubbleActor::Update(float elapsedTime)
     // ゲージで去っていく処理　デバック中やりにくいから一旦コメントアウト
     // 待機
 
-    if (state == EBubbleState::Waiting || state == EBubbleState::QueuingMove && !isCompeted)
+    if (state == EBubbleState::Waiting && canAcceptOrder)
     {
         // 残り時間を減らす
         remainingTime -= elapsedTime;
@@ -96,7 +96,7 @@ void OdenBubbleActor::Update(float elapsedTime)
 
     // 焦り度
     float timeRate = remainingTime / timeLimit; // 1.0->0.0
-    if (orderUi && timeRate < 0.3f && state == EBubbleState::Waiting || state == EBubbleState::QueuingMove)
+    if (orderUi && timeRate < 0.3f && state == EBubbleState::Waiting)
     {// 揺らす
         shakeTimer += elapsedTime;
 
@@ -127,54 +127,20 @@ void OdenBubbleActor::Update(float elapsedTime)
 
     switch (state)
     {
-    case EBubbleState::QueuingMove:
-        position = MathHelper::Lerp(position, targetPos, elapsedTime * moveSpeed);
-        SetPosition(position);
-
-        if (MathHelper::Distance(position, targetPos) < 0.05f)
-        {
-            SetPosition(targetPos);
-            state = EBubbleState::Waiting;
-        }
-        break;
-
     case EBubbleState::LeavingBack:
-#if 0
-        position = MathHelper::Lerp(position, targetPos, elapsedTime * moveSpeed);
-        SetPosition(position);
-
-        if (MathHelper::Distance(position, targetPos) < 0.05f)
-        {
-            // 左に退場
-            targetPos = position;
-            targetPos.x -= 6.0f;   // 左に消える
-            state = EBubbleState::LeavingLeft;
-        }
-#else
         if (MoveTowards(targetPos, moveSpeed, elapsedTime))
         {
             // 次は「斜め後ろの共通退場地点」へ
             targetPos = { -14.0f, 0.0f, 23.0f };
             state = EBubbleState::LeavingLeft;
         }
-#endif // 0
         break;
 
     case EBubbleState::LeavingLeft:
-#if 0
-        position = MathHelper::Lerp(position, targetPos, elapsedTime * moveSpeed);
-        SetPosition(position);
-
-        if (MathHelper::Distance(position, targetPos) < 0.05f)
-        {
-            MarkPendingKill();
-        }
-#else
         if (MoveTowards(targetPos, moveSpeed, elapsedTime))
         {
             MarkPendingKill();
         }
-#endif // 0
         break;
     }
 
@@ -241,7 +207,7 @@ void OdenBubbleActor::SetOrderAndMakeUi(const OrderData& orderData, const std::s
     uiManager->Add(orderUi);
 
     // 制限時間を設定する
-    timeLimit = MathHelper::RandomRange(5.0f, 10.0f); // 4.0f ~ 6.0f で去る
+    timeLimit = MathHelper::RandomRange(10.0f, 15.0f); // 
     remainingTime = timeLimit;
 
     // 制限時間のゲージのUIを作成する
@@ -250,15 +216,16 @@ void OdenBubbleActor::SetOrderAndMakeUi(const OrderData& orderData, const std::s
     gaugeUi->SetSize({ 300, 40 });
 
     uiManager->Add(gaugeUi);
-
 }
 
 // 食材が落とされたら呼ばれる関数
 void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
 {
-    if (state != EBubbleState::Waiting) // 状態が待機じゃなかったら
+    if (!CanAcceptIngredient())
         return;
 
+    isCompeted = true;
+    canAcceptOrder = false;
 
     // スコアを計算する
     float matchRate = JudgeMatchShapeRate(ingredient);

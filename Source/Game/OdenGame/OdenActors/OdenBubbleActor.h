@@ -34,7 +34,6 @@ public:
         Waiting, // 待っている
         LeavingBack,   // 少し後ろに下がる
         LeavingLeft,    // 左に退場
-        QueuingMove,     // 列の詰め動作中
         Completed,    // 注文完了して去った
     };
 
@@ -56,14 +55,6 @@ public:
     // 食材が落とされたら呼ばれる関数
     void OnIngredientDropped(const OdenIngredientActor& ingredient);
 
-    // 目標位置に向かって動く
-    void SetTargetPosition(const XMFLOAT3& pos, bool acceptOrder)
-    {
-        targetPos = pos;
-        canAcceptOrder = acceptOrder;
-        state = EBubbleState::QueuingMove;
-    }
-
     // 注文を完了して離れる
     void SetLeaving()
     {
@@ -74,9 +65,9 @@ public:
     }
 
     // 注文できるかどうか
-    bool CanAcceptOrder() const
+    bool CanAcceptIngredient() const
     {
-        return canAcceptOrder;
+        return canAcceptOrder && state == EBubbleState::Waiting && !isCompeted;
     }
 
     // 拍が来た瞬間の処理
@@ -129,7 +120,7 @@ private:
     DirectX::XMFLOAT3 targetPos;
     float moveSpeed = 4.0f;
 
-    bool canAcceptOrder = false; // 注文ができるかどうか
+    bool canAcceptOrder = true; // 注文ができるかどうか
 
     DirectX::XMFLOAT3 leaveFinalPos; // 最終的に消える位置
 

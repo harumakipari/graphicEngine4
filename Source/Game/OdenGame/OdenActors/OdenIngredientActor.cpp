@@ -245,8 +245,8 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
     }
 
     // 値段を設定する
-    price = ingredientPriceTable[ingredientType];
-
+    // price = ingredientPriceTable[ingredientType];
+    price = 100.0f; // 全て 100 点にする
 #if 1
     struct FaceTransform
     {
@@ -383,7 +383,7 @@ OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const D
         }
         if (auto odenBubble = dynamic_cast<OdenBubbleActor*>(result.actor))
         {// お題の上だったら
-            if (odenBubble->CanAcceptOrder())
+            if (odenBubble->CanAcceptIngredient())
             {// オーダー可能な時
                 odenBubble->OnIngredientDropped(*this); // これちょっと怖い。。
                 return EHoverTarget::OrderBubble;

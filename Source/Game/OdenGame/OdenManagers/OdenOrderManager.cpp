@@ -16,6 +16,7 @@ void OdenOrderManager::Initialize(const Transform& transform)
     // お題を生成
     for (int i = 0; i < MaxOrders + arrangeOrder; i++) // 奥に見える分
     {
+        slots.push_back({  {} ,i});
         SpawnOrderBubble(i);
     }
 
@@ -44,18 +45,13 @@ void OdenOrderManager::SpawnOrderBubble(int index)
     // お題を設定する
     bubble->SetOrderAndMakeUi(randomOrder.data, randomOrder.uiName);
 
-    bubble->onCompleted = [this](const OdenBubbleActor& bubble, const OdenResult score)
+    bubble->onCompleted = [this, index](OdenBubbleActor& bubble, const OdenResult score)
         {
             //　完了時の処理
-            OnBubbleCompleted(bubble, score);
+            OnBubbleCompleted(index,bubble, score);
         };
 
-    BubbleSlot slot;
-    slot.bubble = bubble;
-    slot.slotIndex = index;
-
-    slots.push_back(slot);
-
+    slots[index].bubble = bubble;
 
     // スロットマネージャーに吹き出しを登録する　これで吹き出しがビートに乗る
     auto slotManagerActor = GetOwnerScene()->GetActorManager()->GetActorByName("slotManager");
@@ -92,7 +88,7 @@ DirectX::XMFLOAT3 OdenOrderManager::GetBubblePosition(const int index)
 }
 
 // 注文が完了した時に呼ばれる関数
-void OdenOrderManager::OnBubbleCompleted(const OdenBubbleActor& bubble, const OdenResult score)
+void OdenOrderManager::OnBubbleCompleted(int slotIndex,  OdenBubbleActor& bubble, const OdenResult score)
 {
     Logger::Log(U8("オーダー完了時のスコア = ") + std::to_string(score.price));
 
@@ -111,22 +107,11 @@ void OdenOrderManager::OnBubbleCompleted(const OdenBubbleActor& bubble, const Od
         }
     }
 
-    // 列から外す
-    for (auto& s : slots)
-    {
-        if (auto b = s.bubble.lock())
-        {
-            if (b.get() == &bubble)
-            {
-                b->SetLeaving();
-                s.bubble.reset(); // スロットは空に
-                break;
-            }
-        }
-    }
+    bubble.SetLeaving();
+    slots[slotIndex].bubble.reset();
 
-    // スロット再配置（詰める）
-    RearrangeBubbles();
+    // 少し遅らせて新しい客を出すのもアリ
+    SpawnOrderBubble(slotIndex);
 }
 
 // 並びを詰める
@@ -141,7 +126,7 @@ void OdenOrderManager::RearrangeBubbles()
             s.slotIndex = newIndex;
 
             const bool canOrder = (newIndex < MaxOrders); // ← 3人だけ
-            b->SetTargetPosition(GetBubblePosition(newIndex), canOrder);
+     //       b->SetTargetPosition(GetBubblePosition(newIndex), canOrder);
 
             newIndex++;
         }

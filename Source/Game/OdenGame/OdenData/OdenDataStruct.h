@@ -52,7 +52,7 @@ struct OdenData
 static  std::unordered_map<EOdenType, float> ingredientPriceTable =
 {
     { EOdenType::Daikon, 100.0f },
-    { EOdenType::Egg, 120.0f },
+    { EOdenType::Egg, 100.0f },
     { EOdenType::Chikuwa, 80.0f },
     { EOdenType::Konnyaku, 90.0f },
     { EOdenType::Tsukune, 90.0f },

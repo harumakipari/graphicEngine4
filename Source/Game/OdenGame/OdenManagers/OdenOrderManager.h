@@ -27,7 +27,7 @@ private:
     DirectX::XMFLOAT3 GetBubblePosition(const int index);
 
     // ’•¶‚ªŠ®—¹‚µ‚½‚ÉŒÄ‚Î‚ê‚éŠÖ”
-    void OnBubbleCompleted(const OdenBubbleActor& bubble, OdenResult score);
+    void OnBubbleCompleted(int slotIndex,  OdenBubbleActor& bubble, OdenResult score);
 
     // •À‚Ñ‚ğ‹l‚ß‚é
     void RearrangeBubbles();
@@ -45,6 +45,6 @@ private:
     float spacing = 3.0f;
 
     // TODO:@’•¶{•À‚ñ‚Å‚¢‚él”
-    static constexpr int arrangeOrder = 2;
+    static constexpr int arrangeOrder = 0;
 
 };
