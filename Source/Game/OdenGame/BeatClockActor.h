@@ -36,25 +36,35 @@ public:
         return false;
     }
 
+
     // BPMを設定する
     void SetBpm(const float bpm)
     {
         this->bpm = bpm;
     }
+
+    // 進んだ拍数を取得してリセットする
+    int ConsumeAdvancedBeatCount();
 private:
     // ビートを進める
     void AdvanceBeat();
 
 private:
     float bpm = 105.0f;
-    float time = 0.0f;
+    double time = 0.0;
     float beatPhase = 0.0f;
 
-    int beatIndex = 0;
+    int beatIndex = -1;
     int barIndex = 0;
     int beatsPerBar = 4;
+    int advancedBeatCount = 0;
 
     BeatInfo currentBeat;
 
     bool beatJustChanged = false;
+
+
+    double gameTime = 0.0;
+    double beatInterval = 1.5;
+
 };

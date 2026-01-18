@@ -10,7 +10,6 @@ void Pause::Initialize(const Transform& transform)
 {
     const auto scene = GetOwnerScene();
 
-
     pausePanel = std::make_shared<UIImageComponent>("./Data/Textures/UI/pause_panel.png", "pause_panel");
     pausePanel->SetWorldPosition({ 967, 490 });
     pausePanel->SetPivot({ 0.5f,0.5f });
@@ -20,15 +19,17 @@ void Pause::Initialize(const Transform& transform)
     pausePanel->zOrder = 100; // 手前に描画する
     scene->GetUIManager()->Add(pausePanel);
 
-    menuButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/menu.png", "menu");
-    menuButton->SetWorldPosition({ 100, 85 });
-    menuButton->SetPivot({ 0.5f,0.5f });
-    menuButton->SetSize({ 140, 140 });
-    menuButton->zOrder = 100; // 手前に描画する
-    scene->GetUIManager()->Add(menuButton);
-    menuButton->onClick = [&]()
+    // メニューボタン
+    {
+        menuButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/menu.png", "menu");
+        menuButton->SetWorldPosition({ 100, 85 });
+        menuButton->SetPivot({ 0.5f,0.5f });
+        menuButton->SetSize({ 140, 140 });
+        menuButton->zOrder = 100; // 手前に描画する
+        scene->GetUIManager()->Add(menuButton);
+        menuButton->onClick = [&]()
         {
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/pushButton.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/escape_se.wav");
             pausePanel->SetVisible(true);
             pausePanel->SetEnable(true);
 
@@ -45,6 +46,7 @@ void Pause::Initialize(const Transform& transform)
 
             GetOwnerScene()->SetPaused(true);
         };
+    }
 
 
     closeButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/close.png", "close");
@@ -57,15 +59,13 @@ void Pause::Initialize(const Transform& transform)
 
     closeButton->onClick = [&]()
         {
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/pushButton.wav");
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
             pausePanel->SetVisible(false);
             pausePanel->SetEnable(false);
             closeButton->SetEnable(false);
             closeButton->SetVisible(false);
             returnTitleButton->SetEnable(false);
             returnTitleButton->SetVisible(false);
-
-
             state = PauseState::ResumeCountdown;
             countdownTime = 3.0f;
         };
@@ -80,8 +80,7 @@ void Pause::Initialize(const Transform& transform)
     returnTitleButton->zOrder = 105; // 手前に描画する
     returnTitleButton->onClick = [&]()
         {
-
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/pushButton.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
             Time::timeScale = 1.0f;
 
             const char* types[] = { "0", "1" };
@@ -144,7 +143,7 @@ void Pause::Update(float deltaTime)
 
         if (current != lastCountdownNumber)
         {
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/countdown.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/countDown_se.wav");
             lastCountdownNumber = current;
         }
     }

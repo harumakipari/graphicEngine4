@@ -4,6 +4,7 @@
 #include <magic_enum.hpp>
 
 #include "Engine/Scene/Scene.h"
+#include "Game/OdenGame/OdenGameSession.h"
 #include "Physics/CollisionFunction.h"
 
 #include "Game/OdenGame/OdenActors/OdenIngredientActor.h"
@@ -253,11 +254,24 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
     if (scorePopupUi)
     {
         if (score == EScore::Perfect)
+        {
             scorePopupUi->Play(L"Perfect!");
+            // 提出音　成功SE再生
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/succeed_submit.wav");
+            OdenGameSession::Instance().submitLogs.emplace_back(submittedIngredientType, 1, sales);
+
+        }
         else if (score == EScore::Good)
+        {
             scorePopupUi->Play(L"Good!");
+            OdenGameSession::Instance().submitLogs.emplace_back(submittedIngredientType, 1, sales);
+        }
         else
+        {
             scorePopupUi->Play(L"Fail");
+            // 提出音　失敗SE再生
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/fail_submit.wav");
+        }
 
         scorePopupUi->SetVisible(true);
     }

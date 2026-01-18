@@ -340,6 +340,8 @@ void OdenIngredientActor::UpdateDragging(const DirectX::XMFLOAT2& cursor) const
 void OdenIngredientActor::EndDrag(const DirectX::XMFLOAT2& cursor)
 {
     dragState = EOdenDragState::InSlot;
+    // ‚¨‚Å‚ñ‚ð—£‚·‰¹@SEÄ¶
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE/release_ingredient.wav", 1.0f);
     switch (DetectHoverTarget(cursor))
     {
     case EHoverTarget::OdenSlot:
@@ -530,6 +532,14 @@ void OdenIngredientActor::StartRotationAnim(const ERotateType rotateType)
     }
     XMVECTOR target = OrientationToQuat(odenOrientation);
 
+    XMVECTOR q = XMQuaternionMultiply(startOrientation, targetRotation);
+    q = XMQuaternionNormalize(q);
+    XMStoreFloat4(&visualOrientation, q);
+
+    ingredientModel->SetRelativeRotationDirect(visualOrientation);
+
+
+    return;
     TestEasingHandler handler;
     handler.AddEasing(TestEaseType::OutCubic, 0.f, 1.0f, 0.25f);
 

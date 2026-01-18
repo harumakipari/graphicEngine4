@@ -120,7 +120,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     //  specular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
     float3 Lo = totalDiffuse + totalSpecular + emissive;
 
-    return float4(baseColor);
+    // return float4(baseColor);
 
     return float4(Lo, 1.0f);
 }

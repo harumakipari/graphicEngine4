@@ -35,48 +35,35 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
 
 void TitleScene::Start()
 {
-    auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
-    auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
-    audioComp->SetSource(L"./Data/Sound/BGM/title.wav");
-    audioComp->SetLoop(true);
-    audioComp->Play();
+    // タイトルのBGM再生
+    {
+        auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
+        auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
+        // audioComp->SetSource(L"./Data/Sound/BGM/title.wav");// 屋台音
+        audioComp->SetSource(L"./Data/Sound/BGM/A Snowless Winter_1h.wav");// 
+        audioComp->SetLoop(true);
+        audioComp->SetVolume(0.5f);
+        audioComp->Play();
+    }
 
+    // スタートボタンの作成
+    {
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/start_button.png", "button");
+        button->SetWorldPosition({ 300, 50 });
+        button->SetSize({ 200, 80 });
+        uiManager->Add(button);
 
-    std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("image");
-    image->SetWorldPosition({ 50, 50 });
-    image->SetSize({ 200, 200 });
+        button->onClick = []()
+            {
+                Logger::Log(u8"ボタンButton Clicked!");
+                static float  value = 1.0f;
+                const char* types[] = { "0", "1" };
+                //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
 
-    uiManager->Add(image);
-
-
-    std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/start_button.png", "button");
-    button->SetWorldPosition({ 300, 50 });
-    button->SetSize({ 200, 80 });
-
-    uiManager->Add(button);
-
-    std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>("gauge");
-    gauge->SetWorldPosition({ 50, 300 });
-    gauge->SetSize({ 300, 40 });
-
-    uiManager->Add(gauge);
-
-    // ボタンでゲージ減らす
-    button->onClick = [gauge]()
-        {
-            Logger::Log(u8"ボタンButton Clicked!");
-            static float  value = 1.0f;
-            const char* types[] = { "0", "1" };
-            //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
-
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
-            value -= 0.1f;
-            if (value < 0.0f)
-                value = 0.0f;
-            gauge->SetValue(value, 1.0f);
-        };
-
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            };
+    }
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
 }

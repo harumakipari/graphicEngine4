@@ -91,14 +91,29 @@ void OdenSlotManager::UpdateBeat(float deltaTime)
     if (!clock)
         return;
 
+    int beatCount = clock->ConsumeAdvancedBeatCount();
+
+    for (int i = 0; i < beatCount; ++i)
+    {
+        for (auto& slot : slots)
+        {
+            if (auto slotActor = slot.lock())
+            {
+                slotActor->OnBeat();
+            }
+        }
+    }
+
     // 拍が切り替わった瞬間
     if (clock->ConsumeBeatJustChanged())
     {
         const auto& beat = clock->GetCurrentBeat();
 
         // 回転音　SE再生
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE/turning.wav", 0.8f);
+        //CoreAudio::PlayOneShot(L"./Data/Sound/SE/turning.wav", 0.3f);
+        //CoreAudio::PlayOneShot(L"./Data/Sound/SE/turning_finger_clap.wav");
         // スロットの食材回転処理
+#if 0
         for (auto& slot : slots)
         {
             if (auto slotActor = slot.lock())
@@ -106,6 +121,8 @@ void OdenSlotManager::UpdateBeat(float deltaTime)
                 slotActor->OnBeat(/*beat.isStrong*/);
             }
         }
+
+#endif // 0
 
         // 拍が切り替わった時の処理
         for (auto& beatReact : beatReactives)

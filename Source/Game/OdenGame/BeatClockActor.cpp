@@ -1,26 +1,53 @@
 #include "pch.h"
 #include "BeatClockActor.h"
 
-
+#include <chrono>
 
 
 void BeatClockActor::Update(float deltaTime)
 {
-    time += deltaTime;
+    gameTime += deltaTime;
 
-    float beatTime = 60.0f / bpm;
-    while (time >= beatTime)
+    int currentBeatIndex = static_cast<int>(gameTime / beatInterval);
+
+    if (currentBeatIndex != beatIndex)
     {
-        time -= beatTime;
+        beatIndex = currentBeatIndex;
         AdvanceBeat();
     }
 
-    beatPhase = time / beatTime; // 0.0~1.0
+
+    //time += deltaTime;
+
+    //double beatTime = 1.5;
+    //while (time >= beatTime)
+    //{
+    //    time -= beatTime;
+    //    AdvanceBeat();
+    //}
+
+    //beatPhase = time / beatTime; // 0.0~1.0
+}
+
+
+// 進んだ拍数を取得してリセットする
+int BeatClockActor::ConsumeAdvancedBeatCount()
+{
+    int count = advancedBeatCount;
+    advancedBeatCount = 0;
+    return count;
 }
 
 void BeatClockActor::AdvanceBeat()
 {
-    beatIndex++;
+
+    double idealTime = beatIndex * beatInterval;
+
+    Logger::Log("Beat at: " + std::to_string(idealTime));
+
+
+    advancedBeatCount++;
+
     if (beatIndex % beatsPerBar == 0)
     {
         barIndex++;

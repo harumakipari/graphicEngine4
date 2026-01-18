@@ -140,7 +140,7 @@ void MainScene::Start()
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
-    audioBgmComponent->SetSource(L"./Data/Sound/BGM/game.wav");
+    audioBgmComponent->SetSource(L"./Data/Sound/BGM/game_bgm.wav");
     audioBgmComponent->SetLoop(true);
     audioBgmComponent->SetVolume(0.8f);
     audioBgmComponent->Play();
@@ -148,7 +148,7 @@ void MainScene::Start()
     auto audioPotBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
     audioPotBgmComponent->SetSource(L"./Data/Sound/BGM/pot_bgm.wav");
     audioPotBgmComponent->SetLoop(true);
-    audioPotBgmComponent->SetVolume(2.5f);
+    audioPotBgmComponent->SetVolume(3.0f);
     audioPotBgmComponent->Play();
 
 #if 0
@@ -187,7 +187,7 @@ void MainScene::Start()
     // ビートを設定する関数
     auto beatClockActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<BeatClockActor>("beatClockActor");
     slotManager->SetBeatActor(beatClockActor);
-    beatClockActor->SetBpm(60.0f);
+    beatClockActor->SetBpm(50.0f);
 
     // ステージアクターを生成
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });

@@ -106,7 +106,7 @@ void OdenOrderManager::OnBubbleCompleted(int slotIndex,  OdenBubbleActor& bubble
             gameManager->AddSatisfaction(score.satisfaction);
             // リザルト画面のために実際に提出された食材の種類とスコアを記録する
 
-            OdenGameSession::Instance().submitLogs.emplace_back(bubble.GetIngredientType(), 1, 0.0f);
+            // OdenGameSession::Instance().submitLogs.emplace_back(bubble.GetIngredientType(), 1, 0.0f);
             //gameManager->AddSubmitLog(bubble.GetIngredientType(), score.price);
         }
     }
