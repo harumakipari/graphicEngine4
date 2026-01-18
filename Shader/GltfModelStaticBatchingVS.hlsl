@@ -1,6 +1,6 @@
 #include "GltfModel.hlsli"
 
-VS_OUT main(float4 position : POSITION, float4 normal : NORMAL, float4 tangent : TANGENT, float2 texcoord : TEXCOORD)
+VS_OUT main(float4 position : POSITION, float4 normal : NORMAL, float4 tangent : TANGENT, float2 texcoord[2] : TEXCOORD)
 {
     VS_OUT vout;
 
@@ -19,7 +19,7 @@ VS_OUT main(float4 position : POSITION, float4 normal : NORMAL, float4 tangent :
     //vout.wTangent.xyz = normalize(mul(tangent, inverseTransposeWorld).xyz);
     vout.wTangent.w = sigma;
 
-    vout.texcoord = texcoord;
+    vout.texcoord = texcoord[0];
 
     return vout;
 }

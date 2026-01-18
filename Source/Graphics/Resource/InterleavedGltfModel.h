@@ -255,6 +255,7 @@ public:
             DirectX::XMFLOAT3 normal = { 0, 0, 1 };
             DirectX::XMFLOAT4 tangent = { 1, 0, 0, 1 };
             DirectX::XMFLOAT2 texcoord = { 0, 0 };
+            DirectX::XMFLOAT2 texcoord1 = { 0, 0 };
 
             template<class T>
             void serialize(T& archive)
@@ -263,7 +264,8 @@ public:
                     cereal::make_nvp("position", position),
                     cereal::make_nvp("normal", normal),
                     cereal::make_nvp("tangent", tangent),
-                    cereal::make_nvp("texcoord", texcoord)
+                    cereal::make_nvp("texcoord", texcoord),
+                    cereal::make_nvp("texcoord1", texcoord1)
                 );
             }
         };

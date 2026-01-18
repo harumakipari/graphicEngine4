@@ -722,6 +722,11 @@ void InterleavedGltfModel::FetchAndBatchMeshes(ID3D11Device* device, const tinyg
                         unsigned char* dData = reinterpret_cast<unsigned char*>(&cachedVertices.data()->texcoord);
                         _Copy<DirectX::XMFLOAT2>(dData, dStride, sData, sStride, count);
                     }
+                    else if (gltfAttribute.first == "TEXCOORD_1")
+                    {
+                        unsigned char* dData = reinterpret_cast<unsigned char*>(&cachedVertices.data()->texcoord1);
+                        _Copy<DirectX::XMFLOAT2>(dData, dStride, sData, sStride, count);
+                    }
                     else
                     {
                         OutputDebugStringA((gltfAttribute.first + " is an unsupported attribute.\n").c_str());
@@ -1367,6 +1372,7 @@ void InterleavedGltfModel::CreateAndUploadResources(ID3D11Device* device)
             { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "TANGENT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         };
         hr = CreateVsFromCSO(device, "./Shader/GltfModelStaticBatchingVS.cso", vertexShader.ReleaseAndGetAddressOf(), inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
