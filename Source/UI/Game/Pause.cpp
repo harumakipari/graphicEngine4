@@ -39,8 +39,12 @@ void Pause::Initialize(const Transform& transform)
             returnTitleButton->SetVisible(true);
             returnTitleButton->SetEnable(true);
 
+            retryButton->SetVisible(true);
+            retryButton->SetEnable(true);
+
             menuButton->SetEnable(false);
             menuButton->SetVisible(false);
+
 
             Time::timeScale = 0.0f;
 
@@ -66,12 +70,14 @@ void Pause::Initialize(const Transform& transform)
             closeButton->SetVisible(false);
             returnTitleButton->SetEnable(false);
             returnTitleButton->SetVisible(false);
+            retryButton->SetEnable(false);
+            retryButton->SetVisible(false);
             state = PauseState::ResumeCountdown;
             countdownTime = 3.0f;
         };
     GetOwnerScene()->GetUIManager()->Add(closeButton);
 
-    returnTitleButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/exit.png", "exit");
+    returnTitleButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/back_to_title.png", "back_to_title");
     returnTitleButton->SetWorldPosition({ 977, 638 });
     returnTitleButton->SetPivot({ 0.5f,0.5f });
     returnTitleButton->SetSize({ 472, 183 });
@@ -84,10 +90,30 @@ void Pause::Initialize(const Transform& transform)
             Time::timeScale = 1.0f;
 
             const char* types[] = { "0", "1" };
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
         };
 
     GetOwnerScene()->GetUIManager()->Add(returnTitleButton);
+
+
+    retryButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/retry.png", "retry");
+    retryButton->SetWorldPosition({ 977, 838 });
+    retryButton->SetPivot({ 0.5f,0.5f });
+    retryButton->SetSize({ 472, 183 });
+    retryButton->SetVisible(false);
+    retryButton->SetEnable(false);
+    retryButton->zOrder = 105; // Žè‘O‚É•`‰æ‚·‚é
+    retryButton->onClick = [&]()
+        {
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            Time::timeScale = 1.0f;
+
+            const char* types[] = { "0", "1" };
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
+        };
+
+    GetOwnerScene()->GetUIManager()->Add(retryButton);
+
 
     for (int i = 0; i < 3; i++)
     {

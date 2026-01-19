@@ -23,6 +23,7 @@ private:
     std::shared_ptr<UIImageComponent> pausePanel;
     std::shared_ptr<UIButtonComponent> menuButton;
     std::shared_ptr<UIButtonComponent> returnTitleButton;
+    std::shared_ptr<UIButtonComponent> retryButton;
     std::shared_ptr<UIButtonComponent> closeButton;
 
     std::array<std::shared_ptr<UIImageComponent>, 3> countDownImages;
