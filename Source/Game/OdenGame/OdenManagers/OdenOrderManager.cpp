@@ -9,19 +9,48 @@
 #include "OdenSlotManager.h"
 #include "Game/OdenGame/OdenGameSession.h"
 
+// 形状からお題を探す
+OrderEntry FindShapeOrder(EOdenShapeCategory shape)
+{
+    auto& list = OdenGameParameter::orderDB.shapeOrders;
+
+    auto it = std::ranges::find_if(list,
+        [&](const OrderEntry& e)
+        {
+            return e.data.requiredCategory == shape;
+        });
+
+    assert(it != list.end());
+    return *it;
+}
+
+OrderEntry FindIngredientOrder(EOdenType ingredient)
+{
+    auto& list = OdenGameParameter::orderDB.ingredientOrders;
+
+    auto it = std::ranges::find_if(list,
+        [&](const OrderEntry& e)
+        {
+            return e.data.requiredIngredient == ingredient;
+        });
+
+    assert(it != list.end());
+    return *it;
+}
 
 void OdenOrderManager::Initialize(const Transform& transform)
 {
     slots.clear();
 
+    BuildOrderBag();
+
     // お題を生成
     for (int i = 0; i < MaxOrders + arrangeOrder; i++) // 奥に見える分
     {
-        slots.push_back({  {} ,i});
+        slots.push_back({ {} ,i });
         SpawnOrderBubble(i);
     }
 
-    RearrangeBubbles();
 }
 
 
@@ -49,10 +78,10 @@ void OdenOrderManager::SpawnOrderBubble(int index)
     bubble->onCompleted = [this, index](OdenBubbleActor& bubble, const OdenResult score)
         {
             //　完了時の処理
-            OnBubbleCompleted(index,bubble, score);
+            OnBubbleCompleted(index, bubble, score);
         };
 
-    bubble->SetTargetPosition(GetBubblePosition(index)); 
+    bubble->SetTargetPosition(GetBubblePosition(index));
 
     slots[index].bubble = bubble;
 
@@ -65,27 +94,32 @@ void OdenOrderManager::SpawnOrderBubble(int index)
 // ランダムにお題を生成する
 OrderEntry OdenOrderManager::PickRandomOrder()
 {
+#if 0
     // あいまいな形のお題の割合
     constexpr float shapeOrderRate = 0.8f;   // 60%
 
     EOrderType type;
-    for (;;)
     {
         float r = MathHelper::RandomRange(0.0f, 1.0f);
         type = (r < shapeOrderRate)
             ? EOrderType::ShapeOnly
             : EOrderType::SpecificIngredient;
 
-        if (!lastOrderType || *lastOrderType != type)
-            break;
     }
-
-    lastOrderType = type;
 
     if (type == EOrderType::ShapeOnly)
         return GameHelper::PickRandom(OdenGameParameter::orderDB.shapeOrders);
 
     return GameHelper::PickRandom(OdenGameParameter::orderDB.ingredientOrders);
+#else
+    // Bag が空 or 使い切ったら再生成
+    if (orderBag.empty() || bagIndex >= orderBag.size())
+    {
+        BuildOrderBag();
+    }
+
+    return orderBag[bagIndex++];
+#endif // 0
 }
 
 // 順番から位置を取得する
@@ -103,13 +137,13 @@ DirectX::XMFLOAT3 OdenOrderManager::GetBubblePosition(const int index)
 DirectX::XMFLOAT3 OdenOrderManager::GetBubbleSpawnPosition(const int index)
 {
     auto pos = GetBubblePosition(index);
-    pos.z += spawnOffsetZ;   
+    pos.z += spawnOffsetZ;
     return pos;
 }
 
 
 // 注文が完了した時に呼ばれる関数
-void OdenOrderManager::OnBubbleCompleted(int slotIndex,  OdenBubbleActor& bubble, const OdenResult score)
+void OdenOrderManager::OnBubbleCompleted(int slotIndex, OdenBubbleActor& bubble, const OdenResult score)
 {
     Logger::Log(U8("オーダー完了時のスコア = ") + std::to_string(score.price));
 
@@ -138,28 +172,49 @@ void OdenOrderManager::OnBubbleCompleted(int slotIndex,  OdenBubbleActor& bubble
     SpawnOrderBubble(slotIndex);
 }
 
-// 並びを詰める
-void OdenOrderManager::RearrangeBubbles()
+// お題のバッグを生成する
+void OdenOrderManager::BuildOrderBag()
 {
-    int newIndex = 0;
-
-    for (auto& s : slots)
+    struct OrderBagEntry
     {
-        if (auto b = s.bubble.lock())
+        OrderEntry order;
+        int count;
+    };
+
+
+    std::vector<OrderBagEntry> entries;
+
+    difficulty = OdenGameSession::GetDifficulty();
+
+    if (difficulty == GameDifficulty::Easy)
+    {
+        entries =
         {
-            s.slotIndex = newIndex;
-
-            const bool canOrder = (newIndex < MaxOrders); // ← 3人だけ
-     //       b->SetTargetPosition(GetBubblePosition(newIndex), canOrder);
-
-            newIndex++;
-        }
+            //{ FindShapeOrder(EOdenShapeCategory::TriangleLike), 1 },
+            { FindShapeOrder(EOdenShapeCategory::SquareLike),   2 },
+            //{ FindShapeOrder(EOdenShapeCategory::RoundLike),   1 },
+            { FindIngredientOrder(EOdenType::Daikon), 1 },
+        };
     }
-
-    // 後ろに新しい客を補充
-    while (newIndex < MaxOrders + arrangeOrder) // 奥に見える分
+    else if (difficulty == GameDifficulty::Hard)
     {
-        SpawnOrderBubble(newIndex);
-        newIndex++;
+        entries =
+        {
+            { FindShapeOrder(EOdenShapeCategory::TriangleLike), 3 },
+            { FindShapeOrder(EOdenShapeCategory::SquareLike),   2 },
+            { FindShapeOrder(EOdenShapeCategory::RibbonLike),   1 },
+            { FindShapeOrder(EOdenShapeCategory::RoundLike),   1 },
+            { FindIngredientOrder(EOdenType::Daikon), 1 },
+            { FindIngredientOrder(EOdenType::Egg),    1 },
+            { FindIngredientOrder(EOdenType::Tsukune),1 },
+            { FindIngredientOrder(EOdenType::Donut),  1 },
+        };
     }
+
+    for (auto& e : entries)
+        for (int i = 0; i < e.count; ++i)
+            orderBag.push_back(e.order);
+
+    GameHelper::Shuffle(orderBag);
+    bagIndex = 0;
 }

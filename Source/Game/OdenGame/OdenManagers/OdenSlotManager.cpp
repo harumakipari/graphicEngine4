@@ -6,6 +6,7 @@
 #include "Game/OdenGame/OdenActors/OdenSlotActor.h"
 #include "Game/OdenGame/OdenActors/OdenDetailIngredientsActors.h"
 #include "Game/OdenGame/BeatClockActor.h"
+#include "Game/OdenGame/OdenGameSession.h"
 #include "Game/OdenGame/OdenActors/BeatReactive.h"
 #include "Utility/GameUtility.h"
 
@@ -277,20 +278,42 @@ void OdenSlotManager::BuildIngredientBag()
         int count;
     };
 
-    static const std::vector<IngredientEntry> ingredients = 
+    std::vector<IngredientEntry> ingredients;
+
+    difficulty = OdenGameSession::GetDifficulty();
+
+    if (difficulty == GameDifficulty::Easy)
     {
-        { "Daikon", 1 },
-        //{ "Egg", 1},
-        //{ "Tsukune", 1 },
-        //{ "Chikuwa", 1 },
-        //{ "Konnyaku", 1 },
-        //{ "Hanpen", 1 },
-        //{ "Goboten", 1 },
-        //{ "Shirataki", 1 },
-        //{ "Kobumusubi", 1 },
-        //{ "Cake", 1 },
-        //{ "Donut", 1 },
-    };
+        ingredients =
+        {
+            { "Daikon", 1 },
+            //{ "Egg", 1},
+            //{ "Tsukune", 1 },
+            //{ "Chikuwa", 1 },
+            //{ "Konnyaku", 1 },
+            //{ "Hanpen", 1 },
+            //{ "Cake", 1 },
+            //{ "Donut", 1 },
+        };
+    }
+    else if (difficulty==GameDifficulty::Hard)
+    {
+        ingredients =
+        {
+            { "Daikon", 1 },
+            { "Egg", 1},
+            { "Tsukune", 1 },
+            { "Chikuwa", 1 },
+            { "Konnyaku", 1 },
+            { "Hanpen", 1 },
+            { "Goboten", 1 },
+            { "Shirataki", 1 },
+            { "Kobumusubi", 1 },
+            { "Cake", 1 },
+            { "Donut", 1 },
+        };
+    }
+
 
     ingredientBag.clear();
 

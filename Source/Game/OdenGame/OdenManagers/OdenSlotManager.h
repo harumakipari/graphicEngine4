@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/Actor.h"
+#include "Game/OdenGame/OdenData/OdenDataStruct.h"
 
 class BeatClockActor;
 class OdenSlotActor;
@@ -92,4 +93,5 @@ private:
     std::vector<std::string> ingredientBag; // ãÔçﬁÇÃë‹
     size_t bagIndex = 0; //
 
+    GameDifficulty difficulty = GameDifficulty::Normal;
 };

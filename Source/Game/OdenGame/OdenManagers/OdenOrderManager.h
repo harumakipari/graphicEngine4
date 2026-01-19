@@ -32,8 +32,12 @@ private:
     // 注文が完了した時に呼ばれる関数
     void OnBubbleCompleted(int slotIndex,  OdenBubbleActor& bubble, OdenResult score);
 
-    // 並びを詰める
-    void RearrangeBubbles();
+    // お題のバッグを生成する
+    void BuildOrderBag();
+
+    // バッグからお題を取り出す
+    OrderEntry PickFromBag();
+
 private:
     struct BubbleSlot
     {
@@ -52,6 +56,8 @@ private:
     // TODO:　注文＋並んでいる人数
     static constexpr int arrangeOrder = 0;
 
-    // 連続で同じ注文が出ないようにするための変数
-    std::optional<EOrderType> lastOrderType;
+    size_t bagIndex = 0;
+    std::vector<OrderEntry> orderBag;
+
+    GameDifficulty difficulty = GameDifficulty::Normal;
 };

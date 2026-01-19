@@ -53,7 +53,7 @@ bool Framework::Initialize()
     SceneTransitionManager::Instance().Initialize();
 
     // SCENE_TRANSITION
-    // Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+     //Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "MorphScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "SampleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
@@ -100,7 +100,7 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
     // SCENE_TRANSITION
     {
         ProfileScopedSection_2(0, "SceneUpdate", ImGuiControl::Profiler::Blue);
-       skipRendering = Scene::_update(immediateContext, deltaTime);
+        skipRendering = Scene::_update(immediateContext, deltaTime);
     }
 
 
@@ -180,7 +180,7 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
         ProfileScopedSection_2(0, "ImGui", ImGuiControl::Profiler::Yellow);
         Scene::_drawGUI();
         ImGui::PopFont();
-        
+
     }
     ImGui::Begin("ImGUI");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
