@@ -71,10 +71,10 @@ private:
 private:
     static constexpr BeatPattern BeatTable[4] =
     {
-        { 1.3f, false }, // ったーん
-        { 1.3f, false }, // ったーん
-        { 1.3f, false }, // ったーん
-        { 1.3f, true  }, // ターン！
+        { 0.8f, false }, // ったーん
+        { 0.8f, false }, // ったーん
+        { 0.8f, false }, // ったーん
+        { 0.8f, true  }, // ターン！
     };
 
     float beatTimer = 0.0f;

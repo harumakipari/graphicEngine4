@@ -281,7 +281,7 @@ void MainScene::SetUpActors()
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     mainCameraComponent->target = (mainCameraTarget->GetRootComponent());
-    mainCameraComponent->pitch = DirectX::XMConvertToRadians(51.5f);
+    mainCameraComponent->pitch = DirectX::XMConvertToRadians(71.5f);
     mainCameraComponent->distance = 18.4f;
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("MainScene‚ÌƒJƒƒ‰İ’è‚³‚ê‚éB"));

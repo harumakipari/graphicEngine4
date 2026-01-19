@@ -153,7 +153,9 @@ private:
     void AppearIngredient();
 
     // 点線のモデルパスを取得する関数
-    std::string GetDotLineModelPath(const OdenShapeData shapeData);
+    std::string GetDotLineModelPath(EOdenType ingredientType,
+        EOdenFace face,
+        const OdenShapeData& shapeData);
 
 protected:
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材

@@ -203,7 +203,7 @@ void OdenIngredientActor::RotateVertical()
 
 void OdenIngredientActor::InitParam(const std::string& ingredientName)
 {
-    GetRootComponent()->SetRelativeEulerRotationDirect({ -25.0f,0.0f,0.0f });
+    //GetRootComponent()->SetRelativeEulerRotationDirect({ -25.0f,0.0f,0.0f });
 
     // ÉÇÉfÉãìoò^
     std::string parentName = ingredientName + "_model";
@@ -267,18 +267,18 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
         { EOdenFace::Left,   {{ -halfX, 0, 0 }, { 0, 0, 90 }} },
         { EOdenFace::Right,  {{  halfX, 0, 0 }, { 0,  0, -90 }} },
 
-        { EOdenFace::Top,    {{ 0,  halfY, 0 }, { 0, 0, 0 }} },
-        { EOdenFace::Bottom, {{ 0, -halfY, 0 }, {  0, 0, 180 }} },
+        { EOdenFace::Top,    {{ 0,  0.05f, 0 }, { 0, 0, 0 }} },
+        { EOdenFace::Bottom, {{ 0, -0.05f, 0 }, {  0, 0, 180 }} },
     };
 
     for (auto& [face, shapeData] : faceShapeTable.faceShapes)
     {
-        if (face != EOdenFace::Bottom)
+        if (face != EOdenFace::Top && face != EOdenFace::Bottom)
         {
             continue;
         }
 
-        std::string shapeName = GetDotLineModelPath(shapeData);
+        std::string shapeName = GetDotLineModelPath(ingredientType, face, shapeData);
         std::string modelDotLineFileName = "./Data/Models/Oden_DotLine/" + shapeName;
 
         if (shapeName == "")
@@ -289,7 +289,9 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
         auto dot = AddComponent<DotLineMeshComponent>(dotLineName, parentName);
 
         const FaceTransform& ft = faceTransformTable[face];
-        dot->SetRelativeLocationDirect({ 0.0f,-0.03f,0.0f });
+        //dot->SetRelativeLocationDirect({ 0.0f,-0.03f,0.0f });
+        //dot->SetRelativeLocationDirect({ 0.0f,0.03f,0.0f });
+        dot->SetRelativeLocationDirect(ft.localOffset);
         dot->SetRelativeEulerRotationDirect(ft.localEuler);
         dot->SetModel(modelDotLineFileName);
         dot->SetIsCastShadow(false);
@@ -574,8 +576,47 @@ void OdenIngredientActor::AppearIngredient()
 }
 
 // ì_ê¸ÇÃÉÇÉfÉãÉpÉXÇéÊìæÇ∑ÇÈä÷êî
-std::string OdenIngredientActor::GetDotLineModelPath(const OdenShapeData shapeData)
+std::string OdenIngredientActor::GetDotLineModelPath(EOdenType ingredientType,
+    EOdenFace face,
+    const OdenShapeData& shapeData)
 {
+    struct DotLineKey
+    {
+        EOdenType ingredient;
+        EOdenFace face;
+
+        bool operator==(const DotLineKey& rhs) const
+        {
+            return ingredient == rhs.ingredient && face == rhs.face;
+        }
+    };
+
+    struct DotLineKeyHash
+    {
+        size_t operator()(const DotLineKey& k) const
+        {
+            return (size_t)k.ingredient ^ ((size_t)k.face << 8);
+        }
+    };
+
+    static const std::unordered_map<DotLineKey, std::string, DotLineKeyHash>
+        DotLineByIngredientFace =
+    {
+        // --- ÇøÇ≠ÇÌ ---
+        {{ EOdenType::Chikuwa, EOdenFace::Top   }, "Oden_DotLine_LongRect.gltf" },
+        {{ EOdenType::Chikuwa, EOdenFace::Bottom   }, "Oden_DotLine_LongRect.gltf" },
+
+        // --- ëÂç™ ---
+    };
+
+    // á@ êHçﬁ Å~ ñ  êÍópÇ™Ç†ÇÍÇŒç≈óDêÊ
+    auto it = DotLineByIngredientFace.find({ ingredientType, face });
+    if (it != DotLineByIngredientFace.end())
+    {
+        return it->second;
+    }
+
+
     std::string modelPath;
     switch (shapeData.category)
     {

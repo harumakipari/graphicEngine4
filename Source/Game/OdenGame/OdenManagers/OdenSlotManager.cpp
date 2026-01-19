@@ -87,7 +87,7 @@ std::string OdenSlotManager::GetPreviewIngredient(const int index) const
 // ƒXƒƒbƒg‚Ì‰ñ“]ŠÖ”‚ğŒÄ‚Ô
 void OdenSlotManager::UpdateBeat(float deltaTime)
 {
-#if 0
+#if 1
     auto clock = beatClockWeak.lock();
     if (!clock)
         return;
@@ -287,9 +287,10 @@ void OdenSlotManager::BuildIngredientBag()
         ingredients =
         {
             { "Daikon", 1 },
+            //{ "Kobumusubi", 1 },
             //{ "Egg", 1},
             //{ "Tsukune", 1 },
-            //{ "Chikuwa", 1 },
+            { "Chikuwa", 1 },
             //{ "Konnyaku", 1 },
             //{ "Hanpen", 1 },
             //{ "Cake", 1 },
