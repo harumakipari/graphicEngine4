@@ -10,7 +10,7 @@
 
 #include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Stage/ClothSimulate.h"
-
+#include "Game/OdenGame/OdenData/OdenDataStruct.h"
 
 
 class MainScene : public SceneBase
@@ -66,5 +66,7 @@ private:
     OdenSoupConstantBuffer odenSoupConstantBuffer;
 private:
     std::unique_ptr<ClothSimulate> clothSimulate;
+
+    GameDifficulty difficulty = GameDifficulty::Normal;
 
 };

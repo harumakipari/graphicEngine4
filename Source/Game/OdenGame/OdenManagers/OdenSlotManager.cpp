@@ -86,7 +86,7 @@ std::string OdenSlotManager::GetPreviewIngredient(const int index) const
 // スロットの回転関数を呼ぶ
 void OdenSlotManager::UpdateBeat(float deltaTime)
 {
-#if 1
+#if 0
     auto clock = beatClockWeak.lock();
     if (!clock)
         return;
@@ -220,8 +220,27 @@ void OdenSlotManager::SupplyIngredientTo(const std::shared_ptr<OdenSlotActor>& s
 }
 
 // ランダムな具材の名前を生成する
-std::string OdenSlotManager::MakeRandomIngredientName() const
+std::string OdenSlotManager::MakeRandomIngredientName() 
 {
+    // Bagが空 or 使い切ったら再生成
+    if (ingredientBag.empty() || bagIndex >= ingredientBag.size())
+    {
+        BuildIngredientBag();
+    }
+
+    std::string result = ingredientBag[bagIndex++];
+
+    // 直前と同じなら1回だけスキップ（保険）
+    if (!ingredientQueue.empty() &&
+        result == ingredientQueue.back() &&
+        bagIndex < ingredientBag.size())
+    {
+        result = ingredientBag[bagIndex++];
+    }
+
+    return result;
+
+
     // 生成可能な具材名のリスト
     static const std::vector<std::string> ingredientNames = {
         "Daikon",
@@ -247,6 +266,44 @@ std::string OdenSlotManager::MakeRandomIngredientName() const
         ingredientQueue.back() == candidate);
 
     return candidate;
+}
+
+// 食材袋を初期化する
+void OdenSlotManager::BuildIngredientBag()
+{
+    struct IngredientEntry
+    {
+        std::string name;
+        int count;
+    };
+
+    static const std::vector<IngredientEntry> ingredients = 
+    {
+        { "Daikon", 1 },
+        //{ "Egg", 1},
+        //{ "Tsukune", 1 },
+        //{ "Chikuwa", 1 },
+        //{ "Konnyaku", 1 },
+        //{ "Hanpen", 1 },
+        //{ "Goboten", 1 },
+        //{ "Shirataki", 1 },
+        //{ "Kobumusubi", 1 },
+        //{ "Cake", 1 },
+        //{ "Donut", 1 },
+    };
+
+    ingredientBag.clear();
+
+    for (const auto& e : ingredients)
+    {
+        for (int i = 0; i < e.count; ++i)
+        {
+            ingredientBag.push_back(e.name);
+        }
+    }
+
+    GameHelper::Shuffle(ingredientBag);
+    bagIndex = 0;
 }
 
 // 先にキューを満たす

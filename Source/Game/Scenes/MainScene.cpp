@@ -29,6 +29,7 @@
 #include "Game/OdenGame/OdenActors/OdenSlotActor.h"
 #include "Game/OdenGame/OdenActors/OdenDetailIngredientsActors.h"
 #include "Game/OdenGame/BeatClockActor.h"
+#include "Game/OdenGame/OdenGameSession.h"
 
 
 #include "Physics/CollisionSystem.h"
@@ -115,7 +116,7 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     SetUpActors();
 
     // 暖簾のモデルを作成
-    clothSimulate = std::make_unique<ClothSimulate>(device, "./Data/Models/Oden_Store/cloth1.gltf");
+    // clothSimulate = std::make_unique<ClothSimulate>(device, "./Data/Models/Oden_Store/cloth1.gltf");
 
     // おでんの汁の定数バッファを作成
     odenSoupCBuffer = std::make_unique<ConstantBuffer<OdenSoupConstantBuffer>>(Graphics::GetDevice());
@@ -125,7 +126,7 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         {
             if (const auto cloth = GetActorManager()->GetActorByName("cloth"))
             {
-                clothSimulate->Render(immediateContext, cloth->GetWorldTransform());
+              //   clothSimulate->Render(immediateContext, cloth->GetWorldTransform());
             }
         });
 
@@ -151,6 +152,22 @@ void MainScene::Start()
     audioPotBgmComponent->SetVolume(3.0f);
     audioPotBgmComponent->Play();
 
+
+    // 難易度設定を取得
+    const auto& sceneTransition = SceneTransitionManager::Instance();
+    const auto& params = sceneTransition.GetParams();
+
+    if (params.contains("difficulty"))
+    {
+        difficulty = static_cast<GameDifficulty>(
+            std::stoi(params.at("difficulty"))
+            );
+        OdenGameSession::SetDifficulty(difficulty);
+    }
+
+    difficulty = OdenGameSession::GetDifficulty();
+
+    Logger::Log("Oden Game Difficulty: " + std::to_string(static_cast<uint8_t>(difficulty)));
 #if 0
 
     // デバック時に使用

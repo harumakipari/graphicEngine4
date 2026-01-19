@@ -26,6 +26,11 @@ public:
 
     void Draw(){}
 
+    const SceneTransitionParam& GetParams() const
+    {
+        return param;
+    }
+
     enum class State :uint8_t
     {
         Idle,

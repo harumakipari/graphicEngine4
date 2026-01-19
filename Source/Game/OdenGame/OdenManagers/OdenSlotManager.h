@@ -57,7 +57,10 @@ private:
     void SupplyIngredientTo(const std::shared_ptr<OdenSlotActor>& slot) ;
 
     // ランダムな具材の名前を生成する
-    std::string MakeRandomIngredientName() const;
+    std::string MakeRandomIngredientName() ;
+
+    // 食材袋を初期化する
+    void BuildIngredientBag();
 
     // 先にキューを満たす
     void FillIngredientQueue();
@@ -67,10 +70,10 @@ private:
 private:
     static constexpr BeatPattern BeatTable[4] =
     {
-        { 1.4f, false }, // ったーん
-        { 1.4f, false }, // ったーん
-        { 1.4f, false }, // ったーん
-        { 1.6f, true  }, // ターン！
+        { 1.3f, false }, // ったーん
+        { 1.3f, false }, // ったーん
+        { 1.3f, false }, // ったーん
+        { 1.3f, true  }, // ターン！
     };
 
     float beatTimer = 0.0f;
@@ -85,5 +88,8 @@ private:
     std::weak_ptr<BeatClockActor> beatClockWeak; // ビートを刻むアクター
 
     std::vector<std::weak_ptr<IBeatReactive>> beatReactives; // ビート反応リスト
+
+    std::vector<std::string> ingredientBag; // 具材の袋
+    size_t bagIndex = 0; //
 
 };

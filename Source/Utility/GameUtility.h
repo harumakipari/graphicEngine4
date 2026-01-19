@@ -12,4 +12,12 @@ namespace GameHelper
         int index = MathHelper::RandomRange(0, static_cast<int>(list.size()) - 1);
         return list[index];
     }
+
+    template<typename T>
+    void Shuffle(std::vector<T>& v)
+    {
+        static std::mt19937 rng{ std::random_device{}() };
+        std::shuffle(v.begin(), v.end(), rng);
+    }
+
 }

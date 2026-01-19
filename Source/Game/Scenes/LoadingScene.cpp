@@ -49,7 +49,7 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
     hr = CreatePsFromCSO(device, "./Shader/ShaderToySkyPS.cso", pixel_shaders[1].ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    type = std::stoi(props.at("type"));
+    // type = std::stoi(props.at("type"));
     preload_scene = props.at("preload");
     _async_preload_scene(device, width, height, preload_scene);
 

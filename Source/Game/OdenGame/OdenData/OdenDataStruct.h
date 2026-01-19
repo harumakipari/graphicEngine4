@@ -101,8 +101,12 @@ struct OdenSubmitLog
     int count = 1;             // 基本1だが拡張用
     float score = 0.0f;
     // 後々Great　Goodとか
+};
 
-    //OdenSubmitLog(EOdenType t, int c, float s)
-    //    : type(t), count(c), score(s) {
-    //}
+
+enum class GameDifficulty :uint8_t
+{
+    Easy,
+    Normal,
+    Hard
 };

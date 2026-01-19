@@ -81,6 +81,7 @@ void SceneTransitionManager::NotifySceneChanged()
 {
     if (state_ == State::ChangingScene)
     {
+        param.clear();
         transitionEffect->OnSceneChanged();
         transitionEffect->Start(TransitionDirection::Open);
         state_ = State::Opening;

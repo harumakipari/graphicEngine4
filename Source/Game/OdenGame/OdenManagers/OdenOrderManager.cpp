@@ -68,14 +68,23 @@ OrderEntry OdenOrderManager::PickRandomOrder()
     // あいまいな形のお題の割合
     constexpr float shapeOrderRate = 0.8f;   // 60%
 
-    float random = MathHelper::RandomRange(0.0f, 1.0f);
-
-    if (random < shapeOrderRate)
+    EOrderType type;
+    for (;;)
     {
-        // 形指定お題
-        return GameHelper::PickRandom(OdenGameParameter::orderDB.shapeOrders);
+        float r = MathHelper::RandomRange(0.0f, 1.0f);
+        type = (r < shapeOrderRate)
+            ? EOrderType::ShapeOnly
+            : EOrderType::SpecificIngredient;
+
+        if (!lastOrderType || *lastOrderType != type)
+            break;
     }
-    // 食材指定お題
+
+    lastOrderType = type;
+
+    if (type == EOrderType::ShapeOnly)
+        return GameHelper::PickRandom(OdenGameParameter::orderDB.shapeOrders);
+
     return GameHelper::PickRandom(OdenGameParameter::orderDB.ingredientOrders);
 }
 

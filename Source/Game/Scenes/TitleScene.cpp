@@ -46,26 +46,45 @@ void TitleScene::Start()
         audioComp->Play();
     }
 
-    // スタートボタンの作成
+    // シーンが切り替わった時に
+    SceneTransitionManager::Instance().NotifySceneChanged();
+
+    // スタート簡単ボタンの作成
     {
-        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/start_button.png", "button");
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/easy.png", "button");
         button->SetWorldPosition({ 300, 50 });
-        button->SetSize({ 200, 80 });
+        button->SetSize({ 400, 150 });
         uiManager->Add(button);
 
         button->onClick = []()
             {
                 Logger::Log(u8"ボタンButton Clicked!");
-                static float  value = 1.0f;
                 const char* types[] = { "0", "1" };
                 //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
-                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), {"difficulty","0"} });
 
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
             };
     }
-    // シーンが切り替わった時に
-    SceneTransitionManager::Instance().NotifySceneChanged();
+
+    // スタート難しいボタンの作成
+    {
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/difficult.png", "button");
+        button->SetWorldPosition({ 600, 50 });
+        button->SetSize({ 400, 150 });
+        uiManager->Add(button);
+
+        button->onClick = []()
+            {
+                Logger::Log(u8"難しいButton Clicked!");
+                const char* types[] = { "0", "1" };
+                //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"),{"difficulty","2"} });
+
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            };
+    }
+
 }
 
 void TitleScene::Update(float deltaTime)

@@ -52,4 +52,6 @@ private:
     // TODO:　注文＋並んでいる人数
     static constexpr int arrangeOrder = 0;
 
+    // 連続で同じ注文が出ないようにするための変数
+    std::optional<EOrderType> lastOrderType;
 };

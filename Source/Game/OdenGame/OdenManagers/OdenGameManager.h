@@ -68,7 +68,7 @@ private:
     float totalScore = 0.0f;
     int   combo = 0;
 
-    float maxTime = 35.0f;      // 50•b
+    float maxTime = 0.0f;      // 50•b
     float remainingTime = 50.0f;
 
 

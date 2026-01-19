@@ -23,4 +23,18 @@ public:
         submitLogs.clear();
         ingredientCount = {};
     }
+
+    static void SetDifficulty(GameDifficulty diff)
+    {
+        gameDifficulty = diff;
+    }
+
+    static GameDifficulty GetDifficulty() 
+    {
+        return gameDifficulty;
+    }
+
+private:
+
+    static inline GameDifficulty gameDifficulty = GameDifficulty::Normal;
 };
