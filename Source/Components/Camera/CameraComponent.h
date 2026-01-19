@@ -55,7 +55,7 @@ public:
 
 protected:
     //float fovY = DirectX::XMConvertToRadians(60.0f);
-    float fovY = DirectX::XMConvertToRadians(0.0f);
+    float fovY = DirectX::XMConvertToRadians(10.0f);
     float aspect = 1280.f / 720.f;
     float nearZ = 0.1f;
     float farZ = 1000.f;

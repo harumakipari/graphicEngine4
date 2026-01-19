@@ -33,5 +33,6 @@ public:
     //ƒV[ƒ“‚Ì©“®“o˜^
     static inline Scene::Autoenrollment<TitleScene> _autoenrollment;
 private:
+    std::unique_ptr<ClothSimulate> clothSimulate[5];
 
 };

@@ -587,8 +587,8 @@ void ClothSimulate::SetupPinVertices(int curretPinMode)
             }
             else if (curretPinMode == 1)
             {
-                //const float yThreshold = 0.001f;
-                const float yThreshold = 0.1f;
+                const float yThreshold = 0.001f;
+                //const float yThreshold = 0.1f;
                 for (auto& v : primitive.cachedVertices)
                 {
                     if (fabs(v.position.z - min.z) < yThreshold)
@@ -610,10 +610,10 @@ void ClothSimulate::SetupPinVertices(int curretPinMode)
             }
             else if (curretPinMode == 3)
             {
-                const float yThreshold = 5.0f;
+                const float yThreshold = 0.1f;
                 for (auto& v : primitive.cachedVertices)
                 {
-                    if (fabs(v.position.y - max.y) < yThreshold)
+                    if (fabs(v.position.y - min.y) < yThreshold)
                     {
                         v.isPinned = 1;
                     }
@@ -830,7 +830,8 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
             //}
 #else
 
-            const float yThreshold = 0.1f;
+#if 0
+            const float yThreshold = 0.0001f;
             //const float yThreshold = 10.5f;
             for (auto& v : primitive.cachedVertices)
             {
@@ -843,6 +844,21 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
                     v.isPinned = 0;
                 }
             }
+
+#else
+            const float yThreshold = 0.1f;
+            for (auto& v : primitive.cachedVertices)
+            {
+                if (fabs(v.position.y - min.y) < yThreshold)
+                {
+                    v.isPinned = 1;
+                }
+                else
+                {
+                    v.isPinned = 0;
+                }
+            }
+#endif // 0
 
             //for (auto& v : primitive.cachedVertices)
             //{
@@ -1031,7 +1047,7 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
     }
 #else
 
-    constexpr float maxDistance = 200.0f;
+    constexpr float maxDistance = 20.0f;
     for (auto& mesh : meshes)
     {
         for (auto& primitive : mesh.primitives)

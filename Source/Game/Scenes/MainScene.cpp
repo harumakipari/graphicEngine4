@@ -58,7 +58,6 @@ const OrderEntry* FindOrderByUIName(const std::string& uiName)
 }
 #endif // _DEBUG
 
-
 bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
     SceneBase::Initialize(device, width, height, props);
@@ -152,7 +151,6 @@ void MainScene::Start()
     audioPotBgmComponent->SetVolume(3.0f);
     audioPotBgmComponent->Play();
 
-
     // 難易度設定を取得
     const auto& sceneTransition = SceneTransitionManager::Instance();
     const auto& params = sceneTransition.GetParams();
@@ -192,7 +190,6 @@ void MainScene::Start()
 
     odenKonnyaku->SetCurrentSlot(odenSlotActor1);
 #else
-
     // スロットマネージャー作成 
     auto slotManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotManager>("slotManager");
     slotManager->StartGame();

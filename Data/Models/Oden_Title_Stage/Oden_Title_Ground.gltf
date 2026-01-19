@@ -1,0 +1,180 @@
+{
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 26,
+      "max": [
+        25.424470901489258,
+        20.157827377319336,
+        25.424470901489258
+      ],
+      "min": [
+        -25.424470901489258,
+        -1.2136996474509942e-06,
+        -25.424470901489258
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 26,
+      "max": [
+        0.0,
+        1.0,
+        0.994207501411438
+      ],
+      "min": [
+        0.0,
+        0.10747793316841125,
+        -3.136359083555362e-08
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 26,
+      "max": [
+        1.0,
+        0.16827967762947083,
+        0.40437549352645874,
+        1.0
+      ],
+      "min": [
+        0.8890844583511353,
+        -0.2144976407289505,
+        -0.14524070918560028,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 26,
+      "max": [
+        1.0,
+        1.0
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5125,
+      "count": 54,
+      "max": [
+        25
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 312,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 312,
+      "byteOffset": 312,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 416,
+      "byteOffset": 624,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 208,
+      "byteOffset": 1040,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 216,
+      "byteOffset": 1248,
+      "target": 34963
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1464,
+      "uri": "data:application/octet-stream;base64,UWXLwTMznrVToELBUWXLQTMznrVToELBUWXLQWfmorVDX1TBUWXLwWfmorVDX1TBUWXLQTtDoUFRZcvBUWXLwTtDoUFRZcvBUWXLwf+gHkFuicLBUWXLQf+gHkFuicLBUWXLwQAAAABRZctBUWXLQQAAAABRZctBUWXLwcgP6UDznb3BUWXLQcgP6UDznb3BUWXLwZ4bnECxwrPBUWXLQZ4bnECxwrPBUWXLQcgP6UDznb3BUWXLwUvmNUD7jKXBUWXLQUvmNUD7jKXBUWXLQZ4bnECxwrPBUWXLQXHFpT8N1JPBUWXLwUvmNUD7jKXBUWXLwXHFpT8N1JPBUWXLQYBCqD6tSH/BUWXLwYBCqD6tSH/BUWXLQXHFpT8N1JPBUWXLwWfmorVDX1TBUWXLQYBCqD6tSH/BAAAAAAAAgD+itAazAAAAAAAAgD+itAazAAAAACYLfz9e3rA9AAAAACYLfz9e3rA9AAAAAGQd3D1ihH4/AAAAAGQd3D1ihH4/AAAAAIHHBz5SvX0/AAAAAIHHBz5SvX0/AAAAAAAAgD/ZrQazAAAAAAAAgD/ZrQazAAAAAJJNsD4bWHA/AAAAAJJNsD4bWHA/AAAAAKOSDz8781M/AAAAAKOSDz8781M/AAAAAJJNsD4bWHA/AAAAALN/Pj/kAys/AAAAALN/Pj/kAys/AAAAAKOSDz8781M/AAAAAEAnYj8c7O8+AAAAALN/Pj/kAys/AAAAAEAnYj8c7O8+AAAAACNteD+XPHc+AAAAACNteD+XPHc+AAAAAEAnYj8c7O8+AAAAACYLfz9e3rA9AAAAACNteD+XPHc+AACAPwAAAAAAAAAAAACAPwAAgD8L6SsmSlqjMgAAgD8AAIA/TheZsaTBXDMAAIA/AACAPweoKLGWM/MyAACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/UvjKMQCJL7AAAIA/AACAP50ANzKZ2sOwAACAPwHqfz+sWtI8YiBhuwAAgD8AAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAP/b/fz8tj4u6xL7MOQAAgD/RoX4/moDGPTacEb0AAIC/8c9/P8HZAb086688AACAPwOoej+CUSw+EHTpvQAAgD+WsX8/CxA8PcXzibwAAIC/y7x/P13H9zwGAQq9AACAPwz7fz+ClwY8B+0VvAAAgD/LvH8/SosZPbAE0LwAAIA/CptjP0WlW75OCs8+AACAP5ITez/lgwU++7kUvgAAgD9gu38/MqKvvNWNJT0AAIA/2ep3P3SKdr0munc+AACAvwn2fz+e+Ym7maOKPAAAgD/5iX8/cUnmvCQSWT0AAIA/ktt/P5CxPDstDAi9AACAPxDcfz9H/QI8oZ4DvQAAgL8AAAAANCVpPgAAgD80JWk+AACAP1DPUT6g3QEzVM9RPv//fz8AAAAAAAAAAAAAAADeTQEzKBcCPwAAgD8oFwI/AAAAAAAAgD8AAIA/AACAP9NnrDJwDyw/AACAPzZ0rT7SZywyuAdWPwAAgD80dC0+AACAPzZ0rT4AAAAAAACAPwAAgD8AAAAAAACAPzR0LT4AAIA/iN+LPQAAAAAAAIA/eictMp4mPD8AAIA/jN8LPn8nrTJymvA+AACAP4jfiz2g3QEzVM9RPgAAgD+M3ws+AAAAAAEAAAACAAAAAAAAAAIAAAADAAAABAAAAAUAAAAGAAAABAAAAAYAAAAHAAAAAQAAAAgAAAAJAAAACAAAAAEAAAAAAAAACgAAAAsAAAAGAAAABwAAAAYAAAALAAAADAAAAA0AAAAKAAAADgAAAAoAAAANAAAADwAAABAAAAAMAAAAEQAAAAwAAAAQAAAAEgAAABMAAAAUAAAAEwAAABIAAAAQAAAAFQAAABQAAAAWAAAAFAAAABUAAAAXAAAAAgAAABYAAAAYAAAAFgAAAAIAAAAZAAAA"
+    }
+  ],
+  "materials": [
+    {
+      "name": "standardSurface1",
+      "pbrMetallicRoughness": {
+        "metallicFactor": 0.0
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "floor",
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        5.921149253845215,
+        5.921149253845215,
+        5.921149253845215
+      ],
+      "translation": [
+        0.0,
+        0.07033240050077438,
+        0.0
+      ]
+    }
+  ],
+  "samplers": [
+    {
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

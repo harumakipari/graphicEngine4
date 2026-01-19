@@ -12,14 +12,11 @@
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
 #include "Engine/Utility/Time.h"
-
-
+#include "Game/OdenGame/OdenActors/OdenTitleStageActor.h"
 
 #include "Physics/Physics.h"
 
 #include "Physics/CollisionSystem.h"
-
-
 
 bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
@@ -29,6 +26,27 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
 
     //アクターをセット
     SetUpActors();
+
+    // 暖簾のモデルを作成
+    for (int i = 0; i < 5; i++)
+    {
+        //std::string filename = "./Data/Models/Oden_Title_Stage/Oden_Cloth_Noren_" + std::to_string(i + 1) + ".gltf";
+        std::string filename = "./Data/Models/Oden_Title_Stage/Oden_Cloth_Noren_" + std::to_string(1) + ".gltf";
+        clothSimulate[i] = std::make_unique<ClothSimulate>(device, filename);
+    }
+
+    // ここで布を描画する
+    RegisterRenderHook(RenderPass::Opaque, [&](ID3D11DeviceContext* immediateContext)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                std::string clothName = "noren_" + std::to_string(i + 1);
+                if (const auto cloth = GetActorManager()->GetActorByName(clothName))
+                {
+                    clothSimulate[i]->Render(immediateContext, cloth->GetWorldTransform());
+                }
+            }
+        });
 
     return true;
 }
@@ -91,6 +109,10 @@ void TitleScene::Update(float deltaTime)
 {
     using namespace DirectX;
     SceneBase::Update(deltaTime);
+    for (int i = 0; i < 5; i++)
+    {
+        clothSimulate[i]->Update(deltaTime);
+    }
     Physics::Instance().Update(Time::UnscaledDeltaTime());
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
@@ -108,14 +130,15 @@ void TitleScene::Update(float deltaTime)
 void TitleScene::SetUpActors()
 {
     // メインカメラのターゲットアクターを生成
-    Transform cameraTargetTr(DirectX::XMFLOAT3{ 5.4f,0.0f,4.3f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ -12.3f,13.8f,-12.5f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto mainCameraTarget = GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("MainCameraActorTarget", cameraTargetTr);
 
     // メインカメラアクターを生成
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     mainCameraComponent->target = (mainCameraTarget->GetRootComponent());
-    mainCameraComponent->pitch = DirectX::XMConvertToRadians(51.5f);
+    mainCameraComponent->pitch = DirectX::XMConvertToRadians(18.0f);
+    mainCameraComponent->yaw = DirectX::XMConvertToRadians(14.5f);
     mainCameraComponent->distance = 18.4f;
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("MainSceneのカメラ設定される。"));
@@ -126,6 +149,22 @@ void TitleScene::SetUpActors()
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
     cameraManager->SetDebugCamera(debugCameraActor);
 #endif // !_DEBUG
+
+    // 暖簾を生成
+    //Transform clothTr(DirectX::XMFLOAT3{ 6.3f,7.9f,16.5f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+
+    for (int i = 0; i < 5; i++)
+    {
+        Transform clothTr(DirectX::XMFLOAT3{ 4.8f + i * 6.0f,11.7f,15.f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        std::string actorName = "noren_" + std::to_string(i + 1);
+        auto clothActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>(actorName, clothTr);
+    }
+
+    // ステージアクターを生成
+    Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
+    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenTitleStageActor>("stage", stageTr);
+
+
 }
 
 void TitleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
