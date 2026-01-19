@@ -175,10 +175,10 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 
     float3 emissive = emissiveFactor;
 
-    float3 Lo = totalDiffuse + totalSpecular + emissive;
+    //float3 Lo = totalDiffuse + totalSpecular + emissive;
 	
-    return float4(Lo, baseColorFactor.a);
-
+    //return float4(Lo, baseColorFactor.a);
+    return float4(baseColorFactor);
 
 
     float4 color = float4(diffuse + specular + emissiveFactor, baseColorFactor.a) * baseColorFactor;

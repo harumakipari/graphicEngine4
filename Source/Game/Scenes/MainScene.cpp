@@ -169,7 +169,6 @@ void MainScene::Start()
 
     Logger::Log("Oden Game Difficulty: " + std::to_string(static_cast<uint8_t>(difficulty)));
 #if 0
-
     // デバック時に使用
     // おでんのダイコンを生成
     Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -232,7 +231,6 @@ void MainScene::Start()
     // 内部で OdenBubbleActor をスロットマネージャーに設定している
     auto orderManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenOrderManager>("orderManager");
 #endif
-
 
     // ゴミ箱を生成
     Transform odenTrashTr(DirectX::XMFLOAT3{ -5.0f,1.0f,8.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });

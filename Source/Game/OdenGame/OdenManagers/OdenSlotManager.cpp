@@ -134,7 +134,7 @@ void OdenSlotManager::UpdateBeat(float deltaTime)
         {
             if (auto r = beatReact.lock())
             {
-                r->OnBeat(beat.isStrong);
+             //   r->OnBeat(beat.isStrong);
             }
         }
     }
@@ -291,7 +291,7 @@ void OdenSlotManager::BuildIngredientBag()
             //{ "Egg", 1},
             //{ "Tsukune", 1 },
             { "Chikuwa", 1 },
-            //{ "Konnyaku", 1 },
+            { "Konnyaku", 1 },
             //{ "Hanpen", 1 },
             //{ "Cake", 1 },
             //{ "Donut", 1 },

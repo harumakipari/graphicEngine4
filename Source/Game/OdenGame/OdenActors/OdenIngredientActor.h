@@ -27,6 +27,12 @@ public:
         EOdenFace bottom;
     };
 
+    struct FaceTransform
+    {
+        DirectX::XMFLOAT3 localOffset;
+        DirectX::XMFLOAT3 localEuler; 
+    };
+
     // おでんの状態
     enum class EOdenDragState :uint8_t
     {
@@ -157,10 +163,14 @@ private:
         EOdenFace face,
         const OdenShapeData& shapeData);
 
+    // 点線モデルの角度とoffsetを取得する関数
+    FaceTransform ResolveFaceTransform(EOdenType ingredient,EOdenFace face,const std::unordered_map<EOdenFace, FaceTransform>& baseTable);
+
+    // 点線の表示・非表示を更新する関数
+    void UpdateDotLineVisibility();
 protected:
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
     std::shared_ptr<BoxComponent> boxComponent; // レイキャスト判定するもの
-    std::shared_ptr<DotLineMeshComponent> dotLineModel; // 点線のモデル
 
     //DirectX::XMFLOAT3 odenIngredientAngleDegree = { 0.0f,0.0f,0.0f };
     // 姿勢　
@@ -194,6 +204,9 @@ protected:
 
     std::string ingredientName; // 食材の名前
     float price = 0.0f; // 食材の値段
+
+    
+    std::unordered_map<EOdenFace, std::weak_ptr<DotLineMeshComponent>> dotLineByFace;
 };
 
 

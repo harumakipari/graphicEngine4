@@ -34,6 +34,7 @@ public:
     const DirectX::XMFLOAT4X4& GetProjection()
     {
         using namespace DirectX;
+        //XMStoreFloat4x4(&projection, XMMatrixOrthographicLH(15 * aspect, 15, nearZ, farZ));
         XMStoreFloat4x4(&projection, XMMatrixPerspectiveFovLH(fovY, aspect, nearZ, farZ));
         return projection;
     }
@@ -53,7 +54,8 @@ public:
     }
 
 protected:
-    float fovY = DirectX::XMConvertToRadians(60.0f);
+    //float fovY = DirectX::XMConvertToRadians(60.0f);
+    float fovY = DirectX::XMConvertToRadians(0.0f);
     float aspect = 1280.f / 720.f;
     float nearZ = 0.1f;
     float farZ = 1000.f;

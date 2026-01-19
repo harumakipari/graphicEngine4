@@ -16,16 +16,21 @@ void OdenSlotActor::Initialize(const Transform& transform)
     boxComponent->Initialize();
 
     // 汁のモデルを追加
+#if 1
     soupModelComponent = AddComponent<StaticMeshComponent>("Oden_Soup_Model", parentName);
     soupModelComponent->SetModel("./Data/Models/Oden_Store/Oden_SoupSurface.gltf", false);
     soupModelComponent->SetRelativeLocationDirect({ 0.0f,-0.1f,0.0f });
     soupModelComponent->overrideForwardPipelineName = "OdenSoupSurfaceMesh";
     soupModelComponent->overrideDeferredPipelineName = "OdenSoupSurfaceMesh";
 
+#endif // 1
+#if 1
+
     // 湯気のコンポーネントを追加
     particleComponent = this->AddComponent<class ParticleComponent>("particleComponent", parentName);
     particleComponent->Load("./Data/Effect/Files/SteamEffect2.json");
     particleComponent->SetRelativeLocationDirect({ 0.0f,1.5f,0.0f });
+
 
     // ループ再生設定
     ParticleComponent::AddSettings settings
@@ -35,6 +40,8 @@ void OdenSlotActor::Initialize(const Transform& transform)
     };
     particleComponent->SetAddSettings(settings);
     particleComponent->Play();
+#endif // 0
+
 }
 
 void OdenSlotActor::Update(float elapsedTime)
@@ -95,5 +102,6 @@ void OdenSlotActor::SetVisualScale(float scale) const
 
     odenActor->SetIngredientScale(scale);
 
-    soupModelComponent->SetRelativeScaleDirect({ scale,scale,scale });
+    if (soupModelComponent)
+        soupModelComponent->SetRelativeScaleDirect({ scale,scale,scale });
 }

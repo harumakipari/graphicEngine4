@@ -120,18 +120,24 @@
   "images": [
     {
       "uri": "m_dotine_BaseColo.png"
+    },
+    {
+      "uri": "m_oden_Opacity.png"
     }
   ],
   "materials": [
     {
       "alphaMode": "BLEND",
       "name": "m_dotine",
+      "normalTexture": {
+        "index": 1
+      },
       "pbrMetallicRoughness": {
         "baseColorFactor": [
           0.800000011920929,
           0.800000011920929,
           0.800000011920929,
-          0.47843137383461
+          1.0
         ],
         "baseColorTexture": {
           "index": 0
@@ -196,6 +202,10 @@
     {
       "sampler": 0,
       "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
     }
   ]
 }

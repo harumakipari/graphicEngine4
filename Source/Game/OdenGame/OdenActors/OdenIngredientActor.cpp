@@ -24,24 +24,8 @@ void OdenIngredientActor::Initialize(const Transform& transform)
 
 void OdenIngredientActor::Update(float deltaTime)
 {
-    // イージングコンポーネントの更新
-    easingRunner->Tick(deltaTime);
-
     // 位置を取得
     DirectX::XMFLOAT3 position = GetPosition();
-
-    // ポーズ中はゲーム入力を一切受け付けない
-    if (Scene::GetCurrentScene()->IsPaused())
-        return;
-
-    // UIがマウスを使っているならゲーム操作しない
-    if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
-        return;
-
-    DirectX::XMFLOAT2 cursor;
-    // ビューポート外だったら、入力しない
-    if (!InputSystem::GetMousePositionUI(cursor))
-        return;
 
 #if 0
     // 浮いてくる処理
@@ -70,6 +54,25 @@ void OdenIngredientActor::Update(float deltaTime)
     SetPosition(position);
 
 #endif // 0
+    // イージングコンポーネントの更新
+    easingRunner->Tick(deltaTime);
+
+    // ドットモデルの表示非表示切り替え
+    UpdateDotLineVisibility();
+
+    // ポーズ中はゲーム入力を一切受け付けない
+    if (Scene::GetCurrentScene()->IsPaused())
+        return;
+
+    // UIがマウスを使っているならゲーム操作しない
+    if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
+        return;
+
+    DirectX::XMFLOAT2 cursor;
+    // ビューポート外だったら、入力しない
+    if (!InputSystem::GetMousePositionUI(cursor))
+        return;
+
 
     // ① 押した瞬間：選択判定
     if (dragState == EOdenDragState::InSlot &&
@@ -89,6 +92,8 @@ void OdenIngredientActor::Update(float deltaTime)
         }
     }
 
+
+    
 }
 
 void OdenIngredientActor::DrawImGuiDetails()
@@ -123,7 +128,7 @@ void OdenIngredientActor::RotateHorizontal()
     // 内部向き更新
     RotateHorizontalOrientation(odenOrientation);
 
-    //// 見た目の回転
+    // 見た目の回転
     StartRotationAnim(ERotateType::Horizontal);
 
 #if 0
@@ -248,16 +253,12 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
     // price = ingredientPriceTable[ingredientType];
     price = 100.0f; // 全て 100 点にする
 #if 1
-    struct FaceTransform
-    {
-        DirectX::XMFLOAT3 localOffset;
-        DirectX::XMFLOAT3 localEuler; // 面の法線方向を向く回転
-    };
 
     float halfX = size.x + 0.001f;
     float halfY = size.y + 0.001f;
     float halfZ = size.z + 0.001f;
 
+#if 1
     // 点線のモデルを置く場所と角度を設定する
     std::unordered_map<EOdenFace, FaceTransform> faceTransformTable =
     {
@@ -271,12 +272,14 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
         { EOdenFace::Bottom, {{ 0, -0.05f, 0 }, {  0, 0, 180 }} },
     };
 
+#endif // 0
+
     for (auto& [face, shapeData] : faceShapeTable.faceShapes)
     {
-        if (face != EOdenFace::Top && face != EOdenFace::Bottom)
-        {
-            continue;
-        }
+        //if (face != EOdenFace::Top && face != EOdenFace::Bottom && face != EOdenFace::Left && face != EOdenFace::Right)
+        //{
+        //    continue;
+        //}
 
         std::string shapeName = GetDotLineModelPath(ingredientType, face, shapeData);
         std::string modelDotLineFileName = "./Data/Models/Oden_DotLine/" + shapeName;
@@ -285,16 +288,23 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
         {
             continue;
         }
-        std::string dotLineName = "dot_line" + std::string(magic_enum::enum_name(odenOrientation.bottom));
+        std::string dotLineName = "dot_line" + std::string(magic_enum::enum_name(face));
         auto dot = AddComponent<DotLineMeshComponent>(dotLineName, parentName);
+        dot->overrideDeferredPipelineName = "OdenDotLineMesh";
+        dot->overrideForwardPipelineName = "OdenDotLineMesh";
 
-        const FaceTransform& ft = faceTransformTable[face];
+        FaceTransform ft = ResolveFaceTransform(ingredientType, face, faceTransformTable);
+
+        // const FaceTransform& ft = faceTransformTable[face];
         //dot->SetRelativeLocationDirect({ 0.0f,-0.03f,0.0f });
         //dot->SetRelativeLocationDirect({ 0.0f,0.03f,0.0f });
         dot->SetRelativeLocationDirect(ft.localOffset);
         dot->SetRelativeEulerRotationDirect(ft.localEuler);
         dot->SetModel(modelDotLineFileName);
         dot->SetIsCastShadow(false);
+
+        // ここでリスト追加
+        dotLineByFace[face] = dot;
     }
 
 #endif // 0
@@ -304,8 +314,6 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
     //dotLineModel->SetRelativeLocationDirect({ 0.0f,0.001f,0.0f });
     //std::string modelDotLineFileName = "./Data/Models/Oden_DotLine/Oden_DotLine_Triangle.gltf";
     //dotLineModel->SetModel(modelDotLineFileName.c_str());
-    //dotLineModel->overrideDeferredPipelineName = "OdenDotLineMesh";
-    //dotLineModel->overrideForwardPipelineName = "OdenDotLineMesh";
 }
 
 // ドラック開始処理
@@ -562,11 +570,9 @@ void OdenIngredientActor::StartRotationAnim(const ERotateType rotateType)
 
             ingredientModel->SetRelativeRotationDirect(visualOrientation);
             //ingredientModel->SetWorldRotationDirect(visualOrientation);
-
         };
 
     easingRunner->StartHandler(handler, accessor);
-
 }
 
 // お題出現時の動き
@@ -607,6 +613,9 @@ std::string OdenIngredientActor::GetDotLineModelPath(EOdenType ingredientType,
         {{ EOdenType::Chikuwa, EOdenFace::Bottom   }, "Oden_DotLine_LongRect.gltf" },
 
         // --- 大根 ---
+        {{ EOdenType::Daikon, EOdenFace::Left   }, "Oden_DotLine_Rect.gltf" },
+        {{ EOdenType::Daikon, EOdenFace::Right   }, "Oden_DotLine_Rect.gltf" },
+
     };
 
     // ① 食材 × 面 専用があれば最優先
@@ -637,4 +646,109 @@ std::string OdenIngredientActor::GetDotLineModelPath(EOdenType ingredientType,
     }
 
     return modelPath;
+}
+
+// 点線モデルの角度とoffsetを取得する関数
+OdenIngredientActor::FaceTransform OdenIngredientActor::ResolveFaceTransform(
+    EOdenType ingredient,
+    EOdenFace face,
+    const std::unordered_map<EOdenFace, FaceTransform>& baseTable
+)
+{
+    using FaceKey = std::pair<EOdenType, EOdenFace>;
+
+    struct FaceKeyHash
+    {
+        size_t operator()(const FaceKey& k) const
+        {
+            return (size_t)k.first ^ ((size_t)k.second << 8);
+        }
+    };
+
+    static const std::unordered_map<FaceKey, FaceTransform, FaceKeyHash>
+        IngredientFaceOverride =
+    {
+        // --- ちくわ ---
+        {
+            { EOdenType::Chikuwa, EOdenFace::Top },
+            { { 0, 0.08f, 0 }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Chikuwa, EOdenFace::Bottom },
+            { { 0, -0.08f, 0 }, { 0, 0, 180 } }
+        },
+        {
+            { EOdenType::Chikuwa, EOdenFace::Front },
+            { { 0, 0.08f, 0 }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Chikuwa, EOdenFace::Back },
+            { { 0, -0.08f, 0 }, { 0, 0, 180 } }
+        },
+
+        // --- 大根 ---
+                {
+            { EOdenType::Daikon, EOdenFace::Left },
+            { { -0.75f, 0.0f, 0 }, { 90, 0, 90 } }
+        },
+        {
+            { EOdenType::Daikon, EOdenFace::Top },
+            { { 0, 0.03f, 0 }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Daikon, EOdenFace::Bottom },
+            { { 0, -0.03f, 0 }, { 0, 0, 180 } }
+
+        },
+
+        // --- こんにゃく ---
+        {
+            { EOdenType::Konnyaku, EOdenFace::Top },
+            { { 0, 0.03f, 0 }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Konnyaku, EOdenFace::Bottom },
+            { { 0, -0.03f, 0 }, { 0, 0, 180 } }
+
+        },
+    {
+            { EOdenType::Konnyaku, EOdenFace::Left },
+            { { -0.3f, 0.0f, -0.f }, { 90, -37, 90 } }
+        },
+        {
+            { EOdenType::Konnyaku, EOdenFace::Right },
+            { { 0.9f, 0.0f, -0.4f }, { 90, 37, 90 } }
+        },
+        {
+            { EOdenType::Konnyaku, EOdenFace::Back },
+            { { 0.9f, 0.0f, -0.4f }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Konnyaku, EOdenFace::Front },
+            { { 0.9f, 0.0f, -0.4f }, { 0, 0, 0 } }
+        },
+    };
+
+    auto base = baseTable.at(face);
+
+    auto it = IngredientFaceOverride.find({ ingredient, face });
+    if (it != IngredientFaceOverride.end())
+    {
+        return it->second; // override
+    }
+
+    return base;
+}
+
+// 点線の表示・非表示を更新する関数
+void OdenIngredientActor::UpdateDotLineVisibility()
+{
+    for (auto& [face, weakDot] : dotLineByFace)
+    {
+        if (auto dot = weakDot.lock())
+        {
+            bool isTopFace = (face == odenOrientation.top);
+            dot->SetIsVisible(isTopFace);
+        }
+    }
 }
