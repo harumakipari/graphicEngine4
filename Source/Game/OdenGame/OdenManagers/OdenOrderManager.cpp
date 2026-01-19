@@ -30,7 +30,7 @@ void OdenOrderManager::SpawnOrderBubble(int index)
 {
     // 位置を取得する
     Transform tr(
-        GetBubblePosition(index),
+        GetBubbleSpawnPosition(index),
         { 0,0,0,1 },
         { 1,1,1 }
     );
@@ -51,6 +51,8 @@ void OdenOrderManager::SpawnOrderBubble(int index)
             //　完了時の処理
             OnBubbleCompleted(index,bubble, score);
         };
+
+    bubble->SetTargetPosition(GetBubblePosition(index)); 
 
     slots[index].bubble = bubble;
 
@@ -87,6 +89,15 @@ DirectX::XMFLOAT3 OdenOrderManager::GetBubblePosition(const int index)
         basePos.z
     };
 }
+
+// スロットの番号から出現の位置を取得する
+DirectX::XMFLOAT3 OdenOrderManager::GetBubbleSpawnPosition(const int index)
+{
+    auto pos = GetBubblePosition(index);
+    pos.z += spawnOffsetZ;   
+    return pos;
+}
+
 
 // 注文が完了した時に呼ばれる関数
 void OdenOrderManager::OnBubbleCompleted(int slotIndex,  OdenBubbleActor& bubble, const OdenResult score)

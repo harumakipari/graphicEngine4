@@ -91,6 +91,7 @@ void OdenSlotManager::UpdateBeat(float deltaTime)
     if (!clock)
         return;
 
+#if 1
     int beatCount = clock->ConsumeAdvancedBeatCount();
 
     for (int i = 0; i < beatCount; ++i)
@@ -102,7 +103,10 @@ void OdenSlotManager::UpdateBeat(float deltaTime)
                 slotActor->OnBeat();
             }
         }
+
     }
+
+#endif // 0
 
     // ”‚ªØ‚è‘Ö‚í‚Á‚½uŠÔ
     if (clock->ConsumeBeatJustChanged())

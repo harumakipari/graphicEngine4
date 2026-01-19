@@ -140,7 +140,7 @@ void MainScene::Start()
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
-    audioBgmComponent->SetSource(L"./Data/Sound/BGM/game_bgm.wav");
+    audioBgmComponent->SetSource(L"./Data/Sound/BGM/game.wav");
     audioBgmComponent->SetLoop(true);
     audioBgmComponent->SetVolume(0.8f);
     audioBgmComponent->Play();

@@ -532,14 +532,13 @@ void OdenIngredientActor::StartRotationAnim(const ERotateType rotateType)
     }
     XMVECTOR target = OrientationToQuat(odenOrientation);
 
-    XMVECTOR q = XMQuaternionMultiply(startOrientation, targetRotation);
-    q = XMQuaternionNormalize(q);
-    XMStoreFloat4(&visualOrientation, q);
+    //XMVECTOR q = XMQuaternionMultiply(startOrientation, targetRotation);
+    //q = XMQuaternionNormalize(q);
+    //XMStoreFloat4(&visualOrientation, q);
 
-    ingredientModel->SetRelativeRotationDirect(visualOrientation);
+    //ingredientModel->SetRelativeRotationDirect(visualOrientation);
 
 
-    return;
     TestEasingHandler handler;
     handler.AddEasing(TestEaseType::OutCubic, 0.f, 1.0f, 0.25f);
 

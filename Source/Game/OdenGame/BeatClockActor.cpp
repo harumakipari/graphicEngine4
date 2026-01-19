@@ -15,6 +15,7 @@ void BeatClockActor::Update(float deltaTime)
         beatIndex = currentBeatIndex;
         AdvanceBeat();
     }
+    beatPhase = gameTime / beatInterval; // 0.0~1.0
 
 
     //time += deltaTime;
@@ -26,7 +27,7 @@ void BeatClockActor::Update(float deltaTime)
     //    AdvanceBeat();
     //}
 
-    //beatPhase = time / beatTime; // 0.0~1.0
+    // beatPhase = time / beatTime; // 0.0~1.0
 }
 
 

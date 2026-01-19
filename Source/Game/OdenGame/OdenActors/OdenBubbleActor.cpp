@@ -126,8 +126,17 @@ void OdenBubbleActor::Update(float elapsedTime)
 
 #endif // 0 // ゲージで去っていく処理　デバック中やりにくいから一旦コメントアウト
 
+
     switch (state)
     {
+    case EBubbleState::Entering:
+    {
+        if (MoveTowards(targetPos, moveSpeed, elapsedTime))
+        {
+            state = EBubbleState::Waiting;
+        }
+        break;
+    }
     case EBubbleState::LeavingBack:
         if (MoveTowards(targetPos, moveSpeed, elapsedTime))
         {

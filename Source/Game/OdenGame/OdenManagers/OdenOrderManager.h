@@ -26,6 +26,9 @@ private:
     // 順番から位置を取得する
     DirectX::XMFLOAT3 GetBubblePosition(const int index);
 
+    // スロットの番号から出現の位置を取得する
+    DirectX::XMFLOAT3 GetBubbleSpawnPosition(const int index);
+
     // 注文が完了した時に呼ばれる関数
     void OnBubbleCompleted(int slotIndex,  OdenBubbleActor& bubble, OdenResult score);
 
@@ -43,6 +46,8 @@ private:
     static constexpr int MaxOrders = 3; 
     DirectX::XMFLOAT3 basePos = { 2.0f,3.0f,9.0f };
     float spacing = 3.0f;
+
+    float spawnOffsetZ = 3.0f; // 出現時のZオフセット
 
     // TODO:　注文＋並んでいる人数
     static constexpr int arrangeOrder = 0;

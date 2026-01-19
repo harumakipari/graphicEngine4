@@ -30,13 +30,12 @@ public:
     // お題の状態
     enum class EBubbleState :uint8_t
     {
-        PreOrder,    // お題が来る前
+        Entering,    // 入ってくる
         Waiting, // 待っている
         LeavingBack,   // 少し後ろに下がる
         LeavingLeft,    // 左に退場
         Completed,    // 注文完了して去った
     };
-
 
 public:
     explicit OdenBubbleActor(const std::string& actorName) :Actor(actorName) {}
@@ -80,6 +79,12 @@ public:
     EOdenType GetIngredientType()const
     {
         return submittedIngredientType;
+    }
+
+    void SetTargetPosition(const DirectX::XMFLOAT3& pos)
+    {
+        targetPos = pos;
+        state = EBubbleState::Entering;
     }
 private:
     // マッチ率をスコアに変換する
