@@ -67,6 +67,6 @@ private:
 private:
     std::unique_ptr<ClothSimulate> clothSimulate;
 
-    GameDifficulty difficulty = GameDifficulty::Normal;
+    GameDifficulty difficulty = GameDifficulty::Hard;
 
 };

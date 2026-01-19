@@ -237,7 +237,7 @@ void main(uint3 id : SV_DispatchThreadID)
     {
         // 運動方程式 重力 × 質量
         //float4 forceWorld = float4(0, 0, 0, 0);
-        float4 forceWorld = float4(0, -4.9 * MASS, 0, 0);
+        float4 forceWorld = float4(0, -4.0 * MASS, 0, 0);
         // 重力をモデル空間に変換する
         float4 forceLocal4 = mul(forceWorld, invWorld);
         force += forceLocal4.xyz;
@@ -246,11 +246,13 @@ void main(uint3 id : SV_DispatchThreadID)
         // 風の影響
         float4 windDirWorld = normalize(float4(0, 0, 1, 0)); // Z軸方向
         float4 windDirLocal4 = mul(windDirWorld, invWorld);
-        float windBase = 3.0f;
+        float windBase = 5.0f;
         float windVariation = 15.0f;
 
+        float phase = elapsedTime * 2.0f - currentPos.y * 1.5f;
+
         // 時間と位置によるゆらぎ
-        float w = sin(elapsedTime * 2.0f + id.x * 0.1f) * 0.5f + 0.5f;
+        float w = sin(phase) * 0.5f + 0.5f;
         float strength = windBase + windVariation * w;
 
         // 局所風速（ちょっとゆらぐ）
@@ -260,7 +262,29 @@ void main(uint3 id : SV_DispatchThreadID)
         float3 relativeVel = windVel - currentVelocity;
         float dragCoef = 0.2f;
         float3 windForce = dragCoef * relativeVel;
-        
+
+        // 強制的に揺らす外力（速度に依存しない）
+        float wave =
+    sin(elapsedTime * 2.5f - currentPos.y * 1.8f);
+
+        float3 driveForce =
+    float3(0.0f, 0.0f, wave) * 6.0f;
+
+        force += driveForce;
+
+
+        float heightFactor = saturate(-currentPos.y * 0.3f + 1.0f);
+        windForce *= lerp(1.0f, 3.0f, heightFactor);
+
+    //    // 波として伝播する風の力（直接加速）
+    //    float waveForce =
+    //sin(elapsedTime * 2.0f - currentPos.y * 1.5f);
+
+    //    float3 oscillationForce =
+    //float3(0.0f, 0.0f, waveForce) * 3.0f; // ←ここ超重要
+
+    //    force += oscillationForce;
+
         force += windForce;
 #endif
         avgVelocity /= float(edgeCount);

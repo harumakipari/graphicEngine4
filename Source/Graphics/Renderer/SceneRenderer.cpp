@@ -144,10 +144,87 @@ void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext) const
 
 void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext) const
 {
+    struct BlendRenderItem
+    {
+        MeshComponent* mesh;
+    };
+
     Scene* currentScene = Scene::GetCurrentScene();  // Œ»Ý‚ÌƒV[ƒ“Žæ“¾
     if (!currentScene) return;
     auto& allActors = currentScene->GetActorManager()->GetAllActors();
 
+    std::vector<BlendRenderItem> blendItems;
+    for (auto actor : allActors)
+    {
+        if (!actor || !actor->IsActive() || !actor->GetRootComponent())
+            continue;
+
+        std::vector<MeshComponent*> meshComponents;
+        actor->GetComponents<MeshComponent>(meshComponents);
+
+        for (MeshComponent* meshComponent : meshComponents)
+        {
+            if (!meshComponent->IsVisible())
+                continue;
+
+            blendItems.push_back({ meshComponent });
+        }
+    }
+    std::sort(
+        blendItems.begin(),
+        blendItems.end(),
+        [](const BlendRenderItem& a, const BlendRenderItem& b)
+        {
+            // ¬‚³‚¢ priority ‚ðæ‚É•`‰æ
+            return a.mesh->GetPriority() < b.mesh->GetPriority();
+        });
+
+    for (const auto& item : blendItems)
+    {
+        MeshComponent* meshComponent = item.mesh;
+
+        const auto& worldMat =
+            meshComponent->GetComponentWorldTransform().ToWorldTransform();
+
+        meshComponent->UpdateConstantBuffer(immediateContext);
+        meshComponent->UpdatePlusAlphaConstants(immediateContext);
+
+        auto* convexComponent =
+            meshComponent->GetOwner()->GetComponent<MorphMeshComponent>();
+
+        if (convexComponent)
+        {
+            auto morphModel =
+                dynamic_cast<MorphModel*>(convexComponent->model.get());
+
+            morphModel->Render(
+                immediateContext,
+                worldMat,
+                {},
+                InterleavedGltfModel::RenderPass::All);
+            continue;
+        }
+
+        if (meshComponent->model->mode ==
+            InterleavedGltfModel::Mode::SkeltalMesh)
+        {
+            Draw(immediateContext,
+                meshComponent,
+                worldMat,
+                meshComponent->modelNodes,
+                InterleavedGltfModel::RenderPass::Blend);
+        }
+        else
+        {
+            DrawWithStaticBatching(immediateContext,
+                meshComponent,
+                worldMat,
+                meshComponent->modelNodes,
+                InterleavedGltfModel::RenderPass::Blend);
+        }
+    }
+
+#if 0
     for (auto actor : allActors)
     {
         if (!actor->GetRootComponent())
@@ -185,7 +262,6 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext) const
                 continue;
             }
 
-
             if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
             {// 
                 Draw(immediateContext, meshComponent, worldMat, meshComponent->modelNodes, InterleavedGltfModel::RenderPass::Blend);
@@ -197,6 +273,8 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext) const
 
         }
     }
+
+#endif // 0
 }
 
 

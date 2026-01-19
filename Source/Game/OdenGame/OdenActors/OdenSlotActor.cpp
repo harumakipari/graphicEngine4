@@ -22,7 +22,7 @@ void OdenSlotActor::Initialize(const Transform& transform)
     soupModelComponent->SetRelativeLocationDirect({ 0.0f,-0.1f,0.0f });
     soupModelComponent->overrideForwardPipelineName = "OdenSoupSurfaceMesh";
     soupModelComponent->overrideDeferredPipelineName = "OdenSoupSurfaceMesh";
-
+    soupModelComponent->SetPriority(-10);
 #endif // 1
 #if 1
 

@@ -830,12 +830,12 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
             //}
 #else
 
-#if 0
+#if 1
             const float yThreshold = 0.0001f;
             //const float yThreshold = 10.5f;
             for (auto& v : primitive.cachedVertices)
             {
-                if (fabs(v.position.z - min.z) < yThreshold)
+                if (fabs(v.position.y - min.y) < yThreshold)
                 {
                     v.isPinned = 1;
                 }

@@ -116,6 +116,8 @@ public:
 
     virtual void OnRegister() override {}
 
+    void SetPriority(int priority) { this->priority = priority; }
+    int GetPriority() const { return priority; }
 
     // モデルごとに更新したいPlusAlpha 用定数バッファ
     struct PlusAlphaConstants
@@ -146,9 +148,8 @@ protected:
     bool isVisible_ = true;
     // 影をつけるかどうか
     bool isCastShadow_ = true;
-
-
-
+    // 描画優先度
+    int priority = 0;
 };
 
 class SkeletalMeshComponent :public MeshComponent
