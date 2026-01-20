@@ -307,6 +307,7 @@
     <ClCompile Include="Source\Game\OdenGame\OdenNextViewActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenResultScoreActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenUIScoreViewActor.cpp" />
+    <ClCompile Include="Source\Game\OdenGame\OdenUITimerActor.cpp" />
     <ClCompile Include="Source\Game\Scenes\LoadingScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\MainScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\MorphScene.cpp" />
@@ -471,6 +472,7 @@
     <ClInclude Include="Source\Game\OdenGame\OdenNextViewActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenResultScoreActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenUIScoreViewActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenUITimerActor.h" />
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
     <ClInclude Include="Source\Game\Scenes\MainScene.h" />
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />

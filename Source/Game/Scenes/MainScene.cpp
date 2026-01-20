@@ -30,6 +30,7 @@
 #include "Game/OdenGame/OdenActors/OdenDetailIngredientsActors.h"
 #include "Game/OdenGame/BeatClockActor.h"
 #include "Game/OdenGame/OdenGameSession.h"
+#include "Game/OdenGame/OdenUITimerActor.h"
 
 
 #include "Physics/CollisionSystem.h"
@@ -241,6 +242,10 @@ void MainScene::Start()
     // スコアを表示するアクターを生成
     auto uiScoreViewActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUIScoreViewActor>("OdenUIScoreViewActor");
     uiScoreViewActor->SetFontAndMakeTextComponent();
+
+    // 時間を表示するアクターを生成
+    auto uiTimerActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUITimerActor>("OdenUITimerActor");
+
 #endif // 0
 
     // シーンが切り替わった時に

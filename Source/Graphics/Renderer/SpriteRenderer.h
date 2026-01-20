@@ -3,6 +3,8 @@
 
 class Sprite;
 
+
+
 // UV—p‚ÌŠÈ’P‚ÈRect
 struct SpriteUV
 {
@@ -35,6 +37,10 @@ public:
         const DirectX::XMFLOAT2& pivot = { 0.0f, 0.0f },
         const DirectX::XMFLOAT2& scale = { 1.0f, 1.0f }
     );
+
+    // 0~9‚Ì”š‚É‘Î‰‚·‚éUV‚ğŒvZ‚µ‚Ä•Ô‚·
+    static SpriteUV CalcNumberUV(int number);
+
 
 private:
 };

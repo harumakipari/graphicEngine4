@@ -145,6 +145,9 @@ public:
         );
     }
 
+    // UVê›íË
+    void SetUV(const SpriteUV& inUV) { uv = inUV; }
+
 protected:
     std::shared_ptr<Sprite>  texture;
 

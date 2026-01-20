@@ -60,3 +60,20 @@ void SpriteRenderer::Draw(
         pivot.y
     );
 }
+
+// 0~9‚Ì”š‚É‘Î‰‚·‚éUV‚ğŒvZ‚µ‚Ä•Ô‚·
+SpriteUV SpriteRenderer::CalcNumberUV(int number)
+{
+    number = std::clamp(number, 0, 9);
+
+    const float digitCount = 10.0f;
+    const float uWidth = 1.0f / digitCount;
+
+    SpriteUV uv;
+    uv.x = uWidth * number;
+    uv.y = 0.0f;
+    uv.w = uWidth;
+    uv.h = 1.0f;
+
+    return uv;
+}
