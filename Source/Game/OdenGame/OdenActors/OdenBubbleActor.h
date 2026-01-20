@@ -131,7 +131,8 @@ private:
 
     EOdenType submittedIngredientType = EOdenType::None;// 実際に提出された食材の種類
 
-    std::shared_ptr<ParticleComponent> particleComponent;   // 星のエフェクト
+    std::shared_ptr<ParticleComponent> starSpawnParticleComponent;   // 星の発生エフェクト
+    std::shared_ptr<ParticleComponent> starAttractParticleComponent;   // 星のスコアへ吸い込まれるエフェクト
 
     float shakeTimer = 0.0f;    // シェイクタイマー
 

@@ -4,6 +4,7 @@
 
 #include "Engine/Scene/Scene.h"
 #include "OdenManagers/OdenGameManager.h"
+#include "Physics/CollisionFunction.h"
 #include "UI/FontManager.h"
 
 void OdenUIScoreViewActor::Initialize(const Transform& transform)
@@ -13,6 +14,17 @@ void OdenUIScoreViewActor::Initialize(const Transform& transform)
 
 void OdenUIScoreViewActor::Update(float elapsedTime)
 {
+    // UIの位置
+    DirectX::XMFLOAT3 position = GetPosition();
+    DirectX::XMFLOAT3 bubbleWorldPos = { position.x , position.y, position.z };
+    // ワールド座標からUI座標系に変換する
+    XMFLOAT2 uiPos = WorldToUI(bubbleWorldPos);
+
+    if (scoreTextUi)
+        scoreTextUi->SetWorldPosition({ uiPos.x, uiPos.y });
+
+
+
     // 総合スコアを加算する
     if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
     {

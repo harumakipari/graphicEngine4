@@ -33,9 +33,20 @@ void OdenBubbleActor::Initialize(const Transform& transform)
     state = EBubbleState::Waiting;
 
     // 星のコンポーネントを追加
-    particleComponent = this->AddComponent<class ParticleComponent>("particleComponent", parentName);
-    particleComponent->Load("./Data/Effect/Files/starEffect.json");
-    particleComponent->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
+    starSpawnParticleComponent = this->AddComponent<class ParticleComponent>("starSpawnParticleComponent", parentName);
+    starSpawnParticleComponent->Load("./Data/Effect/Files/starEffect.json");
+    starSpawnParticleComponent->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
+    //// ループ再生設定
+    //ParticleComponent::AddSettings settings
+    //{
+    //    .loop = true, // ループ再生
+    //};
+    //starSpawnParticleComponent->SetAddSettings(settings);
+
+    // 星のコンポーネントを追加
+    starAttractParticleComponent = this->AddComponent<class ParticleComponent>("starAttractParticleComponents", parentName);
+    starAttractParticleComponent->Load("./Data/Effect/Files/starAttractEffect.json");
+    starAttractParticleComponent->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
 
 }
 
@@ -153,6 +164,16 @@ void OdenBubbleActor::Update(float elapsedTime)
         }
         break;
     }
+
+
+    // スコアの場所を取得
+    if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("OdenUIScoreViewActor"))
+    {
+        // スコアのワールド座標を取得
+        XMFLOAT3 pos = actor->GetPosition();
+        starSpawnParticleComponent->SetWorldLocationDirect(pos);
+    }
+
 
 }
 
@@ -286,11 +307,11 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
     }
 
     // エフェクトを出す
-    if (particleComponent)
+    if (starSpawnParticleComponent)
     {
         if (score == EScore::Perfect)
         {
-            particleComponent->Play();
+            starSpawnParticleComponent->Play();
         }
         else if (score == EScore::Good)
         {

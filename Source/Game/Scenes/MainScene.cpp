@@ -126,13 +126,13 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         {
             if (const auto cloth = GetActorManager()->GetActorByName("cloth"))
             {
-              //   clothSimulate->Render(immediateContext, cloth->GetWorldTransform());
+                //   clothSimulate->Render(immediateContext, cloth->GetWorldTransform());
             }
         });
 
     // 水のノーマルテクスチャを追加
     D3D11_TEXTURE2D_DESC texture2dDesc;
-    HRESULT hr=LoadTextureFromFile(device, L"./Data/ShaderTextures/waterNormal.png", waterNormalTexture.GetAddressOf(), &texture2dDesc);
+    HRESULT hr = LoadTextureFromFile(device, L"./Data/ShaderTextures/waterNormal.png", waterNormalTexture.GetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     return true;
 }
@@ -167,7 +167,7 @@ void MainScene::Start()
     difficulty = OdenGameSession::GetDifficulty();
 
     Logger::Log("Oden Game Difficulty: " + std::to_string(static_cast<uint8_t>(difficulty)));
-#if 1
+#if 0
     // デバック時に使用
     // おでんのダイコンを生成
     Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -210,7 +210,7 @@ void MainScene::Start()
 
 #endif // 0
 
-#if 1
+#if 0
     // デバック時に使用
     // お題を生成
     Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -240,7 +240,8 @@ void MainScene::Start()
 
 #if 1
     // スコアを表示するアクターを生成
-    auto uiScoreViewActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUIScoreViewActor>("OdenUIScoreViewActor");
+    Transform uiScoreTr(DirectX::XMFLOAT3{ -7.1f,0.0f,-1.6f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto uiScoreViewActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUIScoreViewActor>("OdenUIScoreViewActor", uiScoreTr);
     uiScoreViewActor->SetFontAndMakeTextComponent();
 
     // 時間を表示するアクターを生成
@@ -308,7 +309,7 @@ void MainScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
     // 水のノーマルテクスチャを送る
     immediateContext->PSSetShaderResources(12, 1, waterNormalTexture.GetAddressOf());
-    odenSoupCBuffer->data=odenSoupConstantBuffer;
+    odenSoupCBuffer->data = odenSoupConstantBuffer;
     odenSoupCBuffer->Activate(immediateContext, 12);
 
     SceneBase::Render(immediateContext, deltaTime);

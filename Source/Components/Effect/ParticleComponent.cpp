@@ -22,8 +22,11 @@ void ParticleComponent::Play()
         }
 
         // ゲームオブジェクトの位置と回転を取得
-        XMFLOAT3 position = owner_.lock()->GetPosition();
-        XMFLOAT3 rotation = owner_.lock()->GetEulerRotation();
+        //XMFLOAT3 position = owner_.lock()->GetPosition();
+        //XMFLOAT3 rotation = owner_.lock()->GetEulerRotation();
+
+        XMFLOAT3 position = GetComponentLocation();
+        XMFLOAT3 rotation = GetComponentEulerRotation();
 
         // 線上にエフェクトを再生する場合
         if (settings.lineData.useLine)
