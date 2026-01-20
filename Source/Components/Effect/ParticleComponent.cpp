@@ -76,6 +76,15 @@ void ParticleComponent::Play()
     }
 }
 
+// エフェクトをアタッチ先に再生
+void ParticleComponent::PlayAttached()
+{
+     if (effectHandle == -1) return;
+
+    EffectManager::PlayAttached(effectHandle, shared_from_this());
+    isPlaying = true;
+}
+
 void ParticleComponent::Stop()
 {
     // エフェクト停止

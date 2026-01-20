@@ -3,6 +3,7 @@
 
 #include <magic_enum.hpp>
 
+#include "StarParticleActor.h"
 #include "Engine/Scene/Scene.h"
 #include "Game/OdenGame/OdenGameSession.h"
 #include "Physics/CollisionFunction.h"
@@ -47,7 +48,15 @@ void OdenBubbleActor::Initialize(const Transform& transform)
     starAttractParticleComponent = this->AddComponent<class ParticleComponent>("starAttractParticleComponents", parentName);
     starAttractParticleComponent->Load("./Data/Effect/Files/starAttractEffect.json");
     starAttractParticleComponent->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
+    // ループ再生設定
+    ParticleComponent::AddSettings settings
+    {
+        .loop = true, // ループ再生
+    };
+    starAttractParticleComponent->SetAddSettings(settings);
 
+    // イージング
+    easingRunner = std::make_shared<EasingRunner>();
 }
 
 void OdenBubbleActor::Finalize()
@@ -64,6 +73,8 @@ void OdenBubbleActor::Finalize()
 
 void OdenBubbleActor::Update(float elapsedTime)
 {
+    easingRunner->Tick(elapsedTime);
+
     // UIの位置
     DirectX::XMFLOAT3 position = GetPosition();
     DirectX::XMFLOAT3 bubbleWorldPos = { position.x , position.y, position.z };
@@ -166,13 +177,6 @@ void OdenBubbleActor::Update(float elapsedTime)
     }
 
 
-    // スコアの場所を取得
-    if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("OdenUIScoreViewActor"))
-    {
-        // スコアのワールド座標を取得
-        XMFLOAT3 pos = actor->GetPosition();
-        starSpawnParticleComponent->SetWorldLocationDirect(pos);
-    }
 
 
 }
@@ -312,6 +316,47 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
         if (score == EScore::Perfect)
         {
             starSpawnParticleComponent->Play();
+#if 0
+            // スコアの場所を取得
+            if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("OdenUIScoreViewActor"))
+            {
+                // スコアのワールド座標を取得
+                XMFLOAT3 pos = actor->GetPosition();
+
+                TestEasingHandler handler;
+                handler.AddEasing(TestEaseType::OutCubic, 0.f, 1.0f, 0.4f);
+                handler.SetCompletedFunction([this]()
+                    {
+                        starAttractParticleComponent->Stop();
+                    });
+                PropertyAccessor<float> accessor;
+                accessor.getter = [this]() { return 1.0f; };
+                accessor.setter = [this](float t)
+                    {
+                        if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("OdenUIScoreViewActor"))
+                        {
+                            XMFLOAT3 pos = actor->GetPosition();
+                            XMVECTOR ScorePos = XMLoadFloat3(&pos);
+                            XMFLOAT3 currentPos = GetPosition();
+                            XMVECTOR StartPos = XMLoadFloat3(&currentPos);
+
+                            XMVECTOR NewPos = XMVectorLerp(StartPos, ScorePos, t);
+                            DirectX::XMFLOAT3 newPos;
+                            XMStoreFloat3(&newPos, NewPos);
+                            starAttractParticleComponent->SetWorldLocationDirect(newPos);
+                        }
+
+                    };
+
+                easingRunner->StartHandler(handler, accessor);
+            }
+            starAttractParticleComponent->PlayAttached();
+#else
+            Transform starTransform;
+            starTransform.SetTranslation(GetPosition());
+            auto starActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<StarParticleActor>("starParticle", starTransform);
+
+#endif // 0
         }
         else if (score == EScore::Good)
         {

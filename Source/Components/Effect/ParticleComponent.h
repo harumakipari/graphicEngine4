@@ -42,6 +42,9 @@ public:
     // エフェクト再生
     void Play();
 
+    // エフェクトをアタッチ先に再生
+    void PlayAttached();
+
     // エフェクト停止
     void Stop();
 

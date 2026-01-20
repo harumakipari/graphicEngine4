@@ -200,14 +200,21 @@ void OdenOrderManager::BuildOrderBag()
     {
         entries =
         {
-            { FindShapeOrder(EOdenShapeCategory::TriangleLike), 3 },
-            { FindShapeOrder(EOdenShapeCategory::SquareLike),   2 },
-            { FindShapeOrder(EOdenShapeCategory::RibbonLike),   1 },
-            { FindShapeOrder(EOdenShapeCategory::RoundLike),   1 },
+            { FindShapeOrder(EOdenShapeCategory::TriangleLike), 2 },
+            { FindShapeOrder(EOdenShapeCategory::SquareLike),   4 },
+            { FindShapeOrder(EOdenShapeCategory::RibbonLike),   2 },
+            { FindShapeOrder(EOdenShapeCategory::RoundLike),   4 },
             { FindIngredientOrder(EOdenType::Daikon), 1 },
             { FindIngredientOrder(EOdenType::Egg),    1 },
             { FindIngredientOrder(EOdenType::Tsukune),1 },
+            { FindIngredientOrder(EOdenType::Chikuwa),  1 },
+            { FindIngredientOrder(EOdenType::Konnyaku), 1 },
+            { FindIngredientOrder(EOdenType::Hanpen),    1 },
+            { FindIngredientOrder(EOdenType::Goboten),    1 },
+            { FindIngredientOrder(EOdenType::Cake),    1 },
             { FindIngredientOrder(EOdenType::Donut),  1 },
+            { FindIngredientOrder(EOdenType::Shirataki),1 },
+            { FindIngredientOrder(EOdenType::Kobumusubi),1 },
         };
     }
 

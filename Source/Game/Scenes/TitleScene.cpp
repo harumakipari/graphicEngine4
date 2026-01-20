@@ -36,7 +36,7 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
     }
 
     // ここで布を描画する
-    RegisterRenderHook(RenderPass::Opaque, [&](ID3D11DeviceContext* immediateContext)
+    RegisterRenderHook(RenderPass::Mask, [&](ID3D11DeviceContext* immediateContext)
         {
             for (int i = 0; i < 5; i++)
             {
@@ -153,16 +153,20 @@ void TitleScene::SetUpActors()
     // 暖簾を生成
     //Transform clothTr(DirectX::XMFLOAT3{ 6.3f,7.9f,16.5f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
 
-    for (int i = 0; i < 5; i++)
-    {
-        Transform clothTr(DirectX::XMFLOAT3{ 4.8f + i * 6.0f,11.7f,15.f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-        std::string actorName = "noren_" + std::to_string(i + 1);
-        auto clothActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>(actorName, clothTr);
-    }
 
     // ステージアクターを生成
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
     auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenTitleStageActor>("stage", stageTr);
+
+
+    for (int i = 0; i < 1; i++)
+    {
+        Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.2f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 90.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.48f,1.0f,0.48sf });
+        std::string actorName = "noren_" + std::to_string(i + 1);
+        auto clothActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>(actorName, clothTr);
+        auto cloth=clothActor->AddComponent<SkeletalMeshComponent>("skeletalMeshComponent");
+        cloth->SetModel("./Data/Models/Oden_Title_Stage/Oden_Cloth_Noren_" + std::to_string( 1) + ".gltf", true);
+    }
 
 
 }

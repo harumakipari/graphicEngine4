@@ -7,6 +7,8 @@
 #include "Core/Vector.h"
 #include "Core/CoreColor.h"
 
+class SceneComponent;
+
 template<typename T>
 struct Range
 {
@@ -32,8 +34,27 @@ struct Range
 	}
 };
 
+
+
 // エフェクトハンドル
 typedef int EffectHandle;
+
+
+struct EffectAttachInfo
+{
+	EffectHandle handle;
+	std::weak_ptr<SceneComponent> target;
+
+	bool followPosition = true;
+	bool followRotation = true;
+
+	float emitInterval = 0.03f;   // ★ ここ重要
+	float emitTimer = 0.0f;
+
+	float lifeTime = 1.0f;        // ★ エフェクト全体寿命
+	float elapsed = 0.0f;
+};
+
 
 class EffectManager
 {
@@ -63,6 +84,9 @@ public:
 
 	// エフェクト再生
 	static void Play(EffectHandle handle, const DirectX::XMFLOAT3& position = {}, const DirectX::XMFLOAT3& rotationEulerDegree = {});
+
+    // エフェクト再生（コンポーネントにアタッチ）
+    static void PlayAttached(EffectHandle handle, const std::shared_ptr<SceneComponent>& target, bool followPosition = true, bool followRotation = true);
 
 	// 全エフェクト停止
 	static void StopAll();
@@ -202,6 +226,8 @@ public:
 		std::string filePath; // エフェクトデータファイルパス
 	};
 	static inline std::vector<EffectData> effectData; // エフェクトデータリスト
+
+	static inline std::vector<EffectAttachInfo> attachedEffects; // エフェクトデータリスト
 
 private:
 	friend class EffectEditor;

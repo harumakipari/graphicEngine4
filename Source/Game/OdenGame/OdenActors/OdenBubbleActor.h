@@ -137,4 +137,6 @@ private:
     float shakeTimer = 0.0f;    // シェイクタイマー
 
     bool isCompeted = false;    // 提出完了したかどうか
+
+    std::shared_ptr<EasingRunner> easingRunner;
 };

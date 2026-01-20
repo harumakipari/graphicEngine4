@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "EffectManager.h"
 
+#include "Components/Base/SceneComponent.h"
 #include "Engine/Debug/Assert.h"
 #include "Graphics/Core/Graphics.h"
 #include "Engine/Utility/JsonFileHandler.h"
@@ -348,6 +349,29 @@ void EffectManager::Play(EffectHandle handle, const DirectX::XMFLOAT3& pos, cons
 	}
 }
 
+
+// エフェクト再生（コンポーネントにアタッチ）
+void EffectManager::PlayAttached(EffectHandle handle, const std::shared_ptr<SceneComponent>& target, bool followPosition , bool followRotation )
+{
+	if (!target) return;
+
+	EffectAttachInfo info;
+	info.handle = handle;
+	info.target = target;
+	info.followPosition = followPosition;
+	info.followRotation = followRotation;
+
+	info.emitInterval = 0.02f;   // ★必須
+	info.emitTimer = 0.0f;
+
+	info.lifeTime = 0.5f;        // ★必須（星が吸い込まれる時間）
+	info.elapsed = 0.0f;
+
+
+
+	attachedEffects.push_back(info);
+}
+
 EffectHandle EffectManager::CopyEffectData(EffectHandle srcHandle)
 {
 	// エフェクトデータコピー
@@ -405,6 +429,47 @@ void EffectManager::Update(float deltaTime)
 			particleSystem->Update(immediateContext, deltaTime);
 		}
 	}
+
+	for (auto it = attachedEffects.begin(); it != attachedEffects.end(); )
+	{
+		auto& attached = *it;
+		auto target = attached.target.lock();
+		if (!target)
+		{
+			it = attachedEffects.erase(it);
+			continue;
+		}
+
+		XMFLOAT3 pos = attached.followPosition
+			? target->GetComponentLocation()
+			: XMFLOAT3{};
+
+		XMFLOAT3 rot = attached.followRotation
+			? target->GetComponentEulerRotation()
+			: XMFLOAT3{};
+
+		attached.emitTimer += deltaTime;
+		attached.elapsed += deltaTime;
+
+		// ★ 一定間隔で Emit
+		if (attached.emitTimer >= attached.emitInterval)
+		{
+			Play(attached.handle, pos, rot);
+			attached.emitTimer = 0.0f;
+		}
+
+		// ★ 寿命で終了
+		if (attached.elapsed >= attached.lifeTime)
+		{
+			it = attachedEffects.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+
+
 }
 
 void EffectManager::Render(ID3D11DeviceContext* immediateContext)
