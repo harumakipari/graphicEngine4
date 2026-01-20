@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/Actor.h"
+#include "OdenActors/OdenResultIngredientActor.h"
 #include "UI/Widgets/Widget.h"
 
 
@@ -23,5 +24,9 @@ public:
 
 private:
     std::shared_ptr<UITextComponent> scoreTextUi; // スコアのテキスト描画
+    std::vector<std::shared_ptr<OdenResultIngredientActor>> resultIngredients; // 具材
 
+    float nextSpawnDelay = 0.5f; // 次の具材が出現するまでの遅延時間
+    float spawnTimer = 0.0f; // 出現タイマー
+    size_t spawnIndex = 0; // 出現インデックス
 };

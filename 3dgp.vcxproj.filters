@@ -570,6 +570,9 @@
     <ClCompile Include="Source\Game\OdenGame\OdenActors\StarParticleActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenResultIngredientActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -941,6 +944,7 @@
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenTitleStageActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenUITimerActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\StarParticleActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenResultIngredientActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

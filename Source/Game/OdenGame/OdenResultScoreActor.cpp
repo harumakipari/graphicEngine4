@@ -48,9 +48,30 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
 
     Logger::Log("=============================");
 
+    int globalIndex = 0; // 全体での横並びインデックス
+
+    for (auto& log : session.submitLogs)
+    {
+        for (int i = 0; i < log.count; ++i)
+        {
+            std::string ingredientName = std::string(magic_enum::enum_name(log.type));
+            if (ingredientName.empty())
+            {
+                Logger::Log("Warning: SubmitLog has invalid EOdenType");
+                continue; // 作らない
+            }
+            float x = globalIndex * 3.0f; // 横に並べる
+            float y = 1.0f;                      // 高さ固定
+            Transform ingredientTr(DirectX::XMFLOAT3{ x,y,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+            auto ingredientActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultIngredientActor>("OdenResultIngredient", ingredientTr, ingredientName);
+            resultIngredients.push_back(ingredientActor);
+            globalIndex++;
+        }
+    }
+
 }
 
-void OdenResultScoreActor::Update(float elapsedTime)
+void OdenResultScoreActor::Update(float deltaTime)
 {
     auto& session = OdenGameSession::Instance();
 
@@ -62,6 +83,25 @@ void OdenResultScoreActor::Update(float elapsedTime)
     // 総合スコアを表示する
     if (scoreTextUi)
         scoreTextUi->SetText(L"ResultScore:" + std::to_wstring(static_cast<int>(score)));
+
+
+    // 食材の順番登場
+    if (spawnIndex < resultIngredients.size())
+    {
+        spawnTimer += deltaTime;
+        if (spawnTimer >= nextSpawnDelay)
+        {
+            resultIngredients[spawnIndex]->AppearIngredient();
+            // 配置
+#if 0
+            float x = 100.0f + spawnIndex * 80.0f; // 横に並べる
+            float y = 1.0f;                      // 高さ固定
+            resultIngredients[spawnIndex]->SetPosition({ x, y, 0.0f });
+#endif // 0
+            spawnTimer = 0.0f;
+            ++spawnIndex;
+        }
+    }
 }
 
 // フォントをセットする

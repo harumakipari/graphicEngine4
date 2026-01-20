@@ -9,6 +9,7 @@
 void StarParticleActor::Initialize(const Transform& transform)
 {
     std::string parentName = "StarParticleActor_Root";
+#if 0
     // 星のコンポーネントを追加
     particleComp = this->AddComponent<class ParticleComponent>("starParticleComponent");
     particleComp->Load("./Data/Effect/Files/starAttractEffect.json");
@@ -23,6 +24,8 @@ void StarParticleActor::Initialize(const Transform& transform)
     easingRunner = std::make_shared<EasingRunner>();
 
     particleComp->Play();
+
+#endif // 0
 
     startPos = GetPosition();
 
@@ -296,7 +299,7 @@ void StarParticleActor::StartParticle()
         starTextures[i]->SetVisible(true);
     }
 
-    particleComp->Play();
+    //particleComp->Play();
 }
 
 void StarParticleActor::SpawnTrailStar(const XMFLOAT3& worldPos, float intensity)

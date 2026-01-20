@@ -17,6 +17,7 @@ struct OdenResult
 {
     float price = 0.0f;
     float satisfaction = 0.0f;
+    float scoreMultiplier = 1.0f;
 };
 
 class OdenIngredientActor;
