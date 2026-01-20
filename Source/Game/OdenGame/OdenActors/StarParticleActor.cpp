@@ -31,11 +31,14 @@ void StarParticleActor::Initialize(const Transform& transform)
     for (int i = 0; i < StarCount; ++i)
     {
         auto star = std::make_shared<UIImageComponent>(
-            "./Data/Textures/star.png", "star_texture");
+            "./Data/Textures/starClear.png", "star_texture");
 
         star->SetPivot({ 0.5f,0.5f });
         star->SetSize({ 120, 120 });
+        float scale = MathHelper::RandomRange(0.6f, 0.8f);
+        star->SetScale({ scale,scale });
         star->zOrder = 100;
+        star->SetVisible(false);
 
         scene->GetUIManager()->Add(star);
 
@@ -45,7 +48,18 @@ void StarParticleActor::Initialize(const Transform& transform)
         starAngles[i] = XM_2PI * (i / float(StarCount));
     }
 
+    for (int i = 0; i < StarCount; ++i)
+    {
+        attractInfos[i].localOffset =
+        {
+            MathHelper::RandomRange(-40.0f, 40.0f),
+            MathHelper::RandomRange(-40.0f, 40.0f),
+            0.0f
+        };
 
+        attractInfos[i].speedFactor =
+            MathHelper::RandomRange(0.6f, 1.5f);
+    }
 }
 
 void StarParticleActor::Finalize()
@@ -74,8 +88,7 @@ void StarParticleActor::Update(float elapsedTime)
     if (phase == StarPhase::Orbit)
     {
         float t = time / orbitDuration;
-        angle = t * XM_2PI * 1.0; // 1周だけ
-
+        angle = t * XM_2PI * 0.6f; // 0.4周くらい
         for (int i = 0; i < StarCount; ++i)
         {
             float a = angle + starAngles[i];
@@ -97,6 +110,7 @@ void StarParticleActor::Update(float elapsedTime)
             XMFLOAT2 uiPos = WorldToUI(pos);
             starTextures[i]->SetWorldPosition(uiPos);
             starTextures[i]->SetWorldAngleDegree(XMConvertToDegrees(a));
+            starTextures[i]->SetVisible(true);
         }
 
         if (time > orbitDuration)
@@ -124,10 +138,16 @@ void StarParticleActor::Update(float elapsedTime)
 
             XMFLOAT2 uiPos = WorldToUI(pos);
             starTextures[i]->SetWorldPosition(uiPos);
+            starTextures[i]->SetVisible(true);
+
         }
 
         if (t >= 1.0f)
         {
+            for (int i = 0; i < StarCount; ++i)
+            {
+                attractStartPos[i] = starTextures[i]->GetWorldPosition();
+            }
             phase = StarPhase::Attract;
             time = 0.0f;
         }
@@ -153,25 +173,85 @@ void StarParticleActor::Update(float elapsedTime)
             0.0f
         };
 
+        float trailFade = 1.0f - easeT;   // 終盤ほど小さく
+        trailFade = std::clamp(trailFade, 0.2f, 1.0f);
+
         float dist = sqrtf(d.x * d.x + d.y * d.y);
 
-        if (dist > 1.0f)   // ★ この値が密度
+        if (dist > trailInterval)
         {
-            SpawnTrailStar(prevTrailPos);
-            prevTrailPos = finalPos;
-            Logger::Log(U8("トレイル星をスポーンさせた"));
+            const int spawnCount = MathHelper::RandomRange(2, 4); // ★ここ
 
+            for (int i = 0; i < spawnCount; ++i)
+            {
+                XMFLOAT3 offset =
+                {
+                    MathHelper::RandomRange(-trailSpread, trailSpread),
+                    MathHelper::RandomRange(-trailSpread, trailSpread),
+                    0.0f
+                };
+
+                XMFLOAT3 spawnPos =
+                {
+                    prevTrailPos.x + offset.x,
+                    prevTrailPos.y + offset.y,
+                    prevTrailPos.z
+                };
+
+                SpawnTrailStar(spawnPos,trailFade);
+                Logger::Log(U8("トレイル星をスポーンさせた"));
+            }
+
+            prevTrailPos = finalPos;
         }
+
         // =====================
 
-        SetPosition(finalPos);
+        for (int i = 0; i < StarCount; ++i)
+        {
+            float localT = std::clamp(
+                time / (attractDuration * attractInfos[i].speedFactor),
+                0.0f, 1.0f);
 
-        XMFLOAT2 uiPos = WorldToUI(finalPos);
-        starTextures[0]->SetWorldPosition(uiPos);
+            float easeT = 1.0f - powf(1.0f - localT, 3.0f);
 
-        starTextures[1]->SetVisible(false);
-        starTextures[2]->SetVisible(false);
+            XMFLOAT2 s = attractStartPos[i];
+            XMFLOAT2 scoreUI = WorldToUI(scorePos);
 
+            XMFLOAT2 endOffset =
+            {
+                attractInfos[i].localOffset.x * 0.15f,
+                attractInfos[i].localOffset.y * 0.15f
+            };
+
+            XMFLOAT2 e =
+            {
+                scoreUI.x + endOffset.x,
+                scoreUI.y + endOffset.y
+            };
+
+            XMFLOAT2 p =
+            {
+                s.x + (e.x - s.x) * easeT,
+                s.y + (e.y - s.y) * easeT
+            };
+
+            XMFLOAT2 final =
+            {
+                p.x + attractInfos[i].localOffset.x * (1.0f - easeT),
+                p.y + attractInfos[i].localOffset.y * (1.0f - easeT)
+            };
+            float alpha = 1.0f - easeT;
+
+            // 消え際を少し早めたいなら
+            alpha = powf(alpha, 1.5f);
+
+            // 最低限の残り防止
+            alpha = std::clamp(alpha, 0.0f, 1.0f);
+
+            starTextures[i]->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
+            starTextures[i]->SetWorldPosition(final);
+        }
         if (t >= 1.0f)
         {
             MarkPendingKill();
@@ -186,7 +266,7 @@ void StarParticleActor::Update(float elapsedTime)
         t = std::clamp(t, 0.0f, 1.0f);
 
         it->sprite->SetColor({ 1.0f,1.0f,1.0f,t });
-        it->sprite->SetScale({ t * 0.4f, t * 0.4f });
+        it->sprite->SetScale({ t * 0.6f, t * 0.6f });
 
         if (it->life <= 0.0f)
         {
@@ -219,24 +299,24 @@ void StarParticleActor::StartParticle()
     particleComp->Play();
 }
 
-void StarParticleActor::SpawnTrailStar(const XMFLOAT3& worldPos)
+void StarParticleActor::SpawnTrailStar(const XMFLOAT3& worldPos, float intensity)
 {
-    auto s = std::make_shared<UIImageComponent>("./Data/Textures/star.png", "trail_star");
+    auto s = std::make_shared<UIImageComponent>("./Data/Textures/starClear.png", "trail_star");
 
     s->SetPivot({ 0.5f,0.5f });
 
     s->SetSize({ 120, 120 });
-    float scale = MathHelper::RandomRange(1.2f, 1.8f);
+    float scale = MathHelper::RandomRange(1.8f, 2.5f) * intensity;
     s->SetScale({ scale, scale });
 
     XMFLOAT2 uiPos = WorldToUI(worldPos);
     s->SetWorldPosition(uiPos);
     s->zOrder = 90;
-    s->SetWorldAngleDegree(MathHelper::RandomRange(0.0f, 360.0f));
-    s->SetColor({ 1.0f,1.0f,1.0f,0.8f });
+    //    s->SetWorldAngleDegree(MathHelper::RandomRange(0.0f, 360.0f));
+    s->SetColor({ 1.0f,1.0f,1.0f,0.8f * intensity });
     GetOwnerScene()->GetUIManager()->Add(s);
 
-    float lifeTime = MathHelper::RandomRange(0.3f, 0.8f);
+    float lifeTime = MathHelper::RandomRange(0.3f, 0.5f);
 
     trailStars.push_back({ s, lifeTime });
 }

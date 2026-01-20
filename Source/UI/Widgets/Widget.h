@@ -64,6 +64,8 @@ public:
 
     bool IsPendingKill() const { return isPendingKill; }
 
+    XMFLOAT2 GetWorldPosition() { return this->worldPosition; }
+
     // テキスト描画コンポーネントに使用している　テキストが更新された時に呼ばれる
     bool IsDirty() const { return dirty; }
     void ClearDirty() { dirty = false; }

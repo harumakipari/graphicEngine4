@@ -135,3 +135,4 @@ inline XMFLOAT2 WorldToUI(const XMFLOAT3& worldPos)
 
     return ConvertScreenToUI(screen);
 }
+

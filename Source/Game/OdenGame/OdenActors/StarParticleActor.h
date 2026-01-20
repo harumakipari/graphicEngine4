@@ -12,7 +12,7 @@
 class StarParticleActor :public Actor
 {
 public:
-    enum class StarPhase
+    enum class StarPhase :uint8_t
     {
         Orbit,      // ü‚è‚ğ‰ñ‚é
         Merge,      // ‡—¬
@@ -25,6 +25,11 @@ public:
         float life;
     };
 
+    struct StarAttractInfo
+    {
+        XMFLOAT3 localOffset;   // ‹z‚¢Šñ‚¹’†‚ÌƒYƒŒ
+        float speedFactor;     // ‘¬“x‚ÌŒÂ‘Ì·
+    };
 public:
 
     explicit StarParticleActor(const std::string& actorName) :Actor(actorName) {}
@@ -41,24 +46,31 @@ public:
     void StartParticle();
 
 private:
-    void SpawnTrailStar(const XMFLOAT3& worldPos);
+    void SpawnTrailStar(const XMFLOAT3& worldPos,float intensity);
 
 private:
     std::shared_ptr<EasingRunner> easingRunner;
     std::shared_ptr<ParticleComponent> particleComp;
-    static constexpr int StarCount = 3;
+    static constexpr int StarCount = 5;
+    static constexpr int OrbitStarCount = 3;
     std::array<std::shared_ptr<UIImageComponent>, StarCount> starTextures;
-    std::array<float, StarCount> starAngles;    XMFLOAT3 startPos;
+    std::array<float, StarCount> starAngles;
+    XMFLOAT3 startPos;
 
+    StarAttractInfo attractInfos[StarCount];
+    XMFLOAT2 attractStartPos[StarCount];
     XMFLOAT3 scorePos;
 
     float time = 0.0f;
     float attractDuration = 1.2f;   // ƒXƒRƒA‚ÖˆÚ“®‚ÌŠÔ
-    float mergeDuration = 0.6f; // ‡—¬ŠÔ
+    float mergeDuration = 0.3f; // ‡—¬ŠÔ
     float orbitDuration = 0.6f; // ‰ñ“]‚ÌŠÔ
     float angle = 0.0f;
     float radius = 1.5f;
     StarPhase phase = StarPhase::Orbit;
     XMFLOAT3 prevTrailPos = { 0.0f,0.0f,0.0f };
     std::vector<TrailStar> trailStars;
+
+    float trailInterval = 1.5f;   // ‹——£ŠÔŠu
+    float trailSpread = 1.5f;  // ‰¡‚ÉU‚ç‚·•
 };
