@@ -60,7 +60,6 @@ void ParticleComponent::Play()
                 }
             }
 #endif // 0
-
         }
         else
         {

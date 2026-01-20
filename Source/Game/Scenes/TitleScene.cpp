@@ -161,14 +161,12 @@ void TitleScene::SetUpActors()
 
     for (int i = 0; i < 1; i++)
     {
-        Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.2f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 90.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.48f,1.0f,0.48sf });
+        Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.2f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 90.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.48f,1.0f,0.48f });
         std::string actorName = "noren_" + std::to_string(i + 1);
         auto clothActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>(actorName, clothTr);
         auto cloth=clothActor->AddComponent<SkeletalMeshComponent>("skeletalMeshComponent");
         cloth->SetModel("./Data/Models/Oden_Title_Stage/Oden_Cloth_Noren_" + std::to_string( 1) + ".gltf", true);
     }
-
-
 }
 
 void TitleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
