@@ -729,8 +729,9 @@ void InterleavedGltfModel::FetchAndBatchMeshes(ID3D11Device* device, const tinyg
                     }
                     else
                     {
-                        OutputDebugStringA((gltfAttribute.first + " is an unsupported attribute.\n").c_str());
-                        _ASSERT_EXPR(FALSE, L"This attribute is unsupported.");
+                        Logger::Error(gltfAttribute.first + " is an unsupported attribute.");
+                        //OutputDebugStringA((gltfAttribute.first + " is an unsupported attribute.\n").c_str());
+                        //_ASSERT_EXPR(FALSE, L"This attribute is unsupported.");
                     }
                     batchMesh.attributes.emplace(gltfAttribute.first, _DxgiFormat(gltfAccessor));
                 }

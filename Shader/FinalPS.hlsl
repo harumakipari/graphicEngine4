@@ -94,7 +94,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     // シーンからライティング済みのカラーテクスチャ
     float4 color = colorTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
 
-    return float4(color);
+    //return float4(color);
 
     // uv -> ndc 
     float4 positionNdc = CalculatedPositionNDC(pin);

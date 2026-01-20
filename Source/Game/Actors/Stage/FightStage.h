@@ -25,7 +25,7 @@ public:
         //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelFightStagePS.cso", staticMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
         //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 #endif // 1
-        //staticMeshComponent->SetRelativeLocationDirect({ 0.0f,2.45f,0.0f });
+        staticMeshComponent->SetRelativeLocationDirect({ 16.0f,0.0f,-4.0f });
 
 #if 0 // “–‚½‚è”»’è
         // ƒƒbƒVƒ…

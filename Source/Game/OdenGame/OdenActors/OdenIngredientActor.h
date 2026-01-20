@@ -31,6 +31,7 @@ public:
     {
         DirectX::XMFLOAT3 localOffset;
         DirectX::XMFLOAT3 localEuler; 
+        DirectX::XMFLOAT3 localScale={1.0f,1.0f,1.0f}; 
     };
 
     // Ç®Ç≈ÇÒÇÃèÛë‘

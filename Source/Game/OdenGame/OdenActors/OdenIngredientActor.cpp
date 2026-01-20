@@ -93,7 +93,7 @@ void OdenIngredientActor::Update(float deltaTime)
     }
 
 
-    
+
 }
 
 void OdenIngredientActor::DrawImGuiDetails()
@@ -300,6 +300,8 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
         //dot->SetRelativeLocationDirect({ 0.0f,0.03f,0.0f });
         dot->SetRelativeLocationDirect(ft.localOffset);
         dot->SetRelativeEulerRotationDirect(ft.localEuler);
+        dot->SetRelativeScaleDirect(ft.localScale);
+
         dot->SetModel(modelDotLineFileName);
         dot->SetIsCastShadow(false);
 
@@ -609,6 +611,8 @@ std::string OdenIngredientActor::GetDotLineModelPath(EOdenType ingredientType,
         DotLineByIngredientFace =
     {
         // --- ÇøÇ≠ÇÌ ---
+        {{ EOdenType::Chikuwa, EOdenFace::Front   }, "Oden_DotLine_LongRect.gltf" },
+        {{ EOdenType::Chikuwa, EOdenFace::Back   }, "Oden_DotLine_LongRect.gltf" },
         {{ EOdenType::Chikuwa, EOdenFace::Top   }, "Oden_DotLine_LongRect.gltf" },
         {{ EOdenType::Chikuwa, EOdenFace::Bottom   }, "Oden_DotLine_LongRect.gltf" },
 
@@ -616,6 +620,11 @@ std::string OdenIngredientActor::GetDotLineModelPath(EOdenType ingredientType,
         {{ EOdenType::Daikon, EOdenFace::Left   }, "Oden_DotLine_Rect.gltf" },
         {{ EOdenType::Daikon, EOdenFace::Right   }, "Oden_DotLine_Rect.gltf" },
 
+        // --- Ç≤Ç⁄ÇƒÇÒ ---
+    {{ EOdenType::Goboten, EOdenFace::Front   }, "Oden_DotLine_LongRect.gltf" },
+    {{ EOdenType::Goboten, EOdenFace::Back   }, "Oden_DotLine_LongRect.gltf" },
+    {{ EOdenType::Goboten, EOdenFace::Top   }, "Oden_DotLine_LongRect.gltf" },
+    {{ EOdenType::Goboten, EOdenFace::Bottom   }, "Oden_DotLine_LongRect.gltf" },
     };
 
     // á@ êHçﬁ Å~ ñ  êÍópÇ™Ç†ÇÍÇŒç≈óDêÊ
@@ -679,12 +688,31 @@ OdenIngredientActor::FaceTransform OdenIngredientActor::ResolveFaceTransform(
         },
         {
             { EOdenType::Chikuwa, EOdenFace::Front },
-            { { 0, 0.08f, 0 }, { 0, 0, 0 } }
+            { { 0, 0.0f, 0 }, { -90, 0, 0 } }
         },
         {
             { EOdenType::Chikuwa, EOdenFace::Back },
+            { { 0, 0.0f, 0 }, { 90, 0, 0 } }
+        },
+
+        // --- Ç≤Ç⁄ÇƒÇÒ ---
+        {
+            { EOdenType::Goboten, EOdenFace::Top },
+            { { 0, 0.08f, 0 }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Goboten, EOdenFace::Bottom },
             { { 0, -0.08f, 0 }, { 0, 0, 180 } }
         },
+        {
+            { EOdenType::Goboten, EOdenFace::Front },
+            { { 0, 0.0f, 0 }, { -90, 0, 0 } }
+        },
+        {
+            { EOdenType::Goboten, EOdenFace::Back },
+            { { 0, 0.0f, 0 }, { 90, 0, 0 } }
+        },
+
 
         // --- ëÂç™ ---
                 {
@@ -699,6 +727,18 @@ OdenIngredientActor::FaceTransform OdenIngredientActor::ResolveFaceTransform(
             { EOdenType::Daikon, EOdenFace::Bottom },
             { { 0, -0.03f, 0 }, { 0, 0, 180 } }
 
+        },
+                {
+            { EOdenType::Daikon, EOdenFace::Right },
+            { { 1.4f, 0.0f, 0.f }, { 90, 0, 90 } }
+        },
+        {
+            { EOdenType::Daikon, EOdenFace::Back },
+            { { 0.f, 0.0f, 0.8f }, { 90, 0, 0 } }
+        },
+        {
+            { EOdenType::Daikon, EOdenFace::Front },
+            { { 0.0f, 0.0f, -1.3f }, { 90, 0, 0 } }
         },
 
         // --- Ç±ÇÒÇ…Ç·Ç≠ ---
@@ -721,12 +761,108 @@ OdenIngredientActor::FaceTransform OdenIngredientActor::ResolveFaceTransform(
         },
         {
             { EOdenType::Konnyaku, EOdenFace::Back },
-            { { 0.9f, 0.0f, -0.4f }, { 0, 0, 0 } }
+            { { 0.f, 0.0f, 0.3f }, { 90, 0, 0 } }
         },
         {
             { EOdenType::Konnyaku, EOdenFace::Front },
-            { { 0.9f, 0.0f, -0.4f }, { 0, 0, 0 } }
+            { { -0.1f, 0.0f, -0.9f }, { -90, 0, 0 } }
         },
+
+        // --- ÇÕÇÒÇÿÇÒ ---
+        {
+            { EOdenType::Hanpen, EOdenFace::Top },
+            { { 0, 0.03f, 0 }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Hanpen, EOdenFace::Bottom },
+            { { 0, -0.03f, 0 }, { 0, 0, 180 } }
+
+        },
+    {
+            { EOdenType::Hanpen, EOdenFace::Left },
+            { { -0.3f, 0.0f, -0.f }, { 90, -37, 90 } }
+        },
+        {
+            { EOdenType::Hanpen, EOdenFace::Right },
+            { { 0.9f, 0.0f, -0.4f }, { 90, 37, 90 } }
+        },
+        {
+            { EOdenType::Hanpen, EOdenFace::Back },
+            { { 0.f, 0.0f, 0.3f }, { 90, 0, 0 } }
+        },
+        {
+            { EOdenType::Hanpen, EOdenFace::Front },
+            { { -0.1f, 0.0f, -0.9f }, { -90, 0, 0 } }
+        },
+
+        // --- ÉPÅ[ÉL ---
+        {
+            { EOdenType::Cake, EOdenFace::Top },
+            { { 0, 0.03f, 0 }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Cake, EOdenFace::Bottom },
+            { { 0, -0.03f, 0 }, { 0, 0, 180 } }
+
+        },
+    {
+            { EOdenType::Cake, EOdenFace::Left },
+            { { -0.93f, 0.1f, -0.1f }, { -90, 90, 3 },{0.82f,1.0f,1.15f} }
+        },
+        {
+            { EOdenType::Cake, EOdenFace::Right },
+            { { 1.1f, -0.1f, -0.1f }, { 90, 90, 7 } ,{0.7f,1.3f,1.4f}}
+        },
+        {
+            { EOdenType::Cake, EOdenFace::Back },
+            { { 0.1f, 0.1f, 0.65f }, { 90, -26, 0 } ,{1.0f,1.0f,1.5f}}
+        },
+        {
+            { EOdenType::Cake, EOdenFace::Front },
+            { { 0.3f, 0.6f, -2.15f }, { -90, 20, 0 },{0.93f,1.0f,1.28f} }
+        },
+
+
+        // --- ÇΩÇ‹Ç≤ ---
+{
+    { EOdenType::Egg, EOdenFace::Top },
+    { { 0, 0.05f, 0 }, { 0, 0, 0 } ,{0.78f,0.78f,0.78f}}
+},
+{
+    { EOdenType::Egg, EOdenFace::Bottom },
+    { { 0, -0.25f, 0 }, { -180, 0, 0 } ,{0.78f,0.78f,0.78f}}
+
+},
+
+
+// --- Ç¬Ç≠ÇÀ ---
+{
+    { EOdenType::Tsukune, EOdenFace::Top },
+    { { 0, 0.05f, 0 }, { 0, 0, -15 } ,{0.78f,0.78f,0.78f}}
+},
+{
+    { EOdenType::Tsukune, EOdenFace::Bottom },
+    { { 0, -0.25f, 0 }, { -180, 0, 0 } ,{0.78f,0.78f,0.78f}}
+
+},
+    {
+            { EOdenType::Tsukune, EOdenFace::Left },
+            { { -0.0f, 0.0f, -0.f }, { 0, -0, 90 }  ,{0.78f,0.78f,0.78f}}
+    },
+        {
+            { EOdenType::Tsukune, EOdenFace::Right },
+            { { 0.9f, 0.0f, -0.4f }, { 90, 0, 90 } ,{0.78f,0.78f,0.78f}}
+        },
+        {
+            { EOdenType::Tsukune, EOdenFace::Back },
+            { { 0.f, 0.0f, 0.3f }, { 90, 0, 0 }  ,{0.78f,0.78f,0.78f}}
+        },
+        {
+            { EOdenType::Tsukune, EOdenFace::Front },
+            { { -0.1f, 0.0f, -0.9f }, { -90, 0, 0 }  ,{0.78f,0.78f,0.78f}}
+        },
+
+
     };
 
     auto base = baseTable.at(face);

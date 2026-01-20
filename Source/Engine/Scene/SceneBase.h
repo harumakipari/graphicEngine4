@@ -141,8 +141,7 @@ protected:
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> environmentTextures[8];
 
     DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
-    DirectX::XMFLOAT4 lightColor{ 1.0f, 1.0f, 1.0f, 4.1f };
-    float iblIntensity_ = 2.0f;
+    DirectX::XMFLOAT4 lightColor{ 1.0f, 1.0f, 1.0f, 20.1f };
 
     bool useDeferredRendering = true;
     bool enableSSAO = true;

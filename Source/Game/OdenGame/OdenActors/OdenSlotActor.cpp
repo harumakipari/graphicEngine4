@@ -25,7 +25,6 @@ void OdenSlotActor::Initialize(const Transform& transform)
     soupModelComponent->SetPriority(-10);
 #endif // 1
 #if 1
-
     // 湯気のコンポーネントを追加
     particleComponent = this->AddComponent<class ParticleComponent>("particleComponent", parentName);
     particleComponent->Load("./Data/Effect/Files/SteamEffect2.json");
