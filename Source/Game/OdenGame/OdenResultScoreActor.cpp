@@ -9,6 +9,8 @@
 
 void OdenResultScoreActor::Initialize(const Transform& transform)
 {
+    easingRunner = std::make_shared<EasingRunner>();
+
     auto& session = OdenGameSession::Instance();
 
     Logger::Log("===== Result Initialize =====");
@@ -60,7 +62,10 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
                 Logger::Log("Warning: SubmitLog has invalid EOdenType");
                 continue; // 作らない
             }
-            float x = globalIndex * 3.0f; // 横に並べる
+
+            // ここで配置位置を決めて生成する
+
+            float x = globalIndex * 3.0f; // 横に並べる      
             float y = 1.0f;                      // 高さ固定
             Transform ingredientTr(DirectX::XMFLOAT3{ x,y,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
             auto ingredientActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultIngredientActor>("OdenResultIngredient", ingredientTr, ingredientName);
@@ -69,10 +74,14 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
         }
     }
 
+    displayScore = 0;
+
 }
 
 void OdenResultScoreActor::Update(float deltaTime)
 {
+    easingRunner->Tick(deltaTime);
+
     auto& session = OdenGameSession::Instance();
 
     float score = session.totalScore;
@@ -82,7 +91,16 @@ void OdenResultScoreActor::Update(float deltaTime)
 
     // 総合スコアを表示する
     if (scoreTextUi)
-        scoreTextUi->SetText(L"ResultScore:" + std::to_wstring(static_cast<int>(score)));
+    {
+        scoreTextUi->SetText(std::to_wstring(static_cast<int>(displayScore)));
+        scoreTextUi->SetWorldPosition({ baseScorePos.x,baseScorePos.y + popupOffsetY });
+    }
+    // 総合スコアを表示する
+    if (scoreBackTextUi)
+    {
+        scoreBackTextUi->SetText(std::to_wstring(static_cast<int>(displayScore)));
+        scoreBackTextUi->SetWorldPosition({ baseScorePos.x,baseScorePos.y + popupOffsetY });
+    }
 
 
     // 食材の順番登場
@@ -92,12 +110,10 @@ void OdenResultScoreActor::Update(float deltaTime)
         if (spawnTimer >= nextSpawnDelay)
         {
             resultIngredients[spawnIndex]->AppearIngredient();
-            // 配置
-#if 0
-            float x = 100.0f + spawnIndex * 80.0f; // 横に並べる
-            float y = 1.0f;                      // 高さ固定
-            resultIngredients[spawnIndex]->SetPosition({ x, y, 0.0f });
-#endif // 0
+
+            int addScore = 100; // 仮のスコア加算値
+            AddScore(addScore);
+
             spawnTimer = 0.0f;
             ++spawnIndex;
         }
@@ -107,11 +123,62 @@ void OdenResultScoreActor::Update(float deltaTime)
 // フォントをセットする
 void OdenResultScoreActor::SetFontAndMakeTextComponent()
 {
+    baseScorePos = { 1980.0f * 0.5f,1080.0f * 0.5f };
+
     // スコアテキストのUIコンポーネントを作成する
     scoreTextUi = std::make_shared<UITextComponent>("scoreFont");
-    scoreTextUi->SetWorldPosition({ 1550, 20 });
-    scoreTextUi->SetScale({ 1.0f, 1.0f });
+
+    scoreTextUi->SetWorldPosition(baseScorePos);
+    scoreTextUi->SetScale({ 3.0f, 3.0f });
+    scoreTextUi->SetPivot({ 0.5f,0.5f });
+    scoreTextUi->zOrder = 20;
 
     auto uiManager = GetOwnerScene()->GetUIManager();
     uiManager->Add(scoreTextUi);
+
+    scoreBackTextUi = std::make_shared<UITextComponent>("scoreFont");
+    scoreBackTextUi->SetWorldPosition(baseScorePos);
+    scoreBackTextUi->SetScale({ 3.5f, 3.5f });
+    scoreBackTextUi->SetPivot({ 0.5f,0.5f });
+    scoreBackTextUi->SetColor(CoreColor::Black);
+    scoreBackTextUi->zOrder = 15;
+    uiManager->Add(scoreBackTextUi);
+
+}
+
+// 演出のためにスコアを加算する
+void OdenResultScoreActor::AddScore(int add)
+{
+    displayScore += add;
+
+    popupOffsetY = 0.0f;
+
+    TestEasingHandler handler;
+    handler.AddEasing(
+        TestEaseType::OutElastic,
+        0.0f,
+        20.0f,
+        0.3f
+    );
+
+    handler.AddEasing(
+        TestEaseType::InQuad,
+        20.0f,
+        0.0f,
+        0.15f
+    );
+
+    handler.SetCompletedFunction([this]()
+        {
+            popupOffsetY = 0.0f;
+        });
+    PropertyAccessor<float> accessor;
+    
+    accessor.getter = [this]() { return popupOffsetY; };
+    accessor.setter = [this](float t)
+        {
+            popupOffsetY = t;
+        };
+
+    easingRunner->StartHandler(handler, accessor);
 }
