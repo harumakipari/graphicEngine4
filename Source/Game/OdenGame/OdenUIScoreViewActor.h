@@ -24,4 +24,6 @@ public:
 private:
     std::shared_ptr<UITextComponent> scoreTextUi; // スコアのテキスト描画
 
+    int prevScore = 0;
+    float popupTimer = 0.0f;
 };

@@ -425,7 +425,8 @@ void Font::Begin(ID3D11DeviceContext* context)
     subsets.clear();
 }
 
-void Font::Draw(float x, float y, const wchar_t* string, DirectX::XMFLOAT4 color, float scale)
+
+void Font::Draw(float x, float y, const wchar_t* string, DirectX::XMFLOAT4 color, float scale, float pivotX, float pivotY)
 {
     size_t length = ::wcslen(string);
 
@@ -438,9 +439,44 @@ void Font::Draw(float x, float y, const wchar_t* string, DirectX::XMFLOAT4 color
     y *= scale_ui;
     scale *= scale_ui;
 
+    float space = fontWidth * scale;
+
+    float totalWidth = 0.0f;
+    float totalHeight = fontHeight * scale;
+
+    float lineWidth = 0.0f;
+
+    // ëSëÃÇÃïùÇ∆çÇÇ≥ÇåvéZ
+    for (size_t i = 0; i < length; ++i)
+    {
+        WORD word = static_cast<WORD>(string[i]);
+        WORD code = characterIndices.at(word);
+
+        if (code == CharacterInfo::ReturnCode)
+        {
+            totalWidth = std::max<float>(totalWidth, lineWidth);
+            lineWidth = 0.0f;
+            totalHeight += fontHeight * scale;
+            continue;
+        }
+        if (code == CharacterInfo::SpaceCode)
+        {
+            lineWidth += fontWidth * scale;
+            continue;
+        }
+
+        const CharacterInfo& info = characterInfos.at(code);
+        lineWidth += info.xadvance * scale;
+    }
+
+    totalWidth = std::max<float>(totalWidth, lineWidth);
+
+
+    x -= totalWidth * pivotX;
+    y -= totalHeight * pivotY;
+
     float start_x = x;
     float start_y = y;
-    float space = fontWidth * scale;
 
 
     for (size_t i = 0; i < length; ++i)
@@ -458,6 +494,8 @@ void Font::Draw(float x, float y, const wchar_t* string, DirectX::XMFLOAT4 color
         {
             x = start_x;
             y += fontHeight * scale;
+
+
             continue;
         }
         else if (code == CharacterInfo::TabCode)
@@ -547,6 +585,8 @@ void Font::Draw(float x, float y, const wchar_t* string, DirectX::XMFLOAT4 color
         currentIndexCount += 6;
     }
 }
+
+
 
 void Font::End(ID3D11DeviceContext* context)
 {

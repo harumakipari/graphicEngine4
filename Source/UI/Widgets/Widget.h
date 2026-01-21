@@ -72,7 +72,7 @@ public:
 
 public:
     int zOrder = 0; // 値が大きいほど手前に描画される
-    
+
     bool dirty = true;// テキスト描画コンポーネントに使用している
 
 protected:
@@ -338,9 +338,9 @@ public:
 
     void DrawTexts(ID3D11DeviceContext* immediateContext) override
     {
-        if (!visible ) return;
+        if (!visible) return;
 
-        FontManager::GetUIFont()->Draw(worldPosition.x, worldPosition.y, text.c_str(), { 1,1,0,1 }, scale.x);
+        FontManager::GetUIFont()->Draw(worldPosition.x, worldPosition.y, text.c_str(), { 1,1,0,1 }, scale.x, pivot.x, pivot.y);
     }
 
 
