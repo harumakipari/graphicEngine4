@@ -69,4 +69,46 @@ public:
 
 private:
     std::shared_ptr<UIImageComponent> tutorialTakeIngredientImage;
+    std::shared_ptr<UIImageComponent> tutorialOperateImage;
 };
+
+
+// チュートリアルステップ  ：おでんの具材を提出する
+class TutorialStep_SubmitOdenIngredient : public TutorialStep
+{
+public:
+    TutorialStep_SubmitOdenIngredient(TutorialActor* actor);
+    virtual ~TutorialStep_SubmitOdenIngredient();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "SubmitOdenIngredient"; }
+
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialSubmitIngredientImage;
+};
+
+// チュートリアルステップ  ：　●のおでんがほしい客が来る
+class TutorialStep_SubmitOdenCircleIngredient : public TutorialStep
+{
+public:
+    TutorialStep_SubmitOdenCircleIngredient(TutorialActor* actor);
+    virtual ~TutorialStep_SubmitOdenCircleIngredient();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "SubmitOdenCircleIngredient"; }
+
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialSubmitIngredientImage;
+};
+
+

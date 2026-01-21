@@ -16,6 +16,10 @@ public:
 
     void Update(float deltaTime)override {}
 
+    void StartGame();
+
+    // 特定のお題を出現させる
+    void SpawnSpecificOrderBubble(int index, const std::string& uiName);
 private:
     // お客さんを出現させる
     void SpawnOrderBubble(int index);
@@ -29,15 +33,18 @@ private:
     // スロットの番号から出現の位置を取得する
     DirectX::XMFLOAT3 GetBubbleSpawnPosition(const int index);
 
-    // 注文が完了した時に呼ばれる関数
-    void OnBubbleCompleted(int slotIndex,  OdenBubbleActor& bubble, OdenResult score);
-
     // お題のバッグを生成する
     void BuildOrderBag();
 
-    // バッグからお題を取り出す
-    OrderEntry PickFromBag();
+    // 注文が完了した時に呼ばれる関数
+    void OnBubbleCompleted(int slotIndex, OdenBubbleActor& bubble, OdenResult score);
 
+    // --- チュートリアル用　 --- //
+    // 注文が完了した時に呼ばれる関数 チュートリアル用
+    void OnBubbleCompletedTutorial(int slotIndex, OdenBubbleActor& bubble, OdenResult score);
+
+    // UI名からお題を探す
+    const OrderEntry* FindOrderByUiName(const std::string& uiName);
 private:
     struct BubbleSlot
     {
@@ -47,7 +54,7 @@ private:
     std::vector<BubbleSlot> slots;
 
     // TODO: 最大の注文を聞ける人数
-    static constexpr int MaxOrders = 3; 
+    static constexpr int MaxOrders = 3;
     DirectX::XMFLOAT3 basePos = { 2.0f,3.0f,9.0f };
     float spacing = 3.0f;
 

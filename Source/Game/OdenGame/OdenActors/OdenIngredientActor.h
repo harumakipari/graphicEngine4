@@ -30,8 +30,8 @@ public:
     struct FaceTransform
     {
         DirectX::XMFLOAT3 localOffset;
-        DirectX::XMFLOAT3 localEuler; 
-        DirectX::XMFLOAT3 localScale={1.0f,1.0f,1.0f}; 
+        DirectX::XMFLOAT3 localEuler;
+        DirectX::XMFLOAT3 localScale = { 1.0f,1.0f,1.0f };
     };
 
     // おでんの状態
@@ -109,6 +109,11 @@ public:
         ingredientModel->SetRelativeScaleDirect({ scale,scale,scale });
     }
 
+    //　チュートリアル用　食材を掴んだか
+    bool IsGrabIngredient()const
+    {
+        return dragState == EOdenDragState::Dragging;
+    }
 protected:
     // 具材の名前からモデルやデータを設定する
     void InitParam(const std::string& ingredientName);
@@ -165,7 +170,7 @@ private:
         const OdenShapeData& shapeData);
 
     // 点線モデルの角度とoffsetを取得する関数
-    FaceTransform ResolveFaceTransform(EOdenType ingredient,EOdenFace face,const std::unordered_map<EOdenFace, FaceTransform>& baseTable);
+    FaceTransform ResolveFaceTransform(EOdenType ingredient, EOdenFace face, const std::unordered_map<EOdenFace, FaceTransform>& baseTable);
 
     // 点線の表示・非表示を更新する関数
     void UpdateDotLineVisibility();
@@ -206,7 +211,7 @@ protected:
     std::string ingredientName; // 食材の名前
     float price = 0.0f; // 食材の値段
 
-    
+
     std::unordered_map<EOdenFace, std::weak_ptr<DotLineMeshComponent>> dotLineByFace;
 };
 

@@ -221,7 +221,7 @@ void OdenBubbleActor::DrawImGuiDetails()
 };
 
 // お題を設定する
-void OdenBubbleActor::SetOrderAndMakeUi(const OrderData& orderData, const std::string& orderUiFileName)
+void OdenBubbleActor::SetOrderAndMakeUi(const OrderData& orderData, const std::string& orderUiFileName, bool useTimeLimit)
 {
     // ここでお題のデータを入れる
     this->orderData = orderData;
@@ -240,11 +240,17 @@ void OdenBubbleActor::SetOrderAndMakeUi(const OrderData& orderData, const std::s
     orderUi->SetPivot({ 0.5f,0.5f });
     orderUi->SetSize({ 200, 150 });
     uiManager->Add(orderUi);
-
-    // 制限時間を設定する
-    timeLimit = MathHelper::RandomRange(10.0f, 15.0f); // 
-    remainingTime = timeLimit;
-
+    if (useTimeLimit)
+    {
+        // 制限時間を設定する
+        timeLimit = MathHelper::RandomRange(10.0f, 15.0f); // 
+        remainingTime = timeLimit;
+    }
+    else
+    {
+        timeLimit = 1000.0f; // 事実上無制限
+        remainingTime = timeLimit;
+    }
     // 制限時間のゲージのUIを作成する
 #if 0
     gaugeUi = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/boss_hp_frame.png", "./Data/Textures/UI/boss_hp.png", "gauge");

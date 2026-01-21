@@ -40,6 +40,10 @@ OrderEntry FindIngredientOrder(EOdenType ingredient)
 
 void OdenOrderManager::Initialize(const Transform& transform)
 {
+}
+
+void OdenOrderManager::StartGame()
+{
     slots.clear();
 
     BuildOrderBag();
@@ -50,7 +54,45 @@ void OdenOrderManager::Initialize(const Transform& transform)
         slots.push_back({ {} ,i });
         SpawnOrderBubble(i);
     }
+}
 
+// 特定のお題を出現させる
+void OdenOrderManager::SpawnSpecificOrderBubble(int index, const std::string& uiName)
+{
+    // 位置を取得する
+    Transform tr(
+        GetBubbleSpawnPosition(index),
+        { 0,0,0,1 },
+        { 1,1,1 }
+    );
+
+    std::string bubbleName = "TutorialOdenBubble_" + uiName;
+
+    // お題アクターを生成する
+    auto bubble =
+        Scene::GetCurrentScene()->GetActorManager()->
+        CreateAndRegisterActorWithTransform<OdenBubbleActor>(bubbleName, tr);
+
+    // お題をランダムに生成する
+    auto  specificOrder = FindOrderByUiName(uiName);
+
+    // お題を設定する  時間制限なし
+    bubble->SetOrderAndMakeUi(specificOrder->data, specificOrder->uiName, false);
+
+    bubble->onCompleted = [this, index](OdenBubbleActor& bubble, const OdenResult score)
+        {
+            //　完了時の処理
+            OnBubbleCompletedTutorial(index, bubble, score);
+        };
+
+    bubble->SetTargetPosition(GetBubblePosition(index));
+
+    slots.push_back({ bubble ,index });
+
+    // スロットマネージャーに吹き出しを登録する　これで吹き出しがビートに乗る
+    auto slotManagerActor = GetOwnerScene()->GetActorManager()->GetActorByName("slotManager");
+    auto slotManager = std::dynamic_pointer_cast<OdenSlotManager>(slotManagerActor);
+    slotManager->RegisterBeatReactive(bubble);
 }
 
 
@@ -172,6 +214,34 @@ void OdenOrderManager::OnBubbleCompleted(int slotIndex, OdenBubbleActor& bubble,
     SpawnOrderBubble(slotIndex);
 }
 
+// 注文が完了した時に呼ばれる関数 チュートリアル用
+void OdenOrderManager::OnBubbleCompletedTutorial(int slotIndex, OdenBubbleActor& bubble, OdenResult score)
+{
+    Logger::Log(U8("チュートリアル用オーダー完了時のスコア = ") + std::to_string(score.price));
+
+    // 総合スコアを加算する
+    if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+    {
+        if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+        {
+            // スコアを加算する
+            gameManager->AddScore(score.price);
+            OdenGameSession::Instance().totalScore += score.price;
+
+            // 満足度を加算する
+            gameManager->AddSatisfaction(score.satisfaction);
+            // リザルト画面のために実際に提出された食材の種類とスコアを記録する
+
+            // OdenGameSession::Instance().submitLogs.emplace_back(bubble.GetIngredientType(), 1, 0.0f);
+            //gameManager->AddSubmitLog(bubble.GetIngredientType(), score.price);
+        }
+    }
+
+    bubble.SetLeaving();
+    slots[slotIndex].bubble.reset();
+}
+
+
 // お題のバッグを生成する
 void OdenOrderManager::BuildOrderBag()
 {
@@ -224,4 +294,20 @@ void OdenOrderManager::BuildOrderBag()
 
     GameHelper::Shuffle(orderBag);
     bagIndex = 0;
+}
+
+// UI名からお題を探す
+const OrderEntry* OdenOrderManager::FindOrderByUiName(const std::string& uiName)
+{
+    for (const auto& o : OdenGameParameter::orderDB.shapeOrders)
+    {
+        if (o.uiName == uiName)
+            return &o;
+    }
+    for (const auto& o : OdenGameParameter::orderDB.ingredientOrders)
+    {
+        if (o.uiName == uiName)
+            return &o;
+    }
+    return nullptr;
 }

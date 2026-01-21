@@ -157,7 +157,7 @@ void TutorialScene::Start()
     // デバック時に使用
     // おでんのダイコンを生成
     Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Chikuwa", daikonTr, "Cake");
+    auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_tutorial_daikon", daikonTr, "Daikon");
 
     // おでんのこんにゃくを生成
     Transform konnyakuTr(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -200,7 +200,6 @@ void TutorialScene::Start()
     // スロットマネージャー作成 
     auto slotManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotManager>("slotManager");
     //slotManager->StartGame();
-#else
 
     // 右上に表示する次来る食材を表示する
     auto odenNextViewActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenNextViewActor>("odenNextViewActor");
@@ -209,6 +208,7 @@ void TutorialScene::Start()
     auto beatClockActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<BeatClockActor>("beatClockActor");
     slotManager->SetBeatActor(beatClockActor);
     beatClockActor->SetBpm(50.0f);
+#else
 
 #endif // 0
     // ステージアクターを生成
@@ -217,7 +217,7 @@ void TutorialScene::Start()
     slotManager->RegisterBeatReactive(stage);  // ビートするものとして設定
 
 
-#if 1
+#if 0
     // デバック時に使用
     // お題を生成
     Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -230,11 +230,14 @@ void TutorialScene::Start()
     auto odenBubbleActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenBubbleActor>("odenBubble", odenBubbleTr1);
     order = FindOrderByUIName("UI_Order_CircleLike");
     odenBubbleActor1->SetOrderAndMakeUi(order->data, order->uiName);
-
 #else
+
     // お題マネージャー作成
     // 内部で OdenBubbleActor をスロットマネージャーに設定している
     auto orderManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenOrderManager>("orderManager");
+    orderManager->SpawnSpecificOrderBubble(0, "UI_Order_Daikon");
+    orderManager->SpawnSpecificOrderBubble(1, "UI_Order_CircleLike");
+
 #endif
 
     // ゴミ箱を生成
@@ -244,6 +247,7 @@ void TutorialScene::Start()
     // ゲームマネージャーを生成
     auto gameManager = GetActorManager()->CreateAndRegisterActorWithTransform<OdenGameManager>("odenGameManager");
     gameManager->Reset();
+    gameManager->EndGame(); // タイマーを進めないために
 
 #if 1
     // スコアを表示するアクターを生成

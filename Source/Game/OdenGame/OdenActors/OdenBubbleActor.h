@@ -50,7 +50,7 @@ public:
     void DrawImGuiDetails() override;
 
     // お題を設定する　Uiを生成する
-    void SetOrderAndMakeUi(const OrderData& orderData, const std::string& orderUiFileName);
+    void SetOrderAndMakeUi(const OrderData& orderData, const std::string& orderUiFileName, bool useTimeLimit = true);
 
     // 食材が落とされたら呼ばれる関数
     void OnIngredientDropped(const OdenIngredientActor& ingredient);
@@ -86,6 +86,13 @@ public:
     {
         targetPos = pos;
         state = EBubbleState::Entering;
+    }
+
+
+    // 注文が完了したかどうか　チュートリアル用
+    bool IsCompleted() const
+    {
+        return state == EBubbleState::LeavingLeft;
     }
 private:
     // マッチ率をスコアに変換する
