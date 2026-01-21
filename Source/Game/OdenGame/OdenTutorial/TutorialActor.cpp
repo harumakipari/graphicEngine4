@@ -10,7 +10,10 @@ void TutorialActor::Initialize(const Transform& transform)
     tutorialManager->RegisterState(std::make_unique<TutorialStep_StartOdenStore>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_TakeOdenIngredient>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_SubmitOdenIngredient>(this));
+    tutorialManager->RegisterState(std::make_unique<TutorialStep_SubmitClearIngredient>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_SubmitOdenCircleIngredient>(this));
+    tutorialManager->RegisterState(std::make_unique<TutorialStep_ClearCircleIngredient>(this));
+
 
     // 最初のステートに変更
     tutorialManager->ChangeState("StartOdenStore");

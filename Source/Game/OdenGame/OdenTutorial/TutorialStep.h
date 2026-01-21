@@ -92,7 +92,27 @@ private:
     std::shared_ptr<UIImageComponent> tutorialSubmitIngredientImage;
 };
 
-// チュートリアルステップ  ：　●のおでんがほしい客が来る
+// チュートリアルステップ  ：　提出クリアした
+class TutorialStep_SubmitClearIngredient : public TutorialStep
+{
+public:
+    TutorialStep_SubmitClearIngredient(TutorialActor* actor);
+    virtual ~TutorialStep_SubmitClearIngredient();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "SubmitOdenClear"; }
+
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialClearSubmitIngredientImage;
+};
+
+
+// チュートリアルステップ  ：　●のおでんがほしい客が来る ダイコンを渡す
 class TutorialStep_SubmitOdenCircleIngredient : public TutorialStep
 {
 public:
@@ -109,6 +129,28 @@ public:
 
 private:
     std::shared_ptr<UIImageComponent> tutorialSubmitIngredientImage;
+    std::shared_ptr<UIImageComponent> tutorialAnywayDaikonImage;
+};
+
+
+// チュートリアルステップ  ：　丸いのを成功した後に出す　
+class TutorialStep_ClearCircleIngredient : public TutorialStep
+{
+public:
+    TutorialStep_ClearCircleIngredient(TutorialActor* actor);
+    virtual ~TutorialStep_ClearCircleIngredient();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "ClearCircleIngredient"; }
+
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialClearCircleIngredientImage;
+    std::shared_ptr<UIImageComponent> tutorialRotateOdenImage;
 };
 
 

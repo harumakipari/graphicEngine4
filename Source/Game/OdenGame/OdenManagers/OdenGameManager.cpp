@@ -33,7 +33,7 @@ void OdenGameManager::Reset()
 {
     totalScore = 0;
     combo = 0;
-    maxTime = 15.0f;    // ‚±‚±‚Å§ŒÀŠÔ‚ğİ’è
+    maxTime = 15000.0f;    // ‚±‚±‚Å§ŒÀŠÔ‚ğİ’è
     remainingTime = maxTime;
     satisfaction = 0.0f;
     isGameEnded = false;
