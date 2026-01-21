@@ -811,15 +811,34 @@ OdenIngredientActor::FaceTransform OdenIngredientActor::ResolveFaceTransform(
         },
         {
             { EOdenType::Cake, EOdenFace::Right },
-            { { 1.9f, -0.05f, 0.15f }, { 90, 0, 90 } ,{0.79f,1.44f,1.53f}}
+            { { 1.6f, 0.05f, -0.05f }, { 90, 0, 90 } ,{0.79f,1.44f,1.53f}}
         },
         {
             { EOdenType::Cake, EOdenFace::Back },
-            { { -0.1f, -0.03f, 0.75f }, { 90, -19, 0 } ,{1.04f,0.97f,1.64f}}
+            { { 0.3f, 0.17f, 0.75f }, { 90, -22, 0 } ,{1.04f,0.97f,1.64f}}
         },
         {
             { EOdenType::Cake, EOdenFace::Front },
-            { { 0.5f, 0.05f, -2.05f }, { 90, 0, 0 },{0.93f,1.0f,1.43f} }
+            { { -0.1f, 0.05f, -0.85f }, { 90, 21, 0 },{1.03f,1.0f,1.5f} }
+        },
+
+
+        // --- ドーナツ ---
+    {
+            { EOdenType::Donut, EOdenFace::Left },
+            { { -0.8f, 0.f, -0.f }, { -90, 90, 0 },{1.0f,1.0f,1.0f} }
+        },
+        {
+            { EOdenType::Donut, EOdenFace::Right },
+            { { 0.8f, 0.0f, -0.0f }, { 90, 90, 0 } ,{1.0f,1.0f,1.0f} }
+        },
+        {
+            { EOdenType::Donut, EOdenFace::Back },
+            { { 0.f, 0.f, 0.7f }, { 90, 0, 0 } ,{1.0f,1.0f,1.0f} }
+        },
+        {
+            { EOdenType::Donut, EOdenFace::Front },
+            { { -0.f, 0.0f, -0.8f }, { -90, 0, 0 },{1.0f,1.0f,1.0f} }
         },
 
 
