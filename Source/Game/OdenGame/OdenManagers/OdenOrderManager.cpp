@@ -194,6 +194,7 @@ void OdenOrderManager::OnBubbleCompleted(int slotIndex, OdenBubbleActor& bubble,
     {
         if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
         {
+#if 0
             // スコアを加算する
             gameManager->AddScore(score.price);
             OdenGameSession::Instance().totalScore += score.price;
@@ -204,6 +205,7 @@ void OdenOrderManager::OnBubbleCompleted(int slotIndex, OdenBubbleActor& bubble,
 
             // OdenGameSession::Instance().submitLogs.emplace_back(bubble.GetIngredientType(), 1, 0.0f);
             //gameManager->AddSubmitLog(bubble.GetIngredientType(), score.price);
+#endif
         }
     }
 
@@ -224,6 +226,7 @@ void OdenOrderManager::OnBubbleCompletedTutorial(int slotIndex, OdenBubbleActor&
     {
         if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
         {
+#if 0
             // スコアを加算する
             gameManager->AddScore(score.price);
             OdenGameSession::Instance().totalScore += score.price;
@@ -234,6 +237,8 @@ void OdenOrderManager::OnBubbleCompletedTutorial(int slotIndex, OdenBubbleActor&
 
             // OdenGameSession::Instance().submitLogs.emplace_back(bubble.GetIngredientType(), 1, 0.0f);
             //gameManager->AddSubmitLog(bubble.GetIngredientType(), score.price);
+
+#endif // 0
         }
     }
 

@@ -361,7 +361,7 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
             Transform starTransform;
             starTransform.SetTranslation(GetPosition());
             auto starActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<StarParticleActor>("starParticle", starTransform);
-
+            starActor->StartParticle(sales);
 #endif // 0
         }
         else if (score == EScore::Good)
@@ -396,6 +396,7 @@ EScore OdenBubbleActor::JudgeScoreFromRate(const float matchRate) const
     if (matchRate <= 0.0f)
         return EScore::Fail;
 
+    return EScore::Perfect;
     return EScore::Good;
 }
 

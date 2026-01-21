@@ -43,7 +43,7 @@ public:
     void DrawImGuiDetails() override {}
 
     // エフェクト再生開始
-    void StartParticle();
+    void StartParticle(int score);
 
 private:
     void SpawnTrailStar(const XMFLOAT3& worldPos,float intensity);
@@ -73,4 +73,6 @@ private:
 
     float trailInterval = 1.5f;   // 距離間隔
     float trailSpread = 1.5f;  // 横に散らす幅
+
+    int pendingScore = 0.0f; // 加算予定のスコア
 };

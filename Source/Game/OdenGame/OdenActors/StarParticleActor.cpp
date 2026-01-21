@@ -3,6 +3,8 @@
 #include "StarParticleActor.h"
 
 #include "Engine/Scene/Scene.h"
+#include "Game/OdenGame/OdenManagers/OdenGameManager.h"
+#include "Game/OdenGame/OdenGameSession.h"
 #include "Physics/CollisionFunction.h"
 
 
@@ -201,7 +203,7 @@ void StarParticleActor::Update(float elapsedTime)
                     prevTrailPos.z
                 };
 
-                SpawnTrailStar(spawnPos,trailFade);
+                SpawnTrailStar(spawnPos, trailFade);
                 //Logger::Log(U8("トレイル星をスポーンさせた"));
             }
 
@@ -257,35 +259,49 @@ void StarParticleActor::Update(float elapsedTime)
         }
         if (t >= 1.0f)
         {
+            // ここでスコアを加算する
+            if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+            {
+                if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+                {
+                    // スコアを加算する
+                    gameManager->AddScore(pendingScore);
+                    OdenGameSession::Instance().totalScore += pendingScore;
+
+                    // 満足度を加算する
+                    //gameManager->AddSatisfaction(score.satisfaction);
+                }
+            }
             MarkPendingKill();
         }
-    }
 
-    for (auto it = trailStars.begin(); it != trailStars.end(); )
-    {
-        it->life -= elapsedTime;
-
-        float t = it->life / 0.3f;
-        t = std::clamp(t, 0.0f, 1.0f);
-
-        it->sprite->SetColor({ 1.0f,1.0f,1.0f,t });
-        it->sprite->SetScale({ t * 0.6f, t * 0.6f });
-
-        if (it->life <= 0.0f)
+        for (auto it = trailStars.begin(); it != trailStars.end(); )
         {
-            it->sprite->SetVisible(false);
-            it = trailStars.erase(it);
+            it->life -= elapsedTime;
+
+            float t = it->life / 0.3f;
+            t = std::clamp(t, 0.0f, 1.0f);
+
+            it->sprite->SetColor({ 1.0f,1.0f,1.0f,t });
+            it->sprite->SetScale({ t * 0.6f, t * 0.6f });
+
+            if (it->life <= 0.0f)
+            {
+                it->sprite->SetVisible(false);
+                it = trailStars.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
         }
-        else
-        {
-            ++it;
-        }
+
+
     }
-
-
 }
 
-void StarParticleActor::StartParticle()
+
+void StarParticleActor::StartParticle(const int score)
 {
     phase = StarPhase::Orbit;
     time = 0.0f;
@@ -299,6 +315,7 @@ void StarParticleActor::StartParticle()
         starTextures[i]->SetVisible(true);
     }
 
+    pendingScore = score;
     //particleComp->Play();
 }
 
