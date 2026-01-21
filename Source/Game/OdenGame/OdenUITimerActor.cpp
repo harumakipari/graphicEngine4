@@ -45,10 +45,14 @@ void OdenUITimerActor::Initialize(const Transform& transform)
     timerTensUi->SetSize({ 90, 120 });
     timerTensUi->zOrder = 100;
     scene->GetUIManager()->Add(timerTensUi);
+
+    easingRunner = std::make_shared<EasingRunner>();
 }
 
 void OdenUITimerActor::Update(float elapsedTime)
 {
+    easingRunner->Tick(elapsedTime);
+
     // 総合スコアを加算する
     if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
     {
@@ -82,6 +86,23 @@ void OdenUITimerActor::Update(float elapsedTime)
         else if (currentSecond <= 9)
         {// 9秒以下になったらフェードアウトアニメーションへ
             timerAnimState = ETimerAnimState::FadeOut;
+
+            //popupScale = 1.0f;
+            //TestEasingHandler handler;
+            //handler.AddEasing(TestEaseType::OutElastic, 0.5f, 1.2f, 0.25f);
+
+            //handler.SetCompletedFunction([this]()
+            //    {
+            //        timerAnimState = ETimerAnimState::FadeOut;
+            //        animTimer = 0.0f;
+            //    });
+
+            //PropertyAccessor<float> accessor;
+            //accessor.getter = [this]() { return popupScale; };
+            //accessor.setter = [this](float v) { popupScale = v; };
+
+            //easingRunner->StartHandler(handler, accessor);
+
         }
         else
         {
@@ -145,29 +166,6 @@ void OdenUITimerActor::Update(float elapsedTime)
 
     if (timerAnimState == ETimerAnimState::PopWarning)
     {
-#if 0
-        const float popTime = 0.6f;
-        animTimer += elapsedTime;
-
-        float t = std::clamp(animTimer / popTime, 0.0f, 1.0f);
-
-        float scale = std::lerp(0.5f, 1.4f, t);
-        float alpha = 1.0f - t;
-
-        timerOnesUi->SetScale({ scale, scale });
-        timerTensUi->SetScale({ scale, scale });
-        timerOnesUi->SetColor({ 1,1,1,alpha });
-        timerTensUi->SetColor({ 1,1,1,alpha });
-
-        if (t >= 1.0f)
-        {
-            // 完全に消えた状態で次の秒を待つ
-            timerOnesUi->SetVisible(false);
-            timerTensUi->SetVisible(false);
-        }
-
-        return;
-#else
         if (timerAnimState == ETimerAnimState::PopWarning)
         {
             animTimer += elapsedTime;
@@ -175,14 +173,15 @@ void OdenUITimerActor::Update(float elapsedTime)
             // ---- ① ポン！フェーズ ----
             if (popPhase == EPopPhase::Pop)
             {
+#if 1
                 const float popTime = 0.25f;
                 float t = std::clamp(animTimer / popTime, 0.0f, 1.0f);
 
                 float eased = EaseOutBounce(t);   // ← ここが「ぽよん」
-                float scale = std::lerp(0.5f, 1.3f, eased);
+                popupScale = std::lerp(0.5f, 1.3f, eased);
 
-                timerOnesUi->SetScale({ scale, scale });
-                timerTensUi->SetScale({ scale, scale });
+                timerOnesUi->SetScale({ popupScale, popupScale });
+                timerTensUi->SetScale({ popupScale, popupScale });
                 timerOnesUi->SetColor({ 1,1,1,1 });
                 timerTensUi->SetColor({ 1,1,1,1 });
 
@@ -193,6 +192,11 @@ void OdenUITimerActor::Update(float elapsedTime)
                     animTimer = 0.0f;
                 }
                 return;
+#else
+
+                popPhase = EPopPhase::FadeOut;
+#endif // 0
+
             }
 
             // ---- ② フェードアウトフェーズ ----
@@ -204,10 +208,10 @@ void OdenUITimerActor::Update(float elapsedTime)
                 float alpha = 1.0f - t;
 
                 // 少しだけ余韻でスケールを落とすのも◎
-                float scale = std::lerp(1.3f, 1.15f, t);
+                popupScale = std::lerp(1.3f, 1.8f, t);
 
-                timerOnesUi->SetScale({ scale, scale });
-                timerTensUi->SetScale({ scale, scale });
+                timerOnesUi->SetScale({ popupScale, popupScale });
+                timerTensUi->SetScale({ popupScale, popupScale });
                 timerOnesUi->SetColor({ 1,1,1,alpha });
                 timerTensUi->SetColor({ 1,1,1,alpha });
 
@@ -220,8 +224,11 @@ void OdenUITimerActor::Update(float elapsedTime)
             }
         }
 
-#endif // 0
 
     }
+
+    //timerOnesUi->SetScale({ popupScale, popupScale });
+    //timerTensUi->SetScale({ popupScale, popupScale });
+
 }
 

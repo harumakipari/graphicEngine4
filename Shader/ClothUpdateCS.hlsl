@@ -46,7 +46,7 @@ RWStructuredBuffer<ClothVertex> outVertices : register(u0);
 
 // 定数
 #define SPRING_STIFFNESS 40.0   // ばね定数 40-200
-#define SPRING_DAMPING   10.0     // ばね粘性（相対速度に対する減衰）
+#define SPRING_DAMPING   25.0     // ばね粘性（相対速度に対する減衰）
 #define GLOBAL_DAMPING   0.05     // 全体指数減衰
 
 cbuffer SCENE_CONSTANT_BUFFER : register(b1)
@@ -247,7 +247,7 @@ void main(uint3 id : SV_DispatchThreadID)
         float4 windDirWorld = normalize(float4(0, 0, 1, 0)); // Z軸方向
         float4 windDirLocal4 = mul(windDirWorld, invWorld);
         float windBase = 5.0f;
-        float windVariation = 15.0f;
+        float windVariation = 10.0f;
 
         float phase = elapsedTime * 2.0f - currentPos.y * 1.5f;
 

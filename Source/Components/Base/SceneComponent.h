@@ -98,6 +98,7 @@ public:
     void DrawImGuiInspector() override
     {
 #ifdef USE_IMGUI
+        inspectorEuler_ = GetRelativeEulerRotation();
 
         if (ImGui::TreeNode((name_ + "  Transform").c_str()))
         {
@@ -222,11 +223,12 @@ public:
     {
         relativeScale_ = newRelativeScale;
     }
-    // 相対的な角度を取得
+    // 相対的な角度を取得   degree で返す
     DirectX::XMFLOAT3 GetRelativeEulerRotation()const
     {
         DirectX::XMFLOAT3 angle = MathHelper::QuaternionToEuler(relativeRotation_);
-        return angle;
+
+        return { DirectX::XMConvertToDegrees(angle.x),DirectX::XMConvertToDegrees(angle.y) ,DirectX::XMConvertToDegrees(angle.z) };
     }
     DirectX::XMFLOAT4 QuaternionFromEulerYXZ(const DirectX::XMFLOAT3& eulerRadians)
     {
@@ -517,35 +519,6 @@ public:
 
     virtual void OnUnregister()override {} // 派生クラスで override して解除処理を書く
 
-
-#if 0
-    void SetLerpQuaternion(DirectX::XMFLOAT3 angle)
-    {
-        DirectX::XMFLOAT3 euler = { DirectX::XMConvertToRadians(angle.x),DirectX::XMConvertToRadians(angle.y),DirectX::XMConvertToRadians(angle.z) };
-        DirectX::XMVECTOR q = DirectX::XMQuaternionRotationRollPitchYaw(euler.x, euler.y, euler.z);
-        DirectX::XMStoreFloat4(&afterRotation, q);
-        if (std::abs(beforeRotation.y - afterRotation.y) <= FLT_EPSILON)
-        {// 前のrotaionと変更後のrotationが一緒の場合スキップする
-            return;
-        }
-        beforeRotation = rotationLocal;
-        lerpTime = 0.0f;
-    }
-
-    void LerpQuaternion(float deltaTime)
-    {
-        DirectX::XMVECTOR qAfter = DirectX::XMLoadFloat4(&afterRotation);
-        DirectX::XMVECTOR qBefore = DirectX::XMLoadFloat4(&beforeRotation);
-        lerpTime += deltaTime * 0.8f;
-        if (lerpTime > 1.0f)
-        {
-            lerpTime = 1.0f;
-        }
-        DirectX::XMVECTOR q = DirectX::XMQuaternionSlerp(qBefore, qAfter, lerpTime);
-        DirectX::XMStoreFloat4(&rotationLocal, q);
-    }
-
-#endif
 
     // 親子関係セット
     void AttachTo(const std::shared_ptr<SceneComponent>& parent)

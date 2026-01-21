@@ -27,8 +27,9 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
     //アクターをセット
     SetUpActors();
 
+#if 1
     // 暖簾のモデルを作成
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 1; i++)
     {
         //std::string filename = "./Data/Models/Oden_Title_Stage/Oden_Cloth_Noren_" + std::to_string(i + 1) + ".gltf";
         std::string filename = "./Data/Models/Oden_Title_Stage/Oden_Cloth_Noren_" + std::to_string(1) + ".gltf";
@@ -38,7 +39,7 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
     // ここで布を描画する
     RegisterRenderHook(RenderPass::Mask, [&](ID3D11DeviceContext* immediateContext)
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 1; i++)
             {
                 std::string clothName = "noren_" + std::to_string(i + 1);
                 if (const auto cloth = GetActorManager()->GetActorByName(clothName))
@@ -47,6 +48,8 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
                 }
             }
         });
+
+#endif // 0
 
     return true;
 }
@@ -179,11 +182,15 @@ void TitleScene::SetUpActors()
 
     for (int i = 0; i < 1; i++)
     {
-        Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.2f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 90.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.48f,1.0f,0.48f });
+       Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.0f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 90.0f,90.0f,-90.0f }, DirectX::XMFLOAT3{ -0.36f,1.0f,0.36f });
+      //  Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.2f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.48f,1.0f,0.48f });
         std::string actorName = "noren_" + std::to_string(i + 1);
         auto clothActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>(actorName, clothTr);
-        auto cloth=clothActor->AddComponent<SkeletalMeshComponent>("skeletalMeshComponent");
-        cloth->SetModel("./Data/Models/Oden_Title_Stage/Oden_Cloth_Noren_" + std::to_string( 1) + ".gltf", true);
+#if 0
+        auto cloth = clothActor->AddComponent<SkeletalMeshComponent>("skeletalMeshComponent");
+        cloth->SetModel("./Data/Models/Oden_Title_Stage/Oden_Cloth_Noren_" + std::to_string(1) + ".gltf", true);
+
+#endif // 0
     }
 }
 

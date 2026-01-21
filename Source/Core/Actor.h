@@ -246,6 +246,7 @@ public:
         this->rootComponent_->SetRelativeRotationDirect(rotation);
     }
 
+    // degrees ‚Å•Ô‚·
     DirectX::XMFLOAT3 GetEulerRotation() const
     {
         return rootComponent_->GetRelativeEulerRotation();

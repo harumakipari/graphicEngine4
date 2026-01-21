@@ -127,6 +127,8 @@ void RotationComponent::SetDirection(const DirectX::XMFLOAT3& dir)
     startAngle_ = owner_.lock()->GetEulerRotation();
     startRotation_ = owner_.lock()->GetQuaternionRotation();
     float targetYaw = std::atan2f(dir.x, dir.z);
+    startAngle_.x = DirectX::XMConvertToRadians(startAngle_.x);
+    startAngle_.z = DirectX::XMConvertToRadians(startAngle_.z);
 
     DirectX::XMStoreFloat4(&targetRotation_, DirectX::XMQuaternionRotationRollPitchYaw(startAngle_.x, targetYaw, startAngle_.z));
 }
@@ -144,7 +146,7 @@ void RotationComponent::Tick(float deltaTime)
     owner_.lock()->SetQuaternionRotation(q);
 }
 
-void InputComponent::Tick(float) 
+void InputComponent::Tick(float)
 {
     intent_.move = { 0,0,0 };
     auto scene = Scene::GetCurrentScene();

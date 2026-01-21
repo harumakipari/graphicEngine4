@@ -118,6 +118,7 @@ void TestEasingHandler::ToEasingFunction(TestEaseType type, std::function<float(
 	case TestEaseType::OutBounce:function = Easing::OutBounce<float>; break;
 	case TestEaseType::InOutBounce:function = Easing::InOutBounce<float>; break;
 	case TestEaseType::Linear:function = Easing::Linear<float>; break;
+	case TestEaseType::OutElastic:function = Easing::OutElastic<float>; break;
 	case TestEaseType::InBack:backFunction = Easing::InBack<float>; break;
 	case TestEaseType::OutBack:backFunction = Easing::OutBack<float>; break;
 	case TestEaseType::InOutBack:backFunction = Easing::InOutBack<float>; break;

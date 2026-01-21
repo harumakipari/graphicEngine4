@@ -202,7 +202,7 @@ void StarParticleActor::Update(float elapsedTime)
                 };
 
                 SpawnTrailStar(spawnPos,trailFade);
-                Logger::Log(U8("トレイル星をスポーンさせた"));
+                //Logger::Log(U8("トレイル星をスポーンさせた"));
             }
 
             prevTrailPos = finalPos;

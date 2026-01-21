@@ -35,7 +35,8 @@ enum class TestEaseType
 	InBack,
 	OutBack,
 	InOutBack,
-	Linear
+	Linear,
+	OutElastic
 };
 
 /**

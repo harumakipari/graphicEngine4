@@ -9,41 +9,56 @@
 
 void OdenUIScoreViewActor::Initialize(const Transform& transform)
 {
-
+    easingRunner = std::make_shared<EasingRunner>();
 }
 
 void OdenUIScoreViewActor::Update(float elapsedTime)
 {
+    easingRunner->Tick(elapsedTime);
+
     // UIの位置
     DirectX::XMFLOAT3 position = GetPosition();
     DirectX::XMFLOAT3 bubbleWorldPos = { position.x , position.y, position.z };
     // ワールド座標からUI座標系に変換する
     XMFLOAT2 uiPos = WorldToUI(bubbleWorldPos);
 
-    if (scoreTextUi)
-        scoreTextUi->SetWorldPosition({ uiPos.x, uiPos.y });
-
     auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager");
     if (!actor) return;
 
+    // 総合スコアを加算する
     auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor);
     int currentScore = static_cast<int>(gameManager->GetTotalScore());
 
+    if (scoreTextUi)
+    {
+        scoreTextUi->SetWorldPosition({ uiPos.x, uiPos.y });
+        scoreTextUi->SetText(std::to_wstring(currentScore));
+        scoreTextUi->SetScale({ popupScale,popupScale });
+    }
+
     if (currentScore > prevScore)
     {
-        popupTimer = 0.3f; // ポップアップ時間
+        popupScale = 1.0f;
+
+        TestEasingHandler handler;
+        handler.AddEasing(TestEaseType::OutElastic, 0.5f, 1.2f, 0.8f);
+
+        handler.SetCompletedFunction([this]()
+            {
+            });
+
+        PropertyAccessor<float> accessor;
+        accessor.getter = [this]() { return popupScale; };
+        accessor.setter = [this](float t)
+            {
+                popupScale = t;
+            };
+
+        easingRunner->StartHandler(handler, accessor);
     }
 
     prevScore = currentScore;
 
-    popupTimer -= elapsedTime;
-    float scale = (popupTimer > 0.0f) ? 1.3f : 1.0f;
-
-    scoreTextUi->SetScale({ scale, scale });
-    //scoreTextUi->SetText(L"Score:" + std::to_wstring(currentScore));
-    scoreTextUi->SetText(std::to_wstring(currentScore));
-
-    // 総合スコアを加算する
 }
 
 // フォントをセットする

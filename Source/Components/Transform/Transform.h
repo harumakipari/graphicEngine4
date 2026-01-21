@@ -19,7 +19,7 @@ struct alignas(16) Transform
     }
     Transform(DirectX::XMFLOAT3 translation, DirectX::XMFLOAT3 euler_rotation, DirectX::XMFLOAT3 scale) :
         translation_(DirectX::XMLoadFloat3(&translation)),
-        rotation_(DirectX::XMQuaternionRotationRollPitchYaw(euler_rotation.x, euler_rotation.y, euler_rotation.z)),
+        rotation_(DirectX::XMQuaternionRotationRollPitchYaw(DirectX::XMConvertToRadians(euler_rotation.x), DirectX::XMConvertToRadians( euler_rotation.y), DirectX::XMConvertToRadians(euler_rotation.z))),
         scale_(DirectX::XMLoadFloat3(&scale))
     {
     }

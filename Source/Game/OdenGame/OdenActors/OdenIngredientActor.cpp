@@ -811,15 +811,15 @@ OdenIngredientActor::FaceTransform OdenIngredientActor::ResolveFaceTransform(
         },
         {
             { EOdenType::Cake, EOdenFace::Right },
-            { { 1.1f, -0.1f, -0.1f }, { 90, 90, 7 } ,{0.7f,1.3f,1.4f}}
+            { { 1.9f, -0.05f, 0.15f }, { 90, 0, 90 } ,{0.79f,1.44f,1.53f}}
         },
         {
             { EOdenType::Cake, EOdenFace::Back },
-            { { 0.1f, 0.1f, 0.65f }, { 90, -26, 0 } ,{1.0f,1.0f,1.5f}}
+            { { -0.1f, -0.03f, 0.75f }, { 90, -19, 0 } ,{1.04f,0.97f,1.64f}}
         },
         {
             { EOdenType::Cake, EOdenFace::Front },
-            { { 0.3f, 0.6f, -2.15f }, { -90, 20, 0 },{0.93f,1.0f,1.28f} }
+            { { 0.5f, 0.05f, -2.05f }, { 90, 0, 0 },{0.93f,1.0f,1.43f} }
         },
 
 
@@ -851,7 +851,7 @@ OdenIngredientActor::FaceTransform OdenIngredientActor::ResolveFaceTransform(
     },
         {
             { EOdenType::Tsukune, EOdenFace::Right },
-            { { 0.9f, 0.0f, -0.4f }, { 90, 0, 90 } ,{0.78f,0.78f,0.78f}}
+            { { 0.8f, 0.02f, 0.05f }, { 0, 0, 90 } ,{0.78f,0.78f,0.78f}}
         },
         {
             { EOdenType::Tsukune, EOdenFace::Back },
@@ -859,7 +859,7 @@ OdenIngredientActor::FaceTransform OdenIngredientActor::ResolveFaceTransform(
         },
         {
             { EOdenType::Tsukune, EOdenFace::Front },
-            { { -0.1f, 0.0f, -0.9f }, { -90, 0, 0 }  ,{0.78f,0.78f,0.78f}}
+            { { 0.07f, 0.0f, -0.8f }, { 90, 0, 0 }  ,{0.78f,0.78f,0.78f}}
         },
 
 

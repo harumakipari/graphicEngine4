@@ -393,4 +393,32 @@ public:
     {
         return (max - min) * time / totaltime + min;
     }
+
+
+    template<typename Ty = float>
+    [[nodiscard]] static inline Ty OutElastic(
+        Ty time,
+        Ty totaltime,
+        Ty max = _1<Ty>,
+        Ty min = _0<Ty>)
+    {
+        // ê≥ãKâª
+        Ty x = time / totaltime;
+
+        if (AdjEqual<Ty>(x, _0<Ty>))
+            return min;
+
+        if (AdjEqual<Ty>(x, _1<Ty>))
+            return max;
+
+        max -= min;
+
+        constexpr Ty c4 = (_2<Ty> *Pai<Ty>) / static_cast<Ty>(3);
+
+        return max *
+            (std::pow(_2<Ty>, -_10<Ty> *x) *
+                std::sin((x * _10<Ty> -static_cast<Ty>(0.75)) * c4)
+                + _1<Ty>)
+            + min;
+    }
 };

@@ -23,7 +23,7 @@ public:
 
 private:
     std::shared_ptr<UITextComponent> scoreTextUi; // スコアのテキスト描画
-
+    std::shared_ptr<EasingRunner> easingRunner;
     int prevScore = 0;
-    float popupTimer = 0.0f;
+    float popupScale = 1.0f;
 };
