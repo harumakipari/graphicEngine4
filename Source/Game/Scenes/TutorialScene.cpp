@@ -38,6 +38,8 @@
 #include "Game/OdenGame/OdenManagers/OdenOrderManager.h"
 #include "Game/OdenGame/OdenManagers/OdenGameManager.h"
 #include "Game/OdenGame/OdenData/OdenGameParameter.h"
+#include "Game/OdenGame/OdenTutorial/TutorialActor.h"
+#include "Game/OdenGame/OdenTutorial/TutorialManager.h"
 
 
 //#ifdef _DEBUG
@@ -151,7 +153,7 @@ void TutorialScene::Start()
     difficulty = OdenGameSession::GetDifficulty();
 
     Logger::Log("Oden Game Difficulty: " + std::to_string(static_cast<uint8_t>(difficulty)));
-#if 0
+#if 1
     // デバック時に使用
     // おでんのダイコンを生成
     Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -161,23 +163,44 @@ void TutorialScene::Start()
     Transform konnyakuTr(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenKonnyaku = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Egg", konnyakuTr, "Tsukune");
 
-    // おでんの枠を生成
+    // おでんの枠を生成 　下　一個
     Transform odenSlotTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenSlotActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot", odenSlotTr);
     odenSlotActor->SetIngredient(odenDaikon);
 
     odenDaikon->SetCurrentSlot(odenSlotActor);
 
-    // おでんの枠を生成
+    // おでんの枠を生成　上　一個
     Transform odenSlotTr1(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto odenSlotActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot", odenSlotTr1);
     odenSlotActor1->SetIngredient(odenKonnyaku);
 
     odenKonnyaku->SetCurrentSlot(odenSlotActor1);
-#else
+
+
+    // 下4段  横回転
+    for (int i = 1; i < 4; ++i)
+    {
+        // スロット生成
+        Transform odenSlotTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,0.0f }, XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        auto slot = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot_Horizontal", odenSlotTr);
+        slot->rotationType = ERotationType::Horizontal;
+    }
+
+    // 上4段  縦回転
+    for (int i = 1; i < 4; ++i)
+    {
+        // スロット生成
+        Transform odenSlotTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        auto slot = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot_Vertical", odenSlotTr);
+        slot->rotationType = ERotationType::Vertical;
+    }
+
+
     // スロットマネージャー作成 
     auto slotManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotManager>("slotManager");
-    slotManager->StartGame();
+    //slotManager->StartGame();
+#else
 
     // 右上に表示する次来る食材を表示する
     auto odenNextViewActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenNextViewActor>("odenNextViewActor");
@@ -187,14 +210,14 @@ void TutorialScene::Start()
     slotManager->SetBeatActor(beatClockActor);
     beatClockActor->SetBpm(50.0f);
 
+#endif // 0
     // ステージアクターを生成
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenStoreActor>("stage", stageTr);
     slotManager->RegisterBeatReactive(stage);  // ビートするものとして設定
 
-#endif // 0
 
-#if 0
+#if 1
     // デバック時に使用
     // お題を生成
     Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -232,6 +255,8 @@ void TutorialScene::Start()
     auto uiTimerActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUITimerActor>("OdenUITimerActor");
 
 #endif // 0
+    // チュートリアルアクターを生成
+    auto tutorialActor = GetActorManager()->CreateAndRegisterActorWithTransform<TutorialActor>("OdenTutorialActor");
 
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();

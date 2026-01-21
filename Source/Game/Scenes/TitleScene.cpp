@@ -103,6 +103,24 @@ void TitleScene::Start()
             };
     }
 
+    // スタートチュートリアルボタンの作成
+    {
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/tutorial_button.png", "tutorial_button");
+        button->SetWorldPosition({ 300, 250 });
+        button->SetSize({ 400, 150 });
+        uiManager->Add(button);
+
+        button->onClick = []()
+            {
+                Logger::Log(u8"tutorial_button Clicked!");
+                const char* types[] = { "0", "1" };
+                //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TutorialScene"), {"difficulty","1"} });
+
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            };
+    }
+
 }
 
 void TitleScene::Update(float deltaTime)

@@ -315,7 +315,6 @@ void OdenSlotManager::BuildIngredientBag()
         };
     }
 
-
     ingredientBag.clear();
 
     for (const auto& e : ingredients)

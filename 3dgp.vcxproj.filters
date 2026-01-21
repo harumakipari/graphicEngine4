@@ -573,6 +573,18 @@
     <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenResultIngredientActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Scenes\TutorialScene.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\OdenGame\OdenTutorial\TutorialManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\OdenGame\OdenTutorial\TutorialStep.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\OdenGame\OdenTutorial\TutorialActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -945,6 +957,10 @@
     <ClInclude Include="Source\Game\OdenGame\OdenUITimerActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\StarParticleActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenResultIngredientActor.h" />
+    <ClInclude Include="Source\Game\Scenes\TutorialScene.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialStep.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialManager.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
