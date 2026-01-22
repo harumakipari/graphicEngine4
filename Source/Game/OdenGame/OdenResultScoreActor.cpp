@@ -14,6 +14,10 @@ static std::vector<OdenSubmitLog> CreateDebugSubmitLogs()
         { EOdenType::Egg,     2, 200.0f },
         { EOdenType::Chikuwa,    3, 300.0f },
         { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Cake,   1, 100.0f },
+        { EOdenType::Hanpen,   1, 100.0f },
+        { EOdenType::Donut,   1, 100.0f },
+        { EOdenType::Shirataki,   1, 100.0f },
     };
 }
 
@@ -63,7 +67,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     const std::vector<OdenSubmitLog>* logs = nullptr;
 
 #if _DEBUG
-    static bool useDebug = false; // ← ImGui で切り替えてもいい
+    static bool useDebug = true; // ← ImGui で切り替えてもいい
     if (useDebug)
     {
         static std::vector<OdenSubmitLog> debugLogs = CreateDebugSubmitLogs();
@@ -141,10 +145,16 @@ void OdenResultScoreActor::Update(float deltaTime)
             resultIngredients[spawnIndex]->AppearIngredient();
 
             int addScore = 100; // 仮のスコア加算値
+            if (resultIngredients[spawnIndex]->GetIsFeverModeIngredient())
+            {
+                addScore *= 2; // フィーバー中はスコア2倍
+            }
+
             AddScore(addScore);
 
             spawnTimer = 0.0f;
             ++spawnIndex;
+            nextSpawnDelay = CalcSpawnDelay();
         }
     }
 }
@@ -210,4 +220,23 @@ void OdenResultScoreActor::AddScore(int add)
         };
 
     easingRunner->StartHandler(handler, accessor);
+}
+
+// spawnIndexに応じてスポーンタイムを変更する
+float OdenResultScoreActor::CalcSpawnDelay() const
+{
+    int total = static_cast<int>(resultIngredients.size());
+
+    // 最初の2個
+    if (spawnIndex < 2)
+        return 0.6f;
+
+    // 最後の2個
+    if (spawnIndex >= total - 2)
+        return 0.7f;
+
+    // 中盤はだんだん早く
+    float t = static_cast<float>(spawnIndex - 2) / (total - 4);
+    return std::lerp<float>(0.5f, 0.15f, t); // 徐々に速く
+
 }

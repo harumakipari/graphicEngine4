@@ -22,6 +22,12 @@ public:
     {
         isPlayTwinkleEffect = isFever;
     }
+
+    // フィーバーモードで提出された具材かどうかを取得する
+    bool GetIsFeverModeIngredient() const
+    {
+        return isPlayTwinkleEffect;
+    }
 private:
     std::string ingredientName; // 食材の名前
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材

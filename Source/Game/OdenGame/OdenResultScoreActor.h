@@ -26,6 +26,9 @@ private:
     // 演出のためにスコアを加算する
     void AddScore(int add);
 
+    // spawnIndexに応じてスポーンタイムを変更する
+    float CalcSpawnDelay() const;
+
 private:
     std::shared_ptr<UITextComponent> scoreTextUi; // スコアのテキスト描画
     std::shared_ptr<UITextComponent> scoreBackTextUi; // スコアのテキスト描画
