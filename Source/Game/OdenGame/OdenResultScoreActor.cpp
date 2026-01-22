@@ -63,7 +63,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     const std::vector<OdenSubmitLog>* logs = nullptr;
 
 #if _DEBUG
-    static bool useDebug = false; // © ImGui ‚ÅØ‚è‘Ö‚¦‚Ä‚à‚¢‚¢
+    static bool useDebug = true; // © ImGui ‚ÅØ‚è‘Ö‚¦‚Ä‚à‚¢‚¢
     if (useDebug)
     {
         static std::vector<OdenSubmitLog> debugLogs = CreateDebugSubmitLogs();

@@ -311,14 +311,18 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
 
 #endif // 0
 
-    //
+    // パーティクルコンポーネントを追加
+    particleComponent = AddComponent<ParticleComponent>("twinkleComponent", parentName);
+    particleComponent->Load("./Data/Effect/Files/sparklingEffect.json");
+    particleComponent->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
+    //// ループ再生設定
+    //ParticleComponent::AddSettings settings
+    //{
+    //    .loop = true, // ループ再生
+    //};
+    //starSpawnParticleComponent->SetAddSettings(settings);
 
 
-    // 点線のモデルを追加 食材の子供とする。
-    //dotLineModel = AddComponent<DotLineMeshComponent>("dotLineModel", parentName);
-    //dotLineModel->SetRelativeLocationDirect({ 0.0f,0.001f,0.0f });
-    //std::string modelDotLineFileName = "./Data/Models/Oden_DotLine/Oden_DotLine_Triangle.gltf";
-    //dotLineModel->SetModel(modelDotLineFileName.c_str());
 }
 
 // ドラック開始処理
