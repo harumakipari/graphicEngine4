@@ -7,6 +7,16 @@
 #include "Engine/Scene/Scene.h"
 #include "UI/FontManager.h"
 
+static std::vector<OdenSubmitLog> CreateDebugSubmitLogs()
+{
+    return {
+        { EOdenType::Daikon,     4, 400.0f },
+        { EOdenType::Egg,     2, 200.0f },
+        { EOdenType::Chikuwa,    3, 300.0f },
+        { EOdenType::Konnyaku,   1, 100.0f },
+    };
+}
+
 void OdenResultScoreActor::Initialize(const Transform& transform)
 {
     easingRunner = std::make_shared<EasingRunner>();
@@ -50,9 +60,26 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
 
     Logger::Log("=============================");
 
+    const std::vector<OdenSubmitLog>* logs = nullptr;
+
+#if _DEBUG
+    static bool useDebug = false; // ← ImGui で切り替えてもいい
+    if (useDebug)
+    {
+        static std::vector<OdenSubmitLog> debugLogs = CreateDebugSubmitLogs();
+        logs = &debugLogs;
+    }
+    else
+#endif
+    {
+        logs = &session.submitLogs;
+    }
+
+
+
     int globalIndex = 0; // 全体での横並びインデックス
 
-    for (auto& log : session.submitLogs)
+    for (auto& log : *logs)
     {
         for (int i = 0; i < log.count; ++i)
         {
@@ -65,9 +92,10 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
 
             // ここで配置位置を決めて生成する
 
-            float x = globalIndex * 3.0f; // 横に並べる      
-            float y = 1.0f;                      // 高さ固定
-            Transform ingredientTr(DirectX::XMFLOAT3{ x,y,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+            float x = 1.2f + globalIndex * 2.4f; // 横に並べる      
+            float y = 6.723f;                      // 高さ固定
+            float z = -5.506f;
+            Transform ingredientTr(DirectX::XMFLOAT3{ x,y,z }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
             auto ingredientActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultIngredientActor>("OdenResultIngredient", ingredientTr, ingredientName);
             resultIngredients.push_back(ingredientActor);
             globalIndex++;
@@ -173,7 +201,7 @@ void OdenResultScoreActor::AddScore(int add)
             popupOffsetY = 0.0f;
         });
     PropertyAccessor<float> accessor;
-    
+
     accessor.getter = [this]() { return popupOffsetY; };
     accessor.setter = [this](float t)
         {
