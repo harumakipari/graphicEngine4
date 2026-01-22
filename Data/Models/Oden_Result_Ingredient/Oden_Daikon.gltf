@@ -119,17 +119,17 @@
   ],
   "images": [
     {
-      "uri": "Oden_Daikon.fbm/m_oden_BaseColo.png"
+      "uri": "m_oden_BaseColo.png"
     }
   ],
   "materials": [
     {
-      "name": "m_oden",
+      "name": "m_oden1",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
+          1.0,
+          0.9999899864196777,
+          0.9999899864196777,
           1.0
         ],
         "baseColorTexture": {
@@ -157,6 +157,28 @@
     }
   ],
   "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "name": "oden1",
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
     {
       "mesh": 0,
       "name": "Oden_Daikon",
