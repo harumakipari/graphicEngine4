@@ -150,7 +150,22 @@ public:
 
 private:
     std::shared_ptr<UIImageComponent> tutorialClearCircleIngredientImage;
-    std::shared_ptr<UIImageComponent> tutorialRotateOdenImage;
 };
 
 
+// チュートリアルステップ  ：　ダイコンを回す
+class TutorialStep_RotateOdenIngredient : public TutorialStep
+{
+    public:
+    TutorialStep_RotateOdenIngredient(TutorialActor* actor);
+    virtual ~TutorialStep_RotateOdenIngredient();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "RotateOdenIngredient"; }
+private:
+    std::shared_ptr<UIImageComponent> tutorialRotateOdenImage;
+};

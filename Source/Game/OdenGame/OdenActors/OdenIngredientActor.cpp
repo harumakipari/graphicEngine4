@@ -311,6 +311,9 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
 
 #endif // 0
 
+    //
+
+
     // 点線のモデルを追加 食材の子供とする。
     //dotLineModel = AddComponent<DotLineMeshComponent>("dotLineModel", parentName);
     //dotLineModel->SetRelativeLocationDirect({ 0.0f,0.001f,0.0f });

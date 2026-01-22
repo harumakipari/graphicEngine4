@@ -71,8 +71,10 @@ cbuffer CLOTH_SIMULATE_CBUFFER : register(b10)
 {
     float g;
     uint vertexCount;
-    float pading[2];
+    float windPhaseOffset;
+    float align;
 };
+
 
 cbuffer SPHERE_CBUFFER : register(b7)
 {
@@ -244,12 +246,12 @@ void main(uint3 id : SV_DispatchThreadID)
         float3 currentVelocity = inVertex.velocity;
 #if 1
         // 風の影響
-        float4 windDirWorld = normalize(float4(0, 0, 1, 0)); // Z軸方向
+        float4 windDirWorld = normalize(float4(1, 0, 1, 0)); // Z軸方向
         float4 windDirLocal4 = mul(windDirWorld, invWorld);
         float windBase = 5.0f;
         float windVariation = 10.0f;
 
-        float phase = elapsedTime * 2.0f - currentPos.y * 1.5f;
+        float phase = elapsedTime * 2.0f - currentPos.y * 1.5f + windPhaseOffset;
 
         // 時間と位置によるゆらぎ
         float w = sin(phase) * 0.5f + 0.5f;
@@ -264,8 +266,7 @@ void main(uint3 id : SV_DispatchThreadID)
         float3 windForce = dragCoef * relativeVel;
 
         // 強制的に揺らす外力（速度に依存しない）
-        float wave =
-    sin(elapsedTime * 2.5f - currentPos.y * 1.8f);
+        float wave = sin(elapsedTime * 2.5f - currentPos.y * 1.8f);
 
         float3 driveForce =
     float3(0.0f, 0.0f, wave) * 6.0f;

@@ -86,8 +86,8 @@ cbuffer CLOTH_SIMULATE_CBUFFER : register(b10)
 {
     float g;
     uint vertexCount;
-    float align[2];
-    //row_major float4x4 clothInvWorld;
+    float windPhaseOffset;
+    float align;
 };
 
 float4x4 RightMultiMatrix(float4 a)

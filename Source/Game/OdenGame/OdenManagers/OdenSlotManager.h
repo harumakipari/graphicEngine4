@@ -47,6 +47,10 @@ public:
     {
         beatReactives.push_back(obj);
     }
+
+    // 特定の食材を補充する
+    void SupplySpecificIngredientTo(const std::shared_ptr<OdenSlotActor>& slot, const std::string& ingredientName);
+
 private:
     // スロットの回転関数を呼ぶ
     void UpdateBeat(float deltaTime);
@@ -68,6 +72,8 @@ private:
 
     // ビートに合わせてスケールを変更する
     void ApplyBeatScaling(float beatPhase) const;
+
+
 private:
     static constexpr BeatPattern BeatTable[4] =
     {

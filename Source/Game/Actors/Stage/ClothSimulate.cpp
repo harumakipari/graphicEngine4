@@ -22,6 +22,7 @@
 #include "Graphics/Core/PipelineState.h"
 
 #include "Graphics/Core/Graphics.h"
+#include "Math/MathHelper.h"
 
 #define NUMTHREAD_X 16
 
@@ -1115,7 +1116,7 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
 
 #endif // 0
     cbuffer->data.vertexCount = static_cast<int>(allVertices.size());
-
+    cbuffer->data.windPhaseOffset = MathHelper::RandomRange(0.0f, DirectX::XM_2PI);
     for (auto& mesh : meshes)
     {
         for (auto& primitive : mesh.primitives)

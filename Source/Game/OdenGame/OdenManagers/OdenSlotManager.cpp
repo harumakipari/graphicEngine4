@@ -37,7 +37,6 @@ void OdenSlotManager::StartGame()
     {
         // ランダムに名前を選択
         const std::string& selectedName = MakeRandomIngredientName();
-        //const std::string& selectedName = "Konnyaku";
 
         // おでんの具材を生成
         Transform downIngredientTr(DirectX::XMFLOAT3{ i * 4.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -58,7 +57,6 @@ void OdenSlotManager::StartGame()
     {
         // ランダムに名前を選択
         const std::string& selectedName = MakeRandomIngredientName();
-        //const std::string& selectedName = "Daikon";
 
         // おでんの具材を生成
         Transform odenUpIngredient(DirectX::XMFLOAT3{ i * 4.0f,0.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -104,7 +102,6 @@ void OdenSlotManager::UpdateBeat(float deltaTime)
                 slotActor->OnBeat();
             }
         }
-
     }
 
 #endif // 0
@@ -174,7 +171,6 @@ void OdenSlotManager::UpdateBeat(float deltaTime)
         beatIndex = (beatIndex + 1) % 4;
     }
 #endif // 0
-
 }
 
 // 空スロットを見つけたら、食材を補充する
@@ -218,6 +214,25 @@ void OdenSlotManager::SupplyIngredientTo(const std::shared_ptr<OdenSlotActor>& s
 
     // 次のために補充
     FillIngredientQueue();
+}
+
+
+// 特定の食材を補充する
+void OdenSlotManager::SupplySpecificIngredientTo(const std::shared_ptr<OdenSlotActor>& slot, const std::string& ingredientName)
+{
+    auto actorManager = Scene::GetCurrentScene()->GetActorManager();
+
+    std::string actorName = "OdenIngredient_Specific_" + ingredientName;
+
+    // おでんの具材を生成
+    Transform ingredientTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto ingredient = actorManager->CreateAndRegisterActorWithTransform<OdenIngredientActor>(actorName, ingredientTr, ingredientName);
+    XMFLOAT3 slotPosition = slot->GetPosition();
+    slotPosition.y -= 1.0f;
+    ingredient->SetPosition(slotPosition);
+
+    ingredient->SetCurrentSlot(slot);
+    slot->SetIngredient(ingredient);
 }
 
 // ランダムな具材の名前を生成する

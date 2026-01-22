@@ -29,17 +29,17 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
 
 #if 1
     // ’g—ú‚Ìƒ‚ƒfƒ‹‚ğì¬
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 5; i++)
     {
-        //std::string filename = "./Data/Models/Oden_Title_Stage/Oden_Cloth_Noren_" + std::to_string(i + 1) + ".gltf";
-        std::string filename = "./Data/Models/Oden_Title_Stage/Oden_Cloth_Noren_" + std::to_string(1) + ".gltf";
+        std::string filename = "./Data/Models/Oden_Title_Stage/Oden_Cloth_Noren_" + std::to_string(i + 1) + ".gltf";
+        //std::string filename = "./Data/Models/Oden_Title_Stage/Oden_Cloth_Noren_" + std::to_string(1) + ".gltf";
         clothSimulate[i] = std::make_unique<ClothSimulate>(device, filename);
     }
 
     // ‚±‚±‚Å•z‚ğ•`‰æ‚·‚é
     RegisterRenderHook(RenderPass::Mask, [&](ID3D11DeviceContext* immediateContext)
         {
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 5; i++)
             {
                 std::string clothName = "noren_" + std::to_string(i + 1);
                 if (const auto cloth = GetActorManager()->GetActorByName(clothName))
@@ -180,9 +180,9 @@ void TitleScene::SetUpActors()
     auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenTitleStageActor>("stage", stageTr);
 
 
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 5; i++)
     {
-       Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.0f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 90.0f,90.0f,-90.0f }, DirectX::XMFLOAT3{ -0.36f,1.0f,0.36f });
+       Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.1f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 90.0f,90.0f,-90.0f }, DirectX::XMFLOAT3{ -0.46f,1.0f,0.36f });
       //  Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.2f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.48f,1.0f,0.48f });
         std::string actorName = "noren_" + std::to_string(i + 1);
         auto clothActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>(actorName, clothTr);

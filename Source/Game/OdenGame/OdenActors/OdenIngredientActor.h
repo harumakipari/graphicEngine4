@@ -5,6 +5,7 @@
 #include "Components/CollisionShape/StaticMeshCollisionComponent.h"
 #include "Components/CollisionShape/ShapeComponent.h"
 #include "Components/Easing/CoreEasingComponent.h"
+#include "Components/Effect/ParticleComponent.h"
 #include "Game/OdenGame/OdenData/OdenDataStruct.h"
 #include "Game/OdenGame/OdenData/OdenShapeDataTable.h"
 
@@ -213,6 +214,7 @@ protected:
 
 
     std::unordered_map<EOdenFace, std::weak_ptr<DotLineMeshComponent>> dotLineByFace;
+    std::shared_ptr<ParticleComponent> particleComponent;
 };
 
 

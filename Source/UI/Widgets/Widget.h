@@ -340,7 +340,7 @@ public:
     {
         if (!visible) return;
 
-        FontManager::GetUIFont()->Draw(worldPosition.x, worldPosition.y, text.c_str(), { 1,1,0,1 }, scale.x, pivot.x, pivot.y);
+        FontManager::GetUIFont()->Draw(worldPosition.x, worldPosition.y, text.c_str(), color, scale.x, pivot.x, pivot.y);
     }
 
 

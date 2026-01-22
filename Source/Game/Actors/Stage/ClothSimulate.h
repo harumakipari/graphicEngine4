@@ -118,7 +118,8 @@ public:
     {
         float gravity = -0.98f;
         int vertexCount = 0;
-        float pads[2];
+        float windPhaseOffset = 0.0f;
+        float pad;
     };
     std::unique_ptr<ConstantBuffer<ClothSimulateCBuffer>> cbuffer;
 

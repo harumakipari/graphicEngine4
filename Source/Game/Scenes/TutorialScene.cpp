@@ -165,7 +165,7 @@ void TutorialScene::Start()
 
     // おでんの枠を生成 　下　一個
     Transform odenSlotTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenSlotActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot", odenSlotTr);
+    auto odenSlotActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot_Horizontal_0", odenSlotTr);
     odenSlotActor->SetIngredient(odenDaikon);
 
     odenDaikon->SetCurrentSlot(odenSlotActor);
@@ -181,18 +181,20 @@ void TutorialScene::Start()
     // 下4段  横回転
     for (int i = 1; i < 4; ++i)
     {
+        std::string actorName = "odenSlot_Horizontal_" + std::to_string(i);
         // スロット生成
         Transform odenSlotTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,0.0f }, XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-        auto slot = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot_Horizontal", odenSlotTr);
+        auto slot = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>(actorName, odenSlotTr);
         slot->rotationType = ERotationType::Horizontal;
     }
 
     // 上4段  縦回転
-    for (int i = 1; i < 4; ++i)
+    for (int i = 0; i < 4; ++i)
     {
+        std::string actorName = "odenSlot_Vertical_" + std::to_string(i);
         // スロット生成
         Transform odenSlotTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-        auto slot = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot_Vertical", odenSlotTr);
+        auto slot = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>(actorName, odenSlotTr);
         slot->rotationType = ERotationType::Vertical;
     }
 

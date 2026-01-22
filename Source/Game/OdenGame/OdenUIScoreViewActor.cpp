@@ -69,7 +69,7 @@ void OdenUIScoreViewActor::SetFontAndMakeTextComponent()
     scoreTextUi->SetWorldPosition({ 67, 965 });
     scoreTextUi->SetScale({ 1.0f, 1.0f });
     scoreTextUi->SetPivot({ 0.5f,0.5f });
-
+    scoreTextUi->SetColor(CoreColor::White);
     auto uiManager = GetOwnerScene()->GetUIManager();
     uiManager->Add(scoreTextUi);
 }

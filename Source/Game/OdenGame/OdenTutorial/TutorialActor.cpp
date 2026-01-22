@@ -13,6 +13,7 @@ void TutorialActor::Initialize(const Transform& transform)
     tutorialManager->RegisterState(std::make_unique<TutorialStep_SubmitClearIngredient>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_SubmitOdenCircleIngredient>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_ClearCircleIngredient>(this));
+    tutorialManager->RegisterState(std::make_unique<TutorialStep_RotateOdenIngredient>(this));
 
 
     // 最初のステートに変更
