@@ -312,6 +312,7 @@
     <ClCompile Include="Source\Game\OdenGame\OdenTutorial\TutorialActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenTutorial\TutorialManager.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenTutorial\TutorialStep.cpp" />
+    <ClCompile Include="Source\Game\OdenGame\OdenUIFeverGaugeActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenUIScoreViewActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenUITimerActor.cpp" />
     <ClCompile Include="Source\Game\Scenes\LoadingScene.cpp" />
@@ -484,6 +485,7 @@
     <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialManager.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialStep.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenUIFeverGaugeActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenUIScoreViewActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenUITimerActor.h" />
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />

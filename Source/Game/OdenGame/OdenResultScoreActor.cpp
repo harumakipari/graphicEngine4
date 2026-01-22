@@ -63,7 +63,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     const std::vector<OdenSubmitLog>* logs = nullptr;
 
 #if _DEBUG
-    static bool useDebug = true; // ← ImGui で切り替えてもいい
+    static bool useDebug = false; // ← ImGui で切り替えてもいい
     if (useDebug)
     {
         static std::vector<OdenSubmitLog> debugLogs = CreateDebugSubmitLogs();
@@ -97,6 +97,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
             float z = -5.506f;
             Transform ingredientTr(DirectX::XMFLOAT3{ x,y,z }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
             auto ingredientActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultIngredientActor>("OdenResultIngredient", ingredientTr, ingredientName);
+            ingredientActor->SetFeverModeIngredient(log.wasFever);// フィーバー中に提出された具材かどうかを設定する
             resultIngredients.push_back(ingredientActor);
             globalIndex++;
         }

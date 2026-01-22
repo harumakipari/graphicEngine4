@@ -9,6 +9,13 @@
 class OdenGameManager :public Actor
 {
 public:
+    enum class EFeverState
+    {
+        Charging,   // 溜め中
+        Fever       // フィーバー中
+    };
+
+public:
     OdenGameManager(const std::string& actorName) :Actor(actorName) {}
 
     void Initialize(const Transform& transform)override;
@@ -30,10 +37,34 @@ public:
     // スコアを加算する
     void AddScore(float score);
 
-    // コンボを加算する
-    void AddCombo()
+    // 提出成功時の処理
+    void OnSubmitSuccess();
+
+    // フィーバー開始
+    void StartFeverMode();
+
+    // フィーバー終了
+    void EndFever();
+
+    // スコアを二倍にする
+    float CalcScore(float baseScore) const;
+
+    // 現在ゲージの値を取得する
+    float GetFeverGauge() const
     {
-        combo++;
+        return feverGauge;
+    }
+
+    // ゲージの最大値を取得する
+    float GetFeverGaugeMax() const
+    {
+        return feverGaugeMax;
+    }
+
+    // コンボ数を取得する
+    int GetCombo() const
+    {
+        return combo;
     }
 
     // コンボをリセットする
@@ -61,7 +92,18 @@ public:
     // 提出ログを追加
     void AddSubmitLog(EOdenType type, float score);
 
+    // フィーバーモードかどうか
+    bool IsFeverMode()const
+    {
+        return feverState == EFeverState::Fever;
+    }
 
+private:
+    // コンボを加算する
+    void AddCombo()
+    {
+        combo++;
+    }
 private:
     //std::vector<OdenSubmitLog> submitLogs; 
     //std::array<int, static_cast<size_t>(EOdenType::Count)> ingredientCount{};
@@ -71,8 +113,17 @@ private:
     float maxTime = 0.0f;      // 50秒
     float remainingTime = 50.0f;
 
-
     float satisfaction = 0.0f;  // 満足度
 
     bool isGameEnded = false; // ゲームが終わったかどうか
+
+    EFeverState feverState = EFeverState::Charging;
+
+    float feverGauge = 0.0f;
+    float feverGaugeMax = 100.0f;
+
+    float feverTime = 8.0f;
+    float feverRemainingTime = 0.0f;
+
+    int feverTriggerCombo = 5;
 };

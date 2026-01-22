@@ -30,6 +30,7 @@
 #include "Game/OdenGame/OdenActors/OdenDetailIngredientsActors.h"
 #include "Game/OdenGame/BeatClockActor.h"
 #include "Game/OdenGame/OdenGameSession.h"
+#include "Game/OdenGame/OdenUIFeverGaugeActor.h"
 #include "Game/OdenGame/OdenUITimerActor.h"
 
 
@@ -167,7 +168,7 @@ void MainScene::Start()
     difficulty = OdenGameSession::GetDifficulty();
 
     Logger::Log("Oden Game Difficulty: " + std::to_string(static_cast<uint8_t>(difficulty)));
-#if 1
+#if 0
     // デバック時に使用
     // おでんのダイコンを生成
     Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -210,7 +211,7 @@ void MainScene::Start()
 
 #endif // 0
 
-#if 1
+#if 0
     // デバック時に使用
     // お題を生成
     Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -247,6 +248,10 @@ void MainScene::Start()
 
     // 時間を表示するアクターを生成
     auto uiTimerActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUITimerActor>("OdenUITimerActor");
+
+    // フィーバーゲージを表示するアクターを生成
+    Transform uiGaugeTr(DirectX::XMFLOAT3{ -7.1f,0.0f,-1.6f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto uiFeverGaugeActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUIFeverGaugeActor>("OdenUIFeverGaugeActor", uiGaugeTr);
 
 #endif // 0
 

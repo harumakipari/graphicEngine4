@@ -15,9 +15,21 @@ void OdenResultIngredientActor::Initialize(const Transform& transform)
 
 #endif // 0
     // エフェクト登録
-    particleComponent = this->AddComponent<class ParticleComponent>("appearEffect");
+    particleComponent = this->AddComponent<class ParticleComponent>("appearEffect", parentName);
     particleComponent->Load("./Data/Effect/Files/appearEffect.json");
     //particleComponent->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
+
+    // きらきらエフェクト登録
+    twinkleParticleComponent = AddComponent<ParticleComponent>("twinkleComponent", parentName);
+    twinkleParticleComponent->Load("./Data/Effect/Files/sparklingEffect.json");
+    twinkleParticleComponent->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
+    // ループ再生設定
+    ParticleComponent::AddSettings settings
+    {
+        .loop = true, // ループ再生
+        .startDelay = 0.2f			// 再生開始遅延時間（秒）
+    };
+    twinkleParticleComponent->SetAddSettings(settings);
 
 }
 
@@ -34,6 +46,7 @@ void OdenResultIngredientActor::Update(float deltaTime)
             isPlayEffect = false;
         }
     }
+
 }
 
 // 食材が登場する
@@ -46,5 +59,13 @@ void OdenResultIngredientActor::AppearIngredient()
     elapsedTime = modelSpawnTime;
     isPlayEffect = true;
 
-    
+    if (isPlayTwinkleEffect)
+    {
+        // キラキラエフェクト再生
+        if (twinkleParticleComponent)
+        {
+            twinkleParticleComponent->Play();
+        }
+    }
+
 }

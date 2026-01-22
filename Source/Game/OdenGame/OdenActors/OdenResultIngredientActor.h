@@ -17,10 +17,16 @@ public:
     // 食材が登場する
     void AppearIngredient();
 
+    // フィーバーモードで提出された具材かどうかを設定する
+    void SetFeverModeIngredient(bool isFever)
+    {
+        isPlayTwinkleEffect = isFever;
+    }
 private:
     std::string ingredientName; // 食材の名前
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
     std::shared_ptr<ParticleComponent> particleComponent;   // エフェクト
+    std::shared_ptr<ParticleComponent> twinkleParticleComponent;   // エフェクト
 
     // 経過時間
     float elapsedTime = 0.0f;
@@ -28,5 +34,8 @@ private:
 
     // エフェクトを再生したかどうか
     bool isPlayEffect = false;
+
+    // キラキラエフェクトを再生するかどうか
+    bool isPlayTwinkleEffect = false;
 
 };

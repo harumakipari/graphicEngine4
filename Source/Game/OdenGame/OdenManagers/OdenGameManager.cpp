@@ -18,6 +18,18 @@ void OdenGameManager::Update(float deltaTime)
 {
     if (isGameEnded)
         return;
+
+    if (feverState == EFeverState::Fever)
+    {
+        feverRemainingTime -= deltaTime;
+        feverGauge = feverGaugeMax * (feverRemainingTime / feverTime);
+
+        if (feverRemainingTime <= 0.0f)
+        {
+            EndFever();
+        }
+    }
+
     remainingTime -= deltaTime;
     remainingTime = std::max<float>(remainingTime, 0.0f);
     if (IsTimeUp())
@@ -33,7 +45,7 @@ void OdenGameManager::Reset()
 {
     totalScore = 0;
     combo = 0;
-    maxTime = 50000.0f;    // ここで制限時間を設定
+    maxTime = 50.0f;    // ここで制限時間を設定
     remainingTime = maxTime;
     satisfaction = 0.0f;
     isGameEnded = false;
@@ -46,11 +58,61 @@ void OdenGameManager::Reset()
 void OdenGameManager::AddScore(float score)
 {
     //if (IsTimeUp()) return;
-    totalScore += score;
+    float addScore = CalcScore(score);
+    totalScore += addScore;
     Logger::Log(U8("今の総スコア") + std::to_string(totalScore));
     //OdenGameSession::Instance().totalScore = totalScore;
 }
 
+// 提出成功時の処理
+void OdenGameManager::OnSubmitSuccess()
+{
+    AddCombo();
+
+    if (feverState == EFeverState::Charging)
+    {
+        // コンボに応じてフィーバーゲージを加算
+        float addFeverGauge = feverGaugeMax / static_cast<float>(feverTriggerCombo);
+
+        feverGauge += addFeverGauge;
+
+        if (feverGauge >= feverGaugeMax)
+        {
+            StartFeverMode();
+        }
+    }
+}
+
+// フィーバー開始
+void OdenGameManager::StartFeverMode()
+{
+    feverState = EFeverState::Fever;
+    feverRemainingTime = feverTime;
+    feverGauge = feverGaugeMax;
+
+    Logger::Log(U8("フィーバーモード突入！"));
+}
+
+// フィーバー終了
+void OdenGameManager::EndFever()
+{
+    feverState = EFeverState::Charging;
+    feverGauge = 0.0f;
+    ResetCombo();
+
+    Logger::Log(U8("フィーバー終了"));
+}
+
+// スコアを二倍にする
+float OdenGameManager::CalcScore(float baseScore) const
+{
+    if (feverState == EFeverState::Fever)
+    {
+        Logger::Log(U8("フィーバー中のためにスコアを二倍にする"));
+        return baseScore * 2.0f;
+    }
+    return baseScore;
+}
 
 // 提出ログを追加
 void OdenGameManager::AddSubmitLog(EOdenType type, float score)

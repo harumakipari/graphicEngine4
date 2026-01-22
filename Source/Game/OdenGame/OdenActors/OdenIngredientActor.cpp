@@ -315,12 +315,12 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
     particleComponent = AddComponent<ParticleComponent>("twinkleComponent", parentName);
     particleComponent->Load("./Data/Effect/Files/sparklingEffect.json");
     particleComponent->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
-    //// ループ再生設定
-    //ParticleComponent::AddSettings settings
-    //{
-    //    .loop = true, // ループ再生
-    //};
-    //starSpawnParticleComponent->SetAddSettings(settings);
+    // ループ再生設定
+    ParticleComponent::AddSettings settings
+    {
+        .loop = true, // ループ再生
+    };
+    particleComponent->SetAddSettings(settings);
 
 
 }

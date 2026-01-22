@@ -100,6 +100,7 @@ struct OdenSubmitLog
     EOdenType type; // 具材の種類
     int count = 1;             // 基本1だが拡張用
     float score = 0.0f;
+    bool wasFever = false;  // 提出時にフィーバー中だったかどうか
     // 後々Great　Goodとか
 };
 

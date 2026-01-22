@@ -266,7 +266,7 @@ void StarParticleActor::Update(float elapsedTime)
                 {
                     // ƒXƒRƒA‚ð‰ÁŽZ‚·‚é
                     gameManager->AddScore(pendingScore);
-                    OdenGameSession::Instance().totalScore += pendingScore;
+                    OdenGameSession::Instance().totalScore = gameManager->GetTotalScore();
 
                     // –ž‘«“x‚ð‰ÁŽZ‚·‚é
                     //gameManager->AddSatisfaction(score.satisfaction);

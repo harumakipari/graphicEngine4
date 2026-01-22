@@ -205,6 +205,12 @@ void OdenOrderManager::OnBubbleCompleted(int slotIndex, OdenBubbleActor& bubble,
 
             // OdenGameSession::Instance().submitLogs.emplace_back(bubble.GetIngredientType(), 1, 0.0f);
             //gameManager->AddSubmitLog(bubble.GetIngredientType(), score.price);
+#else
+            // コンボを加算する フィーバーゲージが溜まる
+            gameManager->OnSubmitSuccess();
+            //gameManager->AddSubmitLog(bubble.GetIngredientType(), score.price);
+          //  bool wasFever = gameManager->IsFeverMode();
+         //   OdenGameSession::Instance().submitLogs.emplace_back(bubble.GetIngredientType(), 1, 0.0f, wasFever);
 #endif
         }
     }
@@ -237,6 +243,12 @@ void OdenOrderManager::OnBubbleCompletedTutorial(int slotIndex, OdenBubbleActor&
 
             // OdenGameSession::Instance().submitLogs.emplace_back(bubble.GetIngredientType(), 1, 0.0f);
             //gameManager->AddSubmitLog(bubble.GetIngredientType(), score.price);
+#else
+            // コンボを加算する フィーバーゲージが溜まる
+            gameManager->OnSubmitSuccess();
+            //gameManager->AddSubmitLog(bubble.GetIngredientType(), score.price);
+          //  bool wasFever = gameManager->IsFeverMode();
+          //  OdenGameSession::Instance().submitLogs.emplace_back(bubble.GetIngredientType(), 1, 0.0f, wasFever);
 
 #endif // 0
         }

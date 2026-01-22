@@ -10,6 +10,7 @@
 
 #include "Game/OdenGame/OdenActors/OdenIngredientActor.h"
 #include "Game/OdenGame/OdenData/OdenShapeDataTable.h"
+#include "Game/OdenGame/OdenManagers/OdenGameManager.h"
 
 void OdenBubbleActor::Initialize(const Transform& transform)
 {
@@ -298,13 +299,30 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
             scorePopupUi->Play(L"Perfect!");
             // 提出音　成功SE再生
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/succeed_submit.wav");
-            OdenGameSession::Instance().submitLogs.emplace_back(submittedIngredientType, 1, sales);
+            // 総合スコアを加算する
+            if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+            {
+                if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+                {
+                    bool wasFever = gameManager->IsFeverMode();
+                    OdenGameSession::Instance().submitLogs.emplace_back(submittedIngredientType, 1, sales, wasFever);
+                }
+            }
 
         }
         else if (score == EScore::Good)
         {
             scorePopupUi->Play(L"Good!");
-            OdenGameSession::Instance().submitLogs.emplace_back(submittedIngredientType, 1, sales);
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/succeed_submit.wav");
+            // 総合スコアを加算する
+            if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+            {
+                if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+                {
+                    bool wasFever = gameManager->IsFeverMode();
+                    OdenGameSession::Instance().submitLogs.emplace_back(submittedIngredientType, 1, sales, wasFever);
+                }
+            }
         }
         else
         {

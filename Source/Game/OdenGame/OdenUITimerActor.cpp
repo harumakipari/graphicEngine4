@@ -141,8 +141,8 @@ void OdenUITimerActor::Update(float elapsedTime)
         float t = std::clamp(animTimer / fadeTime, 0.0f, 1.0f);
         float alpha = 1.0f - t;
 
-        timerOnesUi->SetColor({ 1,1,1,alpha });
-        timerTensUi->SetColor({ 1,1,1,alpha });
+        timerOnesUi->SetColor({ 1,0,0,alpha });
+        timerTensUi->SetColor({ 1,0,0,alpha });
 
         // ˆÊ’u‚ð^‚ñ’†‚É‚·‚é
         timerOnesUi->SetWorldPosition({ (onesPosition.x + tensPosition.x) * 0.5f ,onesPosition.y });
