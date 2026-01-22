@@ -288,6 +288,7 @@
     <ClCompile Include="Source\Game\OdenGame\BeatClockActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenBubbleActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenResultIngredientActor.cpp" />
+    <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenResultStage.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenTitleStageActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenActors\StarParticleActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenData\OdenGameParameter.cpp" />
@@ -451,6 +452,7 @@
     <ClInclude Include="Source\Game\OdenGame\OdenActors\BeatReactive.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenBubbleActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenResultIngredientActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenResultStageActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenTitleStageActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\StarParticleActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenData\OdenDataStruct.h" />

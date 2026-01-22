@@ -9,12 +9,11 @@ void OdenResultIngredientActor::Initialize(const Transform& transform)
     std::string parentName = ingredientName + "_model";
 #if 1
     ingredientModel = AddComponent<SkeletalMeshComponent>(parentName);
-    std::string modelFileName = "./Data/Models/Oden_Ingredient/Oden_" + ingredientName + ".gltf";
+    std::string modelFileName = "./Data/Models/Oden_Result_Ingredient/Oden_" + ingredientName + ".gltf";
     ingredientModel->SetModel(modelFileName.c_str());
     ingredientModel->SetIsVisible(false);
 
 #endif // 0
-
     // エフェクト登録
     particleComponent = this->AddComponent<class ParticleComponent>("appearEffect");
     particleComponent->Load("./Data/Effect/Files/appearEffect.json");
