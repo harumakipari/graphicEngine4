@@ -253,7 +253,7 @@ void MainScene::Start()
     auto uiTimerActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUITimerActor>("OdenUITimerActor");
 
     // フィーバーゲージを表示するアクターを生成
-    Transform uiGaugeTr(DirectX::XMFLOAT3{ -7.1f,0.0f,-1.6f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform uiGaugeTr(DirectX::XMFLOAT3{ -6.1f,0.0f,9.6f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto uiFeverGaugeActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUIFeverGaugeActor>("OdenUIFeverGaugeActor", uiGaugeTr);
 
     // 終了演出をするアクターを生成

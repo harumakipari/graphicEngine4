@@ -229,23 +229,10 @@ public:
         else
             drawSize.y *= value;
 
-        // 枠の描画
-        SpriteRenderer::Draw(
-            frameTexture.get(),
-            worldPosition,
-            size,
-            color,
-            uv,
-            worldAngle,
-            pivot,
-            scale
-        );
-
-
         // ゲージの中身
         SpriteRenderer::Draw(
             texture.get(),
-            worldPosition,
+            { worldPosition.x + gaugeOffset.x,worldPosition.y + gaugeOffset.y },
             drawSize,
             color,
             uv,
@@ -253,6 +240,21 @@ public:
             pivot,
             scale
         );
+
+
+        // 枠の描画
+        SpriteRenderer::Draw(
+            frameTexture.get(),
+            worldPosition,
+            size,
+            gaugeFrameColor,
+            uv,
+            worldAngle,
+            pivot,
+            scale
+        );
+
+
     }
 
 
@@ -261,11 +263,23 @@ public:
         value = std::clamp(current / max, 0.0f, 1.0f);
     }
 
+    void SetGaugeFrameColor(const CoreColor color)
+    {
+        this->gaugeFrameColor = color;
+    }
+
+    void SetGaugeOffset(const XMFLOAT2 offset)
+    {
+        this->gaugeOffset = offset;
+    }
+
     bool horizontal = true;
 
 private:
     float value = 1.0f;  // 0.0f ~ 1.0f
     std::shared_ptr<Sprite>  frameTexture;  //　枠のテクスチャ
+    XMFLOAT2 gaugeOffset = { 0.0f,0.0f }; // ゲージの中身のオフセット
+    CoreColor gaugeFrameColor = CoreColor::Black; // ゲージのフレームの色
 };
 
 class UISceneChangeComponent : public UICoreComponent

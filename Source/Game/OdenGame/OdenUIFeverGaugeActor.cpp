@@ -41,6 +41,7 @@ void OdenUIFeverGaugeActor::Initialize(const Transform& transform)
     easingRunner = std::make_shared<EasingRunner>();
     auto uiManager = GetOwnerScene()->GetUIManager();
 
+#if 0
     // フィーバーゲージのスプライト描画コンポーネントを追加
     gaugeComponent = std::make_shared<UIImageComponent>("./Data/Textures/UI/bar.png", "fever_gauge_ui");
     gaugeComponent->SetWorldPosition({ 67, 965 });
@@ -57,18 +58,23 @@ void OdenUIFeverGaugeActor::Initialize(const Transform& transform)
     gaugeFrameComponent->SetColor(CoreColor::White);
     uiManager->Add(gaugeFrameComponent);
 
+#endif // 0
+
     // フィーバーゲージのフレームスプライト描画コンポーネントを追加
     gaugeFrameBackComponent = std::make_shared<UIImageComponent>("./Data/Textures/UI/bar_back.png", "bar_back_ui");
     gaugeFrameBackComponent->SetWorldPosition({ 67, 965 });
     gaugeFrameBackComponent->SetScale({ 1.0f, 1.0f });
-    gaugeFrameBackComponent->SetPivot({ 0.0f,0.5f });
+    gaugeFrameBackComponent->SetSize({ 400,50 });
+    gaugeFrameBackComponent->zOrder = 10;
+    //gaugeFrameBackComponent->SetPivot({ 0.0f,0.5f });
     gaugeFrameBackComponent->SetColor(CoreColor::White);
     uiManager->Add(gaugeFrameBackComponent);
 
 
-    gaugeUi = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/boss_hp_frame.png", "./Data/Textures/UI/boss_hp.png", "gauge");
+    gaugeUi = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/bar_line_yellow.png", "./Data/Textures/UI/bar.png", "gauge");
     gaugeUi->SetWorldPosition({ 50, 300 });
-    gaugeUi->SetSize({ 350, 40 });
+    gaugeUi->zOrder = 15;
+    gaugeUi->SetSize({ 400,50 });
 
     uiManager->Add(gaugeUi);
 
@@ -92,19 +98,46 @@ void OdenUIFeverGaugeActor::Update(float elapsedTime)
     //　フィーバーをためるコンボを取得する
     auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor);
 
-    int currentCombo = gameManager->GetCombo();
 
     float feverGauge = gameManager->GetFeverGauge();
     float feverGaugeMax = gameManager->GetFeverGaugeMax();
 
-    float hue = fmod(totalTime * 0.2f, 1.0f); // ゆっくり回す
-    XMFLOAT4 color = HSVtoRGB(hue, 1.0f, 1.0f);
+
+    if (feverGauge > 0.0f && !gameManager->IsFeverMode())
+    {// 
+        gaugeUi->SetColor({ 1.0f, 1.0f, 0.3f, 1.0f }); // 黄色
+        gaugeUi->SetGaugeFrameColor(CoreColor::White);
+    }
+    else
+    {
+        gaugeUi->SetColor(CoreColor::White);
+        gaugeUi->SetGaugeFrameColor({0.8f,0.8f,0.8f,1.0});
+    }
+
+    if (gameManager->IsFeverMode())
+    {
+        static XMFLOAT4 colors[] =
+        {
+            {1.0f, 0.3f, 0.8f, 1.0f},
+            {1.0f, 1.0f, 0.2f, 1.0f},
+            {0.3f, 1.0f, 0.5f, 1.0f},
+        };
+
+        int idx = static_cast<int>(totalTime * 8.0f) % 3;
+        gaugeUi->SetColor({ colors[idx].x,colors[idx].y,colors[idx].z,colors[idx].w });
+    }
+
+    //float hue = fmod(totalTime * 0.2f, 1.0f); // ゆっくり回す
+    //XMFLOAT4 color = HSVtoRGB(hue, 1.0f, 1.0f);
 
     if (gaugeUi)
     {
         gaugeUi->SetValue(feverGauge, feverGaugeMax);
         gaugeUi->SetWorldPosition({ uiPos.x, uiPos.y });
-        gaugeUi->SetColor({ color.x,color.y,color.z,color.w });
+        //gaugeUi->SetColor({ color.x,color.y,color.z,color.w });
+        gaugeUi->SetGaugeOffset(offset);
+
+        gaugeFrameBackComponent->SetWorldPosition({ uiPos.x, uiPos.y });
     }
 
 
@@ -120,3 +153,9 @@ void OdenUIFeverGaugeActor::Update(float elapsedTime)
 
 }
 
+void OdenUIFeverGaugeActor::DrawImGuiDetails()
+{
+#ifdef USE_IMGUI
+    ImGui::DragFloat2("gaugeOffset", &offset.x, 0.5f);
+#endif
+}

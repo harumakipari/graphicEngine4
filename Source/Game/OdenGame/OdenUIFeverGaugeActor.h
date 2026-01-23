@@ -16,7 +16,7 @@ public:
 
     void Update(float elapsedTime)override;
 
-    void DrawImGuiDetails() override {}
+    void DrawImGuiDetails() override;
 
 private:
     std::shared_ptr<UIImageComponent> gaugeComponent;  // フィーバーゲージのスプライト描画
@@ -27,4 +27,5 @@ private:
     std::shared_ptr<UIGaugeComponent> gaugeUi; // 残り時間のゲージUI
 
     float totalTime = 0.0f;
+    XMFLOAT2 offset = { 11.5f,0.0f };
 };
