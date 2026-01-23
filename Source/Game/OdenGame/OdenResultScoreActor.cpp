@@ -72,7 +72,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     const std::vector<OdenSubmitLog>* logs = nullptr;
 
 #if _DEBUG
-    static bool useDebug = false; // ← ImGui で切り替えてもいい
+    static bool useDebug = true; // ← ImGui で切り替えてもいい
     if (useDebug)
     {
         static std::vector<OdenSubmitLog> debugLogs = CreateDebugSubmitLogs();
@@ -239,11 +239,11 @@ float OdenResultScoreActor::CalcSpawnDelay() const
 
     // ラスト1個：溜め
     if (spawnIndex == total - 1)
-        return 1.0f;   // ← ここが「溜め」
+        return 0.8f;   // ← ここが「溜め」
 
     // ラスト2個目：少しゆっくり
     if (spawnIndex == total - 2)
-        return 0.7f;
+        return 0.6f;
 
     // ラスト3個目：少しゆっくり
     if (spawnIndex == total - 3)
@@ -253,7 +253,7 @@ float OdenResultScoreActor::CalcSpawnDelay() const
 
     // 中盤はだんだん早く
     float t = static_cast<float>(spawnIndex - 2) / (total - 4);
-    float time = std::lerp<float>(0.4f, 0.25f, t); // 徐々に速く
+    float time = std::lerp<float>(0.3f, 0.1f, t); // 徐々に速く
     return time;
 
 }

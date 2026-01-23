@@ -2,6 +2,7 @@
 #include "Components/Easing/CoreEasingComponent.h"
 #include "Core/Actor.h"
 
+class RotationComponent;
 class ParticleComponent;
 class CoreAudioSourceComponent;
 
@@ -38,6 +39,7 @@ private:
     std::shared_ptr<ParticleComponent> twinkleParticleComponent;   // エフェクト
     std::shared_ptr<CoreAudioSourceComponent> audioComponent;   // エフェクト
     std::shared_ptr<CoreEasingComponent> easingComponent;   
+    std::shared_ptr<RotationComponent> rotationComponent;
 
     // 経過時間
     float elapsedTime = 0.0f;

@@ -291,6 +291,7 @@ void OdenOrderManager::BuildOrderBag()
             { FindShapeOrder(EOdenShapeCategory::SquareLike),   4 },
             { FindShapeOrder(EOdenShapeCategory::RibbonLike),   2 },
             { FindShapeOrder(EOdenShapeCategory::RoundLike),   4 },
+            { FindShapeOrder(EOdenShapeCategory::DonutLike),   2 },
             { FindIngredientOrder(EOdenType::Daikon), 1 },
             { FindIngredientOrder(EOdenType::Egg),    1 },
             { FindIngredientOrder(EOdenType::Tsukune),1 },

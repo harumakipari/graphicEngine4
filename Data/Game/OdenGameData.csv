@@ -25,8 +25,8 @@ Tsukune,Top,RoundLike,1,1,0
 Tsukune,Bottom,RoundLike,1,1,0
 Chikuwa,Front,SquareLike,0,0.5,0
 Chikuwa,Back,SquareLike,0,0.5,0
-Chikuwa,Left,RoundLike,1,1,1
-Chikuwa,Right,RoundLike,1,1,1
+Chikuwa,Left,DonutLike,1,1,1
+Chikuwa,Right,DonutLike,1,1,1
 Chikuwa,Top,SquareLike,0,0.5,0
 Chikuwa,Bottom,SquareLike,0,0.5,0
 Hanpen,Front,SquareLike,0,1,0
@@ -63,5 +63,5 @@ Donut,Front,SquareLike,0,1,0
 Donut,Back,SquareLike,0,1,0
 Donut,Left,SquareLike,0,1,0
 Donut,Right,SquareLike,0,1,0
-Donut,Top,RoundLike,1,1,1
-Donut,Bottom,RoundLike,1,1,1
+Donut,Top,DonutLike,1,1,1
+Donut,Bottom,DonutLike,1,1,1

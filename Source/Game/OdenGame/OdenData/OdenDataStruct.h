@@ -24,7 +24,8 @@ enum class EOdenShapeCategory :uint8_t
     TriangleLike,// △
     SquareLike, // 四角
     RoundLike,   // 〇
-    RibbonLike   // リボン型
+    RibbonLike,   // リボン型
+    DonutLike,  // 穴あき
 };
 
 // 形の近さを判定する用

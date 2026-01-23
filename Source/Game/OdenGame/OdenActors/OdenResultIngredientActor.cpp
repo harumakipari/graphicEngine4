@@ -3,6 +3,9 @@
 
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Components/Effect/ParticleComponent.h"
+#include "Components/Controller/ControllerComponent.h"
+#include "Engine/Scene/Scene.h"
+#include "Game/Actors/Camera/Camera.h"
 
 
 void OdenResultIngredientActor::Initialize(const Transform& transform)
@@ -44,7 +47,10 @@ void OdenResultIngredientActor::Initialize(const Transform& transform)
 
     // イージングコンポーネントを追加
     easingComponent = AddComponent<CoreEasingComponent>("easingComponent", parentName);
-    
+
+    // 回転コンポーネント追加
+    rotationComponent = AddComponent<RotationComponent>("rotationComponent", parentName);
+
 }
 
 void OdenResultIngredientActor::Update(float deltaTime)
@@ -60,8 +66,25 @@ void OdenResultIngredientActor::Update(float deltaTime)
             isPlayEffect = false;
         }
     }
-#if 0
+
     XMFLOAT3 position = GetPosition();
+
+    if (auto camera = GetOwnerScene()->GetActiveCamera())
+    {
+        XMFLOAT3 cameraPosition = camera->GetPosition();
+
+        XMVECTOR Position = XMLoadFloat3(&position);
+        XMVECTOR CameraPos = XMLoadFloat3(&cameraPosition);
+
+        DirectX::XMVECTOR  Direction = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract( Position, CameraPos));
+        XMFLOAT3 direction;
+        XMStoreFloat3(&direction, Direction);
+        if (rotationComponent)
+            rotationComponent->SetDirection(direction);
+    }
+
+#if 0
+
 
     totalTime += deltaTime;
     // 浮遊
