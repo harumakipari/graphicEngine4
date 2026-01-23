@@ -2,6 +2,7 @@
 
 #include "OdenUITimerActor.h"
 
+#include "Engine/Audio/CoreAudio.h"
 #include "Engine/Scene/Scene.h"
 #include "OdenManagers/OdenGameManager.h"
 #include "UI/FontManager.h"
@@ -86,6 +87,8 @@ void OdenUITimerActor::Update(float elapsedTime)
         else if (currentSecond <= 9)
         {// 9秒以下になったらフェードアウトアニメーションへ
             timerAnimState = ETimerAnimState::FadeOut;
+
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/game_countDown_se.wav", 0.5f);
 
             //popupScale = 1.0f;
             //TestEasingHandler handler;

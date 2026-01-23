@@ -1,6 +1,9 @@
 #pragma once
-#include "Components/Effect/ParticleComponent.h"
+#include "Components/Easing/CoreEasingComponent.h"
 #include "Core/Actor.h"
+
+class ParticleComponent;
+class CoreAudioSourceComponent;
 
 // 　
 // 　リザルトで描画する食材
@@ -33,15 +36,20 @@ private:
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
     std::shared_ptr<ParticleComponent> particleComponent;   // エフェクト
     std::shared_ptr<ParticleComponent> twinkleParticleComponent;   // エフェクト
+    std::shared_ptr<CoreAudioSourceComponent> audioComponent;   // エフェクト
+    std::shared_ptr<CoreEasingComponent> easingComponent;   
 
     // 経過時間
     float elapsedTime = 0.0f;
-    float modelSpawnTime = 0.5f; // モデルが表示されるまでの時間
+    float modelSpawnTime = 0.4f; // モデルが表示されるまでの時間
 
     // エフェクトを再生したかどうか
     bool isPlayEffect = false;
 
     // キラキラエフェクトを再生するかどうか
     bool isPlayTwinkleEffect = false;
+
+    // モデルの動きのための時間
+    float totalTime=0.0f;
 
 };

@@ -10,14 +10,19 @@
 static std::vector<OdenSubmitLog> CreateDebugSubmitLogs()
 {
     return {
-        { EOdenType::Daikon,     4, 400.0f },
-        { EOdenType::Egg,     2, 200.0f },
-        { EOdenType::Chikuwa,    3, 300.0f },
+        { EOdenType::Daikon,     2, 400.0f },
+        { EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Chikuwa,    2, 300.0f },
         { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Daikon,     1, 400.0f },
         { EOdenType::Cake,   1, 100.0f },
         { EOdenType::Hanpen,   1, 100.0f },
         { EOdenType::Donut,   1, 100.0f },
+        { EOdenType::Cake,   1, 100.0f },
         { EOdenType::Shirataki,   1, 100.0f },
+        { EOdenType::Kobumusubi,   1, 100.0f },
+        { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Goboten,   1, 100.0f },
     };
 }
 
@@ -67,7 +72,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     const std::vector<OdenSubmitLog>* logs = nullptr;
 
 #if _DEBUG
-    static bool useDebug = true; // ← ImGui で切り替えてもいい
+    static bool useDebug = false; // ← ImGui で切り替えてもいい
     if (useDebug)
     {
         static std::vector<OdenSubmitLog> debugLogs = CreateDebugSubmitLogs();
@@ -96,10 +101,11 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
 
             // ここで配置位置を決めて生成する
 
-            float x = 1.2f + globalIndex * 2.4f; // 横に並べる      
+            //float x = 1.2f + globalIndex * 2.4f; // 横に並べる      
+            float x = 1.2f + globalIndex * 5.0f; // 横に並べる      
             float y = 6.723f;                      // 高さ固定
             float z = -5.506f;
-            Transform ingredientTr(DirectX::XMFLOAT3{ x,y,z }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+            Transform ingredientTr(DirectX::XMFLOAT3{ x,y,z }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 2.5f,2.5f,2.5f });
             auto ingredientActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultIngredientActor>("OdenResultIngredient", ingredientTr, ingredientName);
             ingredientActor->SetFeverModeIngredient(log.wasFever);// フィーバー中に提出された具材かどうかを設定する
             resultIngredients.push_back(ingredientActor);
@@ -231,12 +237,23 @@ float OdenResultScoreActor::CalcSpawnDelay() const
     if (spawnIndex < 2)
         return 0.6f;
 
-    // 最後の2個
-    if (spawnIndex >= total - 2)
+    // ラスト1個：溜め
+    if (spawnIndex == total - 1)
+        return 1.0f;   // ← ここが「溜め」
+
+    // ラスト2個目：少しゆっくり
+    if (spawnIndex == total - 2)
         return 0.7f;
+
+    // ラスト3個目：少しゆっくり
+    if (spawnIndex == total - 3)
+        return 0.5f;
+
+
 
     // 中盤はだんだん早く
     float t = static_cast<float>(spawnIndex - 2) / (total - 4);
-    return std::lerp<float>(0.5f, 0.15f, t); // 徐々に速く
+    float time = std::lerp<float>(0.4f, 0.25f, t); // 徐々に速く
+    return time;
 
 }

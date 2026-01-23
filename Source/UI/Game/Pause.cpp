@@ -169,7 +169,7 @@ void Pause::Update(float deltaTime)
 
         if (current != lastCountdownNumber)
         {
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/countDown_se.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/pause_countDown_se.wav",3.0f);
             lastCountdownNumber = current;
         }
     }

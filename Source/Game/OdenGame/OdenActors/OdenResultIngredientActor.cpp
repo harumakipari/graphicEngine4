@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "OdenResultIngredientActor.h"
 
+#include "Components/Audio/CoreAudioSourceComponent.h"
+#include "Components/Effect/ParticleComponent.h"
+
+
 void OdenResultIngredientActor::Initialize(const Transform& transform)
 {
     // 初期化処理
@@ -27,10 +31,20 @@ void OdenResultIngredientActor::Initialize(const Transform& transform)
     ParticleComponent::AddSettings settings
     {
         .loop = true, // ループ再生
-        .startDelay = 0.2f			// 再生開始遅延時間（秒）
+        .startDelay = 0.0f			// 再生開始遅延時間（秒）
     };
     twinkleParticleComponent->SetAddSettings(settings);
 
+
+    // 音のコンポーネントを追加
+    audioComponent = AddComponent<CoreAudioSourceComponent>("audioSource", parentName);
+    audioComponent->SetSource(L"./Data/Sound/SE/result_ingredient_appear_high.wav");
+    //audioComponent->SetSource(L"./Data/Sound/SE/result_ingredient_appear_mid.wav");
+    audioComponent->SetLoop(false);
+
+    // イージングコンポーネントを追加
+    easingComponent = AddComponent<CoreEasingComponent>("easingComponent", parentName);
+    
 }
 
 void OdenResultIngredientActor::Update(float deltaTime)
@@ -46,7 +60,16 @@ void OdenResultIngredientActor::Update(float deltaTime)
             isPlayEffect = false;
         }
     }
+#if 0
+    XMFLOAT3 position = GetPosition();
 
+    totalTime += deltaTime;
+    // 浮遊
+    constexpr float uniquePhase = 0.1f;
+    float floatY = sinf(totalTime * 2.0f + uniquePhase) * 0.1f;
+    position.y += floatY;
+    SetPosition(position);
+#endif // 0
 }
 
 // 食材が登場する
@@ -68,4 +91,42 @@ void OdenResultIngredientActor::AppearIngredient()
         }
     }
 
+    if (audioComponent)
+    {
+        audioComponent->Play();
+    }
+#if 0
+
+    TestEasingHandler handler;
+    handler.AddEasing(
+        TestEaseType::OutBack,
+        0.0f,
+        20.0f,
+        0.3f
+    );
+
+    handler.AddEasing(
+        TestEaseType::InQuad,
+        20.0f,
+        0.0f,
+        0.15f
+    );
+
+    handler.SetCompletedFunction([this]()
+        {
+            popupOffsetY = 0.0f;
+        });
+    PropertyAccessor<float> accessor;
+
+    accessor.getter = [this]() { return popupOffsetY; };
+    accessor.setter = [this](float t)
+        {
+            popupOffsetY = t;
+        };
+
+
+
+    easingComponent->StartHandler(handler, accessor);
+
+#endif // 0
 }
