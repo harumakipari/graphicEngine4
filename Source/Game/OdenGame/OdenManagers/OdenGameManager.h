@@ -82,6 +82,8 @@ public:
     // ゲーム終了処理
     void EndGame();
 
+    // ゲーム開始処理
+    void StartGame();
 
     // 満足度加算
     void AddSatisfaction(const float value)
@@ -116,6 +118,7 @@ private:
     float satisfaction = 0.0f;  // 満足度
 
     bool isGameEnded = false; // ゲームが終わったかどうか
+    bool isGameRunning = false; // ゲーム開始かどうか
 
     EFeverState feverState = EFeverState::Charging;
 

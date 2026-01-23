@@ -315,6 +315,7 @@
     <ClCompile Include="Source\Game\OdenGame\OdenUIEndActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenUIFeverGaugeActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenUIScoreViewActor.cpp" />
+    <ClCompile Include="Source\Game\OdenGame\OdenUIStartActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenUITimerActor.cpp" />
     <ClCompile Include="Source\Game\Scenes\LoadingScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\MainScene.cpp" />
@@ -489,6 +490,7 @@
     <ClInclude Include="Source\Game\OdenGame\OdenUIEndActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenUIFeverGaugeActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenUIScoreViewActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenUIStartActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenUITimerActor.h" />
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
     <ClInclude Include="Source\Game\Scenes\MainScene.h" />

@@ -24,7 +24,12 @@ public:
     // シーンが切り替わった時に呼ばれる シーン遷移の演出を入れる
     void NotifySceneChanged(); 
 
+    // シーンが切り替わり演出が終了した後に呼ぶ関数
+    void SetOnOpeningFinished(const std::function<void()>& callback);
+
     void Draw(){}
+
+
 
     const SceneTransitionParam& GetParams() const
     {
@@ -40,6 +45,7 @@ public:
     };
 
 private:
+    std::function<void()> onOpeningFinished;
 
     State state_ = State::ChangingScene;
 

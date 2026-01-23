@@ -88,7 +88,8 @@ void OdenUITimerActor::Update(float elapsedTime)
         {// 9秒以下になったらフェードアウトアニメーションへ
             timerAnimState = ETimerAnimState::FadeOut;
 
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/game_countDown_se.wav", 0.5f);
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/game_countDown_se.wav", 0.5f);
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/cancel.wav");
 
             //popupScale = 1.0f;
             //TestEasingHandler handler;

@@ -43,6 +43,7 @@ void ResultScene::Start()
     audioComp->SetLoop(true);
     audioComp->Play();
 
+#if 1
     // タイトルへ戻るボタンを生成
     {
         std::shared_ptr<UIButtonComponent> backToTitleButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/Result/back_to_title.png", "backToTitleButton");
@@ -53,13 +54,13 @@ void ResultScene::Start()
 
         // タイトルへ戻るボタンがクリックされたときの処理
         backToTitleButton->onClick = []()
-        {
-            Logger::Log(u8"BackToTitleボタンButton Clicked!");
-            static float  value = 1.0f;
-            const char* types[] = { "0", "1" };
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
-        };
+            {
+                Logger::Log(u8"BackToTitleボタンButton Clicked!");
+                static float  value = 1.0f;
+                const char* types[] = { "0", "1" };
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            };
     }
 
 
@@ -73,18 +74,20 @@ void ResultScene::Start()
 
         // タイトルへ戻るボタンがクリックされたときの処理
         retryButton->onClick = []()
-        {
-            Logger::Log(u8"retryButton Clicked!");
-            const char* types[] = { "0", "1" };
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
-        };
+            {
+                Logger::Log(u8"retryButton Clicked!");
+                const char* types[] = { "0", "1" };
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            };
     }
 
 
     // 結果スコア表示アクターを生成
     auto resultActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultScoreActor>("resultActor");
     resultActor->SetFontAndMakeTextComponent();
+
+#endif // 1
 
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();

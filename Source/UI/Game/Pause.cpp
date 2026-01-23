@@ -166,10 +166,9 @@ void Pause::Update(float deltaTime)
         float alpha = std::lerp(0.0f, 1.0f, t);
         countDownImages[index]->SetColor({ 1,1,1, alpha });
 
-
         if (current != lastCountdownNumber)
         {
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/pause_countDown_se.wav",3.0f);
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/game_countDown_se.wav",3.0f);
             lastCountdownNumber = current;
         }
     }

@@ -18,7 +18,7 @@ void OdenGameManager::Initialize(const Transform& transform)
 
 void OdenGameManager::Update(float deltaTime)
 {
-    if (isGameEnded)
+    if (isGameEnded || !isGameRunning) 
         return;
 
     if (feverState == EFeverState::Fever)
@@ -154,3 +154,8 @@ void OdenGameManager::EndGame()
 
 }
 
+// ƒQ[ƒ€ŠJnˆ—
+void OdenGameManager::StartGame()
+{
+    isGameRunning = true;
+}

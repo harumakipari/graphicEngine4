@@ -72,10 +72,22 @@ void SceneTransitionManager::Update(float deltaTime)
             //transitionEffect.reset();
             state_ = State::Idle;
             Logger::Log(U8("Opening ‚ð’Ê‚Á‚½"));
+
+            if (onOpeningFinished)
+            {
+                onOpeningFinished();
+                onOpeningFinished = nullptr;
+            }
         }
         break;
     }
 }
+
+void SceneTransitionManager::SetOnOpeningFinished(const std::function<void()>& callback)
+{
+    onOpeningFinished = callback;
+}
+
 
 void SceneTransitionManager::NotifySceneChanged()
 {

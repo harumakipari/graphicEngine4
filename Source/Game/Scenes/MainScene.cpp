@@ -32,6 +32,7 @@
 #include "Game/OdenGame/OdenGameSession.h"
 #include "Game/OdenGame/OdenUIEndActor.h"
 #include "Game/OdenGame/OdenUIFeverGaugeActor.h"
+#include "Game/OdenGame/OdenUIStartActor.h"
 #include "Game/OdenGame/OdenUITimerActor.h"
 
 
@@ -142,17 +143,17 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 void MainScene::Start()
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
-    auto audioBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
+    audioBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
     audioBgmComponent->SetSource(L"./Data/Sound/BGM/game.wav");
     audioBgmComponent->SetLoop(true);
     audioBgmComponent->SetVolume(0.8f);
-    audioBgmComponent->Play();
+    
 
-    auto audioPotBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
+    audioPotBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
     audioPotBgmComponent->SetSource(L"./Data/Sound/BGM/pot_bgm.wav");
     audioPotBgmComponent->SetLoop(true);
     audioPotBgmComponent->SetVolume(3.0f);
-    audioPotBgmComponent->Play();
+    
 
     // 難易度設定を取得
     const auto& sceneTransition = SceneTransitionManager::Instance();
@@ -169,7 +170,7 @@ void MainScene::Start()
     difficulty = OdenGameSession::GetDifficulty();
 
     Logger::Log("Oden Game Difficulty: " + std::to_string(static_cast<uint8_t>(difficulty)));
-#if 1
+#if 0
     // デバック時に使用
     // おでんのダイコンを生成
     Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -212,7 +213,7 @@ void MainScene::Start()
 
 #endif // 0
 
-#if 1
+#if 0
     // デバック時に使用
     // お題を生成
     Transform odenBubbleTr(DirectX::XMFLOAT3{ 2.0f,3.0f,9.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
@@ -257,7 +258,15 @@ void MainScene::Start()
     // 終了演出をするアクターを生成
     auto uiFinishActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUIEndActor>("OdenUIEndActor");
 
-
+    // スタート演出をするアクターを生成
+    auto uiStartActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUIStartActor>("OdenUIStartActor");
+    SceneTransitionManager::Instance().SetOnOpeningFinished([this, uiStartActor]()
+        {
+            uiStartActor->PlayReady([this]()
+                {
+                    OnGameStart();
+                });
+        });
 #endif // 0
 
     // シーンが切り替わった時に
@@ -359,4 +368,21 @@ void MainScene::DrawGui()
 
     ImGui::End();
 #endif
+}
+
+
+// ゲーム開始処理
+void MainScene::OnGameStart()
+{
+    // BGM再生開始
+    audioBgmComponent->Play();
+    audioPotBgmComponent->Play();
+
+    if (auto actor = GetActorManager()->GetActorByName("odenGameManager"))
+    {
+        if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+        {
+            gameManager->StartGame();
+        }
+    }
 }

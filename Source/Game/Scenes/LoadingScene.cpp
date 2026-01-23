@@ -125,6 +125,8 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime
         shaderToyCBuffer->Activate(immediateContext, 7);
     }
     SceneBase::Render(immediateContext, deltaTime);
+
+    sprite->Draw(immediateContext);
 }
 
 

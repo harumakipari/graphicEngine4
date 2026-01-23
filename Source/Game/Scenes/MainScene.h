@@ -59,6 +59,10 @@ public:
     static inline Scene::Autoenrollment<MainScene> _autoenrollment;
 
 private:
+    // ゲーム開始処理
+    void OnGameStart();
+
+private:
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> waterNormalTexture; // ノーマルテクスチャ
 
     // おでんの汁の定数バッファ
@@ -69,4 +73,6 @@ private:
 
     GameDifficulty difficulty = GameDifficulty::Hard;
 
+    std::shared_ptr<CoreAudioSourceComponent> audioBgmComponent ;
+    std::shared_ptr<CoreAudioSourceComponent> audioPotBgmComponent;
 };
