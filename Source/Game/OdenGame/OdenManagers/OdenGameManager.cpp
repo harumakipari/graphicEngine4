@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "OdenGameManager.h"
 
+#include "Engine/Scene/Scene.h"
 #include "Game/OdenGame/OdenGameSession.h"
+#include "Game/OdenGame/OdenUIEndActor.h"
 #include "UI/Game/SceneTransitionManager.h"
 
 
@@ -35,8 +37,6 @@ void OdenGameManager::Update(float deltaTime)
     if (IsTimeUp())
     {
         EndGame();
-        const char* types[] = { "0", "1" };
-        SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("type", types[rand() % 2]) });
     }
 }
 
@@ -131,10 +131,26 @@ void OdenGameManager::AddSubmitLog(EOdenType type, float score)
 void OdenGameManager::EndGame()
 {
     isGameEnded = true;
-    //auto& session = OdenGameSession::Instance();
-    //session.totalScore = totalScore;
-    //session.satisfaction = satisfaction;
-    //session.ingredientCount = ingredientCount;
-    //session.submitLogs = submitLogs;
+
+    // finish ‚Ì‰‰o‚ð“ü‚ê‚é
+    if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("OdenUIEndActor"))
+    {
+        if (auto endUI = std::dynamic_pointer_cast<OdenUIEndActor>(actor))
+        {
+            endUI->Play();
+        }
+        else
+        {
+            const char* types[] = { "0", "1" };
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("type", types[rand() % 2]) });
+        }
+    }
+    else
+    {
+        const char* types[] = { "0", "1" };
+        SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("type", types[rand() % 2]) });
+    }
+
+
 }
 
