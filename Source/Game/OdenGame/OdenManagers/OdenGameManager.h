@@ -1,6 +1,9 @@
 #pragma once
+#include "Components/Easing/CoreEasingComponent.h"
 #include "Core/Actor.h"
 #include "Game/OdenGame/OdenData/OdenDataStruct.h"
+
+class CoreAudioSourceComponent;
 
 // 全体の管理
 // スコア管理
@@ -100,6 +103,8 @@ public:
         return feverState == EFeverState::Fever;
     }
 
+    void SetBgmAudio(const std::shared_ptr<CoreAudioSourceComponent>& bgm) { bgmAudio = bgm; }
+
 private:
     // コンボを加算する
     void AddCombo()
@@ -107,6 +112,9 @@ private:
         combo++;
     }
 private:
+    std::weak_ptr<CoreAudioSourceComponent> bgmAudio;
+    std::shared_ptr<EasingRunner> easingBgm;
+
     //std::vector<OdenSubmitLog> submitLogs; 
     //std::array<int, static_cast<size_t>(EOdenType::Count)> ingredientCount{};
     float totalScore = 0.0f;
@@ -129,4 +137,7 @@ private:
     float feverRemainingTime = 0.0f;
 
     int feverTriggerCombo = 5;
+
+    float bgmPitch = 1.0f;
+    
 };

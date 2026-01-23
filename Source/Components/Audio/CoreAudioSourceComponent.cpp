@@ -383,11 +383,25 @@ float CoreAudioSourceComponent::GetTotalDuration() const
 	return m_SptrBuffer->GetDuration();
 }
 
+void CoreAudioSourceComponent::SetPitch(float pitch)
+{
+	if (!sourceVoice)
+	{
+		return;
+	}
+
+	m_Pitch = std::clamp(pitch, 0.1f, XAUDIO2_MAX_FREQ_RATIO);
+
+	HRESULT hr = sourceVoice->SetFrequencyRatio(m_Pitch);
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+}
+
 
 
 void CoreAudioSourceComponent::DrawImGuiInspector()
 {
 #ifdef USE_IMGUI
+	ImGui::PushID(this);
 
 	ImGui::SameLine();
 	// 現在のファイルパスを表示
@@ -443,6 +457,10 @@ void CoreAudioSourceComponent::DrawImGuiInspector()
 			sourceVoice->SetVolume(volume);
 		}
 	}
+	if (ImGui::SliderFloat("Pitch", &m_Pitch, 0.5f, 2.0f))
+	{
+		SetPitch(m_Pitch);
+	}
 
 	ImGui::Separator();
 
@@ -458,6 +476,8 @@ void CoreAudioSourceComponent::DrawImGuiInspector()
 			CoreAudio::SetSeVolume(seVolume);
 		}
 	}
+
+	ImGui::PopID();
 
 #endif // USE_IMGUI
 }

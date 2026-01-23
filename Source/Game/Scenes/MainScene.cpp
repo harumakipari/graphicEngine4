@@ -241,6 +241,7 @@ void MainScene::Start()
     // ゲームマネージャーを生成
     auto gameManager = GetActorManager()->CreateAndRegisterActorWithTransform<OdenGameManager>("odenGameManager");
     gameManager->Reset();
+    gameManager->SetBgmAudio(audioBgmComponent); // BGMを設定する
 
 #if 1
     // スコアを表示するアクターを生成

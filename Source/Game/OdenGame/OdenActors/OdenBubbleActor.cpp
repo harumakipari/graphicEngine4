@@ -380,6 +380,15 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
             starTransform.SetTranslation(GetPosition());
             auto starActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<StarParticleActor>("starParticle", starTransform);
             starActor->StartParticle(sales);
+            // 総合スコアを加算する
+            if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+            {
+                if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+                {
+                    // コンボを加算する フィーバーゲージが溜まる
+                    gameManager->OnSubmitSuccess();
+                }
+            }
 #endif // 0
         }
         else if (score == EScore::Good)

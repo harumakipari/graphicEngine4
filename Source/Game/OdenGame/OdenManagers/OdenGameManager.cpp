@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "OdenGameManager.h"
 
+#include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Engine/Scene/Scene.h"
 #include "Game/OdenGame/OdenGameSession.h"
 #include "Game/OdenGame/OdenUIEndActor.h"
@@ -9,16 +10,30 @@
 
 void OdenGameManager::Initialize(const Transform& transform)
 {
+    // イージングコンポーネントを作成
+    easingBgm = std::make_shared<EasingRunner>();
+
     // タイマーやスコアをリセットする
     Reset();
 
     // セッションもリセット
     OdenGameSession::Instance().Reset();
+
+
 }
 
 void OdenGameManager::Update(float deltaTime)
 {
-    if (isGameEnded || !isGameRunning) 
+    easingBgm->Tick(deltaTime);
+
+    auto bgm = bgmAudio.lock();
+    if (bgm)
+    {
+        bgm->SetPitch(bgmPitch);
+    }
+
+
+    if (isGameEnded || !isGameRunning)
         return;
 
     if (feverState == EFeverState::Fever)
@@ -45,7 +60,7 @@ void OdenGameManager::Reset()
 {
     totalScore = 0;
     combo = 0;
-    maxTime = 15.0f;    // ここで制限時間を設定
+    maxTime = 150000.0f;    // ここで制限時間を設定
     remainingTime = maxTime;
     satisfaction = 0.0f;
     isGameEnded = false;
@@ -90,6 +105,38 @@ void OdenGameManager::StartFeverMode()
     feverRemainingTime = feverTime;
     feverGauge = feverGaugeMax;
 
+    // ピッチ の easing
+    {
+        TestEasingHandler handler;
+
+        handler.AddEasing(
+            TestEaseType::OutExp,
+            1.0f,
+            1.2f,
+            0.2f
+        );
+
+        handler.SetCompletedFunction([this]()
+            {
+                auto bgm = bgmAudio.lock();
+                if (bgm)
+                {
+                    bgm->SetPitch(1.2f);
+                }
+
+            });
+        PropertyAccessor<float> accessor;
+
+        accessor.getter = [this]() { return bgmPitch; };
+        accessor.setter = [this](float t)
+            {
+                bgmPitch = t;
+            };
+
+        easingBgm->StartHandler(handler, accessor);
+    }
+
+
     Logger::Log(U8("フィーバーモード突入！"));
 }
 
@@ -99,6 +146,38 @@ void OdenGameManager::EndFever()
     feverState = EFeverState::Charging;
     feverGauge = 0.0f;
     ResetCombo();
+
+    // ピッチ の easing
+    {
+        TestEasingHandler handler;
+
+        handler.AddEasing(
+            TestEaseType::OutExp,
+            1.2f,
+            1.0f,
+            0.2f
+        );
+
+        handler.SetCompletedFunction([this]()
+            {
+                auto bgm = bgmAudio.lock();
+                if (bgm)
+                {
+                    bgm->SetPitch(1.0f);
+                }
+
+            });
+        PropertyAccessor<float> accessor;
+
+        accessor.getter = [this]() { return bgmPitch; };
+        accessor.setter = [this](float t)
+            {
+                bgmPitch = t;
+            };
+
+        easingBgm->StartHandler(handler, accessor);
+    }
+
 
     Logger::Log(U8("フィーバー終了"));
 }

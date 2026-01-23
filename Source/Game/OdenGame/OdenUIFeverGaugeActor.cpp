@@ -6,6 +6,36 @@
 #include "Physics/CollisionFunction.h"
 
 
+DirectX::XMFLOAT4 HSVtoRGB(float h, float s, float v, float a = 1.0f)
+{
+    h = fmodf(h, 1.0f);
+    if (h < 0.0f) h += 1.0f;
+
+    float r = v, g = v, b = v;
+
+    if (s > 0.0f)
+    {
+        h *= 6.0f;
+        int i = static_cast<int>(floorf(h));
+        float f = h - i;
+        float p = v * (1.0f - s);
+        float q = v * (1.0f - s * f);
+        float t = v * (1.0f - s * (1.0f - f));
+
+        switch (i % 6)
+        {
+        case 0: r = v; g = t; b = p; break;
+        case 1: r = q; g = v; b = p; break;
+        case 2: r = p; g = v; b = t; break;
+        case 3: r = p; g = q; b = v; break;
+        case 4: r = t; g = p; b = v; break;
+        case 5: r = v; g = p; b = q; break;
+        }
+    }
+
+    return DirectX::XMFLOAT4(r, g, b, a);
+}
+
 void OdenUIFeverGaugeActor::Initialize(const Transform& transform)
 {
     easingRunner = std::make_shared<EasingRunner>();
@@ -46,6 +76,8 @@ void OdenUIFeverGaugeActor::Initialize(const Transform& transform)
 
 void OdenUIFeverGaugeActor::Update(float elapsedTime)
 {
+    totalTime += elapsedTime;
+
     easingRunner->Tick(elapsedTime);
 
     // UI‚ÌˆÊ’u
@@ -65,10 +97,14 @@ void OdenUIFeverGaugeActor::Update(float elapsedTime)
     float feverGauge = gameManager->GetFeverGauge();
     float feverGaugeMax = gameManager->GetFeverGaugeMax();
 
+    float hue = fmod(totalTime * 0.2f, 1.0f); // ‚ä‚Á‚­‚è‰ñ‚·
+    XMFLOAT4 color = HSVtoRGB(hue, 1.0f, 1.0f);
+
     if (gaugeUi)
     {
         gaugeUi->SetValue(feverGauge, feverGaugeMax);
         gaugeUi->SetWorldPosition({ uiPos.x, uiPos.y });
+        gaugeUi->SetColor({ color.x,color.y,color.z,color.w });
     }
 
 

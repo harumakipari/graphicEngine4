@@ -127,10 +127,25 @@ public:
      */
     float GetTotalDuration() const;
 
+
+    /**
+    * @brief ピッチ（再生速度）を設定します。
+    * @param pitch 1.0f = 通常、1.2f = 速い、0.8f = 遅い
+    */
+    void SetPitch(float pitch);
+
+
+    /**
+    * @brief 現在のピッチを取得します。
+    */
+    float GetPitch() const { return m_Pitch; }
+
     /**
      * @brief インスペクタ用のプロパティ表示。
      */
     void DrawImGuiInspector() override;
+
+
 
 private:
     /** @brief 設定中のファイルパス。*/
@@ -143,7 +158,8 @@ private:
     bool use3DAudio = false;
     /** @brief パン（-1.0 左、0 中央、1.0 右）。*/
     float m_Pan = 0.0f;
-
+    /** @brief ピッチ（-1.0 左、0 中央、1.0 右）*/
+    float m_Pitch = 1.0f;
     /** @brief 再生対象のオーディオバッファ。*/
     std::shared_ptr<CoreAudio::CoreAudioBuffer> m_SptrBuffer;
     friend class C3DAudio;
