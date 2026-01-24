@@ -353,7 +353,7 @@ void OdenIngredientActor::TryBeginDrag(const DirectX::XMFLOAT2& cursor)
         {
             if (auto currentStep = tutorial->GetTutorialManager()->GetCurrentState())
             {
-                auto res = currentStep->CanGrabIngredient(ingredientType);
+                auto res = currentStep->CanGrabIngredient(ingredientType, GetCurrentShape().category);
                 if (res != ETutorialIngredientResult::Allow)
                 {
                     currentStep->OnDeniedGrab(shared_from_this());

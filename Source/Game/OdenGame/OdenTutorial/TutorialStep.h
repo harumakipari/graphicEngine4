@@ -29,7 +29,7 @@ public:
     virtual const char* GetName() const = 0;
 
     // この種類の食材を掴むことができるか
-    virtual ETutorialIngredientResult CanGrabIngredient(EOdenType ingredientType) const
+    virtual ETutorialIngredientResult CanGrabIngredient(EOdenType ingredientType, EOdenShapeCategory shape ) const
     {
         return ETutorialIngredientResult::Allow;
     }
@@ -102,7 +102,7 @@ public:
     virtual const char* GetName() const override { return "TakeOdenIngredient"; }
 
     // この種類の食材を掴むことができるか
-    ETutorialIngredientResult CanGrabIngredient(const EOdenType ingredientType) const override
+    ETutorialIngredientResult CanGrabIngredient(const EOdenType ingredientType, EOdenShapeCategory shape) const override
     {
         if (ingredientType == EOdenType::Daikon)
             return ETutorialIngredientResult::Allow;
@@ -120,7 +120,6 @@ private:
     std::shared_ptr<UIImageComponent> tutorialTakeIngredientImage;
     std::shared_ptr<UIImageComponent> tutorialSubmitIngredientImage;
 
-    std::shared_ptr<UIImageComponent> tutorialBubbleLeftImage;
     std::shared_ptr<UIImageComponent> tutorialReleaseMouseImage;
 
     Phase phase = Phase::WaitGrabDaikon;
@@ -147,7 +146,32 @@ private:
 };
 
 
-// チュートリアルステップ  ：　●のおでんがほしい客が来る ダイコンを渡す
+// チュートリアルステップ  ：　●のおでんがほしい客が来る
+class TutorialStep_ComeOdenCircleIngredient : public TutorialStep
+{
+public:
+    TutorialStep_ComeOdenCircleIngredient(TutorialActor* actor);
+    virtual ~TutorialStep_ComeOdenCircleIngredient();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "ComeOdenCircleIngredient"; }
+
+    // この種類の食材を掴むことができるか
+    ETutorialIngredientResult CanGrabIngredient(const EOdenType ingredientType, EOdenShapeCategory shape) const override
+    {
+        return ETutorialIngredientResult::DenyNotTarget;
+    }
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialSubmitIngredientImage;
+};
+
+
+// チュートリアルステップ  ：　●のおでんを渡す
 class TutorialStep_SubmitOdenCircleIngredient : public TutorialStep
 {
 public:
@@ -161,10 +185,27 @@ public:
     void Exit() override;
     virtual const char* GetName() const override { return "SubmitOdenCircleIngredient"; }
 
+    // この種類の食材を掴むことができるか
+    ETutorialIngredientResult CanGrabIngredient(const EOdenType ingredientType, EOdenShapeCategory shape) const override
+    {
+        if (shape == EOdenShapeCategory::RoundLike)
+        {// 丸いおでんはつかめる
+            return ETutorialIngredientResult::Allow;
+        }
+
+        return ETutorialIngredientResult::DenyNotTarget;
+    }
+
+    // 掴んではいけない食材の時の処理
+    void OnDeniedGrab(std::shared_ptr<Actor> ingredient) override;
+
+    // 掴める食材の時の処理
+    void OnAllowGrab(std::shared_ptr<Actor> ingredient) override;
 
 private:
-    std::shared_ptr<UIImageComponent> tutorialSubmitIngredientImage;
+    std::shared_ptr<UIImageComponent> tutorialSubmitCircleIngredientImage;
     std::shared_ptr<UIImageComponent> tutorialAnywayDaikonImage;
+    std::shared_ptr<UIImageComponent> tutorialReleaseMouseImage;
 };
 
 

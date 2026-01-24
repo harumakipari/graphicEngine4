@@ -15,7 +15,7 @@ void BeatClockActor::Update(float deltaTime)
         beatIndex = currentBeatIndex;
         AdvanceBeat();
     }
-    beatPhase = gameTime / beatInterval; // 0.0~1.0
+    beatPhase = static_cast<float>(gameTime / beatInterval); // 0.0~1.0
 
 
     //time += deltaTime;
@@ -41,7 +41,6 @@ int BeatClockActor::ConsumeAdvancedBeatCount()
 
 void BeatClockActor::AdvanceBeat()
 {
-
     double idealTime = beatIndex * beatInterval;
 
     Logger::Log("Beat at: " + std::to_string(idealTime));

@@ -204,8 +204,7 @@ void MainScene::Start()
     // ビートを設定する関数
     auto beatClockActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<BeatClockActor>("beatClockActor");
     slotManager->SetBeatActor(beatClockActor);
-    beatClockActor->SetBpm(50.0f);
-
+    slotManager->SetBeatInterval(1.5);
     // ステージアクターを生成
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenStoreActor>("stage", stageTr);

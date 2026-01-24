@@ -48,6 +48,35 @@ public:
     // “Á’è‚ÌHŞ‚ğ•â[‚·‚é
     void SupplySpecificIngredientTo(const std::shared_ptr<OdenSlotActor>& slot, const std::string& ingredientName);
 
+    // ƒXƒƒbƒg‚ğ“n‚·
+    std::vector<std::weak_ptr<OdenSlotActor>> GetSlots() { return slots; }
+
+    // ‰ñ“]‚·‚é‚©‚ğİ’è‚·‚é
+    void SetRotationEnabled(bool enabled)
+    {
+        rotationEnabled = enabled;
+    }
+
+    // ‰ñ“]‚·‚é‚©‚Ç‚¤‚©
+    bool IsRotationEnabled() const
+    {
+        return rotationEnabled;
+    }
+
+    // •â[‚·‚é‚©‚ğİ’è‚·‚é
+    void SetSupplyEnabled(bool enabled)
+    {
+        supplyEnabled = enabled;
+    }
+
+    // •â[‚·‚é‚©‚Ç‚¤‚©
+    bool IsSupplyEnabled() const
+    {
+        return supplyEnabled;
+    }
+
+    // ƒr[ƒgŠÔ‚ÌŠÔ‚ğİ’è‚·‚é
+    void SetBeatInterval(double beatInterval) const;
 private:
     // ƒXƒƒbƒg‚Ì‰ñ“]ŠÖ”‚ğŒÄ‚Ô
     void UpdateBeat(float deltaTime);
@@ -101,4 +130,7 @@ private:
 
     std::vector<std::weak_ptr<OdenSlotActor>> verticalSlots;
     std::vector<std::weak_ptr<OdenSlotActor>> horizontalSlots;
+
+    bool rotationEnabled = true; // ’Êí‚ÍON
+    bool supplyEnabled = true;  // ’Êí‚ÍON 
 };

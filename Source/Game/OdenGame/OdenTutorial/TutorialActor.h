@@ -27,8 +27,11 @@ public:
     // 今掴まれている食材を伝える関数
     std::shared_ptr<OdenIngredientActor> GetGrabbedIngredient() const;
 
-    // 吹き出しを表示する
+    // 吹き出しを表示する　ダイコンのチュートリアル用
     void ShowBalloonNearIngredient(const std::shared_ptr<OdenIngredientActor>& ingredient);
+
+    // 吹き出しを表示する　丸っぽいのチュートリアル用
+    void ShowCircleBallonNearIngredient(const std::shared_ptr<OdenIngredientActor>& ingredient);
 
     // 吹き出しや文字を全て非表示にする関数
     void HideAllBubbles();
@@ -51,6 +54,9 @@ private:
     std::shared_ptr<UIImageComponent> thisGobotenImage;
     std::shared_ptr<UIImageComponent> thisChikuwaImage;
 
+
+    std::shared_ptr<UIImageComponent> thisNotCircleImage;
+
     XMFLOAT2 uiOffsetPos = { 0.0f,0.0f };
-    XMFLOAT2 uiTextOffsetPos = { 30.0f,20.0f };
+    XMFLOAT2 uiTextOffsetPos = { 110.0f,15.0f };
 };

@@ -13,6 +13,7 @@
 // 初期化
 void OdenSlotManager::Initialize(const Transform& transform)
 {
+
 }
 
 
@@ -21,8 +22,11 @@ void OdenSlotManager::Update(float deltaTime)
     // ビート処理
     UpdateBeat(deltaTime);
 
-    // 空スロットを見つけたら、食材を補充する
-    TrySupplyIngredients();
+    if (supplyEnabled)
+    {
+        // 空スロットを見つけたら、食材を補充する
+        TrySupplyIngredients();
+    }
 }
 
 // スロットを登録する
@@ -104,13 +108,16 @@ void OdenSlotManager::UpdateBeat(float deltaTime)
 #if 1
     int beatCount = clock->ConsumeAdvancedBeatCount();
 
-    for (int i = 0; i < beatCount; ++i)
-    {
-        for (auto& slot : slots)
+    if (rotationEnabled)
+    {// 回転するなら
+        for (int i = 0; i < beatCount; ++i)
         {
-            if (auto slotActor = slot.lock())
+            for (auto& slot : slots)
             {
-                slotActor->OnBeat();
+                if (auto slotActor = slot.lock())
+                {
+                    slotActor->OnBeat();
+                }
             }
         }
     }
@@ -252,6 +259,15 @@ void OdenSlotManager::SupplySpecificIngredientTo(const std::shared_ptr<OdenSlotA
 
     ingredient->SetCurrentSlot(slot);
     slot->SetIngredient(ingredient);
+}
+
+// ビート間の時間を設定する
+void OdenSlotManager::SetBeatInterval(double beatInterval) const
+{
+    auto clock = beatClockWeak.lock();
+    if (!clock)
+        return;
+    clock->SetBeatInterval(beatInterval);
 }
 
 // ランダムな具材の名前を生成する

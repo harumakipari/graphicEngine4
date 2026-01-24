@@ -155,6 +155,14 @@ void TutorialScene::Start()
     Logger::Log("Oden Game Difficulty: " + std::to_string(static_cast<uint8_t>(difficulty)));
 #if 1
 
+    // スロットマネージャー作成 
+    slotManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotManager>("slotManager");
+    //slotManager->StartGame();
+    // チュートリアルでは回転を止める
+    slotManager->SetRotationEnabled(false);
+    // チュートリアルでは補充しない
+    slotManager->SetSupplyEnabled(false);
+
     // 下段
     CreateSlotRow(GetActorManager(),"bottom",
         { "Daikon", "Chikuwa", "Egg", "Daikon" },0.0f,
@@ -165,18 +173,12 @@ void TutorialScene::Start()
         { "Konnyaku", "Daikon", "Kobumusubi", "Goboten" },4.0f,
         ERotationType::Vertical);
 
-
-    // スロットマネージャー作成 
-    auto slotManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotManager>("slotManager");
-    //slotManager->StartGame();
-
     // 右上に表示する次来る食材を表示する
     auto odenNextViewActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenNextViewActor>("odenNextViewActor");
 
     // ビートを設定する関数
     auto beatClockActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<BeatClockActor>("beatClockActor");
     slotManager->SetBeatActor(beatClockActor);
-    beatClockActor->SetBpm(50.0f);
 #else
 
 #endif // 0
@@ -355,6 +357,11 @@ void TutorialScene::CreateSlotRow(ActorManager* actorManager,
             );
 
         slot->rotationType = rotationType;
+
+        if (slotManager)
+        {
+            slotManager->RegisterSlot(slot);
+        }
 
         // Ingredient（Slotと同じ位置）
         Transform ingredientTr = slotTr;

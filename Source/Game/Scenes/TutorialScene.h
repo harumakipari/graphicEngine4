@@ -15,6 +15,7 @@
 #include "Game/OdenGame/OdenData/OdenGameParameter.h"
 
 
+class OdenSlotManager;
 class OdenSlotActor;
 
 class TutorialScene : public SceneBase
@@ -96,6 +97,6 @@ private:
 
     GameDifficulty difficulty = GameDifficulty::Hard;
 
-    std::vector<std::shared_ptr<OdenSlotActor>> horizontalSlots;
-    std::vector<std::shared_ptr<OdenSlotActor>> verticalSlots;
+    std::shared_ptr<OdenSlotManager> slotManager;
+    
 };
