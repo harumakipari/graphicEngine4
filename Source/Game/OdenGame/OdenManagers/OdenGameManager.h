@@ -105,6 +105,12 @@ public:
 
     void SetBgmAudio(const std::shared_ptr<CoreAudioSourceComponent>& bgm) { bgmAudio = bgm; }
 
+    // ゲームの入力処理状態を設定する
+    void SetGameInputEnabled(bool enabled) { gameInputEnabled = enabled; }
+
+    // ゲームの入力処理状態を取得する
+    bool IsGameInputEnabled() const { return gameInputEnabled; }
+
 private:
     // コンボを加算する
     void AddCombo()
@@ -139,5 +145,7 @@ private:
     int feverTriggerCombo = 5;
 
     float bgmPitch = 1.0f;
-    
+
+    // ゲームの入力を許可するかどうかのフラグ
+    bool gameInputEnabled = true;
 };

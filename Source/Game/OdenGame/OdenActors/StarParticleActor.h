@@ -74,5 +74,5 @@ private:
     float trailInterval = 1.5f;   // ‹——£ŠÔŠu
     float trailSpread = 1.5f;  // ‰¡‚ÉU‚ç‚·•
 
-    int pendingScore = 0.0f; // ‰ÁZ—\’è‚ÌƒXƒRƒA
+    int pendingScore = 0; // ‰ÁZ—\’è‚ÌƒXƒRƒA
 };

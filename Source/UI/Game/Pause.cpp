@@ -109,7 +109,7 @@ void Pause::Initialize(const Transform& transform)
             Time::timeScale = 1.0f;
 
             const char* types[] = { "0", "1" };
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", retrySceneName), std::make_pair("type", types[rand() % 2]) });
         };
 
     GetOwnerScene()->GetUIManager()->Add(retryButton);
@@ -168,7 +168,7 @@ void Pause::Update(float deltaTime)
 
         if (current != lastCountdownNumber)
         {
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/game_countDown_se.wav",3.0f);
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/pause_countDown_se.wav",3.0f);
             lastCountdownNumber = current;
         }
     }

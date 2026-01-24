@@ -3,6 +3,7 @@
 
 #include "Engine/Audio/CoreAudio.h"
 #include "Engine/Scene/Scene.h"
+#include "OdenManagers/OdenGameManager.h"
 
 
 void OdenUIEndActor::Initialize(const Transform& transform)
@@ -48,6 +49,15 @@ void OdenUIEndActor::DrawImGuiDetails()
 void OdenUIEndActor::Play()
 {
     finishImageComponent->SetVisible(true);
+
+    // ƒQ[ƒ€‚Ì“ü—Íˆ—‚ğ~‚ß‚é
+    if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+    {
+        if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+        {
+            gameManager->SetGameInputEnabled(false);
+        }
+    }
 
     {
         TestEasingHandler handler;
@@ -134,6 +144,8 @@ void OdenUIEndActor::Play()
 
     // ‰¹‚ğÄ¶
     CoreAudio::PlayOneShot(L"./Data/Sound/SE/se_end.wav");
+
+    
 
 }
 

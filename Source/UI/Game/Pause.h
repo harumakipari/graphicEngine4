@@ -5,11 +5,11 @@
 class Pause :public Actor
 {
 public:
-    enum class PauseState:uint8_t
+    enum class PauseState :uint8_t
     {
         Playing,
         Paused,
-        ResumeCountdown, 
+        ResumeCountdown,
     };
 
 public:
@@ -19,6 +19,8 @@ public:
 
     void Update(float deltaTime)override;
 
+    // リトライするシーンの名前を設定する
+    void SetRetrySceneName(const std::string& sceneName) { retrySceneName = sceneName; }
 private:
     std::shared_ptr<UIImageComponent> pausePanel;
     std::shared_ptr<UIButtonComponent> menuButton;
@@ -30,4 +32,6 @@ private:
     PauseState state = PauseState::Playing;
     float countdownTime = 3.0f;
     int lastCountdownNumber = -1;
+
+    std::string retrySceneName = "MainScene";
 };

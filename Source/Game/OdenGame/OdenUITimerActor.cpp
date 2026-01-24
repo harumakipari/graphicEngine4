@@ -11,7 +11,7 @@ float EaseOutBack(float t)
 {
     const float c1 = 1.70158f;
     const float c3 = c1 + 1.0f;
-    return 1 + c3 * std::pow(t - 1, 3) + c1 * std::pow(t - 1, 2);
+    return  static_cast<float>(1 + c3 * std::pow(t - 1, 3) + c1 * std::pow(t - 1, 2));
 }
 float EaseOutBounce(float t)
 {
@@ -88,8 +88,7 @@ void OdenUITimerActor::Update(float elapsedTime)
         {// 9秒以下になったらフェードアウトアニメーションへ
             timerAnimState = ETimerAnimState::FadeOut;
 
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/game_countDown_se.wav", 0.5f);
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/cancel.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/game_countDown_se.wav");
 
             //popupScale = 1.0f;
             //TestEasingHandler handler;

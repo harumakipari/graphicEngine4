@@ -279,6 +279,7 @@ void TutorialScene::SetUpActors()
 
     // ポーズアクターを生成
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
+    pauseActor->SetRetrySceneName("TutorialScene");
 
     // 暖簾を生成
     Transform clothTr(DirectX::XMFLOAT3{ 1.0f,9.0f,6.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });

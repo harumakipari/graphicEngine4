@@ -3,6 +3,7 @@
 
 #include "Engine/Audio/CoreAudio.h"
 #include "Engine/Scene/Scene.h"
+#include "OdenManagers/OdenGameManager.h"
 
 
 void OdenUIStartActor::Initialize(const Transform& transform)
@@ -135,6 +136,14 @@ void OdenUIStartActor::PlayReady(const std::function<void()>& onFinished)
     // ‰¹‚ðÄ¶
     CoreAudio::PlayOneShot(L"./Data/Sound/SE/ready_se.wav");    // ready 
 
+    // ƒQ[ƒ€‚Ì“ü—Íˆ—‚ðŽ~‚ß‚é
+    if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+    {
+        if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+        {
+            gameManager->SetGameInputEnabled(false);
+        }
+    }
 }
 
 
@@ -216,6 +225,16 @@ void OdenUIStartActor::PlayGo()
                 {
                     onStartFinished();
                 }
+
+                // ƒQ[ƒ€‚Ì“ü—Íˆ—‚ð‰ð‹Ö‚·‚é
+                if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+                {
+                    if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+                    {
+                        gameManager->SetGameInputEnabled(true);
+                    }
+                }
+
             });
         PropertyAccessor<float> accessor;
 

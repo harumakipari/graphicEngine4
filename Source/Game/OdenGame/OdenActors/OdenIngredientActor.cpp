@@ -12,6 +12,7 @@
 #include "Game/OdenGame/OdenActors/OdenSlotActor.h"    
 #include "Game/OdenGame/OdenActors/OdenTrashActor.h"    
 #include "Game/OdenGame/OdenData/OdenGameParameter.h"
+#include "Game/OdenGame/OdenManagers/OdenGameManager.h"
 #include "Game/OdenGame/OdenTutorial/TutorialActor.h"
 #include "Game/OdenGame/OdenTutorial/TutorialManager.h"
 
@@ -28,6 +29,8 @@ void OdenIngredientActor::Update(float deltaTime)
 {
     // 位置を取得
     DirectX::XMFLOAT3 position = GetPosition();
+
+
 
 #if 0
     // 浮いてくる処理
@@ -75,6 +78,18 @@ void OdenIngredientActor::Update(float deltaTime)
     if (!InputSystem::GetMousePositionUI(cursor))
         return;
 
+    // スタートとエンドの演出で入力を禁止していたら
+    if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+    {
+        if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+        {
+            if (!gameManager->IsGameInputEnabled())
+            {
+                return;
+            }
+        }
+    }
+
 
     // ① 押した瞬間：選択判定
     if (dragState == EOdenDragState::InSlot &&
@@ -93,9 +108,6 @@ void OdenIngredientActor::Update(float deltaTime)
             EndDrag(cursor);
         }
     }
-
-
-
 }
 
 void OdenIngredientActor::DrawImGuiDetails()
