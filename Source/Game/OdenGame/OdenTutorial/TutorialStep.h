@@ -75,6 +75,13 @@ public:
     // ステージから出ていくときのメソッド
     void Exit() override;
     virtual const char* GetName() const override { return "StartOdenStore"; }
+
+    // この種類の食材を掴むことができるか
+    virtual ETutorialIngredientResult CanGrabIngredient(EOdenType ingredientType, EOdenShapeCategory shape) const
+    {
+        return ETutorialIngredientResult::DenyNotTarget;
+    }
+
 private:
     std::shared_ptr<UIImageComponent> tutorialStartStoreImage;
 };
@@ -229,7 +236,7 @@ private:
 };
 
 
-// チュートリアルステップ  ：　ダイコンを回す
+// チュートリアルステップ  ：　回る
 class TutorialStep_RotateOdenIngredient : public TutorialStep
 {
 public:
@@ -245,3 +252,173 @@ public:
 private:
     std::shared_ptr<UIImageComponent> tutorialRotateOdenImage;
 };
+
+
+// チュートリアルステップ  ：　四角っぽいお客さんが来る
+class TutorialStep_ComeOdenSquareIngredient : public TutorialStep
+{
+public:
+    TutorialStep_ComeOdenSquareIngredient(TutorialActor* actor);
+    virtual ~TutorialStep_ComeOdenSquareIngredient();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "ComeOdenSquareIngredient"; }
+
+    // この種類の食材を掴むことができるか
+    ETutorialIngredientResult CanGrabIngredient(const EOdenType ingredientType, EOdenShapeCategory shape) const override
+    {
+        return ETutorialIngredientResult::DenyNotTarget;
+    }
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialSubmitIngredientImage;
+};
+
+
+// チュートリアルステップ  ：　四角のおでんを渡す
+class TutorialStep_SubmitOdenSquareIngredient : public TutorialStep
+{
+public:
+    TutorialStep_SubmitOdenSquareIngredient(TutorialActor* actor);
+    virtual ~TutorialStep_SubmitOdenSquareIngredient();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "SubmitOdenSquareIngredient"; }
+
+    // この種類の食材を掴むことができるか
+    ETutorialIngredientResult CanGrabIngredient(const EOdenType ingredientType, EOdenShapeCategory shape) const override
+    {
+        if (shape == EOdenShapeCategory::SquareLike)
+        {// 四角いおでんはつかめる
+            return ETutorialIngredientResult::Allow;
+        }
+
+        return ETutorialIngredientResult::DenyNotTarget;
+    }
+
+    // 掴んではいけない食材の時の処理
+    void OnDeniedGrab(std::shared_ptr<Actor> ingredient) override;
+
+    // 掴める食材の時の処理
+    void OnAllowGrab(std::shared_ptr<Actor> ingredient) override;
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialSubmitCircleIngredientImage;
+    std::shared_ptr<UIImageComponent> tutorialAnywayDaikonImage;
+    std::shared_ptr<UIImageComponent> tutorialReleaseMouseImage;
+};
+
+// チュートリアルステップ  ：　四角いのを成功した後に出す　
+class TutorialStep_ClearSquareIngredient : public TutorialStep
+{
+public:
+    TutorialStep_ClearSquareIngredient(TutorialActor* actor);
+    virtual ~TutorialStep_ClearSquareIngredient();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "ClearSquareIngredient"; }
+
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialClearCircleIngredientImage;
+};
+
+
+// チュートリアルステップ  ： 下の段のおでんのスワップについて説明　
+class TutorialStep_SwapIngredient : public TutorialStep
+{
+public:
+    TutorialStep_SwapIngredient(TutorialActor* actor);
+    virtual ~TutorialStep_SwapIngredient();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "SwapIngredient"; }
+
+    // 食材をスワップできるかどうか
+    bool CanSwapIngredient() const override{ return true; }
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialClearCircleIngredientImage;
+    std::shared_ptr<UIImageComponent> tutorialArrowImage;
+};
+
+
+// チュートリアルステップ  ： スワップした後の
+class TutorialStep_ClearSwapIngredient : public TutorialStep
+{
+public:
+    TutorialStep_ClearSwapIngredient(TutorialActor* actor);
+    virtual ~TutorialStep_ClearSwapIngredient();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "ClearSwapIngredient"; }
+
+    // 食材をスワップできるかどうか
+    bool CanSwapIngredient() const override { return true; }
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialImage;
+};
+
+// チュートリアルステップ  ： 他の形の紹介
+class TutorialStep_IntroduceShape : public TutorialStep
+{
+public:
+    TutorialStep_IntroduceShape(TutorialActor* actor);
+    virtual ~TutorialStep_IntroduceShape();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "IntroduceShape"; }
+
+    // 食材をスワップできるかどうか
+    bool CanSwapIngredient() const override { return true; }
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialImage;
+};
+
+// チュートリアルステップ  ： 開店準備OKです！
+class TutorialStep_ClearTutorial : public TutorialStep
+{
+public:
+    TutorialStep_ClearTutorial(TutorialActor* actor);
+    virtual ~TutorialStep_ClearTutorial();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "ClearTutorial"; }
+
+    // 食材をスワップできるかどうか
+    bool CanSwapIngredient() const override { return true; }
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialImage;
+};
+

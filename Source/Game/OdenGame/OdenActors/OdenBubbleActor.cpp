@@ -282,6 +282,8 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
     // 状態を去るに変更
     state = EBubbleState::LeavingBack;
 
+
+
     if (onCompleted)
     {// 提出した後に
         onCompleted(*this, { sales,satisfaction });
@@ -296,7 +298,6 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
     {
         if (score == EScore::Perfect)
         {
-            scorePopupUi->Play(L"Perfect!");
             // 提出音　成功SE再生
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/succeed_submit.wav");
             // 総合スコアを加算する
@@ -306,6 +307,9 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
                 {
                     bool wasFever = gameManager->IsFeverMode();
                     OdenGameSession::Instance().submitLogs.emplace_back(submittedIngredientType, 1, sales, wasFever);
+                    float scoreValue= wasFever ? 2.0f * sales : sales;
+                    scorePopupUi->Play(std::to_wstring(static_cast<int>(scoreValue)));
+
                 }
             }
 
@@ -326,7 +330,7 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
         }
         else
         {
-            scorePopupUi->Play(L"Fail");
+            scorePopupUi->Play(std::to_wstring(0));
             // 提出音　失敗SE再生
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/fail_submit.wav");
         }
@@ -379,7 +383,6 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
             Transform starTransform;
             starTransform.SetTranslation(GetPosition());
             auto starActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<StarParticleActor>("starParticle", starTransform);
-            starActor->StartParticle(sales);
             // 総合スコアを加算する
             if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
             {
@@ -387,6 +390,10 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
                 {
                     // コンボを加算する フィーバーゲージが溜まる
                     gameManager->OnSubmitSuccess();
+                    bool wasFever = gameManager->IsFeverMode();
+                    float scoreValue = wasFever ? 2.0f * sales : sales;
+
+                    starActor->StartParticle(scoreValue);
                 }
             }
 #endif // 0

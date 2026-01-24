@@ -33,6 +33,9 @@ public:
     // 吹き出しを表示する　丸っぽいのチュートリアル用
     void ShowCircleBallonNearIngredient(const std::shared_ptr<OdenIngredientActor>& ingredient);
 
+    // 吹き出しを表示する　四角っぽいのチュートリアル用
+    void ShowSquareBallonNearIngredient(const std::shared_ptr<OdenIngredientActor>& ingredient);
+
     // 吹き出しや文字を全て非表示にする関数
     void HideAllBubbles();
 
@@ -56,6 +59,7 @@ private:
 
 
     std::shared_ptr<UIImageComponent> thisNotCircleImage;
+    std::shared_ptr<UIImageComponent> thisNotSquareImage;
 
     XMFLOAT2 uiOffsetPos = { 0.0f,0.0f };
     XMFLOAT2 uiTextOffsetPos = { 110.0f,15.0f };

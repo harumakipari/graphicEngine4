@@ -5,6 +5,7 @@
 #include "TutorialActor.h"
 #include "Engine/Input/InputSystem.h"
 #include "TutorialManager.h"
+#include "Engine/Audio/CoreAudio.h"
 #include "Game/OdenGame/OdenActors/OdenBubbleActor.h"
 #include "Game/OdenGame/OdenActors/OdenIngredientActor.h"
 #include "Game/OdenGame/OdenActors/OdenSlotActor.h"
@@ -123,6 +124,7 @@ void TutorialStep_StartOdenStore::Execute(float deltaTime)
     if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
     {
         owner->GetTutorialManager()->ChangeState("TakeOdenIngredient");
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav");
     }
 
 }
@@ -682,6 +684,7 @@ void TutorialStep_ClearCircleIngredient::Exit()
 
 
 // ------------------------------ TutorialStep_RotateOdenIngredient ------------------------------
+// 回るとおでんの見え方が変わるね！
 TutorialStep_RotateOdenIngredient::TutorialStep_RotateOdenIngredient(TutorialActor* actor) :TutorialStep(actor)
 {
     auto uiManager = Scene::GetCurrentScene()->GetUIManager();
@@ -717,23 +720,13 @@ void TutorialStep_RotateOdenIngredient::Enter()
         if (slotManager)
         {
             slotManager->SetRotationEnabled(true);
-            slotManager->SetBeatInterval(0.3f);    // 半分に設定する
+            slotManager->SetBeatInterval(2.0);    // 半分に設定する
         }
     }
 
-#if 0
-    // ダイコンを生成  左下のスロットに補充
-    if (auto slotManagerActor = scene->GetActorManager()->GetActorByName("slotManager"))
-    {
-        auto slotManager = std::dynamic_pointer_cast<OdenSlotManager>(slotManagerActor);
+    ResetMouseClickBlink();
+    ShowMouseClick(true);
 
-        if (auto slotActor = scene->GetActorManager()->GetActorByName("odenSlot_Horizontal_0"))
-        {
-            auto slot = std::dynamic_pointer_cast<OdenSlotActor>(slotActor);
-            slotManager->SupplySpecificIngredientTo(slot, "Daikon");
-        }
-    }
-#endif // 0
 }
 
 // ステートで実行するメソッド
@@ -750,10 +743,638 @@ void TutorialStep_RotateOdenIngredient::Execute(float deltaTime)
     // ビューポート外だったら、入力しない
     if (!InputSystem::GetMousePositionUI(cursor))
         return;
+
+    UpdateMouseClickBlink(deltaTime);
+
+    //  押した瞬間
+    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
+    {
+        tutorialRotateOdenImage->SetVisible(false);
+        owner->GetTutorialManager()->ChangeState("ComeOdenSquareIngredient"); // 次のステップへ
+    }
+
 }
 
 // ステージから出ていくときのメソッド
 void TutorialStep_RotateOdenIngredient::Exit()
 {
     tutorialRotateOdenImage->SetVisible(false);
+    ShowMouseClick(false);
+}
+
+// ------------------------------ TutorialStep_ComeOdenSquareIngredient ------------------------------
+// 四角のおでんがほしい客が来る
+// コンストラクタ
+TutorialStep_ComeOdenSquareIngredient::TutorialStep_ComeOdenSquareIngredient(TutorialActor* actor) :TutorialStep(actor)
+{
+    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+
+    // チュートリアル画像の作成
+    // 次は、四角いおでんを食べたい人が来たよ
+    tutorialSubmitIngredientImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_square_oden.png", "Tutorial_TakeOdenCircleIngredient");
+    tutorialSubmitIngredientImage->SetWorldPosition(imagePos);
+    tutorialSubmitIngredientImage->SetSize(imageSize);
+    tutorialSubmitIngredientImage->SetVisible(false);
+    uiManager->Add(tutorialSubmitIngredientImage);
+
+}
+
+// デストラクタ
+TutorialStep_ComeOdenSquareIngredient::~TutorialStep_ComeOdenSquareIngredient()
+{
+    if (tutorialSubmitIngredientImage)
+    {// 削除通知を出す
+        tutorialSubmitIngredientImage->MarkPendingKill();
+    }
+}
+
+// ステートに入った時のメソッド
+void TutorialStep_ComeOdenSquareIngredient::Enter()
+{
+    tutorialSubmitIngredientImage->SetVisible(true);
+
+    // 四角いお題を生成
+    auto scene = Scene::GetCurrentScene();
+    if (auto orderActor = scene->GetActorManager()->GetActorByName("orderManager"))
+    {
+        auto orderManager = std::dynamic_pointer_cast<OdenOrderManager>(orderActor);
+        orderManager->SpawnSpecificOrderBubble(0, "UI_Order_SquareLike");
+    }
+
+    ResetMouseClickBlink();
+    ShowMouseClick(true);
+
+
+}
+
+// ステートで実行するメソッド
+void TutorialStep_ComeOdenSquareIngredient::Execute(float deltaTime)
+{
+    auto scene = Scene::GetCurrentScene();
+
+    // ポーズ中はゲーム入力を一切受け付けない
+    if (scene->IsPaused())
+        return;
+
+    // UIがマウスを使っているならゲーム操作しない
+    if (scene->GetUIManager()->IsMouseCaptured())
+        return;
+
+    DirectX::XMFLOAT2 cursor;
+    // ビューポート外だったら、入力しない
+    if (!InputSystem::GetMousePositionUI(cursor))
+        return;
+
+    UpdateMouseClickBlink(deltaTime);
+
+    //  押した瞬間
+    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
+    {
+        tutorialSubmitIngredientImage->SetVisible(false);
+        owner->GetTutorialManager()->ChangeState("SubmitOdenSquareIngredient");
+    }
+}
+
+// ステージから出ていくときのメソッド
+void TutorialStep_ComeOdenSquareIngredient::Exit()
+{
+    tutorialSubmitIngredientImage->SetVisible(false);
+    ShowMouseClick(false);
+}
+
+
+// ------------------------------ TutorialStep_SubmitOdenSquareIngredient ------------------------------
+// 四角のおでんを渡す
+// コンストラクタ
+TutorialStep_SubmitOdenSquareIngredient::TutorialStep_SubmitOdenSquareIngredient(TutorialActor* actor) :TutorialStep(actor)
+{
+    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+
+    // チュートリアル画像の作成
+    // 四角っぽいおでんを渡そう！
+    tutorialAnywayDaikonImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_submit_square.png", "Tutorial_TakeOdenCircleIngredient");
+    tutorialAnywayDaikonImage->SetWorldPosition(imagePos);
+    tutorialAnywayDaikonImage->SetSize(imageSize);
+    tutorialAnywayDaikonImage->SetVisible(false);
+    uiManager->Add(tutorialAnywayDaikonImage);
+
+    // いいね！そのまま食券のところに持って行こう
+    tutorialSubmitCircleIngredientImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_clear_grab.png", "Tutorial_TakeOdenIngredient");
+    tutorialSubmitCircleIngredientImage->SetWorldPosition(imagePos);
+    tutorialSubmitCircleIngredientImage->SetSize(imageSize);
+    tutorialSubmitCircleIngredientImage->SetVisible(false);
+    uiManager->Add(tutorialSubmitCircleIngredientImage);
+
+    XMFLOAT2 bubbleSize = { 400.0f,150.0f };
+    XMFLOAT2 bubblePos = { 80.0f,130.0f };
+    tutorialReleaseMouseImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_release_mouse.png", "tutorial_release_mouse");    // マウスを離そう
+    tutorialReleaseMouseImage->SetWorldPosition(bubblePos);
+    tutorialReleaseMouseImage->SetSize(bubbleSize);
+    tutorialReleaseMouseImage->SetVisible(false);
+    uiManager->Add(tutorialReleaseMouseImage);
+
+}
+
+// デストラクタ
+TutorialStep_SubmitOdenSquareIngredient::~TutorialStep_SubmitOdenSquareIngredient()
+{
+    if (tutorialAnywayDaikonImage)
+    {// 削除通知を出す
+        tutorialAnywayDaikonImage->MarkPendingKill();
+    }
+    if (tutorialSubmitCircleIngredientImage)
+    {// 削除通知を出す
+        tutorialSubmitCircleIngredientImage->MarkPendingKill();
+    }
+    if (tutorialReleaseMouseImage)
+    {// 削除通知を出す
+        tutorialReleaseMouseImage->MarkPendingKill();
+    }
+}
+
+// ステートに入った時のメソッド
+void TutorialStep_SubmitOdenSquareIngredient::Enter()
+{
+    tutorialAnywayDaikonImage->SetVisible(true);
+}
+
+// ステートで実行するメソッド
+void TutorialStep_SubmitOdenSquareIngredient::Execute(float deltaTime)
+{
+    auto scene = Scene::GetCurrentScene();
+
+    // ポーズ中はゲーム入力を一切受け付けない
+    if (scene->IsPaused())
+        return;
+
+    // UIがマウスを使っているならゲーム操作しない
+    if (scene->GetUIManager()->IsMouseCaptured())
+        return;
+
+    DirectX::XMFLOAT2 cursor;
+    // ビューポート外だったら、入力しない
+    if (!InputSystem::GetMousePositionUI(cursor))
+        return;
+
+
+    // 丸を掴んだかどうか
+    if (auto grabbed = owner->GetGrabbedIngredient())
+    {
+        if (grabbed->GetCurrentShape().category == EOdenShapeCategory::SquareLike)
+        {
+            tutorialAnywayDaikonImage->SetVisible(false);
+            tutorialSubmitCircleIngredientImage->SetVisible(true);
+        }
+
+        if (grabbed->IsHoveringOrder())
+        {// オーダーの上にダイコンが来たら
+            Logger::Log(U8("四角がオーダーの上にある"));
+            tutorialReleaseMouseImage->SetVisible(true);
+        }
+        else
+        {
+            Logger::Log(U8("四角ががオーダーの上にない"));
+            tutorialReleaseMouseImage->SetVisible(false);
+        }
+    }
+    else
+    {
+        tutorialReleaseMouseImage->SetVisible(false);
+    }
+
+
+    if (auto order = scene->GetActorManager()->GetActorByName("TutorialOdenBubble_UI_Order_SquareLike"))
+    {
+        auto odenBubble = std::dynamic_pointer_cast<OdenBubbleActor>(order);
+        if (odenBubble && odenBubble->IsCompleted())
+        {// 四角の形のおでん注文が完了したら次のステップへ
+            tutorialReleaseMouseImage->SetVisible(false);
+            owner->GetTutorialManager()->ChangeState("ClearSquareIngredient");
+        }
+    }
+}
+
+// ステージから出ていくときのメソッド
+void TutorialStep_SubmitOdenSquareIngredient::Exit()
+{
+    tutorialAnywayDaikonImage->SetVisible(false);
+    tutorialReleaseMouseImage->SetVisible(false);
+    tutorialSubmitCircleIngredientImage->SetVisible(false);
+}
+
+// 掴んではいけない食材の時の処理
+void TutorialStep_SubmitOdenSquareIngredient::OnDeniedGrab(std::shared_ptr<Actor> ingredient)
+{
+    if (auto ingredientActor = std::dynamic_pointer_cast<OdenIngredientActor>(ingredient))
+    {
+        owner->ShowSquareBallonNearIngredient(ingredientActor);
+    }
+}
+
+// 掴める食材の時の処理
+void TutorialStep_SubmitOdenSquareIngredient::OnAllowGrab(std::shared_ptr<Actor> ingredient)
+{
+    owner->HideAllBubbles();
+}
+
+
+// ------------------------------ TutorialStep_ClearSquareIngredient ------------------------------
+// 四角のおでんがほしい客をクリア
+// コンストラクタ
+TutorialStep_ClearSquareIngredient::TutorialStep_ClearSquareIngredient(TutorialActor* actor) :TutorialStep(actor)
+{
+    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+    // チュートリアル画像の作成 
+    // 注文通りのおでんが渡せたね！
+    tutorialClearCircleIngredientImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_clear_circle.png", "Tutorial_ClearCircleIngredient");
+    tutorialClearCircleIngredientImage->SetWorldPosition(imagePos);
+    tutorialClearCircleIngredientImage->SetSize(imageSize);
+    tutorialClearCircleIngredientImage->SetVisible(false);
+    uiManager->Add(tutorialClearCircleIngredientImage);
+
+}
+
+// デストラクタ
+TutorialStep_ClearSquareIngredient::~TutorialStep_ClearSquareIngredient()
+{
+    if (tutorialClearCircleIngredientImage)
+    {// 削除通知を出す
+        tutorialClearCircleIngredientImage->MarkPendingKill();
+    }
+}
+
+// ステートに入った時のメソッド
+void TutorialStep_ClearSquareIngredient::Enter()
+{
+    auto scene = Scene::GetCurrentScene();
+
+    tutorialClearCircleIngredientImage->SetVisible(true);
+
+    ResetMouseClickBlink();
+    ShowMouseClick(true);
+
+    // ダイコンを生成  
+    auto slotManagerActor = scene->GetActorManager()->GetActorByName("slotManager");
+
+    auto slotManager = std::dynamic_pointer_cast<OdenSlotManager>(slotManagerActor);
+
+    if (!slotManager)
+        return;
+
+    // 空スロットを探す
+    for (auto& weakSlot : slotManager->GetSlots())
+    {
+        auto slot = weakSlot.lock();
+        if (!slot)
+            continue;
+
+        if (!slot->GetIngredient())
+        {
+            slotManager->SupplySpecificIngredientTo(slot, "Chikuwa");
+            break; // 1個でいいなら break
+        }
+    }
+}
+
+// ステートで実行するメソッド
+void TutorialStep_ClearSquareIngredient::Execute(float deltaTime)
+{
+    auto scene = Scene::GetCurrentScene();
+    // ポーズ中はゲーム入力を一切受け付けない
+    if (scene->IsPaused())
+        return;
+    // UIがマウスを使っているならゲーム操作しない
+    if (scene->GetUIManager()->IsMouseCaptured())
+        return;
+    DirectX::XMFLOAT2 cursor;
+    // ビューポート外だったら、入力しない
+    if (!InputSystem::GetMousePositionUI(cursor))
+        return;
+
+    UpdateMouseClickBlink(deltaTime);
+
+    //  押した瞬間
+    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
+    {
+        tutorialClearCircleIngredientImage->SetVisible(false);
+        owner->GetTutorialManager()->ChangeState("SwapIngredient"); // 次のステップへ
+    }
+}
+
+// ステージから出ていくときのメソッド
+void TutorialStep_ClearSquareIngredient::Exit()
+{
+    tutorialClearCircleIngredientImage->SetVisible(false);
+    ShowMouseClick(false);
+}
+
+
+// ------------------------------ TutorialStep_SwapIngredient ------------------------------
+// 食材のスワップ
+// コンストラクタ
+TutorialStep_SwapIngredient::TutorialStep_SwapIngredient(TutorialActor* actor) :TutorialStep(actor)
+{
+    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+    // チュートリアル画像の作成 
+    // 下の段のおでんを上に移してみよう！
+    tutorialClearCircleIngredientImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_swap_ingredient.png", "tutorial_swap_ingredient");
+    tutorialClearCircleIngredientImage->SetWorldPosition(imagePos);
+    tutorialClearCircleIngredientImage->SetSize(imageSize);
+    tutorialClearCircleIngredientImage->SetVisible(false);
+    uiManager->Add(tutorialClearCircleIngredientImage);
+
+    // チュートリアル画像の作成 
+    // 矢印
+    tutorialArrowImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_arrow.png", "tutorial_arrow");
+    tutorialArrowImage->SetWorldPosition({ 10.0f,10.0f });
+    tutorialArrowImage->SetSize({ 100.0f,600.0f });
+    tutorialArrowImage->SetVisible(false);
+    uiManager->Add(tutorialArrowImage);
+
+}
+
+// デストラクタ
+TutorialStep_SwapIngredient::~TutorialStep_SwapIngredient()
+{
+    if (tutorialClearCircleIngredientImage)
+    {// 削除通知を出す
+        tutorialClearCircleIngredientImage->MarkPendingKill();
+    }
+    if (tutorialArrowImage)
+    {// 削除通知を出す
+        tutorialArrowImage->MarkPendingKill();
+    }
+}
+
+// ステートに入った時のメソッド
+void TutorialStep_SwapIngredient::Enter()
+{
+    auto scene = Scene::GetCurrentScene();
+
+    tutorialClearCircleIngredientImage->SetVisible(true);
+    tutorialArrowImage->SetVisible(true);
+
+    // ダイコンを生成  
+    auto slotManagerActor = scene->GetActorManager()->GetActorByName("slotManager");
+
+    auto slotManager = std::dynamic_pointer_cast<OdenSlotManager>(slotManagerActor);
+
+    if (!slotManager)
+        return;
+
+    // 空スロットを探す
+    for (auto& weakSlot : slotManager->GetSlots())
+    {
+        auto slot = weakSlot.lock();
+        if (!slot)
+            continue;
+
+        if (!slot->GetIngredient())
+        {
+            slotManager->SupplySpecificIngredientTo(slot, "Egg");
+            break; // 1個でいいなら break
+        }
+    }
+}
+
+// ステートで実行するメソッド
+void TutorialStep_SwapIngredient::Execute(float deltaTime)
+{
+    auto scene = Scene::GetCurrentScene();
+    // ポーズ中はゲーム入力を一切受け付けない
+    if (scene->IsPaused())
+        return;
+    // UIがマウスを使っているならゲーム操作しない
+    if (scene->GetUIManager()->IsMouseCaptured())
+        return;
+    DirectX::XMFLOAT2 cursor;
+    // ビューポート外だったら、入力しない
+    if (!InputSystem::GetMousePositionUI(cursor))
+        return;
+
+
+    //  押した瞬間
+    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
+    {
+        //tutorialClearCircleIngredientImage->SetVisible(false);
+        //owner->GetTutorialManager()->ChangeState("ClearSwapIngredient"); // 次のステップへ
+    }
+}
+
+// ステージから出ていくときのメソッド
+void TutorialStep_SwapIngredient::Exit()
+{
+    tutorialClearCircleIngredientImage->SetVisible(false);
+}
+
+
+
+// ------------------------------ TutorialStep_ClearSwapIngredient ------------------------------
+// スワップできたあとに呼ぶ処理
+// コンストラクタ
+TutorialStep_ClearSwapIngredient::TutorialStep_ClearSwapIngredient(TutorialActor* actor) :TutorialStep(actor)
+{
+    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+
+    // チュートリアル画像の作成
+    // おでんが入れ替わって回り方が変わるよ
+    tutorialImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_clear_swap.png", "tutorial_clear_swap");
+    tutorialImage->SetWorldPosition(imagePos);
+    tutorialImage->SetSize(imageSize);
+    tutorialImage->SetVisible(false);
+    uiManager->Add(tutorialImage);
+}
+
+// デストラクタ
+TutorialStep_ClearSwapIngredient::~TutorialStep_ClearSwapIngredient()
+{
+    if (tutorialImage)
+    {// 削除通知を出す
+        tutorialImage->MarkPendingKill();
+    }
+}
+
+// ステートに入った時のメソッド
+void TutorialStep_ClearSwapIngredient::Enter()
+{
+    tutorialImage->SetVisible(true);
+
+    ResetMouseClickBlink();
+    ShowMouseClick(true);
+}
+
+// ステートで実行するメソッド
+void TutorialStep_ClearSwapIngredient::Execute(float deltaTime)
+{
+    auto scene = Scene::GetCurrentScene();
+
+    // ポーズ中はゲーム入力を一切受け付けない
+    if (scene->IsPaused())
+        return;
+
+    // UIがマウスを使っているならゲーム操作しない
+    if (scene->GetUIManager()->IsMouseCaptured())
+        return;
+
+    DirectX::XMFLOAT2 cursor;
+    // ビューポート外だったら、入力しない
+    if (!InputSystem::GetMousePositionUI(cursor))
+        return;
+
+    UpdateMouseClickBlink(deltaTime);
+
+    //  押した瞬間
+    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
+    {
+        tutorialImage->SetVisible(false);
+        owner->GetTutorialManager()->ChangeState("IntroduceShape");
+    }
+}
+
+// ステージから出ていくときのメソッド
+void TutorialStep_ClearSwapIngredient::Exit()
+{
+    tutorialImage->SetVisible(false);
+    ShowMouseClick(false);
+}
+
+
+// ------------------------------ TutorialStep_IntroduceShape ------------------------------
+// スワップできたあとに呼ぶ処理
+// コンストラクタ
+TutorialStep_IntroduceShape::TutorialStep_IntroduceShape(TutorialActor* actor) :TutorialStep(actor)
+{
+    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+
+    // チュートリアル画像の作成
+    // 他にも。。
+    tutorialImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_introduce_shape.png", "tutorial_introduce_shape");
+    tutorialImage->SetWorldPosition(imagePos);
+    tutorialImage->SetSize(imageSize);
+    tutorialImage->SetVisible(false);
+    uiManager->Add(tutorialImage);
+}
+
+// デストラクタ
+TutorialStep_IntroduceShape::~TutorialStep_IntroduceShape()
+{
+    if (tutorialImage)
+    {// 削除通知を出す
+        tutorialImage->MarkPendingKill();
+    }
+}
+
+// ステートに入った時のメソッド
+void TutorialStep_IntroduceShape::Enter()
+{
+    tutorialImage->SetVisible(true);
+
+    ResetMouseClickBlink();
+    ShowMouseClick(true);
+}
+
+// ステートで実行するメソッド
+void TutorialStep_IntroduceShape::Execute(float deltaTime)
+{
+    auto scene = Scene::GetCurrentScene();
+
+    // ポーズ中はゲーム入力を一切受け付けない
+    if (scene->IsPaused())
+        return;
+
+    // UIがマウスを使っているならゲーム操作しない
+    if (scene->GetUIManager()->IsMouseCaptured())
+        return;
+
+    DirectX::XMFLOAT2 cursor;
+    // ビューポート外だったら、入力しない
+    if (!InputSystem::GetMousePositionUI(cursor))
+        return;
+
+    UpdateMouseClickBlink(deltaTime);
+
+    //  押した瞬間
+    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
+    {
+        tutorialImage->SetVisible(false);
+        owner->GetTutorialManager()->ChangeState("ClearTutorial");
+    }
+}
+
+// ステージから出ていくときのメソッド
+void TutorialStep_IntroduceShape::Exit()
+{
+    tutorialImage->SetVisible(false);
+    ShowMouseClick(false);
+}
+
+// ------------------------------ TutorialStep_ClearTutorial ------------------------------
+// スワップできたあとに呼ぶ処理
+// コンストラクタ
+TutorialStep_ClearTutorial::TutorialStep_ClearTutorial(TutorialActor* actor) :TutorialStep(actor)
+{
+    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+
+    // チュートリアル画像の作成
+    // チュートリアル終わり
+    tutorialImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_clear.png", "tutorial_clear");
+    tutorialImage->SetWorldPosition(imagePos);
+    tutorialImage->SetSize(imageSize);
+    tutorialImage->SetVisible(false);
+    uiManager->Add(tutorialImage);
+}
+
+// デストラクタ
+TutorialStep_ClearTutorial::~TutorialStep_ClearTutorial()
+{
+    if (tutorialImage)
+    {// 削除通知を出す
+        tutorialImage->MarkPendingKill();
+    }
+}
+
+// ステートに入った時のメソッド
+void TutorialStep_ClearTutorial::Enter()
+{
+    tutorialImage->SetVisible(true);
+
+    ResetMouseClickBlink();
+    ShowMouseClick(true);
+}
+
+// ステートで実行するメソッド
+void TutorialStep_ClearTutorial::Execute(float deltaTime)
+{
+    auto scene = Scene::GetCurrentScene();
+
+    // ポーズ中はゲーム入力を一切受け付けない
+    if (scene->IsPaused())
+        return;
+
+    // UIがマウスを使っているならゲーム操作しない
+    if (scene->GetUIManager()->IsMouseCaptured())
+        return;
+
+    DirectX::XMFLOAT2 cursor;
+    // ビューポート外だったら、入力しない
+    if (!InputSystem::GetMousePositionUI(cursor))
+        return;
+
+    UpdateMouseClickBlink(deltaTime);
+
+    //  押した瞬間
+    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
+    {
+        tutorialImage->SetVisible(false);
+        // シーン遷移する
+        const char* types[] = { "0", "1" };
+        SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
+    }
+}
+
+// ステージから出ていくときのメソッド
+void TutorialStep_ClearTutorial::Exit()
+{
+    tutorialImage->SetVisible(false);
+    ShowMouseClick(false);
 }

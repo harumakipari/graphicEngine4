@@ -73,7 +73,8 @@ void OdenGameManager::Reset()
 void OdenGameManager::AddScore(float score)
 {
     //if (IsTimeUp()) return;
-    float addScore = CalcScore(score);
+    //float addScore = CalcScore(score);
+    float addScore = score;
     totalScore += addScore;
     Logger::Log(U8("ç°ÇÃëçÉXÉRÉA") + std::to_string(totalScore));
     //OdenGameSession::Instance().totalScore = totalScore;

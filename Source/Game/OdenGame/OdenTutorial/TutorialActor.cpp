@@ -16,6 +16,11 @@ void TutorialActor::Initialize(const Transform& transform)
     tutorialManager->RegisterState(std::make_unique<TutorialStep_SubmitOdenCircleIngredient>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_ClearCircleIngredient>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_RotateOdenIngredient>(this));
+    tutorialManager->RegisterState(std::make_unique<TutorialStep_ComeOdenSquareIngredient>(this));
+    tutorialManager->RegisterState(std::make_unique<TutorialStep_SubmitOdenSquareIngredient>(this));
+    tutorialManager->RegisterState(std::make_unique<TutorialStep_ClearSquareIngredient>(this));
+    tutorialManager->RegisterState(std::make_unique<TutorialStep_SwapIngredient>(this));
+    tutorialManager->RegisterState(std::make_unique<TutorialStep_ClearSwapIngredient>(this));
 
 
     auto uiManager = Scene::GetCurrentScene()->GetUIManager();
@@ -108,6 +113,14 @@ void TutorialActor::Initialize(const Transform& transform)
     thisNotCircleImage->zOrder = 7;
     thisNotCircleImage->SetVisible(false);
     uiManager->Add(thisNotCircleImage);
+
+    // チュートリアル画像の作成 
+    thisNotSquareImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_not_square.png", "tutorial_not_square");
+    thisNotSquareImage->SetWorldPosition(textPos);
+    thisNotSquareImage->SetSize(textSize);
+    thisNotSquareImage->zOrder = 7;
+    thisNotSquareImage->SetVisible(false);
+    uiManager->Add(thisNotSquareImage);
 
 }
 
@@ -236,6 +249,49 @@ void TutorialActor::ShowCircleBallonNearIngredient(const std::shared_ptr<OdenIng
 
 }
 
+// 吹き出しを表示する　四角っぽいのチュートリアル用
+void TutorialActor::ShowSquareBallonNearIngredient(const std::shared_ptr<OdenIngredientActor>& ingredient)
+{
+    HideAllBubbles();
+
+    DirectX::XMFLOAT3 worldPos = ingredient->GetPosition();
+    //worldPos.y += 2.0f; // 少し上
+
+    DirectX::XMFLOAT2 uiPos = WorldToUI(worldPos);
+    uiPos.x += uiOffsetPos.x;
+    uiPos.y += uiOffsetPos.y;
+    DirectX::XMFLOAT2 textPos = WorldToUI(worldPos);
+    textPos.x += uiTextOffsetPos.x;
+    textPos.y += uiTextOffsetPos.y;
+    {
+        bubbleLeftImage->SetWorldPosition(uiPos);
+        bubbleLeftImage->SetVisible(true);
+    }
+
+    // 面の種類
+    EOdenShapeCategory type = ingredient->GetCurrentShape().category;
+    switch (type)
+    {
+    case EOdenShapeCategory::TriangleLike:
+        thisNotSquareImage->SetWorldPosition(textPos);
+        thisNotSquareImage->SetVisible(true);
+        break;
+    case EOdenShapeCategory::RibbonLike:
+        thisNotSquareImage->SetWorldPosition(textPos);
+        thisNotSquareImage->SetVisible(true);
+        break;
+    case EOdenShapeCategory::DonutLike:
+        thisNotSquareImage->SetWorldPosition(textPos);
+        thisNotSquareImage->SetVisible(true);
+        break;
+    case EOdenShapeCategory::RoundLike:
+        thisNotSquareImage->SetWorldPosition(textPos);
+        thisNotSquareImage->SetVisible(true);
+        break;
+    }
+
+}
+
 // 吹き出しや文字を全て非表示にする関数
 void TutorialActor::HideAllBubbles()
 {
@@ -251,5 +307,6 @@ void TutorialActor::HideAllBubbles()
     thisKobumusubiImage->SetVisible(false);
 
     thisNotCircleImage->SetVisible(false);
+    thisNotSquareImage->SetVisible(false);
 }
 

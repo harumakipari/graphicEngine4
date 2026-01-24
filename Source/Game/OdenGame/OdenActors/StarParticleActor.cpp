@@ -38,6 +38,7 @@ void StarParticleActor::Initialize(const Transform& transform)
         auto star = std::make_shared<UIImageComponent>(
             "./Data/Textures/starClear.png", "star_texture");
 
+        star->SetWorldPosition({ -100.0f,-100.0f });
         star->SetPivot({ 0.5f,0.5f });
         star->SetSize({ 120, 120 });
         float scale = MathHelper::RandomRange(0.6f, 0.8f);
