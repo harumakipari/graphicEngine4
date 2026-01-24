@@ -148,7 +148,7 @@ protected:
     bool enableCascadedShadowMaps = true;
     bool enableSSR = true;
     bool enableFog = true;
-    bool enableBloom = true;
+    bool enableBloom = false;
 
     bool useDrawDebug = true;
 

@@ -542,6 +542,16 @@ void OdenIngredientActor::SwapWithSlot(const std::weak_ptr<OdenSlotActor>& targe
         other->SetCurrentSlot(from);
         other->SetPosition(from->GetPosition());
     }
+
+
+    if (auto tutorialActor = GetOwnerScene()->GetActorManager()->GetActorByName("OdenTutorialActor"))
+    {// チュートリアルだったら
+        if (auto tutorial = std::dynamic_pointer_cast<TutorialActor>(tutorialActor))
+        {// スワップを通知する
+            tutorial->GetTutorialManager()->NotifyIngredientSwapped();
+        }
+    }
+
 }
 
 // 元のスロットに戻す

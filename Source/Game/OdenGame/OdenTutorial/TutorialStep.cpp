@@ -40,15 +40,18 @@ TutorialStep::TutorialStep(TutorialActor* actor) :owner(actor)
 
 void TutorialStep::UpdateMouseClickBlink(float deltaTime)
 {
-    mouseBlinkTimer += deltaTime;
-
-    if (mouseBlinkTimer >= mouseBlinkInterval)
+    if (isUpdateMouse)
     {
-        mouseBlinkTimer = 0.0f;
-        isMouseClickOn = !isMouseClickOn;
+        mouseBlinkTimer += deltaTime;
 
-        tutorialMouseClickImage->SetVisible(isMouseClickOn);
-        tutorialMouseClickOffImage->SetVisible(!isMouseClickOn);
+        if (mouseBlinkTimer >= mouseBlinkInterval)
+        {
+            mouseBlinkTimer = 0.0f;
+            isMouseClickOn = !isMouseClickOn;
+
+            tutorialMouseClickImage->SetVisible(isMouseClickOn);
+            tutorialMouseClickOffImage->SetVisible(!isMouseClickOn);
+        }
     }
 }
 
@@ -56,6 +59,7 @@ void TutorialStep::ShowMouseClick(bool visible)
 {
     tutorialMouseClickImage->SetVisible(visible && isMouseClickOn);
     tutorialMouseClickOffImage->SetVisible(visible && !isMouseClickOn);
+    isUpdateMouse = true;
 }
 
 void TutorialStep::ResetMouseClickBlink()
@@ -186,6 +190,15 @@ TutorialStep_TakeOdenIngredient::~TutorialStep_TakeOdenIngredient()
 void TutorialStep_TakeOdenIngredient::Enter()
 {
     tutorialTakeIngredientImage->SetVisible(true);
+
+    // 丸いお題を生成
+    auto scene = Scene::GetCurrentScene();
+    if (auto orderActor = scene->GetActorManager()->GetActorByName("orderManager"))
+    {
+        auto orderManager = std::dynamic_pointer_cast<OdenOrderManager>(orderActor);
+        orderManager->SpawnSpecificOrderBubble(0, "UI_Order_Daikon");
+    }
+
 }
 
 // ステートで実行するメソッド
@@ -1083,13 +1096,6 @@ TutorialStep_SwapIngredient::TutorialStep_SwapIngredient(TutorialActor* actor) :
     tutorialClearCircleIngredientImage->SetVisible(false);
     uiManager->Add(tutorialClearCircleIngredientImage);
 
-    // チュートリアル画像の作成 
-    // 矢印
-    tutorialArrowImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_arrow.png", "tutorial_arrow");
-    tutorialArrowImage->SetWorldPosition({ 10.0f,10.0f });
-    tutorialArrowImage->SetSize({ 100.0f,600.0f });
-    tutorialArrowImage->SetVisible(false);
-    uiManager->Add(tutorialArrowImage);
 
 }
 
@@ -1100,10 +1106,6 @@ TutorialStep_SwapIngredient::~TutorialStep_SwapIngredient()
     {// 削除通知を出す
         tutorialClearCircleIngredientImage->MarkPendingKill();
     }
-    if (tutorialArrowImage)
-    {// 削除通知を出す
-        tutorialArrowImage->MarkPendingKill();
-    }
 }
 
 // ステートに入った時のメソッド
@@ -1112,7 +1114,6 @@ void TutorialStep_SwapIngredient::Enter()
     auto scene = Scene::GetCurrentScene();
 
     tutorialClearCircleIngredientImage->SetVisible(true);
-    tutorialArrowImage->SetVisible(true);
 
     // ダイコンを生成  
     auto slotManagerActor = scene->GetActorManager()->GetActorByName("slotManager");
@@ -1152,12 +1153,11 @@ void TutorialStep_SwapIngredient::Execute(float deltaTime)
     if (!InputSystem::GetMousePositionUI(cursor))
         return;
 
+    auto tutorialManager = owner->GetTutorialManager();
 
-    //  押した瞬間
-    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
+    if (tutorialManager->ConsumeIngredientSwapped())
     {
-        //tutorialClearCircleIngredientImage->SetVisible(false);
-        //owner->GetTutorialManager()->ChangeState("ClearSwapIngredient"); // 次のステップへ
+        owner->GetTutorialManager()->ChangeState("ClearSwapIngredient");
     }
 }
 
@@ -1366,6 +1366,7 @@ void TutorialStep_ClearTutorial::Execute(float deltaTime)
     if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
     {
         tutorialImage->SetVisible(false);
+        NotShowMouse();
         // シーン遷移する
         const char* types[] = { "0", "1" };
         SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });

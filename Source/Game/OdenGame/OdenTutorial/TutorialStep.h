@@ -48,6 +48,14 @@ protected:
     void ShowMouseClick(bool visible);
 
     void ResetMouseClickBlink();
+
+    // マウスをもう見せない
+    void NotShowMouse()
+    {
+        isUpdateMouse = false;
+        tutorialMouseClickImage->SetVisible(false);
+        tutorialMouseClickOffImage->SetVisible(false);
+    }
 protected:
     TutorialActor* owner = nullptr;
 
@@ -60,6 +68,7 @@ protected:
     float mouseBlinkTimer = 0.0f;
     float mouseBlinkInterval = 0.6f; // 切り替え間隔
     bool isMouseClickOn = false;
+    bool isUpdateMouse = true;
 };
 
 // チュートリアルステップ  ：おでん屋さんを始める
@@ -355,7 +364,6 @@ public:
 
 private:
     std::shared_ptr<UIImageComponent> tutorialClearCircleIngredientImage;
-    std::shared_ptr<UIImageComponent> tutorialArrowImage;
 };
 
 

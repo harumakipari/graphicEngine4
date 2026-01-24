@@ -21,6 +21,8 @@ void TutorialActor::Initialize(const Transform& transform)
     tutorialManager->RegisterState(std::make_unique<TutorialStep_ClearSquareIngredient>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_SwapIngredient>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_ClearSwapIngredient>(this));
+    tutorialManager->RegisterState(std::make_unique<TutorialStep_IntroduceShape>(this));
+    tutorialManager->RegisterState(std::make_unique<TutorialStep_ClearTutorial>(this));
 
 
     auto uiManager = Scene::GetCurrentScene()->GetUIManager();

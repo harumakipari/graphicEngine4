@@ -206,7 +206,7 @@ void TutorialScene::Start()
     // お題マネージャー作成
     // 内部で OdenBubbleActor をスロットマネージャーに設定している
     auto orderManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenOrderManager>("orderManager");
-    orderManager->SpawnSpecificOrderBubble(0, "UI_Order_Daikon");
+    // orderManager->SpawnSpecificOrderBubble(0, "UI_Order_Daikon");
     // orderManager->SpawnSpecificOrderBubble(1, "UI_Order_CircleLike");
 
 #endif

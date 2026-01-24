@@ -30,7 +30,24 @@ public:
     const char* GetStateName() const { return currentState == nullptr ? "" : currentState->GetName(); }
 
     // 現在のステートを取得
-     TutorialStep* GetCurrentState()  { return currentState; }
+    TutorialStep* GetCurrentState() { return currentState; }
+
+    // スワップを通知する
+    void NotifyIngredientSwapped()
+    {
+        ingredientSwapped = true;
+    }
+
+    // スワップの通知を受け取る
+    bool ConsumeIngredientSwapped()
+    {
+        if (ingredientSwapped)
+        {
+            ingredientSwapped = false;
+            return true;
+        }
+        return false;
+    }
 
 private:
     // 現在のステート
@@ -38,4 +55,6 @@ private:
 
     // 各ステートを保持する配列
     std::unordered_map<std::string, std::unique_ptr<TutorialStep>> statePool;
+
+    bool ingredientSwapped = false;
 };
