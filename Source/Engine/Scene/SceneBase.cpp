@@ -477,6 +477,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
         //immediateContext->PSSetShaderResources(25, 1, nullSRV);
     }
 
+#if 1
     // PARTICLES
     {
         ProfileScopedSection_2(0, "Particles", ImGuiControl::Profiler::Green);
@@ -493,6 +494,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
         ExecuteHooks(RenderPass::Particle, immediateContext);
     }
+
+#endif // 0
 
 
     // デバック描画
@@ -530,12 +533,14 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
                sceneEffectManager->GetOutput("FogEffect"),
                sceneEffectManager->GetOutput("SSAOEffect"),
                sceneEffectManager->GetOutput("SSREffect"),
+               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],   // emissiveMap
                cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
         };
         immediateContext->PSSetShaderResources(8, 1, cascadedShadowMaps->depthMap().GetAddressOf());
 
         // メインフレームバッファとブルームエフェクトを組み合わせて描画
         fullscreenQuad->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());
+
     }
 }
 

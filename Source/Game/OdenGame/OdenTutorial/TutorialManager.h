@@ -29,6 +29,9 @@ public:
     // ステート名取得
     const char* GetStateName() const { return currentState == nullptr ? "" : currentState->GetName(); }
 
+    // 現在のステートを取得
+     TutorialStep* GetCurrentState()  { return currentState; }
+
 private:
     // 現在のステート
     TutorialStep* currentState = nullptr;

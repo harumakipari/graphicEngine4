@@ -11,7 +11,8 @@ Texture2D bloomTexture : register(t4);
 Texture2D fogTexture : register(t5);
 Texture2D ambientOcclusionTexture : register(t6);
 Texture2D reflectionTexture : register(t7);
-Texture2DArray cascadedShadowMaps : register(t8);
+Texture2D emissiveTexture : register(t8);
+Texture2DArray cascadedShadowMaps : register(t9);
 
 cbuffer SSAO_CONSTANTS_BUFFER : register(b5)
 {
@@ -518,6 +519,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     }
 
     
+    
 
     float4 positionNdc;
     // texture space to ndc
@@ -764,6 +766,14 @@ float4 main(VS_OUT pin) : SV_TARGET
 	// Gamma process
     const float GAMMA = 2.2;
     color.rgb = pow(color.rgb, 1.0 / GAMMA);
+
+    //float mask = emissiveTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord).w;
+    //if (mask == 2)
+    //{
+    //    return float4(color.rgb, alpha);
+    //}
+    //color.rgb = lerp(color.rgb, float3(0.0f, 0.0f, 0.0f), 0.8);
+
     return float4(color.rgb, alpha);
 #endif
 }

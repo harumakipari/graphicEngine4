@@ -82,6 +82,7 @@ public:
         plusAlphaCBuffer->data.dissolve = dissolve;
         plusAlphaCBuffer->data.cpuColor = cpuColor;
         plusAlphaCBuffer->data.emissionPower = emissionPower;
+        plusAlphaCBuffer->data.value = value;
         plusAlphaCBuffer->Activate(immediateContext, 5);
 
     }
@@ -89,7 +90,6 @@ public:
     virtual void DrawImGuiInspector() override
     {
 #ifdef USE_IMGUI
-
         SceneComponent::DrawImGuiInspector();
         if (ImGui::TreeNode((name_ + "  model").c_str()))
         {
@@ -101,6 +101,7 @@ public:
             ImGui::ColorEdit4("cpuColor", &cpuColor.x);
             ImGui::SliderFloat("emissionPower", &emissionPower, 0.0f, 10.0f);
             ImGui::SliderFloat4("morphWeight", &plusAlphaCBuffer->data.morphWeights.x, 0.0f, 1.0f);
+            ImGui::SliderInt("value", &plusAlphaCBuffer->data.value, 0, 10);
             ImGui::TreePop();
         }
 #endif
@@ -119,6 +120,9 @@ public:
     void SetPriority(int priority) { this->priority = priority; }
     int GetPriority() const { return priority; }
 
+    // チーム制作のために追加
+    void SetValue(const int value) { this->value = value; }
+
     // モデルごとに更新したいPlusAlpha 用定数バッファ
     struct PlusAlphaConstants
     {
@@ -130,7 +134,9 @@ public:
         float   dissolve;   // ディゾルブ用
 
         DirectX::XMFLOAT4 morphWeights = { 0.0f,0.0f,0.0f,0.0f };  // モーフモデルに使用する weight 0.0f ~ 1.0f
+
         float emissionPower; // 自己発光の強さ
+        int value = 0;
     };
     std::unique_ptr<ConstantBuffer<PlusAlphaConstants>> plusAlphaCBuffer;
 
@@ -141,7 +147,7 @@ public:
     DirectX::XMFLOAT4 cpuColor = { 1.0f,1.0f,1.0f,1.0f }; // 色をCPU側で指定する用　（ダメージ当たったときとか）
     float emissionPower = 1.0f; // 自己発光の強さ
     float morphWeight = 0.0f;   // モーフモデルに使用する weight  0.0f ~ 1.0f 
-
+    int value = 0;
 
 protected:
     //描画するかどうか

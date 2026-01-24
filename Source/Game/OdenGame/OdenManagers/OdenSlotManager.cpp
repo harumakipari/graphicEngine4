@@ -25,6 +25,17 @@ void OdenSlotManager::Update(float deltaTime)
     TrySupplyIngredients();
 }
 
+// スロットを登録する
+void OdenSlotManager::RegisterSlot(const std::shared_ptr<OdenSlotActor>& slot)
+{
+    slots.push_back(slot);
+
+    if (slot->rotationType == ERotationType::Vertical)
+        verticalSlots.push_back(slot);
+    else
+        horizontalSlots.push_back(slot);
+}
+
 // ゲーム開始時に呼ぶ関数
 void OdenSlotManager::StartGame()
 {
@@ -171,6 +182,14 @@ void OdenSlotManager::UpdateBeat(float deltaTime)
         beatIndex = (beatIndex + 1) % 4;
     }
 #endif // 0
+
+#if 0
+    // スペースキーを押したらスワップする
+    if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
+    {
+        SwapVerticalAndHorizontal();
+    }
+#endif // 0
 }
 
 // 空スロットを見つけたら、食材を補充する
@@ -301,12 +320,12 @@ void OdenSlotManager::BuildIngredientBag()
     {
         ingredients =
         {
-            { "Daikon", 1 },
+            //{ "Daikon", 1 },
             //{ "Kobumusubi", 1 },
             //{ "Egg", 1},
             //{ "Tsukune", 1 },
             { "Chikuwa", 1 },
-            { "Konnyaku", 1 },
+            //{ "Konnyaku", 1 },
             //{ "Hanpen", 1 },
             //{ "Cake", 1 },
             //{ "Donut", 1 },
@@ -364,6 +383,40 @@ void OdenSlotManager::ApplyBeatScaling(float beatPhase) const
         if (auto slotActor = slot.lock())
         {
             slotActor->SetVisualScale(scale);
+        }
+    }
+}
+
+// 上下列ごと丸ごとスワップする関数
+void OdenSlotManager::SwapVerticalAndHorizontal()
+{
+    if (verticalSlots.size() != horizontalSlots.size())
+        return;
+
+    const int count = verticalSlots.size();
+
+    for (int i = 0; i < count; ++i)
+    {
+        auto vSlot = verticalSlots[i].lock();
+        auto hSlot = horizontalSlots[i].lock();
+        if (!vSlot || !hSlot)
+            continue;
+
+        auto vIng = vSlot->RemoveIngredient();
+        auto hIng = hSlot->RemoveIngredient();
+
+        if (vIng)
+        {
+            hSlot->SetIngredient(vIng);
+            vIng->SetCurrentSlot(hSlot);
+            vIng->SetPosition(hSlot->GetPosition());
+        }
+
+        if (hIng)
+        {
+            vSlot->SetIngredient(hIng);
+            hIng->SetCurrentSlot(vSlot);
+            hIng->SetPosition(vSlot->GetPosition());
         }
     }
 }

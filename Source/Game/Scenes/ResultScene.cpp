@@ -100,14 +100,6 @@ void ResultScene::Update(float deltaTime)
     Physics::Instance().Update(Time::UnscaledDeltaTime());
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
-#ifdef _DEBUG
-
-    if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
-    {
-        const char* types[] = { "0", "1" };
-        Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
-    }
-#endif // !_DEBUG
 
 }
 

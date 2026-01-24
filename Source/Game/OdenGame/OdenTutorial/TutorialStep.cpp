@@ -12,6 +12,61 @@
 #include "Game/OdenGame/OdenManagers/OdenSlotManager.h"
 
 
+TutorialStep::TutorialStep(TutorialActor* actor) :owner(actor)
+{
+    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+
+    XMFLOAT2 mousePos = { 1605.0f,340.0f };
+    XMFLOAT2 mouseSize = { 120.0f,120.0f };
+
+    // チュートリアル画像の作成 
+    tutorialMouseClickImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/mouseClick.png", "Tutorial_Mouse_Click");     // マウスのクリック
+    tutorialMouseClickImage->SetWorldPosition(mousePos);
+    tutorialMouseClickImage->SetSize(mouseSize);
+    tutorialMouseClickImage->zOrder = 5;
+    tutorialMouseClickImage->SetVisible(false);
+    uiManager->Add(tutorialMouseClickImage);
+
+    // チュートリアル画像の作成 
+    tutorialMouseClickOffImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/mouseClick_off.png", "Tutorial_Mouse_Click_Off");     // マウスのクリックオフ
+    tutorialMouseClickOffImage->SetWorldPosition(mousePos);
+    tutorialMouseClickOffImage->SetSize(mouseSize);
+    tutorialMouseClickOffImage->SetVisible(false);
+    tutorialMouseClickOffImage->zOrder = 5;
+    uiManager->Add(tutorialMouseClickOffImage);
+}
+
+
+void TutorialStep::UpdateMouseClickBlink(float deltaTime)
+{
+    mouseBlinkTimer += deltaTime;
+
+    if (mouseBlinkTimer >= mouseBlinkInterval)
+    {
+        mouseBlinkTimer = 0.0f;
+        isMouseClickOn = !isMouseClickOn;
+
+        tutorialMouseClickImage->SetVisible(isMouseClickOn);
+        tutorialMouseClickOffImage->SetVisible(!isMouseClickOn);
+    }
+}
+
+void TutorialStep::ShowMouseClick(bool visible)
+{
+    tutorialMouseClickImage->SetVisible(visible && isMouseClickOn);
+    tutorialMouseClickOffImage->SetVisible(visible && !isMouseClickOn);
+}
+
+void TutorialStep::ResetMouseClickBlink()
+{
+    mouseBlinkTimer = 0.0f;
+    isMouseClickOn = false;
+    tutorialMouseClickImage->SetVisible(false);
+    tutorialMouseClickOffImage->SetVisible(false);
+}
+
+
+
 // ------------------------------ TutorialStep_StartOdenStore ------------------------------
 // おでん屋さんを始める
 // コンストラクタ
@@ -21,8 +76,8 @@ TutorialStep_StartOdenStore::TutorialStep_StartOdenStore(TutorialActor* actor) :
 
     // チュートリアル画像の作成 
     tutorialStartStoreImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_start_store.png", "Tutorial_Start_Store");     // おでん屋さんの店主になったよ
-    tutorialStartStoreImage->SetWorldPosition({ 50, 300 });
-    tutorialStartStoreImage->SetSize({ 700, 550 });
+    tutorialStartStoreImage->SetWorldPosition(imagePos);
+    tutorialStartStoreImage->SetSize(imageSize);
     tutorialStartStoreImage->SetVisible(false);
     uiManager->Add(tutorialStartStoreImage);
 }
@@ -41,6 +96,9 @@ TutorialStep_StartOdenStore::~TutorialStep_StartOdenStore()
 void TutorialStep_StartOdenStore::Enter()
 {
     tutorialStartStoreImage->SetVisible(true);
+
+    ResetMouseClickBlink();
+    ShowMouseClick(true);
 }
 
 // ステートで実行するメソッド
@@ -59,6 +117,7 @@ void TutorialStep_StartOdenStore::Execute(float deltaTime)
     if (!InputSystem::GetMousePositionUI(cursor))
         return;
 
+    UpdateMouseClickBlink(deltaTime);
 
     //  押した瞬間
     if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
@@ -73,9 +132,8 @@ void TutorialStep_StartOdenStore::Exit()
 {
     // チュートリアル画像の切り替え
     tutorialStartStoreImage->SetVisible(false);
+    ShowMouseClick(false);
 }
-
-
 
 // ------------------------------ TutorialStep_TakeOdenIngredient ------------------------------
 // おでんの具材を取る
@@ -85,18 +143,24 @@ TutorialStep_TakeOdenIngredient::TutorialStep_TakeOdenIngredient(TutorialActor* 
     auto uiManager = Scene::GetCurrentScene()->GetUIManager();
     // チュートリアル画像の作成 
     tutorialTakeIngredientImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_take_ingredient.png", "Tutorial_TakeOdenIngredient");    // まずはダイコンを取ってみよう
-    tutorialTakeIngredientImage->SetWorldPosition({ 50, 300 });
-    tutorialTakeIngredientImage->SetSize({ 700, 550 });
+    tutorialTakeIngredientImage->SetWorldPosition(imagePos);
+    tutorialTakeIngredientImage->SetSize(imageSize);
     tutorialTakeIngredientImage->SetVisible(false);
     uiManager->Add(tutorialTakeIngredientImage);
 
-    // チュートリアル画像の作成  操作方法説明
-    tutorialOperateImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_click_oden.png", "Tutorial_ClickOden");    // マウスの左クリックで取れるよ
-    tutorialOperateImage->SetWorldPosition({ 50, 300 });
-    tutorialOperateImage->SetSize({ 700, 550 });
-    tutorialOperateImage->SetVisible(false);
-    uiManager->Add(tutorialOperateImage);
+    tutorialSubmitIngredientImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_clear_grab.png", "Tutorial_TakeOdenIngredient"); // いいね！そのまま食券のところに持って行こう
+    tutorialSubmitIngredientImage->SetWorldPosition(imagePos);
+    tutorialSubmitIngredientImage->SetSize(imageSize);
+    tutorialSubmitIngredientImage->SetVisible(false);
+    uiManager->Add(tutorialSubmitIngredientImage);
 
+    XMFLOAT2 bubbleSize = { 400.0f,150.0f };
+    XMFLOAT2 bubblePos = { 80.0f,130.0f };
+    tutorialReleaseMouseImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_release_mouse.png", "tutorial_release_mouse");    // マウスを離そう
+    tutorialReleaseMouseImage->SetWorldPosition(bubblePos);
+    tutorialReleaseMouseImage->SetSize(bubbleSize);
+    tutorialReleaseMouseImage->SetVisible(false);
+    uiManager->Add(tutorialReleaseMouseImage);
 }
 
 // デストラクタ
@@ -106,9 +170,13 @@ TutorialStep_TakeOdenIngredient::~TutorialStep_TakeOdenIngredient()
     {// 削除通知を出す
         tutorialTakeIngredientImage->MarkPendingKill();
     }
-    if (tutorialOperateImage)
+    if (tutorialSubmitIngredientImage)
     {// 削除通知を出す
-        tutorialOperateImage->MarkPendingKill();
+        tutorialSubmitIngredientImage->MarkPendingKill();
+    }
+    if (tutorialReleaseMouseImage)
+    {// 削除通知を出す
+        tutorialReleaseMouseImage->MarkPendingKill();
     }
 }
 
@@ -136,14 +204,13 @@ void TutorialStep_TakeOdenIngredient::Execute(float deltaTime)
     if (!InputSystem::GetMousePositionUI(cursor))
         return;
 
-    //  押した瞬間
-    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
-    {
-        tutorialTakeIngredientImage->SetVisible(false);
-        tutorialOperateImage->SetVisible(true);
-    }
-
-
+    ////  押した瞬間
+    //if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
+    //{
+    //    tutorialTakeIngredientImage->SetVisible(false);
+    //    tutorialOperateImage->SetVisible(true);
+    //}
+#if 0
     // ダイコンを掴んだかどうか
     if (auto daikonIngredient = scene->GetActorManager()->GetActorByName("oden_tutorial_daikon"))
     {
@@ -153,71 +220,26 @@ void TutorialStep_TakeOdenIngredient::Execute(float deltaTime)
             owner->GetTutorialManager()->ChangeState("SubmitOdenIngredient");
         }
     }
-
-
-}
-
-// ステージから出ていくときのメソッド
-void TutorialStep_TakeOdenIngredient::Exit()
-{
-    tutorialTakeIngredientImage->SetVisible(false);
-    tutorialOperateImage->SetVisible(false);
-}
-
-
-// ------------------------------ TutorialStep_SubmitOdenIngredient ------------------------------
-// おでんの具材を渡す
-// コンストラクタ
-TutorialStep_SubmitOdenIngredient::TutorialStep_SubmitOdenIngredient(TutorialActor* actor) :TutorialStep(actor)
-{
-    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
-    // チュートリアル画像の作成 
-    tutorialSubmitIngredientImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_clear_grab.png", "Tutorial_TakeOdenIngredient"); // いいね！そのまま食券のところに持って行こう
-    tutorialSubmitIngredientImage->SetWorldPosition({ 50, 300 });
-    tutorialSubmitIngredientImage->SetSize({ 700, 550 });
-    tutorialSubmitIngredientImage->SetVisible(false);
-    uiManager->Add(tutorialSubmitIngredientImage);
-
-}
-
-// デストラクタ
-TutorialStep_SubmitOdenIngredient::~TutorialStep_SubmitOdenIngredient()
-{
-    if (tutorialSubmitIngredientImage)
-    {// 削除通知を出す
-        tutorialSubmitIngredientImage->MarkPendingKill();
-    }
-}
-
-
-// ステートに入った時のメソッド
-void TutorialStep_SubmitOdenIngredient::Enter()
-{
-    tutorialSubmitIngredientImage->SetVisible(true);
-}
-
-// ステートで実行するメソッド
-void TutorialStep_SubmitOdenIngredient::Execute(float deltaTime)
-{
-    auto scene = Scene::GetCurrentScene();
-
-    // ポーズ中はゲーム入力を一切受け付けない
-    if (scene->IsPaused())
-        return;
-
-    // UIがマウスを使っているならゲーム操作しない
-    if (scene->GetUIManager()->IsMouseCaptured())
-        return;
-
-    DirectX::XMFLOAT2 cursor;
-    // ビューポート外だったら、入力しない
-    if (!InputSystem::GetMousePositionUI(cursor))
-        return;
-
-    //  押した瞬間
-    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
+#else
+    // ダイコンを掴んだかどうか
+    if (auto grabbed = owner->GetGrabbedIngredient())
     {
-        tutorialSubmitIngredientImage->SetVisible(false);
+        if (grabbed->GetIngredientType() == EOdenType::Daikon)
+        {
+            tutorialTakeIngredientImage->SetVisible(false);
+            tutorialSubmitIngredientImage->SetVisible(true);
+        }
+
+        if (grabbed->IsHoveringOrder())
+        {// オーダーの上にダイコンが来たら
+            Logger::Log(U8("ダイコンがオーダーの上にある"));
+            tutorialReleaseMouseImage->SetVisible(true);
+        }
+        else
+        {
+            Logger::Log(U8("ダイコンがオーダーの上にない"));
+            tutorialReleaseMouseImage->SetVisible(false);
+        }
     }
 
     if (auto daikonOrder = scene->GetActorManager()->GetActorByName("TutorialOdenBubble_UI_Order_Daikon"))
@@ -226,14 +248,37 @@ void TutorialStep_SubmitOdenIngredient::Execute(float deltaTime)
         if (odenBubble && odenBubble->IsCompleted())
         {// 大根のおでん注文が完了したら次のステップへ
             owner->GetTutorialManager()->ChangeState("SubmitOdenClear");
+            //owner->GetTutorialManager()->ChangeState("SubmitOdenIngredient");
         }
     }
+
+
+
+#endif // 0
+
 }
 
 // ステージから出ていくときのメソッド
-void TutorialStep_SubmitOdenIngredient::Exit()
+void TutorialStep_TakeOdenIngredient::Exit()
 {
+    tutorialTakeIngredientImage->SetVisible(false);
     tutorialSubmitIngredientImage->SetVisible(false);
+    tutorialReleaseMouseImage->SetVisible(false);
+}
+
+// 掴んではいけない食材の時の処理
+void TutorialStep_TakeOdenIngredient::OnDeniedGrab(std::shared_ptr<Actor> ingredient)
+{
+    if (auto ingredientActor = std::dynamic_pointer_cast<OdenIngredientActor>(ingredient))
+    {
+        owner->ShowBalloonNearIngredient(ingredientActor);
+    }
+}
+
+// 掴める食材の時の処理
+void TutorialStep_TakeOdenIngredient::OnAllowGrab(std::shared_ptr<Actor> ingredient)
+{
+    owner->HideAllBubbles();
 }
 
 
@@ -245,8 +290,8 @@ TutorialStep_SubmitClearIngredient::TutorialStep_SubmitClearIngredient(TutorialA
     auto uiManager = Scene::GetCurrentScene()->GetUIManager();
     // チュートリアル画像の作成 
     tutorialClearSubmitIngredientImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_clear_submit.png", "Tutorial_TakeOdenCircleIngredient"); // これでおでんの具材を渡せたよ！
-    tutorialClearSubmitIngredientImage->SetWorldPosition({ 50, 300 });
-    tutorialClearSubmitIngredientImage->SetSize({ 700, 550 });
+    tutorialClearSubmitIngredientImage->SetWorldPosition(imagePos);
+    tutorialClearSubmitIngredientImage->SetSize(imageSize);
     tutorialClearSubmitIngredientImage->SetVisible(false);
     uiManager->Add(tutorialClearSubmitIngredientImage);
 }
@@ -308,16 +353,16 @@ TutorialStep_SubmitOdenCircleIngredient::TutorialStep_SubmitOdenCircleIngredient
     // チュートリアル画像の作成
     // 次は、丸いおでんを食べたい人が来たよ
     tutorialSubmitIngredientImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_circle_oden.png", "Tutorial_TakeOdenCircleIngredient");
-    tutorialSubmitIngredientImage->SetWorldPosition({ 50, 300 });
-    tutorialSubmitIngredientImage->SetSize({ 700, 550 });
+    tutorialSubmitIngredientImage->SetWorldPosition(imagePos);
+    tutorialSubmitIngredientImage->SetSize(imageSize);
     tutorialSubmitIngredientImage->SetVisible(false);
     uiManager->Add(tutorialSubmitIngredientImage);
 
     // チュートリアル画像の作成
     // とりあえずダイコンを渡そう
     tutorialAnywayDaikonImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_anyway_daikon.png", "Tutorial_TakeOdenCircleIngredient");
-    tutorialAnywayDaikonImage->SetWorldPosition({ 50, 300 });
-    tutorialAnywayDaikonImage->SetSize({ 700, 550 });
+    tutorialAnywayDaikonImage->SetWorldPosition(imagePos);
+    tutorialAnywayDaikonImage->SetSize(imageSize);
     tutorialAnywayDaikonImage->SetVisible(false);
     uiManager->Add(tutorialAnywayDaikonImage);
 }
@@ -412,8 +457,8 @@ TutorialStep_ClearCircleIngredient::TutorialStep_ClearCircleIngredient(TutorialA
     // チュートリアル画像の作成 
     // そうそう！ダイコンって上から見ると丸いよね！
     tutorialClearCircleIngredientImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_clear_circle.png", "Tutorial_ClearCircleIngredient");
-    tutorialClearCircleIngredientImage->SetWorldPosition({ 50, 300 });
-    tutorialClearCircleIngredientImage->SetSize({ 700, 550 });
+    tutorialClearCircleIngredientImage->SetWorldPosition(imagePos);
+    tutorialClearCircleIngredientImage->SetSize(imageSize);
     tutorialClearCircleIngredientImage->SetVisible(false);
     uiManager->Add(tutorialClearCircleIngredientImage);
 
@@ -484,8 +529,8 @@ TutorialStep_RotateOdenIngredient::TutorialStep_RotateOdenIngredient(TutorialAct
     // チュートリアル画像の作成
     // おでんって、回ると見え方が変わるんだよー！
     tutorialRotateOdenImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_rotate_oden.png", "Tutorial_RotateOden");
-    tutorialRotateOdenImage->SetWorldPosition({ 50, 300 });
-    tutorialRotateOdenImage->SetSize({ 700, 550 });
+    tutorialRotateOdenImage->SetWorldPosition(imagePos);
+    tutorialRotateOdenImage->SetSize(imageSize);
     tutorialRotateOdenImage->SetVisible(false);
     uiManager->Add(tutorialRotateOdenImage);
 }

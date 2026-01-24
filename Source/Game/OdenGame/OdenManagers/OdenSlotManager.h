@@ -25,10 +25,7 @@ public:
     void Update(float deltaTime)override;
 
     // スロットを登録する
-    void RegisterSlot(const std::shared_ptr<OdenSlotActor>& slot)
-    {
-        slots.push_back(slot);
-    }
+    void RegisterSlot(const std::shared_ptr<OdenSlotActor>& slot);
 
     // ゲーム開始時に呼ぶ関数
     void StartGame();
@@ -73,7 +70,8 @@ private:
     // ビートに合わせてスケールを変更する
     void ApplyBeatScaling(float beatPhase) const;
 
-
+    // 上下列ごと丸ごとスワップする関数
+    void SwapVerticalAndHorizontal();
 private:
     static constexpr BeatPattern BeatTable[4] =
     {
@@ -100,4 +98,7 @@ private:
     size_t bagIndex = 0; //
 
     GameDifficulty difficulty = GameDifficulty::Normal;
+
+    std::vector<std::weak_ptr<OdenSlotActor>> verticalSlots;
+    std::vector<std::weak_ptr<OdenSlotActor>> horizontalSlots;
 };

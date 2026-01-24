@@ -95,6 +95,13 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
 
     pout.emissive = float4(emissiveFactor, 0); // 元々wは１だったがスカイマップなどの時に使用するため０に変更
 
+    // ここチーム制作のために追加したため後に削除する
+    if (value == 1)
+    {
+        pout.emissive.w = 2;  
+    }
+
+
     pout.material = float4(metallicFactor, occlusionFactor, roughnessFactor, occlusionStrength);
     
     return pout;

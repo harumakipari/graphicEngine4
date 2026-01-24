@@ -1,4 +1,5 @@
 #pragma once
+#include "Game/OdenGame/OdenData/OdenDataStruct.h"
 #include "UI/Widgets/Widget.h"
 
 
@@ -7,7 +8,7 @@ class TutorialActor;
 class TutorialStep
 {
 public:
-    TutorialStep(TutorialActor* actor) :owner(actor) {}
+    TutorialStep(TutorialActor* actor);
     virtual ~TutorialStep() = default;
 
     // コピー禁止（オブジェクトの重複を防ぐ）
@@ -27,10 +28,39 @@ public:
 
     virtual const char* GetName() const = 0;
 
+    // この種類の食材を掴むことができるか
+    virtual ETutorialIngredientResult CanGrabIngredient(EOdenType ingredientType) const
+    {
+        return ETutorialIngredientResult::Allow;
+    }
+
+    // 掴んではいけない食材の時の処理
+    virtual void OnDeniedGrab(std::shared_ptr<Actor> ingredient) {}
+
+    // 掴める食材の時の処理
+    virtual void OnAllowGrab(std::shared_ptr<Actor> ingredient) {}
+
+    // 食材をスワップできるかどうか
+    virtual bool CanSwapIngredient() const { return false; }
+protected:
+    void UpdateMouseClickBlink(float deltaTime);
+
+    void ShowMouseClick(bool visible);
+
+    void ResetMouseClickBlink();
 protected:
     TutorialActor* owner = nullptr;
-};
 
+    std::shared_ptr<UIImageComponent> tutorialMouseClickImage;
+    std::shared_ptr<UIImageComponent> tutorialMouseClickOffImage;
+
+    XMFLOAT2 imagePos = { 1080.0f,78.0f };
+    XMFLOAT2 imageSize = { 700.0f,410.0f };
+
+    float mouseBlinkTimer = 0.0f;
+    float mouseBlinkInterval = 0.6f; // 切り替え間隔
+    bool isMouseClickOn = false;
+};
 
 // チュートリアルステップ  ：おでん屋さんを始める
 class TutorialStep_StartOdenStore : public TutorialStep
@@ -45,8 +75,6 @@ public:
     // ステージから出ていくときのメソッド
     void Exit() override;
     virtual const char* GetName() const override { return "StartOdenStore"; }
-
-
 private:
     std::shared_ptr<UIImageComponent> tutorialStartStoreImage;
 };
@@ -55,6 +83,13 @@ private:
 // チュートリアルステップ  ：おでんの具材を取る
 class TutorialStep_TakeOdenIngredient : public TutorialStep
 {
+public:
+    enum class Phase :uint8_t
+    {
+        WaitGrabDaikon,
+        HoldDaikon,
+        HoverOrder,
+    };
 public:
     TutorialStep_TakeOdenIngredient(TutorialActor* actor);
     virtual ~TutorialStep_TakeOdenIngredient();
@@ -66,31 +101,31 @@ public:
     void Exit() override;
     virtual const char* GetName() const override { return "TakeOdenIngredient"; }
 
+    // この種類の食材を掴むことができるか
+    ETutorialIngredientResult CanGrabIngredient(const EOdenType ingredientType) const override
+    {
+        if (ingredientType == EOdenType::Daikon)
+            return ETutorialIngredientResult::Allow;
+
+        return ETutorialIngredientResult::DenyNotTarget;
+    }
+
+    // 掴んではいけない食材の時の処理
+    void OnDeniedGrab(std::shared_ptr<Actor> ingredient) override;
+
+    // 掴める食材の時の処理
+    void OnAllowGrab(std::shared_ptr<Actor> ingredient) override;
 
 private:
     std::shared_ptr<UIImageComponent> tutorialTakeIngredientImage;
-    std::shared_ptr<UIImageComponent> tutorialOperateImage;
-};
-
-
-// チュートリアルステップ  ：おでんの具材を提出する
-class TutorialStep_SubmitOdenIngredient : public TutorialStep
-{
-public:
-    TutorialStep_SubmitOdenIngredient(TutorialActor* actor);
-    virtual ~TutorialStep_SubmitOdenIngredient();
-    // ステートに入った時のメソッド
-    void Enter() override;
-    // ステートで実行するメソッド
-    void Execute(float deltaTime) override;
-    // ステージから出ていくときのメソッド
-    void Exit() override;
-    virtual const char* GetName() const override { return "SubmitOdenIngredient"; }
-
-
-private:
     std::shared_ptr<UIImageComponent> tutorialSubmitIngredientImage;
+
+    std::shared_ptr<UIImageComponent> tutorialBubbleLeftImage;
+    std::shared_ptr<UIImageComponent> tutorialReleaseMouseImage;
+
+    Phase phase = Phase::WaitGrabDaikon;
 };
+
 
 // チュートリアルステップ  ：　提出クリアした
 class TutorialStep_SubmitClearIngredient : public TutorialStep
@@ -156,7 +191,7 @@ private:
 // チュートリアルステップ  ：　ダイコンを回す
 class TutorialStep_RotateOdenIngredient : public TutorialStep
 {
-    public:
+public:
     TutorialStep_RotateOdenIngredient(TutorialActor* actor);
     virtual ~TutorialStep_RotateOdenIngredient();
     // ステートに入った時のメソッド

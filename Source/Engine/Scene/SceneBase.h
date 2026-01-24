@@ -172,4 +172,8 @@ protected:
     Microsoft::WRL::ComPtr<ID3D11Texture2D> sceneColorBuffer;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> sceneColorSRV;
     Microsoft::WRL::ComPtr<ID3D11Texture2D> sceneColorStencilBuffer;
+
+
+    //@dummyTexture‚ğˆê’U“ü‚ê‚é
+    std::shared_ptr<UIImageComponent> dummyTexture;
 };

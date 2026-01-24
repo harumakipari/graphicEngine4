@@ -10,9 +10,12 @@
 
 #include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Stage/ClothSimulate.h"
+#include "Game/OdenGame/OdenActors/OdenSlotActor.h"
 #include "Game/OdenGame/OdenData/OdenDataStruct.h"
 #include "Game/OdenGame/OdenData/OdenGameParameter.h"
 
+
+class OdenSlotActor;
 
 class TutorialScene : public SceneBase
 {
@@ -75,6 +78,12 @@ private:
         return nullptr;
     }
 
+    void CreateSlotRow(ActorManager* actorManager,
+        const std::string& rowName,
+        const std::vector<std::string>& ingredients,
+        float startZ,
+        ERotationType rotationType);
+
 private:
 
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> waterNormalTexture; // ノーマルテクスチャ
@@ -87,4 +96,6 @@ private:
 
     GameDifficulty difficulty = GameDifficulty::Hard;
 
+    std::vector<std::shared_ptr<OdenSlotActor>> horizontalSlots;
+    std::vector<std::shared_ptr<OdenSlotActor>> verticalSlots;
 };

@@ -112,3 +112,10 @@ enum class GameDifficulty :uint8_t
     Normal,
     Hard
 };
+
+// チュートリアルの時に使用
+enum class ETutorialIngredientResult :uint8_t
+{
+    Allow,
+    DenyNotTarget
+};

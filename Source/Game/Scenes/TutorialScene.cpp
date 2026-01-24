@@ -154,49 +154,16 @@ void TutorialScene::Start()
 
     Logger::Log("Oden Game Difficulty: " + std::to_string(static_cast<uint8_t>(difficulty)));
 #if 1
-    // デバック時に使用
-    // おでんのダイコンを生成
-    Transform daikonTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenDaikon = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_tutorial_daikon", daikonTr, "Daikon");
 
-    // おでんのこんにゃくを生成
-    Transform konnyakuTr(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenKonnyaku = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenIngredientActor>("oden_Egg", konnyakuTr, "Tsukune");
+    // 下段
+    CreateSlotRow(GetActorManager(),"bottom",
+        { "Daikon", "Chikuwa", "Egg", "Daikon" },0.0f,
+        ERotationType::Horizontal);
 
-    // おでんの枠を生成 　下　一個
-    Transform odenSlotTr(DirectX::XMFLOAT3{ 0.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenSlotActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot_Horizontal_0", odenSlotTr);
-    odenSlotActor->SetIngredient(odenDaikon);
-
-    odenDaikon->SetCurrentSlot(odenSlotActor);
-
-    // おでんの枠を生成　上　一個
-    Transform odenSlotTr1(DirectX::XMFLOAT3{ 4.0f,1.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto odenSlotActor1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>("odenSlot", odenSlotTr1);
-    odenSlotActor1->SetIngredient(odenKonnyaku);
-
-    odenKonnyaku->SetCurrentSlot(odenSlotActor1);
-
-
-    // 下4段  横回転
-    for (int i = 1; i < 4; ++i)
-    {
-        std::string actorName = "odenSlot_Horizontal_" + std::to_string(i);
-        // スロット生成
-        Transform odenSlotTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,0.0f }, XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-        auto slot = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>(actorName, odenSlotTr);
-        slot->rotationType = ERotationType::Horizontal;
-    }
-
-    // 上4段  縦回転
-    for (int i = 0; i < 4; ++i)
-    {
-        std::string actorName = "odenSlot_Vertical_" + std::to_string(i);
-        // スロット生成
-        Transform odenSlotTr(DirectX::XMFLOAT3{ i * 4.0f,1.0f,4.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-        auto slot = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotActor>(actorName, odenSlotTr);
-        slot->rotationType = ERotationType::Vertical;
-    }
+    // 上段
+    CreateSlotRow(GetActorManager(),"top",
+        { "Konnyaku", "Daikon", "Kobumusubi", "Goboten" },4.0f,
+        ERotationType::Vertical);
 
 
     // スロットマネージャー作成 
@@ -264,6 +231,11 @@ void TutorialScene::Start()
     // チュートリアルアクターを生成
     auto tutorialActor = GetActorManager()->CreateAndRegisterActorWithTransform<TutorialActor>("OdenTutorialActor");
 
+    SceneTransitionManager::Instance().SetOnOpeningFinished([this, tutorialActor]()
+        {
+            tutorialActor->StartTutorial();
+        });
+
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
 
@@ -278,13 +250,6 @@ void TutorialScene::Update(float deltaTime)
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
 
-    //#ifdef _DEBUG
-    if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
-    {
-        const char* types[] = { "0", "1" };
-        Scene::_transition("LoadingScene", { std::make_pair("preload", "PuddingGameScene"), std::make_pair("type", types[rand() % 2]) });
-    }
-    //#endif // !_DEBUG
 }
 
 void TutorialScene::SetUpActors()
@@ -363,4 +328,48 @@ void TutorialScene::DrawGui()
 
     ImGui::End();
 #endif
+}
+
+
+void TutorialScene::CreateSlotRow(ActorManager* actorManager,
+    const std::string& rowName,
+    const std::vector<std::string>& ingredients,
+    float startZ,
+    ERotationType rotationType)
+{
+    for (int i = 0; i < ingredients.size(); ++i)
+    {
+        // Slot
+        Transform slotTr(
+            DirectX::XMFLOAT3{ i * 4.0f, 1.0f, startZ },
+            DirectX::XMFLOAT4{ 0,0,0,1 },
+            DirectX::XMFLOAT3{ 1,1,1 }
+        );
+
+        std::string slotName = rowName + "_slot_" + std::to_string(i);
+
+        auto slot = actorManager
+            ->CreateAndRegisterActorWithTransform<OdenSlotActor>(
+                slotName,
+                slotTr
+            );
+
+        slot->rotationType = rotationType;
+
+        // Ingredient（Slotと同じ位置）
+        Transform ingredientTr = slotTr;
+
+        std::string ingredientName = rowName + "_ingredient_" + std::to_string(i);
+
+        auto ingredient = actorManager
+            ->CreateAndRegisterActorWithTransform<OdenIngredientActor>(
+                ingredientName,
+                ingredientTr,
+                ingredients[i]
+            );
+
+        // 相互セット
+        slot->SetIngredient(ingredient);
+        ingredient->SetCurrentSlot(slot);
+    }
 }

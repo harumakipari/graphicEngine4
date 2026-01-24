@@ -63,6 +63,8 @@ void OdenSlotActor::SetIngredient(const std::shared_ptr<OdenIngredientActor>& ne
 // HŞ‚ğæ‚èœ‚­
 std::shared_ptr<OdenIngredientActor> OdenSlotActor::RemoveIngredient()
 {
+    if (!odenIngredientActor)
+        return nullptr;
     auto old = odenIngredientActor;
     odenIngredientActor.reset();
     return old;

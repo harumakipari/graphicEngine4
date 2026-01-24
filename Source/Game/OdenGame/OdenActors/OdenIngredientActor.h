@@ -115,6 +115,10 @@ public:
     {
         return dragState == EOdenDragState::Dragging;
     }
+
+    // 食材がお題の上にあるか
+    bool IsHoveringOrder()const;
+
 protected:
     // 具材の名前からモデルやデータを設定する
     void InitParam(const std::string& ingredientName);
@@ -124,13 +128,13 @@ private:
     void TryBeginDrag(const DirectX::XMFLOAT2& cursor);
 
     // ドラック中の処理
-    void UpdateDragging(const DirectX::XMFLOAT2& cursor) const;
+    void UpdateDragging(const DirectX::XMFLOAT2& cursor) ;
 
     // 離した瞬間の処理
     void EndDrag(const DirectX::XMFLOAT2& cursor);
 
     // ドラック中のターゲットを返す
-    EHoverTarget DetectHoverTarget(const DirectX::XMFLOAT2& cursor) const;
+    EHoverTarget DetectHoverTarget(const DirectX::XMFLOAT2& cursor) ;
 
     // 離したときのターゲットのアクターを返す
     std::weak_ptr<Actor> GetHoverSlot(const DirectX::XMFLOAT2& cursor);
@@ -175,6 +179,13 @@ private:
 
     // 点線の表示・非表示を更新する関数
     void UpdateDotLineVisibility();
+
+    // チュートリアルが今掴まれている食材を知る
+    void NotifyGrabbed();
+
+    // ドラック中にどこに食材があるかを判別する
+    void UpdateHoverTarget(const DirectX::XMFLOAT2& cursor);
+
 protected:
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
     std::shared_ptr<BoxComponent> boxComponent; // レイキャスト判定するもの
@@ -215,6 +226,8 @@ protected:
 
     std::unordered_map<EOdenFace, std::weak_ptr<DotLineMeshComponent>> dotLineByFace;
     std::shared_ptr<ParticleComponent> particleComponent;
+
+    EHoverTarget hoverTarget = EHoverTarget::None;
 };
 
 
