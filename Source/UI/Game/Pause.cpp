@@ -164,7 +164,7 @@ void Pause::Update(float deltaTime)
         countDownImages[index]->SetScale({ scale, scale });
 
         float alpha = std::lerp(0.0f, 1.0f, t);
-        countDownImages[index]->SetColor({ 1,1,1, alpha });
+        countDownImages[index]->SetColor(XMFLOAT4{ 1,1,1, alpha });
 
         if (current != lastCountdownNumber)
         {

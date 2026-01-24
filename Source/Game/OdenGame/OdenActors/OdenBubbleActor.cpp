@@ -74,6 +74,17 @@ void OdenBubbleActor::Finalize()
 
 void OdenBubbleActor::Update(float elapsedTime)
 {
+    bool canInput = true;
+
+    if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+    {
+        if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+        {
+            canInput = gameManager->IsGameInputEnabled();
+        }
+    }
+
+
     easingRunner->Tick(elapsedTime);
 
     // UIの位置
@@ -99,51 +110,53 @@ void OdenBubbleActor::Update(float elapsedTime)
 #if 1
     // ゲージで去っていく処理　デバック中やりにくいから一旦コメントアウト
     // 待機
-
-    if (state == EBubbleState::Waiting && canAcceptOrder)
-    {
-        // 残り時間を減らす
-        remainingTime -= elapsedTime;
-
-        if (remainingTime <= 0.0f)
+    if (canInput)
+    {// 演出中じゃないときに
+        if (state == EBubbleState::Waiting && canAcceptOrder)
         {
-            remainingTime = 0.0f;
-            state = EBubbleState::LeavingBack;
+            // 残り時間を減らす
+            remainingTime -= elapsedTime;
 
-            Logger::Log(U8("時間切れで自動失敗"));
+            if (remainingTime <= 0.0f)
+            {
+                remainingTime = 0.0f;
+                state = EBubbleState::LeavingBack;
 
-            // スコア 0 で通知
-            if (onCompleted)
-                onCompleted(*this, { 0.0f,0.0f });
+                Logger::Log(U8("時間切れで自動失敗"));
+
+                // スコア 0 で通知
+                if (onCompleted)
+                    onCompleted(*this, { 0.0f,0.0f });
+            }
         }
-    }
 
-    // 焦り度
-    float timeRate = remainingTime / timeLimit; // 1.0->0.0
-    if (orderUi && timeRate < 0.3f && state == EBubbleState::Waiting)
-    {// 揺らす
-        shakeTimer += elapsedTime;
+        // 焦り度
+        float timeRate = remainingTime / timeLimit; // 1.0->0.0
+        if (orderUi && timeRate < 0.3f && state == EBubbleState::Waiting)
+        {// 揺らす
+            shakeTimer += elapsedTime;
 
-        float panic = (0.4f - timeRate) / 0.4f; // 0~1.0
-        panic = std::clamp(panic, 0.0f, 1.0f);
+            float panic = (0.4f - timeRate) / 0.4f; // 0~1.0
+            panic = std::clamp(panic, 0.0f, 1.0f);
 
-        float shakePower = 6.0f * panic;      // 揺れ幅
-        float shakeSpeed = 25.0f + 40.0f * panic;
+            float shakePower = 6.0f * panic;      // 揺れ幅
+            float shakeSpeed = 25.0f + 40.0f * panic;
 
-        float shakeX = sinf(shakeTimer * shakeSpeed) * shakePower;
+            float shakeX = sinf(shakeTimer * shakeSpeed) * shakePower;
 
-        orderUi->SetWorldPosition({
-            uiPos.x + shakeX,
-            uiPos.y
-            });
+            orderUi->SetWorldPosition({
+                uiPos.x + shakeX,
+                uiPos.y
+                });
 
-        float rot = sinf(shakeTimer * 35.0f) * 8.0f * panic;
-        orderUi->SetWorldAngleDegree(rot);
-    }
-    else
-    {
-        shakeTimer = 0.0f;
-        orderUi->SetWorldAngleDegree(0.0f);
+            float rot = sinf(shakeTimer * 35.0f) * 8.0f * panic;
+            orderUi->SetWorldAngleDegree(rot);
+        }
+        else
+        {
+            shakeTimer = 0.0f;
+            orderUi->SetWorldAngleDegree(0.0f);
+        }
     }
 
 
@@ -393,7 +406,7 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
                     bool wasFever = gameManager->IsFeverMode();
                     float scoreValue = wasFever ? 2.0f * sales : sales;
 
-                    starActor->StartParticle(scoreValue);
+                    starActor->StartParticle(static_cast<int>(scoreValue));
                 }
             }
 #endif // 0

@@ -48,6 +48,8 @@ public:
 private:
     void SpawnTrailStar(const XMFLOAT3& worldPos,float intensity);
 
+    // 虹色を作る関数
+    XMFLOAT4 MakeRainbowColor(float time, float offset, float alpha);
 private:
     std::shared_ptr<EasingRunner> easingRunner;
     std::shared_ptr<ParticleComponent> particleComp;
@@ -75,4 +77,6 @@ private:
     float trailSpread = 1.5f;  // 横に散らす幅
 
     int pendingScore = 0; // 加算予定のスコア
+    bool isFever = false;   // フィーバー中に提出されたかどうか
+    
 };

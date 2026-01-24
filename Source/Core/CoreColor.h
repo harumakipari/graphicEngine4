@@ -65,3 +65,36 @@ struct CoreColor
 	*/
 	static void DarkenColor(CoreColor& color, float factor = 0.8f);
 };
+
+namespace ColorHelper
+{
+	static inline DirectX::XMFLOAT4 HSVtoRGB(float h, float s, float v, float a)
+	{
+		h = fmodf(h, 360.0f);
+		if (h < 0.0f) h += 360.0f;
+
+		s = std::clamp(s, 0.0f, 1.0f);
+		v = std::clamp(v, 0.0f, 1.0f);
+		a = std::clamp(a, 0.0f, 1.0f);
+
+		float c = v * s;                     // chroma
+		float x = c * (1.0f - fabsf(fmodf(h / 60.0f, 2.0f) - 1.0f));
+		float m = v - c;
+
+		float r = 0, g = 0, b = 0;
+
+		if (h < 60.0f) { r = c; g = x; b = 0; }
+		else if (h < 120.0f) { r = x; g = c; b = 0; }
+		else if (h < 180.0f) { r = 0; g = c; b = x; }
+		else if (h < 240.0f) { r = 0; g = x; b = c; }
+		else if (h < 300.0f) { r = x; g = 0; b = c; }
+		else { r = c; g = 0; b = x; }
+
+		return {
+			r + m,
+			g + m,
+			b + m,
+			a
+		};
+	}
+}

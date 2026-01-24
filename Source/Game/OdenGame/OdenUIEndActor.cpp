@@ -17,7 +17,7 @@ void OdenUIEndActor::Initialize(const Transform& transform)
     finishImageComponent->SetScale({ 1.0f, 1.0f });
     finishImageComponent->SetSize({ 895.0f, 512.0f });
     finishImageComponent->SetPivot({ 0.5f,0.5f });
-    finishImageComponent->SetColor({ 1.0f,1.0f,1.0f,0.0f });
+    finishImageComponent->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,0.0f });
     uiManager->Add(finishImageComponent);
 
     easingAlpha = std::make_shared<EasingRunner>();
@@ -30,7 +30,7 @@ void OdenUIEndActor::Update(float deltaTime)
     easingAlpha->Tick(deltaTime);
     easingScale->Tick(deltaTime);
 
-    finishImageComponent->SetColor({ 1.0f,1.0f,1.0f,easingAlphaValue });
+    finishImageComponent->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,easingAlphaValue });
     //float scale = std::lerp(5.0f, 1.0f, easingValue);
     finishImageComponent->SetScale({easingScaleValue, easingScaleValue });
 }
@@ -79,7 +79,7 @@ void OdenUIEndActor::Play()
 
         handler.SetCompletedFunction([this]()
             {
-                finishImageComponent->SetColor({ 1.0f,1.0f,1.0f,0.0f });
+                finishImageComponent->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,0.0f });
             });
         PropertyAccessor<float> accessor;
 

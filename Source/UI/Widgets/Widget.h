@@ -125,6 +125,15 @@ public:
     CoreColor color = CoreColor::White;
 
     void SetColor(const CoreColor color) { this->color = color; }
+    void SetColor(const XMFLOAT4 color)
+    {
+        this->color.r = color.x;
+        this->color.g = color.y;
+        this->color.b = color.z;
+        this->color.a = color.w;
+    }
+
+
 
     void SetTexture(const std::shared_ptr<Sprite>& sprite)
     {

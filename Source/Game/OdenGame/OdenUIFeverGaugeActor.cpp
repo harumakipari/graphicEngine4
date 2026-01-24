@@ -105,7 +105,7 @@ void OdenUIFeverGaugeActor::Update(float elapsedTime)
 
     if (feverGauge > 0.0f && !gameManager->IsFeverMode())
     {// 
-        gaugeUi->SetColor({ 1.0f, 1.0f, 0.3f, 1.0f }); // ‰©F
+        gaugeUi->SetColor(XMFLOAT4{ 1.0f, 1.0f, 0.3f, 1.0f }); // ‰©F
         gaugeUi->SetGaugeFrameColor(CoreColor::White);
     }
     else
@@ -124,7 +124,7 @@ void OdenUIFeverGaugeActor::Update(float elapsedTime)
         };
 
         int idx = static_cast<int>(totalTime * 8.0f) % 3;
-        gaugeUi->SetColor({ colors[idx].x,colors[idx].y,colors[idx].z,colors[idx].w });
+        gaugeUi->SetColor(XMFLOAT4{ colors[idx].x,colors[idx].y,colors[idx].z,colors[idx].w });
     }
 
     //float hue = fmod(totalTime * 0.2f, 1.0f); // ‚ä‚Á‚­‚è‰ñ‚·

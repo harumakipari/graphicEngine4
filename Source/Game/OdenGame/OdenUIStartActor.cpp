@@ -17,7 +17,7 @@ void OdenUIStartActor::Initialize(const Transform& transform)
     readyImageComponent->SetScale({ 1.0f, 1.0f });
     readyImageComponent->SetSize({ 895.0f, 512.0f });
     readyImageComponent->SetPivot({ 0.5f,0.5f });
-    readyImageComponent->SetColor({ 1.0f,1.0f,1.0f,0.0f });
+    readyImageComponent->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,0.0f });
     uiManager->Add(readyImageComponent);
 
     goImageComponent = std::make_shared<UIImageComponent>("./Data/Textures/UI/go.png", "go_ui");
@@ -26,7 +26,7 @@ void OdenUIStartActor::Initialize(const Transform& transform)
     goImageComponent->SetScale({ 1.0f, 1.0f });
     goImageComponent->SetSize({ 895.0f, 512.0f });
     goImageComponent->SetPivot({ 0.5f,0.5f });
-    goImageComponent->SetColor({ 1.0f,1.0f,1.0f,0.0f });
+    goImageComponent->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,0.0f });
     uiManager->Add(goImageComponent);
 
     easingAlpha = std::make_shared<EasingRunner>();
@@ -43,10 +43,10 @@ void OdenUIStartActor::Update(float deltaTime)
     easingGoAlpha->Tick(deltaTime);
     easingGoScale->Tick(deltaTime);
 
-    readyImageComponent->SetColor({ 1,1,1,easingReadyAlphaValue });
+    readyImageComponent->SetColor(XMFLOAT4{ 1,1,1,easingReadyAlphaValue });
     readyImageComponent->SetWorldPosition({ easingReadyPositionValue,targetPos.y });
 
-    goImageComponent->SetColor({ 1,1,1,easingGoAlphaValue });
+    goImageComponent->SetColor(XMFLOAT4{ 1,1,1,easingGoAlphaValue });
     goImageComponent->SetScale({ easingGoScaleValue,easingGoScaleValue });
 }
 
@@ -92,7 +92,7 @@ void OdenUIStartActor::PlayReady(const std::function<void()>& onFinished)
 
         handler.SetCompletedFunction([this]()
             {
-                readyImageComponent->SetColor({ 1.0f,1.0f,1.0f,0.0f });
+                readyImageComponent->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,0.0f });
                 PlayGo();
             });
         PropertyAccessor<float> accessor;
@@ -172,7 +172,7 @@ void OdenUIStartActor::PlayGo()
 
         handler.SetCompletedFunction([this]()
             {
-                goImageComponent->SetColor({ 1.0f,1.0f,1.0f,0.0f });
+                goImageComponent->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,0.0f });
             });
         PropertyAccessor<float> accessor;
 

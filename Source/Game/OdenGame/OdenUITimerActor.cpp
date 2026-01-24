@@ -122,8 +122,8 @@ void OdenUITimerActor::Update(float elapsedTime)
         float t = std::clamp(animTimer / fadeTime, 0.0f, 1.0f);
         float alpha = 1.0f - t;
 
-        timerOnesUi->SetColor({ 1,1,1,alpha });
-        timerTensUi->SetColor({ 1,1,1,alpha });
+        timerOnesUi->SetColor(XMFLOAT4{ 1,1,1,alpha });
+        timerTensUi->SetColor(XMFLOAT4{ 1,1,1,alpha });
 
         if (t >= 1.0f)
         {
@@ -144,8 +144,8 @@ void OdenUITimerActor::Update(float elapsedTime)
         float t = std::clamp(animTimer / fadeTime, 0.0f, 1.0f);
         float alpha = 1.0f - t;
 
-        timerOnesUi->SetColor({ 1,0,0,alpha });
-        timerTensUi->SetColor({ 1,0,0,alpha });
+        timerOnesUi->SetColor(XMFLOAT4{ 1,0,0,alpha });
+        timerTensUi->SetColor(XMFLOAT4{ 1,0,0,alpha });
 
         // ˆÊ’u‚ð^‚ñ’†‚É‚·‚é
         timerOnesUi->SetWorldPosition({ (onesPosition.x + tensPosition.x) * 0.5f ,onesPosition.y });
@@ -160,8 +160,8 @@ void OdenUITimerActor::Update(float elapsedTime)
             //timerTensUi->SetVisible(true);
             timerOnesUi->SetScale({ 0.5f, 0.5f });
             timerTensUi->SetScale({ 0.5f, 0.5f });
-            timerOnesUi->SetColor({ 1,1,1,1 });
-            timerTensUi->SetColor({ 1,1,1,1 });
+            timerOnesUi->SetColor(XMFLOAT4{ 1,1,1,1 });
+            timerTensUi->SetColor(XMFLOAT4{ 1,1,1,1 });
         }
 
         return;
@@ -185,8 +185,8 @@ void OdenUITimerActor::Update(float elapsedTime)
 
                 timerOnesUi->SetScale({ popupScale, popupScale });
                 timerTensUi->SetScale({ popupScale, popupScale });
-                timerOnesUi->SetColor({ 1,1,1,1 });
-                timerTensUi->SetColor({ 1,1,1,1 });
+                timerOnesUi->SetColor(XMFLOAT4{ 1,1,1,1 });
+                timerTensUi->SetColor(XMFLOAT4{ 1,1,1,1 });
 
                 if (t >= 1.0f)
                 {
@@ -215,8 +215,8 @@ void OdenUITimerActor::Update(float elapsedTime)
 
                 timerOnesUi->SetScale({ popupScale, popupScale });
                 timerTensUi->SetScale({ popupScale, popupScale });
-                timerOnesUi->SetColor({ 1,1,1,alpha });
-                timerTensUi->SetColor({ 1,1,1,alpha });
+                timerOnesUi->SetColor(XMFLOAT4{ 1,1,1,alpha });
+                timerTensUi->SetColor(XMFLOAT4{ 1,1,1,alpha });
 
                 if (t >= 1.0f)
                 {

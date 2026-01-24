@@ -117,6 +117,16 @@ void StarParticleActor::Update(float elapsedTime)
             starTextures[i]->SetWorldPosition(uiPos);
             starTextures[i]->SetWorldAngleDegree(XMConvertToDegrees(a));
             starTextures[i]->SetVisible(true);
+
+            if (isFever)
+            {
+                auto color = MakeRainbowColor(time, i * 60.0f, 1.0f);
+                starTextures[i]->SetColor(color);
+            }
+            else
+            {
+                starTextures[i]->SetColor(XMFLOAT4{ 1,1,1,1 });
+            }
         }
 
         if (time > orbitDuration)
@@ -145,7 +155,15 @@ void StarParticleActor::Update(float elapsedTime)
             XMFLOAT2 uiPos = WorldToUI(pos);
             starTextures[i]->SetWorldPosition(uiPos);
             starTextures[i]->SetVisible(true);
-
+            if (isFever)
+            {
+                auto color = MakeRainbowColor(time, i * 60.0f, 1.0f);
+                starTextures[i]->SetColor(color);
+            }
+            else
+            {
+                starTextures[i]->SetColor(XMFLOAT4{ 1,1,1,1 });
+            }
         }
 
         if (t >= 1.0f)
@@ -255,7 +273,16 @@ void StarParticleActor::Update(float elapsedTime)
             // Å’áŒÀ‚Ìc‚è–h~
             alpha = std::clamp(alpha, 0.0f, 1.0f);
 
-            starTextures[i]->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
+            if (isFever)
+            {
+                auto color = MakeRainbowColor(time, i * 60.0f, alpha);
+                starTextures[i]->SetColor(color);
+            }
+            else
+            {
+                starTextures[i]->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,alpha });
+            }
+
             starTextures[i]->SetWorldPosition(final);
         }
         if (t >= 1.0f)
@@ -283,7 +310,10 @@ void StarParticleActor::Update(float elapsedTime)
             float t = it->life / 0.3f;
             t = std::clamp(t, 0.0f, 1.0f);
 
-            it->sprite->SetColor({ 1.0f,1.0f,1.0f,t });
+            auto c = it->sprite->color;
+            c.a = t;
+            it->sprite->SetColor(c);
+
             it->sprite->SetScale({ t * 0.6f, t * 0.6f });
 
             if (it->life <= 0.0f)
@@ -317,6 +347,7 @@ void StarParticleActor::StartParticle(const int score)
     }
 
     pendingScore = score;
+    isFever = (score >= 200);
     //particleComp->Play();
 }
 
@@ -334,10 +365,32 @@ void StarParticleActor::SpawnTrailStar(const XMFLOAT3& worldPos, float intensity
     s->SetWorldPosition(uiPos);
     s->zOrder = 90;
     //    s->SetWorldAngleDegree(MathHelper::RandomRange(0.0f, 360.0f));
-    s->SetColor({ 1.0f,1.0f,1.0f,0.8f * intensity });
+    //s->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,0.8f * intensity });
+
+    if (isFever)
+    {
+        float offset = MathHelper::RandomRange(0.0f, 360.0f);
+        auto color = MakeRainbowColor(time, offset, 0.8f * intensity);
+        s->SetColor(color);
+    }
+    else
+    {
+        s->SetColor(XMFLOAT4{ 1,1,1,0.8f * intensity });
+    }
+
     GetOwnerScene()->GetUIManager()->Add(s);
 
     float lifeTime = MathHelper::RandomRange(0.3f, 0.5f);
 
     trailStars.push_back({ s, lifeTime });
+}
+
+// “øF‚ğì‚éŠÖ”
+XMFLOAT4 StarParticleActor::MakeRainbowColor(float time, float offset, float alpha)
+{
+    float h = fmodf(time * 180.0f + offset, 360.0f); // ‰ñ“]‘¬“x
+    float s = 1.0f;
+    float v = 1.0f;
+
+    return ColorHelper::HSVtoRGB(h, s, v, alpha);
 }
