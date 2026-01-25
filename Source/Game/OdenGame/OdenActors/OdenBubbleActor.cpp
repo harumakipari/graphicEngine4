@@ -29,6 +29,7 @@ void OdenBubbleActor::Initialize(const Transform& transform)
     scorePopupUi = std::make_shared<UITextPopup>("OdenScorePopupUi");
     scorePopupUi->SetWorldPosition({ 50, 300 });
     scorePopupUi->SetVisible(false);
+    scorePopupUi->zOrder = 10;
     GetOwnerScene()->GetUIManager()->Add(scorePopupUi);
 
 #endif // 0
@@ -101,8 +102,13 @@ void OdenBubbleActor::Update(float elapsedTime)
     if (orderUi)
         orderUi->SetWorldPosition({ uiPos.x, uiPos.y });
 
+    
+
     if (scorePopupUi)
-        scorePopupUi->SetWorldPosition({ uiPos.x, uiPos.y });
+    {
+        XMFLOAT2 scoreUiPos = { uiPos.x + scorePopUiOffset.x,uiPos.y + scorePopUiOffset.y };
+        scorePopupUi->SetWorldPosition(scoreUiPos);
+    }
 
     XMFLOAT2 gaugeUiPos = { uiPos.x + uiOffset.x,uiPos.y + uiOffset.y };
 
@@ -235,6 +241,7 @@ void OdenBubbleActor::DrawImGuiDetails()
     ImGui::Text("Remaining Time : %.1f", remainingTime);
 
     ImGui::DragFloat2(U8("UIの吹き出し位置のオフセット"), &uiOffset.x, 0.5f);
+    ImGui::DragFloat2(U8("スコアの数字のオフセット"), &scorePopUiOffset.x, 0.5f);
 
 #endif
 };
@@ -327,7 +334,6 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
                     OdenGameSession::Instance().submitLogs.emplace_back(submittedIngredientType, 1, sales, wasFever);
                     float scoreValue= wasFever ? 2.0f * sales : sales;
                     scorePopupUi->Play(std::to_wstring(static_cast<int>(scoreValue)));
-
                 }
             }
 

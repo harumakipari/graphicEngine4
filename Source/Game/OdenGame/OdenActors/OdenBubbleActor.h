@@ -148,4 +148,6 @@ private:
     bool isCompeted = false;    // ’ñoŠ®—¹‚µ‚½‚©‚Ç‚¤‚©
 
     std::shared_ptr<EasingRunner> easingRunner;
+
+    XMFLOAT2 scorePopUiOffset={80.0f,80.0f};
 };

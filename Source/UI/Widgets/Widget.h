@@ -390,7 +390,7 @@ public:
         //worldPosition = startPos;
 
         TestEasingHandler handler;
-        handler.AddEasing(TestEaseType::OutExp, 0.0f, 1.0f, 0.8f);
+        handler.AddEasing(TestEaseType::OutExp, 0.0f, 1.0f, 1.3f);
 
 
         handler.SetCompletedFunction([this]()
