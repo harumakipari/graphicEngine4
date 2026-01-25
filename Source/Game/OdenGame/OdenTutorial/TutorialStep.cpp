@@ -104,6 +104,8 @@ void TutorialStep_StartOdenStore::Enter()
 
     ResetMouseClickBlink();
     ShowMouseClick(true);
+    showAnywayTimer = 0.0f;
+    canCheckGrab = false;
 }
 
 // ステートで実行するメソッド
@@ -123,12 +125,21 @@ void TutorialStep_StartOdenStore::Execute(float deltaTime)
         return;
 
     UpdateMouseClickBlink(deltaTime);
+    showAnywayTimer += deltaTime;
+
+    if (showAnywayTimer > 0.5f) // ← 好きな秒数
+    {
+        canCheckGrab = true;
+    }
+
+    if (!canCheckGrab)
+        return;
 
     //  押した瞬間
-    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
+    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
     {
         owner->GetTutorialManager()->ChangeState("TakeOdenIngredient");
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav");
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav",2.0f);
     }
 
 }
@@ -199,6 +210,12 @@ void TutorialStep_TakeOdenIngredient::Enter()
         orderManager->SpawnSpecificOrderBubble(0, "UI_Order_Daikon");
     }
 
+    if (owner)
+    {
+        owner->ClearGrabbedIngredient();
+    }
+    hasGrabbedInThisStep = false;
+
 }
 
 // ステートで実行するメソッド
@@ -236,10 +253,12 @@ void TutorialStep_TakeOdenIngredient::Execute(float deltaTime)
         }
     }
 #else
+
+
     // ダイコンを掴んだかどうか
     if (auto grabbed = owner->GetGrabbedIngredient())
     {
-        if (grabbed->GetIngredientType() == EOdenType::Daikon)
+        if (hasGrabbedInThisStep && grabbed->GetIngredientType() == EOdenType::Daikon)
         {
             tutorialTakeIngredientImage->SetVisible(false);
             tutorialSubmitIngredientImage->SetVisible(true);
@@ -271,6 +290,12 @@ void TutorialStep_TakeOdenIngredient::Execute(float deltaTime)
             //owner->GetTutorialManager()->ChangeState("SubmitOdenIngredient");
         }
     }
+
+    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
+    {
+        hasGrabbedInThisStep = true;
+    }
+
 
 #endif // 0
 
@@ -356,6 +381,7 @@ void TutorialStep_SubmitClearIngredient::Execute(float deltaTime)
     if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
     {
         owner->GetTutorialManager()->ChangeState("ComeOdenCircleIngredient");
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
     }
 
 }
@@ -459,6 +485,7 @@ void TutorialStep_ComeOdenCircleIngredient::Execute(float deltaTime)
     {
         tutorialSubmitIngredientImage->SetVisible(false);
         owner->GetTutorialManager()->ChangeState("SubmitOdenCircleIngredient");
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
     }
 }
 
@@ -523,6 +550,10 @@ TutorialStep_SubmitOdenCircleIngredient::~TutorialStep_SubmitOdenCircleIngredien
 void TutorialStep_SubmitOdenCircleIngredient::Enter()
 {
     tutorialAnywayDaikonImage->SetVisible(true);
+    tutorialSubmitCircleIngredientImage->SetVisible(false);
+
+    showAnywayTimer = 0.0f;
+    canCheckGrab = false;
 }
 
 // ステートで実行するメソッド
@@ -543,7 +574,15 @@ void TutorialStep_SubmitOdenCircleIngredient::Execute(float deltaTime)
     if (!InputSystem::GetMousePositionUI(cursor))
         return;
 
+    showAnywayTimer += deltaTime;
 
+    if (showAnywayTimer > 0.5f) // ← 好きな秒数
+    {
+        canCheckGrab = true;
+    }
+
+    if (!canCheckGrab)
+        return;
     // 丸を掴んだかどうか
     if (auto grabbed = owner->GetGrabbedIngredient())
     {
@@ -685,6 +724,7 @@ void TutorialStep_ClearCircleIngredient::Execute(float deltaTime)
     {
         tutorialClearCircleIngredientImage->SetVisible(false);
         owner->GetTutorialManager()->ChangeState("RotateOdenIngredient"); // 次のステップへ
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
     }
 }
 
@@ -764,6 +804,7 @@ void TutorialStep_RotateOdenIngredient::Execute(float deltaTime)
     {
         tutorialRotateOdenImage->SetVisible(false);
         owner->GetTutorialManager()->ChangeState("ComeOdenSquareIngredient"); // 次のステップへ
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
     }
 
 }
@@ -845,6 +886,7 @@ void TutorialStep_ComeOdenSquareIngredient::Execute(float deltaTime)
     {
         tutorialSubmitIngredientImage->SetVisible(false);
         owner->GetTutorialManager()->ChangeState("SubmitOdenSquareIngredient");
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
     }
 }
 
@@ -909,6 +951,8 @@ TutorialStep_SubmitOdenSquareIngredient::~TutorialStep_SubmitOdenSquareIngredien
 void TutorialStep_SubmitOdenSquareIngredient::Enter()
 {
     tutorialAnywayDaikonImage->SetVisible(true);
+    showAnywayTimer = 0.0f;
+    canCheckGrab = false;
 }
 
 // ステートで実行するメソッド
@@ -929,6 +973,15 @@ void TutorialStep_SubmitOdenSquareIngredient::Execute(float deltaTime)
     if (!InputSystem::GetMousePositionUI(cursor))
         return;
 
+    showAnywayTimer += deltaTime;
+
+    if (showAnywayTimer > 0.5f) // ← 好きな秒数
+    {
+        canCheckGrab = true;
+    }
+
+    if (!canCheckGrab)
+        return;
 
     // 丸を掴んだかどうか
     if (auto grabbed = owner->GetGrabbedIngredient())
@@ -1071,6 +1124,7 @@ void TutorialStep_ClearSquareIngredient::Execute(float deltaTime)
     {
         tutorialClearCircleIngredientImage->SetVisible(false);
         owner->GetTutorialManager()->ChangeState("SwapIngredient"); // 次のステップへ
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
     }
 }
 
@@ -1158,6 +1212,7 @@ void TutorialStep_SwapIngredient::Execute(float deltaTime)
     if (tutorialManager->ConsumeIngredientSwapped())
     {
         owner->GetTutorialManager()->ChangeState("ClearSwapIngredient");
+        //CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
     }
 }
 
@@ -1228,6 +1283,7 @@ void TutorialStep_ClearSwapIngredient::Execute(float deltaTime)
     {
         tutorialImage->SetVisible(false);
         owner->GetTutorialManager()->ChangeState("IntroduceShape");
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
     }
 }
 
@@ -1298,6 +1354,7 @@ void TutorialStep_IntroduceShape::Execute(float deltaTime)
     {
         tutorialImage->SetVisible(false);
         owner->GetTutorialManager()->ChangeState("ClearTutorial");
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
     }
 }
 
@@ -1366,6 +1423,7 @@ void TutorialStep_ClearTutorial::Execute(float deltaTime)
     if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
     {
         tutorialImage->SetVisible(false);
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
         NotShowMouse();
         // シーン遷移する
         const char* types[] = { "0", "1" };

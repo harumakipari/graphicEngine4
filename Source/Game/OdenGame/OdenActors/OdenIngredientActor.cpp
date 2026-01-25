@@ -352,6 +352,20 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
 void OdenIngredientActor::TryBeginDrag(const DirectX::XMFLOAT2& cursor)
 {
 #if 1
+    if (auto tutorialActor = GetOwnerScene()->GetActorManager()->GetActorByName("OdenTutorialActor"))
+    {// チュートリアルだったら
+        if (auto tutorial = std::dynamic_pointer_cast<TutorialActor>(tutorialActor))
+        {
+            if (auto currentStep = tutorial->GetTutorialManager()->GetCurrentState())
+            {
+                if (!currentStep->IsIngredientGrabEnabled())
+                {
+                    return; // ← Raycast すらしない
+                }
+            }
+        }
+    }
+
     HitResultWithActor result;
     if (!CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::Oden)))
         return;
@@ -369,7 +383,6 @@ void OdenIngredientActor::TryBeginDrag(const DirectX::XMFLOAT2& cursor)
                 if (res != ETutorialIngredientResult::Allow)
                 {
                     currentStep->OnDeniedGrab(shared_from_this());
-                    CoreAudio::PlayOneShot(L"./Data/Sound/SE/mistake_click.wav", 1.0f);
                     return;
                 }
                 currentStep->OnAllowGrab(shared_from_this());

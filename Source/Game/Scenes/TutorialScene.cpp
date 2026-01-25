@@ -165,12 +165,12 @@ void TutorialScene::Start()
 
     // 下段
     CreateSlotRow(GetActorManager(),"bottom",
-        { "Daikon", "Chikuwa", "Egg", "Daikon" },0.0f,
+        { "Chikuwa", "Daikon", "Egg", "Daikon" },0.0f,
         ERotationType::Horizontal);
 
     // 上段
     CreateSlotRow(GetActorManager(),"top",
-        { "Konnyaku", "Daikon", "Kobumusubi", "Goboten" },4.0f,
+        { "Daikon", "Konnyaku", "Kobumusubi", "Goboten" },4.0f,
         ERotationType::Vertical);
 
     // 右上に表示する次来る食材を表示する

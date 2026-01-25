@@ -40,6 +40,8 @@ void TutorialManager::ChangeState(const std::string& name)
         // 指定されたステートが存在しない
         _ASSERT_EXPR_A(it != statePool.end(), "Not Found State.");
     }
+
+
 }
 
 // ステート登録

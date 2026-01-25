@@ -27,6 +27,9 @@ public:
     // 今掴まれている食材を伝える関数
     std::shared_ptr<OdenIngredientActor> GetGrabbedIngredient() const;
 
+    // ステップ中に掴まれている食材をリセットする
+    void ClearGrabbedIngredient();
+
     // 吹き出しを表示する　ダイコンのチュートリアル用
     void ShowBalloonNearIngredient(const std::shared_ptr<OdenIngredientActor>& ingredient);
 
@@ -40,7 +43,8 @@ public:
     void HideAllBubbles();
 
 private:
-
+    // 何秒後に非表示設定をする
+    void SetBubbleTime();
 private:
     std::unique_ptr<TutorialManager> tutorialManager;
     std::weak_ptr<OdenIngredientActor> grabbedIngredient;
@@ -63,4 +67,9 @@ private:
 
     XMFLOAT2 uiOffsetPos = { 0.0f,0.0f };
     XMFLOAT2 uiTextOffsetPos = { 110.0f,15.0f };
+
+    
+    float bubbleLifeTimer = 0.0f;// 吹き出し用のタイマー
+    float bubbleLifeTime = 0.0f;// 何秒後に非表示にするか
+    bool  isBubbleAutoHide = false;
 };

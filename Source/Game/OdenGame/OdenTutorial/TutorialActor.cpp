@@ -28,8 +28,8 @@ void TutorialActor::Initialize(const Transform& transform)
     auto uiManager = Scene::GetCurrentScene()->GetUIManager();
 
 
-    XMFLOAT2 bubblePos={-100.0f,-100.0f};
-    XMFLOAT2 bubbleSize={400.0f,150.0f};
+    XMFLOAT2 bubblePos = { -100.0f,-100.0f };
+    XMFLOAT2 bubbleSize = { 400.0f,150.0f };
 
 
     // チュートリアル画像の作成 
@@ -133,6 +133,16 @@ void TutorialActor::Update(float deltaTime)
     {
         tutorialManager->Update(deltaTime);
     }
+
+    if (!isBubbleAutoHide)
+        return;
+
+    bubbleLifeTimer += deltaTime;
+    if (bubbleLifeTimer >= bubbleLifeTime)
+    {
+        HideAllBubbles();
+        isBubbleAutoHide = false;
+    }
 }
 
 void TutorialActor::DrawImGuiDetails()
@@ -161,6 +171,11 @@ std::shared_ptr<OdenIngredientActor> TutorialActor::GetGrabbedIngredient() const
     return grabbedIngredient.lock();
 }
 
+// ステップ中に掴まれている食材をリセットする
+void TutorialActor::ClearGrabbedIngredient()
+{
+    grabbedIngredient.reset();
+}
 // 吹き出しを表示する
 void TutorialActor::ShowBalloonNearIngredient(const std::shared_ptr<OdenIngredientActor>& ingredient)
 {
@@ -202,10 +217,12 @@ void TutorialActor::ShowBalloonNearIngredient(const std::shared_ptr<OdenIngredie
         break;
     case EOdenType::Kobumusubi:
         thisKobumusubiImage->SetWorldPosition(textPos);
-        thisKobumusubiImage->SetVisible(true); 
+        thisKobumusubiImage->SetVisible(true);
         break;
 
     }
+    // 何秒後に非表示設定をする
+    SetBubbleTime();
 }
 
 // 吹き出しを表示する　丸っぽいのチュートリアル用
@@ -248,6 +265,8 @@ void TutorialActor::ShowCircleBallonNearIngredient(const std::shared_ptr<OdenIng
         thisNotCircleImage->SetVisible(true);
         break;
     }
+    // 何秒後に非表示設定をする
+    SetBubbleTime();
 
 }
 
@@ -291,6 +310,8 @@ void TutorialActor::ShowSquareBallonNearIngredient(const std::shared_ptr<OdenIng
         thisNotSquareImage->SetVisible(true);
         break;
     }
+    // 何秒後に非表示設定をする
+    SetBubbleTime();
 
 }
 
@@ -312,3 +333,11 @@ void TutorialActor::HideAllBubbles()
     thisNotSquareImage->SetVisible(false);
 }
 
+// 何秒後に非表示設定をする
+void TutorialActor::SetBubbleTime()
+{
+    bubbleLifeTime = 1.5f;
+    bubbleLifeTimer = 0.0f;
+    isBubbleAutoHide = true;
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE/mistake_click.wav", 1.0f);
+}

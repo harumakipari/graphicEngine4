@@ -29,7 +29,7 @@ public:
     virtual const char* GetName() const = 0;
 
     // この種類の食材を掴むことができるか
-    virtual ETutorialIngredientResult CanGrabIngredient(EOdenType ingredientType, EOdenShapeCategory shape ) const
+    virtual ETutorialIngredientResult CanGrabIngredient(EOdenType ingredientType, EOdenShapeCategory shape) const
     {
         return ETutorialIngredientResult::Allow;
     }
@@ -42,6 +42,9 @@ public:
 
     // 食材をスワップできるかどうか
     virtual bool CanSwapIngredient() const { return false; }
+
+    // そもそも食材を掴めるかどうか
+    virtual bool IsIngredientGrabEnabled() const { return true; }
 protected:
     void UpdateMouseClickBlink(float deltaTime);
 
@@ -69,6 +72,7 @@ protected:
     float mouseBlinkInterval = 0.6f; // 切り替え間隔
     bool isMouseClickOn = false;
     bool isUpdateMouse = true;
+
 };
 
 // チュートリアルステップ  ：おでん屋さんを始める
@@ -91,8 +95,14 @@ public:
         return ETutorialIngredientResult::DenyNotTarget;
     }
 
+    // そもそも食材を掴めるかどうか
+    bool IsIngredientGrabEnabled() const override { return false; }
+
 private:
     std::shared_ptr<UIImageComponent> tutorialStartStoreImage;
+    float showAnywayTimer = 0.0f;
+    bool canCheckGrab = false;
+
 };
 
 
@@ -139,6 +149,7 @@ private:
     std::shared_ptr<UIImageComponent> tutorialReleaseMouseImage;
 
     Phase phase = Phase::WaitGrabDaikon;
+    bool hasGrabbedInThisStep = false;
 };
 
 
@@ -182,6 +193,9 @@ public:
         return ETutorialIngredientResult::DenyNotTarget;
     }
 
+    // そもそも食材を掴めるかどうか
+    bool IsIngredientGrabEnabled() const override { return false; }
+
 private:
     std::shared_ptr<UIImageComponent> tutorialSubmitIngredientImage;
 };
@@ -222,6 +236,9 @@ private:
     std::shared_ptr<UIImageComponent> tutorialSubmitCircleIngredientImage;
     std::shared_ptr<UIImageComponent> tutorialAnywayDaikonImage;
     std::shared_ptr<UIImageComponent> tutorialReleaseMouseImage;
+
+    float showAnywayTimer = 0.0f;
+    bool canCheckGrab = false;
 };
 
 
@@ -239,6 +256,8 @@ public:
     void Exit() override;
     virtual const char* GetName() const override { return "ClearCircleIngredient"; }
 
+    // そもそも食材を掴めるかどうか
+    bool IsIngredientGrabEnabled() const override { return false; }
 
 private:
     std::shared_ptr<UIImageComponent> tutorialClearCircleIngredientImage;
@@ -258,6 +277,10 @@ public:
     // ステージから出ていくときのメソッド
     void Exit() override;
     virtual const char* GetName() const override { return "RotateOdenIngredient"; }
+
+    // そもそも食材を掴めるかどうか
+    bool IsIngredientGrabEnabled() const override { return false; }
+
 private:
     std::shared_ptr<UIImageComponent> tutorialRotateOdenImage;
 };
@@ -282,6 +305,9 @@ public:
     {
         return ETutorialIngredientResult::DenyNotTarget;
     }
+    // そもそも食材を掴めるかどうか
+    bool IsIngredientGrabEnabled() const override { return false; }
+
 
 private:
     std::shared_ptr<UIImageComponent> tutorialSubmitIngredientImage;
@@ -323,6 +349,9 @@ private:
     std::shared_ptr<UIImageComponent> tutorialSubmitCircleIngredientImage;
     std::shared_ptr<UIImageComponent> tutorialAnywayDaikonImage;
     std::shared_ptr<UIImageComponent> tutorialReleaseMouseImage;
+
+    float showAnywayTimer = 0.0f;
+    bool canCheckGrab = false;
 };
 
 // チュートリアルステップ  ：　四角いのを成功した後に出す　
@@ -339,6 +368,8 @@ public:
     void Exit() override;
     virtual const char* GetName() const override { return "ClearSquareIngredient"; }
 
+        // そもそも食材を掴めるかどうか
+    bool IsIngredientGrabEnabled() const override { return false; }
 
 private:
     std::shared_ptr<UIImageComponent> tutorialClearCircleIngredientImage;
@@ -360,7 +391,7 @@ public:
     virtual const char* GetName() const override { return "SwapIngredient"; }
 
     // 食材をスワップできるかどうか
-    bool CanSwapIngredient() const override{ return true; }
+    bool CanSwapIngredient() const override { return true; }
 
 private:
     std::shared_ptr<UIImageComponent> tutorialClearCircleIngredientImage;
@@ -405,6 +436,9 @@ public:
     // 食材をスワップできるかどうか
     bool CanSwapIngredient() const override { return true; }
 
+    // そもそも食材を掴めるかどうか
+    bool IsIngredientGrabEnabled() const override { return false; }
+
 private:
     std::shared_ptr<UIImageComponent> tutorialImage;
 };
@@ -425,6 +459,9 @@ public:
 
     // 食材をスワップできるかどうか
     bool CanSwapIngredient() const override { return true; }
+
+    // そもそも食材を掴めるかどうか
+    bool IsIngredientGrabEnabled() const override { return false; }
 
 private:
     std::shared_ptr<UIImageComponent> tutorialImage;

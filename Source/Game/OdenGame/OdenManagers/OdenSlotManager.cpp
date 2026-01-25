@@ -409,7 +409,7 @@ void OdenSlotManager::SwapVerticalAndHorizontal()
     if (verticalSlots.size() != horizontalSlots.size())
         return;
 
-    const int count = verticalSlots.size();
+    const int count = static_cast<int>(verticalSlots.size());
 
     for (int i = 0; i < count; ++i)
     {
