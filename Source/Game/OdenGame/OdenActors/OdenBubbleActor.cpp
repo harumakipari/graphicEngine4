@@ -102,7 +102,7 @@ void OdenBubbleActor::Update(float elapsedTime)
     if (orderUi)
         orderUi->SetWorldPosition({ uiPos.x, uiPos.y });
 
-    
+
 
     if (scorePopupUi)
     {
@@ -332,7 +332,7 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
                 {
                     bool wasFever = gameManager->IsFeverMode();
                     OdenGameSession::Instance().submitLogs.emplace_back(submittedIngredientType, 1, sales, wasFever);
-                    float scoreValue= wasFever ? 2.0f * sales : sales;
+                    float scoreValue = wasFever ? 2.0f * sales : sales;
                     scorePopupUi->Play(std::to_wstring(static_cast<int>(scoreValue)));
                 }
             }
@@ -340,7 +340,7 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
         }
         else if (score == EScore::Good)
         {
-            scorePopupUi->Play(L"Good!");
+            // 提出音　成功SE再生
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/succeed_submit.wav");
             // 総合スコアを加算する
             if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
@@ -349,6 +349,8 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
                 {
                     bool wasFever = gameManager->IsFeverMode();
                     OdenGameSession::Instance().submitLogs.emplace_back(submittedIngredientType, 1, sales, wasFever);
+                    float scoreValue = wasFever ? 2.0f * sales : sales;
+                    scorePopupUi->Play(std::to_wstring(static_cast<int>(scoreValue)));
                 }
             }
         }
@@ -384,42 +386,7 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
         if (score == EScore::Perfect)
         {
             starSpawnParticleComponent->Play();
-#if 0
-            // スコアの場所を取得
-            if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("OdenUIScoreViewActor"))
-            {
-                // スコアのワールド座標を取得
-                XMFLOAT3 pos = actor->GetPosition();
 
-                TestEasingHandler handler;
-                handler.AddEasing(TestEaseType::OutCubic, 0.f, 1.0f, 0.4f);
-                handler.SetCompletedFunction([this]()
-                    {
-                        starAttractParticleComponent->Stop();
-                    });
-                PropertyAccessor<float> accessor;
-                accessor.getter = [this]() { return 1.0f; };
-                accessor.setter = [this](float t)
-                    {
-                        if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("OdenUIScoreViewActor"))
-                        {
-                            XMFLOAT3 pos = actor->GetPosition();
-                            XMVECTOR ScorePos = XMLoadFloat3(&pos);
-                            XMFLOAT3 currentPos = GetPosition();
-                            XMVECTOR StartPos = XMLoadFloat3(&currentPos);
-
-                            XMVECTOR NewPos = XMVectorLerp(StartPos, ScorePos, t);
-                            DirectX::XMFLOAT3 newPos;
-                            XMStoreFloat3(&newPos, NewPos);
-                            starAttractParticleComponent->SetWorldLocationDirect(newPos);
-                        }
-
-                    };
-
-                easingRunner->StartHandler(handler, accessor);
-            }
-            starAttractParticleComponent->PlayAttached();
-#else
             Transform starTransform;
             starTransform.SetTranslation(GetPosition());
             auto starActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<StarParticleActor>("starParticle", starTransform);
@@ -436,11 +403,27 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
                     starActor->StartParticle(static_cast<int>(scoreValue));
                 }
             }
-#endif // 0
         }
         else if (score == EScore::Good)
         {
-            //particleComponent->Play();
+            starSpawnParticleComponent->Play();
+
+            Transform starTransform;
+            starTransform.SetTranslation(GetPosition());
+            auto starActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<StarParticleActor>("starParticle", starTransform);
+            // 総合スコアを加算する
+            if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+            {
+                if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+                {
+                    // コンボを加算する フィーバーゲージが溜まる
+                    gameManager->OnSubmitSuccess();
+                    bool wasFever = gameManager->IsFeverMode();
+                    float scoreValue = wasFever ? 2.0f * sales : sales;
+
+                    starActor->StartParticle(static_cast<int>(scoreValue));
+                }
+            }
         }
         else
         {
@@ -470,7 +453,6 @@ EScore OdenBubbleActor::JudgeScoreFromRate(const float matchRate) const
     if (matchRate <= 0.0f)
         return EScore::Fail;
 
-    return EScore::Perfect;
     return EScore::Good;
 }
 
@@ -514,6 +496,9 @@ float OdenBubbleActor::CalculateSales(const OdenIngredientActor& ingredient, con
     if (score == EScore::Fail)
         return 0.0f;
 
+    if (score == EScore::Good)
+        return 50.0f;
+
     return ingredient.GetPrice();
 }
 
@@ -531,7 +516,7 @@ float OdenBubbleActor::GetSatisfactionValue(EScore score) const
 
 float OdenBubbleActor::JudgeShapeScore(const OdenShapeData& shape) const
 {
-    if (shape.category != orderData.requiredCategory)
+    if (NormalizeShapeCategory(shape.category) != NormalizeShapeCategory(orderData.requiredCategory))
     {
         return 0.0f;
     }

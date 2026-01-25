@@ -12,6 +12,7 @@
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
 #include "Engine/Utility/Time.h"
+#include "Game/OdenGame/OdenHighScoreData.h"
 #include "Game/OdenGame/OdenActors/OdenTitleStageActor.h"
 
 #include "Physics/Physics.h"
@@ -50,6 +51,9 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
         });
 
 #endif // 0
+
+    // セーブデータをロードする
+    OdenHighScoreData::Instance().Load();
 
     return true;
 }

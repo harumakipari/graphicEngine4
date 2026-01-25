@@ -113,6 +113,17 @@ private:
     // ターゲットへ同じ速度で移動する関数
     bool MoveTowards(const XMFLOAT3& target, float speed, float deltaTime);
 
+    // ドーナツを丸に変換する
+    EOdenShapeCategory NormalizeShapeCategory(const EOdenShapeCategory c)const
+    {
+        switch (c)
+        {
+        case EOdenShapeCategory::DonutLike:
+            return EOdenShapeCategory::RoundLike;
+        default:
+            return c;
+        }
+    }
 public:
     std::function<void(OdenBubbleActor&, OdenResult score)> onCompleted;     // コールバック関数
 
@@ -149,5 +160,5 @@ private:
 
     std::shared_ptr<EasingRunner> easingRunner;
 
-    XMFLOAT2 scorePopUiOffset={80.0f,80.0f};
+    XMFLOAT2 scorePopUiOffset = { 80.0f,80.0f };
 };

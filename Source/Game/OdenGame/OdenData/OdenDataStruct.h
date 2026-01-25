@@ -110,7 +110,8 @@ enum class GameDifficulty :uint8_t
 {
     Easy,
     Normal,
-    Hard
+    Hard,
+    Count
 };
 
 // チュートリアルの時に使用

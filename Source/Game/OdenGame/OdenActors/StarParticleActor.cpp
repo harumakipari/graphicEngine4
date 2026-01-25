@@ -293,7 +293,7 @@ void StarParticleActor::Update(float elapsedTime)
                 if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
                 {
                     // ƒXƒRƒA‚ð‰ÁŽZ‚·‚é
-                    gameManager->AddScore(pendingScore);
+                    gameManager->AddScore(static_cast<float>(pendingScore));
                     OdenGameSession::Instance().totalScore = gameManager->GetTotalScore();
 
                     // –ž‘«“x‚ð‰ÁŽZ‚·‚é

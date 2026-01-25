@@ -245,7 +245,7 @@ void MainScene::Start()
 
 #if 1
     // スコアを表示するアクターを生成
-    Transform uiScoreTr(DirectX::XMFLOAT3{ -7.1f,0.0f,-1.6f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform uiScoreTr(DirectX::XMFLOAT3{ -5.1f,0.0f,-1.6f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto uiScoreViewActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUIScoreViewActor>("OdenUIScoreViewActor", uiScoreTr);
     uiScoreViewActor->SetFontAndMakeTextComponent();
 

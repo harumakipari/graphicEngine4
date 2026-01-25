@@ -119,12 +119,16 @@ public:
         float gravity = -0.98f;
         int vertexCount = 0;
         float windPhaseOffset = 0.0f;
-        float pad;
+        float windBase = 5.0f;
     };
     std::unique_ptr<ConstantBuffer<ClothSimulateCBuffer>> cbuffer;
 
 private:
     std::vector<Node> nodes;
+
+    float windPhaseOffset = 5.0f;
+    float windBase = 6.0f;
+
 public:
 
     struct IndexBufferView
@@ -219,6 +223,8 @@ public:
             UINT startIndexLocation = 0;
             UINT indexCount = 0;
             std::vector<ClothEdge> finalEdges;
+            int ping = 0;
+            int pong = 1;
 
 
             void CreateClothPingPongBuffers(ID3D11Device* device)
@@ -337,16 +343,19 @@ public:
                     cereal::make_nvp("attributes", attributes),
                     cereal::make_nvp("clothVertexOffset", clothVertexOffset),
                     cereal::make_nvp("startIndexLocation", startIndexLocation),
-                    cereal::make_nvp("indexCount", indexCount)
+                    cereal::make_nvp("indexCount", indexCount),
+                    cereal::make_nvp("ping", ping),
+                    cereal::make_nvp("pong", pong)
                 );
             }
         };
         std::vector<Primitive> primitives;
 
+
         template<class T>
         void serialize(T& archive)
         {
-            archive(cereal::make_nvp("name", name), cereal::make_nvp("primitives", primitives)/*, cereal::make_nvp("boundingBox", boundingBox)*/);
+            archive(cereal::make_nvp("name", name), cereal::make_nvp("primitives", primitives));
         }
     };
     std::vector<Mesh> meshes;
@@ -557,7 +566,7 @@ public:
     uint32_t clothVertexOffset;
     Microsoft::WRL::ComPtr<ID3D11ComputeShader> clothUpdateCS;
     Microsoft::WRL::ComPtr<ID3D11ComputeShader> clothConstraintCS;
-    
+
     //Microsoft::WRL::ComPtr<ID3D11Buffer> clothEdgeBuffer;   // エッジ用のバッファ
     //Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> clothEdgeSRV;  
 
@@ -572,7 +581,6 @@ public:
     //std::vector<ClothEdge> finalEdges;
 
 
-    int a = 0, b = 1;
     struct PrimitiveConstants
     {
         DirectX::XMFLOAT4X4 world;
@@ -583,7 +591,7 @@ public:
         int pad;
 
         //DirectX::XMFLOAT4X4 inverseTransposeWorld;  // 法線変換行列
-        DirectX::XMFLOAT4X4 invWorld;  
+        DirectX::XMFLOAT4X4 invWorld;
     };
     Microsoft::WRL::ComPtr<ID3D11Buffer> primitiveCbuffer;
 

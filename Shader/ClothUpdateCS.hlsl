@@ -66,15 +66,13 @@ cbuffer VIEW_CONSTANTS_BUFFER : register(b4)
     row_major float4x4 invView;
 }
 
-
 cbuffer CLOTH_SIMULATE_CBUFFER : register(b10)
 {
     float g;
     uint vertexCount;
     float windPhaseOffset;
-    float align;
+    float windBase;
 };
-
 
 cbuffer SPHERE_CBUFFER : register(b7)
 {
@@ -248,10 +246,10 @@ void main(uint3 id : SV_DispatchThreadID)
         // ïóÇÃâeãø
         float4 windDirWorld = normalize(float4(1, 0, 1, 0)); // Zé≤ï˚å¸
         float4 windDirLocal4 = mul(windDirWorld, invWorld);
-        float windBase = 5.0f;
-        float windVariation = 10.0f;
+        //float windBase = 5.0f;
+        float windVariation =windPhaseOffset;
 
-        float phase = elapsedTime * 2.0f - currentPos.y * 1.5f + windPhaseOffset;
+        float phase = elapsedTime * 2.0f - currentPos.y * 1.5f /*+ windPhaseOffset*/;
 
         // éûä‘Ç∆à íuÇ…ÇÊÇÈÇ‰ÇÁÇ¨
         float w = sin(phase) * 0.5f + 0.5f;
@@ -289,7 +287,7 @@ void main(uint3 id : SV_DispatchThreadID)
         force += windForce;
 #endif
         avgVelocity /= float(edgeCount);
-        
+        avgVelocity *= 0.2f;
         // å∏êäó 
         const float damping = SPRING_DAMPING; // ÇŒÇÀÇÃîSê´
         float3 newVelocity = currentVelocity + (force / MASS) * deltaTime /** exp(-damping * deltaTime)*/;

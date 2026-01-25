@@ -491,33 +491,36 @@ void ClothSimulate::Update(float deltaTine)
     int currentPinMode = 0;
 
 #ifdef USE_IMGUI
-    ImGui::Begin("Cloth");
+    std::string windowName =
+        "Cloth##" + std::to_string(reinterpret_cast<uintptr_t>(this));
+
+    ImGui::Begin(windowName.c_str());
+
     if (ImGui::Button("four fix"))
     {
-        currentPinMode = 0;
-        SetupPinVertices(currentPinMode);
+        SetupPinVertices(0);
         RecreateClothBuffers(Graphics::GetDevice());
     }
     if (ImGui::Button("up fix"))
     {
-        currentPinMode = 1;
-        SetupPinVertices(currentPinMode);
+        SetupPinVertices(1);
         RecreateClothBuffers(Graphics::GetDevice());
     }
     if (ImGui::Button("no fix"))
     {
-        currentPinMode = 2;
-        SetupPinVertices(currentPinMode);
+        SetupPinVertices(2);
         RecreateClothBuffers(Graphics::GetDevice());
     }
-    if (ImGui::Button("caurtain fix"))
+    if (ImGui::Button("curtain fix"))
     {
-        currentPinMode = 3;
-        SetupPinVertices(currentPinMode);
+        SetupPinVertices(3);
         RecreateClothBuffers(Graphics::GetDevice());
     }
 
-    ImGui::End();
+    //ImGui::DragFloat("windVariation", &windPhaseOffset, 0.5f);
+    //ImGui::DragFloat("windBase", &windBase, 0.5f);
+
+    ImGui::End(); 
 #endif
 
 
@@ -860,21 +863,21 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
                 }
             }
 #endif // 0
-
-            //for (auto& v : primitive.cachedVertices)
-            //{
-            //    bool isCorner =
-            //        (fabs(v.position.x - min.x) < 0.001f || fabs(v.position.x - max.x) < 0.001f) &&
-            //        (fabs(v.position.z - min.z) < 0.001f || fabs(v.position.z - max.z) < 0.001f) &&
-            //        (fabs(v.position.y - max.y) < 0.001f); // ã•Ó
-
-            //    if (isCorner)
-            //    {
-            //        v.isPinned = 1;
-            //    }
-            //}
-
 #endif // 0
+
+            uint32_t clothSeed = static_cast<uint32_t>(&primitive - &mesh.primitives[0]);
+            std::mt19937 rng(clothSeed);
+            std::uniform_real_distribution<float> dist(-0.01f, 0.01f); // 1mm
+            for (auto& v : primitive.cachedVertices)
+            {
+                if (v.isPinned)
+                    continue;
+
+                v.position.x += dist(rng);
+                v.position.z += dist(rng);
+            }
+
+
             allVertices.insert(allVertices.end(),
                 primitive.cachedVertices.begin(),
                 primitive.cachedVertices.end());
@@ -1116,7 +1119,8 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
 
 #endif // 0
     cbuffer->data.vertexCount = static_cast<int>(allVertices.size());
-    cbuffer->data.windPhaseOffset = MathHelper::RandomRange(0.0f, DirectX::XM_2PI);
+    cbuffer->data.windPhaseOffset = windPhaseOffset;
+    cbuffer->data.windBase = windBase;
     for (auto& mesh : meshes)
     {
         for (auto& primitive : mesh.primitives)
@@ -1137,6 +1141,8 @@ void ClothSimulate::Simulate(ID3D11DeviceContext* immediateContext)
     {
         for (auto& primitive : mesh.primitives)
         {
+            int& a = primitive.ping;
+            int& b = primitive.pong;
 
             immediateContext->VSSetShaderResources(0, 1, nullSRV);
             immediateContext->PSSetShaderResources(0, 1, nullSRV);

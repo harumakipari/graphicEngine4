@@ -4,6 +4,7 @@
 
 #include "OdenManagers/OdenGameManager.h"
 #include "OdenGameSession.h"
+#include "OdenHighScoreData.h"
 #include "Engine/Scene/Scene.h"
 #include "UI/FontManager.h"
 
@@ -66,7 +67,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
             );
         }
     }
-    int noMissBonus = (session.missCount == 0) ? 1000 : 0;
+    int noMissBonus = (session.missCount == 0) ? 500 : 0;
     int feverBonus = session.feverSubmitCount * 100;
     int maxCombo = session.maxCombo;
     Logger::Log(U8("noMissBonus") + std::to_string(noMissBonus));
@@ -122,6 +123,19 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
 
     displayScore = 0;
 
+
+    int baseScore = resultIngredients.size() * 100;
+    int comboBonus = session.maxCombo * 50;
+
+    int finalScore = baseScore + noMissBonus + comboBonus + feverBonus;
+    GameDifficulty diff = session.GetDifficulty();
+
+    bool isNewRecord = OdenHighScoreData::Instance().TryUpdateHighScore(diff, finalScore);
+
+    if (isNewRecord)
+    {
+        Logger::Log(U8("ハイスコア更新！"));
+    }
 }
 
 void OdenResultScoreActor::Update(float deltaTime)
