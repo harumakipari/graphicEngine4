@@ -4,6 +4,7 @@
 #include "Game/OdenGame/OdenData/OdenDataStruct.h"
 #include "Game/OdenGame/OdenData/OdenShapeDataTable.h"
 
+class OdenSlotManager;
 class OdenBubbleActor;
 
 // お客さんを並べる
@@ -20,6 +21,10 @@ public:
 
     // 特定のお題を出現させる
     void SpawnSpecificOrderBubble(int index, const std::string& uiName);
+
+    // スロットマネージャーを設定する
+    void SetSlotManager(const std::shared_ptr<OdenSlotManager>& slotManager);
+
 private:
     // お客さんを出現させる
     void SpawnOrderBubble(int index);
@@ -45,6 +50,12 @@ private:
 
     // UI名からお題を探す
     const OrderEntry* FindOrderByUiName(const std::string& uiName);
+
+    // 出せる特定の食材お題だけを抽出する
+    std::vector<OrderEntry> GetValidIngredientOrders() const;
+
+    // バッグ × 場に存在する で絞る
+    std::vector<OrderEntry> GetValidIngredientOrdersFromBag() const;
 private:
     struct BubbleSlot
     {
@@ -67,4 +78,14 @@ private:
     std::vector<OrderEntry> orderBag;
 
     GameDifficulty difficulty = GameDifficulty::Normal;
+
+    std::weak_ptr<OdenSlotManager> slotManagerWeak;
+
+    std::vector<OrderEntry> shapeOrderBag; // あいまいなお題用
+    std::vector<OrderEntry> ingredientOrderBag; // 特定の食材のお題用
+
+    int shapeBagIndex = 0;
+    int ingredientBagIndex = 0;
+
+    int shapeChainCount = 0;
 };

@@ -270,6 +270,25 @@ void OdenSlotManager::SetBeatInterval(double beatInterval) const
     clock->SetBeatInterval(beatInterval);
 }
 
+// ê‚É‚ ‚éHŞ‚ğæ“¾‚·‚é
+std::vector<EOdenType> OdenSlotManager::GetCurrentIngredientTypes() const
+{
+    std::vector<EOdenType> result;
+
+    for (const auto& slotWeak : slots)
+    {
+        auto slot = slotWeak.lock();
+        if (!slot) continue;
+
+        auto ingredient = slot->GetIngredient();
+        if (!ingredient) continue;
+
+        result.push_back(ingredient->GetIngredientType());
+    }
+
+    return result;
+}
+
 // ƒ‰ƒ“ƒ_ƒ€‚È‹ïŞ‚Ì–¼‘O‚ğ¶¬‚·‚é
 std::string OdenSlotManager::MakeRandomIngredientName() 
 {

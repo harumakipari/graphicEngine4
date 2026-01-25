@@ -77,6 +77,9 @@ public:
 
     // ビート間の時間を設定する
     void SetBeatInterval(double beatInterval) const;
+
+    // 場にある食材を取得する
+    std::vector<EOdenType> GetCurrentIngredientTypes() const;
 private:
     // スロットの回転関数を呼ぶ
     void UpdateBeat(float deltaTime);

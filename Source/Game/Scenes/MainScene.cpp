@@ -231,6 +231,7 @@ void MainScene::Start()
     // 内部で OdenBubbleActor をスロットマネージャーに設定している
     auto orderManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenOrderManager>("orderManager");
     orderManager->StartGame();
+    orderManager->SetSlotManager(slotManager);
 #endif
 
     // ゴミ箱を生成

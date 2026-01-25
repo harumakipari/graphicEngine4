@@ -136,23 +136,35 @@ void OdenOrderManager::SpawnOrderBubble(int index)
 // ランダムにお題を生成する
 OrderEntry OdenOrderManager::PickRandomOrder()
 {
-#if 0
-    // あいまいな形のお題の割合
-    constexpr float shapeOrderRate = 0.8f;   // 60%
+#if 1
+    constexpr int ShapeChainLimit = 3;
 
-    EOrderType type;
+    // ShapeBag が尽きたら再生成
+    if (shapeBagIndex >= shapeOrderBag.size())
     {
-        float r = MathHelper::RandomRange(0.0f, 1.0f);
-        type = (r < shapeOrderRate)
-            ? EOrderType::ShapeOnly
-            : EOrderType::SpecificIngredient;
-
+        BuildOrderBag();
     }
 
-    if (type == EOrderType::ShapeOnly)
-        return GameHelper::PickRandom(OdenGameParameter::orderDB.shapeOrders);
+    // まだ形お題フェーズ
+    if (shapeChainCount < ShapeChainLimit)
+    {
+        shapeChainCount++;
+        return shapeOrderBag[shapeBagIndex++];
+    }
 
-    return GameHelper::PickRandom(OdenGameParameter::orderDB.ingredientOrders);
+    // 特定食材お題フェーズ
+    auto validIngredientOrders = GetValidIngredientOrdersFromBag();
+
+    if (!validIngredientOrders.empty())
+    {
+        shapeChainCount = 0;
+        return GameHelper::PickRandom(validIngredientOrders);
+    }
+
+    // 保険：出せる特定食材が無ければ形に戻す
+    shapeChainCount++;
+    return shapeOrderBag[shapeBagIndex++];
+
 #else
     // Bag が空 or 使い切ったら再生成
     if (orderBag.empty() || bagIndex >= orderBag.size())
@@ -262,56 +274,60 @@ void OdenOrderManager::OnBubbleCompletedTutorial(int slotIndex, OdenBubbleActor&
 // お題のバッグを生成する
 void OdenOrderManager::BuildOrderBag()
 {
-    struct OrderBagEntry
-    {
-        OrderEntry order;
-        int count;
-    };
-
-
-    std::vector<OrderBagEntry> entries;
+    shapeOrderBag.clear();
+    ingredientOrderBag.clear();
 
     difficulty = OdenGameSession::GetDifficulty();
 
     if (difficulty == GameDifficulty::Easy)
     {
-        entries =
+        shapeOrderBag =
         {
-            //{ FindShapeOrder(EOdenShapeCategory::TriangleLike), 1 },
-            { FindShapeOrder(EOdenShapeCategory::SquareLike),   2 },
-            //{ FindShapeOrder(EOdenShapeCategory::RoundLike),   1 },
-            { FindIngredientOrder(EOdenType::Daikon), 1 },
+            FindShapeOrder(EOdenShapeCategory::SquareLike),
+            FindShapeOrder(EOdenShapeCategory::SquareLike),
+        };
+
+        ingredientOrderBag =
+        {
+            FindIngredientOrder(EOdenType::Daikon),
         };
     }
     else if (difficulty == GameDifficulty::Hard)
     {
-        entries =
+        shapeOrderBag =
         {
-            { FindShapeOrder(EOdenShapeCategory::TriangleLike), 2 },
-            { FindShapeOrder(EOdenShapeCategory::SquareLike),   4 },
-            { FindShapeOrder(EOdenShapeCategory::RibbonLike),   2 },
-            { FindShapeOrder(EOdenShapeCategory::RoundLike),   4 },
-            { FindShapeOrder(EOdenShapeCategory::DonutLike),   2 },
-            { FindIngredientOrder(EOdenType::Daikon), 1 },
-            { FindIngredientOrder(EOdenType::Egg),    1 },
-            { FindIngredientOrder(EOdenType::Tsukune),1 },
-            { FindIngredientOrder(EOdenType::Chikuwa),  1 },
-            { FindIngredientOrder(EOdenType::Konnyaku), 1 },
-            { FindIngredientOrder(EOdenType::Hanpen),    1 },
-            { FindIngredientOrder(EOdenType::Goboten),    1 },
-            { FindIngredientOrder(EOdenType::Cake),    1 },
-            { FindIngredientOrder(EOdenType::Donut),  1 },
-            { FindIngredientOrder(EOdenType::Shirataki),1 },
-            { FindIngredientOrder(EOdenType::Kobumusubi),1 },
+            FindShapeOrder(EOdenShapeCategory::TriangleLike),
+            FindShapeOrder(EOdenShapeCategory::TriangleLike),
+            FindShapeOrder(EOdenShapeCategory::SquareLike),
+            FindShapeOrder(EOdenShapeCategory::SquareLike),
+            FindShapeOrder(EOdenShapeCategory::SquareLike),
+            FindShapeOrder(EOdenShapeCategory::SquareLike),
+            FindShapeOrder(EOdenShapeCategory::RibbonLike),
+            FindShapeOrder(EOdenShapeCategory::RibbonLike),
+            FindShapeOrder(EOdenShapeCategory::RoundLike),
+            FindShapeOrder(EOdenShapeCategory::RoundLike),
+            FindShapeOrder(EOdenShapeCategory::RoundLike),
+            FindShapeOrder(EOdenShapeCategory::RoundLike),
+            FindShapeOrder(EOdenShapeCategory::DonutLike),
+            FindShapeOrder(EOdenShapeCategory::DonutLike),
+        };
+
+        ingredientOrderBag =
+        {
+            FindIngredientOrder(EOdenType::Daikon),
+            FindIngredientOrder(EOdenType::Egg),
+            FindIngredientOrder(EOdenType::Chikuwa),
+            FindIngredientOrder(EOdenType::Cake),
+            FindIngredientOrder(EOdenType::Donut),
+            FindIngredientOrder(EOdenType::Kobumusubi),
         };
     }
 
-    for (auto& e : entries)
-        for (int i = 0; i < e.count; ++i)
-            orderBag.push_back(e.order);
+    GameHelper::Shuffle(shapeOrderBag);
+    GameHelper::Shuffle(ingredientOrderBag);
 
-    GameHelper::Shuffle(orderBag);
-    bagIndex = 0;
+    shapeBagIndex = 0;
+    ingredientBagIndex = 0;
 }
 
 // UI名からお題を探す
@@ -328,4 +344,58 @@ const OrderEntry* OdenOrderManager::FindOrderByUiName(const std::string& uiName)
             return &o;
     }
     return nullptr;
+}
+
+// 出せる特定の食材お題だけを抽出する
+std::vector<OrderEntry> OdenOrderManager::GetValidIngredientOrders() const
+{
+    std::vector<OrderEntry> result;
+
+    auto slotManager = slotManagerWeak.lock();
+    if (!slotManager) return result;
+
+    auto currentIngredients = slotManager->GetCurrentIngredientTypes();
+
+    for (const auto& order : OdenGameParameter::orderDB.ingredientOrders)
+    {
+        if (std::ranges::find(
+            currentIngredients,
+            order.data.requiredIngredient
+        ) != currentIngredients.end())
+        {
+            result.push_back(order);
+        }
+    }
+
+    return result;
+}
+
+// バッグ × 場に存在する で絞る
+std::vector<OrderEntry> OdenOrderManager::GetValidIngredientOrdersFromBag() const
+{
+    std::vector<OrderEntry> result;
+
+    auto slotManager = slotManagerWeak.lock();
+    if (!slotManager) return result;
+
+    auto currentIngredients = slotManager->GetCurrentIngredientTypes();
+
+    for (const auto& order : ingredientOrderBag)
+    {
+        if (std::ranges::find(
+            currentIngredients,
+            order.data.requiredIngredient
+        ) != currentIngredients.end())
+        {
+            result.push_back(order);
+        }
+    }
+
+    return result;
+}
+
+// スロットマネージャーを設定する
+void OdenOrderManager::SetSlotManager(const std::shared_ptr<OdenSlotManager>& slotManager)
+{
+    slotManagerWeak = slotManager;
 }

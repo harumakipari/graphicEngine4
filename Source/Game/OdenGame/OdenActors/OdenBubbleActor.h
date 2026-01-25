@@ -141,6 +141,7 @@ private:
 
     std::shared_ptr<ParticleComponent> starSpawnParticleComponent;   // 星の発生エフェクト
     std::shared_ptr<ParticleComponent> starAttractParticleComponent;   // 星のスコアへ吸い込まれるエフェクト
+    std::shared_ptr<ParticleComponent> failParticleComponent;   // 失敗エフェクト
 
     float shakeTimer = 0.0f;    // シェイクタイマー
 

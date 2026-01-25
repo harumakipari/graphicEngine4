@@ -58,6 +58,11 @@ void OdenBubbleActor::Initialize(const Transform& transform)
 
     // イージング
     easingRunner = std::make_shared<EasingRunner>();
+
+    // 失敗のエフェクトコンポーネントを追加
+    failParticleComponent = this->AddComponent<class ParticleComponent>("failParticleComponent", parentName);
+    failParticleComponent->Load("./Data/Effect/Files/failEffect.json");
+    failParticleComponent->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
 }
 
 void OdenBubbleActor::Finalize()
@@ -346,6 +351,11 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
             scorePopupUi->Play(std::to_wstring(0));
             // 提出音　失敗SE再生
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/fail_submit.wav");
+
+            if (failParticleComponent)
+            {// 失敗のエフェクトを出す
+                failParticleComponent->Play();
+            }
         }
 
         scorePopupUi->SetVisible(true);
