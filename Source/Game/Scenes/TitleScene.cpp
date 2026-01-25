@@ -88,10 +88,27 @@ void TitleScene::Start()
             };
     }
 
+    // スタート普通ボタンの作成
+    {
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/normal.png", "button");
+        button->SetWorldPosition({ 600, 50 });
+        button->SetSize({ 400, 150 });
+        uiManager->Add(button);
+
+        button->onClick = []()
+            {
+                Logger::Log(u8"ボタンButton Clicked!");
+                const char* types[] = { "0", "1" };
+                //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), {"difficulty","1"} });
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            };
+    }
+
     // スタート難しいボタンの作成
     {
         std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/difficult.png", "button");
-        button->SetWorldPosition({ 600, 50 });
+        button->SetWorldPosition({ 900, 50 });
         button->SetSize({ 400, 150 });
         uiManager->Add(button);
 

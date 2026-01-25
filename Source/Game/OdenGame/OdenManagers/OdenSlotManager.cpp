@@ -355,15 +355,25 @@ void OdenSlotManager::BuildIngredientBag()
     {
         ingredients =
         {
-            //{ "Daikon", 1 },
+            { "Daikon", 1 },
+            { "Egg", 1},
+            { "Konnyaku", 1 },
+        };
+    }
+    else if (difficulty == GameDifficulty::Normal)
+    {
+        ingredients =
+        {
+            { "Daikon", 1 },
             //{ "Kobumusubi", 1 },
-            //{ "Egg", 1},
+            { "Egg", 1},
             //{ "Tsukune", 1 },
             { "Chikuwa", 1 },
-            //{ "Konnyaku", 1 },
+            { "Konnyaku", 1 },
+            //{ "Goboten", 1 },
             //{ "Hanpen", 1 },
-            //{ "Cake", 1 },
-            //{ "Donut", 1 },
+            { "Cake", 1 },
+            { "Donut", 1 },
         };
     }
     else if (difficulty==GameDifficulty::Hard)

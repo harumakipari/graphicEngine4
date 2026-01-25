@@ -18,8 +18,6 @@ void OdenGameManager::Initialize(const Transform& transform)
 
     // セッションもリセット
     OdenGameSession::Instance().Reset();
-
-
 }
 
 void OdenGameManager::Update(float deltaTime)
@@ -60,7 +58,7 @@ void OdenGameManager::Reset()
 {
     totalScore = 0;
     combo = 0;
-    maxTime = 50000.0f;    // ここで制限時間を設定
+    maxTime = 50.0f;    // ここで制限時間を設定
     remainingTime = maxTime;
     satisfaction = 0.0f;
     isGameEnded = false;

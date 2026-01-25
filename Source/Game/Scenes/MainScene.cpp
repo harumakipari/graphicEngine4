@@ -148,12 +148,10 @@ void MainScene::Start()
     audioBgmComponent->SetLoop(true);
     audioBgmComponent->SetVolume(0.8f);
     
-
     audioPotBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
     audioPotBgmComponent->SetSource(L"./Data/Sound/BGM/pot_bgm.wav");
     audioPotBgmComponent->SetLoop(true);
     audioPotBgmComponent->SetVolume(3.0f);
-    
 
     // 難易度設定を取得
     const auto& sceneTransition = SceneTransitionManager::Instance();
@@ -162,12 +160,16 @@ void MainScene::Start()
     if (params.contains("difficulty"))
     {
         difficulty = static_cast<GameDifficulty>(
-            std::stoi(params.at("difficulty"))
-            );
+            std::stoi(params.at("difficulty")));
         OdenGameSession::SetDifficulty(difficulty);
     }
 
     difficulty = OdenGameSession::GetDifficulty();
+
+    // ステージアクターを生成
+    Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenStoreActor>("stage", stageTr);
+
 
     Logger::Log("Oden Game Difficulty: " + std::to_string(static_cast<uint8_t>(difficulty)));
 #if 0
@@ -205,9 +207,7 @@ void MainScene::Start()
     auto beatClockActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<BeatClockActor>("beatClockActor");
     slotManager->SetBeatActor(beatClockActor);
     slotManager->SetBeatInterval(1.5);
-    // ステージアクターを生成
-    Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenStoreActor>("stage", stageTr);
+
     slotManager->RegisterBeatReactive(stage);  // ビートするものとして設定
 
 #endif // 0

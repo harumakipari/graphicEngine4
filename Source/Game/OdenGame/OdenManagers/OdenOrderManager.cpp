@@ -285,11 +285,45 @@ void OdenOrderManager::BuildOrderBag()
         {
             FindShapeOrder(EOdenShapeCategory::SquareLike),
             FindShapeOrder(EOdenShapeCategory::SquareLike),
+            FindShapeOrder(EOdenShapeCategory::SquareLike),
+            FindShapeOrder(EOdenShapeCategory::SquareLike),
+            FindShapeOrder(EOdenShapeCategory::TriangleLike),
+            FindShapeOrder(EOdenShapeCategory::TriangleLike),
+            FindShapeOrder(EOdenShapeCategory::RoundLike),
+            FindShapeOrder(EOdenShapeCategory::RoundLike),
+            FindShapeOrder(EOdenShapeCategory::RoundLike),
         };
 
         ingredientOrderBag =
         {
             FindIngredientOrder(EOdenType::Daikon),
+            FindIngredientOrder(EOdenType::Egg),
+        };
+    }
+    else if (difficulty == GameDifficulty::Normal)
+    {
+        shapeOrderBag =
+        {
+            FindShapeOrder(EOdenShapeCategory::SquareLike),
+            FindShapeOrder(EOdenShapeCategory::SquareLike),
+            FindShapeOrder(EOdenShapeCategory::SquareLike),
+            FindShapeOrder(EOdenShapeCategory::SquareLike),
+            FindShapeOrder(EOdenShapeCategory::TriangleLike),
+            FindShapeOrder(EOdenShapeCategory::TriangleLike),
+            FindShapeOrder(EOdenShapeCategory::TriangleLike),
+            FindShapeOrder(EOdenShapeCategory::RoundLike),
+            FindShapeOrder(EOdenShapeCategory::RoundLike),
+            FindShapeOrder(EOdenShapeCategory::RoundLike),
+            FindShapeOrder(EOdenShapeCategory::RoundLike),
+            FindShapeOrder(EOdenShapeCategory::DonutLike),
+            FindShapeOrder(EOdenShapeCategory::DonutLike),
+        };
+
+        ingredientOrderBag =
+        {
+            FindIngredientOrder(EOdenType::Daikon),
+            FindIngredientOrder(EOdenType::Cake),
+            FindIngredientOrder(EOdenType::Egg),
         };
     }
     else if (difficulty == GameDifficulty::Hard)
@@ -298,6 +332,8 @@ void OdenOrderManager::BuildOrderBag()
         {
             FindShapeOrder(EOdenShapeCategory::TriangleLike),
             FindShapeOrder(EOdenShapeCategory::TriangleLike),
+            FindShapeOrder(EOdenShapeCategory::TriangleLike),
+            FindShapeOrder(EOdenShapeCategory::SquareLike),
             FindShapeOrder(EOdenShapeCategory::SquareLike),
             FindShapeOrder(EOdenShapeCategory::SquareLike),
             FindShapeOrder(EOdenShapeCategory::SquareLike),
@@ -319,7 +355,7 @@ void OdenOrderManager::BuildOrderBag()
             FindIngredientOrder(EOdenType::Chikuwa),
             FindIngredientOrder(EOdenType::Cake),
             FindIngredientOrder(EOdenType::Donut),
-            FindIngredientOrder(EOdenType::Kobumusubi),
+            //FindIngredientOrder(EOdenType::Kobumusubi),
         };
     }
 

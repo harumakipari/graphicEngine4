@@ -29,8 +29,6 @@ public:
 
     void Draw(){}
 
-
-
     const SceneTransitionParam& GetParams() const
     {
         return param;
