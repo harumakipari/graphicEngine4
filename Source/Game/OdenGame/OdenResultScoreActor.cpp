@@ -66,13 +66,20 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
             );
         }
     }
+    int noMissBonus = (session.missCount == 0) ? 1000 : 0;
+    int feverBonus = session.feverSubmitCount * 100;
+    int maxCombo = session.maxCombo;
+    Logger::Log(U8("noMissBonus") + std::to_string(noMissBonus));
+    Logger::Log(U8("feverBonus") + std::to_string(feverBonus));
+    Logger::Log(U8("連続成功人数") + std::to_string(maxCombo));
+
 
     Logger::Log("=============================");
 
     const std::vector<OdenSubmitLog>* logs = nullptr;
 
 #if _DEBUG
-    static bool useDebug = true; // ← ImGui で切り替えてもいい
+    static bool useDebug = false; // ← ImGui で切り替えてもいい
     if (useDebug)
     {
         static std::vector<OdenSubmitLog> debugLogs = CreateDebugSubmitLogs();
@@ -151,10 +158,12 @@ void OdenResultScoreActor::Update(float deltaTime)
             resultIngredients[spawnIndex]->AppearIngredient();
 
             int addScore = 100; // 仮のスコア加算値
+#if 0
             if (resultIngredients[spawnIndex]->GetIsFeverModeIngredient())
             {
                 addScore *= 2; // フィーバー中はスコア2倍
             }
+#endif // 0
 
             AddScore(addScore);
 

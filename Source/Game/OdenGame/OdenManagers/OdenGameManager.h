@@ -43,6 +43,9 @@ public:
     // 提出成功時の処理
     void OnSubmitSuccess();
 
+    // 提出失敗時の処理
+    void OnSubmitMiss();
+
     // フィーバー開始
     void StartFeverMode();
 
@@ -113,10 +116,7 @@ public:
 
 private:
     // コンボを加算する
-    void AddCombo()
-    {
-        combo++;
-    }
+    void AddCombo();
 private:
     std::weak_ptr<CoreAudioSourceComponent> bgmAudio;
     std::shared_ptr<EasingRunner> easingBgm;
@@ -139,10 +139,10 @@ private:
     float feverGauge = 0.0f;
     float feverGaugeMax = 100.0f;
 
-    float feverTime = 8.0f;
+    float feverTime = 8.0f; // フィーバーの時間
     float feverRemainingTime = 0.0f;
 
-    int feverTriggerCombo = 5;
+    int feverTriggerCombo = 5;  // フィーバーになるまでに提出する個数
 
     float bgmPitch = 1.0f;
 

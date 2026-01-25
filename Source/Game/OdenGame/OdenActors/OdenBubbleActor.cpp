@@ -356,6 +356,17 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
             {// 失敗のエフェクトを出す
                 failParticleComponent->Play();
             }
+
+            // 総合スコアを加算する
+            if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+            {
+                if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+                {
+                    // コンボをなくす
+                    gameManager->OnSubmitMiss();
+                }
+            }
+
         }
 
         scorePopupUi->SetVisible(true);
