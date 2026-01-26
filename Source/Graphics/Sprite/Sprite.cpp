@@ -306,12 +306,15 @@ void Sprite::Render(ID3D11DeviceContext* immediate_context,
     float viewportWidth, viewportHeight;
     viewportWidth = viewport.Width;
     viewportHeight = viewport.Height;
-
-
 #else
     float viewX, viewY, viewportWidth, viewportHeight;
     Graphics::GetViewport(viewX, viewY, viewportWidth, viewportHeight);
-
+ //   Logger::Log(U8("UI Render viewport ") + std::to_string(viewX) + std::to_string(viewY) + std::to_string(viewportWidth) + std::to_string(viewportHeight));
+    if (viewportWidth <= 1.0f || viewportHeight <= 1.0f)
+    {
+        Logger::Log(U8("UI skipped: invalid viewport"));
+        return;
+    }
     // =============================
     // UI 論理解像度 → 実解像度スケール
     // =============================
@@ -326,12 +329,14 @@ void Sprite::Render(ID3D11DeviceContext* immediate_context,
     float scaleX_ui = viewportWidth / DESIGN_W;
     float scaleY_ui = viewportHeight / DESIGN_H;
     float scale_ui = std::min<float>(scaleX_ui, scaleY_ui);
-
     // dx, dy, dw, dh をスケーリング
     dx *= scale_ui;
     dy *= scale_ui;
     dw *= scale_ui;
     dh *= scale_ui;
+
+  //  Logger::Log(U8("scale_ui = %f  dx=%f dy=%f") + std::to_string(scale_ui) + std::to_string(dx) + std::to_string(dh));
+
 #endif // 0
 
     // 無効なスケーリングなら描画しない
@@ -460,6 +465,7 @@ void Sprite::Render(ID3D11DeviceContext* immediate_context,
     float scaleX_ui = viewportWidth / DESIGN_W;
     float scaleY_ui = viewportHeight / DESIGN_H;
     float scale_ui = std::min<float>(scaleX_ui, scaleY_ui);
+    scale_ui = 1.0f;
 
     // dx, dy, dw, dh をスケーリング
     dx *= scale_ui;

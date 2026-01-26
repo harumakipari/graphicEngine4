@@ -85,6 +85,11 @@ void OdenIngredientActor::Update(float deltaTime)
         {
             if (!gameManager->IsGameInputEnabled())
             {
+                // ドラッグ中ならスロットに戻す
+                if (dragState==EOdenDragState::Dragging)
+                {
+                    ReturnToSlot();
+                }
                 return;
             }
         }

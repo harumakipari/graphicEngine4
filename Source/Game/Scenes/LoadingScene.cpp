@@ -35,8 +35,6 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
 
     D3D11_BUFFER_DESC bufferDesc{};
 
-    bit_block_transfer = std::make_unique<FullScreenQuad>(device);
-    cbuffer = std::make_unique<ConstantBuffer<constants>>(device);
 
     //shaderToy
     shaderToyCBuffer = std::make_unique<ConstantBuffer<ShaderToyCB>>(device);
@@ -54,6 +52,7 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
     _async_preload_scene(device, width, height, preload_scene);
 
     useDeferredRendering = false;
+    loadingSprite = std::make_shared<Sprite>(device, L"./Data/Textures/UI/scene_change_blue.png");
 
     return true;
 }
@@ -62,18 +61,18 @@ void LoadingScene::Start()
 {
     SetUpActors();
 
-    //RegisterRenderHook(RenderPass::UI, [&](ID3D11DeviceContext* immediateContext)
-    //    {
-    //        if (const auto e = GetActorManager()->GetActorByName("LoadingEnemy"))
-    //        {
-    //            enemy->skeltalMeshComponent->RenderOpaque(immediateContext, e->GetWorldTransform());
-    //        }
-    //    });
+    RegisterRenderHook(RenderPass::UI, [&](ID3D11DeviceContext* immediateContext)
+        {
+            if (const auto e = GetActorManager()->GetActorByName("LoadingEnemy"))
+            {
+                enemy->skeltalMeshComponent->RenderOpaque(immediateContext, e->GetWorldTransform());
+            }
+        });
 
     float width = 1920.0f;
     float height = 1080.0f;
 
-    sprite = std::make_shared<UISceneChangeComponent>("./Data/Textures/UI/scene_change_blue.png", "sceneChange");
+    sprite = std::make_shared<UISceneChangeComponent>("./Data/Textures/UI/scene_change_blue1.png", "sceneChange");
     sprite->SetWorldPosition({ width * 0.5f, height * 0.5f });
     sprite->SetPivot({ 0.5f,0.5f });
     sprite->SetSize({ width, height });
@@ -124,13 +123,13 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime
     {
         shaderToyCBuffer->Activate(immediateContext, 7);
     }
-    SceneBase::Render(immediateContext, deltaTime);
-
+    //SceneBase::Render(immediateContext, deltaTime);
+    //loadingSprite->Render(immediateContext, 0, 0, 1920.0f, 1080.0f);
     sprite->Draw(immediateContext);
 }
 
 
 void LoadingScene::DrawGui()
 {
-    SceneBase::DrawGui();
+    // SceneBase::DrawGui();
 }

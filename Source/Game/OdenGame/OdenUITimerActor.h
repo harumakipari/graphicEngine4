@@ -31,13 +31,17 @@ public:
 
     void Update(float elapsedTime)override;
 
-    void DrawImGuiDetails() override {}
+    void DrawImGuiDetails() override;
+
+private:
+    void Play();
 
 private:
     std::shared_ptr<UIImageComponent> timerOnesUi; // タイマーの一桁目のスプライト描画
     std::shared_ptr<UIImageComponent> timerTensUi; // タイマーの十桁目のスプライト描画
 
     std::shared_ptr<EasingRunner> easingRunner;
+    std::shared_ptr<EasingRunner> easingTimerPlus;  // フィーバー時に＋三秒されるやつの動き
 
     std::shared_ptr<UIImageComponent> timerPlusUi;  // フィーバーによって＋3秒された描画
 
@@ -52,4 +56,6 @@ private:
     XMFLOAT2 tensPosition={};
     XMFLOAT2 onesPosition = {};
     XMFLOAT2 timerPos = { 1600.0f,200.0f };
+
+    float timerPlusPositionY = 0.0f;
 };

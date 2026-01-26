@@ -82,6 +82,17 @@ void OdenUITimerActor::Update(float elapsedTime)
         timerTensUi->SetVisible(false);
     }
 
+    if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+    {
+        if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+        {
+            if (gameManager->ConsumeFeverMode())
+            {// フィーバーモードに入った瞬間
+                timerPlusUi->SetVisible(true);
+            }
+        }
+    }
+
     // 秒が変わったら時の処理
     int currentSecond = remainingTimer;
     if (currentSecond != lastSecond)
@@ -247,3 +258,18 @@ void OdenUITimerActor::Update(float elapsedTime)
 
 }
 
+void OdenUITimerActor::DrawImGuiDetails()
+{
+#ifdef USE_IMGUI
+    if (ImGui::Button("timer"))
+    {
+        Play();
+    }
+
+#endif
+}
+
+void OdenUITimerActor::Play()
+{
+    
+}

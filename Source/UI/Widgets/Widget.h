@@ -22,7 +22,6 @@ public:
     {
         this->name = name;
     }
-
     virtual ~UICoreComponent() = default;
     virtual void Update(float dt) {}
     virtual void Draw(ID3D11DeviceContext* immediateContext) {}

@@ -120,7 +120,7 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         imageSize.x,
         imageSize.y
     );
-
+    Logger::Log(U8("UI Render viewport ") + std::to_string(imageMin.x) + std::to_string(imageMin.y) + std::to_string(imageSize.x) + std::to_string(imageSize.y));
 
     // シーンカラーテクスチャを送るのに使用する
     {
@@ -524,17 +524,17 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
         ID3D11ShaderResourceView* shader_resource_views[]
         {
-             //  gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],   // colorMap
-              frameBuffer->shaderResourceViews[0].Get(),//colorMap
-               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
-               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
-               gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
-               postEffectManager->GetOutput("BloomEffect"),
-               sceneEffectManager->GetOutput("FogEffect"),
-               sceneEffectManager->GetOutput("SSAOEffect"),
-               sceneEffectManager->GetOutput("SSREffect"),
-               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],   // emissiveMap
-               cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
+            //  gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],   // colorMap
+             frameBuffer->shaderResourceViews[0].Get(),//colorMap
+              gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
+              gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
+              gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
+              postEffectManager->GetOutput("BloomEffect"),
+              sceneEffectManager->GetOutput("FogEffect"),
+              sceneEffectManager->GetOutput("SSAOEffect"),
+              sceneEffectManager->GetOutput("SSREffect"),
+              gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],   // emissiveMap
+              cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
         };
         immediateContext->PSSetShaderResources(8, 1, cascadedShadowMaps->depthMap().GetAddressOf());
 

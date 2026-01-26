@@ -519,7 +519,7 @@ void ClothSimulate::Update(float deltaTine)
 
     //ImGui::DragFloat("windVariation", &windPhaseOffset, 0.5f);
     //ImGui::DragFloat("windBase", &windBase, 0.5f);
-    ImGui::DragFloat3("windEmitPosition", &cbuffer->data.windEmitPosition.x, 0.5f);
+    //ImGui::DragFloat3("windEmitPosition", &cbuffer->data.windEmitPosition.x, 0.5f);
 
     ImGui::End();
 #endif

@@ -106,6 +106,7 @@ private:
 
     DirectX::XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
 
+    std::shared_ptr<Sprite> loadingSprite;
 
     SceneRenderer sceneRender;
 
