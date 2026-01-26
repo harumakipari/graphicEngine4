@@ -600,6 +600,9 @@
     <ClCompile Include="Source\Game\OdenGame\OdenhighScoreData.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\OdenGame\OdenResultSkewerActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -983,6 +986,7 @@
     <ClInclude Include="Source\Game\OdenGame\OdenHighScoreData.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenRank.h" />
     <ClInclude Include="Source\Game\OdenGame\SubmitSEPlayer.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenResultSkewerActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

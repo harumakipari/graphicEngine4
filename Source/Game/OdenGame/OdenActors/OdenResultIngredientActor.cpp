@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "OdenResultIngredientActor.h"
 
+#include <magic_enum.hpp>
+
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Components/Effect/ParticleComponent.h"
 #include "Components/Controller/ControllerComponent.h"
@@ -38,7 +40,6 @@ void OdenResultIngredientActor::Initialize(const Transform& transform)
     };
     twinkleParticleComponent->SetAddSettings(settings);
 
-
     // 音のコンポーネントを追加
     audioComponent = AddComponent<CoreAudioSourceComponent>("audioSource", parentName);
     audioComponent->SetSource(L"./Data/Sound/SE/result_ingredient_appear_high.wav");
@@ -50,6 +51,18 @@ void OdenResultIngredientActor::Initialize(const Transform& transform)
 
     // 回転コンポーネント追加
     rotationComponent = AddComponent<RotationComponent>("rotationComponent", parentName);
+
+    // 食材の種類を登録
+    auto maybeEnum = magic_enum::enum_cast<EOdenType>(ingredientName);
+    if (maybeEnum.has_value())
+    {
+        ingredientType = maybeEnum.value();
+    }
+    else
+    {
+        Logger::Error(U8("おでんの具材の名前のEOdenTypeが登録されていません！"));
+        ingredientType = EOdenType::None; // たとえばデフォルト
+    }
 
 }
 
@@ -76,7 +89,7 @@ void OdenResultIngredientActor::Update(float deltaTime)
         XMVECTOR Position = XMLoadFloat3(&position);
         XMVECTOR CameraPos = XMLoadFloat3(&cameraPosition);
 
-        DirectX::XMVECTOR  Direction = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract( Position, CameraPos));
+        DirectX::XMVECTOR  Direction = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(Position, CameraPos));
         XMFLOAT3 direction;
         XMStoreFloat3(&direction, Direction);
         if (rotationComponent)
@@ -152,4 +165,19 @@ void OdenResultIngredientActor::AppearIngredient()
     easingComponent->StartHandler(handler, accessor);
 
 #endif // 0
+}
+
+// 串内のインデックス
+void OdenResultIngredientActor::SetIndexInSkewer(int index)
+{
+    //indexInSkewer = index;
+
+    //float x = 1.2f + indexInSkewer * 5.0f;
+    //float y = 6.723f;
+    //float z = -5.506f;
+
+    //DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
+    //float spacing = y + size.y * 1.1f;
+
+    //ingredientModel->SetRelativeLocationDirect({ x, -indexInSkewer * spacing, z });
 }

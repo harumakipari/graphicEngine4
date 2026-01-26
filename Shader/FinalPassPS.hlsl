@@ -512,10 +512,11 @@ float4 main(VS_OUT pin) : SV_TARGET
     float depthNdc = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).x;
 
     // GBuffer‚ð‘‚«ž‚ñ‚Å‚¢‚È‚¢—Ìˆæ‚ÍColor‚»‚Ì‚Ü‚Ü•Ô‚·
-    //bool isSky = (depthNdc == 0.0 || depthNdc >= 1.0);
-    //if (isSky)
+     // ‚±‚êUI‚Ì‚½‚ß‚É
+    bool isSky = (depthNdc == 0.0 || depthNdc >= 1.0);
+    if (isSky)
     {
-        //return float4(color.rgb, 1.0);
+        return float4(color.rgb, 1.0);
     }
 
     

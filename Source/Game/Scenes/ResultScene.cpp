@@ -82,6 +82,24 @@ void ResultScene::Start()
             };
     }
 
+    backImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/backGround.png", "backGround");
+    backImage->SetSize({ 1920, 1080 });
+
+    menuImage = std::make_shared<UIImageComponent>("menuImage");
+    menuImage->SetWorldPosition({ 700, 260 });
+    menuImage->SetSize({ 650, 750 });
+    //uiManager->Add(menuImage);
+
+
+    // ここで背景を描画
+    RegisterRenderHook(RenderPass::Sky, [&](ID3D11DeviceContext* immediateContext)
+        {
+            backImage->Draw(immediateContext);
+            menuImage->Draw(immediateContext);
+        });
+
+
+
 
     // 結果スコア表示アクターを生成
     auto resultActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultScoreActor>("resultActor");
@@ -106,16 +124,16 @@ void ResultScene::Update(float deltaTime)
 void ResultScene::SetUpActors()
 {
     // メインカメラのターゲットアクターを生成
-    Transform cameraTargetTr(DirectX::XMFLOAT3{ 5.6f,10.301f,-17.811f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ 0.6f,11.4f,-15.4f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto mainCameraTarget = GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("MainCameraActorTarget", cameraTargetTr);
 
     // メインカメラアクターを生成
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     mainCameraComponent->target = (mainCameraTarget->GetRootComponent());
-    mainCameraComponent->pitch = DirectX::XMConvertToRadians(12.5f);
-    mainCameraComponent->yaw = DirectX::XMConvertToRadians(32.0f);
-    mainCameraComponent->distance = 11.807f;
+    mainCameraComponent->pitch = DirectX::XMConvertToRadians(0.0f);
+    mainCameraComponent->yaw = DirectX::XMConvertToRadians(1.5f);
+    mainCameraComponent->distance = 30.6f;
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("MainSceneのカメラ設定される。"));
 
@@ -127,8 +145,11 @@ void ResultScene::SetUpActors()
 #endif // !_DEBUG
 
     // ステージアクターを生成
+#if 0
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
     auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultStageActor>("stage", stageTr);
+
+#endif // 0
 
 }
 

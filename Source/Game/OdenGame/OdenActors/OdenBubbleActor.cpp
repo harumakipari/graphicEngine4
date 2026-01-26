@@ -25,6 +25,10 @@ void OdenBubbleActor::Initialize(const Transform& transform)
     boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);// おでんのゲームのカーソルのターゲット
     boxComponent->Initialize();
 
+    auto meshComponent = AddComponent<SkeletalMeshComponent>("skeletalMeshComponent", parentName);
+    meshComponent->SetModel("./Data/Models/Oden_Bubble/Oden_Bubble_Model.gltf"); // お客さんのモデル
+    meshComponent->SetRelativeScaleDirect({ 0.5f,0.5f,0.5f });
+
 #if 1
     // 取得したスコアを表示するUI
     scorePopupUi = std::make_shared<UITextPopup>("OdenScorePopupUi");

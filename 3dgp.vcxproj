@@ -310,6 +310,7 @@
     <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenTrashActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenNextViewActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenResultScoreActor.cpp" />
+    <ClCompile Include="Source\Game\OdenGame\OdenResultSkewerActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenTutorial\TutorialActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenTutorial\TutorialManager.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenTutorial\TutorialStep.cpp" />
@@ -487,6 +488,7 @@
     <ClInclude Include="Source\Game\OdenGame\OdenNextViewActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenRank.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenResultScoreActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenResultSkewerActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialManager.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialStep.h" />

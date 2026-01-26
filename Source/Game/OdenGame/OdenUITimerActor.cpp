@@ -57,11 +57,17 @@ void OdenUITimerActor::Initialize(const Transform& transform)
 
 
     easingRunner = std::make_shared<EasingRunner>();
+    easingTimerPlus = std::make_shared<EasingRunner>();
 }
 
 void OdenUITimerActor::Update(float elapsedTime)
 {
     easingRunner->Tick(elapsedTime);
+    easingTimerPlus->Tick(elapsedTime);
+
+    timerPos.y = timerPlusPosition;
+    timerPlusUi->SetWorldPosition(timerPos);
+
 
     // 残り時間を計算する
     if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
@@ -88,7 +94,7 @@ void OdenUITimerActor::Update(float elapsedTime)
         {
             if (gameManager->ConsumeFeverMode())
             {// フィーバーモードに入った瞬間
-                timerPlusUi->SetVisible(true);
+                Play();
             }
         }
     }
@@ -261,15 +267,39 @@ void OdenUITimerActor::Update(float elapsedTime)
 void OdenUITimerActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
-    if (ImGui::Button("timer"))
+    if (ImGui::Button("timerPlaying"))
     {
         Play();
     }
-
 #endif
 }
 
 void OdenUITimerActor::Play()
 {
-    
+    timerPlusUi->SetVisible(true);
+
+    float upTimer = 1.2f;
+    {
+        TestEasingHandler handler;
+        handler.AddEasing(
+            TestEaseType::OutExp,
+            300.0f,
+            150.0f,
+            upTimer
+        );
+
+        handler.SetCompletedFunction([this]()
+            {
+                timerPlusUi->SetVisible(false);
+            });
+        PropertyAccessor<float> accessor;
+
+        accessor.getter = [this]() { return timerPlusPosition; };
+        accessor.setter = [this](float t)
+            {
+                timerPlusPosition = t;
+            };
+
+        easingTimerPlus->StartHandler(handler, accessor);
+    }
 }

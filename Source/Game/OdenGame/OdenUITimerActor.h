@@ -34,6 +34,7 @@ public:
     void DrawImGuiDetails() override;
 
 private:
+    // タイマーの動き
     void Play();
 
 private:
@@ -57,5 +58,5 @@ private:
     XMFLOAT2 onesPosition = {};
     XMFLOAT2 timerPos = { 1600.0f,200.0f };
 
-    float timerPlusPositionY = 0.0f;
+    float timerPlusPosition = 0.0f;
 };

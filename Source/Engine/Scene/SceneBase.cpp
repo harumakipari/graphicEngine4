@@ -417,6 +417,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
             ViewConstants data = camera->GetViewConstants();
             skyMap->Blit(immediateContext, data.viewProjection);
         }
+        ExecuteHooks(RenderPass::Sky, immediateContext);
 
         RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);

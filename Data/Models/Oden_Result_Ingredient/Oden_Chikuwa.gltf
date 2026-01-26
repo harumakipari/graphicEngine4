@@ -15,7 +15,12 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Oden_Chikuwa"
+			"name":"Oden_Chikuwa",
+			"translation":[
+				0,
+				0,
+				0.3895776867866516
+			]
 		},
 		{
 			"children":[
@@ -23,10 +28,15 @@
 			],
 			"name":"oden1",
 			"rotation":[
-				-0.5,
-				0.5,
-				-0.5,
-				0.5000000596046448
+				0,
+				0.7071068286895752,
+				-0.7071068286895752,
+				5.338508302088485e-08
+			],
+			"translation":[
+				0,
+				0.3895776867866516,
+				0
 			]
 		}
 	],
@@ -80,29 +90,29 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":379,
+			"count":382,
 			"max":[
 				1.5882465839385986,
-				0.39951154589653015,
-				0.39975008368492126
+				0.3995116055011749,
+				0.010172426700592041
 			],
 			"min":[
 				-1.5884290933609009,
-				-0.3995116055011749,
-				-0.39975011348724365
+				-0.39951154589653015,
+				-0.7893277406692505
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":379,
+			"count":382,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":379,
+			"count":382,
 			"type":"VEC2"
 		},
 		{
@@ -115,26 +125,26 @@
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":4548,
+			"byteLength":4584,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":4548,
-			"byteOffset":4548,
+			"byteLength":4584,
+			"byteOffset":4584,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":3032,
-			"byteOffset":9096,
+			"byteLength":3056,
+			"byteOffset":9168,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":2160,
-			"byteOffset":12128,
+			"byteOffset":12224,
 			"target":34963
 		}
 	],
@@ -146,7 +156,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":14288,
+			"byteLength":14384,
 			"uri":"Oden_Chikuwa.bin"
 		}
 	]

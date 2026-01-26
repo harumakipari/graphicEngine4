@@ -141,10 +141,13 @@ void OdenUIFeverGaugeActor::Update(float elapsedTime)
         gaugeUi->SetColor(XMFLOAT4{ colors[idx].x,colors[idx].y,colors[idx].z,colors[idx].w });
     }
 
-    if (isFever && !performFeverWord)
-    {// フィーバーに入った最初に一回演出する
-        performFeverWord = true;
-        PlayFever();
+    if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
+    {
+        if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))
+        {
+            if (gameManager->ConsumeFeverWordAppear())
+                PlayFever();
+        }
     }
 
     //float hue = fmod(totalTime * 0.2f, 1.0f); // ゆっくり回す

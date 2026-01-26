@@ -116,6 +116,9 @@ public:
 
     // フィーバーに入った瞬間を取得する
     bool ConsumeFeverMode();
+
+    // フィーバーに入った瞬間を取得する
+    bool ConsumeFeverWordAppear();
 private:
     // コンボを加算する
     void AddCombo();
@@ -144,7 +147,7 @@ private:
     float feverTime = 8.0f; // フィーバーの時間
     float feverRemainingTime = 0.0f;
 
-    int feverTriggerCombo = 5;  // フィーバーになるまでに提出する個数
+    int feverTriggerCombo = 2;  // フィーバーになるまでに提出する個数
 
     float bgmPitch = 1.0f;
 
@@ -153,4 +156,7 @@ private:
 
     // フィーバーに入った瞬間を取得する
     bool justFeverMode = false;
+
+    // フィーバーに入った瞬間の文字演出
+    bool justAppearWord = false;
 };

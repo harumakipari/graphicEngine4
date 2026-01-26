@@ -6,25 +6,53 @@
 #include "OdenGameSession.h"
 #include "OdenHighScoreData.h"
 #include "OdenRank.h"
+#include "OdenResultSkewerActor.h"
 #include "Engine/Scene/Scene.h"
 #include "UI/FontManager.h"
 
 static std::vector<OdenSubmitLog> CreateDebugSubmitLogs()
 {
     return {
-        { EOdenType::Daikon,     2, 400.0f },
+        { EOdenType::Chikuwa,    1, 300.0f },
+        { EOdenType::Donut,   1, 100.0f },
         { EOdenType::Egg,     1, 200.0f },
-        { EOdenType::Chikuwa,    2, 300.0f },
+
+        { EOdenType::Cake,   1, 100.0f },
+        { EOdenType::Goboten,   1, 100.0f },
+        { EOdenType::Donut,   1, 100.0f },
+
+        { EOdenType::Daikon,   1, 100.0f },
+        { EOdenType::Hanpen,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+
+        { EOdenType::Donut,   1, 100.0f },
+        { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Goboten,   1, 100.0f },
+
+        { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Shirataki,   1, 100.0f },
+
         { EOdenType::Konnyaku,   1, 100.0f },
         { EOdenType::Daikon,     1, 400.0f },
         { EOdenType::Cake,   1, 100.0f },
-        { EOdenType::Hanpen,   1, 100.0f },
+
+        { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Daikon,     1, 400.0f },
         { EOdenType::Donut,   1, 100.0f },
+
         { EOdenType::Cake,   1, 100.0f },
-        { EOdenType::Shirataki,   1, 100.0f },
-        { EOdenType::Kobumusubi,   1, 100.0f },
         { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+
+        { EOdenType::Kobumusubi,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Shirataki,   1, 100.0f },
+
+
         { EOdenType::Goboten,   1, 100.0f },
+            { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
     };
 }
 
@@ -61,11 +89,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
         int count = session.ingredientCount[i];
         if (count > 0)
         {
-            Logger::Log(
-                "  "
-                + std::string(magic_enum::enum_name(static_cast<EOdenType>(i)))
-                + " : " + std::to_string(count)
-            );
+            Logger::Log("  " + std::string(magic_enum::enum_name(static_cast<EOdenType>(i))) + " : " + std::to_string(count));
         }
     }
     // ノーミスのスコア
@@ -76,8 +100,6 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     Logger::Log(U8("noMissBonus") + std::to_string(noMissBonus));
     Logger::Log(U8("feverBonus") + std::to_string(feverBonus));
     Logger::Log(U8("連続成功人数") + std::to_string(maxCombo));
-
-
 
     const std::vector<OdenSubmitLog>* logs = nullptr;
 
@@ -93,15 +115,16 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     {
         logs = &session.submitLogs;
     }
-
-
-
     int globalIndex = 0; // 全体での横並びインデックス
+    int skewerIndex = 0;
+    std::shared_ptr<OdenResultSkewerActor> currentSkewer;
+    int ingredientInSkewer = 0;
 
     for (auto& log : *logs)
     {
         for (int i = 0; i < log.count; ++i)
         {
+#if 0
             std::string ingredientName = std::string(magic_enum::enum_name(log.type));
             if (ingredientName.empty())
             {
@@ -120,8 +143,42 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
             ingredientActor->SetFeverModeIngredient(log.wasFever);// フィーバー中に提出された具材かどうかを設定する
             resultIngredients.push_back(ingredientActor);
             globalIndex++;
+#else
+            if (ingredientInSkewer == 0)
+            {// 三個に一個串を作成する
+                //float x = 1.2f + skewerIndex * 5.0f;
+                float x = -20.1f + skewerIndex * 5.0f;
+                //float y = 6.723f;
+                float y = 0.1f;
+                float z = -5.506f;
+
+                Transform skewerTr(DirectX::XMFLOAT3{ x, y, z }, DirectX::XMFLOAT4{ 0,0,0,1 }, DirectX::XMFLOAT3{ 1,1,1 });
+                currentSkewer = GetOwnerScene()->GetActorManager()
+                    ->CreateAndRegisterActorWithTransform<OdenResultSkewerActor>("OdenSkewer", skewerTr);
+
+                skewerIndex++;
+            }
+
+            std::string ingredientName = std::string(magic_enum::enum_name(log.type));
+
+            auto ingredientActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultIngredientActor>("OdenResultIngredient", Transform{}, ingredientName);
+
+            ingredientActor->SetFeverModeIngredient(log.wasFever);
+
+            // 串に追加
+            currentSkewer->AddIngredient(ingredientActor, ingredientInSkewer);
+
+            resultIngredients.push_back(ingredientActor);
+
+            ingredientInSkewer++;
+            if (ingredientInSkewer >= 3)
+                ingredientInSkewer = 0;
         }
+
+#endif // 0
+
     }
+
 
     displayScore = 0;
 
@@ -157,6 +214,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     XMFLOAT2 uiPos = { 500.0f,500.0f };
     XMFLOAT2 uiSize = { 400.0f,150.0f };
 
+#if 0
     // 合計個数UI描画
     totalCountUi = std::make_shared<UIImageComponent>("./Data/Textures/UI/Result/result_total_count.png", "result_total_count");
     totalCountUi->SetWorldPosition({ uiPos.x, uiPos.y });
@@ -214,6 +272,8 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     std::shared_ptr<UIImageComponent> nextRankBUi; // 次のランクBの時に表示するUI
     std::shared_ptr<UIImageComponent> nextRankCUi; // 次のランクCの時に表示するUI
     std::shared_ptr<UIImageComponent> nextRankDUi; // 次のランクDの時に表示するUI
+
+#endif // 0
 
 
 
@@ -349,8 +409,6 @@ float OdenResultScoreActor::CalcSpawnDelay() const
     // ラスト3個目：少しゆっくり
     if (spawnIndex == total - 3)
         return 0.5f;
-
-
 
     // 中盤はだんだん早く
     float t = static_cast<float>(spawnIndex - 2) / (total - 4);

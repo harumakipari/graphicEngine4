@@ -32,5 +32,6 @@ public:
     //ƒV[ƒ“‚Ì©“®“o˜^
     static inline Scene::Autoenrollment<ResultScene> _autoenrollment;
 private:
-
+    std::shared_ptr<UIImageComponent> backImage;
+    std::shared_ptr<UIImageComponent> menuImage;
 };

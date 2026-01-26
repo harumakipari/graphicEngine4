@@ -122,6 +122,7 @@ void OdenGameManager::StartFeverMode()
     remainingTime = std::min<float>(remainingTime, maxTime);
 
     justFeverMode = true;
+    justAppearWord = true;
 
     Logger::Log(U8("fever‚Ì‚É{‚R•b‚³‚ê‚½")+std::to_string(remainingTime));
 
@@ -231,6 +232,17 @@ bool OdenGameManager::ConsumeFeverMode()
     if (justFeverMode)
     {
         justFeverMode = false;
+        return true;
+    }
+    return false;
+}
+
+// ƒtƒB[ƒo[‚É“ü‚Á‚½uŠÔ‚ğæ“¾‚·‚é
+bool OdenGameManager::ConsumeFeverWordAppear()
+{
+    if (justAppearWord)
+    {
+        justAppearWord = false;
         return true;
     }
     return false;

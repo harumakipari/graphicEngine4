@@ -56,6 +56,8 @@ private:
     std::shared_ptr<UIImageComponent> nextRankCUi; // 次のランクCの時に表示するUI
     std::shared_ptr<UIImageComponent> nextRankDUi; // 次のランクDの時に表示するUI
 
+    std::shared_ptr<SkeletalMeshComponent> odenPoleModel;   // おでんの串モデル
+
     float nextSpawnDelay = 0.5f; // 次の具材が出現するまでの遅延時間
     float spawnTimer = 0.0f; // 出現タイマー
     size_t spawnIndex = 0; // 出現インデックス
