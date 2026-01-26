@@ -485,6 +485,7 @@
     <ClInclude Include="Source\Game\Actors\WaterSphere\WaterSphere.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenTrashActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenNextViewActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenRank.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenResultScoreActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialManager.h" />
@@ -494,6 +495,7 @@
     <ClInclude Include="Source\Game\OdenGame\OdenUIScoreViewActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenUIStartActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenUITimerActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\SubmitSEPlayer.h" />
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
     <ClInclude Include="Source\Game\Scenes\MainScene.h" />
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />

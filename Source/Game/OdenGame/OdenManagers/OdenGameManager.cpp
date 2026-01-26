@@ -58,7 +58,7 @@ void OdenGameManager::Reset()
 {
     totalScore = 0;
     combo = 0;
-    maxTime = 50.0f;    // ‚±‚±‚Å§ŒÀŠÔ‚ğİ’è
+    maxTime = 20.0f;    // ‚±‚±‚Å§ŒÀŠÔ‚ğİ’è
     remainingTime = maxTime;
     satisfaction = 0.0f;
     isGameEnded = false;
@@ -116,6 +116,11 @@ void OdenGameManager::StartFeverMode()
     feverState = EFeverState::Fever;
     feverRemainingTime = feverTime;
     feverGauge = feverGaugeMax;
+
+    // fever“ü‚é‚Æ{3•b
+    remainingTime += 3.0f;
+    remainingTime = std::min<float>(remainingTime, maxTime);
+    Logger::Log(U8("fever‚Ì‚É{‚R•b‚³‚ê‚½")+std::to_string(remainingTime));
 
     // ƒsƒbƒ` ‚Ì easing
     {

@@ -5,6 +5,7 @@
 #include "OdenManagers/OdenGameManager.h"
 #include "OdenGameSession.h"
 #include "OdenHighScoreData.h"
+#include "OdenRank.h"
 #include "Engine/Scene/Scene.h"
 #include "UI/FontManager.h"
 
@@ -67,7 +68,9 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
             );
         }
     }
+    // ノーミスのスコア
     int noMissBonus = (session.missCount == 0) ? 500 : 0;
+    // フィーバー中の提供のスコアの計算
     int feverBonus = session.feverSubmitCount * 100;
     int maxCombo = session.maxCombo;
     Logger::Log(U8("noMissBonus") + std::to_string(noMissBonus));
@@ -75,7 +78,6 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     Logger::Log(U8("連続成功人数") + std::to_string(maxCombo));
 
 
-    Logger::Log("=============================");
 
     const std::vector<OdenSubmitLog>* logs = nullptr;
 
@@ -123,12 +125,23 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
 
     displayScore = 0;
 
-
+    // 基本スコアの計算
     int baseScore = resultIngredients.size() * 100;
-    int comboBonus = session.maxCombo * 50;
-
+    // 連続正解のスコアの計算
+    int comboBonus = session.maxCombo * 50; // 連続正解　＊　５０
+    // 最終的なスコアの計算
     int finalScore = baseScore + noMissBonus + comboBonus + feverBonus;
+    // クリアした難易度を取得する
     GameDifficulty diff = session.GetDifficulty();
+
+    // ランクの計算をする
+    auto rankResult = EvaluateRank(session.GetDifficulty(), finalScore);
+    // 次のランクまで必要なスコア
+    int needScore = rankResult.isMaxRank ? 0 : rankResult.nextRankScore - finalScore;
+
+    Logger::Log(U8("今回のランク: ") + std::string(magic_enum::enum_name(rankResult.current)));
+    Logger::Log(U8("次のランクまでに必要なスコア") + std::to_string(needScore));
+
 
     bool isNewRecord = OdenHighScoreData::Instance().TryUpdateHighScore(diff, finalScore);
 
@@ -136,6 +149,74 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     {
         Logger::Log(U8("ハイスコア更新！"));
     }
+
+
+    Logger::Log("=============================");
+
+    auto uiManager = GetOwnerScene()->GetUIManager();
+    XMFLOAT2 uiPos = { 500.0f,500.0f };
+    XMFLOAT2 uiSize = { 400.0f,150.0f };
+
+    // 合計個数UI描画
+    totalCountUi = std::make_shared<UIImageComponent>("./Data/Textures/UI/Result/result_total_count.png", "result_total_count");
+    totalCountUi->SetWorldPosition({ uiPos.x, uiPos.y });
+    totalCountUi->SetPivot({ 0.5f,0.5f });
+    totalCountUi->SetSize(uiSize);
+    uiManager->Add(totalCountUi);
+
+    uiPos.y += 140.0f;
+
+    // 注文ミスをしないUI描画
+    noMissOrderUi = std::make_shared<UIImageComponent>("./Data/Textures/UI/Result/result_no_miss_order.png", "result_no_miss_order");
+    noMissOrderUi->SetWorldPosition({ uiPos.x, uiPos.y });
+    noMissOrderUi->SetPivot({ 0.5f,0.5f });
+    noMissOrderUi->SetSize(uiSize);
+    uiManager->Add(noMissOrderUi);
+
+    uiPos.y += 140.0f;
+
+    // 連続正解の個数UI描画
+    streakCountUi = std::make_shared<UIImageComponent>("./Data/Textures/UI/Result/result_streak_count.png", "result_streak_count");
+    streakCountUi->SetWorldPosition({ uiPos.x, uiPos.y });
+    streakCountUi->SetPivot({ 0.5f,0.5f });
+    streakCountUi->SetSize(uiSize);
+    uiManager->Add(streakCountUi);
+
+    uiPos.y += 140.0f;
+
+    // フィーバー中の提供の個数UI描画
+    feverCountUi = std::make_shared<UIImageComponent>("./Data/Textures/UI/Result/result_fever_count.png", "result_fever_count");
+    feverCountUi->SetWorldPosition({ uiPos.x, uiPos.y });
+    feverCountUi->SetPivot({ 0.5f,0.5f });
+    feverCountUi->SetSize(uiSize);
+    uiManager->Add(feverCountUi);
+
+    // ランクS
+    rankSUi = std::make_shared<UIImageComponent>("./Data/Textures/UI/Result/result_rank_s.png", "result_rank_s");
+    rankSUi->SetWorldPosition({ uiPos.x, uiPos.y });
+    rankSUi->SetPivot({ 0.5f,0.5f });
+    rankSUi->SetSize(uiSize);
+    uiManager->Add(rankSUi);
+
+    std::shared_ptr<UIImageComponent> rankAUi; // ランクA
+    std::shared_ptr<UIImageComponent> rankBUi; // ランクB
+    std::shared_ptr<UIImageComponent> rankCUi; // ランクC
+    std::shared_ptr<UIImageComponent> rankDUi; // ランクD
+
+    // 次のランクSの時に表示するUI
+    nextRankSUi = std::make_shared<UIImageComponent>("./Data/Textures/UI/Result/result_rank_no_next.png", "result_rank_no_next");
+    nextRankSUi->SetWorldPosition({ uiPos.x, uiPos.y });
+    nextRankSUi->SetPivot({ 0.5f,0.5f });
+    nextRankSUi->SetSize(uiSize);
+    uiManager->Add(nextRankSUi);
+
+    std::shared_ptr<UIImageComponent> nextRankAUi; // 次のランクAの時に表示するUI
+    std::shared_ptr<UIImageComponent> nextRankBUi; // 次のランクBの時に表示するUI
+    std::shared_ptr<UIImageComponent> nextRankCUi; // 次のランクCの時に表示するUI
+    std::shared_ptr<UIImageComponent> nextRankDUi; // 次のランクDの時に表示するUI
+
+
+
 }
 
 void OdenResultScoreActor::Update(float deltaTime)
@@ -154,12 +235,6 @@ void OdenResultScoreActor::Update(float deltaTime)
     {
         scoreTextUi->SetText(std::to_wstring(static_cast<int>(displayScore)));
         scoreTextUi->SetWorldPosition({ baseScorePos.x,baseScorePos.y + popupOffsetY });
-    }
-    // 総合スコアを表示する
-    if (scoreBackTextUi)
-    {
-        scoreBackTextUi->SetText(std::to_wstring(static_cast<int>(displayScore)));
-        scoreBackTextUi->SetWorldPosition({ baseScorePos.x,baseScorePos.y + popupOffsetY });
     }
 
 
@@ -204,13 +279,12 @@ void OdenResultScoreActor::SetFontAndMakeTextComponent()
     auto uiManager = GetOwnerScene()->GetUIManager();
     uiManager->Add(scoreTextUi);
 
-    scoreBackTextUi = std::make_shared<UITextComponent>("scoreFont");
-    scoreBackTextUi->SetWorldPosition(baseScorePos);
-    scoreBackTextUi->SetScale({ 3.5f, 3.5f });
-    scoreBackTextUi->SetPivot({ 0.5f,0.5f });
-    scoreBackTextUi->SetColor(CoreColor::Black);
-    scoreBackTextUi->zOrder = 15;
-    uiManager->Add(scoreBackTextUi);
+
+    std::shared_ptr<UITextComponent> noMissScoreTextUi; // 注文ミスをしないスコア数字描画
+    std::shared_ptr<UITextComponent> totalCountTextUi; // 合計個数の数字描画
+    std::shared_ptr<UITextComponent> streakCountTextUi; // 連続正解の個数テキスト描画
+    std::shared_ptr<UITextComponent> feverCountTextUi; // フィーバー中の提供の個数テキスト描画
+
 
 }
 

@@ -981,6 +981,8 @@
     <ClInclude Include="Source\Game\OdenGame\OdenUIEndActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenUIStartActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenHighScoreData.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenRank.h" />
+    <ClInclude Include="Source\Game\OdenGame\SubmitSEPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

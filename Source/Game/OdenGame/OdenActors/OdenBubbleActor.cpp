@@ -6,6 +6,7 @@
 #include "StarParticleActor.h"
 #include "Engine/Scene/Scene.h"
 #include "Game/OdenGame/OdenGameSession.h"
+#include "Game/OdenGame/SubmitSEPlayer.h"
 #include "Physics/CollisionFunction.h"
 
 #include "Game/OdenGame/OdenActors/OdenIngredientActor.h"
@@ -324,7 +325,9 @@ void OdenBubbleActor::OnIngredientDropped(const OdenIngredientActor& ingredient)
         if (score == EScore::Perfect)
         {
             // 提出音　成功SE再生
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/succeed_submit.wav");
+
+            SubmitSEPlayer::Play();
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/succeed_submit.wav");
             // 総合スコアを加算する
             if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
             {
