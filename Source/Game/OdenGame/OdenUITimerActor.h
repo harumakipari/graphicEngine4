@@ -39,6 +39,8 @@ private:
 
     std::shared_ptr<EasingRunner> easingRunner;
 
+    std::shared_ptr<UIImageComponent> timerPlusUi;  // フィーバーによって＋3秒された描画
+
     int remainingTimer = 0; // 残り時間（秒）
 
     ETimerAnimState timerAnimState = ETimerAnimState::Normal;
@@ -49,4 +51,5 @@ private:
 
     XMFLOAT2 tensPosition={};
     XMFLOAT2 onesPosition = {};
+    XMFLOAT2 timerPos = { 1600.0f,200.0f };
 };

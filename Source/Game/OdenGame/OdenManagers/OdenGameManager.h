@@ -114,6 +114,8 @@ public:
     // ゲームの入力処理状態を取得する
     bool IsGameInputEnabled() const { return gameInputEnabled; }
 
+    // フィーバーに入った瞬間を取得する
+    bool ConsumeFeverMode();
 private:
     // コンボを加算する
     void AddCombo();
@@ -148,4 +150,7 @@ private:
 
     // ゲームの入力を許可するかどうかのフラグ
     bool gameInputEnabled = true;
+
+    // フィーバーに入った瞬間を取得する
+    bool justFeverMode = false;
 };

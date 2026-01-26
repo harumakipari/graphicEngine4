@@ -28,7 +28,7 @@ float EaseOutBounce(float t)
 
 void OdenUITimerActor::Initialize(const Transform& transform)
 {
-    const auto scene = GetOwnerScene();
+    auto uiManager = GetOwnerScene()->GetUIManager();
 
     tensPosition = { 1737.0f, 88.0f };
     onesPosition = { 1835.0f, 88.0f };
@@ -38,14 +38,23 @@ void OdenUITimerActor::Initialize(const Transform& transform)
     timerOnesUi->SetPivot({ 0.5f,0.5f });
     timerOnesUi->SetSize({ 90, 120 });
     timerOnesUi->zOrder = 100;
-    scene->GetUIManager()->Add(timerOnesUi);
+    uiManager->Add(timerOnesUi);
 
     timerTensUi = std::make_shared<UIImageComponent>("./Data/Textures/UI/number.png", "timer_tens_number");
     timerTensUi->SetWorldPosition(tensPosition);
     timerTensUi->SetPivot({ 0.5f,0.5f });
     timerTensUi->SetSize({ 90, 120 });
     timerTensUi->zOrder = 100;
-    scene->GetUIManager()->Add(timerTensUi);
+    uiManager->Add(timerTensUi);
+
+    // フィーバーによって＋3秒された描画
+    timerPlusUi = std::make_shared<UIImageComponent>("./Data/Textures/UI/plusTimer.png", "plusTimer");
+    timerPlusUi->SetWorldPosition(timerPos);
+    timerPlusUi->SetSize({ 280, 200 });
+    timerPlusUi->SetVisible(false);
+    timerPlusUi->zOrder = 20;
+    uiManager->Add(timerPlusUi);
+
 
     easingRunner = std::make_shared<EasingRunner>();
 }
@@ -54,7 +63,7 @@ void OdenUITimerActor::Update(float elapsedTime)
 {
     easingRunner->Tick(elapsedTime);
 
-    // 総合スコアを加算する
+    // 残り時間を計算する
     if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
     {
         if (auto gameManager = std::dynamic_pointer_cast<OdenGameManager>(actor))

@@ -72,6 +72,8 @@ cbuffer CLOTH_SIMULATE_CBUFFER : register(b10)
     uint vertexCount;
     float windPhaseOffset;
     float windBase;
+
+    float3 windEmitPosition;
 };
 
 cbuffer SPHERE_CBUFFER : register(b7)
@@ -236,7 +238,7 @@ void main(uint3 id : SV_DispatchThreadID)
     if (edgeCount > 0)
     {
         // ‰^“®•û’ö® d—Í ~ ¿—Ê
-        //float4 forceWorld = float4(0, 0, 0, 0);
+        // float4 forceWorld = float4(0, 0, 0, 0);
         float4 forceWorld = float4(0, -4.0 * MASS, 0, 0);
         // d—Í‚ğƒ‚ƒfƒ‹‹óŠÔ‚É•ÏŠ·‚·‚é
         float4 forceLocal4 = mul(forceWorld, invWorld);
@@ -244,12 +246,13 @@ void main(uint3 id : SV_DispatchThreadID)
         float3 currentVelocity = inVertex.velocity;
 #if 1
         // •—‚Ì‰e‹¿
-        float4 windDirWorld = normalize(float4(1, 0, 1, 0)); // Z²•ûŒü
+        float3 windDir = windEmitPosition - outVertex.oldPosition;
+        float4 windDirWorld = normalize(float4(windDir, 0));
         float4 windDirLocal4 = mul(windDirWorld, invWorld);
         //float windBase = 5.0f;
-        float windVariation =windPhaseOffset;
+        float windVariation = windPhaseOffset;
 
-        float phase = elapsedTime * 2.0f - currentPos.y * 1.5f /*+ windPhaseOffset*/;
+        float phase = elapsedTime * 2.0f + windPhaseOffset - currentPos.y * 1.5f /*+ windPhaseOffset*/;
 
         // ŠÔ‚ÆˆÊ’u‚É‚æ‚é‚ä‚ç‚¬
         float w = sin(phase) * 0.5f + 0.5f;

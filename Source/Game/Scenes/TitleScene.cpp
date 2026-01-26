@@ -51,10 +51,8 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
         });
 
 #endif // 0
-
     // セーブデータをロードする
     OdenHighScoreData::Instance().Load();
-
     return true;
 }
 

@@ -120,6 +120,8 @@ public:
         int vertexCount = 0;
         float windPhaseOffset = 0.0f;
         float windBase = 5.0f;
+
+        DirectX::XMFLOAT3 windEmitPosition={0.0f,0.0f,0.0f};    // •—‚ª”­¶‚µ‚Ä‚¢‚éêŠ
     };
     std::unique_ptr<ConstantBuffer<ClothSimulateCBuffer>> cbuffer;
 

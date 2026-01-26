@@ -120,6 +120,9 @@ void OdenGameManager::StartFeverMode()
     // fever“ü‚é‚Æ{3•b
     remainingTime += 3.0f;
     remainingTime = std::min<float>(remainingTime, maxTime);
+
+    justFeverMode = true;
+
     Logger::Log(U8("fever‚Ì‚É{‚R•b‚³‚ê‚½")+std::to_string(remainingTime));
 
     // ƒsƒbƒ` ‚Ì easing
@@ -220,6 +223,17 @@ void OdenGameManager::AddSubmitLog(EOdenType type, float score)
     //auto& session = OdenGameSession::Instance();
     //session.submitLogs.push_back({ type,1,score });
     //session.ingredientCount[type]++;
+}
+
+// ƒtƒB[ƒo[‚É“ü‚Á‚½uŠÔ‚ğæ“¾‚·‚é
+bool OdenGameManager::ConsumeFeverMode()
+{
+    if (justFeverMode)
+    {
+        justFeverMode = false;
+        return true;
+    }
+    return false;
 }
 
 // ƒRƒ“ƒ{‚ğ‰ÁZ‚·‚é
