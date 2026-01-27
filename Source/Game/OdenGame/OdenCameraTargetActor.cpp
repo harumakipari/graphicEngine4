@@ -49,8 +49,6 @@ void OdenCameraTargetActor::StartEasing(float moveTime, float from, float to)
 
     handler.SetCompletedFunction([this]()
         {
-            //if (onMoveFinished)
-            //    onMoveFinished();
         });
 
     PropertyAccessor<float> accessor;

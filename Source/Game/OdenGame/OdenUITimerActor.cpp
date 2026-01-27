@@ -317,8 +317,8 @@ void OdenUITimerActor::Play()
         TestEasingHandler handler;
         handler.AddEasing(
             TestEaseType::OutExp,
+            450.0f,
             300.0f,
-            150.0f,
             upTimer
         );
 

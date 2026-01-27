@@ -118,20 +118,9 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     //アクターをセット
     SetUpActors();
 
-    // 暖簾のモデルを作成
-    // clothSimulate = std::make_unique<ClothSimulate>(device, "./Data/Models/Oden_Store/cloth1.gltf");
-
     // おでんの汁の定数バッファを作成
     odenSoupCBuffer = std::make_unique<ConstantBuffer<OdenSoupConstantBuffer>>(Graphics::GetDevice());
 
-    // ここで布を描画する
-    RegisterRenderHook(RenderPass::Opaque, [&](ID3D11DeviceContext* immediateContext)
-        {
-            if (const auto cloth = GetActorManager()->GetActorByName("cloth"))
-            {
-                //   clothSimulate->Render(immediateContext, cloth->GetWorldTransform());
-            }
-        });
 
     // 水のノーマルテクスチャを追加
     D3D11_TEXTURE2D_DESC texture2dDesc;
@@ -280,7 +269,6 @@ void MainScene::Update(float deltaTime)
 {
     using namespace DirectX;
     SceneBase::Update(deltaTime);
-    clothSimulate->Update(deltaTime);
     Physics::Instance().Update(Time::UnscaledDeltaTime());
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
@@ -290,15 +278,15 @@ void MainScene::Update(float deltaTime)
 void MainScene::SetUpActors()
 {
     // メインカメラのターゲットアクターを生成
-    Transform cameraTargetTr(DirectX::XMFLOAT3{ 5.4f,0.0f,4.3f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ 5.4f,0.0f,3.4f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto mainCameraTarget = GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("MainCameraActorTarget", cameraTargetTr);
 
     // メインカメラアクターを生成
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     mainCameraComponent->target = (mainCameraTarget->GetRootComponent());
-    mainCameraComponent->pitch = DirectX::XMConvertToRadians(71.5f);
-    mainCameraComponent->distance = 18.4f;
+    mainCameraComponent->pitch = DirectX::XMConvertToRadians(68.0f);
+    mainCameraComponent->distance = 16.4f;
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("MainSceneのカメラ設定される。"));
 

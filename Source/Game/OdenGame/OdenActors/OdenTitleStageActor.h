@@ -11,7 +11,7 @@ class OdenTitleStageActor :public Actor
 private:
     enum class Difficulty :uint8_t
     {
-        Tutorial,
+        Tutorial = -1,
         Easy,
         Normal,
         Hard
