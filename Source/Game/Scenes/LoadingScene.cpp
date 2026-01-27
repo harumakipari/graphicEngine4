@@ -51,7 +51,7 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
     preload_scene = props.at("preload");
     _async_preload_scene(device, width, height, preload_scene);
 
-    useDeferredRendering = false;
+    //useDeferredRendering = false;
     loadingSprite = std::make_shared<Sprite>(device, L"./Data/Textures/UI/scene_change_blue.png");
 
     return true;
@@ -78,12 +78,16 @@ void LoadingScene::Start()
     sprite->SetSize({ width, height });
     sprite->zOrder = 1000;
 
-#if 1
+
+    backImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/scene_change_blue1.png", "backGround");
+    backImage->SetSize({ 1920, 1080 });
+
+#if 0
     GetUIManager()->Add(sprite);
 #else
-    RegisterRenderHook(RenderPass::UI, [&](ID3D11DeviceContext* immediateContext)
+    RegisterRenderHook(RenderPass::Sky, [&](ID3D11DeviceContext* immediateContext)
         {
-            sprite->Draw(immediateContext);
+            backImage->Draw(immediateContext);
         });
 #endif // 0
 }
@@ -123,13 +127,13 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime
     {
         shaderToyCBuffer->Activate(immediateContext, 7);
     }
-    //SceneBase::Render(immediateContext, deltaTime);
+    SceneBase::Render(immediateContext, deltaTime);
     //loadingSprite->Render(immediateContext, 0, 0, 1920.0f, 1080.0f);
-    sprite->Draw(immediateContext);
+    // sprite->Draw(immediateContext);
 }
 
 
 void LoadingScene::DrawGui()
 {
-    // SceneBase::DrawGui();
+     SceneBase::DrawGui();
 }

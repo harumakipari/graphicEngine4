@@ -58,6 +58,29 @@ void OdenUITimerActor::Initialize(const Transform& transform)
 
     easingRunner = std::make_shared<EasingRunner>();
     easingTimerPlus = std::make_shared<EasingRunner>();
+
+    std::string parentName = "skeletalMeshComponent";
+
+    // タイマーのモデル
+    timerObj = AddComponent<SkeletalMeshComponent>(parentName);
+    timerObj->SetModel("./Data/Models/Oden_Timer/Oden_Timer_Model.gltf"); // タイマーのモデル
+    timerObj->SetRelativeLocationDirect({ 14.3f,3.4f,7.2f });
+
+
+    for (int i = 0; i < 10; i++)
+    {
+        std::string tensFileModelName = "./Data/Models/Oden_Timer/Oden_Timer_Tens_Model_" + std::to_string(i) + ".gltf";
+        std::string oneFileModelName = "./Data/Models/Oden_Timer/Oden_Timer_Ones_Model_" + std::to_string(i) + ".gltf";
+
+        timerTensObj[i] = AddComponent<SkeletalMeshComponent>("tensModel_" + std::to_string(i), parentName);
+        timerTensObj[i]->SetModel(tensFileModelName); // タイマーの十の位モデル
+        timerTensObj[i]->SetIsVisible(false); 
+
+        timerOnesObj[i] = AddComponent<SkeletalMeshComponent>("onesModel_" + std::to_string(i), parentName);
+        timerOnesObj[i]->SetModel(oneFileModelName); // タイマーの一の位モデル
+        timerOnesObj[i]->SetIsVisible(false);
+    }
+
 }
 
 void OdenUITimerActor::Update(float elapsedTime)

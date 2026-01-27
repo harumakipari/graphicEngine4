@@ -15,7 +15,7 @@ public:
         Normal,          // 11秒以上
         FadeOnly,        // 10秒専用（フェードだけ）
         FadeOut,         // ９秒以下（フェードアウト）
-        PopWarning         
+        PopWarning
     };
 
     enum class EPopPhase
@@ -46,6 +46,10 @@ private:
 
     std::shared_ptr<UIImageComponent> timerPlusUi;  // フィーバーによって＋3秒された描画
 
+    std::shared_ptr<SkeletalMeshComponent> timerObj;    // タイマーのモデル
+    std::shared_ptr<SkeletalMeshComponent> timerTensObj[10];    // タイマーの十の位モデル
+    std::shared_ptr<SkeletalMeshComponent> timerOnesObj[10];    // タイマーの一の位モデル
+
     int remainingTimer = 0; // 残り時間（秒）
 
     ETimerAnimState timerAnimState = ETimerAnimState::Normal;
@@ -54,7 +58,7 @@ private:
     EPopPhase popPhase = EPopPhase::Pop;
     float popupScale = 1.0f;
 
-    XMFLOAT2 tensPosition={};
+    XMFLOAT2 tensPosition = {};
     XMFLOAT2 onesPosition = {};
     XMFLOAT2 timerPos = { 1600.0f,200.0f };
 

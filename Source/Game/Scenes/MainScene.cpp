@@ -147,7 +147,7 @@ void MainScene::Start()
     audioBgmComponent->SetSource(L"./Data/Sound/BGM/game.wav");
     audioBgmComponent->SetLoop(true);
     audioBgmComponent->SetVolume(0.8f);
-    
+
     audioPotBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
     audioPotBgmComponent->SetSource(L"./Data/Sound/BGM/pot_bgm.wav");
     audioPotBgmComponent->SetLoop(true);
@@ -250,7 +250,8 @@ void MainScene::Start()
     uiScoreViewActor->SetFontAndMakeTextComponent();
 
     // 時間を表示するアクターを生成
-    auto uiTimerActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUITimerActor>("OdenUITimerActor");
+    Transform uiTimerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto uiTimerActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUITimerActor>("OdenUITimerActor", uiTimerTr);
 
     // フィーバーゲージを表示するアクターを生成
     Transform uiGaugeTr(DirectX::XMFLOAT3{ -6.1f,0.0f,9.6f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });

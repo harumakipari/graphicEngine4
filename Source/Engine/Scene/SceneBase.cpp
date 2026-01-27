@@ -159,6 +159,9 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
 
+    dummyTexture= std::make_shared<UIImageComponent>("./Data/Textures/UI/scene_change_blue1.png", "backGround");
+    dummyTexture->SetSize({ 1920, 1080 });
+
     return true;
 }
 
@@ -418,6 +421,9 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
             skyMap->Blit(immediateContext, data.viewProjection);
         }
         ExecuteHooks(RenderPass::Sky, immediateContext);
+
+
+        //dummyTexture->Draw(immediateContext);
 
         RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);

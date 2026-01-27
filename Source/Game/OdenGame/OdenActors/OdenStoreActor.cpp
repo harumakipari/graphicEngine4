@@ -14,6 +14,12 @@ void OdenStoreActor::Initialize(const Transform& transform)
     boxComponent->SetRelativeLocationDirect({ 6.0f,0.0f,6.0f });
     boxComponent->Initialize();
 
+
+    auto stageModel = AddComponent<StaticMeshComponent>("Oden_Store_Model", parentName);
+    stageModel->SetModel("./Data/Models/Oden_Store/Oden_GameStage.gltf", false);
+    //stageModel->SetRelativeScaleDirect({ -1.0f,1.0f,1.0f });
+    stageModel->SetRelativeLocationDirect({ 6.0f,0.0f,2.0f });
+
     storeModelComponent = AddComponent<StaticMeshComponent>("Oden_Store_Model", parentName);
     storeModelComponent->SetModel("./Data/Models/Oden_Store/Oden_frame.gltf", false);
     storeModelComponent->SetRelativeScaleDirect({ -1.0f,1.0f,-1.0f });
