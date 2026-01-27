@@ -518,7 +518,7 @@ void ClothSimulate::Update(float deltaTine)
         RecreateClothBuffers(Graphics::GetDevice());
     }
 
-#if 1
+#if 0
     ImGui::DragFloat("windVariation", &windPhaseOffset, 0.5f);
     ImGui::DragFloat("windBase", &windBase, 0.5f);
 

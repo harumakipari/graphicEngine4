@@ -17,8 +17,15 @@ public:
     void DrawImGuiDetails() override;
 
     // ターゲットの移動開始  何秒で移動するか
-    void Play(float moveTime);
+    void PlayToTarget(float moveTime);
 
+    // ターゲットの移動開始  何秒で移動するか
+    void PlayToOrigin(float moveTime);
+private:
+    void StartEasing(float moveTime, float from, float to);
+
+public:
+    std::function<void()> onMoveFinished;
 private:
     std::shared_ptr<CoreEasingComponent> easingComponent;
 

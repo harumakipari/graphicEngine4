@@ -510,7 +510,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     if (useDrawDebug)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         DebugDrawManager::Render(immediateContext);
         ExecuteHooks(RenderPass::Debug, immediateContext);
     }

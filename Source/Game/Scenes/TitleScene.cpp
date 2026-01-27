@@ -169,10 +169,27 @@ void TitleScene::Start()
         button->SetSize({ 400, 150 });
         uiManager->Add(button);
 
-        button->onClick = []()
+        button->onClick = [this]()
             {
                 Logger::Log(u8"難易度選択のカメラ遷移");
+                phase = TitlePhase::CameraMovingIn;
+                mainCameraTarget->PlayToTarget(3.0f);
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            };
+    }
 
+    // ゲーム戻るボタンの作成
+    {
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/back_to_title.png", "back_to_title");
+        button->SetWorldPosition({ 300, 750 });
+        button->SetSize({ 400, 150 });
+        uiManager->Add(button);
+
+        button->onClick = [this]()
+            {
+                Logger::Log(u8"難易度選択のカメラ遷移");
+                phase = TitlePhase::CameraMovingOut;
+                mainCameraTarget->PlayToOrigin(3.0f);
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
             };
     }
@@ -198,6 +215,13 @@ void TitleScene::SetUpActors()
     // メインカメラのターゲットアクターを生成
     Transform cameraTargetTr(DirectX::XMFLOAT3{ -12.3f,13.8f,-12.5f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     mainCameraTarget = GetActorManager()->CreateAndRegisterActorWithTransform<OdenCameraTargetActor>("MainCameraActorTarget", cameraTargetTr);
+    mainCameraTarget->onMoveFinished = [this]()
+        {
+            if (phase == TitlePhase::CameraMovingIn)
+                phase = TitlePhase::DifficultySelect;
+            else if (phase == TitlePhase::CameraMovingOut)
+                phase = TitlePhase::StartWait;
+        };
 
     // メインカメラアクターを生成
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
@@ -215,10 +239,8 @@ void TitleScene::SetUpActors()
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
     cameraManager->SetDebugCamera(debugCameraActor);
 #endif // !_DEBUG
-
     // 暖簾を生成
     //Transform clothTr(DirectX::XMFLOAT3{ 6.3f,7.9f,16.5f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-
 
     // ステージアクターを生成
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });

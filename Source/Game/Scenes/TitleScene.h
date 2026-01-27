@@ -17,6 +17,14 @@ class OdenCameraTargetActor;
 class TitleScene : public SceneBase
 {
 public:
+    enum class TitlePhase :uint8_t
+    {
+        StartWait,        // スタート前（看板は無効）
+        CameraMovingIn,   // カメラ寄り中
+        DifficultySelect, // 難易度選択中（有効）
+        CameraMovingOut   // 戻り中
+    };
+public:
     bool Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props) override;
 
     void Start() override;
@@ -34,6 +42,9 @@ public:
     //シーンの自動登録
     static inline Scene::Autoenrollment<TitleScene> _autoenrollment;
 
+public:
+    TitlePhase GetPhase() const { return phase; }
+
 private:
     // カメラのターゲットを移動する
     void MoveCameraTarget(const XMFLOAT3 originPos, const XMFLOAT3 targetPos);
@@ -42,7 +53,9 @@ private:
     std::shared_ptr<OdenCameraTargetActor> mainCameraTarget;
 
     std::unique_ptr<ClothSimulate> clothSimulate[5];
-    
+
     XMFLOAT3 titleCameraTargetPos = { -12.3f,13.8f,-12.5f };
     XMFLOAT3 selectCameraTargetPos = { -3.6f,5.7f,0.3f };
+
+    TitlePhase phase = TitlePhase::StartWait;
 };
