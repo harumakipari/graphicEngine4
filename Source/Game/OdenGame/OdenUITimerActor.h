@@ -32,8 +32,11 @@ public:
     void DrawImGuiDetails() override;
 
 private:
-    // タイマーの動き
+    // ＋３秒の動き
     void Play();
+
+    // 残り５秒のタイマーの動き
+    void PlayWarning();
 private:
     std::shared_ptr<UIImageComponent> timerOnesUi; // タイマーの一桁目のスプライト描画
     std::shared_ptr<UIImageComponent> timerTensUi; // タイマーの十桁目のスプライト描画

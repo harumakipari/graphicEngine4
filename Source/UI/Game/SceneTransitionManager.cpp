@@ -62,8 +62,6 @@ void SceneTransitionManager::Update(float deltaTime)
 
     case State::ChangingScene:
         // 新シーン生成後に呼ばれる想定
-        //transitionEffect->Start(TransitionDirection::Open);
-        //state_ = State::Opening;
         break;
 
     case State::Opening:

@@ -103,15 +103,15 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
 
     const std::vector<OdenSubmitLog>* logs = nullptr;
 
-#if _DEBUG
-    static bool useDebug = false; // ← ImGui で切り替えてもいい
+//#if _DEBUG
+    static bool useDebug = true; // ← ImGui で切り替えてもいい
     if (useDebug)
     {
         static std::vector<OdenSubmitLog> debugLogs = CreateDebugSubmitLogs();
         logs = &debugLogs;
     }
     else
-#endif
+//#endif
     {
         logs = &session.submitLogs;
     }
@@ -124,20 +124,22 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     {
         for (int i = 0; i < log.count; ++i)
         {
-#if 0
+#if 1
             std::string ingredientName = std::string(magic_enum::enum_name(log.type));
             if (ingredientName.empty())
             {
                 Logger::Log("Warning: SubmitLog has invalid EOdenType");
                 continue; // 作らない
             }
-
             // ここで配置位置を決めて生成する
 
-            //float x = 1.2f + globalIndex * 2.4f; // 横に並べる      
-            float x = 1.2f + globalIndex * 5.0f; // 横に並べる      
-            float y = 6.723f;                      // 高さ固定
+            float x = -20.1f + globalIndex * 3.0f;
+            float y = 10.723f;
             float z = -5.506f;
+
+            //float x =  globalIndex * 0.5f; // 横に並べる      
+            //float y = 10.723f+globalIndex * 1.0f;                      // 高さ固定
+            //float z = -5.506f + globalIndex * 1.0f;
             Transform ingredientTr(DirectX::XMFLOAT3{ x,y,z }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 2.5f,2.5f,2.5f });
             auto ingredientActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultIngredientActor>("OdenResultIngredient", ingredientTr, ingredientName);
             ingredientActor->SetFeverModeIngredient(log.wasFever);// フィーバー中に提出された具材かどうかを設定する
@@ -173,9 +175,8 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
             ingredientInSkewer++;
             if (ingredientInSkewer >= 3)
                 ingredientInSkewer = 0;
-        }
-
 #endif // 0
+        }
 
     }
 
@@ -389,6 +390,8 @@ void OdenResultScoreActor::AddScore(int add)
 float OdenResultScoreActor::CalcSpawnDelay() const
 {
     int total = static_cast<int>(resultIngredients.size());
+
+    return 1.5f;
 
     // 最初の2個
     if (spawnIndex < 1)

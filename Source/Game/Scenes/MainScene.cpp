@@ -189,8 +189,10 @@ void MainScene::Start()
     auto slotManager = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenSlotManager>("slotManager");
     slotManager->StartGame();
 
+#if 0
     // 右上に表示する次来る食材を表示する
     auto odenNextViewActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenNextViewActor>("odenNextViewActor");
+#endif // 0
 
     // ビートを設定する関数
     auto beatClockActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<BeatClockActor>("beatClockActor");
@@ -290,7 +292,6 @@ void MainScene::SetUpActors()
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("MainSceneのカメラ設定される。"));
 
-
 #ifdef _DEBUG
     // デバックカメラアクターを生成
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
@@ -304,7 +305,6 @@ void MainScene::SetUpActors()
     // 暖簾を生成
     Transform clothTr(DirectX::XMFLOAT3{ 1.0f,9.0f,6.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
     auto clothActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cloth", clothTr);
-
 
 }
 

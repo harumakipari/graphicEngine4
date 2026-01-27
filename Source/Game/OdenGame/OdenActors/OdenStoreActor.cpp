@@ -36,6 +36,5 @@ void OdenStoreActor::OnBeatPhase(float phase)
     storeModelComponent->SetRelativeScaleDirect({
         -1.0f * scale,
          1.0f * scale,
-        -1.0f * scale
-        });
+        -1.0f * scale});
 }

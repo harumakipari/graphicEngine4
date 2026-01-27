@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "OdenResultIngredientActor.h"
+#include "OdenResultIngredientTestActor.h"
 
 #include <magic_enum.hpp>
 
@@ -10,10 +10,9 @@
 #include "Game/Actors/Camera/Camera.h"
 
 
-void OdenResultIngredientActor::Initialize(const Transform& transform)
+void OdenResultIngredientTestActor::Initialize(const Transform& transform)
 {
     // 初期化処理
-
     // モデル登録
     std::string parentName = ingredientName + "_model";
 #if 1
@@ -64,6 +63,15 @@ void OdenResultIngredientActor::Initialize(const Transform& transform)
         ingredientType = EOdenType::None; // たとえばデフォルト
     }
 
+    // 当たり判定を登録
+    auto boxComponent = AddComponent<BoxComponent>(parentName);
+    DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
+    boxComponent->SetBoxExtent(size);
+    boxComponent->SetKinematic(false);
+    boxComponent->SetMass(40.0f);
+    boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);// おでんのゲームのカーソルのターゲット
+    boxComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
+    boxComponent->Initialize();
 
     //auto convexMeshComponent = AddComponent<ConvexCollisionComponent>("convexComponent", parentName);
     //convexMeshComponent->SetLayer(CollisionLayer::Convex);
@@ -73,7 +81,7 @@ void OdenResultIngredientActor::Initialize(const Transform& transform)
     //convexMeshComponent->CreateConvexMeshFromModel(ingredientModel.get());
 }
 
-void OdenResultIngredientActor::Update(float deltaTime)
+void OdenResultIngredientTestActor::Update(float deltaTime)
 {
     // 更新処理
     if (isPlayEffect)
@@ -104,8 +112,6 @@ void OdenResultIngredientActor::Update(float deltaTime)
     }
 
 #if 0
-
-
     totalTime += deltaTime;
     // 浮遊
     constexpr float uniquePhase = 0.1f;
@@ -116,7 +122,7 @@ void OdenResultIngredientActor::Update(float deltaTime)
 }
 
 // 食材が登場する
-void OdenResultIngredientActor::AppearIngredient()
+void OdenResultIngredientTestActor::AppearIngredient()
 {
     if (particleComponent)
     {// エフェクト再生
@@ -138,22 +144,6 @@ void OdenResultIngredientActor::AppearIngredient()
     {
         audioComponent->Play();
     }
-
-
-    // 当たり判定を登録
-    auto boxComponent = AddComponent<BoxComponent>("boxComponent");
-    DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
-    size.x *= 2.5f;
-    size.y *= 2.5f;
-    size.z *= 2.5f;
-    boxComponent->SetBoxExtent(size);
-    boxComponent->SetKinematic(false);
-    boxComponent->SetMass(40.0f);
-    boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);// おでんのゲームのカーソルのターゲット
-    boxComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
-    boxComponent->Initialize();
-    boxComponent->AddImpulse({ 0.0f,0.0f,0.0f });
-
 #if 0
 
     TestEasingHandler handler;
@@ -191,7 +181,7 @@ void OdenResultIngredientActor::AppearIngredient()
 }
 
 // 串内のインデックス
-void OdenResultIngredientActor::SetIndexInSkewer(int index)
+void OdenResultIngredientTestActor::SetIndexInSkewer(int index)
 {
     //indexInSkewer = index;
 

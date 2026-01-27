@@ -66,8 +66,8 @@ private:
 
     // TODO: 最大の注文を聞ける人数
     static constexpr int MaxOrders = 3;
-    DirectX::XMFLOAT3 basePos = { 2.0f,3.0f,9.0f };
-    float spacing = 4.5f;
+    DirectX::XMFLOAT3 basePos = { -0.9f,1.2f,10.0f };
+    float spacing = 6.1f;
 
     float spawnOffsetZ = 3.0f; // 出現時のZオフセット
 

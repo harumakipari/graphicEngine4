@@ -38,14 +38,14 @@ void OdenUITimerActor::Initialize(const Transform& transform)
     timerOnesUi->SetPivot({ 0.5f,0.5f });
     timerOnesUi->SetSize({ 90, 120 });
     timerOnesUi->zOrder = 100;
-    uiManager->Add(timerOnesUi);
+    //uiManager->Add(timerOnesUi);
 
     timerTensUi = std::make_shared<UIImageComponent>("./Data/Textures/UI/number.png", "timer_tens_number");
     timerTensUi->SetWorldPosition(tensPosition);
     timerTensUi->SetPivot({ 0.5f,0.5f });
     timerTensUi->SetSize({ 90, 120 });
     timerTensUi->zOrder = 100;
-    uiManager->Add(timerTensUi);
+    //uiManager->Add(timerTensUi);
 
     // フィーバーによって＋3秒された描画
     timerPlusUi = std::make_shared<UIImageComponent>("./Data/Textures/UI/plusTimer.png", "plusTimer");
@@ -305,6 +305,10 @@ void OdenUITimerActor::DrawImGuiDetails()
     {
         Play();
     }
+    if (ImGui::Button("timerPlaying"))
+    {
+        PlayWarning();
+    }
 #endif
 }
 
@@ -336,4 +340,10 @@ void OdenUITimerActor::Play()
 
         easingTimerPlus->StartHandler(handler, accessor);
     }
+}
+
+// 残り５秒のタイマーの動き
+void OdenUITimerActor::PlayWarning()
+{
+    
 }

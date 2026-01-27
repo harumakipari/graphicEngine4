@@ -139,6 +139,7 @@ void OdenTitleStageActor::RequestChangeScene(Difficulty diff)
 {
     if (diff == Difficulty::Tutorial)
     {
+#if 1
         SceneTransitionManager::Instance().RequestTransition(
             "LoadingScene",
             {
@@ -146,9 +147,14 @@ void OdenTitleStageActor::RequestChangeScene(Difficulty diff)
                 {"difficulty", "0"}
             }
         );
+#else
+        const char* types[] = { "0", "1" };
+        Scene::_transition("LoadingScene", { std::make_pair("preload", "TutorialScene"),{"difficulty", "0"} });
+#endif // 0
     }
     else
     {
+#if 1
         SceneTransitionManager::Instance().RequestTransition(
             "LoadingScene",
             {
@@ -156,5 +162,11 @@ void OdenTitleStageActor::RequestChangeScene(Difficulty diff)
                 {"difficulty", std::to_string((int)diff)}
             }
         );
+#else
+        const char* types[] = { "0", "1" };
+        Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"), {"difficulty", std::to_string(static_cast<int>(diff))} });
+
+#endif // 0
+
     }
 }

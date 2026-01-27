@@ -211,12 +211,12 @@ public:
     }
 
     // デバック箱を描画するか
-    bool IsVisibleDebugBox() { return isVisibleDebugBox_; }
+    bool IsVisibleDebugBox() const { return isVisibleDebugBox_; }
 
     void SetIsVisibleDebugBox(const bool isVisibleDebugBox) { this->isVisibleDebugBox_ = isVisibleDebugBox; }
 
     // デバックの形状を描画するか
-    bool IsVisibleDebugShape() { return isVisibleDebugShape_; }
+    bool IsVisibleDebugShape() const { return isVisibleDebugShape_; }
 
     void SetIsVisibleDebugShape(const bool isVisibleDebugShape) { this->isVisibleDebugShape_ = isVisibleDebugShape; }
 

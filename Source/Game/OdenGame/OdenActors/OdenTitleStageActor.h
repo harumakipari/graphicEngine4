@@ -11,10 +11,10 @@ class OdenTitleStageActor :public Actor
 private:
     enum class Difficulty :uint8_t
     {
-        Tutorial = -1,
-        Easy,
-        Normal,
-        Hard
+        Tutorial = 5,
+        Easy = 0,
+        Normal = 1,
+        Hard = 2
     };
 
     struct DifficultySelect
