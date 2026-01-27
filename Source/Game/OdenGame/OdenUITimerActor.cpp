@@ -104,8 +104,15 @@ void OdenUITimerActor::Update(float elapsedTime)
     int onesNumber = remainingTimer % 10;
     int tensNumber = remainingTimer / 10;
 
-
+    for (int i = 0; i < 10; i++)
+    {
+        timerOnesObj[i]->SetIsVisible(false);
+    }
     timerOnesObj[onesNumber]->SetIsVisible(true);
+    for (int i = 0; i < 10; i++)
+    {
+        timerTensObj[i]->SetIsVisible(false);
+    }
     timerTensObj[tensNumber]->SetIsVisible(true);
 
     timerOnesUi->SetUV({ 150.0f * onesNumber,0.0f,150.0f,200.0f });

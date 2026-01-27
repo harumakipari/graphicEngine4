@@ -38,6 +38,24 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
         clothSimulate[i] = std::make_unique<ClothSimulate>(device, filename);
     }
 
+    clothSimulate[0]->windPhaseOffset = 5.0f;
+    clothSimulate[1]->windPhaseOffset = 5.0f;
+    clothSimulate[2]->windPhaseOffset = 5.0f;
+    clothSimulate[3]->windPhaseOffset = 5.0f;
+    clothSimulate[4]->windPhaseOffset = 5.0f;
+
+    clothSimulate[0]->windBase = -0.5f;
+    clothSimulate[1]->windBase = 7.0f;
+    clothSimulate[2]->windBase = 7.0f;
+    clothSimulate[3]->windBase = 6.0f;
+    clothSimulate[4]->windBase = -10.5f;
+
+    clothSimulate[0]->windEmitPosition = { -9.5f,10.0f,27.5f };
+    clothSimulate[1]->windEmitPosition = { -4.5f,14.0f,25.5f };
+    clothSimulate[2]->windEmitPosition = { -34.5f,14.5f,5.5f };
+    clothSimulate[3]->windEmitPosition = { -38.0f,4.0f,4.0f };
+    clothSimulate[4]->windEmitPosition = { -34.0f,4.0f,5.5f };
+
     // ‚±‚±‚Å•z‚ð•`‰æ‚·‚é
     RegisterRenderHook(RenderPass::Mask, [&](ID3D11DeviceContext* immediateContext)
         {
@@ -209,8 +227,8 @@ void TitleScene::SetUpActors()
 
     for (int i = 0; i < 5; i++)
     {
-       Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.1f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 90.0f,90.0f,-90.0f }, DirectX::XMFLOAT3{ -0.46f,1.0f,0.36f });
-      //  Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.2f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.48f,1.0f,0.48f });
+        Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.1f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 90.0f,90.0f,-90.0f }, DirectX::XMFLOAT3{ -0.46f,1.0f,0.36f });
+        //  Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.2f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.48f,1.0f,0.48f });
         std::string actorName = "noren_" + std::to_string(i + 1);
         auto clothActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>(actorName, clothTr);
 #if 0

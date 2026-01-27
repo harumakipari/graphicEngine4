@@ -15,6 +15,7 @@
 
 #include "Engine/Utility/Win32Utils.h"
 #include "Engine/Debug/Assert.h"
+#include "Engine/Debug/DebugDrawManager.h"
 #include "Engine/Serialization/DirectXSerializers.h"
 #include "Graphics/Core/Shader.h"
 #include "Graphics/Resource/Texture.h"
@@ -517,13 +518,17 @@ void ClothSimulate::Update(float deltaTine)
         RecreateClothBuffers(Graphics::GetDevice());
     }
 
-    //ImGui::DragFloat("windVariation", &windPhaseOffset, 0.5f);
-    //ImGui::DragFloat("windBase", &windBase, 0.5f);
-    //ImGui::DragFloat3("windEmitPosition", &cbuffer->data.windEmitPosition.x, 0.5f);
+#if 1
+    ImGui::DragFloat("windVariation", &windPhaseOffset, 0.5f);
+    ImGui::DragFloat("windBase", &windBase, 0.5f);
+
+    ImGui::DragFloat3("windEmitPosition", &windEmitPosition.x, 0.5f);
+
+#endif // 0
 
     ImGui::End();
 #endif
-
+  //  DebugDrawManager::DrawSphere(cbuffer->data.windEmitPosition, 0.5f, { 1.0f,1.0f,0.0f,1.0f });
 
 }
 
@@ -1122,6 +1127,7 @@ void ClothSimulate::CreateAndUploadResources(ID3D11Device* device)
     cbuffer->data.vertexCount = static_cast<int>(allVertices.size());
     cbuffer->data.windPhaseOffset = windPhaseOffset;
     cbuffer->data.windBase = windBase;
+    cbuffer->data.windEmitPosition = windEmitPosition;
     for (auto& mesh : meshes)
     {
         for (auto& primitive : mesh.primitives)

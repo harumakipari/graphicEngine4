@@ -125,11 +125,13 @@ public:
     };
     std::unique_ptr<ConstantBuffer<ClothSimulateCBuffer>> cbuffer;
 
-private:
-    std::vector<Node> nodes;
-
     float windPhaseOffset = 5.0f;
     float windBase = 6.0f;
+    DirectX::XMFLOAT3 windEmitPosition = {};
+
+
+private:
+    std::vector<Node> nodes;
 
 public:
 
