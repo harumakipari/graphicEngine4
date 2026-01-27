@@ -45,9 +45,8 @@ public:
 public:
     TitlePhase GetPhase() const { return phase; }
 
-private:
-    // カメラのターゲットを移動する
-    void MoveCameraTarget(const XMFLOAT3 originPos, const XMFLOAT3 targetPos);
+    void SetPhase(const TitlePhase phase) { this->phase = phase; }
+
 private:
     // カメラのターゲットアクター
     std::shared_ptr<OdenCameraTargetActor> mainCameraTarget;

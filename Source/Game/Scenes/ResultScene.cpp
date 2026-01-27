@@ -103,15 +103,7 @@ void ResultScene::Start()
     resultActor->SetFontAndMakeTextComponent();
 
     Transform stageTr(DirectX::XMFLOAT3{ 0.f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto stageActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("resultStage", stageTr);
-    auto boxComponent = stageActor->AddComponent<BoxComponent>("boxComponent");
-    DirectX::XMFLOAT3 size = { 80.0f,1.0f,80.0f };
-    boxComponent->SetBoxExtent(size);
-    boxComponent->SetMass(40.0f);
-    boxComponent->SetLayer(CollisionLayer::WorldStatic);
-    boxComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
-    //boxComponent->SetRelativeLocationDirect({ 6.0f,0.0f,6.0f });
-    boxComponent->Initialize();
+    auto stageActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultStageActor>("resultStage", stageTr);
 
 
 #endif // 1

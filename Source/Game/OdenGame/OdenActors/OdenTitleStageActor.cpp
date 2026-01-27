@@ -88,7 +88,8 @@ void OdenTitleStageActor::Update(float elapsedTime)
 
 
     auto scene = Scene::GetCurrentScene();
-    if (auto titleScene = dynamic_cast<TitleScene*>(scene))
+    auto titleScene = dynamic_cast<TitleScene*>(scene);
+    if (titleScene)
     {
         if (titleScene->GetPhase() != TitleScene::TitlePhase::DifficultySelect)
         {// 選択画面じゃなかったら
@@ -113,6 +114,7 @@ void OdenTitleStageActor::Update(float elapsedTime)
         if (hitThis && InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
         {
             Logger::Log(U8("難易度選択のモデルを押した"));
+            titleScene->SetPhase(TitleScene::TitlePhase::StartWait); // これで板のスケールが変わらないようにsる
             RequestChangeScene(d.difficulty);
         }
     }

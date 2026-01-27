@@ -391,7 +391,7 @@ float OdenResultScoreActor::CalcSpawnDelay() const
 {
     int total = static_cast<int>(resultIngredients.size());
 
-    return 1.5f;
+    return 0.5f;
 
     // Å‰‚Ì2ŒÂ
     if (spawnIndex < 1)

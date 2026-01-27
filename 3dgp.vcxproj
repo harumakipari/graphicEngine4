@@ -310,7 +310,6 @@
     <ClCompile Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenTrashActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenNextViewActor.cpp" />
-    <ClCompile Include="Source\Game\OdenGame\OdenResultIngredientTestActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenResultScoreActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenResultSkewerActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenTutorial\TutorialActor.cpp" />
@@ -490,7 +489,6 @@
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenTrashActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenNextViewActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenRank.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenResultIngredientTestActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenResultScoreActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenResultSkewerActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialActor.h" />

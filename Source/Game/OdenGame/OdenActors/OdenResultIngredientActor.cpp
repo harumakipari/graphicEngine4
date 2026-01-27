@@ -149,6 +149,7 @@ void OdenResultIngredientActor::AppearIngredient()
     boxComponent->SetBoxExtent(size);
     boxComponent->SetKinematic(false);
     boxComponent->SetMass(40.0f);
+    boxComponent->SetCollisionOffsetY(size.y*0.5f);
     boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);// おでんのゲームのカーソルのターゲット
     boxComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
     boxComponent->Initialize();

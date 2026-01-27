@@ -259,6 +259,8 @@ void TitleScene::SetUpActors()
 
 #endif // 0
     }
+
+
 }
 
 void TitleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
