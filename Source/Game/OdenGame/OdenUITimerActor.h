@@ -2,8 +2,6 @@
 #include "Core/Actor.h"
 #include "UI/Widgets/Widget.h"
 
-
-
 // 　
 // 　タイマーのUI表示
 //
@@ -36,7 +34,6 @@ public:
 private:
     // タイマーの動き
     void Play();
-
 private:
     std::shared_ptr<UIImageComponent> timerOnesUi; // タイマーの一桁目のスプライト描画
     std::shared_ptr<UIImageComponent> timerTensUi; // タイマーの十桁目のスプライト描画

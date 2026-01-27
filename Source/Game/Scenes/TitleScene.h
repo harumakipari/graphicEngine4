@@ -12,6 +12,7 @@
 #include "Game/Actors/Stage/ClothSimulate.h"
 
 
+class OdenCameraTargetActor;
 
 class TitleScene : public SceneBase
 {
@@ -32,7 +33,16 @@ public:
 
     //シーンの自動登録
     static inline Scene::Autoenrollment<TitleScene> _autoenrollment;
-private:
-    std::unique_ptr<ClothSimulate> clothSimulate[5];
 
+private:
+    // カメラのターゲットを移動する
+    void MoveCameraTarget(const XMFLOAT3 originPos, const XMFLOAT3 targetPos);
+private:
+    // カメラのターゲットアクター
+    std::shared_ptr<OdenCameraTargetActor> mainCameraTarget;
+
+    std::unique_ptr<ClothSimulate> clothSimulate[5];
+    
+    XMFLOAT3 titleCameraTargetPos = { -12.3f,13.8f,-12.5f };
+    XMFLOAT3 selectCameraTargetPos = { -3.6f,5.7f,0.3f };
 };

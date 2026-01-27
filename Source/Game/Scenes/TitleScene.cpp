@@ -12,6 +12,7 @@
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
 #include "Engine/Utility/Time.h"
+#include "Game/OdenGame/OdenCameraTargetActor.h"
 #include "Game/OdenGame/OdenHighScoreData.h"
 #include "Game/OdenGame/OdenActors/OdenTitleStageActor.h"
 
@@ -143,6 +144,21 @@ void TitleScene::Start()
             };
     }
 
+    // ゲームスタートボタンの作成
+    {
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/start_button.png", "start_button");
+        button->SetWorldPosition({ 300, 550 });
+        button->SetSize({ 400, 150 });
+        uiManager->Add(button);
+
+        button->onClick = []()
+            {
+                Logger::Log(u8"難易度選択のカメラ遷移");
+
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            };
+    }
+
 }
 
 void TitleScene::Update(float deltaTime)
@@ -163,7 +179,7 @@ void TitleScene::SetUpActors()
 {
     // メインカメラのターゲットアクターを生成
     Transform cameraTargetTr(DirectX::XMFLOAT3{ -12.3f,13.8f,-12.5f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto mainCameraTarget = GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("MainCameraActorTarget", cameraTargetTr);
+    mainCameraTarget = GetActorManager()->CreateAndRegisterActorWithTransform<OdenCameraTargetActor>("MainCameraActorTarget", cameraTargetTr);
 
     // メインカメラアクターを生成
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
@@ -225,3 +241,4 @@ void TitleScene::DrawGui()
 
 #endif
 }
+

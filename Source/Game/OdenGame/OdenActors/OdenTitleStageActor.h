@@ -17,5 +17,6 @@ public:
 
 private:
     std::shared_ptr<StaticMeshComponent> storeModelComponent;     // 店のモデル
+    std::shared_ptr<SkeletalMeshComponent> selectModelComponent;   // 難易度選択のモデル
 
 };
