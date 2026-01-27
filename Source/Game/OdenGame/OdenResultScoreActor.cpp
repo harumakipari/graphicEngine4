@@ -104,7 +104,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     const std::vector<OdenSubmitLog>* logs = nullptr;
 
 #if _DEBUG
-    static bool useDebug = true; // © ImGui ‚ÅØ‚è‘Ö‚¦‚Ä‚à‚¢‚¢
+    static bool useDebug = false; // © ImGui ‚ÅØ‚è‘Ö‚¦‚Ä‚à‚¢‚¢
     if (useDebug)
     {
         static std::vector<OdenSubmitLog> debugLogs = CreateDebugSubmitLogs();
@@ -391,7 +391,7 @@ float OdenResultScoreActor::CalcSpawnDelay() const
 {
     int total = static_cast<int>(resultIngredients.size());
 
-    return 0.5f;
+    //return 0.5f;
 
     // Å‰‚Ì2ŒÂ
     if (spawnIndex < 1)

@@ -117,6 +117,7 @@ public:
 
     virtual void OnRegister() override {}
 
+    // ”’l‚ª‘å‚«‚¢‚Ù‚¤‚ªŒã‚É•`‰æ‚³‚ê‚é
     void SetPriority(int priority) { this->priority = priority; }
     int GetPriority() const { return priority; }
 

@@ -241,6 +241,7 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
     std::string modelFileName = "./Data/Models/Oden_Ingredient/Oden_" + ingredientName + ".gltf";
     ingredientModel->SetModel(modelFileName.c_str());
     ingredientModel->SetValue(1);
+    ingredientModel->SetPriority(10);
 
     // “–‚½‚è”»’è‚ð“o˜^
     boxComponent = AddComponent<BoxComponent>("boxComponent", parentName);
@@ -432,7 +433,7 @@ void OdenIngredientActor::UpdateDragging(const DirectX::XMFLOAT2& cursor)
     if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
     {
         XMFLOAT3 pos = result.hitPoint;
-        pos.y = 1.0f;
+        pos.y = 2.0f;
         SetPosition(pos);
 
         //DebugDrawManager::DrawSphere(pos, 0.5f, { 1,1,0,1 });

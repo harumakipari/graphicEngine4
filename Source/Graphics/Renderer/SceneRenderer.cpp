@@ -29,6 +29,75 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::v
     if (!currentScene) return;
     auto& allActors = currentScene->GetActorManager()->GetAllActors();
 
+    struct OpaqueRenderItem
+    {
+        MeshComponent* mesh;
+    };
+
+    std::vector<OpaqueRenderItem> opaqueItems;
+
+
+    for (auto actor : allActors)
+    {
+        if (!actor || !actor->IsActive() || !actor->GetRootComponent())
+            continue;
+
+        std::vector<MeshComponent*> meshComponents;
+        actor->GetComponents<MeshComponent>(meshComponents);
+
+        for (MeshComponent* meshComponent : meshComponents)
+        {
+            if (!meshComponent || !meshComponent->IsVisible())
+                continue;
+
+            // MorphMesh ‚Í Opaque ‚Å‚Í•`‚©‚È‚¢
+            if (actor->GetComponent<MorphMeshComponent>())
+                continue;
+
+            opaqueItems.push_back({ meshComponent });
+        }
+    }
+
+    std::sort(
+        opaqueItems.begin(),
+        opaqueItems.end(),
+        [](const OpaqueRenderItem& a, const OpaqueRenderItem& b)
+        {
+            return a.mesh->GetPriority() < b.mesh->GetPriority();
+        });
+
+    for (const auto& item : opaqueItems)
+    {
+        MeshComponent* meshComponent = item.mesh;
+
+        const auto& worldMat =
+            meshComponent->GetComponentWorldTransform().ToWorldTransform();
+
+        meshComponent->UpdateConstantBuffer(immediateContext);
+        meshComponent->UpdatePlusAlphaConstants(immediateContext);
+
+        if (meshComponent->model->mode ==
+            InterleavedGltfModel::Mode::SkeltalMesh)
+        {
+            Draw(
+                immediateContext,
+                meshComponent,
+                worldMat,
+                meshComponent->modelNodes,
+                InterleavedGltfModel::RenderPass::Opaque);
+        }
+        else
+        {
+            DrawWithStaticBatching(
+                immediateContext,
+                meshComponent,
+                worldMat,
+                meshComponent->modelNodes,
+                InterleavedGltfModel::RenderPass::Opaque);
+        }
+    }
+
+#if 0
     for (auto actor : allActors)
     {
         if (!actor->GetRootComponent())
@@ -44,6 +113,7 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::v
         // actor ‚É•t‘®‚µ‚Ä‚¢‚é‘S‚Ä‚Ì meshComponent ‚ğæ‚èo‚·
         std::vector<MeshComponent*> meshComponents;
         actor->GetComponents<MeshComponent>(meshComponents);
+
 
         for (MeshComponent* meshComponent : meshComponents)
         {
@@ -86,6 +156,8 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::v
             //meshComponent->RenderOpaque(immediateContext, worldMat);
         }
     }
+#endif // 0
+
 }
 
 void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext) const

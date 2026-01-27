@@ -115,6 +115,7 @@ void OdenTitleStageActor::Update(float elapsedTime)
         {
             Logger::Log(U8("難易度選択のモデルを押した"));
             titleScene->SetPhase(TitleScene::TitlePhase::StartWait); // これで板のスケールが変わらないようにsる
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/grab_ingredient.wav", 1.0f);
             RequestChangeScene(d.difficulty);
         }
     }
