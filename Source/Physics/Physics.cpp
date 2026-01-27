@@ -49,8 +49,8 @@ void Physics::Initialize()
         pxSceneDesc.cpuDispatcher = pxDispatcher;
         pxSceneDesc.filterShader = SimulationFilterShader;	// NOTE:⑧衝突検出フィルタリング
         pxSceneDesc.simulationEventCallback = this;
-        //	pxSceneDesc.flags |= physx::PxSceneFlag::eENABLE_PCM;
-        //	pxSceneDesc.flags |= physx::PxSceneFlag::eENABLE_STABILIZATION;
+        	pxSceneDesc.flags |= physx::PxSceneFlag::eENABLE_PCM;
+        	pxSceneDesc.flags |= physx::PxSceneFlag::eENABLE_STABILIZATION;
 
         pxScene = pxPhysics->createScene(pxSceneDesc);
         _ASSERT_EXPR(pxScene != nullptr, "Failed pxPhysics->createScene");
@@ -294,6 +294,7 @@ void Physics::Update(float elapsedTime)
 // 描画
 void Physics::Render(const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection, const DirectX::XMFLOAT3& lightDirection)
 {
+
     ID3D11DeviceContext* immediateContext = Graphics::GetDeviceContext();
     PrimitiveRenderer* primitiveRenderer = Graphics::GetPrimitiveRenderer();
     PrimitiveShapeRenderer* shapeRenderer = Graphics::GetShapeRenderer();

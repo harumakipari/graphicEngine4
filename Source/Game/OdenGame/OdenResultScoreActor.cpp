@@ -103,7 +103,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
 
     const std::vector<OdenSubmitLog>* logs = nullptr;
 
-//#if _DEBUG
+#if _DEBUG
     static bool useDebug = true; // Å© ImGui Ç≈êÿÇËë÷Ç¶ÇƒÇ‡Ç¢Ç¢
     if (useDebug)
     {
@@ -111,7 +111,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
         logs = &debugLogs;
     }
     else
-//#endif
+#endif
     {
         logs = &session.submitLogs;
     }

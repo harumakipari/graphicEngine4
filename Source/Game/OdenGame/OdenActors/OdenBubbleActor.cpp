@@ -19,14 +19,16 @@ void OdenBubbleActor::Initialize(const Transform& transform)
 
     // “–‚½‚è”»’è‚ð“o˜^
     auto boxComponent = AddComponent<BoxComponent>(parentName);
-    DirectX::XMFLOAT3 size = { 2.5f,5.0f,5.0f };
+    DirectX::XMFLOAT3 size = { 5.0f,5.0f,4.0f };
     boxComponent->SetBoxExtent(size);
     boxComponent->SetMass(40.0f);
     boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);// ‚¨‚Å‚ñ‚ÌƒQ[ƒ€‚ÌƒJ[ƒ\ƒ‹‚Ìƒ^[ƒQƒbƒg
     boxComponent->Initialize();
 
+    int number = MathHelper::RandomRange(1, 4);
+    std::string modelPath = "./Data/Models/Oden_Bubble/Oden_Person_Model" + std::to_string(number) + ".gltf";
     auto meshComponent = AddComponent<SkeletalMeshComponent>("skeletalMeshComponent", parentName);
-    meshComponent->SetModel("./Data/Models/Oden_Bubble/Oden_Person_Model1.gltf"); // ‚¨‹q‚³‚ñ‚Ìƒ‚ƒfƒ‹
+    meshComponent->SetModel(modelPath); // ‚¨‹q‚³‚ñ‚Ìƒ‚ƒfƒ‹
     //meshComponent->SetModel("./Data/Models/Oden_Bubble/Oden_Bubble_Model.gltf"); // ‚¨‹q‚³‚ñ‚Ìƒ‚ƒfƒ‹
     //meshComponent->SetRelativeScaleDirect({ 0.5f,0.5f,0.5f });
 
