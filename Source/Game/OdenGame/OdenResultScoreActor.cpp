@@ -179,12 +179,10 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
         }
 
     }
-
-
     displayScore = 0;
 
     // 基本スコアの計算
-    int baseScore = resultIngredients.size() * 100;
+    int baseScore = static_cast<int>(resultIngredients.size()) * 100;
     // 連続正解のスコアの計算
     int comboBonus = session.maxCombo * 50; // 連続正解　＊　５０
     // 最終的なスコアの計算

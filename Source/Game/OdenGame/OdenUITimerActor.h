@@ -35,8 +35,8 @@ private:
     // ＋３秒の動き
     void Play();
 
-    // 残り５秒のタイマーの動き
-    void PlayWarning();
+    // 時計を揺らす
+    void StartTimerShake();
 private:
     std::shared_ptr<UIImageComponent> timerOnesUi; // タイマーの一桁目のスプライト描画
     std::shared_ptr<UIImageComponent> timerTensUi; // タイマーの十桁目のスプライト描画
@@ -63,4 +63,9 @@ private:
     XMFLOAT2 timerPos = { 1600.0f,200.0f };
 
     float timerPlusPosition = 0.0f;
+
+    float shakeTimer = 0.0f;
+    float shakeDuration = 0.5f;   // 揺れる時間
+    float shakeStrength = 8.0f;   // 揺れの強さ（度数）
+    bool isShaking = false;
 };

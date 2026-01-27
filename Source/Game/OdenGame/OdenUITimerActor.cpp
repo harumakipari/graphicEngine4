@@ -115,6 +115,30 @@ void OdenUITimerActor::Update(float elapsedTime)
     }
     timerTensObj[tensNumber]->SetIsVisible(true);
 
+    if (isShaking)
+    {
+        shakeTimer += elapsedTime;
+
+        float t = shakeTimer / shakeDuration;
+        if (t >= 1.0f)
+        {
+            isShaking = false;
+            timerObj->SetRelativeEulerRotationDirect({ 0,0,0 }); // 元に戻す
+        }
+        else
+        {
+            // 揺れ減衰つき
+            float power = (1.0f - t);
+            float angle = std::sin(shakeTimer * 30.0f) * shakeStrength * power;
+
+            timerObj->SetRelativeEulerRotationDirect({ 0.0f, 0.0f, angle });
+        }
+    }
+
+
+
+
+
     timerOnesUi->SetUV({ 150.0f * onesNumber,0.0f,150.0f,200.0f });
     timerTensUi->SetUV({ 150.0f * tensNumber,0.0f,150.0f,200.0f });
     if (tensNumber == 0)
@@ -146,6 +170,8 @@ void OdenUITimerActor::Update(float elapsedTime)
         }
         else if (currentSecond <= 5)
         {// 5秒以下になったらフェードアウトアニメーションへ
+            // 時計を揺らす
+            StartTimerShake();
             timerAnimState = ETimerAnimState::FadeOut;
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/game_countDown_se.wav");
         }
@@ -307,7 +333,7 @@ void OdenUITimerActor::DrawImGuiDetails()
     }
     if (ImGui::Button("timerPlaying"))
     {
-        PlayWarning();
+        StartTimerShake();
     }
 #endif
 }
@@ -343,7 +369,8 @@ void OdenUITimerActor::Play()
 }
 
 // 残り５秒のタイマーの動き
-void OdenUITimerActor::PlayWarning()
+void OdenUITimerActor::StartTimerShake()
 {
-    
+    shakeTimer = 0.0f;
+    isShaking = true;
 }
