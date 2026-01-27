@@ -47,14 +47,14 @@ public:
 
     void SetPhase(const TitlePhase phase) { this->phase = phase; }
 
+
 private:
     // カメラのターゲットアクター
     std::shared_ptr<OdenCameraTargetActor> mainCameraTarget;
+    std::shared_ptr<MainCamera> mainCameraActor;
 
     std::unique_ptr<ClothSimulate> clothSimulate[5];
 
-    XMFLOAT3 titleCameraTargetPos = { -12.3f,13.8f,-12.5f };
-    XMFLOAT3 selectCameraTargetPos = { -3.6f,5.7f,0.3f };
-
     TitlePhase phase = TitlePhase::StartWait;
+
 };

@@ -77,6 +77,32 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
 
 void TitleScene::Start()
 {
+    // メインカメラのターゲットアクターを生成
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ -12.3f,13.8f,-12.5f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    mainCameraTarget = GetActorManager()->CreateAndRegisterActorWithTransform<OdenCameraTargetActor>("MainCameraActorTarget", cameraTargetTr);
+    mainCameraTarget->onMoveFinished = [this]()
+        {
+            if (phase == TitlePhase::CameraMovingIn)
+                phase = TitlePhase::DifficultySelect;
+            else if (phase == TitlePhase::CameraMovingOut)
+                phase = TitlePhase::StartWait;
+        };
+
+    // メインカメラアクターを生成
+    mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
+    auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
+    mainCameraComponent->target = (mainCameraTarget->GetRootComponent());
+    mainCameraComponent->pitch = DirectX::XMConvertToRadians(11.0f);
+    mainCameraComponent->yaw = DirectX::XMConvertToRadians(16.5f);
+    mainCameraComponent->distance = 14.3f;
+    //mainCameraComponent->pitch = DirectX::XMConvertToRadians(18.0f);
+    //mainCameraComponent->yaw = DirectX::XMConvertToRadians(14.5f);
+    //mainCameraComponent->distance = 18.4f;
+    SetActiveCamera(mainCameraActor);
+    Logger::Log(U8("MainSceneのカメラ設定される。"));
+
+
+
     // タイトルのBGM再生
     {
         auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
@@ -91,6 +117,7 @@ void TitleScene::Start()
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
 
+#if 1
     // スタート簡単ボタンの作成
     {
         std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/easy.png", "button");
@@ -162,6 +189,8 @@ void TitleScene::Start()
             };
     }
 
+#endif // 1
+
     // ゲームスタートボタンの作成
     {
         std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/start_button.png", "start_button");
@@ -174,6 +203,10 @@ void TitleScene::Start()
                 Logger::Log(u8"難易度選択のカメラ遷移");
                 phase = TitlePhase::CameraMovingIn;
                 mainCameraTarget->PlayToTarget(3.0f);
+
+                auto cam = mainCameraActor->GetComponent<TPSCameraComponent>();
+                cam->PlayDistance(cam->distance, 19.8f, 3.0f);
+
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
             };
     }
@@ -187,9 +220,14 @@ void TitleScene::Start()
 
         button->onClick = [this]()
             {
-                Logger::Log(u8"難易度選択のカメラ遷移");
+                Logger::Log(u8"カメラを元に戻す");
                 phase = TitlePhase::CameraMovingOut;
                 mainCameraTarget->PlayToOrigin(3.0f);
+
+                auto cam = mainCameraActor->GetComponent<TPSCameraComponent>();
+                cam->PlayDistance(cam->distance, 14.3f, 3.0f);
+
+
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
             };
     }
@@ -200,6 +238,8 @@ void TitleScene::Update(float deltaTime)
 {
     using namespace DirectX;
     SceneBase::Update(deltaTime);
+
+
     for (int i = 0; i < 5; i++)
     {
         clothSimulate[i]->Update(deltaTime);
@@ -212,27 +252,6 @@ void TitleScene::Update(float deltaTime)
 
 void TitleScene::SetUpActors()
 {
-    // メインカメラのターゲットアクターを生成
-    Transform cameraTargetTr(DirectX::XMFLOAT3{ -12.3f,13.8f,-12.5f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    mainCameraTarget = GetActorManager()->CreateAndRegisterActorWithTransform<OdenCameraTargetActor>("MainCameraActorTarget", cameraTargetTr);
-    mainCameraTarget->onMoveFinished = [this]()
-        {
-            if (phase == TitlePhase::CameraMovingIn)
-                phase = TitlePhase::DifficultySelect;
-            else if (phase == TitlePhase::CameraMovingOut)
-                phase = TitlePhase::StartWait;
-        };
-
-    // メインカメラアクターを生成
-    auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
-    auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
-    mainCameraComponent->target = (mainCameraTarget->GetRootComponent());
-    mainCameraComponent->pitch = DirectX::XMConvertToRadians(18.0f);
-    mainCameraComponent->yaw = DirectX::XMConvertToRadians(14.5f);
-    mainCameraComponent->distance = 18.4f;
-    SetActiveCamera(mainCameraActor);
-    Logger::Log(U8("MainSceneのカメラ設定される。"));
-
 #ifdef _DEBUG
     // デバックカメラアクターを生成
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");

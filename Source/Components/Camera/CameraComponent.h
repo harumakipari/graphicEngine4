@@ -14,6 +14,7 @@
 
 // プロジェクトの他のヘッダ
 #include "Components/Base/SceneComponent.h"
+#include "Components/Easing/CoreEasingComponent.h"
 #include "Core/Actor.h"
 #include "Engine/Input/InputSystem.h"
 
@@ -21,6 +22,8 @@ class CameraComponent :public SceneComponent
 {
 public:
     CameraComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner) {}
+
+
     // パースペクティブ設定
     void SetPerspective(float fovY, float aspect, float nearZ, float farZ)
     {
@@ -70,8 +73,11 @@ class TPSCameraComponent : public CameraComponent
 public:
     TPSCameraComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :CameraComponent(name, owner) {}
 
+
     void Tick(float deltaTime) override
     {
+        easingComponent.Tick(deltaTime);
+
         pitch = std::clamp(
             pitch,
             DirectX::XMConvertToRadians(-60.0f),
@@ -154,6 +160,26 @@ public:
         return view;
     }
 
+
+    void PlayDistance(float from, float to, float time)
+    {
+        distanceFrom = from;
+        distanceTo = to;
+
+        TestEasingHandler handler;
+        handler.AddEasing(TestEaseType::OutExp, 0.0f, 1.0f, time);
+
+        PropertyAccessor<float> accessor;
+        accessor.getter = [this]() { return distanceEasingValue; };
+        accessor.setter = [this](float t)
+            {
+                distanceEasingValue = t;
+                distance = std::lerp(distanceFrom, distanceTo, t);
+            };
+
+        easingComponent.StartHandler(handler, accessor);
+    }
+
     float yaw = 0.0f;
     float pitch = DirectX::XMConvertToRadians(-12.0f);
     float distance = 4.5f;
@@ -197,6 +223,13 @@ private:
 
         return idealEye;
     }
+
+private:
+    float distanceEasingValue = 0.0f;
+    float distanceFrom = 0.0f;
+    float distanceTo = 0.0f;
+
+    EasingRunner easingComponent;
 };
 
 

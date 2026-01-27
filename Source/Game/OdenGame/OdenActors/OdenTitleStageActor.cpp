@@ -18,7 +18,7 @@ void OdenTitleStageActor::Initialize(const Transform& transform)
 
     auto groundModelComponent = AddComponent<StaticMeshComponent>("Oden_Ground_Model", parentName);
     groundModelComponent->SetModel("./Data/Models/Oden_Title_Stage/Oden_Title_Ground.gltf", false);
-    groundModelComponent->SetRelativeScaleDirect({ -1.0f,1.0f,-1.0f });
+    groundModelComponent->SetRelativeScaleDirect({ 1.5f,1.0f,-1.0f });
     groundModelComponent->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
 
     struct InitData
@@ -107,9 +107,8 @@ void OdenTitleStageActor::Update(float elapsedTime)
         bool hitThis = hit && result.component == d.collider.get();
 
         d.model->SetRelativeScaleDirect(hitThis ? hoverScale : defaultScale);
-        if (hitThis)
-            Logger::Log(U8("難易度選択のモデルに重なっている"));
-
+        //if (hitThis)
+        //    Logger::Log(U8("難易度選択のモデルに重なっている"));
 
         if (hitThis && InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
         {
