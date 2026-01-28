@@ -31,6 +31,15 @@ bool ResultScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     //アクターをセット
     SetUpActors();
 
+    // おでんの汁の定数バッファを作成
+    odenSoupCBuffer = std::make_unique<ConstantBuffer<OdenSoupConstantBuffer>>(Graphics::GetDevice());
+
+    // 水のノーマルテクスチャを追加
+    D3D11_TEXTURE2D_DESC texture2dDesc;
+    HRESULT hr = LoadTextureFromFile(device, L"./Data/ShaderTextures/waterNormal.png", waterNormalTexture.GetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+
     return true;
 }
 
@@ -167,6 +176,11 @@ void ResultScene::SetUpActors()
 
 void ResultScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
+    // 水のノーマルテクスチャを送る
+    immediateContext->PSSetShaderResources(12, 1, waterNormalTexture.GetAddressOf());
+    odenSoupCBuffer->data = odenSoupConstantBuffer;
+    odenSoupCBuffer->Activate(immediateContext, 12);
+
     SceneBase::Render(immediateContext, deltaTime);
 }
 
@@ -182,6 +196,28 @@ void ResultScene::DrawGui()
 {
 #ifdef USE_IMGUI
     SceneBase::DrawGui();
+
+    ImGui::Begin("OdenSoupBuffer");
+
+    ImGui::ColorEdit4("shallowColor", &odenSoupConstantBuffer.shallowColor.x);
+    ImGui::ColorEdit4("deepColor", &odenSoupConstantBuffer.deepColor.x);
+    ImGui::SliderFloat("waterAlpha", &odenSoupConstantBuffer.waterAlpha, 0.0f, 1.0f);
+
+    ImGui::DragFloat("normalScale", &odenSoupConstantBuffer.normalScale, 0.01f);
+    ImGui::DragFloat("normalStrength", &odenSoupConstantBuffer.normalStrength, 0.01f);
+    ImGui::DragFloat("normalSpeed", &odenSoupConstantBuffer.normalSpeed, 0.01f);
+    ImGui::SliderFloat("specularSmoothness", &odenSoupConstantBuffer.specularSmoothness, 0.0f, 1.0f);
+
+    ImGui::SliderFloat("specularHardness", &odenSoupConstantBuffer.specularHardness, 0.0f, 1.0f);
+    ImGui::DragFloat("specularIntensity", &odenSoupConstantBuffer.specularIntensity, 0.01f);
+    ImGui::ColorEdit3("specularColor", &odenSoupConstantBuffer.specularColor.x);
+    ImGui::ColorEdit3("mainLightColor", &odenSoupConstantBuffer.mainLightColor.x);
+
+    ImGui::DragFloat(U8("濁り"), &odenSoupConstantBuffer.turbidity, 0.01f);
+    ImGui::DragFloat(U8("油膜"), &odenSoupConstantBuffer.oilStrength, 0.01f);
+
+    ImGui::End();
+
 
 #endif
 }

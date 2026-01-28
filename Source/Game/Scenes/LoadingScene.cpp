@@ -6,6 +6,8 @@
 #include "../External/imgui/imgui.h"
 #endif
 
+#include <magic_enum.hpp>
+
 #include "Engine/Input/InputSystem.h"
 
 #include "Graphics/Core/Shader.h"
@@ -14,7 +16,8 @@
 #include "Graphics/Core/RenderState.h"
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
-
+#include "Game/OdenGame/OdenResultSkewerActor.h"
+#include "Game/OdenGame/OdenActors/OdenResultIngredientActor.h"
 
 
 bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
@@ -61,13 +64,19 @@ void LoadingScene::Start()
 {
     SetUpActors();
 
-    RegisterRenderHook(RenderPass::UI, [&](ID3D11DeviceContext* immediateContext)
-        {
-            if (const auto e = GetActorManager()->GetActorByName("LoadingEnemy"))
-            {
-                enemy->skeltalMeshComponent->RenderOpaque(immediateContext, e->GetWorldTransform());
-            }
-        });
+    //RegisterRenderHook(RenderPass::UI, [&](ID3D11DeviceContext* immediateContext)
+    //    {
+    //        //if (const auto e = GetActorManager()->GetActorByName("LoadingEnemy"))
+    //        //{
+    //            loadingSkewer->poleModel->RenderOpaque(immediateContext, loadingSkewer->GetWorldTransform());
+
+    //            for (const auto ingredient:loadingSkewer->ingredients)
+    //            {
+    //                ingredient->LoadRenderIngredient(immediateContext);
+    //            }
+    //            //enemy->skeltalMeshComponent->RenderOpaque(immediateContext, e->GetWorldTransform());
+    //        //}
+    //    });
 
     float width = 1920.0f;
     float height = 1080.0f;
@@ -82,7 +91,7 @@ void LoadingScene::Start()
     backImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/scene_change_blue1.png", "backGround");
     backImage->SetSize({ 1920, 1080 });
 
-#if 1
+#if 0
     GetUIManager()->Add(sprite);
 #else
     RegisterRenderHook(RenderPass::Sky, [&](ID3D11DeviceContext* immediateContext)
@@ -94,6 +103,47 @@ void LoadingScene::Start()
 
 void LoadingScene::SetUpActors()
 {
+    // Ç®Ç≈ÇÒÇÃã¯ÇçÏÇÈ
+    Transform skewerTr(
+        XMFLOAT3{ 11.0f, .0f, 22.5f },
+        XMFLOAT4{ 0,0,0,1 },
+        XMFLOAT3{ 0.8f,0.8f,0.8f }
+    );
+
+    auto skewer = GetActorManager()
+        ->CreateAndRegisterActorWithTransform<OdenResultSkewerActor>(
+            "LoadingSkewer", skewerTr);
+
+    auto types = CreateRandomSkewerIngredients();
+
+    for (int i = 0; i < types.size(); ++i)
+    {
+        std::string name = std::string(magic_enum::enum_name(types[i]));
+
+        auto ingredient = GetActorManager()
+            ->CreateAndRegisterActorWithTransform<OdenResultIngredientActor>(
+                "LoadingIngredient", Transform{}, name);
+
+        skewer->AddIngredient(ingredient, i);
+        ingredient->ingredientModel->SetIsVisible(true);
+        
+    }
+
+
+    skewer->onRotationFinished = [this]()
+        {
+            if (_has_finished_preloading())
+            {
+                _transition(preload_scene, {});
+            }
+            else
+            {
+                canTransition = true;
+            }
+        };
+    loadingSkewer = skewer; 
+    loadingSkewer->StartRotateOneTurn();
+
     //Transform enemyTr(DirectX::XMFLOAT3{ 5.0f,-6.0f,16.5f }, DirectX::XMFLOAT3{ 0.0f,35.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
     //enemy = GetActorManager()->CreateAndRegisterActorWithTransform<EmptyEnemy>("LoadingEnemy", enemyTr);
     //enemy->PlayAnimation("Idle", false);
@@ -103,11 +153,12 @@ void LoadingScene::Update(float deltaTime)
 {
     SceneBase::Update(deltaTime);
 
+
     shaderToyConstant.iTime += deltaTime;
     shaderToyConstant.iResolution.x = Graphics::GetScreenWidth();
     shaderToyConstant.iResolution.y = Graphics::GetScreenHeight();
 
-    if (_has_finished_preloading()/* && !enemy->GetAnimationController()->IsPlayAnimation()*/)
+    if (canTransition && _has_finished_preloading())
     {
         _transition(preload_scene, {});
     }
@@ -135,5 +186,34 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime
 
 void LoadingScene::DrawGui()
 {
-     SceneBase::DrawGui();
+    SceneBase::DrawGui();
+}
+
+// ÉâÉìÉ_ÉÄÇÃÇ®Ç≈ÇÒÇÃã¯ÇçÏÇÈ
+std::vector<EOdenType> LoadingScene::CreateRandomSkewerIngredients()
+{
+    static std::array<EOdenType, 11> allTypes =
+    {
+        EOdenType::Daikon,
+        EOdenType::Egg,
+        EOdenType::Konnyaku,
+        EOdenType::Hanpen,
+        EOdenType::Chikuwa,
+        EOdenType::Goboten,
+        EOdenType::Cake,
+        EOdenType::Shirataki,
+        EOdenType::Kobumusubi,
+        EOdenType::Tsukune,
+        EOdenType::Donut,
+    };
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::shuffle(allTypes.begin(), allTypes.end(), gen);
+
+    return {
+        allTypes[0],
+        allTypes[1],
+        allTypes[2],
+    };
 }

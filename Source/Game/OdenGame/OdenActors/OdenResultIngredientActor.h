@@ -53,9 +53,15 @@ public:
 
     // 食材の種類を取得する
     EOdenType GetIngredientType() const { return  ingredientType; }
+
+    // ロード画面で使用する
+    void LoadRenderIngredient(ID3D11DeviceContext* immediateContext) const;
+
+public:
+    std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
+
 private:
     std::string ingredientName; // 食材の名前
-    std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
     std::shared_ptr<ParticleComponent> particleComponent;   // エフェクト
     std::shared_ptr<ParticleComponent> twinkleParticleComponent;   // エフェクト
     std::shared_ptr<CoreAudioSourceComponent> audioComponent;   // エフェクト

@@ -149,7 +149,7 @@ void OdenResultIngredientActor::AppearIngredient()
     boxComponent->SetBoxExtent(size);
     boxComponent->SetKinematic(false);
     boxComponent->SetMass(40.0f);
-    boxComponent->SetCollisionOffsetY(size.y*0.5f);
+    boxComponent->SetCollisionOffsetY(size.y * 0.5f);
     boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);// おでんのゲームのカーソルのターゲット
     boxComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
     boxComponent->Initialize();
@@ -204,4 +204,11 @@ void OdenResultIngredientActor::SetIndexInSkewer(int index)
     //float spacing = y + size.y * 1.1f;
 
     //ingredientModel->SetRelativeLocationDirect({ x, -indexInSkewer * spacing, z });
+}
+
+// ロード画面で使用する
+void OdenResultIngredientActor::LoadRenderIngredient(ID3D11DeviceContext* immediateContext) const
+{
+    ingredientModel->SetIsVisible(true);
+    ingredientModel->RenderOpaque(immediateContext, GetWorldTransform());
 }

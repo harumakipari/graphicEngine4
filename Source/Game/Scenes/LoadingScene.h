@@ -24,6 +24,8 @@
 
 #include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Enemy/EmptyEnemy.h"
+#include "Game/OdenGame/OdenResultSkewerActor.h"
+#include "Game/OdenGame/OdenData/OdenDataStruct.h"
 
 class LoadingScene : public SceneBase
 {
@@ -96,11 +98,19 @@ public:
     static inline Scene::Autoenrollment<LoadingScene> _autoenrollment;
 
 private:
+    // ランダムのおでんの串を作る
+    static std::vector<EOdenType> CreateRandomSkewerIngredients();
+private:
     std::shared_ptr<EmptyEnemy> enemy = nullptr;
     std::shared_ptr<UISceneChangeComponent> sprite = nullptr;
     std::shared_ptr<UIImageComponent> backImage;
 
     std::shared_ptr<MainCamera> mainCameraActor = nullptr;
+
+    // おでんの串
+    std::shared_ptr<OdenResultSkewerActor> loadingSkewer;
+    float skewerRotateAngle = 0.0f;
+    bool  canTransition = false;
 
     // ImGuiで使用する
     std::shared_ptr<Actor> selectedActor_;  // 選択中のアクターを保持

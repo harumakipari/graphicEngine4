@@ -125,7 +125,6 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     // おでんの汁の定数バッファを作成
     odenSoupCBuffer = std::make_unique<ConstantBuffer<OdenSoupConstantBuffer>>(Graphics::GetDevice());
 
-
     // 水のノーマルテクスチャを追加
     D3D11_TEXTURE2D_DESC texture2dDesc;
     HRESULT hr = LoadTextureFromFile(device, L"./Data/ShaderTextures/waterNormal.png", waterNormalTexture.GetAddressOf(), &texture2dDesc);

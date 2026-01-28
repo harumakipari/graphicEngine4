@@ -9,6 +9,8 @@ void OdenResultSkewerActor::Initialize(const Transform& transform)
     poleModel = AddComponent<SkeletalMeshComponent>("odenPoleModel");
     poleModel->SetModel("./Data/Models/Oden_Result_Stage/Oden_Kushi.gltf"); // 串
     poleModel->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
+
+    easingRunner = AddComponent<CoreEasingComponent>("easingComponent", "odenPoleModel");
 }
 
 void OdenResultSkewerActor::AddIngredient(const std::shared_ptr<OdenResultIngredientActor>& ingredient, int index)
@@ -38,6 +40,56 @@ void OdenResultSkewerActor::AddIngredient(const std::shared_ptr<OdenResultIngred
     ingredient->GetRootComponent()->AttachTo(GetRootComponent());
 
     ingredients.push_back(ingredient);
+}
+
+
+// 回転開始
+void OdenResultSkewerActor::StartRotateOneTurn()
+{
+    using namespace DirectX;
+
+    XMVECTOR startQ = XMLoadFloat4(
+        &GetRootComponent()->GetRelativeRotation()
+    );
+
+    constexpr float totalAngle = 720.0f; // 720°
+
+    TestEasingHandler handler;
+    handler.AddEasing(TestEaseType::OutCubic, 0.0f, 1.0f, 2.5f);
+
+    handler.SetCompletedFunction([this, startQ]()
+        {
+            if (onRotationFinished)
+                onRotationFinished();
+        });
+
+    PropertyAccessor<float> accessor;
+    accessor.getter = []() { return 1.0f; };
+    accessor.setter = [this, startQ](float t)
+        {
+#if 0
+            float angle = totalAngle * t;
+
+            XMVECTOR delta =
+                XMQuaternionRotationAxis(
+                    XMVectorSet(0, 1, 0, 0),
+                    angle
+                );
+
+            XMVECTOR q = XMQuaternionMultiply(startQ, delta);
+            q = XMQuaternionNormalize(q);
+
+            DirectX::XMFLOAT4 out;
+            XMStoreFloat4(&out, q);
+            GetRootComponent()->SetRelativeRotationDirect(out);
+#else
+            XMFLOAT3 angleDegree = GetRootComponent()->GetRelativeEulerRotation();
+            angleDegree.y = totalAngle * t;
+            GetRootComponent()->SetRelativeEulerRotationDirect(angleDegree);
+#endif // 0
+        };
+
+    easingRunner->StartHandler(handler, accessor);
 }
 
 // 食材の種類によってオフセットを取得する
