@@ -347,7 +347,7 @@ void StarParticleActor::StartParticle(const int score)
     }
 
     pendingScore = score;
-    isFever = (score >= 200);
+    isFever = score >= OdenGameSession::GetOdenScoreByOnce() * 2;
     //particleComp->Play();
 }
 

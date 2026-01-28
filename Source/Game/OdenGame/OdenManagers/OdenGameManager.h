@@ -147,7 +147,7 @@ private:
     float feverTime = 8.0f; // フィーバーの時間
     float feverRemainingTime = 0.0f;
 
-    int feverTriggerCombo = 2;  // フィーバーになるまでに提出する個数
+    int feverTriggerCombo = 4;  // フィーバーになるまでに提出する個数
 
     float bgmPitch = 1.0f;
 

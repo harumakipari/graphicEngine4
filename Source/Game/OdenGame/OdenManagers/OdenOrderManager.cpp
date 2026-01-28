@@ -201,6 +201,7 @@ void OdenOrderManager::OnBubbleCompleted(int slotIndex, OdenBubbleActor& bubble,
 {
     Logger::Log(U8("オーダー完了時のスコア = ") + std::to_string(score.price));
 
+#if 0
     // 総合スコアを加算する
     if (auto actor = GetOwnerScene()->GetActorManager()->GetActorByName("odenGameManager"))
     {
@@ -226,6 +227,7 @@ void OdenOrderManager::OnBubbleCompleted(int slotIndex, OdenBubbleActor& bubble,
 #endif
         }
     }
+#endif // 0
 
     bubble.SetLeaving();
     slots[slotIndex].bubble.reset();

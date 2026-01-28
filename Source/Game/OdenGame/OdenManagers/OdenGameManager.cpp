@@ -62,6 +62,7 @@ void OdenGameManager::Reset()
     remainingTime = maxTime;
     satisfaction = 0.0f;
     isGameEnded = false;
+
     //submitLogs.clear();
     //ingredientCount = {};
     Logger::Log(U8("ゲームステートをリセットしました。"));

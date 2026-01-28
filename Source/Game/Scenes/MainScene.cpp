@@ -64,6 +64,10 @@ const OrderEntry* FindOrderByUIName(const std::string& uiName)
 
 bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
+    // ƒ‰ƒCƒg‚Ì•ûŒü‚ÆF‚ğİ’è
+    lightDirection={ 0.094f, -0.925f, 0.5f, 0.0f };
+    lightColor={ 1.0f, 1.0f, 1.0f, 10.15f };
+
     SceneBase::Initialize(device, width, height, props);
 
     Physics::Instance().Initialize();

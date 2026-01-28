@@ -32,6 +32,9 @@ public:
         maxCombo = 0;
         missCount = 0;
         feverSubmitCount = 0;
+        onceScore = 200;
+        comboBonus = 50;
+        noMissBonus = 500;
     }
 
     static void SetDifficulty(GameDifficulty diff)
@@ -39,12 +42,27 @@ public:
         gameDifficulty = diff;
     }
 
-    static GameDifficulty GetDifficulty() 
+    static GameDifficulty GetDifficulty()
     {
         return gameDifficulty;
     }
 
+    // おでん一個当たりのスコアを取得する
+    static int GetOdenScoreByOnce() { return onceScore; }
+
+    // 連続正解のボーナスを取得する
+    static int GetOdenComboBonus() { return comboBonus; }
+
+    // 連続正解のボーナスを取得する
+    static int GetOdenNoMissBonus() { return noMissBonus; }
+
 private:
 
     static inline GameDifficulty gameDifficulty = GameDifficulty::Normal;
+
+    static inline int onceScore = 200; // おでん一個当たりのスコア
+
+    static inline int comboBonus = 50;  // 連続正解のボーナス
+
+    static inline int noMissBonus = 500;    // ノーミスのスコア
 };

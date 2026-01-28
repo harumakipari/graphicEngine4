@@ -93,9 +93,9 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
         }
     }
     // ノーミスのスコア
-    int noMissBonus = (session.missCount == 0) ? 500 : 0;
+    int noMissBonus = (session.missCount == 0) ? OdenGameSession::GetOdenNoMissBonus() : 0;
     // フィーバー中の提供のスコアの計算
-    int feverBonus = session.feverSubmitCount * 100;
+    int feverBonus = session.feverSubmitCount * OdenGameSession::GetOdenScoreByOnce();  // フィーバーは二倍になるから
     int maxCombo = session.maxCombo;
     Logger::Log(U8("noMissBonus") + std::to_string(noMissBonus));
     Logger::Log(U8("feverBonus") + std::to_string(feverBonus));
@@ -182,11 +182,14 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     displayScore = 0;
 
     // 基本スコアの計算
-    int baseScore = static_cast<int>(resultIngredients.size()) * 100;
+    int baseScore = static_cast<int>(resultIngredients.size()) * OdenGameSession::GetOdenScoreByOnce();
+    Logger::Log(U8("基本スコア") + std::to_string(baseScore));
     // 連続正解のスコアの計算
-    int comboBonus = session.maxCombo * 50; // 連続正解　＊　５０
+    int comboBonus = session.maxCombo * OdenGameSession::GetOdenComboBonus(); // 連続正解　＊　
+    Logger::Log(U8("連続正解スコア") + std::to_string(comboBonus));
     // 最終的なスコアの計算
     int finalScore = baseScore + noMissBonus + comboBonus + feverBonus;
+    Logger::Log(U8("最終的なスコア") + std::to_string(finalScore));
     // クリアした難易度を取得する
     GameDifficulty diff = session.GetDifficulty();
 
@@ -305,7 +308,7 @@ void OdenResultScoreActor::Update(float deltaTime)
         {
             resultIngredients[spawnIndex]->AppearIngredient();
 
-            int addScore = 100; // 仮のスコア加算値
+            int addScore = OdenGameSession::GetOdenScoreByOnce(); 
 #if 0
             if (resultIngredients[spawnIndex]->GetIsFeverModeIngredient())
             {

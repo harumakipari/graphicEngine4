@@ -503,13 +503,15 @@ float OdenBubbleActor::JudgeMatchShapeRate(const OdenIngredientActor& ingredient
 
 float OdenBubbleActor::CalculateSales(const OdenIngredientActor& ingredient, const EScore score)
 {
+    float sales = ingredient.GetPrice();
+
     if (score == EScore::Fail)
         return 0.0f;
 
     if (score == EScore::Good)
-        return 50.0f;
+        return sales * 0.5f;
 
-    return ingredient.GetPrice();
+    return sales;
 }
 
 // –ž‘«“x‚ÌŒvŽZ

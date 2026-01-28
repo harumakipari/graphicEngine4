@@ -6,6 +6,7 @@
 #include "OdenTrashActor.h"
 #include "Engine/Input/InputSystem.h"
 #include "Engine/Scene/Scene.h"
+#include "Game/OdenGame/OdenGameSession.h"
 #include "Physics/CollisionFunction.h"
 
 #include "Game/OdenGame/OdenActors/OdenBubbleActor.h"  
@@ -86,7 +87,7 @@ void OdenIngredientActor::Update(float deltaTime)
             if (!gameManager->IsGameInputEnabled())
             {
                 // ドラッグ中ならスロットに戻す
-                if (dragState==EOdenDragState::Dragging)
+                if (dragState == EOdenDragState::Dragging)
                 {
                     ReturnToSlot();
                 }
@@ -160,18 +161,18 @@ void OdenIngredientActor::RotateHorizontal()
     );
 
     handler.SetCompletedFunction([this, targetAngle]()
-    {
-        // 最終値を保証
-        odenIngredientAngleDegree.z = targetAngle;
+        {
+            // 最終値を保証
+            odenIngredientAngleDegree.z = targetAngle;
 
-    });
+        });
 
     PropertyAccessor<float> accessor;
     accessor.getter = [this]() { return odenIngredientAngleDegree.z; };
     accessor.setter = [this](float v)
-    {
-        odenIngredientAngleDegree.z = v;
-    };
+        {
+            odenIngredientAngleDegree.z = v;
+        };
 
     easingRunner->StartHandler(handler, accessor);
 #endif // 0
@@ -206,18 +207,18 @@ void OdenIngredientActor::RotateVertical()
     );
 
     handler.SetCompletedFunction([this, targetAngle]()
-    {
-        // 最終値を保証
-        odenIngredientAngleDegree.x = targetAngle;
+        {
+            // 最終値を保証
+            odenIngredientAngleDegree.x = targetAngle;
 
-    });
+        });
 
     PropertyAccessor<float> accessor;
     accessor.getter = [this]() { return odenIngredientAngleDegree.x; };
     accessor.setter = [this](float v)
-    {
-        odenIngredientAngleDegree.x = v;
-    };
+        {
+            odenIngredientAngleDegree.x = v;
+        };
 
     easingRunner->StartHandler(handler, accessor);
 
@@ -278,7 +279,9 @@ void OdenIngredientActor::InitParam(const std::string& ingredientName)
 
     // 値段を設定する
     // price = ingredientPriceTable[ingredientType];
-    price = 100.0f; // 全て 100 点にする
+
+    // ここでスコアを変更している    
+    price = static_cast<float>(OdenGameSession::GetOdenScoreByOnce());
 #if 1
 
     float halfX = size.x + 0.001f;
@@ -427,7 +430,7 @@ void OdenIngredientActor::TryBeginDrag(const DirectX::XMFLOAT2& cursor)
 }
 
 // ドラック中の処理
-void OdenIngredientActor::UpdateDragging(const DirectX::XMFLOAT2& cursor) 
+void OdenIngredientActor::UpdateDragging(const DirectX::XMFLOAT2& cursor)
 {
     HitResultWithActor result;
     if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
@@ -449,29 +452,29 @@ void OdenIngredientActor::EndDrag(const DirectX::XMFLOAT2& cursor)
     switch (DetectHoverTarget(cursor))
     {
     case EHoverTarget::OdenSlot:
-        {
-            if (auto tutorialActor = GetOwnerScene()->GetActorManager()->GetActorByName("OdenTutorialActor"))
-            {// チュートリアルだったら
-                if (auto tutorial = std::dynamic_pointer_cast<TutorialActor>(tutorialActor))
+    {
+        if (auto tutorialActor = GetOwnerScene()->GetActorManager()->GetActorByName("OdenTutorialActor"))
+        {// チュートリアルだったら
+            if (auto tutorial = std::dynamic_pointer_cast<TutorialActor>(tutorialActor))
+            {
+                if (auto currentStep = tutorial->GetTutorialManager()->GetCurrentState())
                 {
-                    if (auto currentStep = tutorial->GetTutorialManager()->GetCurrentState())
+                    if (!currentStep->CanSwapIngredient())
                     {
-                        if (!currentStep->CanSwapIngredient())
-                        {
-                            ReturnToSlot();
-                            return;
-                        }
+                        ReturnToSlot();
+                        return;
                     }
                 }
             }
-            auto actor = GetHoverSlot(cursor);
-            if (auto slot = std::static_pointer_cast<OdenSlotActor>(actor.lock()))
-                SwapWithSlot(slot);
-            else
-                ReturnToSlot();
-            Logger::Log(U8("枠の上でマウスクリックを離した！"));
-            break;
         }
+        auto actor = GetHoverSlot(cursor);
+        if (auto slot = std::static_pointer_cast<OdenSlotActor>(actor.lock()))
+            SwapWithSlot(slot);
+        else
+            ReturnToSlot();
+        Logger::Log(U8("枠の上でマウスクリックを離した！"));
+        break;
+    }
     case EHoverTarget::OrderBubble:
         TrashSelf();
         //DebugDrawManager::DrawSphere({ 0, 0, 0 }, 13.5f, { 1,0,1,1 });
@@ -493,7 +496,7 @@ void OdenIngredientActor::EndDrag(const DirectX::XMFLOAT2& cursor)
 }
 
 // マウスを離した時のターゲットを返す
-OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const DirectX::XMFLOAT2& cursor) 
+OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const DirectX::XMFLOAT2& cursor)
 {
     HitResultWithActor result;
     if (CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::OdenHoverTarget)))
@@ -501,7 +504,7 @@ OdenIngredientActor::EHoverTarget OdenIngredientActor::DetectHoverTarget(const D
         // マウスカーソルが
         if (auto odenSlot = dynamic_cast<OdenSlotActor*>(result.actor))
         {// おでんの枠モデルに当たっていたら、
-            hoverTarget= EHoverTarget::OdenSlot;
+            hoverTarget = EHoverTarget::OdenSlot;
             return EHoverTarget::OdenSlot;
         }
         if (auto odenBubble = dynamic_cast<OdenBubbleActor*>(result.actor))
@@ -676,24 +679,24 @@ void OdenIngredientActor::StartRotationAnim(const ERotateType rotateType)
     handler.AddEasing(TestEaseType::OutCubic, 0.f, 1.0f, 0.25f);
 
     handler.SetCompletedFunction([this, target]()
-    {
-        XMStoreFloat4(&visualOrientation, target);
-        ingredientModel->SetRelativeRotationDirect(visualOrientation);
-        //ingredientModel->SetWorldRotationDirect(visualOrientation);
-    });
+        {
+            XMStoreFloat4(&visualOrientation, target);
+            ingredientModel->SetRelativeRotationDirect(visualOrientation);
+            //ingredientModel->SetWorldRotationDirect(visualOrientation);
+        });
 
     PropertyAccessor<float> accessor;
     accessor.getter = [this]() { return 1.0f; };
     accessor.setter = [this](float t)
-    {
-        XMVECTOR q = XMQuaternionSlerp(startOrientation, XMQuaternionMultiply(startOrientation, targetRotation), t);
-        //Logger::Log(U8("t の値") + std::to_string(t));
-        q = XMQuaternionNormalize(q);
-        XMStoreFloat4(&visualOrientation, q);
+        {
+            XMVECTOR q = XMQuaternionSlerp(startOrientation, XMQuaternionMultiply(startOrientation, targetRotation), t);
+            //Logger::Log(U8("t の値") + std::to_string(t));
+            q = XMQuaternionNormalize(q);
+            XMStoreFloat4(&visualOrientation, q);
 
-        ingredientModel->SetRelativeRotationDirect(visualOrientation);
-        //ingredientModel->SetWorldRotationDirect(visualOrientation);
-    };
+            ingredientModel->SetRelativeRotationDirect(visualOrientation);
+            //ingredientModel->SetWorldRotationDirect(visualOrientation);
+        };
 
     easingRunner->StartHandler(handler, accessor);
 }
@@ -706,8 +709,8 @@ void OdenIngredientActor::AppearIngredient()
 
 // 点線のモデルパスを取得する関数
 std::string OdenIngredientActor::GetDotLineModelPath(EOdenType ingredientType,
-                                                     EOdenFace face,
-                                                     const OdenShapeData& shapeData)
+    EOdenFace face,
+    const OdenShapeData& shapeData)
 {
     struct DotLineKey
     {
@@ -730,51 +733,51 @@ std::string OdenIngredientActor::GetDotLineModelPath(EOdenType ingredientType,
 
     static const std::unordered_map<DotLineKey, std::string, DotLineKeyHash>
         DotLineByIngredientFace =
-        {
-            // --- ちくわ ---
-            {{ EOdenType::Chikuwa, EOdenFace::Front   }, "Oden_DotLine_LongRect.gltf" },
-            {{ EOdenType::Chikuwa, EOdenFace::Back   }, "Oden_DotLine_LongRect.gltf" },
-            {{ EOdenType::Chikuwa, EOdenFace::Top   }, "Oden_DotLine_LongRect.gltf" },
-            {{ EOdenType::Chikuwa, EOdenFace::Bottom   }, "Oden_DotLine_LongRect.gltf" },
-            {{ EOdenType::Chikuwa, EOdenFace::Left   }, "Oden_DotLine_Small_Donut.gltf" },
-            {{ EOdenType::Chikuwa, EOdenFace::Right   }, "Oden_DotLine_Small_Donut.gltf" },
+    {
+        // --- ちくわ ---
+        {{ EOdenType::Chikuwa, EOdenFace::Front   }, "Oden_DotLine_LongRect.gltf" },
+        {{ EOdenType::Chikuwa, EOdenFace::Back   }, "Oden_DotLine_LongRect.gltf" },
+        {{ EOdenType::Chikuwa, EOdenFace::Top   }, "Oden_DotLine_LongRect.gltf" },
+        {{ EOdenType::Chikuwa, EOdenFace::Bottom   }, "Oden_DotLine_LongRect.gltf" },
+        {{ EOdenType::Chikuwa, EOdenFace::Left   }, "Oden_DotLine_Small_Donut.gltf" },
+        {{ EOdenType::Chikuwa, EOdenFace::Right   }, "Oden_DotLine_Small_Donut.gltf" },
 
-            // --- 大根 ---
-            {{ EOdenType::Daikon, EOdenFace::Left   }, "Oden_DotLine_Rect.gltf" },
-            {{ EOdenType::Daikon, EOdenFace::Right   }, "Oden_DotLine_Rect.gltf" },
+        // --- 大根 ---
+        {{ EOdenType::Daikon, EOdenFace::Left   }, "Oden_DotLine_Rect.gltf" },
+        {{ EOdenType::Daikon, EOdenFace::Right   }, "Oden_DotLine_Rect.gltf" },
 
-            // --- ごぼてん ---
-            {{ EOdenType::Goboten, EOdenFace::Front   }, "Oden_DotLine_LongRect.gltf" },
-            {{ EOdenType::Goboten, EOdenFace::Back   }, "Oden_DotLine_LongRect.gltf" },
-            {{ EOdenType::Goboten, EOdenFace::Top   }, "Oden_DotLine_LongRect.gltf" },
-            {{ EOdenType::Goboten, EOdenFace::Bottom   }, "Oden_DotLine_LongRect.gltf" },
-            {{ EOdenType::Goboten, EOdenFace::Left   }, "Oden_DotLine_Small_Circle.gltf" },
-            {{ EOdenType::Goboten, EOdenFace::Right   }, "Oden_DotLine_Small_Circle.gltf" },
+        // --- ごぼてん ---
+        {{ EOdenType::Goboten, EOdenFace::Front   }, "Oden_DotLine_LongRect.gltf" },
+        {{ EOdenType::Goboten, EOdenFace::Back   }, "Oden_DotLine_LongRect.gltf" },
+        {{ EOdenType::Goboten, EOdenFace::Top   }, "Oden_DotLine_LongRect.gltf" },
+        {{ EOdenType::Goboten, EOdenFace::Bottom   }, "Oden_DotLine_LongRect.gltf" },
+        {{ EOdenType::Goboten, EOdenFace::Left   }, "Oden_DotLine_Small_Circle.gltf" },
+        {{ EOdenType::Goboten, EOdenFace::Right   }, "Oden_DotLine_Small_Circle.gltf" },
 
-            // --- ドーナツ ---
-            {{ EOdenType::Donut, EOdenFace::Top   }, "Oden_DotLine_Donut.gltf" },
-            {{ EOdenType::Donut, EOdenFace::Bottom   }, "Oden_DotLine_Donut.gltf" },
+        // --- ドーナツ ---
+        {{ EOdenType::Donut, EOdenFace::Top   }, "Oden_DotLine_Donut.gltf" },
+        {{ EOdenType::Donut, EOdenFace::Bottom   }, "Oden_DotLine_Donut.gltf" },
 
-            // --- ケーキ ---
-            {{ EOdenType::Cake, EOdenFace::Top   }, "Oden_DotLine_Cake.gltf" },
-            {{ EOdenType::Cake, EOdenFace::Bottom   }, "Oden_DotLine_Cake.gltf" },
-            {{ EOdenType::Cake, EOdenFace::Back   }, "Oden_DotLine_Cake_Back.gltf" },
+        // --- ケーキ ---
+        {{ EOdenType::Cake, EOdenFace::Top   }, "Oden_DotLine_Cake.gltf" },
+        {{ EOdenType::Cake, EOdenFace::Bottom   }, "Oden_DotLine_Cake.gltf" },
+        {{ EOdenType::Cake, EOdenFace::Back   }, "Oden_DotLine_Cake_Back.gltf" },
 
-            // --- たまご ---
-            {{ EOdenType::Egg, EOdenFace::Front   }, "Oden_DotLine_Egg.gltf" },
-            {{ EOdenType::Egg, EOdenFace::Back   }, "Oden_DotLine_Egg.gltf" },
-            {{ EOdenType::Egg, EOdenFace::Left   }, "Oden_DotLine_Egg.gltf" },
-            {{ EOdenType::Egg, EOdenFace::Right   }, "Oden_DotLine_Egg.gltf" },
+        // --- たまご ---
+        {{ EOdenType::Egg, EOdenFace::Front   }, "Oden_DotLine_Egg.gltf" },
+        {{ EOdenType::Egg, EOdenFace::Back   }, "Oden_DotLine_Egg.gltf" },
+        {{ EOdenType::Egg, EOdenFace::Left   }, "Oden_DotLine_Egg.gltf" },
+        {{ EOdenType::Egg, EOdenFace::Right   }, "Oden_DotLine_Egg.gltf" },
 
-            // --- しらたき ---
-            {{ EOdenType::Shirataki, EOdenFace::Left   }, "Oden_DotLine_Small_Circle.gltf" },
-            {{ EOdenType::Shirataki, EOdenFace::Right   }, "Oden_DotLine_Small_Circle.gltf" },
+        // --- しらたき ---
+        {{ EOdenType::Shirataki, EOdenFace::Left   }, "Oden_DotLine_Small_Circle.gltf" },
+        {{ EOdenType::Shirataki, EOdenFace::Right   }, "Oden_DotLine_Small_Circle.gltf" },
 
-            // --- こぶむすび ---
-            {{ EOdenType::Kobumusubi, EOdenFace::Left   }, "Oden_DotLine_Small_Circle.gltf" },
-            {{ EOdenType::Kobumusubi, EOdenFace::Right   }, "Oden_DotLine_Small_Circle.gltf" },
+        // --- こぶむすび ---
+        {{ EOdenType::Kobumusubi, EOdenFace::Left   }, "Oden_DotLine_Small_Circle.gltf" },
+        {{ EOdenType::Kobumusubi, EOdenFace::Right   }, "Oden_DotLine_Small_Circle.gltf" },
 
-        };
+    };
 
     // ① 食材 × 面 専用があれば最優先
     auto it = DotLineByIngredientFace.find({ ingredientType, face });
@@ -828,296 +831,296 @@ OdenIngredientActor::FaceTransform OdenIngredientActor::ResolveFaceTransform(
 
     static const std::unordered_map<FaceKey, FaceTransform, FaceKeyHash>
         IngredientFaceOverride =
+    {
+        // --- ちくわ ---
         {
-            // --- ちくわ ---
-            {
-                { EOdenType::Chikuwa, EOdenFace::Top },
-                { { 0, 0.08f, 0 }, { 0, 0, 0 } }
-            },
-            {
-                { EOdenType::Chikuwa, EOdenFace::Bottom },
-                { { 0, -0.08f, 0 }, { 0, 0, 180 } }
-            },
-            {
-                { EOdenType::Chikuwa, EOdenFace::Front },
-                { { 0, 0.0f, 0 }, { -90, 0, 0 } }
-            },
-            {
-                { EOdenType::Chikuwa, EOdenFace::Back },
-                { { 0, 0.0f, 0 }, { 90, 0, 0 } }
-            },
-            {
-                { EOdenType::Chikuwa, EOdenFace::Left },
-                { { -3.181f, 0.0f, 0 }, { -0, 0, 0 } }
-            },
-            {
-                { EOdenType::Chikuwa, EOdenFace::Right },
-                { { 0.08f, 0.0f, 0 }, { 0, 0, 0 } }
-            },
+            { EOdenType::Chikuwa, EOdenFace::Top },
+            { { 0, 0.08f, 0 }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Chikuwa, EOdenFace::Bottom },
+            { { 0, -0.08f, 0 }, { 0, 0, 180 } }
+        },
+        {
+            { EOdenType::Chikuwa, EOdenFace::Front },
+            { { 0, 0.0f, 0 }, { -90, 0, 0 } }
+        },
+        {
+            { EOdenType::Chikuwa, EOdenFace::Back },
+            { { 0, 0.0f, 0 }, { 90, 0, 0 } }
+        },
+        {
+            { EOdenType::Chikuwa, EOdenFace::Left },
+            { { -3.181f, 0.0f, 0 }, { -0, 0, 0 } }
+        },
+        {
+            { EOdenType::Chikuwa, EOdenFace::Right },
+            { { 0.08f, 0.0f, 0 }, { 0, 0, 0 } }
+        },
 
-            // --- ごぼてん ---
-            {
-                { EOdenType::Goboten, EOdenFace::Top },
-                { { 0, 0.08f, 0 }, { 0, 0, 0 } }
-            },
-            {
-                { EOdenType::Goboten, EOdenFace::Bottom },
-                { { 0, -0.08f, 0 }, { 0, 0, 180 } }
-            },
-            {
-                { EOdenType::Goboten, EOdenFace::Front },
-                { { 0, 0.0f, 0 }, { -90, 0, 0 } }
-            },
-            {
-                { EOdenType::Goboten, EOdenFace::Back },
-                { { 0, 0.0f, 0 }, { 90, 0, 0 } }
-            },
-            {
-                { EOdenType::Goboten, EOdenFace::Left },
-                { { -3.3f, 0.0f, 0 }, { -0, 0, 0 } ,{1.0f,0.78f,0.78f}}
-            },
-            {
-                { EOdenType::Goboten, EOdenFace::Right },
-                { { 0.08f, 0.0f, 0 }, { 0, 0, 0 },{1.0f,0.78f,0.78f}}
-            },
+        // --- ごぼてん ---
+        {
+            { EOdenType::Goboten, EOdenFace::Top },
+            { { 0, 0.08f, 0 }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Goboten, EOdenFace::Bottom },
+            { { 0, -0.08f, 0 }, { 0, 0, 180 } }
+        },
+        {
+            { EOdenType::Goboten, EOdenFace::Front },
+            { { 0, 0.0f, 0 }, { -90, 0, 0 } }
+        },
+        {
+            { EOdenType::Goboten, EOdenFace::Back },
+            { { 0, 0.0f, 0 }, { 90, 0, 0 } }
+        },
+        {
+            { EOdenType::Goboten, EOdenFace::Left },
+            { { -3.3f, 0.0f, 0 }, { -0, 0, 0 } ,{1.0f,0.78f,0.78f}}
+        },
+        {
+            { EOdenType::Goboten, EOdenFace::Right },
+            { { 0.08f, 0.0f, 0 }, { 0, 0, 0 },{1.0f,0.78f,0.78f}}
+        },
 
 
-            // --- 大根 ---
-            {
-                { EOdenType::Daikon, EOdenFace::Left },
-                { { -0.75f, 0.0f, 0 }, { 90, 0, 90 } }
-            },
-            {
-                { EOdenType::Daikon, EOdenFace::Top },
-                { { 0, 0.03f, 0 }, { 0, 0, 0 } }
-            },
-            {
-                { EOdenType::Daikon, EOdenFace::Bottom },
-                { { 0, -0.03f, 0 }, { 0, 0, 180 } }
+        // --- 大根 ---
+        {
+            { EOdenType::Daikon, EOdenFace::Left },
+            { { -0.75f, 0.0f, 0 }, { 90, 0, 90 } }
+        },
+        {
+            { EOdenType::Daikon, EOdenFace::Top },
+            { { 0, 0.03f, 0 }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Daikon, EOdenFace::Bottom },
+            { { 0, -0.03f, 0 }, { 0, 0, 180 } }
 
-            },
-            {
-                { EOdenType::Daikon, EOdenFace::Right },
-                { { 1.4f, 0.0f, 0.f }, { 90, 0, 90 } }
-            },
-            {
-                { EOdenType::Daikon, EOdenFace::Back },
-                { { 0.f, 0.0f, 0.8f }, { 90, 0, 0 } }
-            },
-            {
-                { EOdenType::Daikon, EOdenFace::Front },
-                { { 0.0f, 0.0f, -1.3f }, { 90, 0, 0 } }
-            },
+        },
+        {
+            { EOdenType::Daikon, EOdenFace::Right },
+            { { 1.4f, 0.0f, 0.f }, { 90, 0, 90 } }
+        },
+        {
+            { EOdenType::Daikon, EOdenFace::Back },
+            { { 0.f, 0.0f, 0.8f }, { 90, 0, 0 } }
+        },
+        {
+            { EOdenType::Daikon, EOdenFace::Front },
+            { { 0.0f, 0.0f, -1.3f }, { 90, 0, 0 } }
+        },
 
-            // --- こんにゃく ---
-            {
-                { EOdenType::Konnyaku, EOdenFace::Top },
-                { { 0, 0.03f, 0 }, { 0, 0, 0 } }
-            },
-            {
-                { EOdenType::Konnyaku, EOdenFace::Bottom },
-                { { 0, -0.03f, 0 }, { 0, 0, 180 } }
+        // --- こんにゃく ---
+        {
+            { EOdenType::Konnyaku, EOdenFace::Top },
+            { { 0, 0.03f, 0 }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Konnyaku, EOdenFace::Bottom },
+            { { 0, -0.03f, 0 }, { 0, 0, 180 } }
 
-            },
-            {
-                { EOdenType::Konnyaku, EOdenFace::Left },
-                { { -0.3f, 0.0f, -0.f }, { 90, -37, 90 } }
-            },
-            {
-                { EOdenType::Konnyaku, EOdenFace::Right },
-                { { 0.9f, 0.0f, -0.4f }, { 90, 37, 90 } }
-            },
-            {
-                { EOdenType::Konnyaku, EOdenFace::Back },
-                { { 0.f, 0.0f, 0.3f }, { 90, 0, 0 } }
-            },
-            {
-                { EOdenType::Konnyaku, EOdenFace::Front },
-                { { -0.1f, 0.0f, -0.9f }, { -90, 0, 0 } }
-            },
+        },
+        {
+            { EOdenType::Konnyaku, EOdenFace::Left },
+            { { -0.3f, 0.0f, -0.f }, { 90, -37, 90 } }
+        },
+        {
+            { EOdenType::Konnyaku, EOdenFace::Right },
+            { { 0.9f, 0.0f, -0.4f }, { 90, 37, 90 } }
+        },
+        {
+            { EOdenType::Konnyaku, EOdenFace::Back },
+            { { 0.f, 0.0f, 0.3f }, { 90, 0, 0 } }
+        },
+        {
+            { EOdenType::Konnyaku, EOdenFace::Front },
+            { { -0.1f, 0.0f, -0.9f }, { -90, 0, 0 } }
+        },
 
-            // --- はんぺん ---
-            {
-                { EOdenType::Hanpen, EOdenFace::Top },
-                { { 0, 0.03f, 0 }, { 0, 0, 0 } }
-            },
-            {
-                { EOdenType::Hanpen, EOdenFace::Bottom },
-                { { 0, -0.03f, 0 }, { 0, 0, 180 } }
-            },
-            {
-                { EOdenType::Hanpen, EOdenFace::Left },
-                { { -0.3f, 0.0f, -0.f }, { 90, -37, 90 } }
-            },
-            {
-                { EOdenType::Hanpen, EOdenFace::Right },
-                { { 0.9f, 0.0f, -0.4f }, { 90, 37, 90 } }
-            },
-            {
-                { EOdenType::Hanpen, EOdenFace::Back },
-                { { 0.f, 0.0f, 0.3f }, { 90, 0, 0 } }
-            },
-            {
-                { EOdenType::Hanpen, EOdenFace::Front },
-                { { -0.1f, 0.0f, -0.9f }, { -90, 0, 0 } }
-            },
+        // --- はんぺん ---
+        {
+            { EOdenType::Hanpen, EOdenFace::Top },
+            { { 0, 0.03f, 0 }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Hanpen, EOdenFace::Bottom },
+            { { 0, -0.03f, 0 }, { 0, 0, 180 } }
+        },
+        {
+            { EOdenType::Hanpen, EOdenFace::Left },
+            { { -0.3f, 0.0f, -0.f }, { 90, -37, 90 } }
+        },
+        {
+            { EOdenType::Hanpen, EOdenFace::Right },
+            { { 0.9f, 0.0f, -0.4f }, { 90, 37, 90 } }
+        },
+        {
+            { EOdenType::Hanpen, EOdenFace::Back },
+            { { 0.f, 0.0f, 0.3f }, { 90, 0, 0 } }
+        },
+        {
+            { EOdenType::Hanpen, EOdenFace::Front },
+            { { -0.1f, 0.0f, -0.9f }, { -90, 0, 0 } }
+        },
 
-            // --- ケーキ ---
-            {
-                { EOdenType::Cake, EOdenFace::Top },
-                { { 0, 0.03f, 0 }, { 0, 0, 0 } }
-            },
-            {
-                { EOdenType::Cake, EOdenFace::Bottom },
-                { { 0, -0.03f, 0 }, { 0, -180, 180 } }
+        // --- ケーキ ---
+        {
+            { EOdenType::Cake, EOdenFace::Top },
+            { { 0, 0.03f, 0 }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Cake, EOdenFace::Bottom },
+            { { 0, -0.03f, 0 }, { 0, -180, 180 } }
 
-            },
-            {
-                { EOdenType::Cake, EOdenFace::Left },
-                { { -0.93f, 0.1f, -0.1f }, { -90, 90, 3 },{0.82f,1.0f,1.15f} }
-            },
-            {
-                { EOdenType::Cake, EOdenFace::Right },
-                { { 1.6f, 0.05f, -0.05f }, { 90, 0, 90 } ,{0.79f,1.44f,1.53f}}
-            },
-            {
-                { EOdenType::Cake, EOdenFace::Back },
-                { { 0.f, 0.f, 0.f }, { 0, -0, 0 } ,{1.0f,1.0f,1.0f}}
-            },
-            {
-                { EOdenType::Cake, EOdenFace::Front },
-                { { -0.1f, 0.05f, -0.85f }, { 90, 21, 0 },{1.03f,1.0f,1.5f} }
-            },
-
-
-            // --- ドーナツ ---
-            {
-                { EOdenType::Donut, EOdenFace::Left },
-                { { -0.8f, 0.f, -0.f }, { -90, 90, 0 },{1.0f,1.0f,1.0f} }
-            },
-            {
-                { EOdenType::Donut, EOdenFace::Right },
-                { { 0.8f, 0.0f, -0.0f }, { 90, 90, 0 } ,{1.0f,1.0f,1.0f} }
-            },
-            {
-                { EOdenType::Donut, EOdenFace::Back },
-                { { 0.f, 0.f, 0.7f }, { 90, 0, 0 } ,{1.0f,1.0f,1.0f} }
-            },
-            {
-                { EOdenType::Donut, EOdenFace::Front },
-                { { -0.f, 0.0f, -0.8f }, { -90, 0, 0 },{1.0f,1.0f,1.0f} }
-            },
+        },
+        {
+            { EOdenType::Cake, EOdenFace::Left },
+            { { -0.93f, 0.1f, -0.1f }, { -90, 90, 3 },{0.82f,1.0f,1.15f} }
+        },
+        {
+            { EOdenType::Cake, EOdenFace::Right },
+            { { 1.6f, 0.05f, -0.05f }, { 90, 0, 90 } ,{0.79f,1.44f,1.53f}}
+        },
+        {
+            { EOdenType::Cake, EOdenFace::Back },
+            { { 0.f, 0.f, 0.f }, { 0, -0, 0 } ,{1.0f,1.0f,1.0f}}
+        },
+        {
+            { EOdenType::Cake, EOdenFace::Front },
+            { { -0.1f, 0.05f, -0.85f }, { 90, 21, 0 },{1.03f,1.0f,1.5f} }
+        },
 
 
-            // --- たまご ---
-            {
-                { EOdenType::Egg, EOdenFace::Top },
-                { { 0, 0.05f, 0 }, { 0, 0, 0 } ,{0.78f,0.78f,0.78f}}
-            },
-            {
-                { EOdenType::Egg, EOdenFace::Bottom },
-                { { 0, 0.05f, 0 }, { -180, 0, 0 } ,{0.78f,0.78f,0.78f}}
-
-            },
-            {
-                { EOdenType::Egg, EOdenFace::Left },
-                { { 0.4f, 0.0f, -0.f }, { 0, -90, 0 }  ,{1.0f,1.0f,1.0f}}
-            },
-            {
-                { EOdenType::Egg, EOdenFace::Right },
-                { { -0.4f, 0.0f, 0.0f }, { 0, 90, 0 } ,{1.0f,1.0f,1.0f}}
-            },
-            {
-                { EOdenType::Egg, EOdenFace::Back },
-                { { 0.f, 0.0f, -0.5f }, { 0, 0, 0 }  ,{1.0f,1.0f,1.0f}}
-            },
-            {
-                { EOdenType::Egg, EOdenFace::Front },
-                { { 0.0f, 0.0f, -1.0f }, { 0, 0, 0 }  ,{1.0f,1.0f,1.0f}}
-            },
+        // --- ドーナツ ---
+        {
+            { EOdenType::Donut, EOdenFace::Left },
+            { { -0.8f, 0.f, -0.f }, { -90, 90, 0 },{1.0f,1.0f,1.0f} }
+        },
+        {
+            { EOdenType::Donut, EOdenFace::Right },
+            { { 0.8f, 0.0f, -0.0f }, { 90, 90, 0 } ,{1.0f,1.0f,1.0f} }
+        },
+        {
+            { EOdenType::Donut, EOdenFace::Back },
+            { { 0.f, 0.f, 0.7f }, { 90, 0, 0 } ,{1.0f,1.0f,1.0f} }
+        },
+        {
+            { EOdenType::Donut, EOdenFace::Front },
+            { { -0.f, 0.0f, -0.8f }, { -90, 0, 0 },{1.0f,1.0f,1.0f} }
+        },
 
 
-            // --- つくね ---
-            {
-                { EOdenType::Tsukune, EOdenFace::Top },
-                { { 0, 0.05f, 0 }, { 0, 0, -15 } ,{0.78f,0.78f,0.78f}}
-            },
-            {
-                { EOdenType::Tsukune, EOdenFace::Bottom },
-                { { 0, -0.25f, 0 }, { -180, 0, 0 } ,{0.78f,0.78f,0.78f}}
+        // --- たまご ---
+        {
+            { EOdenType::Egg, EOdenFace::Top },
+            { { 0, 0.05f, 0 }, { 0, 0, 0 } ,{0.78f,0.78f,0.78f}}
+        },
+        {
+            { EOdenType::Egg, EOdenFace::Bottom },
+            { { 0, 0.05f, 0 }, { -180, 0, 0 } ,{0.78f,0.78f,0.78f}}
 
-            },
-            {
-                { EOdenType::Tsukune, EOdenFace::Left },
-                { { -0.0f, 0.0f, -0.f }, { 0, -0, 90 }  ,{0.78f,0.78f,0.78f}}
-            },
-            {
-                { EOdenType::Tsukune, EOdenFace::Right },
-                { { 0.8f, 0.02f, 0.05f }, { 0, 0, 90 } ,{0.78f,0.78f,0.78f}}
-            },
-            {
-                { EOdenType::Tsukune, EOdenFace::Back },
-                { { 0.f, 0.0f, 0.3f }, { 90, 0, 0 }  ,{0.78f,0.78f,0.78f}}
-            },
-            {
-                { EOdenType::Tsukune, EOdenFace::Front },
-                { { 0.07f, 0.0f, -0.8f }, { 90, 0, 0 }  ,{0.78f,0.78f,0.78f}}
-            },
-
-            // --- しらたき ---
-            {
-                { EOdenType::Shirataki, EOdenFace::Left },
-                { { 0.f, 0.0f, -0.f }, { 0, 0, 180 } }
-            },
-            {
-                { EOdenType::Shirataki, EOdenFace::Right },
-                { { 0.f, 0.0f, -0.f }, { 0, 0, 0 } }
-            },
-            {
-                { EOdenType::Shirataki, EOdenFace::Back },
-                { { 0.f, 0.0f, -0.23f }, { 90, 0, 0 } }
-            },
-            {
-                { EOdenType::Shirataki, EOdenFace::Front },
-                { { 0.0f, 0.0f, 0.33f }, { -90, 0, 0 } }
-            },
-            {
-                { EOdenType::Shirataki, EOdenFace::Top },
-                { { 0.f, -0.25f, -0.0f }, {0, 0, 0 } }
-            },
-            {
-                { EOdenType::Shirataki, EOdenFace::Bottom },
-                { { 0.0f, 0.35f, 0.f }, { 0, 0, -180 } }
-            },
+        },
+        {
+            { EOdenType::Egg, EOdenFace::Left },
+            { { 0.4f, 0.0f, -0.f }, { 0, -90, 0 }  ,{1.0f,1.0f,1.0f}}
+        },
+        {
+            { EOdenType::Egg, EOdenFace::Right },
+            { { -0.4f, 0.0f, 0.0f }, { 0, 90, 0 } ,{1.0f,1.0f,1.0f}}
+        },
+        {
+            { EOdenType::Egg, EOdenFace::Back },
+            { { 0.f, 0.0f, -0.5f }, { 0, 0, 0 }  ,{1.0f,1.0f,1.0f}}
+        },
+        {
+            { EOdenType::Egg, EOdenFace::Front },
+            { { 0.0f, 0.0f, -1.0f }, { 0, 0, 0 }  ,{1.0f,1.0f,1.0f}}
+        },
 
 
-            // --- こぶむすび ---
-            {
-                { EOdenType::Kobumusubi, EOdenFace::Left },
-                { { 0.f, 0.0f, -0.f }, { 0, 0, 180 } }
-            },
-            {
-                { EOdenType::Kobumusubi, EOdenFace::Right },
-                { { 0.f, 0.0f, -0.f }, { 0, 0, 0 } }
-            },
-            {
-                { EOdenType::Kobumusubi, EOdenFace::Back },
-                { { 0.f, 0.0f, -0.23f }, { 90, 0, 0 } }
-            },
-            {
-                { EOdenType::Kobumusubi, EOdenFace::Front },
-                { { 0.0f, 0.0f, 0.33f }, { -90, 0, 0 } }
-            },
-            {
-                { EOdenType::Kobumusubi, EOdenFace::Top },
-                { { 0.f, -0.25f, -0.0f }, {0, 0, 0 } }
-            },
-            {
-                { EOdenType::Kobumusubi, EOdenFace::Bottom },
-                { { 0.0f, 0.35f, 0.f }, { 0, 0, -180 } }
-            },
+        // --- つくね ---
+        {
+            { EOdenType::Tsukune, EOdenFace::Top },
+            { { 0, 0.05f, 0 }, { 0, 0, -15 } ,{0.78f,0.78f,0.78f}}
+        },
+        {
+            { EOdenType::Tsukune, EOdenFace::Bottom },
+            { { 0, -0.25f, 0 }, { -180, 0, 0 } ,{0.78f,0.78f,0.78f}}
 
-        };
+        },
+        {
+            { EOdenType::Tsukune, EOdenFace::Left },
+            { { -0.0f, 0.0f, -0.f }, { 0, -0, 90 }  ,{0.78f,0.78f,0.78f}}
+        },
+        {
+            { EOdenType::Tsukune, EOdenFace::Right },
+            { { 0.8f, 0.02f, 0.05f }, { 0, 0, 90 } ,{0.78f,0.78f,0.78f}}
+        },
+        {
+            { EOdenType::Tsukune, EOdenFace::Back },
+            { { 0.f, 0.0f, 0.3f }, { 90, 0, 0 }  ,{0.78f,0.78f,0.78f}}
+        },
+        {
+            { EOdenType::Tsukune, EOdenFace::Front },
+            { { 0.07f, 0.0f, -0.8f }, { 90, 0, 0 }  ,{0.78f,0.78f,0.78f}}
+        },
+
+        // --- しらたき ---
+        {
+            { EOdenType::Shirataki, EOdenFace::Left },
+            { { 0.f, 0.0f, -0.f }, { 0, 0, 180 } }
+        },
+        {
+            { EOdenType::Shirataki, EOdenFace::Right },
+            { { 0.f, 0.0f, -0.f }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Shirataki, EOdenFace::Back },
+            { { 0.f, 0.0f, -0.23f }, { 90, 0, 0 } }
+        },
+        {
+            { EOdenType::Shirataki, EOdenFace::Front },
+            { { 0.0f, 0.0f, 0.33f }, { -90, 0, 0 } }
+        },
+        {
+            { EOdenType::Shirataki, EOdenFace::Top },
+            { { 0.f, -0.25f, -0.0f }, {0, 0, 0 } }
+        },
+        {
+            { EOdenType::Shirataki, EOdenFace::Bottom },
+            { { 0.0f, 0.35f, 0.f }, { 0, 0, -180 } }
+        },
+
+
+        // --- こぶむすび ---
+        {
+            { EOdenType::Kobumusubi, EOdenFace::Left },
+            { { 0.f, 0.0f, -0.f }, { 0, 0, 180 } }
+        },
+        {
+            { EOdenType::Kobumusubi, EOdenFace::Right },
+            { { 0.f, 0.0f, -0.f }, { 0, 0, 0 } }
+        },
+        {
+            { EOdenType::Kobumusubi, EOdenFace::Back },
+            { { 0.f, 0.0f, -0.23f }, { 90, 0, 0 } }
+        },
+        {
+            { EOdenType::Kobumusubi, EOdenFace::Front },
+            { { 0.0f, 0.0f, 0.33f }, { -90, 0, 0 } }
+        },
+        {
+            { EOdenType::Kobumusubi, EOdenFace::Top },
+            { { 0.f, -0.25f, -0.0f }, {0, 0, 0 } }
+        },
+        {
+            { EOdenType::Kobumusubi, EOdenFace::Bottom },
+            { { 0.0f, 0.35f, 0.f }, { 0, 0, -180 } }
+        },
+
+    };
 
     auto base = baseTable.at(face);
 

@@ -64,6 +64,7 @@ void ScaleTransitionEffect::Start(TransitionDirection dir)
     else // Open
     {
         startScale = 1.0f;
+        handler.AddWait(0.1f);
         handler.AddEasing(TestEaseType::InSine, 1.0f, 100.0f, 1.0f);
     }
 
