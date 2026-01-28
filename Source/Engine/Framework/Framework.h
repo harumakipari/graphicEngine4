@@ -281,4 +281,6 @@ private:
     //std::unique_ptr<GameManager> gameManager;
 
     std::unique_ptr<CoreComputeParticleSystem> particleSystem;
+
+    std::shared_ptr<Sprite> back;
 };

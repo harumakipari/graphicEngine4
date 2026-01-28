@@ -146,7 +146,8 @@ public:
         _current_scene->State(SCENE_STATE::initialized);
         _current_scene->State(SCENE_STATE::active);
         _current_scene->Start();
-        SceneTransitionManager::Instance().NotifySceneChanged();
+
+        //SceneTransitionManager::Instance().NotifySceneChanged();
 
         return true;
     }

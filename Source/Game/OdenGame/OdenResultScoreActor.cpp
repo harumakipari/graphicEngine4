@@ -134,9 +134,9 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
             // ここで配置位置を決めて生成する
 
             float x = -20.1f + globalIndex * 3.0f;
-            float y = 10.723f;
+            float y = 10.723f + globalIndex * 1.0f;
             float z = -5.506f;
-
+            Logger::Log(U8("グローバルインデックス") + std::to_string(globalIndex));
             //float x =  globalIndex * 0.5f; // 横に並べる      
             //float y = 10.723f+globalIndex * 1.0f;                      // 高さ固定
             //float z = -5.506f + globalIndex * 1.0f;

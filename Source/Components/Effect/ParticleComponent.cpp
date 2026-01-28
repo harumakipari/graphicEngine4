@@ -157,6 +157,8 @@ float ParticleComponent::CalculateDuration() const
 void ParticleComponent::DrawImGuiInspector()
 {
 #ifdef USE_IMGUI
+    ImGui::PushID(this);
+
     if (ImGui::Button("Load Effect"))
     {
         // ダイアログを開いてエフェクトデータを読み込む
@@ -176,6 +178,8 @@ void ParticleComponent::DrawImGuiInspector()
     {
         ImGui::Text("No Effect Loaded");
     }
+
+    ImGui::PopID();
 
 #endif // USE_IMGUI
 

@@ -58,7 +58,7 @@ void OdenGameManager::Reset()
 {
     totalScore = 0;
     combo = 0;
-    maxTime = 50.0f;    // Ç±Ç±Ç≈êßå¿éûä‘Çê›íË
+    maxTime = 20.0f;    // Ç±Ç±Ç≈êßå¿éûä‘Çê›íË
     remainingTime = maxTime;
     satisfaction = 0.0f;
     isGameEnded = false;
@@ -269,14 +269,28 @@ void OdenGameManager::EndGame()
         }
         else
         {
+#if 1
             const char* types[] = { "0", "1" };
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("type", types[rand() % 2]) });
+#else
+            const char* types[] = { "0", "1" };
+            Scene::_transition("LoadingScene", { std::make_pair("preload", "ResultScene"),{"difficulty", "0"} });
+
+#endif // 0
+
+
         }
     }
     else
     {
+#if 1
         const char* types[] = { "0", "1" };
         SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("type", types[rand() % 2]) });
+#else
+        const char* types[] = { "0", "1" };
+        Scene::_transition("LoadingScene", { std::make_pair("preload", "ResultScene"),{"difficulty", "0"} });
+
+#endif // 0
     }
 
 

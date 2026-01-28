@@ -64,8 +64,8 @@
             "maxParticles": 1000,
             "name": "Emitter0",
             "positionOffset": [
-                0.0,
-                0.0,
+                0.5,
+                1.0,
                 0.0
             ],
             "radius": 1.0,

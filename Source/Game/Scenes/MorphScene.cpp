@@ -105,7 +105,7 @@ void MorphScene::Start()
         };
 
     // ƒV[ƒ“‚ªØ‚è‘Ö‚í‚Á‚½‚É
-    SceneTransitionManager::Instance().NotifySceneChanged();
+   // SceneTransitionManager::Instance().NotifySceneChanged();
 
 }
 

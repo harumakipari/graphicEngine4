@@ -131,6 +131,20 @@ bool MainScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
 void MainScene::Start()
 {
+#if 0
+    float width = 1920.0f;
+    float height = 1080.0f;
+
+    auto sprite = std::make_shared<UIImageComponent>("./Data/Textures/UI/scene_change_blue1.png", "sceneChange");
+    sprite->SetWorldPosition({ width * 0.5f, height * 0.5f });
+    sprite->SetPivot({ 0.5f,0.5f });
+    sprite->SetSize({ width, height });
+    sprite->zOrder = 1000;
+
+    GetUIManager()->Add(sprite);
+
+#endif // 0
+
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     audioBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
     audioBgmComponent->SetSource(L"./Data/Sound/BGM/game.wav");
@@ -253,6 +267,7 @@ void MainScene::Start()
 
     // スタート演出をするアクターを生成
     auto uiStartActor = GetActorManager()->CreateAndRegisterActorWithTransform<OdenUIStartActor>("OdenUIStartActor");
+#if 1
     SceneTransitionManager::Instance().SetOnOpeningFinished([this, uiStartActor]()
         {
             uiStartActor->PlayReady([this]()
@@ -260,10 +275,18 @@ void MainScene::Start()
                     OnGameStart();
                 });
         });
-#endif // 0
-
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
+
+#else
+
+    uiStartActor->PlayReady([this]()
+        {
+            OnGameStart();
+        });
+#endif // 0
+#endif // 0
+
 
 }
 

@@ -91,6 +91,8 @@ void Pause::Initialize(const Transform& transform)
 
             const char* types[] = { "0", "1" };
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
+            //Scene::_transition("LoadingScene", { std::make_pair("preload","TitleScene"), std::make_pair("type", types[rand() % 2]) });
+
         };
 
     GetOwnerScene()->GetUIManager()->Add(returnTitleButton);
@@ -110,6 +112,9 @@ void Pause::Initialize(const Transform& transform)
 
             const char* types[] = { "0", "1" };
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", retrySceneName), std::make_pair("type", types[rand() % 2]) });
+
+            // Scene::_transition("LoadingScene", { std::make_pair("preload",retrySceneName), std::make_pair("type", types[rand() % 2]) });
+
         };
 
     GetOwnerScene()->GetUIManager()->Add(retryButton);

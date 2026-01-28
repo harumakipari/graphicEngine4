@@ -58,7 +58,12 @@ void ResultScene::Start()
                 Logger::Log(u8"BackToTitleƒ{ƒ^ƒ“Button Clicked!");
                 static float  value = 1.0f;
                 const char* types[] = { "0", "1" };
+#if 1
                 SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
+#else
+                Scene::_transition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
+#endif
+
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
             };
     }
@@ -77,7 +82,13 @@ void ResultScene::Start()
             {
                 Logger::Log(u8"retryButton Clicked!");
                 const char* types[] = { "0", "1" };
+#if 1
                 SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
+
+#else
+                Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
+
+#endif // 0
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
             };
     }

@@ -129,7 +129,7 @@ void TitleScene::Start()
             {
                 Logger::Log(u8"ボタンButton Clicked!");
                 const char* types[] = { "0", "1" };
-                //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
+             //   Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"), {"difficulty","0"} });
                 SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), {"difficulty","0"} });
 
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
@@ -147,8 +147,8 @@ void TitleScene::Start()
             {
                 Logger::Log(u8"ボタンButton Clicked!");
                 const char* types[] = { "0", "1" };
-                //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
-                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), {"difficulty","1"} });
+                Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"),{"difficulty","1"} });
+                //SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), {"difficulty","1"} });
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
             };
     }
@@ -165,7 +165,8 @@ void TitleScene::Start()
                 Logger::Log(u8"難しいButton Clicked!");
                 const char* types[] = { "0", "1" };
                 //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
-                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"),{"difficulty","2"} });
+                //SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"),{"difficulty","2"} });
+                Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"),  {"difficulty","2"} });
 
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
             };
@@ -182,8 +183,8 @@ void TitleScene::Start()
             {
                 Logger::Log(u8"tutorial_button Clicked!");
                 const char* types[] = { "0", "1" };
-                //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
-                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TutorialScene"), {"difficulty","1"} });
+                Scene::_transition("LoadingScene", { std::make_pair("preload", "TutorialScene"),  {"difficulty","1"} });
+                //SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TutorialScene"), {"difficulty","1"} });
 
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
             };

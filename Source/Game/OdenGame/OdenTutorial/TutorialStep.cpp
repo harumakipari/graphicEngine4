@@ -139,7 +139,7 @@ void TutorialStep_StartOdenStore::Execute(float deltaTime)
     if (InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
     {
         owner->GetTutorialManager()->ChangeState("TakeOdenIngredient");
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav",2.0f);
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
     }
 
 }
@@ -1427,7 +1427,13 @@ void TutorialStep_ClearTutorial::Execute(float deltaTime)
         NotShowMouse();
         // ÉVÅ[ÉìëJà⁄Ç∑ÇÈ
         const char* types[] = { "0", "1" };
+
+#if 1
         SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
+#else
+        Scene::_transition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
+#endif // 0
+
     }
 }
 

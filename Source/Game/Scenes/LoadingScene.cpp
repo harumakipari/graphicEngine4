@@ -82,7 +82,7 @@ void LoadingScene::Start()
     backImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/scene_change_blue1.png", "backGround");
     backImage->SetSize({ 1920, 1080 });
 
-#if 0
+#if 1
     GetUIManager()->Add(sprite);
 #else
     RegisterRenderHook(RenderPass::Sky, [&](ID3D11DeviceContext* immediateContext)

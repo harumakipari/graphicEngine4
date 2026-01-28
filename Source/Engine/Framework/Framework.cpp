@@ -80,6 +80,9 @@ bool Framework::Initialize()
     ProfileThreadName(0, "Main Thread");
 
 
+    //back = std::make_shared<Sprite>(device, L"./Data/Textures/UI/backGround.png");
+    back = std::make_shared<Sprite>(device, L"./Data/Textures/UI/scene_change_blue.png");
+
     return true;
 }
 
@@ -173,6 +176,11 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
         }
         //gameManager->GenerateOutputAll();
     }
+    else
+    {
+        back->Render(immediateContext, 0, 0, 1920, 1080);
+    }
+
 
 #ifdef USE_IMGUI
     {

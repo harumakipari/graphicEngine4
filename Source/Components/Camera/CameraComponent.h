@@ -116,8 +116,6 @@ public:
 #endif
     }
 
-
-
     const DirectX::XMFLOAT4X4& GetView() {
         using namespace DirectX;
 

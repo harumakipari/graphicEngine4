@@ -231,7 +231,6 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
 
 void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
 {
-    //if (auto camera = CameraManager::GetRenderCamera(this))
     if (auto camera = cameraManager->GetRenderCamera(this))
     {
         ViewConstants data = camera->GetViewConstants();
@@ -244,7 +243,7 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
 #endif
     if (!useDeferredRendering)
     {// フォワードレンダリング
-       // ForwardRender(immediateContext);
+        ForwardRender(immediateContext);
     }
     else
     {
@@ -510,7 +509,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     if (useDrawDebug)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-       // Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        // Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         DebugDrawManager::Render(immediateContext);
         ExecuteHooks(RenderPass::Debug, immediateContext);
     }

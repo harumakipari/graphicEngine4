@@ -218,7 +218,7 @@ void TutorialScene::Start()
     // ゲームマネージャーを生成
     auto gameManager = GetActorManager()->CreateAndRegisterActorWithTransform<OdenGameManager>("odenGameManager");
     gameManager->Reset();
-    gameManager->EndGame(); // タイマーを進めないために
+  //  gameManager->EndGame(); // タイマーを進めないために
 
 #if 1
     // スコアを表示するアクターを生成
