@@ -16,11 +16,18 @@ void OdenResultIngredientActor::Initialize(const Transform& transform)
 
     // モデル登録
     std::string parentName = ingredientName + "_model";
-#if 1
-    ingredientModel = AddComponent<SkeletalMeshComponent>(parentName);
     std::string modelFileName = "./Data/Models/Oden_Result_Ingredient/Oden_" + ingredientName + ".gltf";
+#if 0
+    ingredientModel = AddComponent<SkeletalMeshComponent>(parentName);
     ingredientModel->SetModel(modelFileName.c_str());
     ingredientModel->SetIsVisible(false);
+
+#else
+    ingredientModel = this->AddComponent<ElasticMeshComponent>(parentName);
+    ingredientModel->SetModel(modelFileName);
+    ingredientModel->SetUseMouseInput(false); // マウス入力によって引っ張られない
+    ingredientModel->SetElasticEnabled(false);
+    ingredientModel->Initialize();
 
 #endif // 0
     // エフェクト登録
@@ -64,6 +71,23 @@ void OdenResultIngredientActor::Initialize(const Transform& transform)
         ingredientType = EOdenType::None; // たとえばデフォルト
     }
 
+    // 当たり判定を登録
+    boxComponent = AddComponent<BoxComponent>("boxComponent");
+    DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
+    size.x *= 2.5f;
+    size.y *= 2.5f;
+    size.z *= 2.5f;
+    boxComponent->SetBoxExtent(size);
+    boxComponent->SetKinematic(false);
+    boxComponent->SetMass(40.0f);
+    boxComponent->SetCollisionOffsetY(size.y * 0.5f);
+    boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);// おでんのゲームのカーソルのターゲット
+    boxComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
+    //boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+    boxComponent->Initialize();
+    boxComponent->AddImpulse({ 0.0f,0.0f,0.0f });
+
+
 
     //auto convexMeshComponent = AddComponent<ConvexCollisionComponent>("convexComponent", parentName);
     //convexMeshComponent->SetLayer(CollisionLayer::Convex);
@@ -103,6 +127,13 @@ void OdenResultIngredientActor::Update(float deltaTime)
             rotationComponent->SetDirection(direction);
     }
 
+    //if (boxComponent.get())
+    //{
+    //    XMFLOAT3 pos = GetPosition();
+    //    pos.y -= 1.0f * deltaTime;   // ← 落としたい高さ（調整）
+    //    SetPosition(pos);
+    //}
+
 #if 0
 
 
@@ -113,6 +144,16 @@ void OdenResultIngredientActor::Update(float deltaTime)
     position.y += floatY;
     SetPosition(position);
 #endif // 0
+}
+
+void OdenResultIngredientActor::DrawImGuiDetails()
+{
+#ifdef USE_IMGUI
+    if (ImGui::Button("elastic push"))
+    {
+        //ingredientModel->AddCherry();
+    }
+#endif
 }
 
 // 食材が登場する
@@ -140,20 +181,6 @@ void OdenResultIngredientActor::AppearIngredient()
     }
 
 
-    // 当たり判定を登録
-    auto boxComponent = AddComponent<BoxComponent>("boxComponent");
-    DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
-    size.x *= 2.5f;
-    size.y *= 2.5f;
-    size.z *= 2.5f;
-    boxComponent->SetBoxExtent(size);
-    boxComponent->SetKinematic(false);
-    boxComponent->SetMass(40.0f);
-    boxComponent->SetCollisionOffsetY(size.y * 0.5f);
-    boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);// おでんのゲームのカーソルのターゲット
-    boxComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
-    boxComponent->Initialize();
-    boxComponent->AddImpulse({ 0.0f,0.0f,0.0f });
 
 #if 0
 

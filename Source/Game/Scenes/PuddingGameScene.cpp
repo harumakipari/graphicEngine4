@@ -22,6 +22,7 @@
 
 #include "Physics/Physics.h"
 #include "Game/Actors/Stage/FightStage.h"
+#include "Game/OdenGame/OdenActors/OdenResultIngredientActor.h"
 
 #include "Physics/CollisionSystem.h"
 #include "UI/UIManager.h"
@@ -47,17 +48,13 @@ void PuddingGameScene::Start()
     audioComp->Play();
     audioComp->SetVolume(0.2f);
 
-
-
-
     std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("image");
     image->SetWorldPosition({ 50, 50 });
     image->SetSize({ 200, 200 });
 
     uiManager->Add(image);
 
-
-    std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/start_button.png","button");
+    std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/start_button.png", "button");
     button->SetWorldPosition({ 300, 50 });
     button->SetSize({ 200, 80 });
 
@@ -126,8 +123,8 @@ void PuddingGameScene::SetUpActors()
     //elasticComp->SetModel("./Data/Models/pink_pudding/scene.gltf");
     //elasticComp->Initialize();
 
-    //Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,0.0f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
-    //auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pudding>("Pudding", buildTr2);
+    Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,0.0f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
+    auto building2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultIngredientActor>("Oden", buildTr2, "Daikon");
 
     //Transform targetPuddingTr(DirectX::XMFLOAT3{ 0.0f,0.0f,13.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.8f,1.8f,1.8f });
     //auto targetPudding = this->GetActorManager()->CreateAndRegisterActorWithTransform<TargetPudding>("targetPudding", targetPuddingTr);

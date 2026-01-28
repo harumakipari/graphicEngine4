@@ -25,6 +25,7 @@ private:
     void StartEasing(float moveTime, float from, float to);
 
 public:
+    std::function<void()> onMoveStarted;
     std::function<void()> onMoveFinished;
 private:
     std::shared_ptr<CoreEasingComponent> easingComponent;

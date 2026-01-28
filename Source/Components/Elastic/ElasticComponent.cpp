@@ -10,8 +10,10 @@
 
 void ElasticMeshComponent::Initialize()
 {
-    DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
-    modelHeight = model->GetModelSize().y;
+    auto actor = owner_.lock();
+    //DirectX::XMFLOAT3 position = actor->GetPosition();
+    DirectX::XMFLOAT3 position = GetRelativeLocation();
+    modelHeight = model->GetModelSize().y * actor->GetScale().y;
     float midY = position.y + modelHeight * 0.5f;
     // 定数バッファの作成
     elasticBuildingCBuffer = std::make_unique<ConstantBuffer<ElasticConstants>>(Graphics::GetDevice());
@@ -35,7 +37,8 @@ void ElasticMeshComponent::Initialize()
 
 void ElasticMeshComponent::Tick(float deltaTime)
 {
-    DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
+    DirectX::XMFLOAT3 position = GetRelativeLocation();
+    //DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
 
     p3Base = {
 position.x,
@@ -48,8 +51,22 @@ position.z
 
 void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
 {
+    DirectX::XMFLOAT3 position = GetRelativeLocation();
+
+    if (!elasticEnabled)
+    {
+        // Elastic OFF → まっすぐ元の形に固定
+        p3Current = p3Base;
+
+        float midY = position.y + modelHeight * 0.5f;
+
+        elasticConstants.p1 = { position.x,position.y,position.z,1.0f };
+        elasticConstants.p2 = { position.x,midY,position.z ,1.0f };
+        elasticConstants.p3 = { p3Base.x,p3Base.y,p3Base.z,1.0f };
+        return;
+    }
+
     using namespace DirectX;
-    DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
     ClearForce();
     bool hasExternalForce = false;
     if (useMouseInput)
@@ -106,7 +123,8 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
 
 bool ElasticMeshComponent::UpdateFromMouse(float deltaTime)
 {
-    DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
+    //DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
+    DirectX::XMFLOAT3 position = GetRelativeLocation();
 
     // ポーズ中はゲーム入力を一切受け付けない
     if (Scene::GetCurrentScene()->IsPaused())
@@ -213,7 +231,8 @@ bool ElasticMeshComponent::UpdateFromMouse(float deltaTime)
 void ElasticMeshComponent::AddCherry()
 {
     // 重さ × 重力方向
-    DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
+    //DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
+    DirectX::XMFLOAT3 position = GetRelativeLocation();
     XMFLOAT3 down = { 0.0f, -0.5f, 0.0f };
 
     cherryForce = down;
@@ -230,6 +249,19 @@ void ElasticMeshComponent::AddCherry()
     };
 }
 
+
+void ElasticMeshComponent::SetElasticEnabled(const bool enabled)
+{
+    elasticEnabled = enabled;
+
+    if (!enabled)
+    {
+        // OFFにした瞬間に余計な運動量を消す
+        elasticParameters.momentumX = 0.0f;
+        elasticParameters.momentumY = 0.0f;
+        elasticParameters.momentumZ = 0.0f;
+    }
+}
 
 // サクランボのためにプリンの表面の位置を取得する関数
 void  ElasticMeshComponent::GetSurfacePositionTangent(DirectX::XMFLOAT3& surfacePosition, DirectX::XMFLOAT3& tangent)

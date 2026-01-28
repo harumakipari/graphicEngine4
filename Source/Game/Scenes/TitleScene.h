@@ -57,4 +57,8 @@ private:
 
     TitlePhase phase = TitlePhase::StartWait;
 
+    // ゲーム開始ボタン
+    std::shared_ptr<UIButtonComponent> gameStartButton;
+    // タイトルへ戻るボタン
+    std::shared_ptr<UIButtonComponent> returnTitleButton;
 };

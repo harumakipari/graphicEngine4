@@ -135,7 +135,7 @@ public:
 
     struct ElasticParameters
     {
-        float stiffness = 4.0f;     // 硬さ（戻る力）
+        float stiffness = 10.0f;     // 硬さ（戻る力）
         float damping = 0.95f;    // 減衰
         float mass = 1.0f;     // 重さ（外力用）
         float maxAngleDegrees = 100.0f;     // 最大変形量
@@ -156,6 +156,10 @@ public:
 
     float GetModelHeight() const { return modelHeight; }
 
+
+    void SetElasticEnabled(bool enabled);
+
+    bool IsElasticEnabled() const { return elasticEnabled; }
 private:
     void UpdatePushElastic(float deltaTime);
 
@@ -185,6 +189,8 @@ private:
     DirectX::XMFLOAT3 cherryForce = { 0.0f,0.0f,0.0f };
 
     bool useMouseInput = true;
+
+    bool elasticEnabled = false;
 };
 
 class ElasticPullController : public Component

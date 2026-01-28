@@ -1,0 +1,186 @@
+{
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 24,
+      "max": [
+        -0.75,
+        0.808182954788208,
+        -0.032106757164001465
+      ],
+      "min": [
+        -0.8378838300704956,
+        -0.25,
+        -0.20250654220581055
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 24,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 24,
+      "max": [
+        0.0,
+        0.0,
+        1.0,
+        -1.0
+      ],
+      "min": [
+        -1.0,
+        0.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 24,
+      "max": [
+        0.875,
+        1.0
+      ],
+      "min": [
+        0.125,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5125,
+      "count": 36,
+      "max": [
+        23
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 288,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 288,
+      "byteOffset": 288,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 384,
+      "byteOffset": 576,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 192,
+      "byteOffset": 960,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 144,
+      "byteOffset": 1152,
+      "target": 34963
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1296,
+      "uri": "data:application/octet-stream;base64,jn9WvxTlTj9gggO9AABAvwAAgL5gggO9AABAvxTlTj9gggO9jn9WvwAAgL5gggO9jn9WvxTlTj/gXU++jn9WvxTlTj9gggO9AABAvxTlTj9gggO9AABAvxTlTj/gXU++jn9WvwAAgL7gXU++AABAvxTlTj/gXU++AABAvwAAgL7gXU++jn9WvxTlTj/gXU++jn9WvwAAgL5gggO9AABAvwAAgL7gXU++AABAvwAAgL5gggO9jn9WvwAAgL7gXU++jn9WvwAAgL5gggO9jn9WvxTlTj9gggO9jn9WvxTlTj/gXU++jn9WvwAAgL7gXU++AABAvxTlTj9gggO9AABAvwAAgL5gggO9AABAvwAAgL7gXU++AABAvxTlTj/gXU++AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAgL8AAAAAAAAAAAAAgL8AAIC/AAAAAAAAAAAAAIC/AACAvwAAAAAAAAAAAACAvwAAgL8AAAAAAAAAAAAAgL8AAIC/AAAAAAAAAAAAAIC/AACAvwAAAAAAAAAAAACAvwAAgL8AAAAAAAAAAAAAgL8AAIC/AAAAAAAAAAAAAIC/AACAvwAAAAAAAAAAAACAvwAAgL8AAAAAAAAAAAAAgL8AAIC/AAAAAAAAAAAAAIC/AACAvwAAAAAAAAAAAACAvwAAgL8AAAAAAAAAAAAAgL8AAIC/AAAAAAAAAAAAAIC/AACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAgL8AAAAAAAAAAAAAgL8AAIC/AAAAAAAAAAAAAIC/AACAvwAAAAAAAAAAAACAvwAAgL8AAAAAAAAAAAAAgD8AAIC/AAAAAAAAAAAAAIA/AACAvwAAAAAAAAAAAACAPwAAgL8AAAAAAAAAAAAAgD8AAIC/AAAgPwAAQD8AAMA+AACAPwAAwD4AAEA/AAAgPwAAgD8AACA/AAAAPwAAID8AAEA/AADAPgAAQD8AAMA+AAAAPwAAID8AAIA+AADAPgAAAD8AAMA+AACAPgAAID8AAAA/AAAgPwAAAAAAAMA+AACAPgAAwD4AAAAAAAAgPwAAgD4AACA/AACAPwAAID8AAEA/AABgPwAAQD8AAGA/AACAPwAAwD4AAEA/AADAPgAAgD8AAAA+AACAPwAAAD4AAEA/AAAAAAEAAAACAAAAAQAAAAAAAAADAAAABAAAAAUAAAAGAAAABgAAAAcAAAAEAAAACAAAAAkAAAAKAAAACQAAAAgAAAALAAAADAAAAA0AAAAOAAAADQAAAAwAAAAPAAAAEAAAABEAAAASAAAAEAAAABIAAAATAAAAFAAAABUAAAAWAAAAFAAAABYAAAAXAAAA"
+    }
+  ],
+  "materials": [
+    {
+      "name": "m_atari",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.22280001640319824,
+          0.4000000059604645,
+          0.3250768780708313,
+          1.0
+        ],
+        "metallicFactor": 0.0
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "Oden_Result_Collider_Left",
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        68.77632141113281,
+        37.80064392089844,
+        35.05943298339844
+      ],
+      "translation": [
+        35.39747619628906,
+        8.083698272705078,
+        1.125645399093628
+      ]
+    }
+  ],
+  "samplers": [
+    {
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

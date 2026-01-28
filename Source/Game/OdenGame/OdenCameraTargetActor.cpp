@@ -30,16 +30,16 @@ void OdenCameraTargetActor::DrawImGuiDetails()
 void OdenCameraTargetActor::PlayToTarget(float moveTime)
 {
     StartEasing(moveTime, 0.0f, 1.0f);
-    if (onMoveFinished)
-        onMoveFinished();
+    if (onMoveStarted)
+        onMoveStarted();
 
 }
 
 void OdenCameraTargetActor::PlayToOrigin(float moveTime)
 {
     StartEasing(moveTime, 1.0f, 0.0f);
-    if (onMoveFinished)
-        onMoveFinished();
+    if (onMoveStarted)
+        onMoveStarted();
 }
 
 void OdenCameraTargetActor::StartEasing(float moveTime, float from, float to)
@@ -49,6 +49,8 @@ void OdenCameraTargetActor::StartEasing(float moveTime, float from, float to)
 
     handler.SetCompletedFunction([this]()
         {
+            if (onMoveFinished)
+                onMoveFinished();
         });
 
     PropertyAccessor<float> accessor;

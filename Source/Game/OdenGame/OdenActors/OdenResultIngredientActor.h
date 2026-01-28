@@ -1,5 +1,6 @@
 #pragma once
 #include "Components/Easing/CoreEasingComponent.h"
+#include "Components/Elastic/ElasticComponent.h"
 #include "Core/Actor.h"
 #include "Game/OdenGame/OdenData/OdenDataStruct.h"
 
@@ -18,6 +19,8 @@ public:
     void Initialize(const Transform& transform)override;
 
     void Update(float deltaTime)override;
+
+    void DrawImGuiDetails() override;
 
     // 食材が登場する
     void AppearIngredient();
@@ -58,7 +61,8 @@ public:
     void LoadRenderIngredient(ID3D11DeviceContext* immediateContext) const;
 
 public:
-    std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
+    //std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
+     std::shared_ptr<ElasticMeshComponent> ingredientModel; // 具材
 
 private:
     std::string ingredientName; // 食材の名前
@@ -67,6 +71,7 @@ private:
     std::shared_ptr<CoreAudioSourceComponent> audioComponent;   // エフェクト
     std::shared_ptr<CoreEasingComponent> easingComponent;
     std::shared_ptr<RotationComponent> rotationComponent;
+    std::shared_ptr<BoxComponent> boxComponent;
 
     // 経過時間
     float elapsedTime = 0.0f;

@@ -80,12 +80,37 @@ void TitleScene::Start()
     // メインカメラのターゲットアクターを生成
     Transform cameraTargetTr(DirectX::XMFLOAT3{ -12.3f,13.8f,-12.5f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     mainCameraTarget = GetActorManager()->CreateAndRegisterActorWithTransform<OdenCameraTargetActor>("MainCameraActorTarget", cameraTargetTr);
-    mainCameraTarget->onMoveFinished = [this]()
-        {
+    mainCameraTarget->onMoveStarted = [this]()
+        {// カメラが動き始めたときに通る関数
             if (phase == TitlePhase::CameraMovingIn)
+            {// 難易度選択へ
                 phase = TitlePhase::DifficultySelect;
+
+                gameStartButton->SetVisible(false);
+                gameStartButton->SetEnable(false);
+            }
             else if (phase == TitlePhase::CameraMovingOut)
+            {// タイトルへ戻る
                 phase = TitlePhase::StartWait;
+
+                returnTitleButton->SetVisible(false);
+                returnTitleButton->SetEnable(false);
+            }
+        };
+
+    mainCameraTarget->onMoveFinished= [this]()
+        {// カメラが動き終えたときに通る関数
+            if (phase == TitlePhase::DifficultySelect)
+            {// 
+                returnTitleButton->SetVisible(true);
+                returnTitleButton->SetEnable(true);
+                
+            }
+            else if (phase == TitlePhase::StartWait)
+            {
+                gameStartButton->SetVisible(true);
+                gameStartButton->SetEnable(true);
+            }
         };
 
     // メインカメラアクターを生成
@@ -194,12 +219,12 @@ void TitleScene::Start()
 
     // ゲームスタートボタンの作成
     {
-        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/start_button.png", "start_button");
-        button->SetWorldPosition({ 300, 550 });
-        button->SetSize({ 400, 150 });
-        uiManager->Add(button);
+        gameStartButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/start_button.png", "start_button");
+        gameStartButton->SetWorldPosition({ 300, 550 });
+        gameStartButton->SetSize({ 400, 150 });
+        uiManager->Add(gameStartButton);
 
-        button->onClick = [this]()
+        gameStartButton->onClick = [this]()
             {
                 Logger::Log(u8"難易度選択のカメラ遷移");
                 phase = TitlePhase::CameraMovingIn;
@@ -214,12 +239,14 @@ void TitleScene::Start()
 
     // ゲーム戻るボタンの作成
     {
-        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/back_to_title.png", "back_to_title");
-        button->SetWorldPosition({ 300, 750 });
-        button->SetSize({ 400, 150 });
-        uiManager->Add(button);
+        returnTitleButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/back_to_title.png", "back_to_title");
+        returnTitleButton->SetWorldPosition({ 300, 750 });
+        returnTitleButton->SetSize({ 400, 150 });
+        uiManager->Add(returnTitleButton);
+        returnTitleButton->SetVisible(false);
+        returnTitleButton->SetEnable(false);
 
-        button->onClick = [this]()
+        returnTitleButton->onClick = [this]()
             {
                 Logger::Log(u8"カメラを元に戻す");
                 phase = TitlePhase::CameraMovingOut;
@@ -269,7 +296,7 @@ void TitleScene::SetUpActors()
 
     for (int i = 0; i < 5; i++)
     {
-        Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.1f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 90.0f,90.0f,-90.0f }, DirectX::XMFLOAT3{ -0.46f,1.0f,0.36f });
+        Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.1f,15.73f,-6.5f }, DirectX::XMFLOAT3{ 90.0f,90.0f,-90.0f }, DirectX::XMFLOAT3{ -0.5f,1.0f,0.26f });
         //  Transform clothTr(DirectX::XMFLOAT3{ -6.8f + i * 3.2f,15.23f,-6.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.48f,1.0f,0.48f });
         std::string actorName = "noren_" + std::to_string(i + 1);
         auto clothActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>(actorName, clothTr);

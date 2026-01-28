@@ -6,6 +6,7 @@ VS_OUT main(VS_IN vin)
 {
     VS_OUT vout;
     float sigma = vin.tangent.w;
+#if 0
 
     // ① モデル→ワールド
     float4 worldPos4 = mul(vin.position, world);
@@ -79,8 +80,6 @@ VS_OUT main(VS_IN vin)
         // 法線／接線も同じ回転を適用する（まずワールドに変換しておく）
         outNormal = normalize(mul(vin.normal.xyz, (float3x3) world));
         outTangent = normalize(mul(vin.tangent.xyz, (float3x3) world));
-        //outNormal = normalize(mul((float3x3) world, vin.gbuffer1Normal.xyz));
-        //outTangent = normalize(mul((float3x3) world, vin.tangent.xyz));
 
         outNormal = RodriguesRotate(outNormal, rotAxis, cosAngle, sinAngle);
         outTangent = RodriguesRotate(outTangent, rotAxis, cosAngle, sinAngle);
@@ -104,4 +103,58 @@ VS_OUT main(VS_IN vin)
 
     vout.texcoord = vin.texcoord;
     return vout;
+
+#else
+
+    float3 localPos = vin.position.xyz;
+    float meshHeight = max(buildHeight, 1e-5);
+    float t = saturate((localPos.y - p1.y) / meshHeight);
+    float3 bezierPos = QuadricBezier(p1.xyz, p2.xyz, p3.xyz, t);
+    float3 bezierTangent = SafeNormalize(QuadricBezierTangent(p1.xyz, p2.xyz, p3.xyz, t), float3(0, 1, 0));
+
+    float3 straightPos = p1.xyz + float3(0, (localPos.y - p1.y), 0);
+    float3 localOffset = localPos - straightPos;
+
+    float3 up = float3(0, 1, 0);
+    float3 rotAxisRaw = cross(up, bezierTangent);
+    float axisLen = length(rotAxisRaw);
+
+    float3 rotatedOffset = localOffset;
+    float3 localNormal = vin.normal.xyz;
+    float3 localTangent = vin.tangent.xyz;
+
+    if (axisLen > 1e-5)
+    {
+        float3 rotAxis = rotAxisRaw / axisLen;
+        float cosAngle = clamp(dot(up, bezierTangent), -1.0, 1.0);
+        float angle = acos(cosAngle);
+        float maxAngle = radians(maxAngleDegree);
+        angle = clamp(angle, -maxAngle, maxAngle);
+
+        float s = sin(angle);
+        float c = cos(angle);
+
+        rotatedOffset = RodriguesRotate(localOffset, rotAxis, c, s);
+        localNormal = RodriguesRotate(localNormal, rotAxis, c, s);
+        localTangent = RodriguesRotate(localTangent, rotAxis, c, s);
+    }
+
+    float3 deformedLocalPos = bezierPos + rotatedOffset;
+
+    float4 worldPos = mul(float4(deformedLocalPos, 1.0f), world);
+
+    vout.wPosition = worldPos;
+    vout.position = mul(worldPos, viewProjection);
+
+    vout.wNormal = float4(
+    normalize(mul((float3x3) world, localNormal)), 0.0f);
+
+    vout.wTangent = float4(
+    normalize(mul((float3x3) world, localTangent)), sigma);
+
+
+    vout.texcoord = vin.texcoord;
+    return vout;
+
+#endif
 }

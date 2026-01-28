@@ -21,38 +21,38 @@ static std::vector<OdenSubmitLog> CreateDebugSubmitLogs()
         { EOdenType::Goboten,   1, 100.0f },
         { EOdenType::Donut,   1, 100.0f },
 
-        { EOdenType::Daikon,   1, 100.0f },
-        { EOdenType::Hanpen,   1, 100.0f },
-        { EOdenType::Egg,     1, 200.0f },
+        //{ EOdenType::Daikon,   1, 100.0f },
+        //{ EOdenType::Hanpen,   1, 100.0f },
+        //{ EOdenType::Egg,     1, 200.0f },
 
-        { EOdenType::Donut,   1, 100.0f },
-        { EOdenType::Konnyaku,   1, 100.0f },
-        { EOdenType::Goboten,   1, 100.0f },
+        //{ EOdenType::Donut,   1, 100.0f },
+        //{ EOdenType::Konnyaku,   1, 100.0f },
+        //{ EOdenType::Goboten,   1, 100.0f },
 
-        { EOdenType::Tsukune,   1, 100.0f },
-        { EOdenType::Egg,     1, 200.0f },
-        { EOdenType::Shirataki,   1, 100.0f },
+        //{ EOdenType::Tsukune,   1, 100.0f },
+        //{ EOdenType::Egg,     1, 200.0f },
+        //{ EOdenType::Shirataki,   1, 100.0f },
 
-        { EOdenType::Konnyaku,   1, 100.0f },
-        { EOdenType::Daikon,     1, 400.0f },
-        { EOdenType::Cake,   1, 100.0f },
+        //{ EOdenType::Konnyaku,   1, 100.0f },
+        //{ EOdenType::Daikon,     1, 400.0f },
+        //{ EOdenType::Cake,   1, 100.0f },
 
-        { EOdenType::Konnyaku,   1, 100.0f },
-        { EOdenType::Daikon,     1, 400.0f },
-        { EOdenType::Donut,   1, 100.0f },
+        //{ EOdenType::Konnyaku,   1, 100.0f },
+        //{ EOdenType::Daikon,     1, 400.0f },
+        //{ EOdenType::Donut,   1, 100.0f },
 
-        { EOdenType::Cake,   1, 100.0f },
-        { EOdenType::Tsukune,   1, 100.0f },
-        { EOdenType::Egg,     1, 200.0f },
+        //{ EOdenType::Cake,   1, 100.0f },
+        //{ EOdenType::Tsukune,   1, 100.0f },
+        //{ EOdenType::Egg,     1, 200.0f },
 
-        { EOdenType::Kobumusubi,   1, 100.0f },
-        { EOdenType::Egg,     1, 200.0f },
-        { EOdenType::Shirataki,   1, 100.0f },
+        //{ EOdenType::Kobumusubi,   1, 100.0f },
+        //{ EOdenType::Egg,     1, 200.0f },
+        //{ EOdenType::Shirataki,   1, 100.0f },
 
 
-        { EOdenType::Goboten,   1, 100.0f },
-            { EOdenType::Tsukune,   1, 100.0f },
-        { EOdenType::Egg,     1, 200.0f },
+        //{ EOdenType::Goboten,   1, 100.0f },
+        //    { EOdenType::Tsukune,   1, 100.0f },
+        //{ EOdenType::Egg,     1, 200.0f },
     };
 }
 
@@ -104,7 +104,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     const std::vector<OdenSubmitLog>* logs = nullptr;
 
 #if _DEBUG
-    static bool useDebug = false; // ← ImGui で切り替えてもいい
+    static bool useDebug = true; // ← ImGui で切り替えてもいい
     if (useDebug)
     {
         static std::vector<OdenSubmitLog> debugLogs = CreateDebugSubmitLogs();
@@ -131,16 +131,23 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
                 Logger::Log("Warning: SubmitLog has invalid EOdenType");
                 continue; // 作らない
             }
-            // ここで配置位置を決めて生成する
 
-            float x = -20.1f + globalIndex * 3.0f;
-            float y = 10.723f + globalIndex * 1.0f;
-            float z = -5.506f;
+            // ここで配置位置を決めて生成する
+            float x = 0.0f + MathHelper::RandomRange(-10.0f, 10.0f);
+            float y = 50.0f + (globalIndex * 20.0f);
+            float z = .0f;
+
+            //float x = -10.1f +/* globalIndex **/ MathHelper::RandomRange(-10.0f, 10.0f);
+            //float y = 10.723f +/* globalIndex * 1.0f*/MathHelper::RandomRange(-3.0f, 3.0f);
+            //float z = -5.506f;
+
             Logger::Log(U8("グローバルインデックス") + std::to_string(globalIndex));
+
             //float x =  globalIndex * 0.5f; // 横に並べる      
             //float y = 10.723f+globalIndex * 1.0f;                      // 高さ固定
             //float z = -5.506f + globalIndex * 1.0f;
             Transform ingredientTr(DirectX::XMFLOAT3{ x,y,z }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 2.5f,2.5f,2.5f });
+            //Transform ingredientTr(DirectX::XMFLOAT3{ x,y,z }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
             auto ingredientActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultIngredientActor>("OdenResultIngredient", ingredientTr, ingredientName);
             ingredientActor->SetFeverModeIngredient(log.wasFever);// フィーバー中に提出された具材かどうかを設定する
             resultIngredients.push_back(ingredientActor);
@@ -308,7 +315,7 @@ void OdenResultScoreActor::Update(float deltaTime)
         {
             resultIngredients[spawnIndex]->AppearIngredient();
 
-            int addScore = OdenGameSession::GetOdenScoreByOnce(); 
+            int addScore = OdenGameSession::GetOdenScoreByOnce();
 #if 0
             if (resultIngredients[spawnIndex]->GetIsFeverModeIngredient())
             {

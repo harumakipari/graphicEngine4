@@ -39,7 +39,6 @@ bool ResultScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     HRESULT hr = LoadTextureFromFile(device, L"./Data/ShaderTextures/waterNormal.png", waterNormalTexture.GetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-
     return true;
 }
 
@@ -110,7 +109,6 @@ void ResultScene::Start()
     menuImage->SetSize({ 650, 750 });
     //uiManager->Add(menuImage);
 
-
     // ‚±‚±‚Å”wŒi‚ð•`‰æ
     RegisterRenderHook(RenderPass::Sky, [&](ID3D11DeviceContext* immediateContext)
         {
@@ -124,7 +122,6 @@ void ResultScene::Start()
 
     Transform stageTr(DirectX::XMFLOAT3{ 0.f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto stageActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultStageActor>("resultStage", stageTr);
-
 
 #endif // 1
 
@@ -169,7 +166,6 @@ void ResultScene::SetUpActors()
 #if 0
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
     auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultStageActor>("stage", stageTr);
-
 #endif // 0
 
 }
@@ -217,7 +213,5 @@ void ResultScene::DrawGui()
     ImGui::DragFloat(U8("–û–Œ"), &odenSoupConstantBuffer.oilStrength, 0.01f);
 
     ImGui::End();
-
-
 #endif
 }

@@ -18,4 +18,5 @@ public:
 private:
     std::shared_ptr<StaticMeshComponent> storeModelComponent;     // “X‚Ìƒ‚ƒfƒ‹
 
+    std::shared_ptr<StaticMeshComponent> soupModelComponent; // `‚Ìƒ‚ƒfƒ‹
 };

@@ -31,10 +31,10 @@ void OdenTitleStageActor::Initialize(const Transform& transform)
 
     InitData datas[] =
     {
-        {Difficulty::Tutorial, "./Data/Models/Oden_Title_Stage/Oden_Title_Select_Tutorial.gltf", {10.7f,12.4f,7.6f}, "0"},
-        {Difficulty::Easy,     "./Data/Models/Oden_Title_Stage/Oden_Title_Select_Easy.gltf",     {4.1f,12.4f,7.6f}, "0"},
-        {Difficulty::Normal,   "./Data/Models/Oden_Title_Stage/Oden_Title_Select_Normal.gltf",   {-2.5f,12.4f,7.6f}, "1"},
-        {Difficulty::Hard,     "./Data/Models/Oden_Title_Stage/Oden_Title_Select_Hard.gltf",     {-9.1f,12.4f,7.6f}, "2"},
+        {Difficulty::Tutorial, "./Data/Models/Oden_Title_Stage/Oden_Title_Select_Tutorial.gltf", {10.7f,12.4f,9.6f}, "0"},
+        {Difficulty::Easy,     "./Data/Models/Oden_Title_Stage/Oden_Title_Select_Easy.gltf",     {4.1f,12.4f,9.6f}, "0"},
+        {Difficulty::Normal,   "./Data/Models/Oden_Title_Stage/Oden_Title_Select_Normal.gltf",   {-2.5f,12.4f,9.6f}, "1"},
+        {Difficulty::Hard,     "./Data/Models/Oden_Title_Stage/Oden_Title_Select_Hard.gltf",     {-9.1f,12.4f,9.6f}, "2"},
     };
 
     for (auto& d : datas)
