@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <string>
 #include <stack>
 #include <functional>
@@ -19,7 +18,6 @@
 #include "Physics/Physics.h"
 #include "Components/Base/SceneComponent.h"
 #include "Components/CollisionShape/ShapeComponent.h"
-
 
 
 //FBX‚Ìs—ñ‚ðDirectX‚ÌXMFLOAT4x4‚É•ÏŠ·‚·‚éŠÖ”
@@ -255,13 +253,11 @@ public:
             parentGlobalTransforms.pop();
         }
 
-
-
         // Ã“I„‘Ìì¬
         {
             physx::PxPhysics* pxPhysics = Physics::Instance().GetPhysics();
             physx::PxScene* pxScene = Physics::Instance().GetScene();
-            physx::PxMaterial* pxMaterial = Physics::Instance().GetMaterial();
+            physx::PxMaterial* pxMaterial = Physics::Instance().GetDefaultMaterial();
 
             //const ModelResource* resource = model->GetResource();
 

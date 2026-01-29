@@ -3,16 +3,17 @@
 
 #include <magic_enum.hpp>
 
+#include "OdenResultStageActor.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Components/Effect/ParticleComponent.h"
 #include "Components/Controller/ControllerComponent.h"
 #include "Engine/Scene/Scene.h"
 #include "Game/Actors/Camera/Camera.h"
 
-
 void OdenResultIngredientActor::Initialize(const Transform& transform)
 {
     // 初期化処理
+
 
     // モデル登録
     std::string parentName = ingredientName + "_model";
@@ -83,9 +84,22 @@ void OdenResultIngredientActor::Initialize(const Transform& transform)
     boxComponent->SetCollisionOffsetY(size.y * 0.5f);
     boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);// おでんのゲームのカーソルのターゲット
     boxComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
-    //boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+    boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+    boxComponent->SetPhysicsMaterial(PhysicsMaterialType::Food);
     boxComponent->Initialize();
-    boxComponent->AddImpulse({ 0.0f,0.0f,0.0f });
+    boxComponent->InitialVelocity({ 0.0f,-80.0f,0.0f });
+    AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
+        {
+            //if (auto item = std::dynamic_pointer_cast<OdenResultStageActor>(hitPair.second->GetActor()))
+            //{
+            //    velocity.y = 0.0f;
+            //}
+            //if (auto item = std::dynamic_pointer_cast<OdenResultIngredientActor>(hitPair.second->GetActor()))
+            //{
+            //    velocity.y = 0.0f;
+            //}
+
+        });
 
 
 
@@ -130,9 +144,74 @@ void OdenResultIngredientActor::Update(float deltaTime)
     //if (boxComponent.get())
     //{
     //    XMFLOAT3 pos = GetPosition();
-    //    pos.y -= 1.0f * deltaTime;   // ← 落としたい高さ（調整）
+    //    pos.y += velocity.y * deltaTime;
     //    SetPosition(pos);
     //}
+
+#if 0
+    float speed = 5.0f;
+    float gravity = -9.8f;
+    float groundOffset = 1.0f;
+
+    // 入力方向を正規化して速度に反映
+    DirectX::XMFLOAT3 wishDir = { 0.0f,-1.0f,0.0f };
+
+    float len = sqrt(wishDir.x * wishDir.x + wishDir.z * wishDir.z);
+    if (len > 0.001f)
+    {
+        wishDir.x /= len;
+        wishDir.z /= len;
+    }
+
+    velocity.x = wishDir.x * speed;
+    velocity.z = wishDir.z * speed;
+
+    // 重力加速度を適用
+    if (!isGrounded)
+    {
+        velocity.y += gravity * deltaTime;
+    }
+
+    // 位置を予測
+    DirectX::XMFLOAT3 nextPos = position;
+
+    nextPos.x += velocity.x * deltaTime;
+    nextPos.y += velocity.y * deltaTime;
+    nextPos.z += velocity.z * deltaTime;
+
+    // 床との衝突判定
+    isGrounded = false;
+
+    float fallDistance = position.y - nextPos.y;
+
+    float rayStartY = position.y + groundOffset;
+    float rayLength = groundOffset + std::max<float>(fallDistance, 0.0f) + 0.1f;
+
+    HitResult hit;
+    if (Physics::Instance().RayCast(
+        { position.x, rayStartY, position.z },
+        { 0,-1,0 },
+        rayLength,
+        hit
+    ))
+    {
+        float groundY = hit.position.y;
+
+        if (nextPos.y <= groundY)
+        {
+            nextPos.y = groundY;
+            velocity.y = 0;
+            isGrounded = true;
+        }
+        Graphics::GetShapeRenderer()->DrawSphere(
+            hit.position, 0.1f, { 1,0,0,1 });
+    }
+
+
+    // 位置を更新
+    SetPosition(nextPos);
+#endif // 0
+
 
 #if 0
 

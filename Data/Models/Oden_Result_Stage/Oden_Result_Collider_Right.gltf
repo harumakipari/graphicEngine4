@@ -1,186 +1,129 @@
 {
-  "accessors": [
-    {
-      "bufferView": 0,
-      "componentType": 5126,
-      "count": 24,
-      "max": [
-        -0.16211611032485962,
-        0.808182954788208,
-        -0.032106757164001465
-      ],
-      "min": [
-        -0.24999994039535522,
-        -0.25,
-        -0.20250654220581055
-      ],
-      "type": "VEC3"
-    },
-    {
-      "bufferView": 1,
-      "componentType": 5126,
-      "count": 24,
-      "max": [
-        1.0,
-        1.0,
-        1.0
-      ],
-      "min": [
-        -1.0,
-        -1.0,
-        -1.0
-      ],
-      "type": "VEC3"
-    },
-    {
-      "bufferView": 2,
-      "componentType": 5126,
-      "count": 24,
-      "max": [
-        1.0,
-        0.0,
-        1.0,
-        1.0
-      ],
-      "min": [
-        0.0,
-        0.0,
-        -1.0,
-        1.0
-      ],
-      "type": "VEC4"
-    },
-    {
-      "bufferView": 3,
-      "componentType": 5126,
-      "count": 24,
-      "max": [
-        0.875,
-        1.0
-      ],
-      "min": [
-        0.125,
-        0.0
-      ],
-      "type": "VEC2"
-    },
-    {
-      "bufferView": 4,
-      "componentType": 5125,
-      "count": 36,
-      "max": [
-        23
-      ],
-      "min": [
-        0
-      ],
-      "type": "SCALAR"
-    }
-  ],
-  "asset": {
-    "version": "2.0"
-  },
-  "bufferViews": [
-    {
-      "buffer": 0,
-      "byteLength": 288,
-      "target": 34962
-    },
-    {
-      "buffer": 0,
-      "byteLength": 288,
-      "byteOffset": 288,
-      "target": 34962
-    },
-    {
-      "buffer": 0,
-      "byteLength": 384,
-      "byteOffset": 576,
-      "target": 34962
-    },
-    {
-      "buffer": 0,
-      "byteLength": 192,
-      "byteOffset": 960,
-      "target": 34962
-    },
-    {
-      "buffer": 0,
-      "byteLength": 144,
-      "byteOffset": 1152,
-      "target": 34963
-    }
-  ],
-  "buffers": [
-    {
-      "byteLength": 1296,
-      "uri": "data:application/octet-stream;base64,/P9/vhTlTj9gggO9/P9/vgAAgL5gggO9xAEmvhTlTj9gggO9xAEmvgAAgL5gggO9xAEmvhTlTj9gggO9xAEmvhTlTj/gXU++/P9/vhTlTj9gggO9/P9/vhTlTj/gXU++/P9/vgAAgL7gXU++/P9/vhTlTj/gXU++xAEmvgAAgL7gXU++xAEmvhTlTj/gXU++/P9/vgAAgL5gggO9/P9/vgAAgL7gXU++xAEmvgAAgL5gggO9xAEmvgAAgL7gXU++xAEmvgAAgL7gXU++xAEmvhTlTj/gXU++xAEmvgAAgL5gggO9xAEmvhTlTj9gggO9/P9/vhTlTj9gggO9/P9/vgAAgL7gXU++/P9/vgAAgL5gggO9/P9/vhTlTj/gXU++AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAgD8AAAAAAAAAgAAAgD8AAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAvwAAgD8AAAAAAAAAAAAAgL8AAIA/AAAAAAAAAAAAAIC/AACAPwAAAAAAAAAAAACAvwAAgD8AAAAAAAAAAAAAgD8AAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAIA/AADAPgAAQD8AAMA+AACAPwAAID8AAEA/AAAgPwAAgD8AACA/AABAPwAAID8AAAA/AADAPgAAQD8AAMA+AAAAPwAAwD4AAIA+AADAPgAAAD8AACA/AACAPgAAID8AAAA/AADAPgAAAAAAAMA+AACAPgAAID8AAAAAAAAgPwAAgD4AAGA/AACAPwAAYD8AAEA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAgD8AAMA+AACAPwAAAD4AAEA/AAAAAAEAAAACAAAAAgAAAAEAAAADAAAABAAAAAUAAAAGAAAABgAAAAUAAAAHAAAACAAAAAkAAAAKAAAACgAAAAkAAAALAAAADAAAAA0AAAAOAAAADgAAAA0AAAAPAAAAEAAAABEAAAASAAAAEwAAABIAAAARAAAAFAAAABUAAAAWAAAAFQAAABQAAAAXAAAA"
-    }
-  ],
-  "materials": [
-    {
-      "name": "m_atari",
-      "pbrMetallicRoughness": {
-        "baseColorFactor": [
-          0.22280001640319824,
-          0.4000000059604645,
-          0.3250768780708313,
-          1.0
-        ],
-        "metallicFactor": 0.0
-      }
-    }
-  ],
-  "meshes": [
-    {
-      "primitives": [
-        {
-          "attributes": {
-            "NORMAL": 1,
-            "POSITION": 0,
-            "TANGENT": 2,
-            "TEXCOORD_0": 3
-          },
-          "indices": 4,
-          "material": 0,
-          "mode": 4
-        }
-      ]
-    }
-  ],
-  "nodes": [
-    {
-      "mesh": 0,
-      "name": "Oden_Result_Collider_Right",
-      "rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "scale": [
-        68.77632141113281,
-        37.80064392089844,
-        35.05943298339844
-      ],
-      "translation": [
-        33.370887756347656,
-        8.083698272705078,
-        1.125645399093628
-      ]
-    }
-  ],
-  "samplers": [
-    {
-      "wrapS": 10497,
-      "wrapT": 10497
-    }
-  ],
-  "scenes": [
-    {
-      "nodes": [
-        0
-      ]
-    }
-  ]
+	"asset":{
+		"generator":"Khronos glTF Blender I/O v4.2.57",
+		"version":"2.0"
+	},
+	"scene":0,
+	"scenes":[
+		{
+			"name":"Scene",
+			"nodes":[
+				0
+			]
+		}
+	],
+	"nodes":[
+		{
+			"mesh":0,
+			"name":"Oden_Result_Collider_Right",
+			"scale":[
+				68.77632141113281,
+				1000,
+				35.05943298339844
+			],
+			"translation":[
+				32.700889587402344,
+				245,
+				1.125645399093628
+			]
+		}
+	],
+	"materials":[
+		{
+			"name":"m_atari",
+			"pbrMetallicRoughness":{
+				"baseColorFactor":[
+					0.22280001640319824,
+					0.4000000059604645,
+					0.3250768780708313,
+					1
+				],
+				"metallicFactor":0
+			}
+		}
+	],
+	"meshes":[
+		{
+			"name":"Mesh_0",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":0,
+						"NORMAL":1,
+						"TEXCOORD_0":2
+					},
+					"indices":3,
+					"material":0
+				}
+			]
+		}
+	],
+	"accessors":[
+		{
+			"bufferView":0,
+			"componentType":5126,
+			"count":24,
+			"max":[
+				-0.16211611032485962,
+				0.808182954788208,
+				-0.032106757164001465
+			],
+			"min":[
+				-0.24999994039535522,
+				-0.25,
+				-0.20250654220581055
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":1,
+			"componentType":5126,
+			"count":24,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":2,
+			"componentType":5126,
+			"count":24,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":3,
+			"componentType":5123,
+			"count":36,
+			"type":"SCALAR"
+		}
+	],
+	"bufferViews":[
+		{
+			"buffer":0,
+			"byteLength":288,
+			"byteOffset":0,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":288,
+			"byteOffset":288,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":192,
+			"byteOffset":576,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":72,
+			"byteOffset":768,
+			"target":34963
+		}
+	],
+	"buffers":[
+		{
+			"byteLength":840,
+			"uri":"Oden_Result_Collider_Right.bin"
+		}
+	]
 }

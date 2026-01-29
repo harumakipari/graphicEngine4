@@ -11,6 +11,13 @@
 class OdenResultScoreActor :public Actor
 {
 public:
+    struct PendingIngredient
+    {
+        EOdenType type;
+        bool wasFever;
+    };
+
+public:
     explicit OdenResultScoreActor(const std::string& actorName) :Actor(actorName) {}
 
     void Initialize(const Transform& transform)override;
@@ -28,6 +35,9 @@ private:
 
     // spawnIndexに応じてスポーンタイムを変更する
     float CalcSpawnDelay() const;
+
+    // 食材を生成する関数
+    void CreateIngredientActor(const PendingIngredient& data);
 
 private:
     std::shared_ptr<UITextComponent> scoreTextUi; // スコアのテキスト描画
@@ -57,6 +67,8 @@ private:
     std::shared_ptr<UIImageComponent> nextRankDUi; // 次のランクDの時に表示するUI
 
     std::shared_ptr<SkeletalMeshComponent> odenPoleModel;   // おでんの串モデル
+
+    std::vector<PendingIngredient> pendingIngredients;
 
     float nextSpawnDelay = 0.5f; // 次の具材が出現するまでの遅延時間
     float spawnTimer = 0.0f; // 出現タイマー

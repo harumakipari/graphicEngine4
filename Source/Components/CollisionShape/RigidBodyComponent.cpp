@@ -25,14 +25,18 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
 
 
     {
-        material_->setRestitution(0.0f);
-        material_->setDynamicFriction(1.0f);
-        material_->setStaticFriction(1.0f);
+        //material_->setRestitution(0.0f);
+        //material_->setDynamicFriction(1.0f);
+        //material_->setStaticFriction(1.0f);
     }
+    material_ = Physics::Instance().GetMaterial(
+        shapeComponent_->GetPhysicsMaterialType()
+    );
 
+    pxShape_ = physics->createShape(info.geometry.any(), *material_, true);
 
     // 第三引数を true にすることで一意的な専用の shape にする
-    pxShape_ = physics->createShape(info.geometry.any(), *material_, true);
+    //pxShape_ = physics->createShape(info.geometry.any(), *material_, true);
 
     pxShape_->userData = shapeComponent_;    // ShapeComponent へのポインタ
     if (shapeComponent_->GetCollisionType() == "Capsule")
@@ -99,8 +103,11 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
     pxActor_->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, shapeComponent_->IsKinematic());
 
     {
-        pxActor_->setMaxLinearVelocity(25.0f);
-        pxActor_->setMaxAngularVelocity(25.0f);
+        pxActor_->setMaxLinearVelocity(300.0f);
+        pxActor_->setMaxAngularVelocity(300.0f);
+
+        pxActor_->setLinearDamping(0.0f);
+        pxActor_->setAngularDamping(0.0f);
     }
 
 
@@ -338,7 +345,7 @@ void MultiRigidBodyComponent::Initialize(physx::PxPhysics* physics)
         //const DirectX::XMFLOAT3 scale = meshComponent_->GetComponentScale();
         const DirectX::XMFLOAT3 scale = { unitScale,unitScale,unitScale };
         PxConvexMeshGeometry geometry(convexMesh, PxMeshScale(physx::PxVec3(scale.x, scale.y, scale.z)));
-        PxMaterial& material = *Physics::Instance().GetMaterial();
+        PxMaterial& material = *Physics::Instance().GetMaterial(PhysicsMaterialType::Default);
         //PxMaterial& mat = *Physics::Instance().GetMaterial();
         //mat.setStaticFriction(1.0f);
         //mat.setDynamicFriction(1.0f);

@@ -221,6 +221,31 @@ public:
     void SetIsVisibleDebugShape(const bool isVisibleDebugShape) { this->isVisibleDebugShape_ = isVisibleDebugShape; }
 
     const std::string& GetCollisionType()const { return collisionTypeName_; }
+
+    void SetPhysicsMaterial(PhysicsMaterialType type)
+    {
+        materialType_ = type;
+        if (rigidBody_)
+        {
+            rigidBody_->SetMaterial(type);
+        }
+    }
+
+    PhysicsMaterialType GetPhysicsMaterialType() const
+    {
+        return materialType_;
+    }
+
+    // ‰‘¬“x‚ð—^‚¦‚é
+    void InitialVelocity(DirectX::XMFLOAT3 initialVelocity)
+    {
+        if (rigidBody_)
+        {
+            rigidBody_->SetIntialVelocity(initialVelocity);
+        }
+    }
+
+
 protected:
     bool isStatic_ = false;
 
@@ -236,6 +261,8 @@ protected:
     float mass_ = 1.0f; // default‚Å 1.0kg ‚É‚µ‚Ä‚¨‚­
 
     std::string collisionTypeName_ = "";
+
+    PhysicsMaterialType materialType_ = PhysicsMaterialType::Default;
 };
 
 

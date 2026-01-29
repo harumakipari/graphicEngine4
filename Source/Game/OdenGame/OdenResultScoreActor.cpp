@@ -10,6 +10,7 @@
 #include "Engine/Scene/Scene.h"
 #include "UI/FontManager.h"
 
+
 static std::vector<OdenSubmitLog> CreateDebugSubmitLogs()
 {
     return {
@@ -124,7 +125,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     {
         for (int i = 0; i < log.count; ++i)
         {
-#if 1
+#if 0
             std::string ingredientName = std::string(magic_enum::enum_name(log.type));
             if (ingredientName.empty())
             {
@@ -153,39 +154,23 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
             resultIngredients.push_back(ingredientActor);
             globalIndex++;
 #else
-            if (ingredientInSkewer == 0)
-            {// 三個に一個串を作成する
-                //float x = 1.2f + skewerIndex * 5.0f;
-                float x = -20.1f + skewerIndex * 5.0f;
-                //float y = 6.723f;
-                float y = 0.1f;
-                float z = -5.506f;
 
-                Transform skewerTr(DirectX::XMFLOAT3{ x, y, z }, DirectX::XMFLOAT4{ 0,0,0,1 }, DirectX::XMFLOAT3{ 1,1,1 });
-                currentSkewer = GetOwnerScene()->GetActorManager()
-                    ->CreateAndRegisterActorWithTransform<OdenResultSkewerActor>("OdenSkewer", skewerTr);
-
-                skewerIndex++;
-            }
-
-            std::string ingredientName = std::string(magic_enum::enum_name(log.type));
-
-            auto ingredientActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<OdenResultIngredientActor>("OdenResultIngredient", Transform{}, ingredientName);
-
-            ingredientActor->SetFeverModeIngredient(log.wasFever);
-
-            // 串に追加
-            currentSkewer->AddIngredient(ingredientActor, ingredientInSkewer);
-
-            resultIngredients.push_back(ingredientActor);
-
-            ingredientInSkewer++;
-            if (ingredientInSkewer >= 3)
-                ingredientInSkewer = 0;
 #endif // 0
         }
 
     }
+
+    for (auto& log : *logs)
+    {
+        for (int i = 0; i < log.count; ++i)
+        {
+            pendingIngredients.push_back({
+                log.type,
+                log.wasFever
+                });
+        }
+    }
+
     displayScore = 0;
 
     // 基本スコアの計算
@@ -308,12 +293,18 @@ void OdenResultScoreActor::Update(float deltaTime)
 
 
     // 食材の順番登場
-    if (spawnIndex < resultIngredients.size())
+    //if (spawnIndex < resultIngredients.size())
+    if (spawnIndex < pendingIngredients.size())
     {
         spawnTimer += deltaTime;
         if (spawnTimer >= nextSpawnDelay)
         {
+#if 0
             resultIngredients[spawnIndex]->AppearIngredient();
+#else
+            const auto& data = pendingIngredients[spawnIndex];
+            CreateIngredientActor(data);
+#endif // 0
 
             int addScore = OdenGameSession::GetOdenScoreByOnce();
 #if 0
@@ -426,4 +417,37 @@ float OdenResultScoreActor::CalcSpawnDelay() const
     float time = std::lerp<float>(0.3f, 0.1f, t); // 徐々に速く
     return time;
 
+}
+
+// 食材を生成する関数
+void OdenResultScoreActor::CreateIngredientActor(const PendingIngredient& data)
+{
+    std::string ingredientName = std::string(magic_enum::enum_name(data.type));
+    if (ingredientName.empty())
+        return;
+
+    float x = MathHelper::RandomRange(-10.0f, 10.0f);
+    float y = 30.0f + spawnIndex * 10.0f;
+    float z = -0.5f;
+
+    Transform tr(
+        XMFLOAT3{ x, y, z },
+        { 0,0,0,1 },
+        { 2.5f,2.5f,2.5f }
+    );
+
+    auto actor =
+        GetOwnerScene()->GetActorManager()
+        ->CreateAndRegisterActorWithTransform<OdenResultIngredientActor>(
+            "OdenResultIngredient",
+            tr,
+            ingredientName
+        );
+
+    actor->SetFeverModeIngredient(data.wasFever);
+
+    // 生成＝即登場演出
+    actor->AppearIngredient();
+
+    resultIngredients.push_back(actor);
 }

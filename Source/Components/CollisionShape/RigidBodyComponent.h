@@ -86,6 +86,7 @@ public:
     virtual void SetKinematic(bool isKinematic) {}
 
     virtual void Destroy() override = 0;
+
 protected:
     uint32_t layer_ = 0xFFFFFFFF;
     uint32_t mask_ = 0xFFFFFFFF;
@@ -96,7 +97,7 @@ class SingleRigidBodyComponent :public RigidBodyComponent
 {
 public:
     SingleRigidBodyComponent(const std::string& name, std::shared_ptr<Actor> owner, ShapeComponent* shape)
-        : RigidBodyComponent(name, owner), shapeComponent_(shape), material_(Physics::Instance().GetMaterial()) {
+        : RigidBodyComponent(name, owner), shapeComponent_(shape), material_(Physics::Instance().GetMaterial(PhysicsMaterialType::Default)) {
     }
     //SingleRigidBodyComponent(const std::string& name, std::shared_ptr<Actor> owner, ShapeComponent* shape)
     //    : RigidBodyComponent(name, owner), shapeComponent_(shape), material_(Physics::Instance().GetDefaultMaterial()) {
@@ -247,6 +248,17 @@ public:
 
         //}
     }
+
+    void SetMaterial(PhysicsMaterialType type)
+    {
+        if (!pxShape_) return;
+
+        physx::PxMaterial* mat =
+            Physics::Instance().GetMaterial(type);
+
+        pxShape_->setMaterials(&mat, 1);
+    }
+
 
 private:
     physx::PxRigidDynamic* pxActor_ = nullptr;
@@ -663,7 +675,7 @@ public:
     //    : RigidBodyComponent(name, owner), owner_(meshComponent), material_(Physics::Instance().GetDefaultMaterial()) {
     //}
     TriangleMeshRigidBodyComponent(const std::string& name, std::shared_ptr<Actor> owner, MeshComponent* meshComponent)
-        : RigidBodyComponent(name, owner), owner_(meshComponent), material_(Physics::Instance().GetMaterial()) {
+        : RigidBodyComponent(name, owner), owner_(meshComponent), material_(Physics::Instance().GetMaterial(PhysicsMaterialType::Wall)) {
     }
 
     void Initialize(physx::PxPhysics* physics) override;
@@ -697,6 +709,41 @@ public:
             pxShape_->setQueryFilterData(filterData);
         }
     }
+
+    void DisableCollision()
+    {
+        if (!pxActor_) return;
+
+        pxActor_->setActorFlag(
+            physx::PxActorFlag::eDISABLE_SIMULATION,
+            false
+        );
+        if (!pxShape_)
+        {
+            return;
+        }
+        pxShape_->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
+        pxShape_->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, false);
+    }
+
+    // “–‚½‚è”»’è‚ð—LŒø‚É‚·‚éŠÖ”
+    void EnableCollision()
+    {
+        if (!pxActor_) return;
+
+        pxActor_->setActorFlag(
+            physx::PxActorFlag::eDISABLE_SIMULATION,
+            true
+        );
+
+        if (!pxShape_)
+        {
+            return;
+        }
+        pxShape_->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+        pxShape_->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
+    }
+
 
     virtual void Destroy()override
     {

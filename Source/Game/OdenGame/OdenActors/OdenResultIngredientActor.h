@@ -62,7 +62,7 @@ public:
 
 public:
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // ‹ïŞ
-     //std::shared_ptr<ElasticMeshComponent> ingredientModel; // ‹ïŞ
+    //std::shared_ptr<ElasticMeshComponent> ingredientModel; // ‹ïŞ
 
 private:
     std::string ingredientName; // HŞ‚Ì–¼‘O
@@ -90,4 +90,8 @@ private:
     int indexInSkewer = 0;
 
     EOdenType ingredientType = EOdenType::Daikon;
+
+    DirectX::XMFLOAT3 velocity = { 0.0f,-10.0f,0.0f };
+    bool isGrounded = false;
+
 };

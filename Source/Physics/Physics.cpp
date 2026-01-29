@@ -76,8 +76,25 @@ void Physics::Initialize()
 
     // マテリアル生成
     {
-        pxMaterial = pxPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-        _ASSERT_EXPR(pxMaterial != nullptr, "Failed pxPhysics->createMaterial");
+
+        materials_[PhysicsMaterialType::Default]
+            = pxPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+        _ASSERT_EXPR(materials_[PhysicsMaterialType::Default] != nullptr, "Failed pxPhysics->createMaterial");
+
+        materials_[PhysicsMaterialType::Wall]
+            = pxPhysics->createMaterial(0.0f, 0.0f, 1.0f); // 壁：滑る＆跳ねる
+        _ASSERT_EXPR(materials_[PhysicsMaterialType::Wall] != nullptr, "Failed pxPhysics->createMaterial");
+
+        materials_[PhysicsMaterialType::Food]
+            = pxPhysics->createMaterial(0.1f, 0.1f, 0.4f); // 食材：少し摩擦
+        _ASSERT_EXPR(materials_[PhysicsMaterialType::Food] != nullptr, "Failed pxPhysics->createMaterial");
+
+        materials_[PhysicsMaterialType::NoFriction]
+            = pxPhysics->createMaterial(0.0f, 0.0f, 0.0f);
+        _ASSERT_EXPR(materials_[PhysicsMaterialType::NoFriction] != nullptr, "Failed pxPhysics->createMaterial");
+
+        //pxMaterial = pxPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+        //_ASSERT_EXPR(pxMaterial != nullptr, "Failed pxPhysics->createMaterial");
     }
 }
 

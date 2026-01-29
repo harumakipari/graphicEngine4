@@ -136,13 +136,13 @@ void ResultScene::Update(float deltaTime)
     Physics::Instance().Update(Time::UnscaledDeltaTime());
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
-
 }
 
 void ResultScene::SetUpActors()
 {
     // メインカメラのターゲットアクターを生成
-    Transform cameraTargetTr(DirectX::XMFLOAT3{ 0.6f,11.4f,-15.4f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ 1.5f,18.9f,-27.3f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    //Transform cameraTargetTr(DirectX::XMFLOAT3{ 7.7f,227.2f,-550.4f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto mainCameraTarget = GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("MainCameraActorTarget", cameraTargetTr);
 
     // メインカメラアクターを生成

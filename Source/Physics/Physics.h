@@ -25,6 +25,17 @@ struct HitResultWithActor
     DirectX::XMFLOAT3 hitPoint;     // ヒット距離
     DirectX::XMFLOAT3 normal;       // 法線
 };
+
+
+// マテリアルのタイプを作成する
+enum class PhysicsMaterialType : uint8_t
+{
+    Default,
+    Wall,
+    Food,
+    NoFriction,
+};
+
 // フィジクス
 class Physics
     : public physx::PxQueryFilterCallback		// NOTE:③フィルタリングインターフェースの継承
@@ -64,7 +75,15 @@ public:
     physx::PxControllerManager* GetControllerManager() const { return pxControllerManager; }
 
     // マテリアル取得
-    physx::PxMaterial* GetMaterial() const { return pxMaterial; }
+    physx::PxMaterial* GetMaterial(PhysicsMaterialType type)
+    {
+        auto it = materials_.find(type);
+        if (it != materials_.end())
+        {
+            return it->second;
+        }
+        return materials_[PhysicsMaterialType::Default];
+    }
 
     // デフォルトのマテリアル取得
     physx::PxMaterial* GetDefaultMaterial() const
@@ -119,7 +138,10 @@ private:
     physx::PxScene* pxScene = nullptr;
     physx::PxControllerManager* pxControllerManager = nullptr;
 
-    physx::PxMaterial* pxMaterial = nullptr;
+    //physx::PxMaterial* pxMaterial = nullptr;
+
+    // 複数のマテリアルを所持する
+    std::map<PhysicsMaterialType, physx::PxMaterial*> materials_;
 
     physx::PxPvd* pxPvd = nullptr;
 
