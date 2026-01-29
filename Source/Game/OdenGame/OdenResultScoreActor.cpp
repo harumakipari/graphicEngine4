@@ -53,6 +53,128 @@ static std::vector<OdenSubmitLog> CreateDebugSubmitLogs()
 
         { EOdenType::Goboten,   1, 100.0f },
             { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Chikuwa,    1, 300.0f },
+        { EOdenType::Donut,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+
+        { EOdenType::Cake,   1, 100.0f },
+        { EOdenType::Goboten,   1, 100.0f },
+        { EOdenType::Donut,   1, 100.0f },
+
+        { EOdenType::Daikon,   1, 100.0f },
+        { EOdenType::Hanpen,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+
+        { EOdenType::Donut,   1, 100.0f },
+        { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Goboten,   1, 100.0f },
+
+        { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Shirataki,   1, 100.0f },
+
+        { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Daikon,     1, 400.0f },
+        { EOdenType::Cake,   1, 100.0f },
+
+        { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Daikon,     1, 400.0f },
+        { EOdenType::Donut,   1, 100.0f },
+
+        { EOdenType::Cake,   1, 100.0f },
+        { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+
+        { EOdenType::Kobumusubi,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Shirataki,   1, 100.0f },
+
+
+        { EOdenType::Goboten,   1, 100.0f },
+            { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Chikuwa,    1, 300.0f },
+        { EOdenType::Donut,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+
+        { EOdenType::Cake,   1, 100.0f },
+        { EOdenType::Goboten,   1, 100.0f },
+        { EOdenType::Donut,   1, 100.0f },
+
+        { EOdenType::Daikon,   1, 100.0f },
+        { EOdenType::Hanpen,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+
+        { EOdenType::Donut,   1, 100.0f },
+        { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Goboten,   1, 100.0f },
+
+        { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Shirataki,   1, 100.0f },
+
+        { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Daikon,     1, 400.0f },
+        { EOdenType::Cake,   1, 100.0f },
+
+        { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Daikon,     1, 400.0f },
+        { EOdenType::Donut,   1, 100.0f },
+
+        { EOdenType::Cake,   1, 100.0f },
+        { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+
+        { EOdenType::Kobumusubi,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Shirataki,   1, 100.0f },
+
+
+        { EOdenType::Goboten,   1, 100.0f },
+            { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Goboten,   1, 100.0f },
+            { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Chikuwa,    1, 300.0f },
+        { EOdenType::Donut,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+
+        { EOdenType::Cake,   1, 100.0f },
+        { EOdenType::Goboten,   1, 100.0f },
+        { EOdenType::Donut,   1, 100.0f },
+
+        { EOdenType::Daikon,   1, 100.0f },
+        { EOdenType::Hanpen,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+
+        { EOdenType::Donut,   1, 100.0f },
+        { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Goboten,   1, 100.0f },
+
+        { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Shirataki,   1, 100.0f },
+
+        { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Daikon,     1, 400.0f },
+        { EOdenType::Cake,   1, 100.0f },
+
+        { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Daikon,     1, 400.0f },
+        { EOdenType::Donut,   1, 100.0f },
+
+        { EOdenType::Cake,   1, 100.0f },
+        { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+
+        { EOdenType::Kobumusubi,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Shirataki,   1, 100.0f },
+
+
+        { EOdenType::Goboten,   1, 100.0f },
+            { EOdenType::Tsukune,   1, 100.0f },
         { EOdenType::Egg,     1, 200.0f },
     };
 }
@@ -105,7 +227,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
     const std::vector<OdenSubmitLog>* logs = nullptr;
 
 #if _DEBUG
-    static bool useDebug = true; // Å© ImGui Ç≈êÿÇËë÷Ç¶ÇƒÇ‡Ç¢Ç¢
+    static bool useDebug = false; // Å© ImGui Ç≈êÿÇËë÷Ç¶ÇƒÇ‡Ç¢Ç¢
     if (useDebug)
     {
         static std::vector<OdenSubmitLog> debugLogs = CreateDebugSubmitLogs();
@@ -428,12 +550,15 @@ void OdenResultScoreActor::CreateIngredientActor(const PendingIngredient& data)
 
     float x = MathHelper::RandomRange(-10.0f, 10.0f);
     float y = 30.0f + spawnIndex * 10.0f;
-    float z = -0.5f;
+    float z = -2.0f;
+
+    bool fever = data.wasFever;
+    float scale = fever ? 3.5f : 2.5f;
 
     Transform tr(
         XMFLOAT3{ x, y, z },
         { 0,0,0,1 },
-        { 2.5f,2.5f,2.5f }
+        { scale,scale,scale }
     );
 
     auto actor =

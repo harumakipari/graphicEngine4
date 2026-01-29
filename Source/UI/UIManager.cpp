@@ -144,3 +144,21 @@ void UIManager::DrawImGUi()
     }
     ImGui::End();
 }
+
+void UIManager::SetAllUIActive(bool visible, bool enabled)
+{
+    this->visible = visible;
+    this->enabled = enabled;
+
+    for (auto& ui : rootComponents)
+    {
+        if (auto sceneChange = std::dynamic_pointer_cast<UISceneChangeComponent>(ui))
+        {
+            continue;
+        }
+        if (!ui) continue;
+
+        ui->SetVisible(visible);
+        ui->SetEnable(enabled);
+    }
+}

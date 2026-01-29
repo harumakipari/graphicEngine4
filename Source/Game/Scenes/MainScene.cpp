@@ -138,7 +138,7 @@ void MainScene::Start()
     float width = 1920.0f;
     float height = 1080.0f;
 
-    auto sprite = std::make_shared<UIImageComponent>("./Data/Textures/UI/scene_change_blue1.png", "sceneChange");
+    auto sprite = std::make_shared<UIImageComponent>("./Data/Textures/UI/Oden_seane_change.png", "sceneChange");
     sprite->SetWorldPosition({ width * 0.5f, height * 0.5f });
     sprite->SetPivot({ 0.5f,0.5f });
     sprite->SetSize({ width, height });

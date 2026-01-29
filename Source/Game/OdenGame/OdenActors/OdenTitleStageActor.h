@@ -34,6 +34,9 @@ private:
     // 難易度によっての遷移シーン選択
     void RequestChangeScene(Difficulty diff);
 
+public:
+    std::function<void()> onPushButton; // ボタンを押したときに実行する関数
+
 private:
     std::shared_ptr<StaticMeshComponent> storeModelComponent;     // 店のモデル
     std::shared_ptr<SkeletalMeshComponent> selectModelComponent;   // 難易度選択のモデル

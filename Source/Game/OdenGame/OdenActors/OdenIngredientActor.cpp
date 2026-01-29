@@ -66,6 +66,29 @@ void OdenIngredientActor::Update(float deltaTime)
     // ドットモデルの表示非表示切り替え
     UpdateDotLineVisibility();
 
+
+    if (auto tutorialActor = GetOwnerScene()->GetActorManager()->GetActorByName("OdenTutorialActor"))
+    {// チュートリアルだったら
+        if (auto tutorial = std::dynamic_pointer_cast<TutorialActor>(tutorialActor))
+        {
+            if (auto currentStep = tutorial->GetTutorialManager()->GetCurrentState())
+            {
+                if (currentStep->IsTopRed())
+                {
+                    // チュートリアルで使用する　上が四角になった時に赤くする
+                    UpdateVisualByTopShape();
+                }
+                else
+                {
+                    // チュートリアルで使用する 色をすべて戻す
+                    UpdateVisualNoRed();
+                }
+            }
+        }
+    }
+
+
+
     // ポーズ中はゲーム入力を一切受け付けない
     if (Scene::GetCurrentScene()->IsPaused())
         return;
@@ -1182,4 +1205,25 @@ void OdenIngredientActor::UpdateHoverTarget(const DirectX::XMFLOAT2& cursor)
         }
     }
     hoverTarget = EHoverTarget::None;
+}
+
+// チュートリアルで使用する　上が四角になった時に赤くする
+void OdenIngredientActor::UpdateVisualByTopShape()
+{
+    const auto& shape = GetCurrentShape();
+
+    if (shape.category == EOdenShapeCategory::SquareLike)
+    {
+        ingredientModel->SetValue(2); // 赤
+    }
+    else
+    {
+        ingredientModel->SetValue(1); // 通常
+    }
+}
+
+// 赤くしていたのを戻す
+void OdenIngredientActor::UpdateVisualNoRed()
+{
+    ingredientModel->SetValue(1); // 通常
 }

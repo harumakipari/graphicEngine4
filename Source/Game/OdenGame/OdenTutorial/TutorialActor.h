@@ -65,8 +65,8 @@ private:
     std::shared_ptr<UIImageComponent> thisNotCircleImage;
     std::shared_ptr<UIImageComponent> thisNotSquareImage;
 
-    XMFLOAT2 uiOffsetPos = { 0.0f,0.0f };
-    XMFLOAT2 uiTextOffsetPos = { 110.0f,15.0f };
+    XMFLOAT2 uiOffsetPos = { 20.0f,0.0f };
+    XMFLOAT2 uiTextOffsetPos = { 20.0f,0.0f };
 
     
     float bubbleLifeTimer = 0.0f;// 吹き出し用のタイマー

@@ -45,6 +45,9 @@ public:
 
     // そもそも食材を掴めるかどうか
     virtual bool IsIngredientGrabEnabled() const { return true; }
+
+    // 食材の上の面を赤くする
+    virtual bool IsTopRed()const { return false; }
 protected:
     void UpdateMouseClickBlink(float deltaTime);
 
@@ -65,8 +68,9 @@ protected:
     std::shared_ptr<UIImageComponent> tutorialMouseClickImage;
     std::shared_ptr<UIImageComponent> tutorialMouseClickOffImage;
 
-    XMFLOAT2 imagePos = { 1080.0f,78.0f };
-    XMFLOAT2 imageSize = { 700.0f,410.0f };
+    XMFLOAT2 imagePos = { 1080.0f,18.0f };
+    //XMFLOAT2 imageSize = { 700.0f,410.0f };
+    XMFLOAT2 imageSize = { 840.0f,492.0f };
 
     float mouseBlinkTimer = 0.0f;
     float mouseBlinkInterval = 0.6f; // 切り替え間隔
@@ -345,6 +349,9 @@ public:
     // 掴める食材の時の処理
     void OnAllowGrab(std::shared_ptr<Actor> ingredient) override;
 
+    // 食材の上の面を赤くする
+    bool IsTopRed()const override { return true; }
+
 private:
     std::shared_ptr<UIImageComponent> tutorialSubmitCircleIngredientImage;
     std::shared_ptr<UIImageComponent> tutorialAnywayDaikonImage;
@@ -368,7 +375,7 @@ public:
     void Exit() override;
     virtual const char* GetName() const override { return "ClearSquareIngredient"; }
 
-        // そもそも食材を掴めるかどうか
+    // そもそも食材を掴めるかどうか
     bool IsIngredientGrabEnabled() const override { return false; }
 
 private:

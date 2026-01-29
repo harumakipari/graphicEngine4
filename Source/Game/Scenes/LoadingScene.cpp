@@ -56,7 +56,7 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
     _async_preload_scene(device, width, height, preload_scene);
 
     //useDeferredRendering = false;
-    loadingSprite = std::make_shared<Sprite>(device, L"./Data/Textures/UI/scene_change_blue.png");
+    loadingSprite = std::make_shared<Sprite>(device, L"./Data/Textures/UI/Oden_seane_change.png");
 
     return true;
 }
@@ -82,14 +82,14 @@ void LoadingScene::Start()
     float width = 1920.0f;
     float height = 1080.0f;
 
-    sprite = std::make_shared<UISceneChangeComponent>("./Data/Textures/UI/scene_change_blue1.png", "sceneChange");
+    sprite = std::make_shared<UISceneChangeComponent>("./Data/Textures/UI/Oden_seane_change.png", "sceneChange");
     sprite->SetWorldPosition({ width * 0.5f, height * 0.5f });
     sprite->SetPivot({ 0.5f,0.5f });
     sprite->SetSize({ width, height });
     sprite->zOrder = 1000;
 
 
-    backImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/scene_change_blue1.png", "backGround");
+    backImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Oden_seane_change.png", "backGround");
     backImage->SetSize({ 1920, 1080 });
 
 #if 0

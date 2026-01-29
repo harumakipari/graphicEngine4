@@ -17,8 +17,8 @@ TutorialStep::TutorialStep(TutorialActor* actor) :owner(actor)
 {
     auto uiManager = Scene::GetCurrentScene()->GetUIManager();
 
-    XMFLOAT2 mousePos = { 1605.0f,340.0f };
-    XMFLOAT2 mouseSize = { 120.0f,120.0f };
+    XMFLOAT2 mousePos = { 1722.0f,391.0f };
+    XMFLOAT2 mouseSize = { 80.0f,80.0f };
 
     // チュートリアル画像の作成 
     tutorialMouseClickImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/mouseClick.png", "Tutorial_Mouse_Click");     // マウスのクリック
@@ -1427,7 +1427,6 @@ void TutorialStep_ClearTutorial::Execute(float deltaTime)
         NotShowMouse();
         // シーン遷移する
         const char* types[] = { "0", "1" };
-
 #if 1
         SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
 #else

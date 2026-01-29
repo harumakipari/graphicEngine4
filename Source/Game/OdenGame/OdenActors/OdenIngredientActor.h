@@ -119,6 +119,7 @@ public:
     // 食材がお題の上にあるか
     bool IsHoveringOrder()const;
 
+
 protected:
     // 具材の名前からモデルやデータを設定する
     void InitParam(const std::string& ingredientName);
@@ -186,7 +187,11 @@ private:
     // ドラック中にどこに食材があるかを判別する
     void UpdateHoverTarget(const DirectX::XMFLOAT2& cursor);
 
+    // チュートリアルで使用する　上が四角になった時に赤くする
+    void UpdateVisualByTopShape();
 
+    // 赤くしていたのを戻す
+    void UpdateVisualNoRed();
 protected:
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
     std::shared_ptr<BoxComponent> boxComponent; // レイキャスト判定するもの

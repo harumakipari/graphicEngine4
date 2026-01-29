@@ -75,9 +75,10 @@ void OdenResultIngredientActor::Initialize(const Transform& transform)
     // “–‚½‚è”»’è‚ð“o˜^
     boxComponent = AddComponent<BoxComponent>("boxComponent");
     DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
-    size.x *= 2.5f;
-    size.y *= 2.5f;
-    size.z *= 2.5f;
+    XMFLOAT3 scale = transform.GetScale();
+    size.x *= scale.x;
+    size.y *= scale.y;
+    size.z *= scale.z;
     boxComponent->SetBoxExtent(size);
     boxComponent->SetKinematic(false);
     boxComponent->SetMass(40.0f);

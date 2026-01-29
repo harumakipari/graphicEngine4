@@ -54,13 +54,13 @@ bool Framework::Initialize()
 
     // SCENE_TRANSITION
    //Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-    //Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-   Scene::_boot(device, "ResultScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-    //Scene::_boot(device, "MorphScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-    // Scene::_boot(device, "SampleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-    //Scene::_boot(device, "PuddingGameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+   // Scene::_boot(device, "ResultScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+     //Scene::_boot(device, "MorphScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+     // Scene::_boot(device, "SampleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+     //Scene::_boot(device, "PuddingGameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
 
-    //パーティクルシステム
+     //パーティクルシステム
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> particleTexture;
     HRESULT hr = LoadTextureFromFile(device, L"./Data/Effect/Textures/particle.png", particleTexture.GetAddressOf(), NULL);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
@@ -81,7 +81,7 @@ bool Framework::Initialize()
 
 
     //back = std::make_shared<Sprite>(device, L"./Data/Textures/UI/backGround.png");
-    back = std::make_shared<Sprite>(device, L"./Data/Textures/UI/scene_change_blue.png");
+    back = std::make_shared<Sprite>(device, L"./Data/Textures/UI/Oden_seane_change.png");
 
     return true;
 }

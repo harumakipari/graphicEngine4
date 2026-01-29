@@ -139,6 +139,12 @@ void OdenTitleStageActor::Update(float elapsedTime)
 // 難易度によっての遷移シーン選択
 void OdenTitleStageActor::RequestChangeScene(Difficulty diff)
 {
+   // GetOwnerScene()->GetUIManager()->SetAllUIActive(false, false);
+    if (onPushButton)
+    {
+        onPushButton();
+    }
+
     if (diff == Difficulty::Tutorial)
     {
 #if 1

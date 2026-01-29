@@ -98,13 +98,13 @@ void TitleScene::Start()
             }
         };
 
-    mainCameraTarget->onMoveFinished= [this]()
+    mainCameraTarget->onMoveFinished = [this]()
         {// カメラが動き終えたときに通る関数
             if (phase == TitlePhase::DifficultySelect)
             {// 
                 returnTitleButton->SetVisible(true);
                 returnTitleButton->SetEnable(true);
-                
+
             }
             else if (phase == TitlePhase::StartWait)
             {
@@ -154,7 +154,7 @@ void TitleScene::Start()
             {
                 Logger::Log(u8"ボタンButton Clicked!");
                 const char* types[] = { "0", "1" };
-             //   Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"), {"difficulty","0"} });
+                //   Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"), {"difficulty","0"} });
                 SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), {"difficulty","0"} });
 
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
@@ -292,7 +292,11 @@ void TitleScene::SetUpActors()
     // ステージアクターを生成
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
     auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<OdenTitleStageActor>("stage", stageTr);
-
+    stage->onPushButton = [&]()
+        {
+            returnTitleButton->SetVisible(false);
+            returnTitleButton->SetEnable(false);
+        };
 
     for (int i = 0; i < 5; i++)
     {

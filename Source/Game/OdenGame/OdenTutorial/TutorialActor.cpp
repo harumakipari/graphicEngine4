@@ -66,7 +66,7 @@ void TutorialActor::Initialize(const Transform& transform)
 
 
     XMFLOAT2 textPos = { -100.0f,-100.0f };
-    XMFLOAT2 textSize = { 315.0f,140.0f };
+    XMFLOAT2 textSize = { 400.0f,150.0f };
 
     // チュートリアル画像の作成 
     thisKobumusubiImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/tutorial_this_kobumusubi.png", "tutorial_this_kobumusubi");

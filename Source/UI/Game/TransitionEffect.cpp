@@ -34,7 +34,7 @@ void ScaleTransitionEffect::Initialize()
 #endif // 0
     const auto scene = Scene::GetCurrentScene();
 
-    sprite = std::make_shared<UISceneChangeComponent>("./Data/Textures/UI/scene_change_blue.png", "sceneChange");
+    sprite = std::make_shared<UISceneChangeComponent>("./Data/Textures/UI/Oden_seane_change.png", "sceneChange");
     sprite->SetWorldPosition({ width * 0.5f, height * 0.5f });
     sprite->SetPivot({ 0.5f,0.5f });
     sprite->SetScale({ startScale,startScale });
@@ -54,7 +54,7 @@ void ScaleTransitionEffect::Start(TransitionDirection dir)
     isFinishTransitionPerform = false;
 
     TestEasingHandler handler;
-    float startScale = 120.0f;
+    float startScale = 160.0f;
 
     if (dir == TransitionDirection::Close)
     {
@@ -65,7 +65,7 @@ void ScaleTransitionEffect::Start(TransitionDirection dir)
     {
         startScale = 1.0f;
         handler.AddWait(0.1f);
-        handler.AddEasing(TestEaseType::InSine, 1.0f, 100.0f, 1.0f);
+        handler.AddEasing(TestEaseType::InSine, 1.0f, 170.0f, 1.0f);
     }
 
     handler.SetCompletedFunction([this]()

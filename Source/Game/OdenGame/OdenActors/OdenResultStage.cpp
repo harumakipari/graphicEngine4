@@ -84,13 +84,14 @@ void OdenResultStageActor::Initialize(const Transform& transform)
     // 下
     {
         auto boxComponent = AddComponent<BoxComponent>("boxComponent_under");
-        DirectX::XMFLOAT3 size = { 80.0f,1.0f,80.0f };
+        DirectX::XMFLOAT3 size = { 160.0f,1.0f,160.0f };
         boxComponent->SetBoxExtent(size);
         boxComponent->SetMass(0.0f);
         boxComponent->SetLayer(CollisionLayer::WorldStatic);
         boxComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
         boxComponent->Initialize();
         boxComponent->SetRelativeLocationDirect({ 0.0f,1.8f,0.0f });
+        //boxComponent->DisableCollision();
     }
 
 
@@ -120,43 +121,87 @@ void OdenResultStageActor::Initialize(const Transform& transform)
 
     // 右
     {
-        std::shared_ptr<StaticMeshComponent> boxMeshComponent = this->AddComponent<StaticMeshComponent>("boxComponent_right", parentName);
+        std::shared_ptr<StaticMeshComponent> boxMeshComponent = this->AddComponent<StaticMeshComponent>("boxMesh_right", parentName);
         boxMeshComponent->SetModel("./Data/Models/Oden_Result_Stage/Oden_Result_Collider_Right.gltf", true);
         boxMeshComponent->SetIsVisible(false);
         // メッシュ
-        std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->AddComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent_right", "boxComponent_right");
-        triangleMeshComponent->SetLayer(CollisionLayer::WorldStatic);
-        triangleMeshComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
-        triangleMeshComponent->CreateConvexMeshFromModel(boxMeshComponent.get());
-        triangleMeshComponent->DisableCollision();
-
-    }
-
-    // 手前
-    {
-        std::shared_ptr<StaticMeshComponent> boxMeshComponent = this->AddComponent<StaticMeshComponent>("boxComponent_front", parentName);
-        boxMeshComponent->SetModel("./Data/Models/Oden_Result_Stage/Oden_Result_Collider_Front.gltf", true);
-        boxMeshComponent->SetIsVisible(false);
-        //// メッシュ
-        //std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->AddComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent_front", "boxComponent_front");
+        //std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->AddComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent_right", "boxMesh_right");
         //triangleMeshComponent->SetLayer(CollisionLayer::WorldStatic);
         //triangleMeshComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
         //triangleMeshComponent->CreateConvexMeshFromModel(boxMeshComponent.get());
         //triangleMeshComponent->DisableCollision();
 
+        rightBoxComponent = AddComponent<BoxComponent>("boxComponent_right", "boxMesh_right");
+        DirectX::XMFLOAT3 size = { 10.0f,1000.0f,10.0f };
+        rightBoxComponent->SetBoxExtent(size);
+        rightBoxComponent->SetMass(0.0f);
+        rightBoxComponent->SetCollisionOffsetY(size.y * 0.5f);
+        rightBoxComponent->SetPhysicsMaterial(PhysicsMaterialType::Wall);
+        rightBoxComponent->SetLayer(CollisionLayer::WorldStatic);
+        rightBoxComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
+        rightBoxComponent->SetRelativeLocationDirect({ 19.0f,0.0f,0.0f });
+        rightBoxComponent->Initialize();
+
+        rightAfterBoxComponent = AddComponent<BoxComponent>("boxComponent_rightAfter", "boxMesh_right");
+        DirectX::XMFLOAT3 sizeAfter = { 10.0f,38.0f,10.0f };
+        rightAfterBoxComponent->SetBoxExtent(sizeAfter);
+        rightAfterBoxComponent->SetMass(0.0f);
+        rightAfterBoxComponent->SetCollisionOffsetY(sizeAfter.y * 0.5f);
+        rightAfterBoxComponent->SetPhysicsMaterial(PhysicsMaterialType::Wall);
+        rightAfterBoxComponent->SetLayer(CollisionLayer::WorldStatic);
+        rightAfterBoxComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
+        rightAfterBoxComponent->SetRelativeLocationDirect({ 19.0f,0.0f,0.0f });
+        rightAfterBoxComponent->Initialize();
+        rightAfterBoxComponent->DisableCollision();
+    }
+
+    // 手前
+    {
+        std::shared_ptr<StaticMeshComponent> boxMeshComponent = this->AddComponent<StaticMeshComponent>("boxMesh_front", parentName);
+        boxMeshComponent->SetModel("./Data/Models/Oden_Result_Stage/Oden_Result_Collider_Front.gltf", true);
+        boxMeshComponent->SetIsVisible(false);
+        //// メッシュ
+        //std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->AddComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent_front", "boxMesh_front");
+        //triangleMeshComponent->SetLayer(CollisionLayer::WorldStatic);
+        //triangleMeshComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
+        //triangleMeshComponent->CreateConvexMeshFromModel(boxMeshComponent.get());
+        //triangleMeshComponent->DisableCollision();
+
+        auto boxComponent = AddComponent<BoxComponent>("boxComponent_front", "boxMesh_front");
+        DirectX::XMFLOAT3 size = { 30.0f,1000.0f,5.0f };
+        boxComponent->SetBoxExtent(size);
+        boxComponent->SetMass(0.0f);
+        boxComponent->SetCollisionOffsetY(size.y * 0.5f);
+        boxComponent->SetPhysicsMaterial(PhysicsMaterialType::Wall);
+        boxComponent->SetLayer(CollisionLayer::WorldStatic);
+        boxComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
+        boxComponent->SetRelativeLocationDirect({ 0.0f,0.0f,5.0f });
+        boxComponent->Initialize();
     }
 
     // 奥
     {
-        std::shared_ptr<StaticMeshComponent> boxMeshComponent = this->AddComponent<StaticMeshComponent>("boxComponent_back", parentName);
+        std::shared_ptr<StaticMeshComponent> boxMeshComponent = this->AddComponent<StaticMeshComponent>("boxMesh_back", parentName);
         boxMeshComponent->SetModel("./Data/Models/Oden_Result_Stage/Oden_Result_Collider_Back.gltf", true);
         boxMeshComponent->SetIsVisible(false);
         // メッシュ
-        std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->AddComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent_back", "boxComponent_back");
-        triangleMeshComponent->SetLayer(CollisionLayer::WorldStatic);
-        triangleMeshComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
-        triangleMeshComponent->CreateConvexMeshFromModel(boxMeshComponent.get());
-        triangleMeshComponent->DisableCollision();
+        //std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->AddComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent_back", "boxMesh_back");
+        //triangleMeshComponent->SetLayer(CollisionLayer::WorldStatic);
+        //triangleMeshComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
+        //triangleMeshComponent->CreateConvexMeshFromModel(boxMeshComponent.get());
+        //triangleMeshComponent->DisableCollision();
+
+        auto boxComponent = AddComponent<BoxComponent>("boxComponent_back", "boxMesh_back");
+        DirectX::XMFLOAT3 size = { 30.0f,1000.0f,5.0f };
+        boxComponent->SetBoxExtent(size);
+        boxComponent->SetMass(0.0f);
+        boxComponent->SetCollisionOffsetY(size.y * 0.5f);
+        boxComponent->SetPhysicsMaterial(PhysicsMaterialType::Wall);
+        boxComponent->SetLayer(CollisionLayer::WorldStatic);
+        boxComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
+        boxComponent->SetRelativeLocationDirect({ 0.0f,0.0f,-5.4f });
+        boxComponent->Initialize();
+
 
     }
 
@@ -172,7 +217,20 @@ void OdenResultStageActor::Initialize(const Transform& transform)
 
 }
 
+void OdenResultStageActor::DrawImGuiDetails()
+{
+#ifdef USE_IMGUI
+    if (ImGui::Button(U8("当たり判定を変更")))
+    {
+        rightBoxComponent->DisableCollision();
+        rightAfterBoxComponent->EnableCollision();
+    }
 
+#endif
+}
 
-
-
+// 当たり判定を切り替える
+void OdenResultStageActor::SwitchCollision()
+{
+    
+}

@@ -41,6 +41,8 @@ public:
 
     void DrawImGUi();
 
+    void SetAllUIActive(bool visible, bool enabled);
+
     bool IsMouseCaptured() const { return mouseCaptured; }
     void SetMouseCaptured(const bool v) { mouseCaptured = v; }
 
