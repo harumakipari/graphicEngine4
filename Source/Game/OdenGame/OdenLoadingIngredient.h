@@ -11,10 +11,10 @@ class CoreAudioSourceComponent;
 // 　
 // 　リザルトで描画する食材
 //
-class OdenResultIngredientActor :public Actor
+class OdenLoadingIngredientActor :public Actor
 {
 public:
-    explicit OdenResultIngredientActor(const std::string& actorName, const std::string& ingredientName) :Actor(actorName), ingredientName(ingredientName) {}
+    explicit OdenLoadingIngredientActor(const std::string& actorName, const std::string& ingredientName) :Actor(actorName), ingredientName(ingredientName) {}
 
     void Initialize(const Transform& transform)override;
 
@@ -62,7 +62,7 @@ public:
 
 public:
     std::shared_ptr<SkeletalMeshComponent> ingredientModel; // 具材
-     //std::shared_ptr<ElasticMeshComponent> ingredientModel; // 具材
+    //std::shared_ptr<ElasticMeshComponent> ingredientModel; // 具材
 
 private:
     std::string ingredientName; // 食材の名前
@@ -71,7 +71,6 @@ private:
     std::shared_ptr<CoreAudioSourceComponent> audioComponent;   // エフェクト
     std::shared_ptr<CoreEasingComponent> easingComponent;
     std::shared_ptr<RotationComponent> rotationComponent;
-    std::shared_ptr<BoxComponent> boxComponent;
 
     // 経過時間
     float elapsedTime = 0.0f;

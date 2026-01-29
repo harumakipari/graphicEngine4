@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "OdenResultSkewerActor.h"
 
-#include "OdenActors/OdenResultIngredientActor.h"
+#include "OdenLoadingIngredient.h"
 
 void OdenResultSkewerActor::Initialize(const Transform& transform)
 {
@@ -13,7 +13,7 @@ void OdenResultSkewerActor::Initialize(const Transform& transform)
     easingRunner = AddComponent<CoreEasingComponent>("easingComponent", "odenPoleModel");
 }
 
-void OdenResultSkewerActor::AddIngredient(const std::shared_ptr<OdenResultIngredientActor>& ingredient, int index)
+void OdenResultSkewerActor::AddIngredient(const std::shared_ptr<OdenLoadingIngredientActor>& ingredient, int index)
 {
     DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };
 

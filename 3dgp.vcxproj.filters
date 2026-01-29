@@ -606,7 +606,7 @@
     <ClCompile Include="Source\Game\OdenGame\OdenCameraTargetActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenResultIngredientTestActor.cpp">
+    <ClCompile Include="Source\Game\OdenGame\OdenLoadingIngredient.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -994,7 +994,7 @@
     <ClInclude Include="Source\Game\OdenGame\SubmitSEPlayer.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenResultSkewerActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenCameraTargetActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenResultIngredientTestActor.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenLoadingIngredient.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

@@ -23,6 +23,14 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
     pxActor_ = physics->createRigidDynamic(transform);
     pxActor_->userData = shapeComponent_->GetOwner();    // Actor へのポインタ
 
+
+    {
+        material_->setRestitution(0.0f);
+        material_->setDynamicFriction(1.0f);
+        material_->setStaticFriction(1.0f);
+    }
+
+
     // 第三引数を true にすることで一意的な専用の shape にする
     pxShape_ = physics->createShape(info.geometry.any(), *material_, true);
 
@@ -89,6 +97,13 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
     pxActor_->attachShape(*pxShape_);
 
     pxActor_->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, shapeComponent_->IsKinematic());
+
+    {
+        pxActor_->setMaxLinearVelocity(25.0f);
+        pxActor_->setMaxAngularVelocity(25.0f);
+    }
+
+
 
     PxRigidBodyExt::updateMassAndInertia(*pxActor_, mass_);
 }

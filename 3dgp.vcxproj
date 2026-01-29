@@ -295,6 +295,7 @@
     <ClCompile Include="Source\Game\OdenGame\OdenData\OdenGameParameter.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenDetailIngredientsActors.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenhighScoreData.cpp" />
+    <ClCompile Include="Source\Game\OdenGame\OdenLoadingIngredient.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenManagers\OdenGameManager.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenIngredientActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenManagers\OdenOrderManager.cpp" />
@@ -468,6 +469,7 @@
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenDetailIngredientsActors.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenGameSession.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenHighScoreData.h" />
+    <ClInclude Include="Source\Game\OdenGame\OdenLoadingIngredient.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenManagers\OdenGameManager.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenIngredientActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenManagers\OdenOrderManager.h" />

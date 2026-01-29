@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "OdenResultIngredientActor.h"
+#include "OdenLoadingIngredient.h"
 
 #include <magic_enum.hpp>
 
@@ -10,7 +10,7 @@
 #include "Game/Actors/Camera/Camera.h"
 
 
-void OdenResultIngredientActor::Initialize(const Transform& transform)
+void OdenLoadingIngredientActor::Initialize(const Transform& transform)
 {
     // 初期化処理
 
@@ -71,33 +71,9 @@ void OdenResultIngredientActor::Initialize(const Transform& transform)
         ingredientType = EOdenType::None; // たとえばデフォルト
     }
 
-    // 当たり判定を登録
-    boxComponent = AddComponent<BoxComponent>("boxComponent");
-    DirectX::XMFLOAT3 size = ingredientModel->GetModelSize();
-    size.x *= 2.5f;
-    size.y *= 2.5f;
-    size.z *= 2.5f;
-    boxComponent->SetBoxExtent(size);
-    boxComponent->SetKinematic(false);
-    boxComponent->SetMass(40.0f);
-    boxComponent->SetCollisionOffsetY(size.y * 0.5f);
-    boxComponent->SetLayer(CollisionLayer::OdenHoverTarget);// おでんのゲームのカーソルのターゲット
-    boxComponent->SetResponseToLayer(CollisionLayer::OdenHoverTarget, CollisionComponent::CollisionResponse::Block);
-    //boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-    boxComponent->Initialize();
-    boxComponent->AddImpulse({ 0.0f,0.0f,0.0f });
-
-
-
-    //auto convexMeshComponent = AddComponent<ConvexCollisionComponent>("convexComponent", parentName);
-    //convexMeshComponent->SetLayer(CollisionLayer::Convex);
-    //convexMeshComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::Block);
-    //convexMeshComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-    //convexMeshComponent->SetActive(false);
-    //convexMeshComponent->CreateConvexMeshFromModel(ingredientModel.get());
 }
 
-void OdenResultIngredientActor::Update(float deltaTime)
+void OdenLoadingIngredientActor::Update(float deltaTime)
 {
     // 更新処理
     if (isPlayEffect)
@@ -146,7 +122,7 @@ void OdenResultIngredientActor::Update(float deltaTime)
 #endif // 0
 }
 
-void OdenResultIngredientActor::DrawImGuiDetails()
+void OdenLoadingIngredientActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
     if (ImGui::Button("elastic push"))
@@ -157,7 +133,7 @@ void OdenResultIngredientActor::DrawImGuiDetails()
 }
 
 // 食材が登場する
-void OdenResultIngredientActor::AppearIngredient()
+void OdenLoadingIngredientActor::AppearIngredient()
 {
     if (particleComponent)
     {// エフェクト再生
@@ -219,7 +195,7 @@ void OdenResultIngredientActor::AppearIngredient()
 }
 
 // 串内のインデックス
-void OdenResultIngredientActor::SetIndexInSkewer(int index)
+void OdenLoadingIngredientActor::SetIndexInSkewer(int index)
 {
     //indexInSkewer = index;
 
@@ -234,7 +210,7 @@ void OdenResultIngredientActor::SetIndexInSkewer(int index)
 }
 
 // ロード画面で使用する
-void OdenResultIngredientActor::LoadRenderIngredient(ID3D11DeviceContext* immediateContext) const
+void OdenLoadingIngredientActor::LoadRenderIngredient(ID3D11DeviceContext* immediateContext) const
 {
     ingredientModel->SetIsVisible(true);
     ingredientModel->RenderOpaque(immediateContext, GetWorldTransform());

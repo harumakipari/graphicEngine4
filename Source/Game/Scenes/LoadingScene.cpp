@@ -17,12 +17,13 @@
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
 #include "Game/OdenGame/OdenResultSkewerActor.h"
-#include "Game/OdenGame/OdenActors/OdenResultIngredientActor.h"
+#include "Game/OdenGame/OdenLoadingIngredient.h"
 
 
 bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
     SceneBase::Initialize(device, width, height, props);
+
 
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<LoadingCamera>("mainLoadingCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
@@ -121,7 +122,7 @@ void LoadingScene::SetUpActors()
         std::string name = std::string(magic_enum::enum_name(types[i]));
 
         auto ingredient = GetActorManager()
-            ->CreateAndRegisterActorWithTransform<OdenResultIngredientActor>(
+            ->CreateAndRegisterActorWithTransform<OdenLoadingIngredientActor>(
                 "LoadingIngredient", Transform{}, name);
 
         skewer->AddIngredient(ingredient, i);

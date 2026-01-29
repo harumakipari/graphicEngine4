@@ -21,38 +21,38 @@ static std::vector<OdenSubmitLog> CreateDebugSubmitLogs()
         { EOdenType::Goboten,   1, 100.0f },
         { EOdenType::Donut,   1, 100.0f },
 
-        //{ EOdenType::Daikon,   1, 100.0f },
-        //{ EOdenType::Hanpen,   1, 100.0f },
-        //{ EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Daikon,   1, 100.0f },
+        { EOdenType::Hanpen,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
 
-        //{ EOdenType::Donut,   1, 100.0f },
-        //{ EOdenType::Konnyaku,   1, 100.0f },
-        //{ EOdenType::Goboten,   1, 100.0f },
+        { EOdenType::Donut,   1, 100.0f },
+        { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Goboten,   1, 100.0f },
 
-        //{ EOdenType::Tsukune,   1, 100.0f },
-        //{ EOdenType::Egg,     1, 200.0f },
-        //{ EOdenType::Shirataki,   1, 100.0f },
+        { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Shirataki,   1, 100.0f },
 
-        //{ EOdenType::Konnyaku,   1, 100.0f },
-        //{ EOdenType::Daikon,     1, 400.0f },
-        //{ EOdenType::Cake,   1, 100.0f },
+        { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Daikon,     1, 400.0f },
+        { EOdenType::Cake,   1, 100.0f },
 
-        //{ EOdenType::Konnyaku,   1, 100.0f },
-        //{ EOdenType::Daikon,     1, 400.0f },
-        //{ EOdenType::Donut,   1, 100.0f },
+        { EOdenType::Konnyaku,   1, 100.0f },
+        { EOdenType::Daikon,     1, 400.0f },
+        { EOdenType::Donut,   1, 100.0f },
 
-        //{ EOdenType::Cake,   1, 100.0f },
-        //{ EOdenType::Tsukune,   1, 100.0f },
-        //{ EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Cake,   1, 100.0f },
+        { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
 
-        //{ EOdenType::Kobumusubi,   1, 100.0f },
-        //{ EOdenType::Egg,     1, 200.0f },
-        //{ EOdenType::Shirataki,   1, 100.0f },
+        { EOdenType::Kobumusubi,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Shirataki,   1, 100.0f },
 
 
-        //{ EOdenType::Goboten,   1, 100.0f },
-        //    { EOdenType::Tsukune,   1, 100.0f },
-        //{ EOdenType::Egg,     1, 200.0f },
+        { EOdenType::Goboten,   1, 100.0f },
+            { EOdenType::Tsukune,   1, 100.0f },
+        { EOdenType::Egg,     1, 200.0f },
     };
 }
 
@@ -135,7 +135,7 @@ void OdenResultScoreActor::Initialize(const Transform& transform)
             // Ç±Ç±Ç≈îzíuà íuÇåàÇﬂÇƒê∂ê¨Ç∑ÇÈ
             float x = 0.0f + MathHelper::RandomRange(-10.0f, 10.0f);
             float y = 50.0f + (globalIndex * 20.0f);
-            float z = .0f;
+            float z = -0.5f;
 
             //float x = -10.1f +/* globalIndex **/ MathHelper::RandomRange(-10.0f, 10.0f);
             //float y = 10.723f +/* globalIndex * 1.0f*/MathHelper::RandomRange(-3.0f, 3.0f);

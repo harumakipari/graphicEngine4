@@ -3,7 +3,7 @@
 #include "Core/Actor.h"
 #include "OdenData/OdenDataStruct.h"
 
-class OdenResultIngredientActor;
+class OdenLoadingIngredientActor;
 
 // ‚¨‚Å‚ñ‚Ì‹øƒ‚ƒfƒ‹
 class OdenResultSkewerActor : public Actor
@@ -13,7 +13,7 @@ public:
 
     void Initialize(const Transform& transform)override;
 
-    void AddIngredient(const std::shared_ptr<OdenResultIngredientActor>& ingredient, int index);
+    void AddIngredient(const std::shared_ptr<OdenLoadingIngredientActor>& ingredient, int index);
 
     // ‰ñ“]ŠJn
     void StartRotateOneTurn();
@@ -24,10 +24,10 @@ private:
 public:
     std::function<void()> onRotationFinished;
     std::shared_ptr<SkeletalMeshComponent> poleModel;
-    std::vector<std::shared_ptr<OdenResultIngredientActor>> ingredients;
+    std::vector<std::shared_ptr<OdenLoadingIngredientActor>> ingredients;
 
 private:
-    std::array<std::shared_ptr<OdenResultIngredientActor>, 3> ingredientArray;
+    std::array<std::shared_ptr<OdenLoadingIngredientActor>, 3> ingredientArray;
     std::shared_ptr<CoreEasingComponent> easingRunner;
 
     DirectX::XMFLOAT4 startOrientation = { 0.0f,0.0f,0.0f,1.0f }; // ‰Šúp¨
