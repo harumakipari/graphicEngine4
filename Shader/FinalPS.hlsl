@@ -7,7 +7,7 @@ Texture2D colorTexture : register(t0);
 Texture2D depthTexture : register(t3);
 
 
-Texture2DArray cascadedShadowMaps : register(t8);
+Texture2DArray cascadedShadowMaps : register(t9);
 
 // texcoord -> ndc 空間に変換
 float4 CalculatedPositionNDC(VS_OUT pin)
@@ -93,8 +93,6 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     // シーンからライティング済みのカラーテクスチャ
     float4 color = colorTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
-
-    //return float4(color);
 
     // uv -> ndc 
     float4 positionNdc = CalculatedPositionNDC(pin);

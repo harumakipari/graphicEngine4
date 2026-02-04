@@ -15,9 +15,10 @@ public:
 #if 0
         staticMeshComponent->SetModel("./Data/Models/Stage/ExampleStage.gltf", true);
 #else
-        staticMeshComponent->SetModel("./Data/Models/Dark_Stage/Mesh/untitled.gltf", true);
+        staticMeshComponent->SetModel("./Data/Models/Dark_Stage0204/untitled.gltf", true);
+        //staticMeshComponent->SetModel("./Data/Models/Dark_Stage/Mesh/untitled.gltf", true);
         //staticMeshComponent->SetModel("./Data/Models/boss_fight_stage/scene.gltf", true);
-        staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
+        //staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         //staticMeshComponent->overrideDeferredPipelineName = "deferredFightStage";
         //staticMeshComponent->hueShift = 191.8f;
         //staticMeshComponent->saturation = 0.8f;
@@ -25,9 +26,9 @@ public:
         //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelFightStagePS.cso", staticMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
         //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 #endif // 1
-        staticMeshComponent->SetRelativeLocationDirect({ 16.0f,0.0f,-4.0f });
+        //staticMeshComponent->SetRelativeLocationDirect({ 16.0f,0.0f,-4.0f });
 
-#if 0 // “–‚½‚è”»’è
+#if 1// “–‚½‚è”»’è
         // ƒƒbƒVƒ…
         std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->AddComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent", "staticMeshComponent");
         triangleMeshComponent->SetLayer(CollisionLayer::WorldStatic);

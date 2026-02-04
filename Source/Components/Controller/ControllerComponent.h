@@ -75,6 +75,7 @@ public:
         inputDir_ = intent.move;
     }
 
+    void SetUseGravity(const bool useGravity) { this->useGravity = useGravity; }
 private:
     // èÛë‘
     DirectX::XMFLOAT3 velocity_{ 0,0,0 };
@@ -85,6 +86,8 @@ private:
     float gravity_ = -4.9f;
     float groundOffset_ = 1.0f;
     float radius_ = 0.4f;
+    bool useGravity = true;
+
 
     DirectX::XMFLOAT3 inputDir_{ 0,0,0 };
 };
@@ -126,7 +129,7 @@ private:
 
     DirectX::XMFLOAT3 direction_ = { 0.0f,0.0f,0.0f };
     DirectX::XMFLOAT3 previousDirection_ = { 0.0f,0.0f,0.0f };
-    DirectX::XMFLOAT3 startAngle_ = { 0.0f,0.0f,0.0f};  // degree
+    DirectX::XMFLOAT3 startAngle_ = { 0.0f,0.0f,0.0f };  // degree
     DirectX::XMFLOAT4 targetRotation_ = { 0.0f,0.0f,0.0f,1.0f };
     DirectX::XMFLOAT4 startRotation_ = { 0.0f,0.0f,0.0f,1.0f };
     float lerpTime_ = 0.0f;

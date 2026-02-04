@@ -34,12 +34,6 @@ float4 main(VS_OUT pin) : SV_TARGET
         discard;
     }
 
-    if (skymap == 2)
-    {
-        return lerp(baseColor, float4(1, 0, 0, 1), 0.7f);
-
-    }
-
     const float3 f0 = lerp(0.04, baseColor.rgb, metallicFactor);
     const float3 f90 = 1.0;
     const float alphaRoughness = roughnessFactor * roughnessFactor;

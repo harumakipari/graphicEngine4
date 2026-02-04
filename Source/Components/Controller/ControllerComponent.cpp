@@ -12,6 +12,15 @@
 
 void CharacterMovementComponent::Tick(float dt)
 {
+    if (useGravity)
+    {
+        gravity_ = -4.9f;
+    }
+    else
+    {
+        gravity_ = 0.0f;
+    }
+
     // “ü—Í•ûŒü‚ğ³‹K‰»‚µ‚Ä‘¬“x‚É”½‰f
     DirectX::XMFLOAT3 wishDir = inputDir_;
     wishDir.y = 0.0f;

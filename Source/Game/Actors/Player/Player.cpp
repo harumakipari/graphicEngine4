@@ -62,17 +62,17 @@ void Player::Initialize(const Transform& transform)
     controller->AddAnimation("Jog_Fwd_Start", 4);
     controller->AddAnimation("Jog_Fwd", 5);
     controller->AddAnimation("Jog_Fwd_Stop", 6);
-    controller->AddAnimation("Primary_Attack_Fast_A", 7);
-    controller->AddAnimation("Primary_Attack_Fast_B", 8);
-    controller->AddAnimation("Primary_Attack_Fast_C", 9);
-    controller->AddAnimation("Primary_Attack_Fast_D", 10);
-    controller->AddAnimation("Ability_R", 11);
-    controller->AddAnimation("Emote_Ice_Sculpture", 12);
-    controller->AddAnimation("HitReact_Back", 13);
-    controller->AddAnimation("HitReact_Front", 14);
-    controller->AddAnimation("HitReact_Left", 15);
-    controller->AddAnimation("HitReact_Right", 16);
-    controller->AddAnimation("Death", 17);
+    //controller->AddAnimation("Primary_Attack_Fast_A", 7);
+    //controller->AddAnimation("Primary_Attack_Fast_B", 8);
+    //controller->AddAnimation("Primary_Attack_Fast_C", 9);
+    //controller->AddAnimation("Primary_Attack_Fast_D", 10);
+    //controller->AddAnimation("Ability_R", 11);
+    //controller->AddAnimation("Emote_Ice_Sculpture", 12);
+    //controller->AddAnimation("HitReact_Back", 13);
+    //controller->AddAnimation("HitReact_Front", 14);
+    //controller->AddAnimation("HitReact_Left", 15);
+    //controller->AddAnimation("HitReact_Right", 16);
+    //controller->AddAnimation("Death", 17);
 
     // アニメーションコントローラーを character に追加
     this->SetAnimationController(controller);
@@ -144,7 +144,7 @@ void Player::Initialize(const Transform& transform)
 
     // 移動用コンポーネントを追加
     characterMovementComponent = this->AddComponent<CharacterMovementComponent>("movementComponent", "skeletalComponent");
-
+    characterMovementComponent->SetUseGravity(false);
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", "skeletalComponent");
 

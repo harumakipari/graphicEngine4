@@ -78,8 +78,8 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = CreatePsFromCSO(device, "./Shader/DeferredLightingPS.cso", deferredPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
-    //hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
+    //hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //CascadedShadowMaps
@@ -87,13 +87,13 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     D3D11_TEXTURE2D_DESC texture2dDesc;
     //テクスチャをロード
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_charlie.dds", environmentTextures[0].ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/lut_charlie.dds", environmentTextures[0].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/diffuse_iem.dds", environmentTextures[1].ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/diffuse_iem.dds", environmentTextures[1].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/specular_pmrem.dds", environmentTextures[2].ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/specular_pmrem.dds", environmentTextures[2].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured/lut_sheen_e.dds", environmentTextures[3].ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/lut_sheen_e.dds", environmentTextures[3].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
 
@@ -122,6 +122,7 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     );
     Logger::Log(U8("UI Render viewport ") + std::to_string(imageMin.x) + std::to_string(imageMin.y) + std::to_string(imageSize.x) + std::to_string(imageSize.y));
 
+#if 0
     // シーンカラーテクスチャを送るのに使用する
     {
         D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc{};
@@ -158,6 +159,8 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         );
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
+#endif // 0
+
 
     dummyTexture = std::make_shared<UIImageComponent>("./Data/Textures/UI/Oden_seane_change.png", "backGround");
     dummyTexture->SetSize({ 1920, 1080 });
@@ -442,11 +445,11 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
         frameBuffer->Deactivate(immediateContext);
     }
 
-    // 今回のゲームで追加
-    {
-        immediateContext->CopyResource(sceneColorStencilBuffer.Get(), sceneColorBuffer.Get());
-        immediateContext->PSSetShaderResources(25, 1, sceneColorSRV.GetAddressOf());
-    }
+    //// 今回のゲームで追加
+    //{
+    //    immediateContext->CopyResource(sceneColorStencilBuffer.Get(), sceneColorBuffer.Get());
+    //    immediateContext->PSSetShaderResources(25, 1, sceneColorSRV.GetAddressOf());
+    //}
 
 #if 1
     postEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get());
@@ -531,7 +534,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
         ID3D11ShaderResourceView* shader_resource_views[]
         {
             //  gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],   // colorMap
-             frameBuffer->shaderResourceViews[0].Get(),//colorMap
+             frameBuffer->shaderResourceViews[0].Get(),//colorMap   こっちライティング済み
               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
               gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
