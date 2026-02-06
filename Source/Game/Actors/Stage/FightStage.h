@@ -3,6 +3,7 @@
 #include "Components/Render/MeshComponent.h"
 #include "Components/CollisionShape/StaticMeshCollisionComponent.h"
 #include "Components/CollisionShape/ShapeComponent.h"
+#include "Components/Render/PointLightComponent.h"
 
 class FightStage :public Actor
 {
@@ -15,7 +16,21 @@ public:
 #if 0
         staticMeshComponent->SetModel("./Data/Models/Stage/ExampleStage.gltf", true);
 #else
-        staticMeshComponent->SetModel("./Data/Models/Dark_Stage0204/untitled.gltf", true);
+        staticMeshComponent->SetModel("./Data/Models/Dark_Stage_0204/DarkStage.gltf", true);
+        staticMeshComponent->model->modelCoordinateSystem= InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
+        auto lightsData = staticMeshComponent->model->GetPointLights();
+        // ポイントライトコンポーネントを追加
+        for (auto light : lightsData)
+        {
+            auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", "staticMeshComponent");
+            pointLightComponent->SetRelativeLocationDirect(light.position);
+            pointLightComponent->SetColor(light.color);
+            pointLightComponent->SetRange(light.range);
+            pointLightComponent->SetIntensity(light.intensity);
+        }
+
+        //staticMeshComponent->SetModel("./Data/Models/Dark_Stage0204/untitled.gltf", true);
+
         //staticMeshComponent->SetModel("./Data/Models/Dark_Stage/Mesh/untitled.gltf", true);
         //staticMeshComponent->SetModel("./Data/Models/boss_fight_stage/scene.gltf", true);
         //staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;

@@ -53,7 +53,9 @@ InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::stri
             cereal::make_nvp("scenes", scenes),
             cereal::make_nvp("defaultScene", defaultScene),
             cereal::make_nvp("nodes", nodes),
-            cereal::make_nvp("materials", materials)
+            cereal::make_nvp("materials", materials),
+            cereal::make_nvp("gltfLights", gltfLights),
+        cereal::make_nvp("pointLights", pointLights)
         );
         deserialization(cereal::make_nvp("batchMeshes", batchMeshes));
         deserialization(cereal::make_nvp("meshes", meshes));
@@ -109,6 +111,10 @@ InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::stri
         defaultScene = gltfModel->defaultScene < 0 ? 0 : gltfModel->defaultScene;
 
         FetchNodes(*gltfModel);
+
+        FetchLights(*gltfModel);
+        FetchLightNodes(*gltfModel);
+
         FetchMaterials(device, *gltfModel);
         FetchTextures(device, *gltfModel);
 
@@ -130,7 +136,9 @@ InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::stri
             cereal::make_nvp("scenes", scenes),
             cereal::make_nvp("defaultScene", defaultScene),
             cereal::make_nvp("nodes", nodes),
-            cereal::make_nvp("materials", materials)
+            cereal::make_nvp("materials", materials),
+            cereal::make_nvp("gltfLights", gltfLights),
+            cereal::make_nvp("pointLights", pointLights)
         );
         serialization(cereal::make_nvp("batchMeshes", batchMeshes));
         serialization(cereal::make_nvp("meshes", meshes));
@@ -192,10 +200,80 @@ void InterleavedGltfModel::FetchNodes(const tinygltf::Model& gltfModel)
                 node.rotation.z = static_cast<float>(gltfNode.rotation.at(2));
                 node.rotation.w = static_cast<float>(gltfNode.rotation.at(3));
             }
+
         }
     }
     CumulateTransforms(nodes);
 }
+
+void InterleavedGltfModel::FetchLights(const tinygltf::Model& model)
+{
+    gltfLights.clear();
+
+    for (const auto& light : model.lights)
+    {
+        GltfLight gl;
+        gl.type = light.type; // "point", "spot", "directional"
+
+        if (!light.color.empty())
+        {
+            gl.color = {
+                static_cast<float>(light.color[0]),
+                static_cast<float>(light.color[1]),
+                static_cast<float>(light.color[2])
+            };
+        }
+        else
+        {
+            gl.color = { 1, 1, 1 };
+        }
+
+        gl.intensity = static_cast<float>(light.intensity);
+        gl.range = static_cast<float>(light.range);
+
+        gltfLights.push_back(gl);
+    }
+}
+
+// ライト付きのノードを探す
+void InterleavedGltfModel::FetchLightNodes(const tinygltf::Model& model)
+{
+    pointLights.clear();
+
+    for (size_t i = 0; i < model.nodes.size(); ++i)
+    {
+        const auto& gltfNode = model.nodes[i];
+        const Node& node = nodes[i]; // ← Cumulate済み
+
+        auto it = gltfNode.extensions.find("KHR_lights_punctual");
+        if (it == gltfNode.extensions.end())
+            continue;
+
+        int lightIndex = it->second.Get("light").Get<int>();
+        const GltfLight& gl = gltfLights.at(lightIndex);
+
+        if (gl.type != "point")
+            continue;
+
+        GltfPointLightData pl;
+
+        // ノード原点を world に変換
+        DirectX::XMStoreFloat3(
+            &pl.position,
+            DirectX::XMVector3Transform(
+                DirectX::XMVectorZero(),
+                DirectX::XMLoadFloat4x4(&node.globalTransform)
+            )
+        );
+
+        pl.color = gl.color;
+        pl.intensity = gl.intensity;
+        pl.range = gl.range;
+
+        pointLights.push_back(pl);
+    }
+}
+
 
 AABB InterleavedGltfModel::GetAABB()const
 {

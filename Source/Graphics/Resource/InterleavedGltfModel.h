@@ -137,7 +137,50 @@ public:
     // ノードを取得する関数
     const std::vector<Node>& GetNodes() const { return nodes; }
 
+    // ライト
+    struct GltfPointLightData
+    {
+        DirectX::XMFLOAT3 position;
+        DirectX::XMFLOAT3 color;
+        float intensity;
+        float range; // directional は無視
+
+        template<class T>
+        void serialize(T& archive)
+        {
+            archive(
+                cereal::make_nvp("position", position),
+                cereal::make_nvp("color", color),
+                cereal::make_nvp("intensity", intensity),
+                cereal::make_nvp("range", range)
+            );
+        }
+    };
+    const std::vector<GltfPointLightData>& GetPointLights() const
+    {
+        return pointLights;
+    }
+    struct GltfLight
+    {
+        std::string type;
+        DirectX::XMFLOAT3 color;
+        float intensity;
+        float range; // directional は無視
+
+        template<class T>
+        void serialize(T& archive)
+        {
+            archive(
+                cereal::make_nvp("type", type),
+                cereal::make_nvp("color", color),
+                cereal::make_nvp("intensity", intensity),
+                cereal::make_nvp("range", range)
+            );
+        }
+    };
+    std::vector<GltfLight> gltfLights;
 private:
+    std::vector<GltfPointLightData> pointLights;
     std::vector<Node> nodes;
 public:
 
@@ -581,6 +624,11 @@ private:
     void FetchMeshes(ID3D11Device* device, const tinygltf::Model& gltf_model);
     // INTERLEAVED_GLTF_MODEL
     void FetchAndBatchMeshes(ID3D11Device* device, const tinygltf::Model& gltf_model);
+
+    // ライトの情報を取る
+    void FetchLights(const tinygltf::Model& model);
+    // ライト付きのノードを探す
+    void FetchLightNodes(const tinygltf::Model& model);
 
 public:
     // CascadedShadowMaps

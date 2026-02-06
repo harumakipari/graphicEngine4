@@ -25,5 +25,5 @@ cbuffer LIGHT_CONSTANT_BUFFER : register(b11)
     int directionalLightEnable; // ïΩçsåıåπÇÃ on / off
     int pointLightEnable;
     int pointLightCount;
-    PointLights pointLights[8];
+    PointLights pointLights[32];
 };

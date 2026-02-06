@@ -23,7 +23,7 @@ void Player::Initialize(const Transform& transform)
 {
     // 描画用コンポーネントを追加
     skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
-    skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/idle.gltf");
+    skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_A.glb");
     //skeletalMeshComponent->SetModel("./Data/Models/Characters/GirlSoldier/idle.gltf");
     //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelCharacterPS.cso", skeletalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
     //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));

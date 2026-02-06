@@ -629,6 +629,9 @@ void SceneRenderer::DrawWithStaticBatching(ID3D11DeviceContext* immediateContext
 
     for (const InterleavedGltfModel::BatchMesh& batchMesh : model->batchMeshes)
     {
+        if (batchMesh.vertexBufferView.buffer < 0)
+            continue;
+
         UINT stride = sizeof(InterleavedGltfModel::BatchMesh::Vertex);
         UINT offset = 0;
         immediateContext->IASetVertexBuffers(0, 1, model->buffers.at(batchMesh.vertexBufferView.buffer).GetAddressOf(), &stride, &offset);
@@ -974,6 +977,9 @@ void SceneRenderer::CastShadowWithStaticBatching(ID3D11DeviceContext* immediateC
 
     for (const InterleavedGltfModel::BatchMesh& batchMesh : model->batchMeshes)
     {
+        if (batchMesh.vertexBufferView.buffer < 0)
+            continue;
+
         UINT stride = sizeof(InterleavedGltfModel::BatchMesh::Vertex);
         UINT offset = 0;
         immediateContext->IASetVertexBuffers(0, 1, model->buffers.at(batchMesh.vertexBufferView.buffer).GetAddressOf(), &stride, &offset);

@@ -48,7 +48,6 @@ float CalculatedCascadedShadowFactor(VS_OUT pin)
         }
     }
 
-
     float shadowFactor = 1.0;
     if (cascadeIndex > -1)
     {
@@ -60,29 +59,9 @@ float CalculatedCascadedShadowFactor(VS_OUT pin)
         positionLightSpace.y = positionLightSpace.y * -0.5 + 0.5;
         shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
         //shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
-        
         return shadowFactor;
-        float3 layerColor = 1;
-#if 1
-        if (colorizeCascadedLayer)
-        {
-            const float3 layerColors[4] =
-            {
-                { 1, 0, 0 },
-                { 0, 1, 0 },
-                { 0, 0, 1 },
-                { 1, 1, 0 },
-            };
-            layerColor = layerColors[cascadeIndex];
-        }
-#endif
-        //color *= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
-        //color *= float4(lerp(shadowColor, 1.0, shadowFactor) * layerColor, color.a);
-        
-        //sampleColor *= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
     }
     return shadowFactor;
-    //return sampleColor;
 }
 
 
@@ -134,7 +113,8 @@ float4 main(VS_OUT pin) : SV_TARGET
         if (enableCascadedShadowMaps)
         {
             color.rgb *= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
-            float3 shadow= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
+
+            //float3 shadow= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
             //return float4(shadow, 1);
         }
     }

@@ -25,7 +25,7 @@ public:
         int directionalLightEnable = 1;// 平行光源の on / off
         int pointLightEnable = 1;
         int pointLightCount = 0;
-        PointLight pointsLight[8];
+        PointLight pointsLight[32];
     };
 
 public:
@@ -94,7 +94,7 @@ private:
     };
     bool directionalLightEnable = true; // 平行光源の on / off
     bool pointLightEnable = true;
-    int pointLightCount = 8;
+    int pointLightCount = 32;
 
     LightConstants constants = {};
     // GPUに送る最終のポイントライト情報
