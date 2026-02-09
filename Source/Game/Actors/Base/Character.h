@@ -2,7 +2,6 @@
 #include <memory>
 #include "Core/Actor.h"
 #include "Graphics/Resource/GeometricPrimitive.h"
-#include "Physics/CollisionMesh.h"
 
 #include "Components/Render/MeshComponent.h"
 #include "Components/CollisionShape/CollisionComponent.h"
@@ -111,104 +110,9 @@ public:
     }
 
 
-    //床へレイキャストを飛ばす
-    bool CheckCollisionFloor(const CollisionMesh* collisionMesh, DirectX::XMFLOAT4X4 transform)
-    {
-        //DirectX::XMFLOAT4 intersection;
-        std::string mesh;
-        std::string material;
-
-        //ステージ床へレイキャストを飛ばす
-        DirectX::XMFLOAT3 rayPosition{ GetPosition().x,GetPosition().y + 1.0f,GetPosition().z };
-        //DirectX::XMFLOAT3 rayDirection{ 0,velocity.y,0};   //例の長さ
-        DirectX::XMFLOAT3 rayDirection{ 0, -1, 0 };   //例の長さ
-        /*DirectX::XMFLOAT3 intersectionPosition;*/
-        DirectX::XMFLOAT3 intersectionNormal;
-        std::string intersectionMesh;
-        std::string intersectionMaterial;
-
-        if (collisionMesh->Raycast(rayPosition, rayDirection, transform, intersectStagePosition, intersectionNormal, intersectionMesh, intersectionMaterial))
-        {
-            float playerHeight = 0.0f;
-            using namespace DirectX;
-            DirectX::XMFLOAT3 pos = GetPosition();
-            float d0 = XMVectorGetX(XMVector3Length(XMLoadFloat3(&pos) - XMLoadFloat3(&rayPosition)));
-            float d1 = XMVectorGetX(XMVector3Length(XMLoadFloat3(&intersectStagePosition) - XMLoadFloat3(&rayPosition)));
-            if (d0 + playerHeight > d1)
-            {
-                XMFLOAT3 outPosition = GetPosition();
-                float d = (d0 + playerHeight) - d1;
-                outPosition.x -= d * rayDirection.x;
-                outPosition.y -= d * rayDirection.y;
-                outPosition.z -= d * rayDirection.z;
-                SetPosition(outPosition);
-                // Reflection
-                velocity.y = 0.0f;
-                //isGround = true;
-                return true;
-            }
-        }
-        return false;
-    }
-
     // 入力をオンにするか
     virtual bool CanMove() { return canMove; }
 
-    //進行方向にレイを飛ばす
-    bool RaycastForward(const CollisionMesh* collisionMesh, DirectX::XMFLOAT4X4 transform)
-    {
-#if 0
-        //DirectX::XMFLOAT4 intersection;
-        std::string mesh;
-        std::string material;
-
-        //進行方向にへレイキャストを飛ばす
-        DirectX::XMFLOAT3 rayPosition{ position.x,position.y + height * 0.5f,position.z };   //背丈の真ん中から
-        //DirectX::XMFLOAT3 rayDirection = GetForward();   //レイの向き
-        DirectX::XMFLOAT3 rayDirection = { velocity.x,0.0f,velocity.z };   //レイの長さ
-        DirectX::XMFLOAT3 intersectionPosition;
-        DirectX::XMFLOAT3 intersectionNormal;
-        std::string intersectionMesh;
-        std::string intersectionMaterial;
-
-        if (fabs(velocity.x - FLT_EPSILON) < 0.0f && fabs(velocity.z - FLT_EPSILON) < 0.0f)
-        {// velocity.x velocity.zがどちらも 0 だったら
-            return false;
-        }
-        DirectX::XMVECTOR RayDirection = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&rayDirection));
-        DirectX::XMStoreFloat3(&rayDirection, RayDirection);
-
-        //レイの長さを適切な値に変更する
-        rayDirection.x *= 1.5f;
-        rayDirection.z *= 1.5f;
-
-        if (collisionMesh->Raycast(rayPosition, rayDirection, transform, intersectionPosition, intersectionNormal, intersectionMesh, intersectionMaterial))
-        {
-            float playerHeight = 0.0f;
-            using namespace DirectX;
-            float d0 = XMVectorGetX(XMVector3Length(XMLoadFloat3(&position) - XMLoadFloat3(&rayPosition)));
-            float d1 = XMVectorGetX(XMVector3Length(XMLoadFloat3(&intersectionPosition) - XMLoadFloat3(&rayPosition)));
-            if (d0 + playerHeight > d1)
-            {
-                XMFLOAT3 outPosition = position;
-                float d = (d0 + playerHeight) - d1;
-                outPosition.x -= d * rayDirection.x;
-                //outPosition.y -= d * rayDirection.y;
-                outPosition.z -= d * rayDirection.z;
-                position = outPosition;
-                // Reflection
-                if (velocity.y < 0.0f)
-                {
-                    XMStoreFloat3(&velocity, XMVector3Reflect(XMLoadFloat3(&velocity), XMLoadFloat3(&intersectionNormal)));
-                }
-
-                //velocity.x = velocity.y = velocity.z = 0.0f;
-                return true;
-            }
-        }
-#endif
-        return false;
-    }
 
     void DrawImGuiDetails()override
     {

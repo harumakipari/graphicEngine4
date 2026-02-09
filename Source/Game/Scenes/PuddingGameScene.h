@@ -11,7 +11,6 @@
 #include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Stage/Stage.h"
 
-#include "Physics/CollisionMesh.h"
 
 class PuddingGameScene : public SceneBase
 {
@@ -35,6 +34,5 @@ public:
 
 private:
     std::shared_ptr<Stage>  title;
-    std::shared_ptr<CollisionMesh> stageCollisionMesh;
 
 };

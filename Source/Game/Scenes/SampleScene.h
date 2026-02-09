@@ -18,7 +18,6 @@
 #include "Game/Actors/Stage/Stage.h"
 
 #include "UI/Widgets/Widget.h"
-#include "Physics/CollisionMesh.h"
 
 #include "PBD/PBDSystem.h"
 
@@ -42,7 +41,6 @@ public:
 
 private:
     std::shared_ptr<Stage>  title;
-    std::shared_ptr<CollisionMesh> stageCollisionMesh;
 
     std::unique_ptr<PBD::System> pbd;
 

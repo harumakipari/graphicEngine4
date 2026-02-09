@@ -288,9 +288,6 @@
     <ClCompile Include="Source\Physics\Collider.cpp">
       <Filter>Sources\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Physics\CollisionMesh.cpp">
-      <Filter>Sources\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Graphics\Resource\GeometricPrimitive.cpp">
       <Filter>Sources\Graphics\Resource</Filter>
     </ClCompile>
@@ -650,9 +647,6 @@
     <ClInclude Include="Source\Physics\CollisionSystem.h">
       <Filter>Sources\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Components\CollisionShape\StaticMeshCollisionComponent.h">
-      <Filter>Sources\Components\CollisionShape</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Actors\Player\Player.h">
       <Filter>Sources\Game\Actors\Player</Filter>
     </ClInclude>
@@ -773,9 +767,6 @@
     <ClInclude Include="Source\Physics\Collider.h">
       <Filter>Sources\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Physics\CollisionMesh.h">
-      <Filter>Sources\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Actors\Stage\Stage.h">
       <Filter>Sources\Game\Actors\Stage</Filter>
     </ClInclude>
@@ -853,9 +844,6 @@
     </ClInclude>
     <ClInclude Include="Source\Graphics\Core\LightManager.h">
       <Filter>Sources\Graphics\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\Resource\Model.h">
-      <Filter>Sources\Graphics\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Camera\CameraConstants.h">
       <Filter>Sources\Engine\Camera</Filter>
@@ -954,7 +942,6 @@
     <ClInclude Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.h" />
     <ClInclude Include="Source\Game\Scenes\MainScene.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenIngredientActor.h" />
-    <ClInclude Include="Source\Components\OdenGame\OdenDataComponent.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenBubbleActor.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenData\OdenDataStruct.h" />
     <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenSlotActor.h" />
@@ -1147,12 +1134,6 @@
     <FxCompile Include="Shader\ShaderToyVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\SkinnedMeshPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\SkinnedMeshVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\SkyBoxPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -1303,9 +1284,6 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\ShaderToy.hlsli">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shader\SkinnedMesh.hlsli">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\SkyMap.hlsli">

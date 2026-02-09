@@ -119,7 +119,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;USE_IMGUI;%(PreprocessorDefinitions);_SILENCE_CXX20_CISO646_REMOVED_WARNING;_SILENCE_ALL_CXX23_DEPRECATION_WARNINGS;PX_PHYSX_STATIC_LIB;IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.\External\DirectXTK-main\Inc;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\include;.\External\cereal-master\include;.\External\tinygltf-release;.\External\DirectXTex-main\DirectXTex;.\External\PhysX\include;.\External\imgui;.\Source;.\External\magic_enum</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\External\DirectXTK-main\Inc;.\External\cereal-master\include;.\External\tinygltf-release;.\External\DirectXTex-main\DirectXTex;.\External\PhysX\include;.\External\imgui;.\Source;.\External\magic_enum</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -177,7 +177,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.\External\DirectXTK-main\Inc;C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.1\include;.\External\cereal-master\include;.\External\tinygltf-release;.\External\DirectXTex-main\DirectXTex;.\External\PhysX\include;.\External\imgui;.\Source;.\External\magic_enum</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\External\DirectXTK-main\Inc;.\External\cereal-master\include;.\External\tinygltf-release;.\External\DirectXTex-main\DirectXTex;.\External\PhysX\include;.\External\imgui;.\Source;.\External\magic_enum</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -370,7 +370,6 @@
     </ClCompile>
     <ClCompile Include="Source\Physics\Collider.cpp" />
     <ClCompile Include="Source\Physics\Collision.cpp" />
-    <ClCompile Include="Source\Physics\CollisionMesh.cpp" />
     <ClCompile Include="Source\Physics\Physics.cpp" />
     <ClCompile Include="Source\Test\SoftBody2d.cpp" />
     <ClCompile Include="Source\UI\Font.cpp" />
@@ -401,14 +400,12 @@
     <ClInclude Include="Source\Components\CollisionShape\CollisionComponent.h" />
     <ClInclude Include="Source\Components\CollisionShape\RigidBodyComponent.h" />
     <ClInclude Include="Source\Components\CollisionShape\ShapeComponent.h" />
-    <ClInclude Include="Source\Components\CollisionShape\StaticMeshCollisionComponent.h" />
     <ClInclude Include="Source\Components\Controller\ControllerComponent.h" />
     <ClInclude Include="Source\Components\Easing\CoreEasingComponent.h" />
     <ClInclude Include="Source\Components\Effect\ParticleComponent.h" />
     <ClInclude Include="Source\Components\Elastic\ElasticComponent.h" />
     <ClInclude Include="Source\Components\Game\LifeTimeComponent.h" />
     <ClInclude Include="Source\Components\Game\TimerActionComponent.h" />
-    <ClInclude Include="Source\Components\OdenGame\OdenDataComponent.h" />
     <ClInclude Include="Source\Components\Render\MeshComponent.h" />
     <ClInclude Include="Source\Components\Render\PointLightComponent.h" />
     <ClInclude Include="Source\Components\Transform\Transform.h" />
@@ -550,7 +547,6 @@
     <ClInclude Include="Source\Graphics\Resource\GltfModelBase.h" />
     <ClInclude Include="Source\Graphics\Resource\GltfModelStaticBatching.h" />
     <ClInclude Include="Source\Graphics\Resource\InterleavedGltfModel.h" />
-    <ClInclude Include="Source\Graphics\Resource\Model.h" />
     <ClInclude Include="Source\Graphics\Resource\ModelResource.h" />
     <ClInclude Include="Source\Graphics\Resource\PrecomputedNoiseTexture3D.h" />
     <ClInclude Include="Source\Graphics\Resource\ShaderToy.h" />
@@ -567,7 +563,6 @@
     <ClInclude Include="Source\Physics\Collider.h" />
     <ClInclude Include="Source\Physics\Collision.h" />
     <ClInclude Include="Source\Physics\CollisionHelper.h" />
-    <ClInclude Include="Source\Physics\CollisionMesh.h" />
     <ClInclude Include="Source\Physics\CollisionSystem.h" />
     <ClInclude Include="Source\Physics\CollisionFunction.h" />
     <ClInclude Include="Source\Physics\Physics.h" />
@@ -939,14 +934,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
-    <FxCompile Include="Shader\SkinnedMeshPS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Shader\SkinnedMeshVS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-    </FxCompile>
     <FxCompile Include="Shader\SkyBoxPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -1043,7 +1030,6 @@
     <None Include="Shader\Sampler.hlsli" />
     <None Include="Shader\ScreenSpaceProjectionMapping.hlsli" />
     <None Include="Shader\ShaderToy.hlsli" />
-    <None Include="Shader\SkinnedMesh.hlsli" />
     <None Include="Shader\SkyMap.hlsli" />
     <None Include="Shader\SolidShapeRenderer.hlsli" />
     <None Include="Shader\sprite.hlsli" />

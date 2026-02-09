@@ -19,7 +19,6 @@
 #include "Game/Actors/WaterSphere/ShapeMatchingModel.h"
 
 #include "UI/Widgets/Widget.h"
-#include "Physics/CollisionMesh.h"
 
 
 class MorphScene : public SceneBase
@@ -42,7 +41,6 @@ public:
 
 private:
     std::shared_ptr<Stage>  title;
-    std::shared_ptr<CollisionMesh> stageCollisionMesh;
 
     std::unique_ptr<MorphModel> morphModel;
     std::unique_ptr<ShapeMatchingModel > shapeMatchingModel;

@@ -8,7 +8,6 @@
 #include <functional>
 #include <array>
 
-#include <fbxsdk.h>
 #include <PxPhysicsAPI.h>
 
 #include <Windows.h>

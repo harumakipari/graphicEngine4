@@ -1,6 +1,4 @@
-#ifndef CAMERA_H
-#define CAMERA_H
-
+#pragma once
 #include <DirectXMath.h>
 
 #include "Core/Actor.h"
@@ -183,4 +181,3 @@ private:
 };
 
 
-#endif //CAMERA_H

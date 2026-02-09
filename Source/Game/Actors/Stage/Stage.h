@@ -1,7 +1,6 @@
 #pragma once
 #include "Core/Actor.h"
 #include "Components/Render/MeshComponent.h"
-#include "Components/CollisionShape/StaticMeshCollisionComponent.h"
 #include "Components/CollisionShape/ShapeComponent.h"
 class Stage :public Actor
 {

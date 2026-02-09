@@ -7,7 +7,7 @@ Texture2D colorTexture : register(t0);
 Texture2D depthTexture : register(t3);
 Texture2D bloomTexture : register(t4);
 Texture2D fogTexture : register(t5);
-
+Texture2D reflectionTexture : register(t7);
 Texture2DArray cascadedShadowMaps : register(t9);
 
 // texcoord -> ndc 空間に変換
@@ -22,7 +22,7 @@ float4 CalculatedPositionNDC(VS_OUT pin)
     return positionNdc;
 }
 
-// 
+// CSM 用の影係数を計算する関数
 float CalculatedCascadedShadowFactor(VS_OUT pin, out int cascadeIndex)
 {
     // uv -> ndc 
@@ -120,7 +120,6 @@ float3 CalculatedFogColor(VS_OUT pin)
     return finalFogColor;
 }
 
-
 // トーンマップ
 float3 JodieReinhardToneMap(float3 c)
 {
@@ -129,8 +128,6 @@ float3 JodieReinhardToneMap(float3 c)
 
     return lerp(c / (l + 1.0), tc, tc);
 }
-
-
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
@@ -175,13 +172,13 @@ float4 main(VS_OUT pin) : SV_TARGET
         }
     }
 
-#if 0
+#if 1
     // フォグの処理
     if (enableFog)
     {
         float3 fogColor = CalculatedFogColor(pin);
         color.rgb += fogColor;
-        return float4(fogColor, 1);
+        //return float4(fogColor, 1);
     }
 
     // ブルーム処理
@@ -190,7 +187,18 @@ float4 main(VS_OUT pin) : SV_TARGET
         float4 bloom = bloomTexture.Sample(samplerStates[POINT], pin.texcoord);
         color.rgb += bloom.rgb;
     }
+
+    // SSRの処理
+    if (enableSSR)
+    {
+        //float3 reflectColor = reflectionTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord).rgb;
+        //return float4(reflectColor.rgb, 1);
+
+        color.rgb += reflectionTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord).rgb;
+    }
 #endif
+
+
     // トーンマップ
     color.rgb = JodieReinhardToneMap(color.rgb);
 
