@@ -353,12 +353,10 @@
     <ClCompile Include="Source\Graphics\Renderer\ShapeRenderer.cpp" />
     <ClCompile Include="Source\Graphics\Renderer\SpriteRenderer.cpp" />
     <ClCompile Include="Source\Graphics\Resource\GeometricPrimitive.cpp" />
-    <ClCompile Include="Source\Graphics\Resource\GltfModelBase.cpp" />
-    <ClCompile Include="Source\Graphics\Resource\GltfModelStaticBatching.cpp" />
-    <ClCompile Include="Source\Graphics\Resource\GlthModel.cpp" />
     <ClCompile Include="Source\Graphics\Resource\InterleavedGltfModel.cpp" />
     <ClCompile Include="Source\Graphics\Resource\ShaderToy.cpp" />
     <ClCompile Include="Source\Graphics\Resource\Texture.cpp" />
+    <ClCompile Include="Source\Graphics\Resource\TinyGltf.cpp" />
     <ClCompile Include="Source\Graphics\Shadow\CascadeShadowMap.cpp" />
     <ClCompile Include="Source\Graphics\Shadow\ShadowMap.cpp" />
     <ClCompile Include="Source\Graphics\Sprite\Sprite.cpp" />
@@ -369,7 +367,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Physics\Collider.cpp" />
-    <ClCompile Include="Source\Physics\Collision.cpp" />
     <ClCompile Include="Source\Physics\Physics.cpp" />
     <ClCompile Include="Source\Test\SoftBody2d.cpp" />
     <ClCompile Include="Source\UI\Font.cpp" />
@@ -543,9 +540,6 @@
     <ClInclude Include="Source\Graphics\Renderer\ShapeRenderer.h" />
     <ClInclude Include="Source\Graphics\Renderer\SpriteRenderer.h" />
     <ClInclude Include="Source\Graphics\Resource\GeometricPrimitive.h" />
-    <ClInclude Include="Source\Graphics\Resource\GltfModel.h" />
-    <ClInclude Include="Source\Graphics\Resource\GltfModelBase.h" />
-    <ClInclude Include="Source\Graphics\Resource\GltfModelStaticBatching.h" />
     <ClInclude Include="Source\Graphics\Resource\InterleavedGltfModel.h" />
     <ClInclude Include="Source\Graphics\Resource\ModelResource.h" />
     <ClInclude Include="Source\Graphics\Resource\PrecomputedNoiseTexture3D.h" />
@@ -561,7 +555,6 @@
     <ClInclude Include="Source\PBD\PBDSystem.h" />
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\Physics\Collider.h" />
-    <ClInclude Include="Source\Physics\Collision.h" />
     <ClInclude Include="Source\Physics\CollisionHelper.h" />
     <ClInclude Include="Source\Physics\CollisionSystem.h" />
     <ClInclude Include="Source\Physics\CollisionFunction.h" />

@@ -29,48 +29,48 @@ void ShapeRenderer::Initialize(ID3D11Device* device)
     hr = CreatePsFromCSO(device, "./Shader/LineSegmentPS.cso", pixelShader.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    sphere = std::make_unique<GltfModel>(device, "./Data/Debug/Primitives/sphere.glb");
-    capsule = std::make_unique<GltfModel>(device, "./Data/Debug/Primitives/capsule.glb");
-    topHalfSphere = std::make_unique<GltfModel>(device, "./Data/Debug/Primitives/topHalfSphere.glb");
-    bottomHalfSphere = std::make_unique<GltfModel>(device, "./Data/Debug/Primitives/bottomHalfSphere.glb");
-    cylinder = std::make_unique<GltfModel>(device, "./Data/Debug/Primitives/cylinder.glb");
-    cube = std::make_unique<GltfModel>(device, "./Data/Debug/Primitives/cube.glb");
-    cubeCenter = std::make_unique<GltfModel>(device, "./Data/Debug/Primitives/boxCenter.glb");
+    sphere = std::make_unique<InterleavedGltfModel>(device, "./Data/Debug/Primitives/sphere.glb",InterleavedGltfModel::Mode::SkeltalMesh);
+    capsule = std::make_unique<InterleavedGltfModel>(device, "./Data/Debug/Primitives/capsule.glb", InterleavedGltfModel::Mode::SkeltalMesh);
+    topHalfSphere = std::make_unique<InterleavedGltfModel>(device, "./Data/Debug/Primitives/topHalfSphere.glb", InterleavedGltfModel::Mode::SkeltalMesh);
+    bottomHalfSphere = std::make_unique<InterleavedGltfModel>(device, "./Data/Debug/Primitives/bottomHalfSphere.glb", InterleavedGltfModel::Mode::SkeltalMesh);
+    cylinder = std::make_unique<InterleavedGltfModel>(device, "./Data/Debug/Primitives/cylinder.glb", InterleavedGltfModel::Mode::SkeltalMesh);
+    cube = std::make_unique<InterleavedGltfModel>(device, "./Data/Debug/Primitives/cube.glb", InterleavedGltfModel::Mode::SkeltalMesh);
+    cubeCenter = std::make_unique<InterleavedGltfModel>(device, "./Data/Debug/Primitives/boxCenter.glb", InterleavedGltfModel::Mode::SkeltalMesh);
 
-    std::vector<GltfModelBase::Material>& sphereMaterials = sphere->materials;
-    std::vector<GltfModelBase::Material>& capsuleMaterials = capsule->materials;
-    std::vector<GltfModelBase::Material>& topHalfSphereMaterials = topHalfSphere->materials;
-    std::vector<GltfModelBase::Material>& bottomHalfSphereMaterials = bottomHalfSphere->materials;
-    std::vector<GltfModelBase::Material>& cylinderMaterials = cylinder->materials;
-    std::vector<GltfModelBase::Material>& cubeMaterials = cube->materials;
+    std::vector<InterleavedGltfModel::Material>& sphereMaterials = sphere->materials;
+    std::vector<InterleavedGltfModel::Material>& capsuleMaterials = capsule->materials;
+    std::vector<InterleavedGltfModel::Material>& topHalfSphereMaterials = topHalfSphere->materials;
+    std::vector<InterleavedGltfModel::Material>& bottomHalfSphereMaterials = bottomHalfSphere->materials;
+    std::vector<InterleavedGltfModel::Material>& cylinderMaterials = cylinder->materials;
+    std::vector<InterleavedGltfModel::Material>& cubeMaterials = cube->materials;
 
     //デバック用のPSに変更する
-    for (GltfModelBase::Material& material : sphereMaterials)
+    for (InterleavedGltfModel::Material& material : sphereMaterials)
     {//色だけを返すPS
         hr = CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
-    for (GltfModelBase::Material& material : capsuleMaterials)
+    for (InterleavedGltfModel::Material& material : capsuleMaterials)
     {//色だけを返すPS
         hr = CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
-    for (GltfModelBase::Material& material : topHalfSphereMaterials)
+    for (InterleavedGltfModel::Material& material : topHalfSphereMaterials)
     {//色だけを返すPS
         hr = CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
-    for (GltfModelBase::Material& material : bottomHalfSphereMaterials)
+    for (InterleavedGltfModel::Material& material : bottomHalfSphereMaterials)
     {//色だけを返すPS
         hr = CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
-    for (GltfModelBase::Material& material : cylinderMaterials)
+    for (InterleavedGltfModel::Material& material : cylinderMaterials)
     {//色だけを返すPS
         hr = CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
-    for (GltfModelBase::Material& material : cubeMaterials)
+    for (InterleavedGltfModel::Material& material : cubeMaterials)
     {//色だけを返すPS
         hr = CreatePsFromCSO(device, "./Shader/GltfModelBaseColorPS.cso", material.replacedPixelShader.GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
@@ -109,7 +109,7 @@ void ShapeRenderer::DrawSphere(ID3D11DeviceContext* immediateContext, const Dire
     DirectX::XMFLOAT4X4 world;
     DirectX::XMStoreFloat4x4(&world, C * S * R * T);
 
-    sphere->Render(immediateContext, world, RenderPass::Opaque);
+    sphere->Render(immediateContext, world,{},InterleavedGltfModel::RenderPass::All);
 }
 
 // カプセル描画
@@ -138,8 +138,7 @@ void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext, const Dir
         DirectX::XMMATRIX T{ DirectX::XMMatrixTranslation(position.x,position.y + radius,position.z) };
         DirectX::XMFLOAT4X4 world;
         DirectX::XMStoreFloat4x4(&world, C * S * R * T);
-        //TODO:03 debugShapeはRenderPassをOpaqueにしている
-        cylinder->Render(immediateContext, world, RenderPass::Opaque);
+        cylinder->Render(immediateContext, world, {}, InterleavedGltfModel::RenderPass::All);
     }
     {//topHalfSphere
         DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinate_system_transforms[0]) * DirectX::XMMatrixScaling(scale_factor, scale_factor, scale_factor) };
@@ -149,7 +148,7 @@ void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext, const Dir
         DirectX::XMFLOAT4X4 world;
         DirectX::XMStoreFloat4x4(&world, C * S * R * T);
 
-        topHalfSphere->Render(immediateContext, world, RenderPass::Opaque);
+        topHalfSphere->Render(immediateContext, world, {}, InterleavedGltfModel::RenderPass::All);
     }
     {//bottomHalfSphere
         DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinate_system_transforms[0]) * DirectX::XMMatrixScaling(scale_factor, scale_factor, scale_factor) };
@@ -159,7 +158,7 @@ void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext, const Dir
         DirectX::XMFLOAT4X4 world;
         DirectX::XMStoreFloat4x4(&world, C * S * R * T);
 
-        bottomHalfSphere->Render(immediateContext, world, RenderPass::Opaque);
+        bottomHalfSphere->Render(immediateContext, world, {}, InterleavedGltfModel::RenderPass::All);
     }
 }
 
@@ -178,7 +177,7 @@ void ShapeRenderer::DrawCylinder(ID3D11DeviceContext* immediateContext, const Di
         DirectX::XMMATRIX world = S * T;
         DirectX::XMFLOAT4X4 m;
         DirectX::XMStoreFloat4x4(&m, world);
-        cylinder->Render(immediateContext, m, RenderPass::Opaque);
+        cylinder->Render(immediateContext, m, {}, InterleavedGltfModel::RenderPass::All);
     }
 
 }
@@ -211,7 +210,7 @@ void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext,
         DirectX::XMMATRIX world = S * finalRotation * T;
         DirectX::XMFLOAT4X4 m;
         DirectX::XMStoreFloat4x4(&m, world);
-        cylinder->Render(immediateContext, m, RenderPass::Opaque);
+        cylinder->Render(immediateContext, m, {}, InterleavedGltfModel::RenderPass::All);
     }
 
     // 上側の半球
@@ -221,7 +220,7 @@ void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext,
         DirectX::XMMATRIX world = S * offset * finalRotation * T;
         DirectX::XMFLOAT4X4 m;
         DirectX::XMStoreFloat4x4(&m, world);
-        topHalfSphere->Render(immediateContext, m, RenderPass::Opaque);
+        topHalfSphere->Render(immediateContext, m, {}, InterleavedGltfModel::RenderPass::All);
     }
 
     // 下側の半球
@@ -231,7 +230,7 @@ void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext,
         DirectX::XMMATRIX world = S * offset * finalRotation * T;
         DirectX::XMFLOAT4X4 m;
         DirectX::XMStoreFloat4x4(&m, world);
-        bottomHalfSphere->Render(immediateContext, m, RenderPass::Opaque);
+        bottomHalfSphere->Render(immediateContext, m, {}, InterleavedGltfModel::RenderPass::All);
     }
 }
 
@@ -271,7 +270,7 @@ void ShapeRenderer::DrawCapsule(
         DirectX::XMMATRIX world = S * T;
         DirectX::XMFLOAT4X4 finalMatrix;
         DirectX::XMStoreFloat4x4(&finalMatrix, world * baseTransform);
-        cylinder->Render(immediateContext, finalMatrix, RenderPass::Opaque);
+        cylinder->Render(immediateContext, finalMatrix, {}, InterleavedGltfModel::RenderPass::All);
     }
 
     {// Top Half Sphere
@@ -280,7 +279,7 @@ void ShapeRenderer::DrawCapsule(
         DirectX::XMMATRIX world = S * T;
         DirectX::XMFLOAT4X4 finalMatrix;
         DirectX::XMStoreFloat4x4(&finalMatrix, world * baseTransform);
-        topHalfSphere->Render(immediateContext, finalMatrix, RenderPass::Opaque);
+        topHalfSphere->Render(immediateContext, finalMatrix, {}, InterleavedGltfModel::RenderPass::All);
     }
 
     {// Bottom Half Sphere
@@ -289,7 +288,7 @@ void ShapeRenderer::DrawCapsule(
         DirectX::XMMATRIX world = S * T;
         DirectX::XMFLOAT4X4 finalMatrix;
         DirectX::XMStoreFloat4x4(&finalMatrix, world * baseTransform);
-        bottomHalfSphere->Render(immediateContext, finalMatrix, RenderPass::Opaque);
+        bottomHalfSphere->Render(immediateContext, finalMatrix, {}, InterleavedGltfModel::RenderPass::All);
     }
 }
 
@@ -342,15 +341,15 @@ void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext, const Dir
 
     // Cylinder（中心部分）
     XMStoreFloat4x4(&world, C * scaleCylinder * R * T_center);
-    cylinder->Render(immediateContext, world, RenderPass::Opaque);
+    cylinder->Render(immediateContext, world, {}, InterleavedGltfModel::RenderPass::All);
 
     // 上の半球
     XMStoreFloat4x4(&world, C * scaleSphere * R * T_top);
-    topHalfSphere->Render(immediateContext, world, RenderPass::Opaque);
+    topHalfSphere->Render(immediateContext, world, {}, InterleavedGltfModel::RenderPass::All);
 
     // 下の半球
     XMStoreFloat4x4(&world, C * scaleSphere * R * T_bottom);
-    bottomHalfSphere->Render(immediateContext, world, RenderPass::Opaque);
+    bottomHalfSphere->Render(immediateContext, world, {}, InterleavedGltfModel::RenderPass::All);
 }
 // 箱描画
 void ShapeRenderer::DrawBox(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& angle, const DirectX::XMFLOAT3& size, const DirectX::XMFLOAT4& color)
@@ -378,8 +377,7 @@ void ShapeRenderer::DrawBox(ID3D11DeviceContext* immediateContext, const DirectX
         DirectX::XMMATRIX T{ DirectX::XMMatrixTranslation(position.x,position.y,position.z) };
         DirectX::XMFLOAT4X4 world;
         DirectX::XMStoreFloat4x4(&world, C * S * R * T);
-        //TODO:03 debugShapeはRenderPassをOpaqueにしている
-        cube->Render(immediateContext, world, RenderPass::Opaque);
+        cube->Render(immediateContext, world, {}, InterleavedGltfModel::RenderPass::All);
     }
 }
 
@@ -410,7 +408,7 @@ void ShapeRenderer::DrawBoxCenter(ID3D11DeviceContext* immediateContext, const D
         DirectX::XMFLOAT4X4 world;
         DirectX::XMStoreFloat4x4(&world, C * S * R * T);
         //TODO:03 debugShapeはRenderPassをOpaqueにしている
-        cubeCenter->Render(immediateContext, world, RenderPass::Opaque);
+        cubeCenter->Render(immediateContext, world, {}, InterleavedGltfModel::RenderPass::All);
     }
 }
 
@@ -427,7 +425,7 @@ void ShapeRenderer::DrawBox(ID3D11DeviceContext* immediateContext, const DirectX
     Transform.r[2] = DirectX::XMVectorScale(Transform.r[2], size.z);
     DirectX::XMFLOAT4X4 world;
     DirectX::XMStoreFloat4x4(&world, Transform);
-    cube->Render(immediateContext, world, RenderPass::Opaque);
+    cube->Render(immediateContext, world, {}, InterleavedGltfModel::RenderPass::All);
 
 }
 
@@ -516,7 +514,7 @@ void ShapeRenderer::DrawSegment(ID3D11DeviceContext* immediateContext, const Dir
         DirectX::XMFLOAT4X4 world;
         DirectX::XMStoreFloat4x4(&world, C * S * R * T);
 
-        sphere->Render(immediateContext, world, RenderPass::Opaque);
+        sphere->Render(immediateContext, world, {}, InterleavedGltfModel::RenderPass::All);
     }
 }
 

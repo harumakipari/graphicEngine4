@@ -5,8 +5,19 @@
 #include <filesystem>
 #include <fstream>
 
-//#define TINYGLTF_IMPLEMENTATION
+//#define TINYGLTF_IMPLEMENTATION 
+
+#include <stack>
+#include <functional>
+#include "DDSTextureLoader.h"
 #include "tiny_gltf.h"
+#include "Engine/Utility/Win32Utils.h"
+#include "Engine/Debug/Assert.h"
+#include "Graphics/Core/Shader.h"
+#include "Texture.h"
+#include <cstddef>
+#include <filesystem>
+
 
 #include "Engine/Utility/Win32Utils.h"
 #include "Engine/Debug/Assert.h"

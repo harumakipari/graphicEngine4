@@ -15,9 +15,9 @@
 #include <vector>
 #include <unordered_map>
 
-#define TINYGLTF_NO_EXTERNAL_IMAGE
-#define TINYGLTF_NO_STB_IMAGE
-#define TINYGLTF_NO_STB_IMAGE_WRITE
+//#define TINYGLTF_NO_EXTERNAL_IMAGE
+//#define TINYGLTF_NO_STB_IMAGE
+//#define TINYGLTF_NO_STB_IMAGE_WRITE
 #include "tiny_gltf.h"
 
 #include <cereal/archives/binary.hpp>

@@ -1,7 +1,15 @@
 // INTERLEAVED_GLTF_MODEL
 #pragma once
 #define NOMINMAX
+#include <d3d11.h>
+#include <wrl.h>
+#include <DirectXMath.h>
 
+//#define TINYGLTF_NO_EXTERNAL_IMAGE
+//#define TINYGLTF_NO_STB_IMAGE
+//#define TINYGLTF_NO_STB_IMAGE_WRITE
+
+#include "tiny_gltf.h"
 #include <d3d11.h>
 #include <wrl.h>
 #include <directxmath.h>
@@ -9,11 +17,6 @@
 #include <vector>
 #include <unordered_map>
 #include <optional>
-
-#define TINYGLTF_NO_EXTERNAL_IMAGE
-#define TINYGLTF_NO_STB_IMAGE
-#define TINYGLTF_NO_STB_IMAGE_WRITE
-#include "tiny_gltf.h"
 
 #include <cereal/archives/binary.hpp>
 #include <cereal/archives/json.hpp>

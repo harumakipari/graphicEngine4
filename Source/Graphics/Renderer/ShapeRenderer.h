@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "Graphics/Core/ConstantBuffer.h"
-#include "Graphics/Resource/GltfModel.h"
+#include "Graphics/Resource/InterleavedGltfModel.h"
 
 /**
  * @file ShapeRenderer.h
@@ -195,13 +195,13 @@ private:
     static inline constexpr size_t maxPoints = 1500; /**< 内部で扱える最大頂点数 */
 
     // プリミティブ用のモデル
-    static inline std::unique_ptr<GltfModel> sphere = nullptr; /**< 球モデル */
-    static inline std::unique_ptr<GltfModel> topHalfSphere = nullptr; /**< 半球（上）モデル */
-    static inline std::unique_ptr<GltfModel> bottomHalfSphere = nullptr; /**< 半球（下）モデル */
-    static inline std::unique_ptr<GltfModel> cylinder = nullptr; /**< 円柱モデル */
-    static inline std::unique_ptr<GltfModel> capsule = nullptr; /**< カプセルモデル */
-    static inline std::unique_ptr<GltfModel> cube = nullptr; /**< 箱（底が原点）モデル */
-    static inline std::unique_ptr<GltfModel> cubeCenter = nullptr; /**< 箱（中心が原点）モデル */
+    static inline std::unique_ptr<InterleavedGltfModel> sphere = nullptr; /**< 球モデル */
+    static inline std::unique_ptr<InterleavedGltfModel> topHalfSphere = nullptr; /**< 半球（上）モデル */
+    static inline std::unique_ptr<InterleavedGltfModel> bottomHalfSphere = nullptr; /**< 半球（下）モデル */
+    static inline std::unique_ptr<InterleavedGltfModel> cylinder = nullptr; /**< 円柱モデル */
+    static inline std::unique_ptr<InterleavedGltfModel> capsule = nullptr; /**< カプセルモデル */
+    static inline std::unique_ptr<InterleavedGltfModel> cube = nullptr; /**< 箱（底が原点）モデル */
+    static inline std::unique_ptr<InterleavedGltfModel> cubeCenter = nullptr; /**< 箱（中心が原点）モデル */
 };
 
 
