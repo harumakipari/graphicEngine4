@@ -4,24 +4,25 @@
 cbuffer SCENE_CONSTANT_BUFFER : register(b1)
 {
     float elapsedTime;
-    float deltaTimesss;
-    float gravitysss;
+    float deltaTimess;
+    float gravityss;
 }
 
 cbuffer SHADER_CONSTANT_BUFFER : register(b9)
 {
+    float shadowColor;
+    float shadowDepthBias;
+    float2 paddings;
+
     bool enableSSAO;
     bool enableCascadedShadowMaps;
     bool enableSSR;
     bool enableFog;
 
     bool enableBloom;
-    bool enableBlurss;
-    bool directionalLightEnablesss = true; // ïΩçsåıåπÇÃ on / off
+    bool enableBlur;
     bool colorizeCascadedLayer = false;
 
-    float shadowColor = 0.2f;
-    float shadowDepthBias = 0.0005f;
 }
 // CASCADED_SHADOW_MAPS
 cbuffer CSM_CONSTANTS : register(b3)
@@ -40,12 +41,9 @@ cbuffer FOG_CONSTANTS_BUFFER : register(b8)
     float fogCutoffDistance;
     
     float mieScatteringCoef;
-    
-    bool enableDither;
-    bool enableBlur;
-    
     float timeScale;
     float noiseScale;
+    bool enableDither;
 }
 
 cbuffer VOLUMETRIC_CLOUDSCAPES_CONSTANT_BUFFER : register(b5)

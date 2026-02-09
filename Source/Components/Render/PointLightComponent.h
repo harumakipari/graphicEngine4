@@ -13,7 +13,7 @@ public:
     virtual void Tick(float deltaTime)override
     {
 #if _DEBUG
-        XMFLOAT3 pos = GetComponentLocation();
+        DirectX::XMFLOAT3 pos = GetComponentLocation();
         DebugDrawManager::DrawSphere(
             pos,
             0.1f,

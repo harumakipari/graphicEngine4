@@ -90,6 +90,22 @@ void SampleScene::Update(float deltaTime)
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
 
+    float followSpeed = 6.0f; // ’²®—p
+
+#if 0
+    if (player && mainCameraComponent)
+    {
+        const auto& forward = player->GetForward();
+        float playerYaw = std::atan2f(forward.x, forward.z);
+        //mainCameraComponent->yaw = (playerYaw);
+
+        float delta = playerYaw - mainCameraComponent->yaw;
+        delta = std::atan2f(std::sinf(delta), std::cosf(delta)); // -3.14 ~ 3.14
+        mainCameraComponent->yaw += delta * followSpeed * deltaTime;
+
+    }
+#endif // 0
+
     //#ifdef _DEBUG
     if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
     {
@@ -102,9 +118,9 @@ void SampleScene::Update(float deltaTime)
 void SampleScene::SetUpActors()
 {
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
-    auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
+    mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.07f,1.07f,1.07f });
-    auto player = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
+    player = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
     mainCameraComponent->target = (player->GetRootComponent());
     mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
     SetActiveCamera(mainCameraActor);

@@ -252,9 +252,6 @@
     <ClCompile Include="Source\Graphics\Effect\Particles.cpp">
       <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\PostProcess\Bloom.cpp">
-      <Filter>Sources\Graphics\PostProcess</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Graphics\PostProcess\FrameBuffer.cpp">
       <Filter>Sources\Graphics\PostProcess</Filter>
     </ClCompile>
@@ -609,6 +606,12 @@
     <ClCompile Include="Source\Game\OdenGame\OdenLoadingIngredient.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Actors\Stage\FightStage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Actors\Camera\Camera.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -712,9 +715,6 @@
     </ClInclude>
     <ClInclude Include="Source\Graphics\Effect\Particles.h">
       <Filter>Sources\Graphics\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\PostProcess\Bloom.h">
-      <Filter>Sources\Graphics\PostProcess</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\PostProcess\FrameBuffer.h">
       <Filter>Sources\Graphics\PostProcess</Filter>

@@ -11,22 +11,6 @@
 #include "Core/ActorManager.h"
 #include "Components/Effect/ParticleComponent.h"
 
-
-enum class AnimationState
-{
-    Idle,
-    Running,
-    Attack,
-    Attack_First,
-    Jump_Start,
-    Jump_Apex,
-    Jump_Land,
-    Jump_Recovering,
-    Jump_Attack,
-    Hit_Damaged,
-    Emote,
-};
-
 class Player :public Character
 {
 public:
@@ -85,12 +69,6 @@ public:
         rightItemCount = 0;
     }
 private:
-    // ビームをチャージする関数
-    void TryStartCharge();
-
-    // ビームを発射する関数
-    void FireBeam();
-
     void Move(float elapsedTime)override;
 
     void Turn(float elapsedTime);

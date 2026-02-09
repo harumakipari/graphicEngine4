@@ -17,6 +17,8 @@
 #include "PlayerStateDerived.h"
 // チュートリアルに使用
 #include "Components/Audio/CoreAudioSourceComponent.h"
+#include "Engine/Scene/Scene.h"
+#include "Game/Actors/Camera/Camera.h"
 #include "Game/Actors/Stage/Stage.h"
 
 void Player::Initialize(const Transform& transform)
@@ -148,9 +150,9 @@ void Player::Initialize(const Transform& transform)
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", "skeletalComponent");
 
-    particleComponent=AddComponent<ParticleComponent>("particleComponent", "skeletalComponent");
+    particleComponent = AddComponent<ParticleComponent>("particleComponent", "skeletalComponent");
     particleComponent->Load("./Data/Effect/Files/heartTestEffect.json");
-    
+
 
     OutputDebugStringA(("Actor::Initialize called. rootComponent_ use_count = " + std::to_string(GetRootComponent().use_count()) + "\n").c_str());
 }
@@ -159,13 +161,51 @@ void Player::Initialize(const Transform& transform)
 
 void Player::Update(float elapsedTime)
 {
+    using namespace DirectX;
+
     // これは絶対入れる　アニメーションの更新をしているから
     Character::Update(elapsedTime);
 
+    DirectX::XMFLOAT3 moveDir = { 0,0,0 };
+    if (auto camera = dynamic_cast<MainCamera*>(GetOwnerScene()->GetActiveCamera()))
+    {
+        XMFLOAT3 cameraForwardDir = camera->CameraForwardXZ();
+        XMFLOAT3 cameraRightDir = camera->CameraRightXZ();
+        if (InputSystem::GetInputState("W"))
+        {
+            moveDir.x += cameraForwardDir.x;
+            moveDir.y += cameraForwardDir.y;
+            moveDir.z += cameraForwardDir.z;
+        }
+        if (InputSystem::GetInputState("S"))
+        {
+            moveDir.x -= cameraForwardDir.x;
+            moveDir.y -= cameraForwardDir.y;
+            moveDir.z -= cameraForwardDir.z;
+        }
+        if (InputSystem::GetInputState("D"))
+        {
+            moveDir.x += cameraRightDir.x;
+            moveDir.y += cameraRightDir.y;
+            moveDir.z += cameraRightDir.z;
+        }
+        if (InputSystem::GetInputState("A"))
+        {
+            moveDir.x -= cameraRightDir.x;
+            moveDir.y -= cameraRightDir.y;
+            moveDir.z -= cameraRightDir.z;
+        }
+    }
+
+#if 0
     auto intent = inputComponent->GetIntent();
     //characterMovementComponent->SetMoveDirection({ 1,0,0 });
     characterMovementComponent->ApplyIntent(intent);
     rotationComponent->SetDirection(intent.move);
+#endif // 0
+
+    characterMovementComponent->SetMoveDirection(moveDir);
+    rotationComponent->SetDirection(moveDir);
 
     //particleComponent->Play();
     return;
@@ -274,11 +314,9 @@ void Player::Update(float elapsedTime)
     {
     case Player::State::Idle:
         currentTurnSpeed = maxTurnSpeed;
-        TryStartCharge();
         break;
     case Player::State::Running:
         currentTurnSpeed = maxTurnSpeed;
-        TryStartCharge();
         break;
     case Player::State::StartCharge:
         currentTurnSpeed = minTurnSpeed;
@@ -289,7 +327,6 @@ void Player::Update(float elapsedTime)
         }
         break;
     case Player::State::FireBeam:
-        FireBeam();
         state = Player::State::Idle;
         break;
     case Player::State::FinishBeam:
@@ -408,54 +445,6 @@ void Player::Update(float elapsedTime)
     ImGui::End();
 #endif
 }
-// ビームをチャージする関数
-void Player::TryStartCharge()
-{
-    float itemCount = static_cast<float>(rightItemCount + leftItemCount);
-    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger) && itemCount > 0)
-    {
-        // チャージの音を再生する
-
-        DirectX::XMFLOAT3 pos = skeletalMeshComponent->GetJointWorldPosition("beam_FK");
-
-        // エフェクトコンポーネントに伝達
-    }
-}
-
-// ビームを発射する関数
-void Player::FireBeam()
-{
-
-    float beamItemPower = static_cast<float>(rightItemCount + leftItemCount);
-    int itemCount = rightItemCount + leftItemCount;
-
-    char debugBuffer[128];
-    sprintf_s(debugBuffer, sizeof(debugBuffer),
-        "beamItemCount%d\n",
-        itemCount);
-    OutputDebugStringA(debugBuffer);
-
-    //if (effectChargeComponent->GetEffectState() == EffectComponent::EffectState::Ending)
-    {// 溜めが終わったら、  Beam を生成する
-        DirectX::XMFLOAT3 dir = GetForward();
-        DirectX::XMFLOAT3 pos = GetPosition();
-        pos.x += dir.x * 1.0f;
-        pos.z += dir.z * 1.0f;
-        pos.y += 0.5f;
-        float speed = 10.0f;
-        DirectX::XMFLOAT3 vel = { dir.x * speed, dir.y * speed, dir.z * speed };
-        char buf[256];
-        sprintf_s(buf, sizeof(buf),
-            "FireBeam: forward=(%.3f, %.3f, %.3f), pos=(%.3f, %.3f, %.3f), velocity=(%.3f, %.3f, %.3f)\n",
-            dir.x, dir.y, dir.z,
-            pos.x, pos.y, pos.z,
-            vel.x, vel.y, vel.z);
-        OutputDebugStringA(buf);
-        // Beam を生成する
-        HasItemReset();
-    }
-}
-
 
 void Player::DrawImGuiDetails()
 {

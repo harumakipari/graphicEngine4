@@ -3,9 +3,7 @@
 
 RWStructuredBuffer<ParticleData> particleDataBuffer : register(u0); //パーティクル管理バッファ
 AppendStructuredBuffer<uint> particleUnusedBuffer : register(u1); //パーティクル番号管理バッファ（末尾への追加専用）
-
 RWByteAddressBuffer indirectDataBuffer : register(u2); // インダイレクト用バッファ
-
 RWStructuredBuffer<ParticleHeader> particleHeaderBuffer : register(u3); //パーティクルヘッダー管理バッファ
 
 [numthreads(NumParticleThread, 1, 1)]

@@ -13,6 +13,7 @@
 #include "Graphics/Renderer/SceneRenderer.h"
 
 #include "Game/Actors/Camera/LoadingCamera.h"
+#include "Game/Actors/Player/Player.h"
 #include "Game/Actors/Stage/ClothSimulate.h"
 #include "Game/Actors/Stage/Stage.h"
 
@@ -43,10 +44,14 @@ private:
     std::shared_ptr<Stage>  title;
     std::shared_ptr<CollisionMesh> stageCollisionMesh;
 
-
     std::unique_ptr<PBD::System> pbd;
 
     std::unique_ptr<ClothSimulate> clothSimulate;
 
     std::shared_ptr<InterleavedGltfModel> model;
+
+    std::shared_ptr<Player> player;
+    TPSCameraComponent* mainCameraComponent;
+
+
 };

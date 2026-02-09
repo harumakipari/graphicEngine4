@@ -38,7 +38,6 @@ cbuffer SPHERE_CBUFFER : register(b7)
     row_major float4x4 sphereInvWorld;
 }
 
-
 cbuffer PRIMITIVE_CONSTANT_BUFFER : register(b0)
 {
     row_major float4x4 world;
@@ -61,7 +60,6 @@ cbuffer VIEW_CONSTANTS_BUFFER : register(b4)
     row_major float4x4 inverseViewProjection;
     row_major float4x4 invView;
 }
-
 
 cbuffer SCENE_CONSTANT_BUFFER : register(b1)
 {

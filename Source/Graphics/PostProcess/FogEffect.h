@@ -20,13 +20,9 @@ public:
         float fogCutoffDistance = 500.0f;
 
         float mieScatteringFactor = 0.55f;
-
-        int enableDither = 1;
-        int enableBlur = 1;
-
         float timeScale = 0.35f;
         float noiseScale = 0.2f;
-        float pads[3] = {};
+        int enableDither = 1;
     };
 
 public:
@@ -56,4 +52,6 @@ private:
 
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> noise2d;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> noise3d;
+
+    bool enableDither = true;
 };

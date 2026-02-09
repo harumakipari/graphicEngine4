@@ -222,6 +222,7 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
     shaderCBuffer->data.enableFog = enableFog;
     shaderCBuffer->data.enableCascadedShadowMaps = enableCascadedShadowMaps;
     shaderCBuffer->data.enableSsr = enableSSR;
+    shaderCBuffer->data.enableBlur = enableBlur;
 
     sceneCBuffer->Activate(immediateContext, 1);
     shaderCBuffer->Activate(immediateContext, 9);
@@ -769,6 +770,7 @@ void SceneBase::DrawPostEffectTab()
     ImGui::Checkbox("Enable SSAO", &enableSSAO);
     ImGui::Checkbox("Enable SSR", &enableSSR);
     ImGui::Checkbox("Enable Bloom", &enableBloom);
+    ImGui::Checkbox("Enable Blur", &enableBlur);
     ImGui::Checkbox("Enable Fog", &enableFog);
     ImGui::Checkbox("Enable CSM", &enableCascadedShadowMaps);
 

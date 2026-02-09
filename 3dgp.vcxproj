@@ -281,10 +281,12 @@
     <ClCompile Include="Source\Engine\Scene\Scene.cpp" />
     <ClCompile Include="Source\Engine\Scene\SceneBase.cpp" />
     <ClCompile Include="Source\Engine\Utility\Time.cpp" />
+    <ClCompile Include="Source\Game\Actors\Camera\Camera.cpp" />
     <ClCompile Include="Source\Game\Actors\Dessert\Cherry.cpp" />
     <ClCompile Include="Source\Game\Actors\Dessert\TargetPudding.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossEnemy.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossState.cpp" />
+    <ClCompile Include="Source\Game\Actors\Stage\FightStage.cpp" />
     <ClCompile Include="Source\Game\OdenGame\BeatClockActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenBubbleActor.cpp" />
     <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenResultIngredientActor.cpp" />
@@ -339,7 +341,6 @@
     <ClCompile Include="Source\Graphics\Effect\HuskParticle.cpp" />
     <ClCompile Include="Source\Graphics\Effect\Particles.cpp" />
     <ClCompile Include="Source\Graphics\Environment\SkyMap.cpp" />
-    <ClCompile Include="Source\Graphics\PostProcess\Bloom.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\FogEffect.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\FrameBuffer.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\FullScreenQuad.cpp" />
@@ -527,7 +528,6 @@
     <ClInclude Include="Source\Graphics\Effect\HuskParticle.h" />
     <ClInclude Include="Source\Graphics\Effect\Particles.h" />
     <ClInclude Include="Source\Graphics\Environment\SkyMap.h" />
-    <ClInclude Include="Source\Graphics\PostProcess\Bloom.h" />
     <ClInclude Include="Source\Graphics\PostProcess\BloomEffect.h" />
     <ClInclude Include="Source\Graphics\PostProcess\FogEffect.h" />
     <ClInclude Include="Source\Graphics\PostProcess\FrameBuffer.h" />

@@ -97,153 +97,16 @@ class MainCamera :public Camera
 {
 public:
     //引数付きコンストラクタ
-    MainCamera(std::string actorName) :Camera(actorName) {}
-
+    explicit MainCamera(const std::string& actorName) :Camera(actorName) {}
     virtual ~MainCamera() = default;
-    std::shared_ptr<SphereComponent> sphereComponent;
+
     void Initialize(const Transform& transform)override
     {
         Camera::Initialize(transform);
-        // 当たり判定のコンポーネントを追加
-        //sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", "springArm");
-        //sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", mainCameraComponent->name());
-        //sphereComponent->SetRadius(0.2f);
-        ////sphereComponent->SetMass(40.0f);
-        //sphereComponent->SetLayer(CollisionLayer::Camera);
-        //sphereComponent->SetResponseToLayer(CollisionLayer::Building, CollisionComponent::CollisionResponse::Trigger);
-        //sphereComponent->SetResponseToLayer(CollisionLayer::Camera, CollisionComponent::CollisionResponse::None);
-        //sphereComponent->Initialize();
-        //sphereComponent->SetIsVisibleDebugBox(false);
-        //sphereComponent->SetIsVisibleDebugShape(false);
-        //sphereComponent->DisableCollision();
     };
 
     //更新処理
-    void Update(float deltaTime)override
-    {
-        using namespace DirectX;
-        switch (state)
-        {
-        case MainCamera::State::Normal:
-        {
-            //mainCameraComponent->customTarget = true;
-
-            DirectX::XMVECTOR vOld = XMLoadFloat3(&oldTarget);
-            DirectX::XMVECTOR vNew = XMLoadFloat3(&target);
-
-            float speed = 2.0f;
-            float t = std::clamp(deltaTime * speed, 0.0f, 1.0f);
-
-            XMVECTOR vInterp = XMVectorLerp(vOld, vNew, t);
-            XMFLOAT3 interpTarget;
-            DirectX::XMStoreFloat3(&interpTarget, vInterp);
-
-            DirectX::XMFLOAT3 clampedTarget;
-            clampedTarget.x = std::clamp(interpTarget.x, cameraMin.x, cameraMax.x);
-            clampedTarget.y = interpTarget.y;
-            clampedTarget.z = std::clamp(interpTarget.z, cameraMin.z, cameraMax.z);
-
-            // 補間済み目標位置を使って、eye にオフセットを適用
-            DirectX::XMFLOAT3 eye;
-            eye.x = clampedTarget.x + offset.x;
-            eye.y = clampedTarget.y + offset.y;
-            eye.z = clampedTarget.z + offset.z;
-            SetPosition(eye);
-
-            oldTarget = clampedTarget;
-
-            //DirectX::XMFLOAT3 eye = GetPosition();
-            DirectX::XMVECTOR eyeVec = DirectX::XMLoadFloat3(&eye);
-            DirectX::XMFLOAT3 tar = target;
-            tar.y += 0.5f;// player の腰当たり
-            DirectX::XMVECTOR targetVec = DirectX::XMLoadFloat3(&tar);
-            DirectX::XMVECTOR dirVec = DirectX::XMVectorSubtract(targetVec, eyeVec);
-            DirectX::XMVECTOR dirNormalized = DirectX::XMVector3Normalize(dirVec);
-            // 前フレームのターゲット
-            preTarget = tar;
-            //mainCameraComponent->_target = clampedTarget;
-            // lerp 先の position を保存
-            afterTarget = clampedTarget;
-            afterEye = eye;
-            HitResultWithActor result;
-            DirectX::XMFLOAT3 origin = GetPosition();
-            DirectX::XMFLOAT3 direction;
-            direction.x = mainCameraComponent->GetView()._31;
-            direction.y = -mainCameraComponent->GetView()._32;
-            direction.z = mainCameraComponent->GetView()._33;
-            DirectX::XMVECTOR distanceVec = DirectX::XMVector3Length(dirVec);
-            float distance;
-            DirectX::XMVECTOR DirVec = DirectX::XMLoadFloat3(&direction);
-            DirVec = DirectX::XMVector3Normalize(DirVec);
-            DirectX::XMStoreFloat3(&direction, DirVec);
-            DirectX::XMStoreFloat(&distance, distanceVec);
-            distance = 100.0f;
-            //if (PhysicsTest::Instance().SphereCast(origin, direction, distance, 0.4f, result, CollisionHelper::ToBit(CollisionLayer::Camera),     // myLayer
-            //    CollisionHelper::ToBit(CollisionLayer::Building)))   // wantHitRayer)
-
-                // レイキャストテスト
-            //HitResult hit;
-            //if (Physics::Instance().SphereCast(
-            //    DirectX::XMFLOAT3(origin.x, origin.y + 1.5f, origin.z),
-            //    direction,
-            //    FLT_MAX,
-            //    0.1f, hit))
-            //{
-            //    Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 0, 0, 1 });
-            //}
-
-
-
-            if (Physics::Instance().SphereCast(origin, direction, FLT_MAX, 0.1f, result))   // wantHitRayer)
-            {
-                if (auto build = dynamic_cast<FightStage*>(result.actor))
-                {
-                    Graphics::GetShapeRenderer()->DrawSphere(result.hitPoint, 0.1f, { 0, 0, 0, 1 });
-                }
-                if (auto build = dynamic_cast<ElasticBuilding*>(result.actor))
-                {
-                    build->skeltalMeshComponent->SetIsVisible(false);
-                }
-            }
-            else
-            {
-            }
-        }
-        break;
-        case MainCamera::State::BossTarget:
-        {
-
-        }
-        break;
-        case MainCamera::State::Lerp:
-        {
-            elapsedTime += deltaTime;
-            float lerpTime = 1.5f;
-            float t = std::clamp(elapsedTime / lerpTime, 0.0f, 1.0f);
-            DirectX::XMVECTOR PreTargetVec = DirectX::XMLoadFloat3(&preTarget);
-            DirectX::XMVECTOR PreEyeVec = DirectX::XMLoadFloat3(&preEye);
-
-            // 最初の　target　はプレイヤーの初期位置
-            DirectX::XMVECTOR AftTargetVec = DirectX::XMLoadFloat3(&afterTarget);
-            DirectX::XMVECTOR AftEyeVec = DirectX::XMLoadFloat3(&afterEye);
-            DirectX::XMVECTOR NowTar = XMVectorLerp(PreTargetVec, AftTargetVec, t);
-            DirectX::XMVECTOR NowEye = XMVectorLerp(PreEyeVec, AftEyeVec, t);
-            DirectX::XMFLOAT3 nowTarget, nowEye;
-            DirectX::XMStoreFloat3(&nowTarget, NowTar);
-            DirectX::XMStoreFloat3(&nowEye, NowEye);
-            //mainCameraComponent->customTarget = true;
-            //mainCameraComponent->_target = nowTarget;
-            SetPosition(nowEye);
-            if (t >= 1.0f)
-            {// lerp し終わったら
-                state = State::Normal;
-            }
-        }
-        break;
-        default:
-            break;
-        }
-    }
+    void Update(float deltaTime)override;
 
     void Shake(float power = 0.02f, float time = 0.2f)
     {
@@ -261,16 +124,6 @@ public:
 
 #endif
     }
-    // ボスに注視点を合わせるかどうか
-    void IsTargetBoss(bool isTargetBoss)
-    {
-        this->isTargetBoss = isTargetBoss;
-        elapsedTime = 0.0f;
-        if (isTargetBoss)
-        {
-            state = State::BossTarget;
-        }
-    }
 
     void SetTarget(DirectX::XMFLOAT3 target)
     {
@@ -281,6 +134,31 @@ public:
     {
         isFinishFirstPerf = true;
     }
+
+    DirectX::XMFLOAT3 CameraForwardXZ() const
+    {
+        float yaw = mainCameraComponent->yaw;
+
+        return {
+            sinf(yaw),
+            0.0f,
+            cosf(yaw)
+        };
+    }
+
+    DirectX::XMFLOAT3 CameraRightXZ() const
+    {
+        float yaw = mainCameraComponent->yaw + DirectX::XM_PIDIV2;
+
+        return {
+            sinf(yaw),
+            0.0f,
+            cosf(yaw)
+        };
+    }
+
+
+
 private:
     DirectX::XMFLOAT3 target = { 0.0f,0.0f,0.0f };
     DirectX::XMFLOAT3 offset = { 0.6f,11.4f,-15.4f };
@@ -292,9 +170,6 @@ private:
     float distanceX = 0.0f;
     float distanceY = 0.0f;
     float distanceZ = 0.0f;
-    //float distanceX = 0.0f;
-    //float distanceY = -1.7f;
-    //float distanceZ = 5.5f;
     // 最初の演出後の focus の位置
     DirectX::XMFLOAT3 preTarget = { 0.0f,0.0f,0.0f };
     float elapsedTime = 0.0f;
@@ -303,19 +178,6 @@ private:
 
     // 最初の演出後のカメラの位置
     DirectX::XMFLOAT3 preEye = { 0.0f,0.0f,0.0f };
-
-    // lerp 先の
-    DirectX::XMFLOAT3 afterTarget = { 0.0f,0.0f,0.0f };
-    DirectX::XMFLOAT3 afterEye = { 0.0f,0.0f,0.0f };
-
-    enum class State
-    {
-        Normal,
-        BossTarget,
-        Lerp,
-    };
-
-    State state = State::Normal;
 
     bool didShake = false;
 };

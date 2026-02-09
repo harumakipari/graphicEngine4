@@ -23,7 +23,6 @@ class CameraComponent :public SceneComponent
 public:
     CameraComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner) {}
 
-
     // パースペクティブ設定
     void SetPerspective(float fovY, float aspect, float nearZ, float farZ)
     {
@@ -56,12 +55,18 @@ public:
         return projection;
     }
 
+public:
+    float yaw = 0.0f;
+    float pitch = DirectX::XMConvertToRadians(-12.0f);
+
 protected:
     //float fovY = DirectX::XMConvertToRadians(60.0f);
     float fovY = DirectX::XMConvertToRadians(10.0f);
     float aspect = 1280.f / 720.f;
     float nearZ = 0.1f;
     float farZ = 1000.f;
+
+
     DirectX::XMFLOAT4X4 view{};
     DirectX::XMFLOAT4X4 projection{};
 };
@@ -178,8 +183,6 @@ public:
         easingComponent.StartHandler(handler, accessor);
     }
 
-    float yaw = 0.0f;
-    float pitch = DirectX::XMConvertToRadians(-12.0f);
     float distance = 4.5f;
     DirectX::XMFLOAT3 targetOffset = { 0.0f, 1.5f, 0.0f };
     std::weak_ptr<SceneComponent> target;

@@ -12,7 +12,6 @@
 #include "Graphics/Core/RenderState.h"
 #include "Graphics/Resource/ShaderToy.h"
 
-#include "Graphics/PostProcess/Bloom.h"
 #include "Graphics/Shadow/ShadowMap.h"
 #include "Graphics/Environment/SkyMap.h"
 #include "Graphics/Shadow/CascadeShadowMap.h"

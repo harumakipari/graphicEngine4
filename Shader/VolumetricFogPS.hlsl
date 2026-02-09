@@ -1,26 +1,16 @@
 #include "FullScreenQuad.hlsli"
 #include "Constants.hlsli"
 #include "Lights.hlsli"
-
-SamplerState pointSamplerState : register(s0);
-SamplerState linearSamplerState : register(s1);
-SamplerState anisotropicSamplerState : register(s2);
-SamplerState linearBorderBlackSamplerState : register(s3);
-SamplerState linearBorderWhiteSamplerState : register(s4);
-SamplerState linearClampSamplerState : register(s5);
-SamplerState linearMirrorSamplerState : register(s6);
-
-SamplerComparisonState comparisonSamplerState : register(s7);
+#include "Sampler.hlsli"
 
 Texture2D depthTexture : register(t0);
 Texture2DArray cascadedShadowMaps : register(t1);
+Texture3D noise3D : register(t10);  // ノイズテクスチャ
 
-// NOISE
-Texture3D noise3D : register(t10);
-
+// この霧ポイントが影の中か、光の中か判別する関数
 float SunlightRadiance(float3 position, VS_OUT pin)
 {
-    float depthNdc = depthTexture.Sample(linearBorderBlackSamplerState, pin.texcoord).x;
+    float depthNdc = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).x;
     float4 positionNdc;
     // テクスチャ座標 → NDC 座標変換
     positionNdc.x = pin.texcoord.x * +2 - 1;
@@ -32,7 +22,7 @@ float SunlightRadiance(float3 position, VS_OUT pin)
     float4 positionViewSpace = mul(positionNdc, inverseProjection);
     positionViewSpace = positionViewSpace / positionViewSpace.w;
     
-     // View 空間での深度を使って、どのカスケードに属するかを判定
+    // View 空間での深度を使って、どのカスケードに属するかを判定
     float depthViewSpace = positionViewSpace.z;
     int cascadeIndex = -1;
     for (uint layer = 0; layer < 4; ++layer)
@@ -44,40 +34,40 @@ float SunlightRadiance(float3 position, VS_OUT pin)
             break;
         }
     }
-     // フォグ内のワールド座標をライト空間（クリップ空間）へ変換
-#if 0
-    float4 p = mul(float4(position, 1.0), viewProjection); //world to clip space
-    p = p / p.w; // clip to ndc
-    // ndc to tecture coordinate
-    p.x = p.x * 0.5 + 0.5;
-    p.y = -p.y * 0.5 + 0.5;
-#else
-    float4 p = mul(float4(position, 1.0), cascadedMatrices[cascadeIndex]);
-    p /= p.w;
-    // ndc to texture coordinate
-    p.x = p.x * +0.5 + 0.5;
-    p.y = p.y * -0.5 + 0.5;
+
+    // フォグ内のワールド座標をライト空間（クリップ空間）へ変換
+    //　world 空間 -> Light Clip 空間 (各カスケードに対応する Light View Projection 空間)
+    float4 positionLightSpace = mul(float4(position, 1.0), cascadedMatrices[cascadeIndex]);
+    positionLightSpace /= positionLightSpace.w; // Light Clip 空間 -> ndc 空間
+    // ndc 空間 -> テクスチャ座標　
+    positionLightSpace.x = positionLightSpace.x * +0.5 + 0.5;
+    positionLightSpace.y = positionLightSpace.y * -0.5 + 0.5;
     
-#endif
-    //return shadowTexture.SampleCmpLevelZero(comparisonSamplerState, p.xy, p.z - shadowDepthBias).x;
-    return cascadedShadowMaps.SampleCmpLevelZero(comparisonSamplerState, float3(p.xy, cascadeIndex), p.z - shadowDepthBias).x;
+    // シャドウマップの深度と現在ピクセルの深度を比較
+    // 1.0 -> 光が当たっている　0.0 -> 影の中
+    return cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
 }
 
+// 高さによる霧の濃度変化
 void ApplyHeightFog(float3 position /*world space*/, inout float density)
 {
+    // 地面付近 → 濃い
+    // 高空→ 薄い
     density *= exp(-(position.y - groundLevel) * fogHeightFalloff);
 }
 
-float MieScattering(float cosAngle, float g)
+// 太陽方向に伸びる霧（前方散乱）
+float MieScattering(float cosAngle/* 光の方向と視線の角度 */, float g/* 前方散乱の強さ*/)
 {
     return (1.0 / (4.0 * 3.14159265358979)) * ((1 - (g * g)) / (pow((1 + (g * g)) - (2 * g) * cosAngle, 1.5)));
 }
 
+// カメラ → ピクセル位置まで霧の中をステップ移動して光を積分
 float DitheredRayMarch(float2 screenPos, float3 rayStart, float3 rayDir, float rayLength, VS_OUT pin)
 {
     float ditherValue = 0;
-    if (enableDither)
-    {
+    if (enableDither)// ディザリング
+    { // レイの開始位置を微妙にずらす
         const float4x4 ditherPattern =
         {
             { 0.0f, 0.5f, 0.125f, 0.625f },
@@ -88,8 +78,8 @@ float DitheredRayMarch(float2 screenPos, float3 rayStart, float3 rayDir, float r
         ditherValue = ditherPattern[screenPos.x % 4][screenPos.y % 4];
     }
 
+    // レイ設定
     const int stepCount = 16;
-    
     float stepSize = rayLength / stepCount;
     float3 step = rayDir * stepSize;
     
@@ -97,54 +87,60 @@ float DitheredRayMarch(float2 screenPos, float3 rayStart, float3 rayDir, float r
     
     float extinction = 0;
     float accumulatedRadiance = 0;
-    [loop]
+    [loop] // レイマーチループ
     for (int i = 0; i < stepCount; ++i)
     {
+        // 太陽光のチェック
         float radiance = SunlightRadiance(currentPosition, pin);
-        
+        // 霧密度
         float density = fogDensity;
-        
 #if 1
+        // ノイズ（霧の揺らぎ）
         const float3 noiseVelocity = normalize(float3(1, 0, 0));
         float3 noiseSamplePosition = frac(currentPosition * noiseScale + noiseVelocity * elapsedTime * timeScale);
-        float noise = 0.5 * noise3D.Sample(linearSamplerState, noiseSamplePosition);
+        float noise = 0.5 * noise3D.Sample(samplerStates[LINEAR], noiseSamplePosition);
         density *= noise;
 #endif
-        
+        // 高さフォグ
         ApplyHeightFog(currentPosition, density);
         
         const float scatteringCoef = 0.815f;
         const float extinctionCoef = 0.0031f;
-        float scattering = scatteringCoef * stepSize * density;
-        extinction += extinctionCoef * stepSize * density;
-        
+        float scattering = scatteringCoef * stepSize * density; // 散乱
+        extinction += extinctionCoef * stepSize * density;  // 減衰
+
+        // 手前の霧ほど強く、奥は減衰 積分
         accumulatedRadiance += radiance * scattering * exp(-extinction);
         
         currentPosition += step;
     }
     
     const float cosAngle = dot(normalize(lightDirection.xyz), -rayDir);
+    // Mie散乱補正
     accumulatedRadiance *= MieScattering(cosAngle, mieScatteringCoef);
-    
     return accumulatedRadiance;
 }
 
 float main(VS_OUT pin) : SV_TARGET
 {
-    const float steps = 16;
-    float depth = depthTexture.Sample(pointSamplerState, pin.texcoord).x;
+    // 深度を取得
+    float depth = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
+
+    // テクスチャ座標 -> world 空間
     float4 position = mul(float4(pin.texcoord.x * 2.0 - 1.0, -pin.texcoord.y * 2.0 + 1.0, depth, 1.0), inverseViewProjection);
-    position = position / position.w; // world space
-    
+    position = position / position.w; // world 空間
+
+    // レイを生成
     float3 rayStart = cameraPositon.xyz;
     float3 rayDir = position.xyz - rayStart;
     float rayLength = length(rayDir);
     rayDir /= rayLength;
     
 #if 1
+    // 距離制限
     const float maxRayLength = fogCutoffDistance;
     rayLength = min(rayLength, maxRayLength);
 #endif
-    
+    // レイマーチ実行
     return DitheredRayMarch(pin.position.xy, rayStart, rayDir, rayLength, pin);
 }

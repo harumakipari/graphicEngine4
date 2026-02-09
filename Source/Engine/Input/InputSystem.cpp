@@ -4,10 +4,16 @@
 #include "Graphics/Core/Graphics.h"
 
 // 仮想的な左スティック方向のキーコード
-#define GAMEPAD_AXIS_UP     0
-#define GAMEPAD_AXIS_LEFT   1
-#define GAMEPAD_AXIS_DOWN   2
-#define GAMEPAD_AXIS_RIGHT  3
+#define GAMEPAD_L_UP     0
+#define GAMEPAD_L_LEFT   1
+#define GAMEPAD_L_DOWN   2
+#define GAMEPAD_L_RIGHT  3
+
+// 仮想的な右スティック方向のキーコード
+#define GAMEPAD_R_UP     4
+#define GAMEPAD_R_LEFT   5
+#define GAMEPAD_R_DOWN   6
+#define GAMEPAD_R_RIGHT  7
 
 // 斜めの入力を正規化
 static float ApplyLinearDeadzone(float value, float maxValue, float deadZoneSize)
@@ -68,19 +74,37 @@ void Gamepad::Update(float deltaTime)
     {
     case GamePadKeyType::Key:
 #if 1
-        if (vkey_ <= 3) // 仮想キー: 左スティック方向（WASD用）
+        if (vkey_ <= GAMEPAD_L_RIGHT || vkey_ <= GAMEPAD_R_RIGHT)
         {
-            float lx = pad.sThumbLX / 32767.0f;
-            float ly = pad.sThumbLY / 32767.0f;
-            float deadZone = 0.25f;
+            float x = 0.0f;
+            float y = 0.0f;
 
+            // 左スティック
+            if (vkey_ <= GAMEPAD_L_RIGHT)
+            {
+                x = pad.sThumbLX / 32767.0f;
+                y = pad.sThumbLY / 32767.0f;
+            }
+            // 右スティック
+            else
+            {
+                x = pad.sThumbRX / 32767.0f;
+                y = pad.sThumbRY / 32767.0f;
+            }
+
+            float deadZone = 0.25f;
             bool active = false;
+
             switch (vkey_)
             {
-            case GAMEPAD_AXIS_UP:    active = (ly > deadZone);  break;  // W
-            case GAMEPAD_AXIS_LEFT:  active = (lx < -deadZone); break;  // A
-            case GAMEPAD_AXIS_DOWN:  active = (ly < -deadZone); break;  // S
-            case GAMEPAD_AXIS_RIGHT: active = (lx > deadZone);  break;  // D
+            case GAMEPAD_L_UP:
+            case GAMEPAD_R_UP:    active = (y > deadZone); break;
+            case GAMEPAD_L_LEFT:
+            case GAMEPAD_R_LEFT:  active = (x < -deadZone); break;
+            case GAMEPAD_L_DOWN:
+            case GAMEPAD_R_DOWN:  active = (y < -deadZone); break;
+            case GAMEPAD_L_RIGHT:
+            case GAMEPAD_R_RIGHT: active = (x > deadZone); break;
             }
 
             pressTime_ = active ? pressTime_ + deltaTime : 0.0f;
@@ -144,10 +168,15 @@ void InputSystem::Initialize()
     inputKeys["D"].emplace_back(std::make_unique<Keyboard>('D'));
 
 
-    inputKeys["W"].emplace_back(std::make_unique<Gamepad>(GAMEPAD_AXIS_UP));     // スティック上
-    inputKeys["A"].emplace_back(std::make_unique<Gamepad>(GAMEPAD_AXIS_LEFT));   // スティック左
-    inputKeys["S"].emplace_back(std::make_unique<Gamepad>(GAMEPAD_AXIS_DOWN));   // スティック下
-    inputKeys["D"].emplace_back(std::make_unique<Gamepad>(GAMEPAD_AXIS_RIGHT));  // スティック右
+    inputKeys["W"].emplace_back(std::make_unique<Gamepad>(GAMEPAD_L_UP));     // スティック上
+    inputKeys["A"].emplace_back(std::make_unique<Gamepad>(GAMEPAD_L_LEFT));   // スティック左
+    inputKeys["S"].emplace_back(std::make_unique<Gamepad>(GAMEPAD_L_DOWN));   // スティック下
+    inputKeys["D"].emplace_back(std::make_unique<Gamepad>(GAMEPAD_L_RIGHT));  // スティック右
+
+    inputKeys["Up"].emplace_back(std::make_unique<Gamepad>(GAMEPAD_R_UP));     // スティック上
+    inputKeys["Left"].emplace_back(std::make_unique<Gamepad>(GAMEPAD_R_LEFT));   // スティック左
+    inputKeys["Down"].emplace_back(std::make_unique<Gamepad>(GAMEPAD_R_DOWN));   // スティック下
+    inputKeys["Right"].emplace_back(std::make_unique<Gamepad>(GAMEPAD_R_RIGHT));  // スティック右
 
     inputKeys["E"].emplace_back(std::make_unique<Keyboard>('E'));
     inputKeys["Q"].emplace_back(std::make_unique<Keyboard>('Q'));

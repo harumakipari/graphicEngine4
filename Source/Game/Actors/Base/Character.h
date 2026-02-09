@@ -104,6 +104,11 @@ public:
         return front;
     }
 
+    float GetYawFromForward(const DirectX::XMFLOAT3& forward)
+    {
+        // Z+ が前の座標系想定（LH）
+        return std::atan2f(forward.x, forward.z);
+    }
 
 
     //床へレイキャストを飛ばす

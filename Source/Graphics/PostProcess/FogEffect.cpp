@@ -36,6 +36,7 @@ void FogEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height
 
 void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal, ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* shadowMap)
 {
+    fogCBuffer->data.enableDither = enableDither;
     fogCBuffer->Activate(immediateContext, 8);
 
     fogBuffer->Clear(immediateContext, 0, 0, 0, 0);
@@ -73,5 +74,6 @@ void FogEffect::DrawDebugUI()
     ImGui::SliderFloat("Mie Scattering", &fogCBuffer->data.mieScatteringFactor, 0.0f, 1.0f, "%.4f");
     ImGui::SliderFloat("Time Scale", &fogCBuffer->data.timeScale, 0.0f, 1.0f, "%.4f");
     ImGui::SliderFloat("Noise Scale", &fogCBuffer->data.noiseScale, 0.0f, 0.5f, "%.4f");
+    ImGui::Checkbox("Enable Dither", &enableDither);
 #endif
 }

@@ -38,8 +38,7 @@ public:
 
     using RenderHook = std::function<void(ID3D11DeviceContext*)>;
 
-    virtual bool Initialize(ID3D11Device* device, UINT64 width, UINT height,
-        const std::unordered_map<std::string, std::string>& props) override;
+    virtual bool Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props) override;
 
     virtual void Update(float deltaTime) override;
 
@@ -61,9 +60,6 @@ public:
         for (auto& hook : renderHooks[pass])
             hook(immediateContext);
     }
-
-
-
 
 private:
     void ForwardRender(ID3D11DeviceContext* immediateContext);
@@ -102,18 +98,18 @@ protected:
 
     struct ShaderConstants
     {
+        float shadowColor = 0.422f;
+        float shadowDepthBias = 0.0005f;
+        float pads[2];
+
         int enableSsao = true;
         int enableCascadedShadowMaps = true;
         int enableSsr = true;
         int enableFog = false;
 
-        int enableBloom = false;
-        int enableBlur = false;
-        int directionalLightEnable = true;
+        int enableBloom = true;
+        int enableBlur = true;
         int colorizeCascadedLayer = false;
-
-        float shadowColor = 0.422f;
-        float shadowDepthBias = 0.0005f;
     };
 
     //==============================
@@ -148,7 +144,8 @@ protected:
     bool enableCascadedShadowMaps = true;
     bool enableSSR = true;
     bool enableFog = true;
-    bool enableBloom = false;
+    bool enableBloom = true;
+    bool enableBlur = true;
 
     bool useDrawDebug = true;
 
@@ -174,7 +171,7 @@ protected:
     Microsoft::WRL::ComPtr<ID3D11Texture2D> sceneColorStencilBuffer;
 
 
-    
+
 
     //Å@dummyTextureÇàÍíUì¸ÇÍÇÈ
     std::shared_ptr<UIImageComponent> dummyTexture;
