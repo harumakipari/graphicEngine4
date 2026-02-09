@@ -20,15 +20,20 @@ public:
         staticMeshComponent->model->modelCoordinateSystem= InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
         auto lightsData = staticMeshComponent->model->GetPointLights();
         // ポイントライトコンポーネントを追加
-        for (auto light : lightsData)
+        for (int i = 0; i < static_cast<int>(lightsData.size()); ++i)
         {
-            auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", "staticMeshComponent");
+            const auto& light = lightsData[i];
+
+            std::string compName = "pointLightComponent_" + std::to_string(i);
+
+            auto pointLightComponent =
+                this->AddComponent<PointLightComponent>(compName, "staticMeshComponent");
+
             pointLightComponent->SetRelativeLocationDirect(light.position);
             pointLightComponent->SetColor(light.color);
             pointLightComponent->SetRange(light.range);
             pointLightComponent->SetIntensity(light.intensity);
         }
-
         //staticMeshComponent->SetModel("./Data/Models/Dark_Stage0204/untitled.gltf", true);
 
         //staticMeshComponent->SetModel("./Data/Models/Dark_Stage/Mesh/untitled.gltf", true);

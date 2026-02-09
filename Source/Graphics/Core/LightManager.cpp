@@ -23,18 +23,18 @@ void LightManager::Update(float deltaTime)
 
     renderPointLights.clear();
 
-    // ① デバッグライト
-    for (auto& l : debugPointLights)
-    {
-        renderPointLights.push_back(l);
-        if (renderPointLights.size() >= 8) break;
-    }
+    //// ① デバッグライト
+    //for (auto& l : debugPointLights)
+    //{
+    //    renderPointLights.push_back(l);
+    //    if (renderPointLights.size() >= 8) break;
+    //}
 
     // ② Sceneライト
     for (auto& l : scenePointLights)
     {
         renderPointLights.push_back(l);
-        if (renderPointLights.size() >= 8) break;
+        if (renderPointLights.size() >= pointLightCount) break;
     }
 
     constants.pointLightCount = static_cast<int>(renderPointLights.size());
@@ -46,11 +46,13 @@ void LightManager::Update(float deltaTime)
     constants.directionalLightEnable = static_cast<int>(directionalLightEnable);
     constants.pointLightEnable = static_cast<int>(pointLightEnable);
     // デフォルト初期化
-    for (int i = 0; i < 8; i++)
+#if 1
+    for (int i = 0; i < pointLightCount; i++)
     {
         constants.pointsLight[i] =
             (i < renderPointLights.size()) ? renderPointLights[i] : PointLight{};
     }
+#endif // 1
 }
 
 void LightManager::Apply(ID3D11DeviceContext* immediateContext, int slot) const
@@ -72,7 +74,10 @@ void LightManager::CollectPointLightsFromScene(const Scene& scene)
             if (!light->IsUsePointLight()) continue;
 
             scenePointLights.push_back(light->ToRenderLight());
-            if (scenePointLights.size() >= 8) break;
+            if (scenePointLights.size() >= pointLightCount)
+            {
+                break;
+            }
         }
     }
 }
@@ -91,6 +96,7 @@ void LightManager::DrawGUI()
     if (debugPointLights.size() != static_cast<size_t>(pointLightCount))
         debugPointLights.resize(pointLightCount); // 個数を合わせる
 
+#if 0
     for (int i = 0; i < pointLightCount; i++)
     {
         std::string header = "PointLight[" + std::to_string(i) + "]";
@@ -102,5 +108,7 @@ void LightManager::DrawGUI()
             ImGui::SliderFloat(("Intensity##" + std::to_string(i)).c_str(), &debugPointLights[i].color.w, 0.0f, 10.0f);
         }
     }
+
+#endif // 0
 #endif
 }

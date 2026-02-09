@@ -34,8 +34,8 @@
 bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
     // ƒ‰ƒCƒg‚Ì•ûŒü‚ÆF‚ðÝ’è
-    lightDirection = { -0.208f, -0.208f, -1.0f, 0.0f };
-    lightColor = { 1.0f, 1.0f, 1.0f, 4.624f };
+    lightDirection = { 0.018f, -0.095f, -0.094f, 0.0f };
+    lightColor = { 1.0f, 1.0f, 1.0f, 5.62f };
 
     SceneBase::Initialize(device, width, height, props);
 
@@ -51,10 +51,10 @@ void SampleScene::Start()
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
-    audioComp->SetSource(L"./Data/Sound/BGM/title.wav");
+    audioComp->SetSource(L"./Data/Sound/BGM/game.wav");
     audioComp->SetLoop(true);
     audioComp->Play();
-    audioComp->SetVolume(0.2f);
+    //audioComp->SetVolume(0.2f);
 
     std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("./Data/Textures/UI/icon_chara.png", "image");
     image->SetWorldPosition({ 50, 50 });
@@ -103,7 +103,7 @@ void SampleScene::SetUpActors()
 {
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
-    Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.3f,1.3f,1.3f });
+    Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.07f,1.07f,1.07f });
     auto player = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
     mainCameraComponent->target = (player->GetRootComponent());
     mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
