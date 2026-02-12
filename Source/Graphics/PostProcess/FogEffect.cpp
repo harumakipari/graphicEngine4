@@ -13,7 +13,7 @@ void FogEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height
     fogCBuffer = std::make_unique<ConstantBuffer<FogConstants>>(device);
     fullScreenQuad = std::make_unique<FullScreenQuad>(device);
     fogBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false, DXGI_FORMAT_R16_FLOAT);
-    HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", fogPS.GetAddressOf());
+    HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", fogPS.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     D3D11_TEXTURE2D_DESC texture2dDesc;
@@ -21,13 +21,13 @@ void FogEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height
     hr = LoadTextureFromFile(device, L"./Data/ShaderTextures/noise.png", noise2d.GetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 #else
-    hr = LoadTextureFromFile(device, L"./Data/ShaderTextures/noise1.png", noise2d.GetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/ShaderTextures/noise1.png", noise2d.ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 #endif
 
 #if 1
     Microsoft::WRL::ComPtr<ID3D11Resource> resource;
-    hr = DirectX::CreateDDSTextureFromFile(device, L"./Data/ShaderTextures/_noise_3d.dds", resource.GetAddressOf(), noise3d.GetAddressOf());
+    hr = DirectX::CreateDDSTextureFromFile(device, L"./Data/ShaderTextures/_noise_3d.dds", resource.ReleaseAndGetAddressOf(), noise3d.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 #else
     ////////PreComputeNoiseTexture3d(device.Get(), 64, noise3d.GetAddressOf());

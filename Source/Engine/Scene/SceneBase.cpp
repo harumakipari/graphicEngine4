@@ -191,13 +191,31 @@ bool SceneBase::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
     framebufferDimensions.cx = static_cast<LONG>(width);
     framebufferDimensions.cy = static_cast<LONG>(height);
 
-    cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
+    // cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
 
     multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, framebufferDimensions.cx, framebufferDimensions.cy, 3);
 
-    postEffectManager->Initialize(device, framebufferDimensions.cx, framebufferDimensions.cy);
-    sceneEffectManager->Initialize(device, framebufferDimensions.cx, framebufferDimensions.cy);
-    return true;
+    //if (!postEffectManager.get())
+    {
+        Logger::Log(U8("ポストエフェクトを作成しました！"));
+        postEffectManager = std::make_unique<PostEffectManager>();
+        postEffectManager->AddEffect(std::make_unique<BloomEffect>());
+        postEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
+    }
+
+    // シーンエフェクト
+    {
+        if (!sceneEffectManager.get())
+        {
+            Logger::Log(U8("シーンエフェクトを作成しました！"));
+            sceneEffectManager = std::make_unique<SceneEffectManager>();
+            sceneEffectManager->AddEffect(std::make_unique<FogEffect>());
+            sceneEffectManager->AddEffect(std::make_unique<SSAOEffect>());
+            sceneEffectManager->AddEffect(std::make_unique<SSREffect>());
+            sceneEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
+        }
+        return true;
+    }
 }
 
 void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
@@ -685,9 +703,9 @@ void SceneBase::SetupImGuiStyle()
     const float left_panel_width = 300.0f;
     const float right_panel_width = 400.0f;
 
-    ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x + viewport->WorkSize.x - 300.0f,
-        viewport->WorkPos.y + viewport->WorkSize.y - 100.0f));
-    ImGui::SetNextWindowBgAlpha(0.3f); // 半透明
+    //ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x + viewport->WorkSize.x - 300.0f,
+    //    viewport->WorkPos.y + viewport->WorkSize.y - 100.0f));
+    //ImGui::SetNextWindowBgAlpha(0.3f); // 半透明
 
 }
 

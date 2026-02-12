@@ -71,8 +71,8 @@ void PuddingGameScene::Start()
             Logger::Log(u8"ƒ{ƒ^ƒ“Button Clicked!");
             static float  value = 1.0f;
             const char* types[] = { "0", "1" };
-            Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
-            //SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
+            //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
 
             value -= 0.1f;
             if (value < 0.0f)

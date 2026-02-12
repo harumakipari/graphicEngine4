@@ -22,15 +22,15 @@ void BloomEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t heig
         gaussianBlur[downsampled_index][0] = std::make_unique<FrameBuffer>(device, width >> downsampled_index, height >> downsampled_index, false);
         gaussianBlur[downsampled_index][1] = std::make_unique<FrameBuffer>(device, width >> downsampled_index, height >> downsampled_index, false);
     }
-    hr = CreatePsFromCSO(device, "./Shader/GlowExtractionPS.cso", glowExtractionPs.GetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/GlowExtractionPS.cso", glowExtractionPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = CreatePsFromCSO(device, "./Shader/GaussianBlurDownSamplingPS.cso", gaussianBlurDownsamplingPs.GetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/GaussianBlurDownSamplingPS.cso", gaussianBlurDownsamplingPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = CreatePsFromCSO(device, "./Shader/GaussianBlurHorizontalPS.cso", gaussianBlurHorizontalPs.GetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/GaussianBlurHorizontalPS.cso", gaussianBlurHorizontalPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = CreatePsFromCSO(device, "./Shader/GaussianBlurVerticalPS.cso", gaussianBlurVerticalPs.GetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/GaussianBlurVerticalPS.cso", gaussianBlurVerticalPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = CreatePsFromCSO(device, "./Shader/GaussianBlurUpsamplingPS.cso", gaussianBlurUpsamplingPs.GetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/GaussianBlurUpsamplingPS.cso", gaussianBlurUpsamplingPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     D3D11_RASTERIZER_DESC rasterizerDesc{};
@@ -44,14 +44,14 @@ void BloomEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t heig
     rasterizerDesc.ScissorEnable = FALSE;
     rasterizerDesc.MultisampleEnable = FALSE;
     rasterizerDesc.AntialiasedLineEnable = FALSE;
-    hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState.GetAddressOf());
+    hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     D3D11_DEPTH_STENCIL_DESC depthStencilDesc{};
     depthStencilDesc.DepthEnable = FALSE;
     depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
     depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-    hr = device->CreateDepthStencilState(&depthStencilDesc, depthStencilState.GetAddressOf());
+    hr = device->CreateDepthStencilState(&depthStencilDesc, depthStencilState.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     D3D11_BLEND_DESC blendDesc{};

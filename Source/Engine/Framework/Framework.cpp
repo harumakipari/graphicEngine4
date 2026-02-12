@@ -166,7 +166,7 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
 
 
     // SCENE_TRANSITION
-    if (!skipRendering)
+    //if (!skipRendering)
     {
         {
             ProfileScopedSection_2(0, "Render", ImGuiControl::Profiler::Red);
@@ -174,7 +174,7 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
         }
         //gameManager->GenerateOutputAll();
     }
-    else
+    //else
     {
         // back->Render(immediateContext, 0, 0, 1920, 1080);
     }
