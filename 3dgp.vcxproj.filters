@@ -728,7 +728,7 @@
     <ClInclude Include="Source\Engine\Camera\CameraConstants.h">
       <Filter>Sources\Engine\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Core\PIpleLineLibrary.h">
+    <ClInclude Include="Source\Graphics\Core\PipelineLibrary.h">
       <Filter>Sources\Graphics\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\UI\Widgets\Widget.h">

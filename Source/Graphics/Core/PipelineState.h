@@ -1,5 +1,4 @@
-#ifndef PIPELINE_STATE_H
-#define PIPELINE_STATE_H
+#pragma once
 
 #include <d3d11.h>
 #include <wrl.h>
@@ -22,12 +21,6 @@ struct PipeLineStateDesc
     DEPTH_STATE               depthState = DEPTH_STATE::ZT_ON_ZW_ON;
     RASTERRIZER_STATE         rasterState = RASTERRIZER_STATE::SOLID_CULL_BACK;
     SAMPLER_STATE             samplerState = SAMPLER_STATE::LINEAR;
-    //Microsoft::WRL::ComPtr<ID3D11RasterizerState>   rasterizerState;
-    //Microsoft::WRL::ComPtr<ID3D11BlendState>        blendState;
-    //Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState;
-
-    //std::vector<Microsoft::WRL::ComPtr<ID3D11SamplerState>> samplerStates;
 };
 
 
-#endif // !PIPELINE_STATE_H

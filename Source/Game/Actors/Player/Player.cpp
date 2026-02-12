@@ -26,6 +26,17 @@ void Player::Initialize(const Transform& transform)
     // 描画用コンポーネントを追加
     skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
     skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_A.glb");
+    for (auto& material:skeletalMeshComponent->model->materials)
+    {
+        //material.data.alphaMode = 2;    // 全てforwardで描画したいからBLENDに変更する
+
+        //if (material.name=="M_Aurora_Hair_Blonde_FrozenHearth")
+        //{// 髪の毛だったら
+        //    material.overridePipelineName = "";
+        //}
+    }
+
+
     //skeletalMeshComponent->SetModel("./Data/Models/Characters/GirlSoldier/idle.gltf");
     //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelCharacterPS.cso", skeletalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
     //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));

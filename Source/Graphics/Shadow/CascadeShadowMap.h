@@ -51,11 +51,10 @@ public:
 
 public:
     const UINT cascadeCount;
-    float splitSchemeWeight = 0.87f; // logarithmic_split_scheme * _split_scheme_weight + uniform_split_scheme * (1 - _split_scheme_weight)
+    float splitSchemeWeight = 0.65f; // logarithmic_split_scheme * _split_scheme_weight + uniform_split_scheme * (1 - _split_scheme_weight)
 
     bool fitToCascade = true;
 
-    //float zMult = 10.0f;
     float zMult = 8.0f;
 
 private:

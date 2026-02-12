@@ -1,5 +1,4 @@
-#ifndef PIPELINELIBRARY_H
-#define PIPELINELIBRARY_H
+#pragma once
 
 #include <string>
 #include <unordered_map>
@@ -29,34 +28,34 @@ enum ModelMode :uint8_t
     InstanceComponent,
 };
 
-constexpr const char* const SkeltalMesh_ForwardNames[] =
+constexpr const char* const SkeletalMesh_ForwardNames[] =
 {
-    "forwardOpaqueSkeltalMesh",
-    "forwardMaskSkeltalMesh",
-    "forwardBlendSkeltalMesh"
+    "forwardOpaqueSkeletalMesh",
+    "forwardMaskSkeletalMesh",
+    "forwardBlendSkeletalMesh"
 };
 
-constexpr const char* const SkeltalMesh_DeferredNames[] =
+constexpr const char* const SkeletalMesh_DeferredNames[] =
 {
-    "deferredOpaqueSkeltalMesh",
-    "deferredMaskSkeltalMesh",
-    "deferredBlendSkeltalMesh"
+    "deferredOpaqueSkeletalMesh",
+    "deferredMaskSkeletalMesh",
+    "deferredBlendSkeletalMesh"
 };
 
-constexpr const char* const SkeltalMesh_ShadowNames[] =
+constexpr const char* const SkeletalMesh_ShadowNames[] =
 {
-    "CascadeShadowMapSkeltalMesh"
+    "CascadeShadowMapSkeletalMesh"
 };
 
-constexpr const char* const* const SkeltalMesh_PipelineNames[] =
+constexpr const char* const* const SkeletalMesh_PipelineNames[] =
 {
-    SkeltalMesh_ForwardNames,
-    SkeltalMesh_DeferredNames,
-    SkeltalMesh_ShadowNames
+    SkeletalMesh_ForwardNames,
+    SkeletalMesh_DeferredNames,
+    SkeletalMesh_ShadowNames
 };
 
 // RenderPath と materialAlphaMode からパイプライン名を作成する関数
-inline std::string GetPipelineName(RenderPath renderPath, MaterialAlphaMode alphaMode, ModelMode modelMode)
+inline std::string GetPipelineName(const RenderPath renderPath, const MaterialAlphaMode alphaMode, const ModelMode modelMode)
 {
     switch (modelMode)
     {
@@ -67,13 +66,13 @@ inline std::string GetPipelineName(RenderPath renderPath, MaterialAlphaMode alph
             switch (alphaMode)
             {
             case MaterialOpaque:
-                return "forwardOpaqueSkeltalMesh";
+                return "forwardOpaqueSkeletalMesh";
                 break;
             case MaterialMask:
-                return "forwardMaskSkeltalMesh";
+                return "forwardMaskSkeletalMesh";
                 break;
             case MaterialBlend:
-                return "forwardBlendSkeltalMesh";
+                return "forwardBlendSkeletalMesh";
                 break;
             default:
                 break;
@@ -83,20 +82,20 @@ inline std::string GetPipelineName(RenderPath renderPath, MaterialAlphaMode alph
             switch (alphaMode)
             {
             case MaterialOpaque:
-                return "defferdOpaqueSkeltalMesh";
+                return "deferredOpaqueSkeletalMesh";
                 break;
             case MaterialMask:
-                return "defferdMaskSkeltalMesh";
+                return "deferredMaskSkeletalMesh";
                 break;
             case MaterialBlend:
-                return "defferdBlendSkeltalMesh";
+                return "deferredBlendSkeletalMesh";
                 break;
             default:
                 break;
             }
             break;
         case RenderPath::Shadow:
-            return "CascadeShadowMapSkeltalMesh";
+            return "CascadeShadowMapSkeletalMesh";
             break;
         default:
             break;
@@ -126,13 +125,13 @@ inline std::string GetPipelineName(RenderPath renderPath, MaterialAlphaMode alph
             switch (alphaMode)
             {
             case MaterialOpaque:
-                return "defferdOpaqueStaticMesh";
+                return "deferredOpaqueStaticMesh";
                 break;
             case MaterialMask:
-                return "defferdMaskStaticMesh";
+                return "deferredMaskStaticMesh";
                 break;
             case MaterialBlend:
-                return "defferdBlendStaticMesh";
+                return "deferredBlendStaticMesh";
                 break;
             default:
                 break;
@@ -176,7 +175,6 @@ public:
         };
         desc.primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
         desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_BACK;
-        //desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_NONE;
         desc.depthState = DEPTH_STATE::ZT_ON_ZW_ON;
         hr = CreateVsFromCSO(device, "./Shader/GltfModelStaticBatchingVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
 
@@ -189,22 +187,22 @@ public:
             AddPipeLineState("forwardOpaqueStaticMesh", desc);
         }
 
-        // StaticMesh defferd Opaque 用
+        // StaticMesh deferred Opaque 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
-            AddPipeLineState("defferdOpaqueStaticMesh", desc);
+            AddPipeLineState("deferredOpaqueStaticMesh", desc);
         }
 
-        // StaticMesh defferd Stage Blend 用
+        // StaticMesh deferred Stage Blend 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
-            AddPipeLineState("defferdBlendStaticMesh", desc);
+            AddPipeLineState("deferredBlendStaticMesh", desc);
         }
 
 
@@ -217,13 +215,13 @@ public:
             AddPipeLineState("forwardMaskStaticMesh", desc);
         }
 
-        // StaticMesh defferd Mask 用
+        // StaticMesh deferred Mask 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
-            AddPipeLineState("defferdMaskStaticMesh", desc);
+            AddPipeLineState("deferredMaskStaticMesh", desc);
         }
 
         // StaticMesh forward Blend 用
@@ -235,16 +233,16 @@ public:
             AddPipeLineState("forwardBlendStaticMesh", desc);
         }
 
-        // StaticMesh defferd Blend 用
+        // StaticMesh deferred Blend 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
-            AddPipeLineState("defferdBlendStaticMesh", desc);
+            AddPipeLineState("deferredBlendStaticMesh", desc);
         }
 
-        // StaticMesh defferd stage 用
+        // StaticMesh deferred stage 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelFightStagePS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
@@ -284,62 +282,61 @@ public:
         desc.primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
         hr = CreateVsFromCSO(device, "./Shader/GltfModelVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-        //desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_BACK;
         desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_NONE;
         desc.depthState = DEPTH_STATE::ZT_ON_ZW_ON;
 
-        // SkeltalMesh forward Opaque 用
+        // SkeletalMesh forward Opaque 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTransparencyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
-            AddPipeLineState("forwardOpaqueSkeltalMesh", desc);
+            AddPipeLineState("forwardOpaqueSkeletalMesh", desc);
         }
 
-        // SkeltalMesh defferd Opaque 用
+        // SkeletalMesh deferred Opaque 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
-            AddPipeLineState("defferdOpaqueSkeltalMesh", desc);
+            AddPipeLineState("deferredOpaqueSkeletalMesh", desc);
         }
 
-        // SkeltalMesh forward Mask 用
+        // SkeletalMesh forward Mask 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTransparencyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
-            AddPipeLineState("forwardMaskSkeltalMesh", desc);
+            AddPipeLineState("forwardMaskSkeletalMesh", desc);
         }
 
-        // SkeltalMesh defferd Mask 用
+        // SkeletalMesh deferred Mask 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
-            AddPipeLineState("defferdMaskSkeltalMesh", desc);
+            AddPipeLineState("deferredMaskSkeletalMesh", desc);
         }
 
-        // SkeltalMesh forward Blend 用
+        // SkeletalMesh forward Blend 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTransparencyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
-            AddPipeLineState("forwardBlendSkeltalMesh", desc);
+            AddPipeLineState("forwardBlendSkeletalMesh", desc);
         }
 
-        // SkeltalMesh defferd Blend 用
+        // SkeletalMesh deferred Blend 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
-            AddPipeLineState("defferdBlendSkeltalMesh", desc);
+            AddPipeLineState("deferredBlendSkeletalMesh", desc);
         }
 
         // elasticBuilding forward Blend 用
@@ -363,16 +360,14 @@ public:
             AddPipeLineState("elasticBuildingDeferred", desc);
         }
 
-
-
-        // SkeltalMesh Cascade ShadowMap 用
+        // SkeletalMesh Cascade ShadowMap 用
         {
             desc.pixelShader = nullptr;
             hr = CreateVsFromCSO(device, "./Shader/GltfModelCsmVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), NULL, NULL, 0);
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             hr = CreateGsFromCSO(device, "./Shader/GltfModelCsmGS.cso", desc.geometryShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-            AddPipeLineState("CascadeShadowMapSkeltalMesh", desc);
+            AddPipeLineState("CascadeShadowMapSkeletalMesh", desc);
         }
 
         // ElasticBuilding Cascade ShadowMap 用
@@ -413,7 +408,7 @@ public:
         return it->second;
     }
 
-    void AddPipeLineState(const std::string name, const PipeLineStateDesc& state)
+    void AddPipeLineState(const std::string& name, const PipeLineStateDesc& state)
     {
         sets_[name] = state;
     }
@@ -445,6 +440,3 @@ private:
 };
 
 
-
-
-#endif // !PIPELINELIBRARY_H
