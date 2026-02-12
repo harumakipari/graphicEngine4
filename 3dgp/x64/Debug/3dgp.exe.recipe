@@ -112,7 +112,7 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelBaseColorPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelCharacterPS.cso</FullPath>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelCharacterHairPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelCsmGS.cso</FullPath>
@@ -125,9 +125,6 @@
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelDissolvePS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelEmissionPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelEmitParticlePS.cso</FullPath>

@@ -414,7 +414,6 @@
     <ClInclude Include="Source\Game\Actors\Dessert\TargetPudding.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\Boss\BossEnemy.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\Boss\BossState.h" />
-    <ClInclude Include="Source\Game\Actors\Enemy\EmptyEnemy.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\Enemy.h" />
     <ClInclude Include="Source\Game\Actors\Player\Player.h" />
     <ClInclude Include="Source\Game\Actors\Player\PlayerState.h" />
@@ -682,8 +681,10 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Shader\GltfModelCharacterPS.hlsl">
+    <FxCompile Include="Shader\GltfModelCharacterHairPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\GltfModelCsmGS.hlsl">
@@ -701,10 +702,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\GltfModelDissolvePS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Shader\GltfModelEmissionPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>

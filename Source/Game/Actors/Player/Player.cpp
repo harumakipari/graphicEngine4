@@ -30,16 +30,13 @@ void Player::Initialize(const Transform& transform)
     {
         //material.data.alphaMode = 2;    // ‘S‚Äforward‚Å•`‰æ‚µ‚½‚¢‚©‚çBLEND‚É•ÏX‚·‚é
 
-        //if (material.name=="M_Aurora_Hair_Blonde_FrozenHearth")
-        //{// ”¯‚Ì–Ñ‚¾‚Á‚½‚ç
-        //    material.overridePipelineName = "";
-        //}
+        if (material.name=="M_Aurora_Hair_Blonde_FrozenHearth")
+        {// ”¯‚Ì–Ñ‚¾‚Á‚½‚ç
+            material.overridePipelineName = "characterHairForward";
+            material.data.alphaMode = 2;    
+        }
     }
 
-
-    //skeletalMeshComponent->SetModel("./Data/Models/Characters/GirlSoldier/idle.gltf");
-    //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelCharacterPS.cso", skeletalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-    //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     SetPosition(transform.GetLocation());
     SetQuaternionRotation(transform.GetRotation());

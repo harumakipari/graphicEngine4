@@ -339,6 +339,14 @@ public:
             AddPipeLineState("deferredBlendSkeletalMesh", desc);
         }
 
+        // キャラクターの髪の毛 用
+        {
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelCharacterHairPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
+            AddPipeLineState("characterHairForward", desc);
+        }
+
         // elasticBuilding forward Blend 用
         {
             hr = CreateVsFromCSO(device, "./Shader/ElasticBuildsVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));

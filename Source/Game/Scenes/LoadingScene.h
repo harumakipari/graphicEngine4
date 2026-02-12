@@ -22,7 +22,6 @@
 #include "Engine/Scene/SceneBase.h"
 
 #include "Game/Actors/Camera/LoadingCamera.h"
-#include "Game/Actors/Enemy/EmptyEnemy.h"
 
 class LoadingScene : public SceneBase
 {
@@ -95,7 +94,6 @@ public:
     static inline Scene::Autoenrollment<LoadingScene> _autoenrollment;
 
 private:
-    std::shared_ptr<EmptyEnemy> enemy = nullptr;
     std::shared_ptr<UISceneChangeComponent> sprite = nullptr;
     std::shared_ptr<UIImageComponent> backImage;
 
