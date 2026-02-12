@@ -24,9 +24,9 @@
 //コンストラクタ：ウィンドウハンドルを受け取って初期化
 Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fullscreen), windowed_style(static_cast<DWORD>(GetWindowLongPtrW(hwnd, GWL_STYLE)))
 {
-    //#ifndef _DEBUG
+#ifndef _DEBUG
     fullscreenMode = true;
-    //#endif
+#endif
     Graphics::Initialize(hwnd, fullscreenMode);
     InputSystem::Initialize();
     RenderState::Initialize();
@@ -112,12 +112,10 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
     ProfileNewFrame();
 #endif
 
-    //gameManager->UpdateAll(elapsed_time);
-    //if (GetAsyncKeyState(VK_RETURN) & 1 && GetAsyncKeyState(VK_MENU) & 1)
-    //{
-    //    Graphics& graphics = Graphics::Instance();
-    //    graphics.StylizeWindow(hwnd, !graphics.fullscreenMode);
-    //}
+    if ((GetAsyncKeyState(VK_RETURN) & 1) && (GetAsyncKeyState(VK_MENU) & 0x8000))
+    {
+        Graphics::StylizeWindow(!Graphics::fullscreenMode);
+    }
 
 
 
@@ -178,7 +176,7 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
     }
     else
     {
-        back->Render(immediateContext, 0, 0, 1920, 1080);
+        // back->Render(immediateContext, 0, 0, 1920, 1080);
     }
 
 

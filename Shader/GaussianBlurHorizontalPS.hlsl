@@ -1,11 +1,4 @@
-//BLOOM
-#define POINT 0
-#define LINEAR 1
-#define ANISOTROPIC 2
-#define LINEAR_BORDER_BLACK 3
-#define LINEAR_BORDER_WHITE 4
-SamplerState sampler_states[5] : register(s0);
-
+#include "Sampler.hlsli"
 Texture2D hdr_color_buffer_texture : register(t0);
 
 float4 main(float4 position : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARGET
@@ -18,11 +11,11 @@ float4 main(float4 position : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARG
     const float offset[3] = { 0.0, 1.3846153846, 3.2307692308 };
     const float weight[3] = { 0.2270270270, 0.3162162162, 0.0702702703 };
 
-    float4 sampled_color = hdr_color_buffer_texture.Sample(sampler_states[LINEAR_BORDER_BLACK], texcoord) * weight[0];
+    float4 sampled_color = hdr_color_buffer_texture.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord) * weight[0];
     for (int i = 1; i < 3; i++)
     {
-        sampled_color += hdr_color_buffer_texture.Sample(sampler_states[LINEAR_BORDER_BLACK], texcoord + float2(offset[i] / width, 0.0)) * weight[i];
-        sampled_color += hdr_color_buffer_texture.Sample(sampler_states[LINEAR_BORDER_BLACK], texcoord - float2(offset[i] / width, 0.0)) * weight[i];
+        sampled_color += hdr_color_buffer_texture.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + float2(offset[i] / width, 0.0)) * weight[i];
+        sampled_color += hdr_color_buffer_texture.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord - float2(offset[i] / width, 0.0)) * weight[i];
     }
 #else
 	const float offset[2] = { 0.53805, 2.06278 };
@@ -30,8 +23,8 @@ float4 main(float4 position : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARG
 	float4 sampled_color = 0;
 	for (int i = 0; i < 2; i++)
 	{
-		sampled_color += hdr_color_buffer_texture.Sample(sampler_states[LINEAR_BORDER_BLACK], texcoord + float2(offset[i], 0.0) / width) * weight[i];
-		sampled_color += hdr_color_buffer_texture.Sample(sampler_states[LINEAR_BORDER_BLACK], texcoord - float2(offset[i], 0.0) / width) * weight[i];
+		sampled_color += hdr_color_buffer_texture.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + float2(offset[i], 0.0) / width) * weight[i];
+		sampled_color += hdr_color_buffer_texture.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord - float2(offset[i], 0.0) / width) * weight[i];
 	}
 #endif
     return sampled_color;

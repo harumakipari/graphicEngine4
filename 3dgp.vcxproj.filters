@@ -231,15 +231,6 @@
     <ClCompile Include="Source\Graphics\Cloud\VolumetricCloudscapes.cpp">
       <Filter>Sources\Graphics\Cloud</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\Resource\GltfModelBase.cpp">
-      <Filter>Sources\Graphics\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\Resource\GltfModelStaticBatching.cpp">
-      <Filter>Sources\Graphics\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\Resource\GlthModel.cpp">
-      <Filter>Sources\Graphics\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Graphics\Resource\InterleavedGltfModel.cpp">
       <Filter>Sources\Graphics\Resource</Filter>
     </ClCompile>
@@ -335,9 +326,6 @@
     </ClCompile>
     <ClCompile Include="Source\Graphics\Renderer\SceneRenderer.cpp">
       <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Physics\Collision.cpp">
-      <Filter>Sources\Physics</Filter>
     </ClCompile>
     <ClCompile Include="Source\Test\SoftBody2d.cpp">
       <Filter>Sources\Test</Filter>
@@ -504,109 +492,13 @@
     <ClCompile Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\Scenes\MainScene.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenIngredientActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenSlotActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenStoreActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenManagers\OdenGameManager.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenBubbleActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenTrashActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenManagers\OdenSlotManager.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenManagers\OdenOrderManager.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenDetailIngredientsActors.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenData\OdenGameParameter.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenNextViewActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenUIScoreViewActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Scenes\TitleScene.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\BeatClockActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Scenes\ResultScene.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenResultScoreActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenTitleStageActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenUITimerActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenActors\StarParticleActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenResultIngredientActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\Scenes\TutorialScene.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenTutorial\TutorialManager.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenTutorial\TutorialStep.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenTutorial\TutorialActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenActors\OdenResultStage.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenUIFeverGaugeActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenUIEndActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenUIStartActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenhighScoreData.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenResultSkewerActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenCameraTargetActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\OdenGame\OdenLoadingIngredient.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Game\Actors\Stage\FightStage.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\Actors\Camera\Camera.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Resource\TinyGltf.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -685,15 +577,6 @@
     </ClInclude>
     <ClInclude Include="Source\Graphics\Cloud\VolumetricCloudscapes.h">
       <Filter>Sources\Graphics\Cloud</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\Resource\GltfModel.h">
-      <Filter>Sources\Graphics\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\Resource\GltfModelBase.h">
-      <Filter>Sources\Graphics\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\Resource\GltfModelStaticBatching.h">
-      <Filter>Sources\Graphics\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Resource\InterleavedGltfModel.h">
       <Filter>Sources\Graphics\Resource</Filter>
@@ -833,9 +716,6 @@
     <ClInclude Include="Source\Components\Game\TimerActionComponent.h">
       <Filter>Sources\Components\Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Camera\DefeatEnemyCamera.h">
-      <Filter>Sources\Game\Actors\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Actors\Camera\LoadingCamera.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\EmptyEnemy.h" />
     <ClInclude Include="Source\Graphics\Resource\ShaderToy.h" />
@@ -856,9 +736,6 @@
     </ClInclude>
     <ClInclude Include="Source\Game\Actors\Stage\ElasticBuilding.h">
       <Filter>Sources\Game\Actors\Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Physics\Collision.h">
-      <Filter>Sources\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\Test\SoftBody2d.h">
       <Filter>Sources\Test</Filter>
@@ -940,48 +817,9 @@
     <ClInclude Include="Source\Game\Actors\WaterSphere\MorphModel.h" />
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />
     <ClInclude Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.h" />
-    <ClInclude Include="Source\Game\Scenes\MainScene.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenIngredientActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenBubbleActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenData\OdenDataStruct.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenSlotActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenStoreActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenManagers\OdenGameManager.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenData\OdenShapeDataTable.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenTrashActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenManagers\OdenSlotManager.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenManagers\OdenOrderManager.h" />
     <ClInclude Include="Source\Utility\GameUtility.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenDetailIngredientsActors.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenData\OdenGameParameter.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenNextViewActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenUIScoreViewActor.h" />
     <ClInclude Include="Source\UI\FontManager.h" />
-    <ClInclude Include="Source\Game\Scenes\TitleScene.h" />
-    <ClInclude Include="Source\Game\OdenGame\BeatClockActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenActors\BeatReactive.h" />
     <ClInclude Include="Source\Engine\Debug\LoggerConfig.h" />
-    <ClInclude Include="Source\Game\Scenes\ResultScene.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenGameSession.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenResultScoreActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenTitleStageActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenUITimerActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenActors\StarParticleActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenResultIngredientActor.h" />
-    <ClInclude Include="Source\Game\Scenes\TutorialScene.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialStep.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialManager.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenTutorial\TutorialActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenActors\OdenResultStageActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenUIFeverGaugeActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenUIEndActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenUIStartActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenHighScoreData.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenRank.h" />
-    <ClInclude Include="Source\Game\OdenGame\SubmitSEPlayer.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenResultSkewerActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenCameraTargetActor.h" />
-    <ClInclude Include="Source\Game\OdenGame\OdenLoadingIngredient.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -1188,13 +1026,10 @@
     <FxCompile Include="Shader\DeferredLightingPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\SSAOPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\SSRPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\ScreenSpaceAmbientOcclusionPS.hlsl">
+    <FxCompile Include="Shader\SsaoPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GltfModelForwardTransparencyPS.hlsl">
@@ -1236,13 +1071,7 @@
     <FxCompile Include="Shader\GltfMorphModelPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\OdenSoupSurfacePS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\FinalPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\OdenDotLinePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

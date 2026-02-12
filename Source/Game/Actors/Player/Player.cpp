@@ -146,7 +146,7 @@ void Player::Initialize(const Transform& transform)
 
     // 移動用コンポーネントを追加
     characterMovementComponent = this->AddComponent<CharacterMovementComponent>("movementComponent", "skeletalComponent");
-    characterMovementComponent->SetUseGravity(false);
+    //characterMovementComponent->SetUseGravity(false);
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", "skeletalComponent");
 

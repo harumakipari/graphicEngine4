@@ -16,8 +16,7 @@ void SSAOEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t heigh
     ssaoBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false, DXGI_FORMAT_R32_FLOAT);
     ssaoCBuffer = std::make_unique<ConstantBuffer<SSAOConstantBuffer>>(device);
 
-    //HRESULT hr = CreatePsFromCSO(device, "./Shader/SSAOPS.cso", ssaoPS.GetAddressOf());
-    HRESULT hr = CreatePsFromCSO(device, "./Shader/ScreenSpaceAmbientOcclusionPS.cso", ssaoPS.GetAddressOf());
+    HRESULT hr = CreatePsFromCSO(device, "./Shader/SsaoPS.cso", ssaoPS.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     // SSAOカーネルポイント用の構造化バッファを作成する
@@ -95,6 +94,7 @@ void SSAOEffect::DrawDebugUI()
     ImGui::Checkbox("enable", &enabled);
     ImGui::SliderFloat("radius", &radius, 0.0f, +1.0f);
     ImGui::SliderFloat("bias", &bias, 0.0f, +1.0f);
+    ImGui::SliderFloat("split_u", &split_u, 0.0f, +1.0f);
     ImGui::SliderFloat("power", &power, 0.0f, +1.0f);
 #endif
 }

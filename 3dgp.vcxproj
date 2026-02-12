@@ -408,7 +408,6 @@
     <ClInclude Include="Source\Engine\Utility\Win32Utils.h" />
     <ClInclude Include="Source\Game\Actors\Base\Character.h" />
     <ClInclude Include="Source\Game\Actors\Camera\Camera.h" />
-    <ClInclude Include="Source\Game\Actors\Camera\DefeatEnemyCamera.h" />
     <ClInclude Include="Source\Game\Actors\Camera\LoadingCamera.h" />
     <ClInclude Include="Source\Game\Actors\Dessert\Cherry.h" />
     <ClInclude Include="Source\Game\Actors\Dessert\Pudding.h" />
@@ -817,7 +816,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Shader\ScreenSpaceAmbientOcclusionPS.hlsl">
+    <FxCompile Include="Shader\SsaoPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -880,12 +879,6 @@
     <FxCompile Include="Shader\sprite_vs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Shader\SSAOPS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\SSRPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

@@ -71,10 +71,9 @@ void PuddingGameScene::Start()
             Logger::Log(u8"ƒ{ƒ^ƒ“Button Clicked!");
             static float  value = 1.0f;
             const char* types[] = { "0", "1" };
-            //Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
+            Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
+            //SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
 
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
             value -= 0.1f;
             if (value < 0.0f)
                 value = 0.0f;
@@ -100,7 +99,9 @@ void PuddingGameScene::Update(float deltaTime)
     if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
     {
         const char* types[] = { "0", "1" };
-        Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"), std::make_pair("type", types[rand() % 2]) });
+        //SceneTransitionManager::Instance().RequestTransition("SampleScene");
+
+        Scene::_transition("LoadingScene", { std::make_pair("preload", "SampleScene"), std::make_pair("type", types[rand() % 2]) });
     }
 #endif // !_DEBUG
 }

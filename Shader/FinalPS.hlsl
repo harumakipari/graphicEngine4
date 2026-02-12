@@ -7,8 +7,17 @@ Texture2D colorTexture : register(t0);
 Texture2D depthTexture : register(t3);
 Texture2D bloomTexture : register(t4);
 Texture2D fogTexture : register(t5);
-Texture2D reflectionTexture : register(t7);
+Texture2D ssaoTexture : register(t6);
+Texture2D ssrTexture : register(t7);
 Texture2DArray cascadedShadowMaps : register(t9);
+
+cbuffer SSAO_CONSTANTS_BUFFER : register(b5)
+{
+    float radius;
+    float bias;
+    float power;
+    float split_u;
+}
 
 // texcoord -> ndc 空間に変換
 float4 CalculatedPositionNDC(VS_OUT pin)
@@ -137,6 +146,9 @@ float4 main(VS_OUT pin) : SV_TARGET
     // シーンからライティング済みのカラーテクスチャ
     float4 color = colorTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
 
+    // シーンから深度値を取得
+    float depth = depthTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord, 0);
+
     // uv -> ndc 
     float4 positionNdc = CalculatedPositionNDC(pin);
     // ndc -> view 
@@ -194,10 +206,47 @@ float4 main(VS_OUT pin) : SV_TARGET
         //float3 reflectColor = reflectionTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord).rgb;
         //return float4(reflectColor.rgb, 1);
 
-        color.rgb += reflectionTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord).rgb;
+        color.rgb += ssrTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord).rgb;
     }
 #endif
 
+    // SSAOの処理
+    const float radius = 4.0;
+    const float sigma = 2.0 * radius * radius;
+    const float sigma2 = 0.01;
+
+    float curr_depth = depth;
+    float weight = 0.0;
+	
+    float accumulated_occlusion = 0;
+	
+    for (float i = -radius; i <= radius; i += 1.0)
+    {
+        for (float j = -radius; j <= radius; j += 1.0)
+        {
+            float dx = i / width;
+            float dy = j / height;
+            float2 uv = float2(pin.texcoord.x + dx, pin.texcoord.y + dy);
+			
+            float distance = i * i + j * j;
+            float domain_gaussian = exp(-distance / sigma);
+			
+            float sample_depth = depthTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], uv, 0).x;
+            distance = (curr_depth - sample_depth) * (curr_depth - sample_depth);
+            float range_gaussian = exp(-distance / sigma2);
+			
+			// Sample occlusion(ambient) factor
+            float sample_occlusion = ssaoTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], uv, 0).x;
+            accumulated_occlusion += sample_occlusion * domain_gaussian * range_gaussian;
+
+            weight += domain_gaussian * range_gaussian;
+        }
+    }
+    float occlusion = accumulated_occlusion / weight;
+    //if (pin.texcoord.x > split_u)
+    {
+        color *= occlusion;
+    }
 
     // トーンマップ
     color.rgb = JodieReinhardToneMap(color.rgb);

@@ -242,8 +242,8 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
     }
     UpdateConstantBuffer(immediateContext);
 #ifdef USE_IMGUI
-    imGuiGizmoBuffer->Clear(immediateContext);
-    imGuiGizmoBuffer->Activate(immediateContext);
+    //imGuiGizmoBuffer->Clear(immediateContext);
+    //imGuiGizmoBuffer->Activate(immediateContext);
 #endif
     if (!useDeferredRendering)
     {// フォワードレンダリング
@@ -255,7 +255,7 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
     }
     Draw(immediateContext);
 #ifdef USE_IMGUI
-    imGuiGizmoBuffer->Deactivate(immediateContext);
+    //imGuiGizmoBuffer->Deactivate(immediateContext);
 #endif
 }
 
@@ -589,9 +589,9 @@ void SceneBase::DrawGui()
 {
 #ifdef USE_IMGUI
     SetupImGuiStyle();
-    DrawDockSpace();
+    //DrawDockSpace();
     DrawOutliner();
-    DrawGizmo();//
+    //DrawGizmo();//
     Logger::DrawImGui();
     Time::DrawImGui();
     DrawInspector();

@@ -32,7 +32,7 @@ public:
     virtual void Initialize(const Transform& transform)override
     {
         mainCameraComponent = this->AddComponent<class TPSCameraComponent>("mainCamera");
-        mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(45), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
+        mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(45), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 1.1f, 100.0f);
     }
 
     virtual ViewConstants GetViewConstants(/*EProjectionType type = EProjectionType::Perspective*/) const
