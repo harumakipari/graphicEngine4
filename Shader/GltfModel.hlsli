@@ -147,9 +147,9 @@ cbuffer PRIMITIVE_JOINT_CONSTANTS : register(b2)
 // MULTIPLE_RENDER_TARGETS
 struct PS_OUT
 {
-    float4 color : SV_TARGET0;
-    float4 position : SV_TARGET1;
-    float4 normal : SV_TARGET2;
+    float4 normal : SV_TARGET1;
+    float4 color : SV_TARGET3;
+    float4 position : SV_TARGET4;   // world position
 };
 
 struct GBUFFER_PS_OUT

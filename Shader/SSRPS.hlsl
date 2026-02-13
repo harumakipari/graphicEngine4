@@ -1,28 +1,19 @@
 #include "Sampler.hlsli"
 #include "FullScreenQuad.hlsli"
+#include "Constants.hlsli"
 
 Texture2D positionTexture : register(t0); // ワールド空間
 Texture2D normalTexture : register(t1); // ワールド空間
 Texture2D colorTexture : register(t2);
 
-cbuffer VIEW_CONSTANTS_BUFFER : register(b4)
-{
-    row_major float4x4 viewProjection;
-    float4 cameraPositon;
-    row_major float4x4 view;
-    row_major float4x4 projection;
-    row_major float4x4 inverseProjection;
-    row_major float4x4 inverseViewProjection;
-    row_major float4x4 invView;
-}
 
 cbuffer SSR_CONSTANTS_BUFFER : register(b5)
 {
-    float reflectionIntensity; // 反射の強さ
-    float maxDistance; // レイをどこまで飛ばすか
-    float resolution; // レイのステップ密度
-    int steps; // 二分探索の回数
-    float thickness; // ヒット判定の厚み
+    float reflectionIntensity;      // 反射の強さ
+    float maxDistance;              // 最大反射距離
+    float resolution;               // 探索の粗さ
+    int steps;                      // 二分探索の回数
+    float thickness;                // ヒット判定の厚みの許容範囲
 }
 
 float2 NdcToUv(float2 ndc)
@@ -49,33 +40,36 @@ float3 main(VS_OUT pin) : SV_TARGET
     float4 position = positionTexture.Sample(samplerStates[LINEAR_BORDER_WHITE], pin.texcoord); // world空間
     float3 normal = normalTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).xyz; // world空間
 
-    float4 positionFrom = position;
+    // world 空間　→　view 空間
+    float4 positionView = mul(position, view);  
+    float3 normalView = normalize(mul(float4(normal, 0), view).xyz);
+
+    float4 positionFrom = positionView;
     float4 positionTo = positionFrom;
 
     // 視線ベクトル
-    float3 incident = normalize(position.xyz - cameraPositon.xyz);
-
+    float3 incident = normalize(positionFrom.xyz);
     // 反射ベクトル
-    float3 reflection = normalize(reflect(incident, normal.xyz));
+    float3 reflection = normalize(reflect(incident, normalView.xyz));
 
-    // ワールド空間でレイを定義する
-    float4 startWorld = float4(positionFrom.xyz + (reflection * 0), 1);
-    float4 endWorld = float4(positionFrom.xyz + (reflection * maxDistance), 1);
+    // view 空間でレイを定義する
+    float4 startView = float4(positionFrom.xyz + (reflection * 0), 1);
+    float4 endView = float4(positionFrom.xyz + (reflection * maxDistance), 1);
 
-    if (endWorld.z < 0)
+    if (endView.z < 0)
     { // 画面外に行かないように補正
-        float3 v = endWorld.xyz - startWorld.xyz;
-        endWorld.xyz = startWorld.xyz + v * abs(startWorld.z / v.z);
+        float3 v = endView.xyz - startView.xyz;
+        endView.xyz = startView.xyz + v * abs(startView.z / v.z);
     }
 
-    // ワールド空間 -> スクリーン空間
-    float4 startFrag = mul(startWorld, viewProjection); //　ワールド空間 -> クリップ空間
+    // view 空間 -> スクリーン空間
+    float4 startFrag = mul(startView, projection); //　view 空間 -> クリップ空間
     startFrag /= startFrag.w; // クリップ空間 -> ndc 空間
     startFrag.xy = NdcToUv(startFrag.xy); // ndc 空間 -> テクスチャ空間
     startFrag.xy *= dimensions;
     
-    // ワールド空間 -> スクリーン空間
-    float4 endFrag = mul(endWorld, viewProjection); //　ワールド空間 -> クリップ空間
+    // view 空間 -> スクリーン空間
+    float4 endFrag = mul(endView, projection); //　view 空間 -> クリップ空間
     endFrag /= endFrag.w; // クリップ空間 -> ndc 空間
     endFrag.xy = NdcToUv(endFrag.xy); // ndc 空間 -> テクスチャ空間
     endFrag.xy *= dimensions;
@@ -101,7 +95,7 @@ float3 main(VS_OUT pin) : SV_TARGET
     int hit0 = 0;
     int hit1 = 0;
     
-    float viewDistance = startWorld.z;
+    float viewDistance = startView.z;
     float depth = thickness;
     
 #define MAX_DELTA 64
@@ -117,22 +111,19 @@ float3 main(VS_OUT pin) : SV_TARGET
             break;
         }
 
+        // world 空間 -> view 空間
         positionTo = positionTexture.Sample(samplerStates[LINEAR_BORDER_WHITE], uv.xy); // ワールド空間
-        float4 positionToClip = mul(float4(positionTo.xyz, 1.0), viewProjection);
-        positionToClip /= positionToClip.w;
+        positionTo = mul(float4(positionTo.xyz, 1.0), view);
 
         search1 = lerp((frag.y - startFrag.y) / deltaY, (frag.x - startFrag.x) / deltaX, useX);
         search1 = clamp(search1, 0.0, 1.0);
 
         // Perspective Correct Interpolation
         // NDC.z ベースで比較する
-        float interpolatedZ = lerp(startFrag.z, endFrag.z, search1);
-        float depthDiff = interpolatedZ - positionToClip.z;
-
         // 深度比較
-        viewDistance = (startWorld.z * endWorld.z) / lerp(endWorld.z, startWorld.z, search1);
+        viewDistance = (startView.z * endView.z) / lerp(endView.z, startView.z, search1);
         depth = viewDistance - positionTo.z;
-#if 1
+
         // ヒット判定
         if (depth > 0 && depth < thickness)
         {// レイが GBuffer の位置より奥で thickness 以内
@@ -143,17 +134,6 @@ float3 main(VS_OUT pin) : SV_TARGET
         {
             search0 = search1;
         }
-#else
-        if (depthDiff > 0 && depthDiff < thickness)
-        {
-            hit0 = 1;
-            break;
-        }
-        else
-        {
-            search0 = search1;
-        }
-#endif
     }
 #if 0
     hit1 = hit0;
@@ -167,15 +147,11 @@ float3 main(VS_OUT pin) : SV_TARGET
         frag = lerp(startFrag.xy, endFrag.xy, search1);
         uv.xy = frag / dimensions;
         
-        positionTo = positionTexture.Sample(samplerStates[LINEAR_BORDER_WHITE], uv.xy); //viewSpace
+        positionTo = positionTexture.Sample(samplerStates[LINEAR_BORDER_WHITE], uv.xy); // world 空間
         positionTo = mul(float4(positionTo.xyz, 1.0), view);
 
-        float4 positionToClip = mul(float4(positionTo.xyz, 1.0), projection);
-        positionToClip /= positionToClip.w;
-        
         // PerspectiveCorrect Interpolation
-#if 1
-        viewDistance = (startWorld.z * endWorld.z) / lerp(endWorld.z, startWorld.z, search1);
+        viewDistance = (startView.z * endView.z) / lerp(endView.z, startView.z, search1);
         depth = viewDistance - positionTo.z;
         
         if (depth > 0 && depth < thickness)
@@ -189,24 +165,9 @@ float3 main(VS_OUT pin) : SV_TARGET
             search1 = search1 + ((search1 - search0) / 2);
             search0 = temp;
         }
-#else
-        float interpolatedZ = lerp(startFrag.z, endFrag.z, search1);
-        float depthDiff = interpolatedZ - positionToClip.z;
-
-        if (depthDiff > 0 && depthDiff < thickness)
-        {
-            hit1 = 1;
-            search1 = search0 + ((search1 - search0) / 2);
-        }
-        else
-        {
-            float temp = search1;
-            search1 = search1 + ((search1 - search0) / 2);
-            search0 = temp;
-        }
-#endif
     }
 #endif
+
     float visibility = hit1;
     visibility *= (1 - max(dot(-normalize(positionFrom.xyz), reflection), 0));
     visibility *= (1 - clamp(depth / thickness, 0, 1));
@@ -215,8 +176,9 @@ float3 main(VS_OUT pin) : SV_TARGET
     visibility = clamp(visibility, 0, 1);
 
     // フレネル＋色取得
-    float fresnel = saturate(FSchlick(0.04, max(0, dot(reflection, normal.xyz))));
-    float3 reflectionColor = colorTexture.Sample(samplerStates[LINEAR_BORDER_WHITE], uv.xy).rgb;
+    float fresnel = saturate(FSchlick(0.04, max(0, dot(reflection, normalView.xyz))));
+    float3 reflectionColor = colorTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], uv.xy).rgb;
     reflectionColor = fresnel * reflectionColor * visibility * reflectionIntensity;
+
     return reflectionColor;
 }

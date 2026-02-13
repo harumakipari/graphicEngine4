@@ -10,12 +10,7 @@
 #define OCCLUSION_TEXTURE 4 
 Texture2D<float4> materialTextures[5] : register(t1);
 
-
-
-// SHADOW
 SamplerComparisonState comparisonSamplerState : register(s7);
-//Texture2D shadowMap : register(t8);
-
 
 PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
 {
@@ -24,32 +19,31 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     const float GAMMA = 2.2;
     const MaterialConstants m = materials[material];
     
-    float4 basecolorFactor = m.pbrMetallicRoughness.baseColorFactor;
-    const int basecolorTexture = m.pbrMetallicRoughness.basecolorTexture.index;
-    
-    if (basecolorTexture > -1)
+    float4 baseColorFactor = m.pbrMetallicRoughness.baseColorFactor;
+    const int baseColorTexture = m.pbrMetallicRoughness.basecolorTexture.index;
+    if (baseColorTexture > -1)
     {
         float4 sampled = materialTextures[BASECOLOR_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(sampled.rgb, GAMMA);
-        basecolorFactor *= sampled;
+        baseColorFactor *= sampled;
     }
     
     if (m.alphaMode == 0 /*OPAQUE*/)
     {
-        basecolorFactor.a = 1.0;
+        baseColorFactor.a = 1.0;
     }
-    if (basecolorFactor.a < m.alphaCutoff)
+    else if (m.alphaMode == 1 /*MASK*/ || m.alphaMode == 2 /*BLEND*/)
     {
-        discard;
+        clip(baseColorFactor.a - m.alphaCutoff);
     }
     
-    float3 emmisiveFactor = m.emissiveFactor;
+    float3 emissiveFactor = m.emissiveFactor;
     const int emissiveTexture = m.emissiveTexture.index;
     if (emissiveTexture > -1)
     {
         float4 sampled = materialTextures[EMISSIVE_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(sampled.rgb, GAMMA);
-        emmisiveFactor *= sampled.rgb;
+        emissiveFactor *= sampled.rgb;
     }
     
     float roughnessFactor = m.pbrMetallicRoughness.roughnessFactor;
@@ -71,21 +65,20 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     }
     const float occlusionStrength = m.occlusionTexture.strength;
     
-    const float3 f0 = lerp(0.04, basecolorFactor.rgb, metallicFactor);
+    const float3 f0 = lerp(0.04, baseColorFactor.rgb, metallicFactor);
     const float3 f90 = 1.0;
     const float alphaRoughness = roughnessFactor * roughnessFactor;
-    const float3 cDiff = lerp(basecolorFactor.rgb, 0.0, metallicFactor);
+    const float3 cDiff = lerp(baseColorFactor.rgb, 0.0, metallicFactor);
     
-    const float3 P = pin.wPosition.xyz;
     const float3 V = normalize(cameraPositon.xyz - pin.wPosition.xyz);
     
     float3 N = normalize(pin.wNormal.xyz);
-    float3 T = hasTangent ? normalize(pin.wTangent.xyz) : float3(1, 0, 0);
+    float3 T = hasTangent ? normalize(pin.wTangent.xyz) : float3(1, 0, 0.0001);
     float sigma = hasTangent ? pin.wTangent.w : 1.0;
     T = normalize(T - N * dot(N, T));
     float3 B = normalize(cross(N, T) * sigma);
     
-    //For a back-facing surface, the tangential basis vectors are negated.
+    //背面については、接線方向の基底ベクトルは符号が反転する。
     if (isFrontFace == false)
     {
         T = -T;
@@ -103,15 +96,8 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
     }
     
-    float3 diffuse = 0;
-    float3 specular = 0;
-  
-#if 1  
-     // Loop for shading process for each light 
-    float3 L = normalize(-lightDirection.xyz);
-    float3 Li = float3(colorLight.x, colorLight.y, colorLight.z) * colorLight.w; // Radiance of the light 
-    float NoL = max(0, 0.5 * dot(N, L) + 0.5);
-// 点光源の処理
+#if 1
+    // 点光源の処理
     float3 pointDiffuse = 0;
     float3 pointSpecular = 0;
     if (pointLightEnable != 0)
@@ -128,23 +114,37 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
             float attenuation = attenuateLength * attenuateLength;
             LP /= len;
             const float pNoV = max(0.0, dot(N, V));
-            if (pNoV > 0.0 || pNoV > 0.0)
+            const float pNoL = max(0.0, dot(N, LP));
+            // float pNoL = max(0, 0.5 * dot(N, LP) + 0.5);
+            if (pNoV > 0.0 || pNoL > 0.0)
             {
                 const float3 R = reflect(-LP, N);
                 const float3 H = normalize(V + LP);
-                float3 pLi = float3(pointLights[i].color.xyz) * pointLights[i].color.w; // Radiance of the light 
+
+                float3 pLi = float3(pointLights[i].color.xyz) * pointLights[i].color.w; // 光の輝き
+
                 const float NoH = max(0.0, dot(N, H));
                 const float HoV = max(0.0, dot(H, V));
-                float pNoL = max(0, 0.5 * dot(N, LP) + 0.5);
+
                 pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV);
-                pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, NoL, pNoV, NoH);
+                pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH);
             }
         }
     }
-    //テクスチャを貼る
+
+    // 平行光源の処理
+    float3 diffuse = 0;
+    float3 specular = 0;
+
+     // 各光源に対するシェーディング処理のループ 
+    float3 L = normalize(-lightDirection.xyz);
+    float3 Li = float3(colorLight.x, colorLight.y, colorLight.z) * colorLight.w; //  光の輝き
+
+    const float NoL = max(0, 0.5 * dot(N, L) + 0.5);
+    const float NoV = max(0, dot(N, V));
+
     if (directionalLightEnable != 0)
     {
-        const float NoV = max(0.0, dot(N, V));
         if (NoL > 0.0 || NoV > 0.0)
         {
             const float3 R = reflect(-L, N);
@@ -158,32 +158,24 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         }
     }
 #endif
-    
-    //return baseColorFactor;
 
-#if 1   //外の背景を移す
-    //totalDiffuse += IblRadianceLambertian(N, V, roughnessFactor, cDiff, f0) * iblIntensity;
+
+#if 1   // 画像ベースの照明
     float3 iblDiffuse = IblRadianceLambertian(N, V, roughnessFactor, cDiff, f0) * iblIntensity;
-    //specular += IblRadianceGgx(N, V, roughnessFactor, f0);
     float3 iblSpecular = IblRadianceGgx(N, V, roughnessFactor, f0) * iblIntensity;
 #endif
-    
     float3 totalDiffuse = diffuse + pointDiffuse + iblDiffuse;
     float3 totalSpecular = specular + pointSpecular + iblSpecular;
 
-    float3 emmisive = emmisiveFactor;
-    diffuse = lerp(totalDiffuse, totalDiffuse * occlusionFactor, occlusionStrength);
-    specular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
-    
-    // MULTIPLE_RENDER_TARGETS
-    pout.color = float4(diffuse + specular + emmisive, basecolorFactor.a) * basecolorFactor;
-    //pout.position = mul(pin.wPosition, view); // to viewSpace
-    //pout.gbuffer1Normal = mul(float4(N.xyz, 0), view); //to viewSpace;
-    pout.normal = float4(N.xyz, 0); //to worldSpace;
-    pout.position = pin.wPosition; // to worldSpace
+    totalDiffuse = lerp(totalDiffuse, totalDiffuse * occlusionFactor, occlusionStrength);
+    totalSpecular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
+
+    float3 emissive = emissiveFactor;
+
+    float3 Lo = totalDiffuse + totalSpecular + emissive;
+	
+    pout.color = float4(Lo, baseColorFactor.a) ;
+    pout.normal = float4(N.xyz, 0); // world 空間
+    pout.position = pin.wPosition; // world 空間
     return pout;
-    
-    float3 Lo = diffuse + specular + emmisive;
-    
-    //return float4(Lo , baseColorFactor.a);
 }

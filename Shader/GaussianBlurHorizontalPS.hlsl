@@ -8,6 +8,7 @@ float4 main(float4 position : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARG
     const float aspect_ratio = width / height;
 
 #if 1
+// ５回のサンプリングで９ピクセル分をカバーする
     const float offset[3] = { 0.0, 1.3846153846, 3.2307692308 };
     const float weight[3] = { 0.2270270270, 0.3162162162, 0.0702702703 };
 
@@ -18,6 +19,7 @@ float4 main(float4 position : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARG
         sampled_color += hdr_color_buffer_texture.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord - float2(offset[i] / width, 0.0)) * weight[i];
     }
 #else
+// 3回のサンプリングで済ませる
 	const float offset[2] = { 0.53805, 2.06278 };
 	const float weight[2] = { 0.44908, 0.05092 };
 	float4 sampled_color = 0;
