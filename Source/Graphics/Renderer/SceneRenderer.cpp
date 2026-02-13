@@ -23,8 +23,46 @@ UINT SizeofComponent(DXGI_FORMAT format)
     return 0;
 }
 
-void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::vector<std::shared_ptr<Actor>> allActors*/) const
+void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext, const std::vector<MeshComponent*>& items) const
 {
+#if 1
+    std::vector<MeshComponent*> sorted = items;
+
+    std::sort(sorted.begin(), sorted.end(),
+        [](auto* a, auto* b)
+        {
+            return a->GetPriority() < b->GetPriority();
+        });
+
+    for (auto* meshComponent : sorted)
+    {
+        const auto& worldMat =
+            meshComponent->GetComponentWorldTransform()
+            .ToWorldTransform();
+
+        meshComponent->UpdateConstantBuffer(immediateContext);
+        meshComponent->UpdatePlusAlphaConstants(immediateContext);
+
+        if (meshComponent->model->mode ==
+            InterleavedGltfModel::Mode::SkeltalMesh)
+        {
+            Draw(immediateContext,
+                meshComponent,
+                worldMat,
+                meshComponent->modelNodes,
+                InterleavedGltfModel::RenderPass::Opaque);
+        }
+        else
+        {
+            DrawWithStaticBatching(immediateContext,
+                meshComponent,
+                worldMat,
+                meshComponent->modelNodes,
+                InterleavedGltfModel::RenderPass::Opaque);
+        }
+    }
+#else
+
     Scene* currentScene = Scene::GetCurrentScene();  // 現在のシーン取得
     if (!currentScene) return;
     auto& allActors = currentScene->GetActorManager()->GetAllActors();
@@ -97,71 +135,52 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::v
         }
     }
 
-#if 0
-    for (auto actor : allActors)
-    {
-        if (!actor->GetRootComponent())
-        {
-            continue;
-        }
-
-        if (!actor->IsActive())
-        {// actorが存在していなかったらスキップ
-            continue;
-        }
-
-        // actor に付属している全ての meshComponent を取り出す
-        std::vector<MeshComponent*> meshComponents;
-        actor->GetComponents<MeshComponent>(meshComponents);
-
-
-        for (MeshComponent* meshComponent : meshComponents)
-        {
-            if (!meshComponent->IsVisible() || !meshComponent)
-            { // 描画フラグが false ならスキップ
-                continue;
-            }
-            // 各 MeshComponent 自身の最新ワールド行列を取り出す
-            const auto& worldMat = meshComponent->GetComponentWorldTransform().ToWorldTransform();
-            // 各 MeshComponent の model を取り出す
-            const InterleavedGltfModel* model = meshComponent->model.get();
-
-#if 0
-            auto* convexComponent = actor->GetComponent<ConvexCollisionComponent>();
-            if (convexComponent = dynamic_cast<ConvexCollisionComponent*>(convexComponent))
-            {
-                //meshComponent->model->Render(immediateContext, worldMat, convexComponent->GetAnimatedNodes(), InterleavedGltfModel::RenderPass::Opaque);
-            }
-#endif // 0
-            meshComponent->UpdateConstantBuffer(immediateContext);
-            meshComponent->UpdatePlusAlphaConstants(immediateContext);
-
-            auto* convexComponent = actor->GetComponent<MorphMeshComponent>();
-            if (convexComponent = dynamic_cast<MorphMeshComponent*>(convexComponent))
-            {
-                continue;
-            }
-
-
-            if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
-            {// 
-                Draw(immediateContext, meshComponent, worldMat, meshComponent->modelNodes, InterleavedGltfModel::RenderPass::Opaque);
-            }
-            else if (meshComponent->model->mode == InterleavedGltfModel::Mode::StaticMesh)
-            {
-                DrawWithStaticBatching(immediateContext, meshComponent, worldMat, meshComponent->modelNodes, InterleavedGltfModel::RenderPass::Opaque);
-            }
-
-            //  描画呼び出し
-            //meshComponent->RenderOpaque(immediateContext, worldMat);
-        }
-    }
 #endif // 0
 
 }
 
-void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext) const
+void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext, const std::vector<MeshComponent*>& items) const
 {
+#if 1
+    std::vector<MeshComponent*> sorted = items;
+
+    std::sort(sorted.begin(), sorted.end(),
+        [](auto* a, auto* b)
+        {
+            return a->GetPriority() < b->GetPriority();
+        });
+
+    for (auto* meshComponent : sorted)
+    {
+        const auto& worldMat =
+            meshComponent->GetComponentWorldTransform()
+            .ToWorldTransform();
+
+        meshComponent->UpdateConstantBuffer(immediateContext);
+        meshComponent->UpdatePlusAlphaConstants(immediateContext);
+
+        if (meshComponent->model->mode ==
+            InterleavedGltfModel::Mode::SkeltalMesh)
+        {
+            Draw(immediateContext,
+                meshComponent,
+                worldMat,
+                meshComponent->modelNodes,
+                InterleavedGltfModel::RenderPass::Mask);
+        }
+        else
+        {
+            DrawWithStaticBatching(immediateContext,
+                meshComponent,
+                worldMat,
+                meshComponent->modelNodes,
+                InterleavedGltfModel::RenderPass::Mask);
+        }
+    }
+#else
+
+
+
     Scene* currentScene = Scene::GetCurrentScene();  // 現在のシーン取得
     if (!currentScene) return;
     auto& allActors = currentScene->GetActorManager()->GetAllActors();
@@ -212,10 +231,49 @@ void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext) const
             }
         }
     }
+#endif // 1
+
 }
 
-void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext) const
+void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext, const std::vector<MeshComponent*>& items) const
 {
+#if 1
+    std::vector<MeshComponent*> sorted = items;
+
+    std::sort(sorted.begin(), sorted.end(),
+        [](auto* a, auto* b)
+        {
+            return a->GetPriority() < b->GetPriority();
+        });
+
+    for (auto* meshComponent : sorted)
+    {
+        const auto& worldMat =
+            meshComponent->GetComponentWorldTransform()
+            .ToWorldTransform();
+
+        meshComponent->UpdateConstantBuffer(immediateContext);
+        meshComponent->UpdatePlusAlphaConstants(immediateContext);
+
+        if (meshComponent->model->mode ==
+            InterleavedGltfModel::Mode::SkeltalMesh)
+        {
+            Draw(immediateContext,
+                meshComponent,
+                worldMat,
+                meshComponent->modelNodes,
+                InterleavedGltfModel::RenderPass::Blend);
+        }
+        else
+        {
+            DrawWithStaticBatching(immediateContext,
+                meshComponent,
+                worldMat,
+                meshComponent->modelNodes,
+                InterleavedGltfModel::RenderPass::Blend);
+        }
+    }
+#else
     struct BlendRenderItem
     {
         MeshComponent* mesh;
@@ -296,57 +354,8 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext) const
         }
     }
 
-#if 0
-    for (auto actor : allActors)
-    {
-        if (!actor->GetRootComponent())
-        {
-            continue;
-        }
-
-        if (!actor->IsActive())
-        {// actorが存在していなかったらスキップ
-            continue;
-        }
-
-        // actor に付属している全ての meshComponent を取り出す
-        std::vector<MeshComponent*> meshComponents;
-        actor->GetComponents<MeshComponent>(meshComponents);
-
-        for (MeshComponent* meshComponent : meshComponents)
-        {
-            if (!meshComponent->IsVisible())
-            { // 描画フラグが false ならスキップ
-                continue;
-            }
-            // 各 MeshComponent 自身の最新ワールド行列を取り出す
-            const auto& worldMat = meshComponent->GetComponentWorldTransform().ToWorldTransform();
-            // 各 MeshComponent の model を取り出す
-            const InterleavedGltfModel* model = meshComponent->model.get();
-            meshComponent->UpdateConstantBuffer(immediateContext);
-            meshComponent->UpdatePlusAlphaConstants(immediateContext);
-
-            auto* convexComponent = actor->GetComponent<MorphMeshComponent>();
-            if (convexComponent = dynamic_cast<MorphMeshComponent*>(convexComponent))
-            {
-                auto morphModel = dynamic_cast<MorphModel*>(convexComponent->model.get());
-                morphModel->Render(immediateContext, worldMat, {}, InterleavedGltfModel::RenderPass::All);
-                continue;
-            }
-
-            if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
-            {// 
-                Draw(immediateContext, meshComponent, worldMat, meshComponent->modelNodes, InterleavedGltfModel::RenderPass::Blend);
-            }
-            else if (meshComponent->model->mode == InterleavedGltfModel::Mode::StaticMesh)
-            {
-                DrawWithStaticBatching(immediateContext, meshComponent, worldMat, meshComponent->modelNodes, InterleavedGltfModel::RenderPass::Blend);
-            }
-
-        }
-    }
-
 #endif // 0
+
 }
 
 
@@ -432,7 +441,7 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                     DirectX::XMStoreFloat4x4(&primitiveJointCBuffer->data.matrices[jointIndex],
                         DirectX::XMLoadFloat4x4(&skin.inverseBindMatrices.at(jointIndex)) *
                         DirectX::XMLoadFloat4x4(&animatedNodes.at(skin.joints.at(jointIndex)).globalTransform) *
-                        DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&node.globalTransform))
+                        DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&node.globalTransform))
                     );
                 }
                 // 2番に定数バッファを送る
@@ -500,7 +509,7 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                     DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
 
                     DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, DirectX::XMLoadFloat4x4(&node.globalTransform) * C * DirectX::XMLoadFloat4x4(&world));
-                    DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&world))));
+                    DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&world))));
 
                     // 0番に定数バッファを送る
                     primitiveCBuffer->Activate(immediateContext, 0);
@@ -614,11 +623,6 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
 
 }
 
-void SceneRenderer::DrawCloth(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass)
-{
-
-}
-
 void SceneRenderer::DrawWithStaticBatching(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass) const
 {
 #if 1
@@ -682,7 +686,7 @@ void SceneRenderer::DrawWithStaticBatching(ID3D11DeviceContext* immediateContext
         DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
 
         DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, C * DirectX::XMLoadFloat4x4(&world));
-        DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&world))));
+        DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&world))));
         // 0番に定数バッファを送る
         primitiveCBuffer->Activate(immediateContext, 0);
 
@@ -826,7 +830,7 @@ void SceneRenderer::CastShadow(ID3D11DeviceContext* immediateContext, const Mesh
                     DirectX::XMLoadFloat4x4(&skin.inverseBindMatrices.at(jointIndex)) *
                     //DirectX::XMLoadFloat4x4(&animatedNodes.at(skin.joints.at(jointIndex)).globalTransform) *
                     DirectX::XMLoadFloat4x4(&nodes.at(skin.joints.at(jointIndex)).globalTransform) *
-                    DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&node.globalTransform))
+                    DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&node.globalTransform))
                 );
             }
             // 2番に定数バッファを送る
@@ -886,7 +890,7 @@ void SceneRenderer::CastShadow(ID3D11DeviceContext* immediateContext, const Mesh
                 }
                 DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
                 DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, DirectX::XMLoadFloat4x4(&node.globalTransform) * C * DirectX::XMLoadFloat4x4(&world));
-                DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&world))));
+                DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&world))));
                 // 0番に定数バッファを送る
                 primitiveCBuffer->Activate(immediateContext, 0);
                 //int materialIndex = primitive.GetCurrentMaterialIndex();
@@ -952,9 +956,9 @@ void SceneRenderer::CastShadow(ID3D11DeviceContext* immediateContext, const Mesh
         traverse(nodeIndex);
     }
 
-    immediateContext->VSSetShader(NULL, NULL, 0);
-    immediateContext->GSSetShader(NULL, NULL, 0);
-    immediateContext->PSSetShader(NULL, NULL, 0);
+    immediateContext->VSSetShader(nullptr, nullptr, 0);
+    immediateContext->GSSetShader(nullptr, nullptr, 0);
+    immediateContext->PSSetShader(nullptr, nullptr, 0);
 }
 
 void SceneRenderer::CastShadowWithStaticBatching(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes)
@@ -968,7 +972,7 @@ void SceneRenderer::CastShadowWithStaticBatching(ID3D11DeviceContext* immediateC
     immediateContext->VSSetShader(model->vertexShaderCSM.Get(), nullptr, 0);
     immediateContext->GSSetShader(model->geometryShaderCSM.Get(), nullptr, 0);
 
-    Microsoft::WRL::ComPtr <ID3D11PixelShader> nullPixelShader{ NULL };
+    Microsoft::WRL::ComPtr <ID3D11PixelShader> nullPixelShader{ nullptr };
     immediateContext->PSSetShader(nullPixelShader.Get()/*SHADOW*/, nullptr, 0);
 
     //immediate_context->PSSetShader(pixelShader.Get(), nullptr, 0);
@@ -1029,7 +1033,7 @@ void SceneRenderer::CastShadowWithStaticBatching(ID3D11DeviceContext* immediateC
         DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
 
         DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, C * DirectX::XMLoadFloat4x4(&world));
-        DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&world))));
+        DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&world))));
         // 0番に定数バッファを送る
         primitiveCBuffer->Activate(immediateContext, 0);
 
@@ -1061,7 +1065,60 @@ void SceneRenderer::CastShadowWithStaticBatching(ID3D11DeviceContext* immediateC
             immediateContext->DrawIndexedInstanced(batchMesh.vertexBufferView.sizeInBytes / batchMesh.vertexBufferView.strideInBytes, 4, 0, 0, 0);
         }
     }
-    immediateContext->VSSetShader(NULL, NULL, 0);
-    immediateContext->GSSetShader(NULL, NULL, 0);
-    immediateContext->PSSetShader(NULL, NULL, 0);
+    immediateContext->VSSetShader(nullptr, nullptr, 0);
+    immediateContext->GSSetShader(nullptr, nullptr, 0);
+    immediateContext->PSSetShader(nullptr, nullptr, 0);
+}
+
+// メッシュを収集して振り分ける
+RenderQueues SceneRenderer::BuildRenderQueues()
+{
+    RenderQueues queues;
+
+    Scene* scene = Scene::GetCurrentScene();
+    if (!scene) return queues;
+
+    auto& actors = scene->GetActorManager()->GetAllActors();
+
+    for (auto actor : actors)
+    {
+        if (!actor || !actor->IsActive() || !actor->GetRootComponent())
+            continue;
+
+        std::vector<MeshComponent*> meshes;
+        actor->GetComponents<MeshComponent>(meshes);
+
+        for (auto* mesh : meshes)
+        {
+            if (!mesh || !mesh->IsVisible())
+                continue;
+
+            // MorphMesh は通常パスに入れない
+            if (actor->GetComponent<MorphMeshComponent>())
+                continue;
+
+            bool isForward =
+                mesh->renderPass ==
+                MeshComponent::MeshRenderPass::Forward;
+
+            auto& opaque =
+                isForward ? queues.forwardOpaque
+                : queues.deferredOpaque;
+
+            auto& mask =
+                isForward ? queues.forwardMask
+                : queues.deferredMask;
+
+            auto& blend =
+                isForward ? queues.forwardBlend
+                : queues.deferredBlend;
+
+            // ここは今後マテリアル判定にしてもいい
+            opaque.push_back(mesh);
+            mask.push_back(mesh);
+            blend.push_back(mesh);
+        }
+    }
+
+    return queues;
 }

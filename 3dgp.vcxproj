@@ -258,6 +258,7 @@
     <ClCompile Include="Source\Components\Effect\ParticleComponent.cpp" />
     <ClCompile Include="Source\Components\Elastic\ElasticComponent.cpp" />
     <ClCompile Include="Source\Components\Game\LifeTimeComponent.cpp" />
+    <ClCompile Include="Source\Components\Render\MeshComponent.cpp" />
     <ClCompile Include="Source\Core\Actor.cpp" />
     <ClCompile Include="Source\Core\ActorManager.cpp" />
     <ClCompile Include="Source\Core\CoreColor.cpp" />

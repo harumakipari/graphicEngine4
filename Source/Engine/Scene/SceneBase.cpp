@@ -214,8 +214,11 @@ bool SceneBase::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
             sceneEffectManager->AddEffect(std::make_unique<SSREffect>());
             sceneEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
         }
-        return true;
     }
+
+    frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
+
+    return true;
 }
 
 void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
@@ -296,18 +299,22 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     skyMap->Blit(immediateContext, data.viewProjection);
     ExecuteHooks(RenderPass::Sky, immediateContext);
 
+    auto queues = sceneRender.BuildRenderQueues();
+
+
     // オブジェクトを描画
     RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Forward;
-    sceneRender.RenderOpaque(immediateContext);
+    sceneRender.RenderOpaque(immediateContext,queues.deferredOpaque);
+    sceneRender.RenderOpaque(immediateContext,queues.forwardOpaque);
     ExecuteHooks(RenderPass::Opaque, immediateContext);
-
-    sceneRender.RenderMask(immediateContext);
+    sceneRender.RenderMask(immediateContext, queues.deferredMask);
+    sceneRender.RenderMask(immediateContext, queues.forwardMask);
     ExecuteHooks(RenderPass::Mask, immediateContext);
-
-    sceneRender.RenderBlend(immediateContext);
+    sceneRender.RenderBlend(immediateContext, queues.deferredBlend);
+    sceneRender.RenderBlend(immediateContext, queues.forwardBlend);
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
     // デバック描画
@@ -396,13 +403,15 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     gBufferRenderTarget->Clear(immediateContext);
     gBufferRenderTarget->Acticate(immediateContext);
 
+    auto queues = sceneRender.BuildRenderQueues();
+
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
     sceneRender.currentRenderPath = RenderPath::Deferred;
-    sceneRender.RenderOpaque(immediateContext);
+    sceneRender.RenderOpaque(immediateContext, queues.deferredOpaque);
     ExecuteHooks(RenderPass::Opaque, immediateContext);
 
-    sceneRender.RenderMask(immediateContext);
+    sceneRender.RenderMask(immediateContext, queues.deferredMask);
     ExecuteHooks(RenderPass::Mask, immediateContext);
 
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
@@ -488,16 +497,32 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 #else
 
     RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
-    RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
+    RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_FRONT);
     sceneRender.currentRenderPath = RenderPath::Forward;
-    sceneRender.RenderBlend(immediateContext); // ここで警告出る
+    sceneRender.RenderBlend(immediateContext,queues.deferredBlend); // ここで警告出る
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Forward;
-    sceneRender.RenderBlend(immediateContext); // ここで警告出る
+    sceneRender.RenderBlend(immediateContext,queues.deferredBlend); // ここで警告出る
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
+
+
+#if 0
+    // フォワードの描画
+    {
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
+        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        sceneRender.RenderOpaque(immediateContext, queues.forwardOpaque);
+        sceneRender.RenderMask(immediateContext, queues.forwardMask);
+        RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF);
+        sceneRender.RenderBlend(immediateContext, queues.forwardBlend);
+    }
+
+#endif // 0
+
 #endif // 0
     {
         //ID3D11ShaderResourceView* nullSRV[1] = { nullptr };

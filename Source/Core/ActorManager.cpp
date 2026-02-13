@@ -236,14 +236,6 @@ void Renderer::CastShadowRender(ID3D11DeviceContext* immediateContext)
             }
 
         }
-        if (auto build = actor->GetComponent<BuildMeshComponent>())
-        {
-            if (build->IsCastShadow())
-            {
-                const auto& worldMat = build->GetComponentWorldTransform().ToWorldTransform();
-                build->CastShadow(immediateContext, worldMat);
-            }
-        }
     }
 }
 

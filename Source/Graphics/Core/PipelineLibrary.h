@@ -287,7 +287,7 @@ public:
 
         // SkeletalMesh forward Opaque —p
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTransparencyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
@@ -305,7 +305,7 @@ public:
 
         // SkeletalMesh forward Mask —p
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTransparencyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;

@@ -11,6 +11,16 @@
 #include "Graphics/Core/PipelineLibrary.h"
 #include "Engine/Camera/CameraConstants.h"
 
+struct RenderQueues
+{
+    std::vector<MeshComponent*> deferredOpaque;
+    std::vector<MeshComponent*> deferredMask;
+    std::vector<MeshComponent*> deferredBlend;
+
+    std::vector<MeshComponent*> forwardOpaque;
+    std::vector<MeshComponent*> forwardMask;
+    std::vector<MeshComponent*> forwardBlend;
+};
 
 class SceneRenderer
 {
@@ -44,11 +54,11 @@ public:
         viewBuffer->Activate(immediateContext, 4);
     }
 
-    void RenderOpaque(ID3D11DeviceContext* immediateContext/*, std::vector<std::shared_ptr<Actor>> allActors*/) const;
+    void RenderOpaque(ID3D11DeviceContext* immediateContext, const std::vector<MeshComponent*>& items) const;
 
-    void RenderMask(ID3D11DeviceContext* immediateContext) const;
+    void RenderMask(ID3D11DeviceContext* immediateContext, const std::vector<MeshComponent*>& items) const;
 
-    void RenderBlend(ID3D11DeviceContext* immediateContext) const;
+    void RenderBlend(ID3D11DeviceContext* immediateContext, const std::vector<MeshComponent*>& items) const;
 
     void CastShadowRender(ID3D11DeviceContext* immediateContext);
 
@@ -56,6 +66,8 @@ public:
 
     void CastShadowWithStaticBatching(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes);
 
+    // ÉÅÉbÉVÉÖÇé˚èWÇµÇƒêUÇËï™ÇØÇÈ
+    RenderQueues BuildRenderQueues();
 private:
     void Draw(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass) const;
 

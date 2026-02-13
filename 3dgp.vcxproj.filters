@@ -501,6 +501,9 @@
     <ClCompile Include="Source\Graphics\Resource\TinyGltf.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Components\Render\MeshComponent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -717,7 +720,6 @@
       <Filter>Sources\Components\Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Actors\Camera\LoadingCamera.h" />
-    <ClInclude Include="Source\Game\Actors\Enemy\EmptyEnemy.h" />
     <ClInclude Include="Source\Graphics\Resource\ShaderToy.h" />
     <ClInclude Include="Source\Graphics\PostProcess\GBuffer.h">
       <Filter>Sources\Graphics\PostProcess</Filter>
@@ -888,9 +890,6 @@
     <FxCompile Include="Shader\GltfModelBaseColorPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\GltfModelCharacterPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\GltfModelCsmGS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -898,9 +897,6 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GltfModelDissolvePS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\GltfModelEmissionPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GltfModelEmitParticlePS.hlsl">
@@ -1072,6 +1068,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\FinalPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GltfModelCharacterHairPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
