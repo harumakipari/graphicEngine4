@@ -439,6 +439,9 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
     // ライティングのパス
     {
+        //multipleRenderTargets->Clear(immediateContext);
+        //multipleRenderTargets->Activate(immediateContext);
+
         frameBuffer->Clear(immediateContext);
         frameBuffer->Activate(immediateContext);
 
@@ -451,7 +454,6 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
             skyMap->Blit(immediateContext, data.viewProjection);
         }
         ExecuteHooks(RenderPass::Sky, immediateContext);
-
 
         //dummyTexture->Draw(immediateContext);
 
@@ -471,6 +473,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
         // メインフレームバッファとブルームエフェクトを組み合わせて描画
         fullscreenQuad->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), deferredPs.Get());
         frameBuffer->Deactivate(immediateContext);
+        //multipleRenderTargets->Deactivate(immediateContext);
     }
 
     //// 今回のゲームで追加
@@ -486,6 +489,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 #endif
 
     // フォーワードの透明描画
+    //multipleRenderTargets->Activate(immediateContext, gBufferRenderTarget->depthStencilView);
+
     frameBuffer->Activate(immediateContext, gBufferRenderTarget->depthStencilView);
 
 #if 0
@@ -509,7 +514,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
 
-#if 0
+#if 1
     // フォワードの描画
     {
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
@@ -563,6 +568,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
 
     frameBuffer->Deactivate(immediateContext);
+    //multipleRenderTargets->Deactivate(immediateContext);
 
 
     // FINAL_PASS
@@ -578,6 +584,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
         {
             //  gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],   // colorMap
              frameBuffer->shaderResourceViews[0].Get(),//colorMap   こっちライティング済み
+             //multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)],//colorMap   こっちライティング済み
               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
               gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
