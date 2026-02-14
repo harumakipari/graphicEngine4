@@ -182,6 +182,30 @@ public:
         }
     };
     std::vector<GltfLight> gltfLights;
+
+    struct SpawnPoint
+    {
+        std::string name;
+        DirectX::XMFLOAT4X4 worldTransform;
+
+        DirectX::XMFLOAT3 worldPosition;
+        DirectX::XMFLOAT4 worldRotation;
+        DirectX::XMFLOAT3 worldScale;
+
+        template<class T>
+        void serialize(T& archive)
+        {
+            archive(
+                cereal::make_nvp("name", name),
+                cereal::make_nvp("worldTransform", worldTransform),
+                cereal::make_nvp("worldPosition", worldPosition),
+                cereal::make_nvp("worldRotation", worldRotation),
+                cereal::make_nvp("worldScale", worldScale)
+            );
+        }
+    };
+    std::vector<SpawnPoint> spawnPoints;
+
 private:
     std::vector<GltfPointLightData> pointLights;
     std::vector<Node> nodes;
@@ -613,14 +637,6 @@ public:
         }
     };
     std::vector<Animation> animations;
-public:
-    //void GetBoundingBox(size_t nodeIndex, DirectX::FXMMATRIX transform) const
-    //{
-    //    const Node& node = nodes.at(nodeIndex);
-
-    //    DirectX::XMVECTOR minValue = DirectX::XMLoadFloat3(&node.minValue);
-    //    DirectX::XMVECTOR maxValue = DirectX::XMLoadFloat3(&node.maxValue);
-    //}
 private:
     void FetchNodes(const tinygltf::Model& gltf_model);
     void CumulateTransforms(std::vector<Node>& nodes) const;
@@ -632,6 +648,8 @@ private:
     void FetchLights(const tinygltf::Model& model);
     // ライト付きのノードを探す
     void FetchLightNodes(const tinygltf::Model& model);
+    // スポーン情報を取得する
+    void ExtractSpawnPoints();
 
 public:
     // CascadedShadowMaps

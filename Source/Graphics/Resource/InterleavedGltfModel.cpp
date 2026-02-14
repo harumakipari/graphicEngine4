@@ -66,7 +66,8 @@ InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::stri
             cereal::make_nvp("nodes", nodes),
             cereal::make_nvp("materials", materials),
             cereal::make_nvp("gltfLights", gltfLights),
-        cereal::make_nvp("pointLights", pointLights)
+            cereal::make_nvp("pointLights", pointLights),
+            cereal::make_nvp("spawnPoints", spawnPoints)
         );
         deserialization(cereal::make_nvp("batchMeshes", batchMeshes));
         deserialization(cereal::make_nvp("meshes", meshes));
@@ -215,6 +216,9 @@ void InterleavedGltfModel::FetchNodes(const tinygltf::Model& gltfModel)
         }
     }
     CumulateTransforms(nodes);
+
+    // スポーン場所を取得する
+    ExtractSpawnPoints();
 }
 
 void InterleavedGltfModel::FetchLights(const tinygltf::Model& model)
@@ -285,7 +289,43 @@ void InterleavedGltfModel::FetchLightNodes(const tinygltf::Model& model)
     }
 }
 
+// スポーン情報を取得する
+void InterleavedGltfModel::ExtractSpawnPoints()
+{
+    spawnPoints.clear();
 
+    for (const Node& node : nodes)
+    {
+        if (node.name.rfind("Spawn_", 0) == 0) // starts_with
+        {
+            SpawnPoint sp;
+            sp.name = node.name;
+            sp.worldTransform = node.globalTransform;
+
+            DirectX::XMVECTOR S, R, T;
+
+            bool ok = DirectX::XMMatrixDecompose(
+                &S,
+                &R,
+                &T,
+                DirectX::XMLoadFloat4x4(&node.globalTransform)
+            );
+
+            if (ok)
+            {
+                DirectX::XMStoreFloat3(&sp.worldScale, S);
+                DirectX::XMStoreFloat4(&sp.worldRotation, R);
+                DirectX::XMStoreFloat3(&sp.worldPosition, T);
+            }
+
+            spawnPoints.push_back(sp);
+#ifdef _DEBUG
+            Logger::Log(Logger::LogCategory::System, "Spawn found: " + sp.name);
+#endif
+        }
+    }
+
+}
 AABB InterleavedGltfModel::GetAABB()const
 {
     using namespace DirectX;
@@ -1786,7 +1826,7 @@ void InterleavedGltfModel::BatchRender(ID3D11DeviceContext* immediateContext, co
         }
         DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
         DirectX::XMStoreFloat4x4(&primitiveData.world, C * DirectX::XMLoadFloat4x4(&world));
-        DirectX::XMStoreFloat4x4(&primitiveData.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&world))));
+        DirectX::XMStoreFloat4x4(&primitiveData.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, C * DirectX::XMLoadFloat4x4(&world))));
 
         immediateContext->UpdateSubresource(primitiveCbuffer.Get(), 0, 0, &primitiveData, 0, 0);
         immediateContext->VSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());

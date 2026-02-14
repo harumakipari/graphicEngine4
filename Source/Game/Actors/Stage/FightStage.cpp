@@ -11,7 +11,8 @@ void FightStage::Initialize(const Transform& transform)
 #if 0
     staticMeshComponent->SetModel("./Data/Models/Stage/ExampleStage.gltf", true);
 #else
-    staticMeshComponent->SetModel("./Data/Models/Dark_Stage0209/DarkStage.gltf", true);
+    //staticMeshComponent->SetModel("./Data/Models/Dark_Stage0209/DarkStage.gltf", true);
+    staticMeshComponent->SetModel("./Data/Models/DarkStage0214/DarkStage.gltf", true);
     staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
     auto lightsData = staticMeshComponent->model->GetPointLights();
     // ポイントライトコンポーネントを追加
@@ -30,6 +31,18 @@ void FightStage::Initialize(const Transform& transform)
         pointLightComponent->SetIntensity(light.intensity);
     }
 
+
+    for (auto point : staticMeshComponent->model->spawnPoints)
+    {
+        if (point.name == "Spawn_Door_Left")
+        {
+            std::shared_ptr<SkeletalMeshComponent> door = AddComponent<SkeletalMeshComponent>("Left_Door", parentName);
+            door->SetModel("./Data/Models/DarkStageAssets/Door_Large/SM_Door_Large_01.gltf");
+            door->SetRelativeLocationDirect(point.worldPosition);
+            door->SetRelativeRotationDirect(point.worldRotation);
+            door->SetRelativeScaleDirect(point.worldScale);
+        }
+    }
 
     //staticMeshComponent->SetModel("./Data/Models/Dark_Stage0204/untitled.gltf", true);
     //staticMeshComponent->SetModel("./Data/Models/Dark_Stage/Mesh/untitled.gltf", true);
