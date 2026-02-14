@@ -59,6 +59,31 @@ static void ApplyStickDeadzone(float x, float y, DeadZoneMode deadZoneMode, floa
     }
 }
 
+// スティック取得関数を作成する
+static DirectX::XMFLOAT2 GetStick(const XINPUT_GAMEPAD& pad, GamePadKeyType type)
+{
+    float x = 0.0f;
+    float y = 0.0f;
+
+    if (type == GamePadKeyType::LeftStick)
+    {
+        x = pad.sThumbLX / 32767.0f;
+        y = pad.sThumbLY / 32767.0f;
+    }
+    else
+    {
+        x = pad.sThumbRX / 32767.0f;
+        y = pad.sThumbRY / 32767.0f;
+    }
+
+    float dead = 0.25f;
+
+    if (fabs(x) < dead) x = 0.0f;
+    if (fabs(y) < dead) y = 0.0f;
+
+    return { x, y };
+}
+
 void InputKey::Update(float deltaTime)
 {
     oldPressTime_ = pressTime_;
@@ -68,66 +93,66 @@ void InputKey::Update(float deltaTime)
 void Gamepad::Update(float deltaTime)
 {
     oldPressTime_ = pressTime_;
-    _XINPUT_STATE state = InputSystem::GetXInputState();
-    const auto& pad = state.Gamepad;
+
+    const XINPUT_STATE& state = InputSystem::GetXInputState();
+    const XINPUT_GAMEPAD& pad = state.Gamepad;
+
+    bool pressed = false;
+
     switch (keyType)
     {
-    case GamePadKeyType::Key:
-#if 1
-        if (vkey_ <= GAMEPAD_L_RIGHT || vkey_ <= GAMEPAD_R_RIGHT)
-        {
-            float x = 0.0f;
-            float y = 0.0f;
-
-            // 左スティック
-            if (vkey_ <= GAMEPAD_L_RIGHT)
-            {
-                x = pad.sThumbLX / 32767.0f;
-                y = pad.sThumbLY / 32767.0f;
-            }
-            // 右スティック
-            else
-            {
-                x = pad.sThumbRX / 32767.0f;
-                y = pad.sThumbRY / 32767.0f;
-            }
-
-            float deadZone = 0.25f;
-            bool active = false;
-
-            switch (vkey_)
-            {
-            case GAMEPAD_L_UP:
-            case GAMEPAD_R_UP:    active = (y > deadZone); break;
-            case GAMEPAD_L_LEFT:
-            case GAMEPAD_R_LEFT:  active = (x < -deadZone); break;
-            case GAMEPAD_L_DOWN:
-            case GAMEPAD_R_DOWN:  active = (y < -deadZone); break;
-            case GAMEPAD_L_RIGHT:
-            case GAMEPAD_R_RIGHT: active = (x > deadZone); break;
-            }
-
-            pressTime_ = active ? pressTime_ + deltaTime : 0.0f;
-        }
-        else
-        {
-            pressTime_ = (pad.wButtons & vkey_) ? pressTime_ + deltaTime : 0.0f;
-        }
-#else
-        pressTime_ = (state.Gamepad.wButtons & vkey_) ? pressTime_ + deltaTime : 0.0f;
-#endif
-        break;
-    case GamePadKeyType::LeftTrigger:
-        pressTime_ = (state.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD) ? pressTime_ + deltaTime : 0.0f;
-        break;
-    case GamePadKeyType::RightTrigger:
-        pressTime_ = (state.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD) ? pressTime_ + deltaTime : 0.0f;
-        break;
-    default:
-        int a = 0;
+    case GamePadKeyType::Button:
+    {
+        pressed = (pad.wButtons & vkey_) != 0;
         break;
     }
 
+    case GamePadKeyType::LeftTrigger:
+    {
+        pressed = pad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
+        break;
+    }
+
+    case GamePadKeyType::RightTrigger:
+    {
+        pressed = pad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD;
+        break;
+    }
+
+    case GamePadKeyType::LeftStick:
+    case GamePadKeyType::RightStick:
+    {
+        auto stick = GetStick(pad, keyType);
+
+        // vkey_ は方向を表す
+        switch (vkey_)
+        {
+        case GAMEPAD_L_UP:
+        case GAMEPAD_R_UP:
+            pressed = stick.y > 0.0f;
+            break;
+
+        case GAMEPAD_L_DOWN:
+        case GAMEPAD_R_DOWN:
+            pressed = stick.y < 0.0f;
+            break;
+
+        case GAMEPAD_L_LEFT:
+        case GAMEPAD_R_LEFT:
+            pressed = stick.x < 0.0f;
+            break;
+
+        case GAMEPAD_L_RIGHT:
+        case GAMEPAD_R_RIGHT:
+            pressed = stick.x > 0.0f;
+            break;
+        }
+
+        break;
+    }
+    }
+
+    pressTime_ = pressed ? pressTime_ + deltaTime : 0.0f;
 }
 
 //  初期化
@@ -194,6 +219,10 @@ void InputSystem::Initialize()
     inputKeys["ok"].emplace_back(std::make_unique<Keyboard>(VK_RETURN));
     inputKeys["ok"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_A));
 
+
+    inputKeys["LockOn"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_RIGHT_THUMB));    // 右スティック押し込み
+    inputKeys["RB"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_RIGHT_SHOULDER));     // 右
+    inputKeys["RT"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::RightTrigger));
 }
 
 

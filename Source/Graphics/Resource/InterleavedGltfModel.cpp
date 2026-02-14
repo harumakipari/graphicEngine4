@@ -150,7 +150,8 @@ InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::stri
             cereal::make_nvp("nodes", nodes),
             cereal::make_nvp("materials", materials),
             cereal::make_nvp("gltfLights", gltfLights),
-            cereal::make_nvp("pointLights", pointLights)
+            cereal::make_nvp("pointLights", pointLights),
+            cereal::make_nvp("spawnPoints", spawnPoints)
         );
         serialization(cereal::make_nvp("batchMeshes", batchMeshes));
         serialization(cereal::make_nvp("meshes", meshes));

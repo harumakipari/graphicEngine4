@@ -166,6 +166,14 @@ void InputComponent::Tick(float)
 
     if (!scene->GetCameraManager()->IsUseDebug())
     {
+
+        float lx = InputSystem::GetLeftStick().x;
+        float ly = InputSystem::GetLeftStick().y;
+
+        intent_.move.x = lx;
+        intent_.move.z = ly;
+
+#if 0
         if (InputSystem::GetInputState("W"))
         {
             intent_.move.z += 1.0f;
@@ -182,5 +190,7 @@ void InputComponent::Tick(float)
         {
             intent_.move.x -= 1.0f;
         }
+
+#endif // 0
     }
 }

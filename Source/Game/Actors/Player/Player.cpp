@@ -26,14 +26,14 @@ void Player::Initialize(const Transform& transform)
     // 描画用コンポーネントを追加
     skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
     skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_A.glb");
-    for (auto& material:skeletalMeshComponent->model->materials)
+    for (auto& material : skeletalMeshComponent->model->materials)
     {
         //material.data.alphaMode = 2;    // 全てforwardで描画したいからBLENDに変更する
 
-        if (material.name=="M_Aurora_Hair_Blonde_FrozenHearth")
+        if (material.name == "M_Aurora_Hair_Blonde_FrozenHearth")
         {// 髪の毛だったら
             material.overridePipelineName = "characterHairForward";
-            material.data.alphaMode = 2;    
+            material.data.alphaMode = 2;
         }
     }
 
@@ -96,8 +96,6 @@ void Player::Initialize(const Transform& transform)
     //this->SetStateMachine(stateMachine);
     // 初期ステートを設定
     stateMachine_->ChangeState("Idle");
-
-
 
 
 #if 1
@@ -166,7 +164,6 @@ void Player::Initialize(const Transform& transform)
 }
 
 
-
 void Player::Update(float elapsedTime)
 {
     using namespace DirectX;
@@ -175,45 +172,61 @@ void Player::Update(float elapsedTime)
     Character::Update(elapsedTime);
 
     DirectX::XMFLOAT3 moveDir = { 0,0,0 };
-    if (auto camera = dynamic_cast<MainCamera*>(GetOwnerScene()->GetActiveCamera()))
+    //if (auto camera = dynamic_cast<MainCamera*>(GetOwnerScene()->GetActiveCamera()))
+    //{
+    //    XMFLOAT3 cameraForwardDir = camera->CameraForwardXZ();
+    //    XMFLOAT3 cameraRightDir = camera->CameraRightXZ();
+    //    if (InputSystem::IsRightStick(Direction::Up))
+    //    {
+    //        moveDir.x += cameraForwardDir.x;
+    //        moveDir.y += cameraForwardDir.y;
+    //        moveDir.z += cameraForwardDir.z;
+    //    }
+    //    //if (InputSystem::GetInputState("S"))
+    //    if (InputSystem::IsRightStick(Direction::Down))
+    //    {
+    //        moveDir.x -= cameraForwardDir.x;
+    //        moveDir.y -= cameraForwardDir.y;
+    //        moveDir.z -= cameraForwardDir.z;
+    //    }
+    //    //if (InputSystem::GetInputState("D"))
+    //    if (InputSystem::IsRightStick(Direction::Right))
+    //    {
+    //        moveDir.x += cameraRightDir.x;
+    //        moveDir.y += cameraRightDir.y;
+    //        moveDir.z += cameraRightDir.z;
+    //    }
+    //    //if (InputSystem::GetInputState("A"))
+    //    if (InputSystem::IsRightStick(Direction::Left))
+    //    {
+    //        moveDir.x -= cameraRightDir.x;
+    //        moveDir.y -= cameraRightDir.y;
+    //        moveDir.z -= cameraRightDir.z;
+    //    }
+    //}
+
+    if (InputSystem::GetInputState("RB", InputStateMask::Trigger))
     {
-        XMFLOAT3 cameraForwardDir = camera->CameraForwardXZ();
-        XMFLOAT3 cameraRightDir = camera->CameraRightXZ();
-        if (InputSystem::GetInputState("W"))
-        {
-            moveDir.x += cameraForwardDir.x;
-            moveDir.y += cameraForwardDir.y;
-            moveDir.z += cameraForwardDir.z;
-        }
-        if (InputSystem::GetInputState("S"))
-        {
-            moveDir.x -= cameraForwardDir.x;
-            moveDir.y -= cameraForwardDir.y;
-            moveDir.z -= cameraForwardDir.z;
-        }
-        if (InputSystem::GetInputState("D"))
-        {
-            moveDir.x += cameraRightDir.x;
-            moveDir.y += cameraRightDir.y;
-            moveDir.z += cameraRightDir.z;
-        }
-        if (InputSystem::GetInputState("A"))
-        {
-            moveDir.x -= cameraRightDir.x;
-            moveDir.y -= cameraRightDir.y;
-            moveDir.z -= cameraRightDir.z;
-        }
+        Logger::Log("RBが押された");
+    }
+    if (InputSystem::GetInputState("LockOn", InputStateMask::Trigger))
+    {
+        Logger::Log("LockOnが押された");
+    }
+    if (InputSystem::GetInputState("RT", InputStateMask::Trigger))
+    {
+        Logger::Log("RTが押された");
     }
 
-#if 0
+#if 1
     auto intent = inputComponent->GetIntent();
     //characterMovementComponent->SetMoveDirection({ 1,0,0 });
     characterMovementComponent->ApplyIntent(intent);
     rotationComponent->SetDirection(intent.move);
 #endif // 0
 
-    characterMovementComponent->SetMoveDirection(moveDir);
-    rotationComponent->SetDirection(moveDir);
+    //characterMovementComponent->SetMoveDirection(moveDir);
+    //rotationComponent->SetDirection(moveDir);
 
     //particleComponent->Play();
     return;

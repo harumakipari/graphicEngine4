@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 
+
 enum class InputDeviceType { Keyboard, Mouse, Gamepad };
 
 class InputKey
@@ -53,7 +54,32 @@ public:
 
 
 ///------------  Gamepad ----------///
-enum class GamePadKeyType { Key, LeftTrigger, RightTrigger };
+enum class GamepadKey
+{
+    A = XINPUT_GAMEPAD_A,
+    B = XINPUT_GAMEPAD_B,
+    X = XINPUT_GAMEPAD_X,
+    Y = XINPUT_GAMEPAD_Y,
+
+    LB = XINPUT_GAMEPAD_LEFT_SHOULDER,
+    RB = XINPUT_GAMEPAD_RIGHT_SHOULDER,
+
+    Start = XINPUT_GAMEPAD_START,
+    Back = XINPUT_GAMEPAD_BACK,
+
+    DPadUp = XINPUT_GAMEPAD_DPAD_UP,
+    DPadDown = XINPUT_GAMEPAD_DPAD_DOWN,
+    DPadLeft = XINPUT_GAMEPAD_DPAD_LEFT,
+    DPadRight = XINPUT_GAMEPAD_DPAD_RIGHT
+};
+enum class GamePadKeyType :uint8_t
+{
+    Button,
+    LeftTrigger,
+    RightTrigger,
+    LeftStick,
+    RightStick
+};
 enum class Side { Left, Right };
 enum class Axis { X, Y };
 
@@ -62,7 +88,7 @@ class Gamepad :public InputKey
 private:
     GamePadKeyType keyType;
 public:
-    Gamepad(int vkey, GamePadKeyType type = GamePadKeyType::Key) :InputKey(vkey, InputDeviceType::Gamepad), keyType(type) {}
+    Gamepad(int vkey, GamePadKeyType type = GamePadKeyType::Button) :InputKey(vkey, InputDeviceType::Gamepad), keyType(type) {}
     virtual ~Gamepad() override = default;
     Gamepad(Gamepad&) = delete;
     Gamepad& operator=(Gamepad&) = delete;
@@ -113,6 +139,53 @@ public:
         if (ay == -1) { return Direction::Down; }
 
         return Direction::None;
+    }
+
+    static DirectX::XMFLOAT2 GetLeftStick()
+    {
+        return {
+            GetAxis(Side::Left, Axis::X),
+            GetAxis(Side::Left, Axis::Y)
+        };
+    }
+
+    static DirectX::XMFLOAT2 GetRightStick()
+    {
+        return {
+            GetAxis(Side::Right, Axis::X),
+            GetAxis(Side::Right, Axis::Y)
+        };
+    }
+
+    static bool IsLeftStick(Direction dir)
+    {
+        auto stick = GetLeftStick();
+
+        switch (dir)
+        {
+        case Direction::Up:    return stick.y > 0.5f;
+        case Direction::Down:  return stick.y < -0.5f;
+        case Direction::Left:  return stick.x < -0.5f;
+        case Direction::Right: return stick.x > 0.5f;
+        }
+
+        return false;
+    }
+
+
+    static bool IsRightStick(Direction dir)
+    {
+        auto stick = GetRightStick();
+
+        switch (dir)
+        {
+        case Direction::Up:    return stick.y > 0.5f;
+        case Direction::Down:  return stick.y < -0.5f;
+        case Direction::Left:  return stick.x < -0.5f;
+        case Direction::Right: return stick.x > 0.5f;
+        }
+
+        return false;
     }
 
     static DirectX::XMFLOAT2 GetAxisDirectionVector()
