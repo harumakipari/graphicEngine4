@@ -154,38 +154,6 @@ void Player::Update(float elapsedTime)
     // これは絶対入れる　アニメーションの更新をしているから
     Character::Update(elapsedTime);
 
-    //if (auto camera = dynamic_cast<MainCamera*>(GetOwnerScene()->GetActiveCamera()))
-    //{
-    //    XMFLOAT3 cameraForwardDir = camera->CameraForwardXZ();
-    //    XMFLOAT3 cameraRightDir = camera->CameraRightXZ();
-    //    if (InputSystem::IsRightStick(Direction::Up))
-    //    {
-    //        moveDir.x += cameraForwardDir.x;
-    //        moveDir.y += cameraForwardDir.y;
-    //        moveDir.z += cameraForwardDir.z;
-    //    }
-    //    //if (InputSystem::GetInputState("S"))
-    //    if (InputSystem::IsRightStick(Direction::Down))
-    //    {
-    //        moveDir.x -= cameraForwardDir.x;
-    //        moveDir.y -= cameraForwardDir.y;
-    //        moveDir.z -= cameraForwardDir.z;
-    //    }
-    //    //if (InputSystem::GetInputState("D"))
-    //    if (InputSystem::IsRightStick(Direction::Right))
-    //    {
-    //        moveDir.x += cameraRightDir.x;
-    //        moveDir.y += cameraRightDir.y;
-    //        moveDir.z += cameraRightDir.z;
-    //    }
-    //    //if (InputSystem::GetInputState("A"))
-    //    if (InputSystem::IsRightStick(Direction::Left))
-    //    {
-    //        moveDir.x -= cameraRightDir.x;
-    //        moveDir.y -= cameraRightDir.y;
-    //        moveDir.z -= cameraRightDir.z;
-    //    }
-    //}
 
     if (InputSystem::GetInputState("RB", InputStateMask::Trigger))
     {

@@ -129,23 +129,39 @@ public:
 
     DirectX::XMFLOAT3 CameraForwardXZ() const
     {
-        float yaw = mainCameraComponent->yaw;
+        auto V = mainCameraComponent->GetView();
+        DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&V);
 
-        return {
-            sinf(yaw),
-            0.0f,
-            cosf(yaw)
-        };
+        // Viewの逆行列 = カメラのワールド行列
+        DirectX::XMMATRIX invView = DirectX::XMMatrixInverse(nullptr, view);
+
+        DirectX::XMFLOAT3 forward;
+        DirectX::XMStoreFloat3(
+            &forward,
+            DirectX::XMVector3Normalize(invView.r[2]) // Z軸
+        );
+
+        // XZに投影
+        forward.y = 0.0f;
+
+        float len = sqrtf(forward.x * forward.x + forward.z * forward.z);
+        if (len > 0.0001f)
+        {
+            forward.x /= len;
+            forward.z /= len;
+        }
+
+        return forward;
     }
 
     DirectX::XMFLOAT3 CameraRightXZ() const
     {
-        float yaw = mainCameraComponent->yaw + DirectX::XM_PIDIV2;
+        auto forward = CameraForwardXZ();
 
         return {
-            sinf(yaw),
+            forward.z,
             0.0f,
-            cosf(yaw)
+            -forward.x
         };
     }
 

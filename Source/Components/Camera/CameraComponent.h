@@ -122,6 +122,43 @@ public:
     }
 
     const DirectX::XMFLOAT4X4& GetView() {
+#if 1
+        using namespace DirectX;
+
+        XMFLOAT3 basePos{ 0,0,0 };
+        if (!target.expired())
+            basePos = target.lock()->GetComponentWorldTransform().GetLocation();
+
+        XMVECTOR focus =
+            XMLoadFloat3(&basePos) +
+            XMVectorSet(targetOffset.x, targetOffset.y, targetOffset.z, 0);
+
+        // yaw/pitch Ç©ÇÁ forward Çíºê⁄çÏÇÈ
+        XMVECTOR forward =
+            XMVector3Normalize(
+                XMVectorSet(
+                    cosf(pitch) * sinf(yaw),
+                    sinf(pitch),
+                    cosf(pitch) * cosf(yaw),
+                    0
+                )
+            );
+
+        // ÉJÉÅÉâà íu
+        XMVECTOR eye = focus - forward * distance;
+
+        XMStoreFloat4x4(
+            &view,
+            XMMatrixLookAtLH(
+                eye,
+                focus,
+                XMVectorSet(0, 1, 0, 0)
+            )
+        );
+
+        return view;
+#else
+
         using namespace DirectX;
 
         XMFLOAT3 basePos{ 0,0,0 };
@@ -161,6 +198,8 @@ public:
         );
 
         return view;
+#endif // 0
+
     }
 
 

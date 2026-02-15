@@ -163,10 +163,10 @@ void InputSystem::Initialize()
     directionKeys[static_cast<size_t>(Side::Left)][static_cast<size_t>(Direction::Down)] = std::make_unique<Keyboard>('S');
     directionKeys[static_cast<size_t>(Side::Left)][static_cast<size_t>(Direction::Right)] = std::make_unique<Keyboard>('D');
 
-    directionKeys[static_cast<size_t>(Side::Right)][static_cast<size_t>(Direction::Up)] = std::make_unique<Keyboard>('I');
-    directionKeys[static_cast<size_t>(Side::Right)][static_cast<size_t>(Direction::Left)] = std::make_unique<Keyboard>('J');
-    directionKeys[static_cast<size_t>(Side::Right)][static_cast<size_t>(Direction::Down)] = std::make_unique<Keyboard>('K');
-    directionKeys[static_cast<size_t>(Side::Right)][static_cast<size_t>(Direction::Right)] = std::make_unique<Keyboard>('L');
+    directionKeys[static_cast<size_t>(Side::Right)][static_cast<size_t>(Direction::Up)] = std::make_unique<Keyboard>(VK_UP);
+    directionKeys[static_cast<size_t>(Side::Right)][static_cast<size_t>(Direction::Left)] = std::make_unique<Keyboard>(VK_LEFT);
+    directionKeys[static_cast<size_t>(Side::Right)][static_cast<size_t>(Direction::Down)] = std::make_unique<Keyboard>(VK_DOWN);
+    directionKeys[static_cast<size_t>(Side::Right)][static_cast<size_t>(Direction::Right)] = std::make_unique<Keyboard>(VK_RIGHT);
 
 
     inputKeys.clear();
