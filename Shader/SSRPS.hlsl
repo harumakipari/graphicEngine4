@@ -24,6 +24,8 @@ float2 NdcToUv(float2 ndc)
     return uv;
 }
 
+// フレネル反射（FSchlick関数）
+// 視線と法線の角度に基づいて、反射の強さを計算
 inline float FSchlick(float f0, float cos)
 {
     return f0 + (1 - f0) * pow(1 - cos, 5);

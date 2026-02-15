@@ -195,6 +195,8 @@ bool SceneBase::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
 
     multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, framebufferDimensions.cx, framebufferDimensions.cy, 3);
 
+    gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
+
     //if (!postEffectManager.get())
     {
         Logger::Log(U8("ポストエフェクトを作成しました！"));
