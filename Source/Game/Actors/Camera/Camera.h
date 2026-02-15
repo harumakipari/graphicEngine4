@@ -110,10 +110,14 @@ public:
     {
         //mainCameraComponent->Shake(power, time);
     }
-
-    void SetOldTarget(const DirectX::XMFLOAT3& oldTarget)
+    void AddYaw(float v)
     {
-        this->oldTarget = oldTarget;
+        mainCameraComponent->yaw += v;
+    }
+
+    void AddPitch(float v)
+    {
+        mainCameraComponent->pitch = std::clamp(mainCameraComponent->pitch + v, -1.5f, 1.5f);
     }
 
     void DrawImGuiDetails()override
@@ -121,16 +125,6 @@ public:
 #ifdef USE_IMGUI
 
 #endif
-    }
-
-    void SetTarget(DirectX::XMFLOAT3 target)
-    {
-        this->target = target;
-    }
-
-    void OnFinishFirstPerf()
-    {
-        isFinishFirstPerf = true;
     }
 
     DirectX::XMFLOAT3 CameraForwardXZ() const
@@ -158,24 +152,15 @@ public:
 
 
 private:
-    DirectX::XMFLOAT3 target = { 0.0f,0.0f,0.0f };
     DirectX::XMFLOAT3 offset = { 0.6f,11.4f,-15.4f };
-    DirectX::XMFLOAT3 oldTarget = { 0.0f,0.0f,0.0f };
     DirectX::XMFLOAT3 cameraMin = { -11.0f,0.0f,-8.0f };
     DirectX::XMFLOAT3 cameraMax = { 11.0f,0.0f,7.0f };
-    bool isTargetBoss = false;
 
     float distanceX = 0.0f;
     float distanceY = 0.0f;
     float distanceZ = 0.0f;
-    // 最初の演出後の focus の位置
-    DirectX::XMFLOAT3 preTarget = { 0.0f,0.0f,0.0f };
     float elapsedTime = 0.0f;
 
-    bool isFinishFirstPerf = false;
-
-    // 最初の演出後のカメラの位置
-    DirectX::XMFLOAT3 preEye = { 0.0f,0.0f,0.0f };
 
     bool didShake = false;
 };

@@ -20,6 +20,7 @@
 #include "Engine/Scene/Scene.h"
 #include "Game/Actors/Camera/Camera.h"
 #include "Game/Actors/Stage/Stage.h"
+#include "Game/DarkGame/Interactable.h"
 
 void Player::Initialize(const Transform& transform)
 {
@@ -37,10 +38,6 @@ void Player::Initialize(const Transform& transform)
         }
     }
 
-
-    SetPosition(transform.GetLocation());
-    SetQuaternionRotation(transform.GetRotation());
-    SetScale(transform.GetScale());
     const std::vector<std::string> animationFilenames =
     {
         "./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_A.glb",
@@ -61,6 +58,7 @@ void Player::Initialize(const Transform& transform)
         "./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Right.glb",
         "./Data/Models/Characters/Aurora_FrozenHealth/Death.glb",
     };
+
     skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
     skeletalMeshComponent->AppendAnimations(animationFilenames);
     // アニメーションコントローラーを作成
@@ -98,7 +96,6 @@ void Player::Initialize(const Transform& transform)
     stateMachine_->ChangeState("Idle");
 
 
-#if 1
     // 敵からの攻撃を受ける当たり判定用のコンポーネントを追加
     std::shared_ptr<CapsuleComponent> capsuleComponent = this->AddComponent<class CapsuleComponent>("capsuleComponent", "skeletalComponent");
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
@@ -114,18 +111,6 @@ void Player::Initialize(const Transform& transform)
     capsuleComponent->SetCollisionOffsetY(height * 0.5f);
     capsuleComponent->SetIsVisibleDebugBox(false);
     capsuleComponent->Initialize();
-#else
-    std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("capsuleComponent", "skeletalComponent");
-    DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
-    boxComponent->SetBoxExtent({ size.x * 0.5f,size.y * 0.5f,size.z * 0.5f });
-    boxComponent->SetCollisionOffsetY(size.y * 0.5f);
-    boxComponent->SetMass(40.0f);
-    boxComponent->SetLayer(CollisionLayer::Player);
-    boxComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
-    boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-    boxComponent->Initialize();
-
-#endif // 0
 
 #if 0
     // ポイントライトコンポーネントを追加
@@ -152,15 +137,13 @@ void Player::Initialize(const Transform& transform)
 
     // 移動用コンポーネントを追加
     characterMovementComponent = this->AddComponent<CharacterMovementComponent>("movementComponent", "skeletalComponent");
-    //characterMovementComponent->SetUseGravity(false);
+
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", "skeletalComponent");
 
     particleComponent = AddComponent<ParticleComponent>("particleComponent", "skeletalComponent");
     particleComponent->Load("./Data/Effect/Files/heartTestEffect.json");
 
-
-    OutputDebugStringA(("Actor::Initialize called. rootComponent_ use_count = " + std::to_string(GetRootComponent().use_count()) + "\n").c_str());
 }
 
 
@@ -171,7 +154,6 @@ void Player::Update(float elapsedTime)
     // これは絶対入れる　アニメーションの更新をしているから
     Character::Update(elapsedTime);
 
-    DirectX::XMFLOAT3 moveDir = { 0,0,0 };
     //if (auto camera = dynamic_cast<MainCamera*>(GetOwnerScene()->GetActiveCamera()))
     //{
     //    XMFLOAT3 cameraForwardDir = camera->CameraForwardXZ();
@@ -221,8 +203,29 @@ void Player::Update(float elapsedTime)
 #if 1
     auto intent = inputComponent->GetIntent();
     //characterMovementComponent->SetMoveDirection({ 1,0,0 });
-    characterMovementComponent->ApplyIntent(intent);
-    rotationComponent->SetDirection(intent.move);
+    DirectX::XMFLOAT3 moveDir = { 0,0,0 };
+
+    if (auto camera = dynamic_cast<MainCamera*>(GetOwnerScene()->GetActiveCamera()))
+    {
+        auto camForward = camera->CameraForwardXZ();
+        auto camRight = camera->CameraRightXZ();
+
+        // 左スティック入力
+        float stickX = intent.leftMove.x;
+        float stickZ = intent.leftMove.z;
+
+        // カメラ基準の移動方向
+        moveDir.x = camForward.x * stickZ + camRight.x * stickX;
+        moveDir.z = camForward.z * stickZ + camRight.z * stickX;
+
+        camera->AddYaw(intent.rightMove.x * elapsedTime * 3.0f);
+        camera->AddPitch(intent.rightMove.y * elapsedTime * 3.0f);
+    }
+
+
+    characterMovementComponent->SetMoveDirection(moveDir);
+    rotationComponent->SetDirection(moveDir);
+
 #endif // 0
 
     //characterMovementComponent->SetMoveDirection(moveDir);
@@ -230,71 +233,6 @@ void Player::Update(float elapsedTime)
 
     //particleComponent->Play();
     return;
-
-    XMFLOAT3 position = GetPosition();
-    XMFLOAT3 prevPosition = position;
-
-    angle = GetEulerRotation();
-
-    //========================
-    // 1. 重力
-    //========================
-    velocity.y += gravity_ * elapsedTime;
-
-    //========================
-    // 2. 位置更新（予測）
-    //========================
-    position.y += velocity.y * elapsedTime;
-
-    isGrounded_ = false;
-
-    //========================
-    // 3. 下向き RayCast（前フレーム基準）
-    //========================
-    HitResult hit;
-
-    float rayStartY = prevPosition.y + groundOffset_;
-    float fallDistance = prevPosition.y - position.y;
-
-    float rayLength = groundOffset_ + fallDistance + 0.1f;
-    rayLength = std::max<float>(rayLength, groundOffset_ + 0.2f);
-
-    if (Physics::Instance().RayCast(
-        { prevPosition.x, rayStartY, prevPosition.z },
-        { 0.0f, -1.0f, 0.0f },
-        rayLength,
-        hit,
-        CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
-    {
-        float groundY = hit.position.y;
-        float desiredY = groundY /*+ groundOffset_*/;
-
-        //========================
-        // 4. 押し戻し
-        //========================
-        if (position.y <= desiredY)
-        {
-            position.y = desiredY;
-            velocity.y = 0.0f;
-            isGrounded_ = true;
-        }
-
-        Graphics::GetShapeRenderer()->DrawSphere(
-            hit.position, 0.1f, { 1,0,0,1 });
-    }
-
-    SetPosition(position);
-
-
-    if (Physics::Instance().RayCast(
-        DirectX::XMFLOAT3(position.x, position.y + 1.5f, position.z),
-        DirectX::XMFLOAT3(sinf(angle.y), 0, cosf(angle.y)),
-        15.0f,
-        hit, CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
-    {
-        Graphics::GetShapeRenderer()->DrawSphere(hit.position, 0.1f, { 1, 1, 1, 1 });
-    }
-
 
     //if (GameManager::GetGameTimerStart() && !onceFrag)
     //{// ゲームが開始されたら
@@ -331,90 +269,8 @@ void Player::Update(float elapsedTime)
         }
     }
 
-    switch (state)
-    {
-    case Player::State::Idle:
-        currentTurnSpeed = maxTurnSpeed;
-        break;
-    case Player::State::Running:
-        currentTurnSpeed = maxTurnSpeed;
-        break;
-    case Player::State::StartCharge:
-        currentTurnSpeed = minTurnSpeed;
-        //if (effectChargeComponent->GetEffectState() == EffectComponent::EffectState::Ending)
-        if (InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
-        {// チャージが終わったら
-            state = Player::State::FireBeam;
-        }
-        break;
-    case Player::State::FireBeam:
-        state = Player::State::Idle;
-        break;
-    case Player::State::FinishBeam:
-        break;
-    case Player::State::Attack:
-        break;
-    case Player::State::CantChargeBeam:
-        currentTurnSpeed = maxTurnSpeed;
-        break;
-    case Player::State::CantMoveCharge:
-        currentTurnSpeed = 0.0f;
-        currentSpeed = 0.0f;
-    default:
-        break;
-    }
 
 
-    //float itemCount = static_cast<float>(hasRightItems.size() + hasLeftItems.size());
-#if 0
-    float itemCount = static_cast<float>(rightItemCount + leftItemCount);
-
-
-    if (InputSystem::GetInputState("Enter", InputStateMask::Trigger) && itemCount > 0)
-    {
-        DirectX::XMFLOAT3 dir = GetForward();
-        DirectX::XMFLOAT3 pos = GetPosition();
-        pos.x += dir.x * 1.0f;
-        pos.z += dir.z * 1.0f;
-        pos.y += 0.5f;
-
-        //// エフェクトコンポーネントに伝達
-        effectChargeComponent->SetWorldLocationDirect(pos);
-        effectChargeComponent->SetEffectType(EffectComponent::EffectType::BeamCharge);
-        effectChargeComponent->SetEffectPower(itemCount);
-        effectChargeComponent->SetEffectDuration(1.5f);
-        effectChargeComponent->Activate();
-    }
-
-    if (effectChargeComponent->GetEffectState() == EffectComponent::EffectState::Ending)
-    {// 溜めが終わったら、  Beam を生成する
-        DirectX::XMFLOAT3 dir = GetForward();
-        DirectX::XMFLOAT3 pos = GetPosition();
-        pos.x += dir.x * 1.0f;
-        pos.z += dir.z * 1.0f;
-        pos.y += 0.5f;
-
-        // Beam を生成する
-        auto beam = ActorManager::CreateAndRegisterActor<Beam>("beam", false);
-        beam->SetItemPower(itemCount);
-        beam->SetItemCount(rightItemCount + leftItemCount);
-        float itemPower = itemCount * 10.0f;
-        float speed = 10.0f;
-        beam->SetTempPosition(pos);
-        beam->SetTempMass(itemPower);
-        beam->Initialize();
-        beam->PostInitialize();
-        auto sphere = std::dynamic_pointer_cast<SphereComponent>(beam->FindComponentByName("sphereComponent"));
-        sphere->SetKinematic(false);
-        sphere->SetGravity(false);
-        //sphere->SetMass(itemPower);
-        //sphere->SetIntialVelocity(DirectX::XMFLOAT3(dir.x * itemPower, dir.y * itemPower, dir.z * itemPower));
-        sphere->SetIntialVelocity(DirectX::XMFLOAT3(dir.x * speed, dir.y * speed, dir.z * speed));
-        HasItemReset();
-        effectChargeComponent->Deactivate();
-    }
-
-#endif // 0
 
 
     // プレイヤーの被弾時に色を変える処理
@@ -448,19 +304,6 @@ void Player::Update(float elapsedTime)
 
 #if USE_IMGUI
     ImGui::Begin("Player");
-    ImGui::Text("State: %s", [&]() {
-        switch (state)
-        {
-        case Player::State::Idle: return "Idle";
-        case Player::State::Running: return "Running";
-        case Player::State::StartCharge: return "StartCharge";
-        case Player::State::FireBeam: return "FireBeam";
-        case Player::State::FinishBeam: return "FinishBeam";
-        case Player::State::Attack: return "Attack";
-        case Player::State::CantChargeBeam: return "CantChargeBeam";
-        default: return "Unknown";
-        }
-        }());
     ImGui::ColorEdit3("playerDamage", &color.x);
     ImGui::DragFloat3("playerDamageColor", &color.x);
     ImGui::End();
@@ -717,49 +560,6 @@ void Player::Move(float elapsedTime)
     SetPosition(pos);
     //position.x += velocity.x * moveSpeed;
     //position.z += velocity.z * moveSpeed;
-    HandleInput(pad);
-}
-
-void Player::HandleInput(GamePad& pad)
-{
-    if (!stateStack.empty())
-    {
-        //stateStack.top()->HandleInput(*this, pad);
-    }
-}
-
-void Player::PushState(std::shared_ptr<PlayerState> state)
-{
-    if (!stateStack.empty())
-    {
-        stateStack.top()->Exit(*this);
-    }
-    stateStack.push(state);
-    state->Enter(*this);
-}
-
-void Player::PopState()
-{
-    if (!stateStack.empty())
-    {//なくなる時
-        stateStack.top()->Exit(*this);
-        stateStack.pop();
-    }
-    if (!stateStack.empty())
-    {//残っているステート
-        stateStack.top()->Enter(*this);
-    }
-}
-
-void Player::ChangeState(std::shared_ptr<PlayerState> state)
-{
-    if (!stateStack.empty())
-    {
-        stateStack.top()->Exit(*this);
-        stateStack.pop();
-    }
-    stateStack.push(state);
-    state->Enter(*this);
 }
 
 //当たった時の処理
@@ -767,6 +567,33 @@ void Player::Hit()
 {
     hp -= 1;
 }
+
+
+// インタラクト対象検索
+IInteractable* Player::FindInteractable() const
+{
+    float bestDist = 2.0f;
+    IInteractable* best = nullptr;
+
+    for (auto& actor : GetOwnerScene()->GetActorManager()->GetAllActors())
+    {
+        auto interactable = dynamic_cast<IInteractable*>(actor.get());
+
+        if (!interactable) continue;
+
+        float dist = MathHelper::Distance(GetPosition(), actor->GetPosition());
+
+        if (dist < bestDist)
+        {
+            bestDist = dist;
+            best = interactable;
+        }
+    }
+
+    return best;
+}
+
+
 
 //スティックの入力値から移動ベクトルを取得
 DirectX::XMFLOAT3 Player::GetMoveVec()

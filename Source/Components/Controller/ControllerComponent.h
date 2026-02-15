@@ -19,7 +19,8 @@ class Actor;
 
 struct MoveIntent
 {
-    DirectX::XMFLOAT3 move;
+    DirectX::XMFLOAT3 leftMove;         // 左スティックの入力値
+    DirectX::XMFLOAT2 rightMove;    // 右スティックの入力値
     bool jump = false;
 };
 
@@ -32,7 +33,7 @@ public:
 
     void Tick(float) override;
 
-    const DirectX::XMFLOAT3& GetMoveInput() const { return intent_.move; }
+    const DirectX::XMFLOAT3& GetMoveInput() const { return intent_.leftMove; }
 
     float GetTumbStateLx()
     {
@@ -72,7 +73,7 @@ public:
 
     void ApplyIntent(const MoveIntent& intent)
     {
-        inputDir_ = intent.move;
+        inputDir_ = intent.leftMove;
     }
 
     void SetUseGravity(const bool useGravity) { this->useGravity = useGravity; }

@@ -157,7 +157,8 @@ void RotationComponent::Tick(float deltaTime)
 
 void InputComponent::Tick(float)
 {
-    intent_.move = { 0,0,0 };
+    intent_.leftMove = { 0,0,0 };
+    intent_.rightMove = { 0.0f,0.0f };
     auto scene = Scene::GetCurrentScene();
     if (!scene)
     {
@@ -166,12 +167,19 @@ void InputComponent::Tick(float)
 
     if (!scene->GetCameraManager()->IsUseDebug())
     {
-
+        // 左スティック
         float lx = InputSystem::GetLeftStick().x;
         float ly = InputSystem::GetLeftStick().y;
 
-        intent_.move.x = lx;
-        intent_.move.z = ly;
+        intent_.leftMove.x = lx;
+        intent_.leftMove.z = ly;
+
+        // 右スティック
+        float rx = InputSystem::GetRightStick().x;
+        float ry = InputSystem::GetRightStick().y;
+
+        intent_.rightMove.x = rx;
+        intent_.rightMove.y = ry;
 
 #if 0
         if (InputSystem::GetInputState("W"))
