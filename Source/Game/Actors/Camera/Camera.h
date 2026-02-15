@@ -11,7 +11,7 @@
 
 #include "Engine/Camera/CameraConstants.h"
 #include "Game/Actors/Stage/ElasticBuilding.h"
-#include "Game/Actors/Stage/FightStage.h"
+#include "Game/DarkGame/DarkActors/FightStage.h"
 
 class Camera :public Actor
 {

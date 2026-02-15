@@ -115,8 +115,8 @@ void ParticleComponent::Tick(float deltaTime)
     {
         settings.onPreEmit();
     }
-    XMFLOAT3 position = owner_.lock()->GetPosition();
-    XMFLOAT3 rotation = owner_.lock()->GetEulerRotation();
+    XMFLOAT3 position = GetComponentLocation();;
+    XMFLOAT3 rotation = GetComponentEulerRotation();
 
     // 再生してからの経過時間更新
     elapsedTimeSincePlay += deltaTime;
@@ -126,10 +126,9 @@ void ParticleComponent::Tick(float deltaTime)
         isPlaying = false;
     }
 
-    if (settings.loop && elapsedTimeSincePlay >= duration)
+    while (settings.loop && elapsedTimeSincePlay >= duration)
     {
-        elapsedTimeSincePlay = 0.0f;
-        // エフェクト再生
+        elapsedTimeSincePlay -= duration;
         EffectManager::Play(effectHandle, position, rotation);
     }
 

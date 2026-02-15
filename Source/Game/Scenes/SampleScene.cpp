@@ -22,7 +22,8 @@
 
 
 #include "Physics/Physics.h"
-#include "Game/Actors/Stage/FightStage.h"
+#include "Game/DarkGame/DarkActors/FightStage.h"
+
 
 #include "Graphics/PostProcess/BloomEffect.h"
 #include "Physics/CollisionSystem.h"

@@ -287,7 +287,8 @@
     <ClCompile Include="Source\Game\Actors\Dessert\TargetPudding.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossEnemy.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossState.cpp" />
-    <ClCompile Include="Source\Game\Actors\Stage\FightStage.cpp" />
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DoorLeftActor.cpp" />
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\FightStage.cpp" />
     <ClCompile Include="Source\Game\Actors\Player\Player.cpp" />
     <ClCompile Include="Source\Game\Actors\Player\PlayerState.cpp" />
     <ClCompile Include="Source\Game\Actors\Player\PlayerStateDerived.cpp" />
@@ -422,12 +423,15 @@
     <ClInclude Include="Source\Game\Actors\Stage\Cloth.h" />
     <ClInclude Include="Source\Game\Actors\Stage\ClothSimulate.h" />
     <ClInclude Include="Source\Game\Actors\Stage\ElasticBuilding.h" />
-    <ClInclude Include="Source\Game\Actors\Stage\FightStage.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DoorLeftActor.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\FightStage.h" />
     <ClInclude Include="Source\Game\Actors\Stage\TestSoftBody.h" />
     <ClInclude Include="Source\Game\Actors\Stage\Stage.h" />
     <ClInclude Include="Source\Game\Actors\WaterSphere\MorphModel.h" />
     <ClInclude Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.h" />
     <ClInclude Include="Source\Game\Actors\WaterSphere\WaterSphere.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\InteractableActor.h" />
+    <ClInclude Include="Source\Game\DarkGame\Interactable.h" />
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />
     <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />

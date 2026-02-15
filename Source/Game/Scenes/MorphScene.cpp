@@ -22,7 +22,8 @@
 
 
 #include "Physics/Physics.h"
-#include "Game/Actors/Stage/FightStage.h"
+#include "Game/DarkGame/DarkActors/FightStage.h"
+
 #include "Game/Actors/WaterSphere/WaterSphere.h"
 
 #include "Physics/CollisionSystem.h"

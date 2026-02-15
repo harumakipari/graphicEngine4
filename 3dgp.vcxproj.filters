@@ -492,7 +492,7 @@
     <ClCompile Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\Actors\Stage\FightStage.cpp">
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\FightStage.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\Actors\Camera\Camera.cpp">
@@ -502,6 +502,9 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Components\Render\MeshComponent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DoorLeftActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -781,7 +784,7 @@
     <ClInclude Include="Source\Game\Actors\Player\PlayerStateDerived.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\Boss\BossEnemy.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\Boss\BossState.h" />
-    <ClInclude Include="Source\Game\Actors\Stage\FightStage.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\FightStage.h" />
     <ClInclude Include="Source\Graphics\Renderer\PrimitiveRenderer.h" />
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\Graphics\Renderer\PrimitiveShapeRenderer.h" />
@@ -822,6 +825,9 @@
     <ClInclude Include="Source\Utility\GameUtility.h" />
     <ClInclude Include="Source\UI\FontManager.h" />
     <ClInclude Include="Source\Engine\Debug\LoggerConfig.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\InteractableActor.h" />
+    <ClInclude Include="Source\Game\DarkGame\Interactable.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DoorLeftActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
