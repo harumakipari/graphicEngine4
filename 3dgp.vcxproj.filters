@@ -204,9 +204,6 @@
     <ClCompile Include="Source\Game\Actors\Player\Player.cpp">
       <Filter>Sources\Game\Actors\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\Actors\Player\PlayerState.cpp">
-      <Filter>Sources\Game\Actors\Player</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Physics\Physics.cpp">
       <Filter>Sources\Physics</Filter>
     </ClCompile>
@@ -546,9 +543,6 @@
       <Filter>Sources\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Actors\Player\Player.h">
-      <Filter>Sources\Game\Actors\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Actors\Player\PlayerState.h">
       <Filter>Sources\Game\Actors\Player</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Actors\Base\Character.h">
@@ -1077,6 +1071,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GltfModelCharacterHairPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\VolumetricLightPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

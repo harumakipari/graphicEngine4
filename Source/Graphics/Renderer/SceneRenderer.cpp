@@ -360,62 +360,37 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext, const std
 
 
 
-void SceneRenderer::CastShadowRender(ID3D11DeviceContext* immediateContext)
+void SceneRenderer::CastShadowRender(ID3D11DeviceContext* immediateContext, const std::vector<MeshComponent*>& items)
 {
-    Scene* currentScene = Scene::GetCurrentScene();  // 現在のシーン取得
-    if (!currentScene) return;
-    auto& allActors = currentScene->GetActorManager()->GetAllActors();
 
-    for (auto actor : allActors)
+    for (auto* meshComponent : items)
     {
-        if (!actor->GetRootComponent())
+        const auto& worldMat =
+            meshComponent->GetComponentWorldTransform()
+            .ToWorldTransform();
+
+        meshComponent->UpdateConstantBuffer(immediateContext);
+
+        if (meshComponent->model->mode ==
+            InterleavedGltfModel::Mode::SkeltalMesh)
         {
-            continue;
+            CastShadow(immediateContext,
+                meshComponent,
+                worldMat,
+                meshComponent->modelNodes,
+                InterleavedGltfModel::RenderPass::All);
         }
-
-        if (!actor->IsActive())
-        {// actorが存在していなかったらスキップ
-            continue;
-        }
-
-        // actor に付属している全ての meshComponent を取り出す
-        std::vector<MeshComponent*> meshComponents;
-        actor->GetComponents<MeshComponent>(meshComponents);
-
-        for (const MeshComponent* meshComponent : meshComponents)
+        else
         {
-            if (!meshComponent->IsVisible())
-            { // 描画フラグが false ならスキップ
-                continue;
-            }
-            if (!meshComponent->IsCastShadow())
-            {
-                continue;
-            }
-            // 各 MeshComponent 自身の最新ワールド行列を取り出す
-            const auto& worldMat = meshComponent->GetComponentWorldTransform().ToWorldTransform();
-            // 各 MeshComponent の model を取り出す
-            const InterleavedGltfModel* model = meshComponent->model.get();
-            meshComponent->UpdateConstantBuffer(immediateContext);
-            auto* convexComponent = actor->GetComponent<MorphMeshComponent>();
-            if (convexComponent = dynamic_cast<MorphMeshComponent*>(convexComponent))
-            {
-                auto morphModel = dynamic_cast<MorphModel*>(convexComponent->model.get());
-                morphModel->CastShadow(immediateContext, worldMat, {});
-                continue;
-            }
-
-            if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
-            {// 
-                CastShadow(immediateContext, meshComponent, worldMat, meshComponent->modelNodes, InterleavedGltfModel::RenderPass::Blend);
-            }
-            else if (meshComponent->model->mode == InterleavedGltfModel::Mode::StaticMesh)
-            {
-                CastShadowWithStaticBatching(immediateContext, meshComponent, worldMat, meshComponent->modelNodes);
-            }
-
+            CastShadowWithStaticBatching(
+                immediateContext,
+                meshComponent,
+                worldMat,
+                meshComponent->modelNodes);
         }
     }
+
+
 }
 
 
@@ -1113,10 +1088,14 @@ RenderQueues SceneRenderer::BuildRenderQueues()
                 isForward ? queues.forwardBlend
                 : queues.deferredBlend;
 
-            // ここは今後マテリアル判定にしてもいい
             opaque.push_back(mesh);
             mask.push_back(mesh);
             blend.push_back(mesh);
+
+            if (mesh->IsCastShadow())
+            {
+                queues.shadowCasters.push_back(mesh);
+            }
         }
     }
 

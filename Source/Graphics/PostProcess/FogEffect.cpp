@@ -12,8 +12,10 @@ void FogEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height
 {
     fogCBuffer = std::make_unique<ConstantBuffer<FogConstants>>(device);
     fullScreenQuad = std::make_unique<FullScreenQuad>(device);
-    fogBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false, DXGI_FORMAT_R16_FLOAT);
-    HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", fogPS.ReleaseAndGetAddressOf());
+    //fogBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false, DXGI_FORMAT_R16_FLOAT);
+    fogBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false);
+    //HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", fogPS.ReleaseAndGetAddressOf());
+    HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricLightPS.cso", fogPS.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     D3D11_TEXTURE2D_DESC texture2dDesc;
@@ -39,11 +41,11 @@ void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourc
     fogCBuffer->data.enableDither = enableDither;
     fogCBuffer->Activate(immediateContext, 8);
 
-    fogBuffer->Clear(immediateContext, 0, 0, 0, 0);
+    fogBuffer->Clear(immediateContext, 0, 0, 0, 1);
     fogBuffer->Activate(immediateContext);
 
-    immediateContext->PSSetShaderResources(10, 1, noise3d.GetAddressOf());
-    immediateContext->PSSetShaderResources(11, 1, noise2d.GetAddressOf());
+    immediateContext->PSSetShaderResources(30, 1, noise2d.GetAddressOf());
+    immediateContext->PSSetShaderResources(31, 1, noise3d.GetAddressOf());
 
 
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
@@ -65,9 +67,9 @@ void FogEffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
     ImGui::Checkbox("enable", &enabled);
-    ImGui::ColorEdit3("Fog Color", fogCBuffer->data.fogColor);
+    ImGui::ColorEdit4("Fog Color", fogCBuffer->data.fogColor);
     ImGui::SliderFloat("Intensity", &(fogCBuffer->data.fogColor[3]), 0.0f, 10.0f);
-    ImGui::SliderFloat("Density", &fogCBuffer->data.fogDensity, 0.0f, 0.05f, "%.6f");
+    ImGui::SliderFloat("Density", &fogCBuffer->data.fogDensity, 0.0f, 10.0f, "%.6f");
     ImGui::SliderFloat("Height Falloff", &fogCBuffer->data.fogHeightFalloff, 0.001f, 1.0f, "%.4f");
     ImGui::SliderFloat("Cutoff Distance", &fogCBuffer->data.fogCutoffDistance, 0.0f, 1000.0f);
     ImGui::SliderFloat("Ground Level", &fogCBuffer->data.groundLevel, -100.0f, 100.0f);

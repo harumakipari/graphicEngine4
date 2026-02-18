@@ -3,6 +3,62 @@
 
 #include "Core/Actor.h"
 
+
+// 自動随従する
+void TPSCameraComponent::AutoFollow(const DirectX::XMFLOAT3& moveDir, const DirectX::XMFLOAT2& rightStick, float deltaTime)
+{
+    using namespace DirectX;
+
+    // 右スティック触ったらタイマーリセット
+    float stickMag =
+        sqrtf(rightStick.x * rightStick.x +
+            rightStick.y * rightStick.y);
+
+    if (stickMag > autoFollowDeadZone)
+    {
+        autoFollowDelayTimer = autoFollowDelay;
+        return;
+    }
+
+    // タイマー中は追従しない
+    if (autoFollowDelayTimer > 0.0f)
+    {
+        autoFollowDelayTimer -= deltaTime;
+        return;
+    }
+
+    // 移動していない
+    float len =
+        sqrtf(moveDir.x * moveDir.x +
+            moveDir.z * moveDir.z);
+
+    if (len < 0.1f)
+        return;
+
+    // 正規化
+    XMFLOAT3 dir = {
+        moveDir.x / len,
+        0.0f,
+        moveDir.z / len
+    };
+
+    float desiredYaw =
+        atan2f(dir.x, dir.z);
+
+    float diff =
+        WrapAngle(desiredYaw - yaw);
+
+    // 小さい角度は無視
+    if (fabsf(diff) < XMConvertToRadians(90.0f))
+        return;
+
+    // ゆっくり回す
+    yaw += diff *
+        autoFollowStrength *
+        deltaTime;
+}
+
+
 void DebugCameraComponent::HandleKeyboardInput(float deltaTime)
 {
     using namespace DirectX;

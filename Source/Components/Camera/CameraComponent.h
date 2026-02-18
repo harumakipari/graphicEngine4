@@ -58,6 +58,7 @@ public:
 public:
     float yaw = 0.0f;
     float pitch = DirectX::XMConvertToRadians(-12.0f);
+    std::weak_ptr<SceneComponent> target;
 
 protected:
     //float fovY = DirectX::XMConvertToRadians(60.0f);
@@ -116,13 +117,15 @@ public:
                 pitch = DirectX::XMConvertToRadians(pitchDeg);
             }
 
+            ImGui::SliderFloat(U8("追従するスピード"), &autoFollowStrength, 0.05f, 10.0f);
+
             ImGui::TreePop();
         }
 #endif
     }
 
-    const DirectX::XMFLOAT4X4& GetView() {
-#if 1
+    const DirectX::XMFLOAT4X4& GetView() override
+    {
         using namespace DirectX;
 
         XMFLOAT3 basePos{ 0,0,0 };
@@ -157,52 +160,14 @@ public:
         );
 
         return view;
-#else
 
-        using namespace DirectX;
-
-        XMFLOAT3 basePos{ 0,0,0 };
-        if (!target.expired())
-            basePos = target.lock()->GetComponentWorldTransform().GetLocation();
-
-        XMVECTOR focus = XMLoadFloat3(&basePos) +
-            XMVectorSet(targetOffset.x, targetOffset.y, targetOffset.z, 0);
-
-        // Yaw → Pitch
-        XMMATRIX yawRot = XMMatrixRotationY(yaw);
-
-        XMVECTOR right = XMVector3TransformNormal(
-            XMVectorSet(1, 0, 0, 0),
-            yawRot
-        );
-
-        XMMATRIX pitchRot = XMMatrixRotationAxis(right, pitch);
-        XMMATRIX rot = pitchRot * yawRot;
-
-        // 後方に距離分下がる
-        XMVECTOR offset = XMVector3TransformNormal(
-            XMVectorSet(0, 0, -distance, 0),
-            rot
-        );
-
-        // 理想のカメラ位置
-        XMVECTOR idealEye = focus + offset;
-
-        //// 衝突解決後のカメラ位置
-        //XMVECTOR finalEye =
-        //    ResolveCameraCollision(focus, idealEye);
-
-        XMStoreFloat4x4(
-            &view,
-            XMMatrixLookAtLH(idealEye, focus, XMVectorSet(0, 1, 0, 0))
-        );
-
-        return view;
-#endif // 0
 
     }
 
+    // 自動随従する
+    void AutoFollow(const DirectX::XMFLOAT3& moveDir, const DirectX::XMFLOAT2& rightStick, float deltaTime);
 
+    // カメラの距離をイージングで変化させる
     void PlayDistance(float from, float to, float time)
     {
         distanceFrom = from;
@@ -224,7 +189,9 @@ public:
 
     float distance = 4.5f;
     DirectX::XMFLOAT3 targetOffset = { 0.0f, 1.5f, 0.0f };
-    std::weak_ptr<SceneComponent> target;
+
+
+
 
 private:
     DirectX::XMVECTOR ResolveCameraCollision(
@@ -264,7 +231,22 @@ private:
         return idealEye;
     }
 
+    static float WrapAngle(float a)
+    {
+        using namespace DirectX;
+
+        while (a > XM_PI)  a -= XM_2PI;
+        while (a < -XM_PI) a += XM_2PI;
+        return a;
+    }
 private:
+    // 自動追従のためのパラメータ
+    float autoFollowStrength = 2.0f; // 追従の強さ。大きいほど素早く追従する
+    float autoFollowDeadZone = 0.15f;
+    float autoFollowDelayTimer = 0.0f;
+    float autoFollowDelay = 1.2f; // カメラの方向を変えたら、一定時間追従しないようにするための遅延時間
+    float autoFollowDegree = 25.0f; // 追従する角度の閾値（degree）
+
     float distanceEasingValue = 0.0f;
     float distanceFrom = 0.0f;
     float distanceTo = 0.0f;

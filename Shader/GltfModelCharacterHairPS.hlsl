@@ -12,7 +12,7 @@ Texture2D<float4> materialTextures[5] : register(t1);
 
 float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 {
-    return 1;
+    //return 1;
 
     const float GAMMA = 2.2;
     const MaterialConstants m = materials[material];

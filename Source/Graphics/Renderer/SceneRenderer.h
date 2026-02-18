@@ -20,6 +20,8 @@ struct RenderQueues
     std::vector<MeshComponent*> forwardOpaque;
     std::vector<MeshComponent*> forwardMask;
     std::vector<MeshComponent*> forwardBlend;
+
+    std::vector<MeshComponent*> shadowCasters;
 };
 
 class SceneRenderer
@@ -60,7 +62,7 @@ public:
 
     void RenderBlend(ID3D11DeviceContext* immediateContext, const std::vector<MeshComponent*>& items) const;
 
-    void CastShadowRender(ID3D11DeviceContext* immediateContext);
+    void CastShadowRender(ID3D11DeviceContext* immediateContext, const std::vector<MeshComponent*>& items);
 
     void CastShadow(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass);
 

@@ -250,6 +250,9 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricFogPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricLightPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\WiredShapeRendererPS.cso</FullPath>
     </ContentFile>
     <ContentFile>

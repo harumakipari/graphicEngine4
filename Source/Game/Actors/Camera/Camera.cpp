@@ -1,28 +1,28 @@
 #include "pch.h"
 #include "Camera.h"
 
+#include "Components/Controller/ControllerComponent.h"
+
 void MainCamera::Update(float deltaTime)
 {
-    //float rotateSpeed = DirectX::XMConvertToRadians(90.0f); // 度/秒
+    // プレイヤーの移動方向を取得
+    XMFLOAT3 moveDir = {};
 
-    //if (InputSystem::GetInputState("Up"))
-    //{
-    //    mainCameraComponent->pitch += rotateSpeed * deltaTime;
-    //}
-    //if (InputSystem::GetInputState("Down"))
-    //{
-    //    mainCameraComponent->pitch -= rotateSpeed * deltaTime;
-    //}
-    //if (InputSystem::GetInputState("Left"))
-    //{
-    //    mainCameraComponent->yaw += rotateSpeed * deltaTime;
-    //}
-    //if (InputSystem::GetInputState("Right"))
-    //{
-    //    mainCameraComponent->yaw -= rotateSpeed * deltaTime;
-    //}
+    if (auto target = mainCameraComponent->target.lock())
+    {
+        auto actor = target->GetOwner();
 
-    //mainCameraComponent->pitch = std::clamp(mainCameraComponent->pitch, DirectX::XMConvertToRadians(-60.0f), DirectX::XMConvertToRadians(80.0f));
-    //mainCameraComponent->yaw = std::atan2f(std::sinf(mainCameraComponent->yaw), std::cosf(mainCameraComponent->yaw));
+        if (auto movement = actor->GetComponent<CharacterMovementComponent>())
+        {
+            moveDir = movement->GetVelocity();
+        }
+    }
+
+    // 右スティック
+    XMFLOAT2 rightStick =
+        InputSystem::GetRightStick();
+
+    // AutoFollow 呼び出し
+    //static_cast<TPSCameraComponent*>(mainCameraComponent.get())->AutoFollow(moveDir, rightStick, deltaTime);
 }
 

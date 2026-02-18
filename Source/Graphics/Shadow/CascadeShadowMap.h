@@ -34,6 +34,9 @@ private:
     };
     Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer;
 
+
+    std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> debugSRVs;
+
 public:
     void Activate(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& cameraView, const DirectX::XMFLOAT4X4& cameraProjection,const DirectX::XMFLOAT4& lightDirection,
         float criticalDepthValue/* If this value is 0, the camera's far panel distance is used.*/,UINT cbSlot);
@@ -48,14 +51,14 @@ public:
     }
 
 
-
+    void DrawImGui();
 public:
     const UINT cascadeCount;
-    float splitSchemeWeight = 0.65f; // logarithmic_split_scheme * _split_scheme_weight + uniform_split_scheme * (1 - _split_scheme_weight)
+    float splitSchemeWeight = 0.774f; // logarithmic_split_scheme * _split_scheme_weight + uniform_split_scheme * (1 - _split_scheme_weight)
 
     bool fitToCascade = true;
 
-    float zMult = 8.0f;
+    float zMult = 1.0f;
 
 private:
     D3D11_VIEWPORT catchedViewports[D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE];

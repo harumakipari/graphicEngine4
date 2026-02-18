@@ -524,7 +524,7 @@ public:
     void AttachTo(const std::shared_ptr<SceneComponent>& parent)
     {
         attachParent_ = parent;
-        parent->attachChildren_.push_back(shared_from_this());
+       parent->attachChildren_.push_back(shared_from_this());
         // ‚à‚¤ˆê“xŠm”F
     }
     void AddWorldOffset(const DirectX::XMFLOAT3& offset);

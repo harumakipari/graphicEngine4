@@ -77,6 +77,12 @@ public:
     }
 
     void SetUseGravity(const bool useGravity) { this->useGravity = useGravity; }
+
+    // ‘¬“x‚ğæ“¾‚·‚é
+    DirectX::XMFLOAT3 GetVelocity() const
+    {
+        return velocity_;
+    }
 private:
     // ó‘Ô
     DirectX::XMFLOAT3 velocity_{ 0,0,0 };

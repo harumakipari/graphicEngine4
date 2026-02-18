@@ -33,8 +33,8 @@ void Player::Initialize(const Transform& transform)
 
         if (material.name == "M_Aurora_Hair_Blonde_FrozenHearth")
         {// ”¯‚Ì–Ñ‚¾‚Á‚½‚ç
-            material.overridePipelineName = "characterHairForward";
-            material.data.alphaMode = 2;
+            //material.overridePipelineName = "characterHairForward";
+            //material.data.alphaMode = 2;
         }
     }
 

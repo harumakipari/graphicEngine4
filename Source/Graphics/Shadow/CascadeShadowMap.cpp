@@ -5,6 +5,8 @@
 
 #include <array>
 #include <algorithm>
+
+#include "imgui.h"
 #include "Engine/Utility/Win32Utils.h"
 
 // Calculate the 8 vertices of the view frustum based on the provided view and projection matrices.
@@ -89,6 +91,31 @@ CascadedShadowMaps::CascadedShadowMaps(ID3D11Device* device, UINT width, UINT he
     bufferDesc.CPUAccessFlags = 0;
     hr = device->CreateBuffer(&bufferDesc, NULL, constantBuffer.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+    // デバッグ用のSRVを作成
+	debugSRVs.resize(cascadeCount);
+
+	for (UINT i = 0; i < cascadeCount; ++i)
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
+		desc.Format = DXGI_FORMAT_R32_FLOAT;
+		desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		desc.Texture2D.MipLevels = 1;
+		desc.Texture2D.MostDetailedMip = 0;
+
+		// slice 指定
+		desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+		desc.Texture2DArray.FirstArraySlice = i;
+		desc.Texture2DArray.ArraySize = 1;
+		desc.Texture2DArray.MipLevels = 1;
+		desc.Texture2DArray.MostDetailedMip = 0;
+
+		device->CreateShaderResourceView(
+			depthStencilBuffer.Get(),
+			&desc,
+			debugSRVs[i].GetAddressOf());
+	}
+
 }
 
 void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& cameraView, const DirectX::XMFLOAT4X4& cameraProjection, const DirectX::XMFLOAT4& lightDirection,
@@ -216,4 +243,24 @@ void CascadedShadowMaps::Deactive(ID3D11DeviceContext* immediateContext)
 	catchedRenderTargetView.Reset();
 	catchedDepthStencilView.Reset();
 
+}
+
+void CascadedShadowMaps::DrawImGui()
+{
+#ifdef USE_IMGUI
+	ImGui::Begin("Cascade Shadow Map Debug");
+
+	for (UINT i = 0; i < cascadeCount; ++i)
+	{
+		ImGui::Text("Cascade %d", i);
+
+		ImGui::Image(
+			debugSRVs[i].Get(),
+			ImVec2(256, 256));
+
+		ImGui::Separator();
+	}
+
+	ImGui::End();
+#endif
 }

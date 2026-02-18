@@ -149,10 +149,11 @@ protected:
 
     bool useDrawDebug = true;
 
-    float criticalDepthValue = 40.0f;
+    float criticalDepthValue = 45.0f;
 
     SIZE framebufferDimensions = {};
 
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> noise3d;
 
     std::shared_ptr<Actor> selectedActor_;  // 選択中のアクターを保持
 

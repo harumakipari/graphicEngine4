@@ -4,6 +4,8 @@
 #ifdef USE_IMGUI
 #include "ImGuizmo.h"
 #endif
+#include <DDSTextureLoader.h>
+
 #include "Engine/Debug/DebugDrawManager.h"
 #include "Engine/Debug/EditorGizmo.h"
 #include "Engine/Debug/SceneEditor.h"
@@ -94,6 +96,11 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/specular_pmrem.dds", environmentTextures[2].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/lut_sheen_e.dds", environmentTextures[3].ReleaseAndGetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+
+    Microsoft::WRL::ComPtr<ID3D11Resource> resource;
+    hr = DirectX::CreateDDSTextureFromFile(device, L"./Data/ShaderTextures/_noise_3d.dds", resource.ReleaseAndGetAddressOf(), noise3d.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
 
@@ -309,8 +316,8 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Forward;
-    sceneRender.RenderOpaque(immediateContext,queues.deferredOpaque);
-    sceneRender.RenderOpaque(immediateContext,queues.forwardOpaque);
+    sceneRender.RenderOpaque(immediateContext, queues.deferredOpaque);
+    sceneRender.RenderOpaque(immediateContext, queues.forwardOpaque);
     ExecuteHooks(RenderPass::Opaque, immediateContext);
     sceneRender.RenderMask(immediateContext, queues.deferredMask);
     sceneRender.RenderMask(immediateContext, queues.forwardMask);
@@ -366,7 +373,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
     sceneRender.currentRenderPath = RenderPath::Shadow;
-    sceneRender.CastShadowRender(immediateContext);
+    sceneRender.CastShadowRender(immediateContext, queues.shadowCasters);
     cascadedShadowMaps->Deactive(immediateContext);
 
     // ファイナルパス
@@ -436,7 +443,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
     sceneRender.currentRenderPath = RenderPath::Shadow;
-    sceneRender.CastShadowRender(immediateContext);
+    sceneRender.CastShadowRender(immediateContext, queues.shadowCasters);
     cascadedShadowMaps->Deactive(immediateContext);
 
     // ライティングのパス
@@ -493,6 +500,10 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     // フォーワードの透明描画
     //multipleRenderTargets->Activate(immediateContext, gBufferRenderTarget->depthStencilView);
 
+    //immediateContext->OMSetRenderTargets(1, gBufferRenderTarget->renderTargetViews[1], gBufferRenderTarget->depthStencilView);
+    //immediateContext->OMSetRenderTargets(1, gBufferRenderTarget->renderTargetViews[4], gBufferRenderTarget->depthStencilView);
+
+
     frameBuffer->Activate(immediateContext, gBufferRenderTarget->depthStencilView);
 
 #if 0
@@ -507,12 +518,12 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_FRONT);
     sceneRender.currentRenderPath = RenderPath::Forward;
-    sceneRender.RenderBlend(immediateContext,queues.deferredBlend); // ここで警告出る
+    sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ここで警告出る
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Forward;
-    sceneRender.RenderBlend(immediateContext,queues.deferredBlend); // ここで警告出る
+    sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ここで警告出る
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
 
@@ -571,6 +582,9 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
     frameBuffer->Deactivate(immediateContext);
     //multipleRenderTargets->Deactivate(immediateContext);
+
+
+    immediateContext->PSSetShaderResources(20, 1, noise3d.GetAddressOf());
 
 
     // FINAL_PASS
@@ -651,6 +665,8 @@ void SceneBase::DrawGui()
     uiManager->DrawImGUi();
     EffectEditor::DrawGUI();
     DrawShortcutInfo();
+
+    cascadedShadowMaps->DrawImGui();
 #endif
 }
 

@@ -1,6 +1,7 @@
 #include "FullScreenQuad.hlsli"
 #include "Constants.hlsli"
 #include "Sampler.hlsli"
+#include "Lights.hlsli"
 
 Texture2D colorTexture : register(t0);
 
@@ -10,6 +11,9 @@ Texture2D fogTexture : register(t5);
 Texture2D ssaoTexture : register(t6);
 Texture2D ssrTexture : register(t7);
 Texture2DArray cascadedShadowMaps : register(t9);
+
+Texture3D noise3D : register(t20); // ノイズテクスチャ
+
 
 cbuffer SSAO_CONSTANTS_BUFFER : register(b5)
 {
@@ -74,12 +78,17 @@ float CalculatedCascadedShadowFactor(VS_OUT pin, out int cascadeIndex)
     return shadowFactor; // 光が当たっている
 }
 
+
+
+
+
 // フォグ結果を「深度付きバイラテラルブラー」する
 float3 CalculatedFogColor(VS_OUT pin)
 {
     uint2 depthMapDimensions;
     uint depthMipLevel = 0, numberOfSamples, levels;
-    depthTexture.GetDimensions(depthMipLevel, depthMapDimensions.x, depthMapDimensions.y, numberOfSamples);
+    fogTexture.GetDimensions(depthMipLevel, depthMapDimensions.x, depthMapDimensions.y, numberOfSamples);
+    //depthTexture.GetDimensions(depthMipLevel, depthMapDimensions.x, depthMapDimensions.y, numberOfSamples);
     
     float fogFacter = 0;
     if (enableBlur)
@@ -129,6 +138,128 @@ float3 CalculatedFogColor(VS_OUT pin)
     return finalFogColor;
 }
 
+
+
+float calculate_shadows_and_lighting(float depth_view_space, float3 position_world_space)
+{
+    int cascade_index = -1;
+    for (uint layer = 0; layer < 4; ++layer)
+    {
+        float distance = cascadedPlaneDistances[layer];
+        if (distance > depth_view_space)
+        {
+            cascade_index = layer;
+            break;
+        }
+    }
+    if (cascade_index == -1)
+    {
+        return 1;
+    }
+    float4 position_light_space = mul(float4(position_world_space, 1.0), cascadedMatrices[cascade_index]);
+    position_light_space /= position_light_space.w;
+
+	// To texture space
+    position_light_space.x = position_light_space.x * +0.5 + 0.5;
+    position_light_space.y = position_light_space.y * -0.5 + 0.5;
+
+    return cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(position_light_space.xy, cascade_index), position_light_space.z - shadowDepthBias).x;
+
+    //return shadow_map.SampleCmpLevelZero(comparison_sampler_state, float3(position_light_space.xy, cascade_index), position_light_space.z - effect_data.shadow_depth_bias).x;
+}
+#define PI 3.14159265358979
+float compute_mie_scattering(float LoV)
+{
+    const float g = mieScatteringCoef;
+    float mie_scattering = 1.0 - g * g;
+    mie_scattering /= (4.0 * PI * pow(1.0 + g * g - (2.0 * g) * LoV, 1.5));
+    return mie_scattering;
+}
+
+float3 compute_layleigh_scattering(float LoV)
+{
+    return 3 / (16.0 * PI) * (1.0 + LoV * LoV) * float3(5.8, 13.5, 33.1) * 1e-2;
+}
+
+float3 apply_volumetric_fog(inout float3 color, in float3 position_world_space)
+{
+    float3 start_position = cameraPositon.xyz;
+	
+    const float3 ray_vector = position_world_space - start_position;
+    const float ray_length = length(ray_vector);
+    const float3 ray_direction = ray_vector / ray_length;
+	
+    const float3 L = normalize(-lightDirection.xyz);
+    const float LoV = max(0, dot(ray_direction, L));
+
+    const float steps = 64;
+    const float step_length = ray_length / steps;
+    const float3 step = ray_direction * step_length;
+
+	
+#if 0
+	const float4x4 dither_pattern =
+	{
+		{ 0.0f, 0.5f, 0.125f, 0.625f },
+		{ 0.75f, 0.22f, 0.875f, 0.375f },
+		{ 0.1875f, 0.6875f, 0.0625f, 0.5625 },
+		{ 0.9375f, 0.4375f, 0.8125f, 0.3125 }
+	};
+	// Offset the start position
+	start_position += dither_pattern[position_world_space.x % 4][position_world_space.y % 4];
+#endif
+	
+    float3 current_position_world_space = start_position;
+    float current_depth_view_space = 0;
+    float accumulated_fog = 0;
+	
+	// Volumetric fog computation
+    for (int i = 0; i < steps; i++)
+    {
+        float current_fog_amount = 0.0f;
+		
+        float noise = 1.0;
+        const float3 wind_velocity = float3(1.0, 0.0, 0.0);
+#if 0
+		noise = (1.0 + snoise((current_position_world_space.xyz + wind_velocity * scene_data.time) * effect_data.noise_scale)) * 0.5;
+#else
+        noise = 0.5 * noise3D.Sample(samplerStates[LINEAR], (current_position_world_space.xyz + wind_velocity * elapsedTime) * noiseScale).x + 0.5;
+#endif
+		
+        float lit_amount = calculate_shadows_and_lighting(current_depth_view_space, current_position_world_space);
+		
+		// Exponential height fog
+        float b = fogHeightFalloff;
+        float c = fogDensity * noise;
+        float t = step_length * c * exp(-current_position_world_space.y * b);
+        float vy = b * step.y * step_length;
+        current_fog_amount = lit_amount * max(0.0, 1.0 - exp(t / vy * (exp(-vy) - 1.0)));
+		
+		// Mie and Layleigh Scattering
+        const float scattering_intensity = 0.02;
+        const float scattering = lit_amount * (compute_mie_scattering(LoV) /* + compute_layleigh_scattering(LoV)*/) * scattering_intensity;
+		
+        accumulated_fog += lerp(current_fog_amount, scattering, 0.5);
+		
+		// Extend the ray by a step in the ray direction
+        current_position_world_space += step;
+        current_depth_view_space += step_length;
+    }
+
+    const float max_fog_opacity = 0.75;
+    accumulated_fog = min(max_fog_opacity, accumulated_fog);
+	
+    float3 fog_color = fogColor.rgb * fogColor.w;
+#if 1
+    float3 sun_color = float3(1.0, 0.9, 0.7) /* * scene_data.pure_white*/;
+    float3 sun_direction = L;
+    float sun_amount = max(0.0, dot(ray_direction, sun_direction));
+    fog_color = lerp(fog_color, sun_color, pow(sun_amount, 128.0));
+#endif
+
+    return lerp(color, fog_color, saturate(accumulated_fog));
+}
+
 // トーンマップ
 float3 JodieReinhardToneMap(float3 c)
 {
@@ -143,17 +274,24 @@ float4 main(VS_OUT pin) : SV_TARGET
     uint mipLevel = 0, width, height, number_of_level;
     colorTexture.GetDimensions(mipLevel, width, height, number_of_level);
 
+    uint2 depth_map_dimensions;
+    depthTexture.GetDimensions(mipLevel, depth_map_dimensions.x, depth_map_dimensions.y, number_of_level);
+
+
     // シーンからライティング済みのカラーテクスチャ
     float4 color = colorTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
 
     // シーンから深度値を取得
-    float depth = depthTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord, 0);
+    float depth = depthTexture.SampleLevel(samplerStates[POINT], pin.texcoord, 0);
 
     // uv -> ndc 
     float4 positionNdc = CalculatedPositionNDC(pin);
     // ndc -> view 
     float4 positionViewSpace = mul(positionNdc, inverseProjection); // ndc → clip 
     positionViewSpace = positionViewSpace / positionViewSpace.w; // clip -> view 
+
+    // ndc -> world 
+    float4 position_world_space = mul(positionNdc, inverseViewProjection);
 
     // 影係数を計算
     int cascadeIndex = -1;
@@ -188,8 +326,50 @@ float4 main(VS_OUT pin) : SV_TARGET
     // フォグの処理
     if (enableFog)
     {
-        float3 fogColor = CalculatedFogColor(pin);
-        color.rgb += fogColor;
+        color.rgb = apply_volumetric_fog(color.rgb, position_world_space.xyz);
+
+        float curr_depth = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).x;
+        float4 sum = float4(0.0, 0.0, 0.0, 0.0);
+        float4 sample;
+        float radius = 4.0;
+        float2 pos;
+        float i, j;
+        float sigma = 2.0 * radius * radius;
+        float domain_gaussian = 0.0;
+        float weight = 0.0;
+        float distance = 0.0;
+        float sample_depth;
+        float range_gaussian;
+        float sigma2 = 0.01;
+        for (i = -radius; i <= radius; i += 1.0)
+        {
+            for (j = -radius; j <= radius; j += 1.0)
+            {
+                float dx = i / depth_map_dimensions.x;
+                float dy = j / depth_map_dimensions.y;
+                pos.x = pin.texcoord.x + dx;
+                pos.y = pin.texcoord.y + dy;
+                sample = fogTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pos);
+
+                distance = i * i + j * j;
+                domain_gaussian = exp(-distance / sigma);
+			
+                sample_depth = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pos).x;
+                distance = (curr_depth - sample_depth) * (curr_depth - sample_depth);
+                range_gaussian = exp(-distance / sigma2);
+			
+                sum += sample * domain_gaussian * range_gaussian;
+                weight += domain_gaussian * range_gaussian;
+            }
+        }
+        float4 volumetric_light_color = sum / weight;
+	
+	//return volumetric_light_color;
+	
+        color.rgb = color.rgb * volumetric_light_color.a + volumetric_light_color.rgb;
+
+        //float3 fogColor = CalculatedFogColor(pin);
+        //color.rgb += fogColor;
         //return float4(fogColor, 1);
     }
 
