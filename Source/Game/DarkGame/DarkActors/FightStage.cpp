@@ -79,7 +79,8 @@ void FightStage::Initialize(const Transform& transform)
     //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 #endif // 1
 
-#if 1// “–‚½‚è”»’è
+#if 0
+    // “–‚½‚è”»’è
     // ƒƒbƒVƒ…
     std::shared_ptr<TriangleMeshCollisionComponent> triangleMeshComponent = this->AddComponent<class TriangleMeshCollisionComponent>("triangleMeshComponent", parentName);
     triangleMeshComponent->SetLayer(CollisionLayer::WorldStatic);

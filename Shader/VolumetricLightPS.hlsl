@@ -124,7 +124,7 @@ float4 dithered_ray_march(float2 screen_pos, float3 ray_start, float3 ray_dir, f
         const float3 noise_velocity = normalize(float3(1, 0, 0));
 		
         float3 position = frac(current_position * noise_scale + noise_velocity * time);
-        float noise = 0.5 * noise3d_map.Sample(samplerStates[LINEAR_BORDER_BLACK], position).x + 0.5;
+        float noise = 0.5 * noise3d_map.Sample(samplerStates[LINEAR], position).x + 0.5;
         const float sharpness_factor = 1.0;
         noise = pow(noise, sharpness_factor);
         const float noise_intensity_offset = 0.0;

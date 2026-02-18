@@ -26,7 +26,7 @@ void Player::Initialize(const Transform& transform)
 {
     // 描画用コンポーネントを追加
     skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
-    skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_A.glb");
+    skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle.gltf");
     for (auto& material : skeletalMeshComponent->model->materials)
     {
         //material.data.alphaMode = 2;    // 全てforwardで描画したいからBLENDに変更する
@@ -137,6 +137,7 @@ void Player::Initialize(const Transform& transform)
 
     // 移動用コンポーネントを追加
     characterMovementComponent = this->AddComponent<CharacterMovementComponent>("movementComponent", "skeletalComponent");
+    characterMovementComponent->SetUseGravity(false);
 
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", "skeletalComponent");
