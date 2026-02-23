@@ -23,7 +23,7 @@ public:
     };
 public:
     //引数付きコンストラクタ
-    Camera(std::string actorName) :Actor(actorName)
+    Camera(const std::string& actorName) :Actor(actorName)
     {
     }
 
@@ -38,7 +38,8 @@ public:
     virtual ViewConstants GetViewConstants(/*EProjectionType type = EProjectionType::Perspective*/) const
     {
         ViewConstants viewConstants;
-        DirectX::XMFLOAT3 cameraPosition = GetPosition();
+        //DirectX::XMFLOAT3 cameraPosition = GetPosition();
+        DirectX::XMFLOAT3 cameraPosition = mainCameraComponent->GetComponentLocation();
         viewConstants.cameraPosition = { cameraPosition.x,cameraPosition.y,cameraPosition.z,1.0f };
         viewConstants.view = mainCameraComponent->GetView();
         viewConstants.projection = mainCameraComponent->GetProjection();

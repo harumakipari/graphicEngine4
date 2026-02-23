@@ -4,6 +4,52 @@
 #include "Core/Actor.h"
 
 
+const DirectX::XMFLOAT4X4& TPSCameraComponent::GetView() 
+{
+    using namespace DirectX;
+
+    XMFLOAT3 basePos{ 0,0,0 };
+    if (!target.expired())
+        basePos = target.lock()->GetComponentWorldTransform().GetLocation();
+
+    XMVECTOR focus =
+        XMLoadFloat3(&basePos) +
+        XMVectorSet(targetOffset.x, targetOffset.y, targetOffset.z, 0);
+
+    // yaw/pitch Ç©ÇÁ forward Çíºê⁄çÏÇÈ
+    XMVECTOR forward =
+        XMVector3Normalize(
+            XMVectorSet(
+                cosf(pitch) * sinf(yaw),
+                sinf(pitch),
+                cosf(pitch) * cosf(yaw),
+                0
+            )
+        );
+
+    // ÉJÉÅÉâà íu
+    XMVECTOR eye = focus - forward * distance;
+    DirectX::XMFLOAT3 eye3;
+    DirectX::XMStoreFloat3(&eye3, eye);
+    if (auto owner = owner_.lock())
+    {
+        owner->SetPosition(eye3);
+    }
+
+    XMStoreFloat4x4(
+        &view,
+        XMMatrixLookAtLH(
+            eye,
+            focus,
+            XMVectorSet(0, 1, 0, 0)
+        )
+    );
+
+    return view;
+
+
+}
+
 // é©ìÆêèè]Ç∑ÇÈ
 void TPSCameraComponent::AutoFollow(const DirectX::XMFLOAT3& moveDir, const DirectX::XMFLOAT2& rightStick, float deltaTime)
 {
