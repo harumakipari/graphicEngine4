@@ -362,7 +362,6 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext, const std
 
 void SceneRenderer::CastShadowRender(ID3D11DeviceContext* immediateContext, const std::vector<MeshComponent*>& items)
 {
-
     for (auto* meshComponent : items)
     {
         const auto& worldMat =
@@ -1065,33 +1064,37 @@ RenderQueues SceneRenderer::BuildRenderQueues()
 
         for (auto* mesh : meshes)
         {
-            if (!mesh || !mesh->IsVisible())
+            if (!mesh)
                 continue;
 
-            // MorphMesh ‚Í’ÊíƒpƒX‚É“ü‚ê‚È‚¢
-            if (actor->GetComponent<MorphMeshComponent>())
-                continue;
+            // ===== ’Êí•`‰æ =====
+            if (mesh->IsVisible())
+            {
+                if (!actor->GetComponent<MorphMeshComponent>())
+                {
+                    bool isForward =
+                        mesh->renderPass ==
+                        MeshComponent::MeshRenderPass::Forward;
 
-            bool isForward =
-                mesh->renderPass ==
-                MeshComponent::MeshRenderPass::Forward;
+                    auto& opaque =
+                        isForward ? queues.forwardOpaque
+                        : queues.deferredOpaque;
 
-            auto& opaque =
-                isForward ? queues.forwardOpaque
-                : queues.deferredOpaque;
+                    auto& mask =
+                        isForward ? queues.forwardMask
+                        : queues.deferredMask;
 
-            auto& mask =
-                isForward ? queues.forwardMask
-                : queues.deferredMask;
+                    auto& blend =
+                        isForward ? queues.forwardBlend
+                        : queues.deferredBlend;
 
-            auto& blend =
-                isForward ? queues.forwardBlend
-                : queues.deferredBlend;
+                    opaque.push_back(mesh);
+                    mask.push_back(mesh);
+                    blend.push_back(mesh);
+                }
+            }
 
-            opaque.push_back(mesh);
-            mask.push_back(mesh);
-            blend.push_back(mesh);
-
+            // ===== ‰eƒpƒX =====
             if (mesh->IsCastShadow())
             {
                 queues.shadowCasters.push_back(mesh);

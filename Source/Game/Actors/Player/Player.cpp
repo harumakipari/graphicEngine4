@@ -59,7 +59,7 @@ void Player::Initialize(const Transform& transform)
         "./Data/Models/Characters/Aurora_FrozenHealth/Death.glb",
     };
 
-    skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
+    //skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
     skeletalMeshComponent->AppendAnimations(animationFilenames);
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());

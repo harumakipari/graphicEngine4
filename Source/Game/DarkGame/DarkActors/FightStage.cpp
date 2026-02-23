@@ -12,11 +12,9 @@ void FightStage::Initialize(const Transform& transform)
     auto scene = GetOwnerScene();
 
     std::shared_ptr<StaticMeshComponent> staticMeshComponent = this->AddComponent<class StaticMeshComponent>(parentName);
-#if 0
-    staticMeshComponent->SetModel("./Data/Models/Stage/ExampleStage.gltf", true);
-#else
-    staticMeshComponent->SetModel("./Data/Models/DarkStage0215/DarkStage.gltf", true);
-    staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
+    staticMeshComponent->SetModel("./Data/Models/DarkStage0223_3/DarkStage.gltf", true);
+    staticMeshComponent->SetIsCastShadow(false);
+    //staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
     auto lightsData = staticMeshComponent->model->GetPointLights();
     // ポイントライトコンポーネントを追加
     for (int i = 0; i < static_cast<int>(lightsData.size()); ++i)
@@ -78,7 +76,12 @@ void FightStage::Initialize(const Transform& transform)
     //staticMeshComponent->brightness = 1.0f;
     //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelFightStagePS.cso", staticMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
     //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-#endif // 1
+
+
+    // 影用のスタティックメッシュコンポーネントを追加
+    std::shared_ptr<StaticMeshComponent> castStaticMeshComponent = this->AddComponent<class StaticMeshComponent>("castShadowModel",parentName);
+    castStaticMeshComponent->SetModel("./Data/Models/DarkStageShadow/DarkStageShadow.gltf");
+    castStaticMeshComponent->SetIsVisible(false);
 
 #if 0
     // 当たり判定
