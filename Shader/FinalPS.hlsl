@@ -49,9 +49,10 @@ float CalculatedCascadedShadowFactor(VS_OUT pin, out int cascadeIndex)
     positionWorldSpace = positionWorldSpace / positionWorldSpace.w;
 
     // カスケードビューフラスタムボリュームのレイヤーを見つける
-    float depthViewSpace = positionViewSpace.z; // view 空間の z はカメラからの距離
+    float depthViewSpace = abs(positionViewSpace.z); // view 空間の z はカメラからの距離
     // カメラからの距離からどのカスケードを使用するか選択する
     cascadeIndex = -1;
+
     for (uint layer = 0; layer < 4; ++layer)
     {
         float distance = cascadedPlaneDistances[layer];
@@ -60,9 +61,14 @@ float CalculatedCascadedShadowFactor(VS_OUT pin, out int cascadeIndex)
             cascadeIndex = layer;
             break;
         }
+
     }
 
     float shadowFactor = 1.0;
+
+    if (cascadeIndex == -1)
+        cascadeIndex = 3;
+
     if (cascadeIndex > -1)
     {
         //　world 空間 -> Light Clip 空間 (各カスケードに対応する Light View Projection 空間)
@@ -161,6 +167,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     // シーンから深度値を取得
     float depth = depthTexture.SampleLevel(samplerStates[POINT], pin.texcoord, 0);
+    //return float4(depth, 1, 0, 1);
 
     // uv -> ndc 
     float4 positionNdc = CalculatedPositionNDC(pin);
@@ -244,7 +251,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 	
 	    //return volumetric_light_color;
 	
-        color.rgb = color.rgb /** volumetric_light_color.a */+ volumetric_light_color.rgb;
+        color.rgb = color.rgb /** volumetric_light_color.a */ + volumetric_light_color.rgb;
 
         //float3 fogColor = CalculatedFogColor(pin);
         //color.rgb += fogColor;

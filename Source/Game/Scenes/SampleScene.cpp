@@ -34,8 +34,9 @@
 bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
     // ƒ‰ƒCƒg‚Ì•ûŒü‚ÆF‚ğİ’è
-    lightDirection = { 0.018f, -0.095f, -0.094f, 0.0f };
-    lightColor = { 1.0f, 1.0f, 1.0f, 5.62f };
+    lightDirection = { -1.0f, -1.0f, -0.02f, 0.0f };
+    //lightDirection = { 0.018f, -0.095f, -0.094f, 0.0f };
+    lightColor = { 1.0f, 1.0f, 1.0f, 14.62f };
 
     SceneBase::Initialize(device, width, height, props);
 

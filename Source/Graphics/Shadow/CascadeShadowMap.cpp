@@ -248,7 +248,7 @@ void CascadedShadowMaps::Deactive(ID3D11DeviceContext* immediateContext)
 void CascadedShadowMaps::DrawImGui()
 {
 #ifdef USE_IMGUI
-	ImGui::Begin("Cascade Shadow Map Debug");
+	ImGui::Begin(U8("Cascade Shadow Map Debug"));
 
 	for (UINT i = 0; i < cascadeCount; ++i)
 	{

@@ -518,16 +518,16 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_FRONT);
     sceneRender.currentRenderPath = RenderPath::Forward;
-    sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ここで警告出る
+  //  sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ここで警告出る
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Forward;
-    sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ここで警告出る
+   // sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ここで警告出る
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
 
-#if 1
+#if 0
     // フォワードの描画
     {
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
@@ -846,7 +846,7 @@ void SceneBase::DrawPostEffectTab()
     // -------------------------
     // CSM (シャドウ関連)
     // -------------------------
-    if (ImGui::CollapsingHeader("Cascaded Shadow Maps"))
+    if (ImGui::CollapsingHeader(U8("Cascaded Shadow Maps")))
     {
         ImGui::SliderFloat("Critical Depth", &criticalDepthValue, 0.0f, 1000.0f);
         ImGui::SliderFloat("Split Scheme", &cascadedShadowMaps->splitSchemeWeight, 0.0f, 1.0f);

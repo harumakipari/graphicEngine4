@@ -54,11 +54,11 @@ public:
     void DrawImGui();
 public:
     const UINT cascadeCount;
-    float splitSchemeWeight = 0.774f; // logarithmic_split_scheme * _split_scheme_weight + uniform_split_scheme * (1 - _split_scheme_weight)
+    float splitSchemeWeight = 0.83f; // logarithmic_split_scheme * _split_scheme_weight + uniform_split_scheme * (1 - _split_scheme_weight)
 
     bool fitToCascade = true;
 
-    float zMult = 1.0f;
+    float zMult = 20.0f;
 
 private:
     D3D11_VIEWPORT catchedViewports[D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE];
