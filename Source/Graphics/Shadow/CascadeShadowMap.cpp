@@ -55,7 +55,7 @@ CascadedShadowMaps::CascadedShadowMaps(ID3D11Device* device, UINT width, UINT he
     texture2dDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
     texture2dDesc.CPUAccessFlags = 0;
     texture2dDesc.MiscFlags = 0;
-    hr = device->CreateTexture2D(&texture2dDesc, 0, depthStencilBuffer.GetAddressOf());
+    hr = device->CreateTexture2D(&texture2dDesc, 0, shadowMapTexture.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     // 深度ステンシルビュー（DSV）作成
@@ -67,7 +67,7 @@ CascadedShadowMaps::CascadedShadowMaps(ID3D11Device* device, UINT width, UINT he
     depthStencilViewDesc.Texture2DArray.ArraySize = static_cast<UINT>(cascadeCount);
     depthStencilViewDesc.Texture2DArray.MipSlice = 0;
     depthStencilViewDesc.Flags = 0;
-    hr = device->CreateDepthStencilView(depthStencilBuffer.Get(), &depthStencilViewDesc, depthStencilView.GetAddressOf());
+    hr = device->CreateDepthStencilView(shadowMapTexture.Get(), &depthStencilViewDesc, shadowMapDSV.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     // シェーダリソースビュー（SRV）作成
@@ -80,7 +80,7 @@ CascadedShadowMaps::CascadedShadowMaps(ID3D11Device* device, UINT width, UINT he
     shaderResourceViesDesc.Texture2DArray.MipLevels = 1;
     shaderResourceViesDesc.Texture2DArray.FirstArraySlice = 0;
     shaderResourceViesDesc.Texture2DArray.MostDetailedMip = 0;
-    hr = device->CreateShaderResourceView(depthStencilBuffer.Get(), &shaderResourceViesDesc, shaderResourceView.GetAddressOf());
+    hr = device->CreateShaderResourceView(shadowMapTexture.Get(), &shaderResourceViesDesc, shadowMapSRV.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 #endif // 0
 
@@ -102,12 +102,12 @@ CascadedShadowMaps::CascadedShadowMaps(ID3D11Device* device, UINT width, UINT he
     bufferDesc.StructureByteStride = 0;
     bufferDesc.Usage = D3D11_USAGE_DEFAULT;
     bufferDesc.CPUAccessFlags = 0;
-    hr = device->CreateBuffer(&bufferDesc, NULL, constantBuffer.GetAddressOf());
+    hr = device->CreateBuffer(&bufferDesc, NULL, csmConstantBuffer.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     // デバッグ表示用：各カスケード単体SRV作成
     // ImGuiで個別に表示するため
-    debugSRVs.resize(cascadeCount);
+    debugCascadeSRVs.resize(cascadeCount);
 
     for (UINT i = 0; i < cascadeCount; ++i)
     {
@@ -124,7 +124,7 @@ CascadedShadowMaps::CascadedShadowMaps(ID3D11Device* device, UINT width, UINT he
         desc.Texture2DArray.MipLevels = 1;
         desc.Texture2DArray.MostDetailedMip = 0;
 
-        hr = device->CreateShaderResourceView(depthStencilBuffer.Get(), &desc, debugSRVs[i].GetAddressOf());
+        hr = device->CreateShaderResourceView(shadowMapTexture.Get(), &desc, debugCascadeSRVs[i].GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
 
@@ -134,8 +134,8 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
     const float criticalDepthValue/* この値が 0 の場合、カメラの遠方パネル距離が使用される。*/, UINT cbSlot)
 {
     // 現在のレンダー状態を保存
-    immediateContext->RSGetViewports(&viewportCount, catchedViewports);
-    immediateContext->OMGetRenderTargets(1, catchedRenderTargetView.ReleaseAndGetAddressOf(), catchedDepthStencilView.ReleaseAndGetAddressOf());
+    immediateContext->RSGetViewports(&savedViewportCount, savedViewports);
+    immediateContext->OMGetRenderTargets(1, savedRenderTargetView.ReleaseAndGetAddressOf(), savedDepthStencilView.ReleaseAndGetAddressOf());
 
     // カメラの near / far をプロジェクション行列から取得
     float m33 = cameraProjection._33;
@@ -209,22 +209,22 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
 
 #if 1
         // Z拡張（シャドウ欠け防止）
-        zMult = std::max<float>(1.0f, zMult);
+        zDepthScale = std::max<float>(1.0f, zDepthScale);
         if (minZ < 0)
         {
-            minZ *= zMult;
+            minZ *= zDepthScale;
         }
         else
         {
-            minZ /= zMult;
+            minZ /= zDepthScale;
         }
         if (maxZ < 0)
         {
-            maxZ /= zMult;
+            maxZ /= zDepthScale;
         }
         else
         {
-            maxZ *= zMult;
+            maxZ *= zDepthScale;
         }
 #endif
         // ライト射影行列
@@ -244,40 +244,39 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
     data.cascadedPlaneDistances[2] = cascadedPlaneDistances.at(3);
     data.cascadedPlaneDistances[3] = cascadedPlaneDistances.at(4);
 
-    immediateContext->UpdateSubresource(constantBuffer.Get(), 0, 0, &data, 0, 0);
-    immediateContext->VSSetConstantBuffers(cbSlot, 1, constantBuffer.GetAddressOf());
-    immediateContext->PSSetConstantBuffers(cbSlot, 1, constantBuffer.GetAddressOf());
+    immediateContext->UpdateSubresource(csmConstantBuffer.Get(), 0, 0, &data, 0, 0);
+    immediateContext->VSSetConstantBuffers(cbSlot, 1, csmConstantBuffer.GetAddressOf());
+    immediateContext->PSSetConstantBuffers(cbSlot, 1, csmConstantBuffer.GetAddressOf());
 
     // シャドウ描画用にレンダーターゲット切替
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> nullRenderTargetView;
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> nullDepthStencilView;
-    immediateContext->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1, 0);
-    immediateContext->OMSetRenderTargets(1, nullRenderTargetView.GetAddressOf(), depthStencilView.Get());
+    immediateContext->ClearDepthStencilView(shadowMapDSV.Get(), D3D11_CLEAR_DEPTH, 1, 0);
+    immediateContext->OMSetRenderTargets(1, nullRenderTargetView.GetAddressOf(), shadowMapDSV.Get());
     immediateContext->RSSetViewports(1, &viewport);
 }
-void CascadedShadowMaps::Deactive(ID3D11DeviceContext* immediateContext)
+void CascadedShadowMaps::Deactivate(ID3D11DeviceContext* immediateContext)
 {
     // 保存していたレンダー状態を復元
-    immediateContext->RSSetViewports(viewportCount, catchedViewports);
-    immediateContext->OMSetRenderTargets(1, catchedRenderTargetView.GetAddressOf(), catchedDepthStencilView.Get());
+    immediateContext->RSSetViewports(savedViewportCount, savedViewports);
+    immediateContext->OMSetRenderTargets(1, savedRenderTargetView.GetAddressOf(), savedDepthStencilView.Get());
 
-    catchedRenderTargetView.Reset();
-    catchedDepthStencilView.Reset();
+    savedRenderTargetView.Reset();
+    savedDepthStencilView.Reset();
 }
 
-void CascadedShadowMaps::DrawImGui()
+void CascadedShadowMaps::DrawImGui() const
 {
 #ifdef USE_IMGUI
-    ImGui::Begin(U8("Cascade Shadow Map Debug"));
+    ImGui::Begin(U8("カスケードシャドウマップのデバッグ"));
 
+    // 各カスケードの深度テクスチャを表示
     for (UINT i = 0; i < cascadeCount; ++i)
     {
-        ImGui::Text("Cascade %d", i);
-
+        ImGui::Text(reinterpret_cast<const char*>(u8"カスケード %d"), i);
         ImGui::Image(
-            debugSRVs[i].Get(),
+            debugCascadeSRVs[i].Get(),
             ImVec2(256, 256));
-
         ImGui::Separator();
     }
 

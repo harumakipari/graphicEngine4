@@ -374,7 +374,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
     sceneRender.currentRenderPath = RenderPath::Shadow;
     sceneRender.CastShadowRender(immediateContext, queues.shadowCasters);
-    cascadedShadowMaps->Deactive(immediateContext);
+    cascadedShadowMaps->Deactivate(immediateContext);
 
     // ファイナルパス
     {
@@ -446,7 +446,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
     sceneRender.currentRenderPath = RenderPath::Shadow;
     sceneRender.CastShadowRender(immediateContext, queues.shadowCasters);
-    cascadedShadowMaps->Deactive(immediateContext);
+    cascadedShadowMaps->Deactivate(immediateContext);
 
     // ライティングのパス
     {
@@ -852,7 +852,7 @@ void SceneBase::DrawPostEffectTab()
     {
         ImGui::SliderFloat("Critical Depth", &criticalDepthValue, 0.0f, 1000.0f);
         ImGui::SliderFloat("Split Scheme", &cascadedShadowMaps->splitSchemeWeight, 0.0f, 1.0f);
-        ImGui::SliderFloat("Z Mult", &cascadedShadowMaps->zMult, 1.0f, 100.0f);
+        ImGui::SliderFloat("Z Mult", &cascadedShadowMaps->zDepthScale, 1.0f, 100.0f);
         ImGui::Checkbox("Fit To Cascade", &cascadedShadowMaps->fitToCascade);
         ImGui::SliderFloat("Shadow Color", &shaderCBuffer->data.shadowColor, 0.0f, 1.0f);
         ImGui::DragFloat("Depth Bias", &shaderCBuffer->data.shadowDepthBias, 0.00001f, 0.0f, 0.01f, "%.8f");
