@@ -80,7 +80,7 @@ void FightStage::Initialize(const Transform& transform)
 
     // 影用のスタティックメッシュコンポーネントを追加
     std::shared_ptr<StaticMeshComponent> castStaticMeshComponent = this->AddComponent<class StaticMeshComponent>("castShadowModel",parentName);
-    castStaticMeshComponent->SetModel("./Data/Models/DarkStageShadow/DarkStageShadow.gltf");
+    castStaticMeshComponent->SetModel("./Data/Models/DarkStageShadow_1/DarkStageShadow.gltf");
     castStaticMeshComponent->SetIsVisible(false);
 
 #if 0
