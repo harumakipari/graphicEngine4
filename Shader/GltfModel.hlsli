@@ -160,3 +160,11 @@ struct GBUFFER_PS_OUT
     float4 position : SV_TARGET4; // world position
     float4 emissive : SV_TARGET5; // w:何かを書き込んでいたら０にするそれ以外は１　スカイマップなどの時に使用 
 };
+
+//struct GBUFFER_PS_OUT
+//{
+//    float4 gbuffer1Normal : SV_TARGET1; // Normal (Octahedral) + Roughness + Metallic
+//    float4 gbuffer2Color : SV_TARGET2; // BaseColor (RGB) +　occlusion
+//    float4 position : SV_TARGET3; // world position
+//    float4 emissive : SV_TARGET4; // w:何かを書き込んでいたら０にするそれ以外は１　スカイマップなどの時に使用 
+//};

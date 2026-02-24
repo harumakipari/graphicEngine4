@@ -47,10 +47,10 @@ void SSREffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
     ImGui::Checkbox("enable", &enabled);
-    ImGui::SliderFloat("Reflection Intensity", &reflectionIntensity, 0.0f, 1.0f);
-    ImGui::SliderFloat("Max Distance", &maxDistance, 0.0f, 30.0f);
-    ImGui::SliderFloat("Resolution", &resolution, 0.0f, 1.0f);
-    ImGui::SliderInt("Steps", &steps, 0, 20);
-    ImGui::SliderFloat("Thickness", &thickness, 0.0f, 1.0f);
+    ImGui::SliderFloat(U8("反射の強度"), &reflectionIntensity, 0.0f, 1.0f);
+    ImGui::SliderFloat(U8("最大反射距離"), &maxDistance, 0.0f, 30.0f);
+    ImGui::SliderFloat(U8("解像度・探索の粗さ"), &resolution, 0.0f, 1.0f);
+    ImGui::SliderInt(U8("ステップ数"), &steps, 0, 20);
+    ImGui::SliderFloat(U8("厚みの許容範囲"), &thickness, 0.0f, 1.0f);
 #endif
 }

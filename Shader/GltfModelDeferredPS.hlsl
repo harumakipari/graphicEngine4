@@ -1,5 +1,6 @@
 #include "GltfModel.hlsli"
 #include "Sampler.hlsli"
+#include "Common.hlsli"
 
 
 #define BASE_COLOR_TEXTURE 0 
@@ -88,6 +89,8 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     }
 
     pout.gbuffer1Normal = float4(N.xyz, 0);  // world space
+
+    //pout.gbuffer1.xy = EncodeOctahedralNormal(N);
 
     pout.gbuffer3Color = baseColorFactor;
 

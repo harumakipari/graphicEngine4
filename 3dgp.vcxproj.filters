@@ -222,9 +222,6 @@
     <ClCompile Include="Source\Graphics\Shadow\CascadeShadowMap.cpp">
       <Filter>Sources\Graphics\Shadow</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\Shadow\ShadowMap.cpp">
-      <Filter>Sources\Graphics\Shadow</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Graphics\Cloud\VolumetricCloudscapes.cpp">
       <Filter>Sources\Graphics\Cloud</Filter>
     </ClCompile>
@@ -570,9 +567,6 @@
       <Filter>Sources\Graphics\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Shadow\CascadeShadowMap.h">
-      <Filter>Sources\Graphics\Shadow</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\Shadow\ShadowMap.h">
       <Filter>Sources\Graphics\Shadow</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Cloud\VolumetricCloudscapes.h">

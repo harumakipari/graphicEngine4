@@ -326,7 +326,6 @@
     <ClCompile Include="Source\Graphics\Resource\Texture.cpp" />
     <ClCompile Include="Source\Graphics\Resource\TinyGltf.cpp" />
     <ClCompile Include="Source\Graphics\Shadow\CascadeShadowMap.cpp" />
-    <ClCompile Include="Source\Graphics\Shadow\ShadowMap.cpp" />
     <ClCompile Include="Source\Graphics\Sprite\Sprite.cpp" />
     <ClCompile Include="Source\Graphics\Sprite\SpriteBatch.cpp" />
     <ClCompile Include="Source\main.cpp" />
@@ -475,7 +474,6 @@
     <ClInclude Include="Source\Graphics\Resource\ShaderToy.h" />
     <ClInclude Include="Source\Graphics\Resource\Texture.h" />
     <ClInclude Include="Source\Graphics\Shadow\CascadeShadowMap.h" />
-    <ClInclude Include="Source\Graphics\Shadow\ShadowMap.h" />
     <ClInclude Include="Source\Graphics\Sprite\Sprite.h" />
     <ClInclude Include="Source\Graphics\Sprite\SpriteBatch.h" />
     <ClInclude Include="Source\Math\MathHelper.h" />
