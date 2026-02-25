@@ -42,7 +42,6 @@ public:
     void Hit();
 
 
-
     // プレイヤーの本体に直接ダメージ処理
     void ApplyDirectHpDamage(int damage)
     {

@@ -13,7 +13,7 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
 
     DirectX::XMFLOAT3 pos = shapeComponent_->GetOwner()->GetPosition();
     DirectX::XMFLOAT4 rot = shapeComponent_->GetComponentRotation();
-    //pos.y += shapeComponent_->GetModelHeight();
+    //pos.y += shapeComponent_->GetCollisionOffsetY();
     PxVec3 pxPosition(pos.x, pos.y, pos.z);
     PxQuat pxRotation(rot.x, rot.y, rot.z, rot.w);
     // physx の原点を上げるため
@@ -40,7 +40,7 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
 
     pxShape_->userData = shapeComponent_;    // ShapeComponent へのポインタ
     if (shapeComponent_->GetCollisionType() == "Capsule")
-    {
+    {// カプセルの時
         // 形状のローカル姿勢を調整
         physx::PxTransform pxShapeTransform = pxShape_->getLocalPose();
 
@@ -50,20 +50,20 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
             pxShapeTransform.q = physx::PxQuat(physx::PxPiDivTwo, physx::PxVec3(1.0f, 0.0f, 0.0f));
             break;
         case ShapeComponent::CapsuleAxis::y:
-            pxShapeTransform.p = PxVec3(0.0f, shapeComponent_->GetModelHeight(), 0.0f);
+            pxShapeTransform.p = PxVec3(0.0f, shapeComponent_->GetCollisionOffsetY(), 0.0f);
             pxShapeTransform.q = physx::PxQuat(physx::PxPiDivTwo, physx::PxVec3(0.0f, 0.0f, 1.0f));	//90度回転させて
             break;
         case ShapeComponent::CapsuleAxis::z:
             pxShapeTransform.q = physx::PxQuat(physx::PxPiDivTwo, physx::PxVec3(0.0f, 1.0f, 0.0f));
             break;
         };
-        //pxShapeTransform.p.y = shapeComponent_->GetModelHeight(); // 上に補正して
+        //pxShapeTransform.p.y = shapeComponent_->GetCollisionOffsetY(); // 上に補正して
         pxShape_->setLocalPose(pxShapeTransform);	//シーンに設定(カプセルを立たせるため)通常は横向き
     }
     else
-    {
-        // 上に補正する
-        pxShape_->setLocalPose(physx::PxTransform(physx::PxVec3(0.0f, shapeComponent_->GetModelHeight(), 0.0f)));
+    {// カプセル以外の時
+        // オフセット方向に補正する
+        pxShape_->setLocalPose(physx::PxTransform(physx::PxVec3(shapeComponent_->GetCollisionOffsetX(), shapeComponent_->GetCollisionOffsetY(), shapeComponent_->GetCollisionOffsetZ())));
     }
 
     // レイキャストなど用のレイヤー設定
@@ -152,7 +152,7 @@ void SingleRigidBodyComponent::Tick(float deltaTime)
                 //t.SetRotation(rotation);
                 PxTransform pxT = PhysicsHelper::ToPxTransform(t);
                 // 当たり判定が地面の下に行くのを防ぐ
-                pxT.p.x += shapeComponent_->GetModelHeight();
+                pxT.p.x += shapeComponent_->GetCollisionOffsetY();
                 pxActor_->setKinematicTarget(pxT);
                 //PhysicsHelper::DebugPrintCollisionInfo("capsule", shapeComponent_->GetPhysicsShapeInfo().geometry.any(), pxT);
                 return;
@@ -172,7 +172,7 @@ void SingleRigidBodyComponent::Tick(float deltaTime)
 
         PxTransform pxT = PhysicsHelper::ToPxTransform(t);
         // 当たり判定が地面の下に行くのを防ぐ
-        //pxT.p.y += shapeComponent_->GetModelHeight();
+        //pxT.p.y += shapeComponent_->GetCollisionOffsetY();
         pxActor_->setKinematicTarget(pxT);
     }
     else

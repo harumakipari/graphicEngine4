@@ -138,9 +138,13 @@ public:
 
     const float& GetRadius() const { return radius_; }
 
-    void SetCollisionOffsetY(const float modelHeight) { modelHeight_ = modelHeight; }
+    void SetCollisionOffsetX(const float offsetX) { collisionOffsetX = offsetX; }
+    void SetCollisionOffsetY(const float offsetY) { collisionOffsetY = offsetY; }
+    void SetCollisionOffsetZ(const float offsetZ) { collisionOffsetZ = offsetZ; }
 
-    const float& GetModelHeight() const { return modelHeight_; }
+    const float& GetCollisionOffsetX() const { return collisionOffsetX; }
+    const float& GetCollisionOffsetY() const { return collisionOffsetY; }
+    const float& GetCollisionOffsetZ() const { return collisionOffsetZ; }
 
     DirectX::XMFLOAT3 GetSizeFromAABB(const AABB& aabb)
     {
@@ -255,7 +259,9 @@ protected:
     bool isCollisionEnabled_ = true;
 
     float radius_ = 0.0f;
-    float modelHeight_ = 0.0f; // physxの当たり判定の原点が埋まらないようにするために使用
+    float collisionOffsetY = 0.0f; // physxの当たり判定の原点が埋まらないようにするために使用
+    float collisionOffsetX = 0.0f; // physxの当たり判定の原点が埋まらないようにするために使用
+    float collisionOffsetZ = 0.0f; // physxの当たり判定の原点が埋まらないようにするために使用
 
     // のちに責任を分離
     float mass_ = 1.0f; // defaultで 1.0kg にしておく

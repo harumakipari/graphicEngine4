@@ -46,17 +46,17 @@ void Player::Initialize(const Transform& transform)
         "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd_Start.glb",
         "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd.glb",
         "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd_Stop.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_A.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_B.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_C.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_D.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Ability_R.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Emote_Ice_Sculpture.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Back.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Front.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Left.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Right.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Death.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_A.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_B.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_C.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_D.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Ability_R.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Emote_Ice_Sculpture.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Back.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Front.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Left.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Right.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Death.glb",
     };
 
     //skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
@@ -70,17 +70,17 @@ void Player::Initialize(const Transform& transform)
     controller->AddAnimation("Jog_Fwd_Start", 4);
     controller->AddAnimation("Jog_Fwd", 5);
     controller->AddAnimation("Jog_Fwd_Stop", 6);
-    //controller->AddAnimation("Primary_Attack_Fast_A", 7);
-    //controller->AddAnimation("Primary_Attack_Fast_B", 8);
-    //controller->AddAnimation("Primary_Attack_Fast_C", 9);
-    //controller->AddAnimation("Primary_Attack_Fast_D", 10);
-    //controller->AddAnimation("Ability_R", 11);
-    //controller->AddAnimation("Emote_Ice_Sculpture", 12);
-    //controller->AddAnimation("HitReact_Back", 13);
-    //controller->AddAnimation("HitReact_Front", 14);
-    //controller->AddAnimation("HitReact_Left", 15);
-    //controller->AddAnimation("HitReact_Right", 16);
-    //controller->AddAnimation("Death", 17);
+    controller->AddAnimation("Primary_Attack_Fast_A", 7);
+    controller->AddAnimation("Primary_Attack_Fast_B", 8);
+    controller->AddAnimation("Primary_Attack_Fast_C", 9);
+    controller->AddAnimation("Primary_Attack_Fast_D", 10);
+    controller->AddAnimation("Ability_R", 11);
+    controller->AddAnimation("Emote_Ice_Sculpture", 12);
+    controller->AddAnimation("HitReact_Back", 13);
+    controller->AddAnimation("HitReact_Front", 14);
+    controller->AddAnimation("HitReact_Left", 15);
+    controller->AddAnimation("HitReact_Right", 16);
+    controller->AddAnimation("Death", 17);
 
     // アニメーションコントローラーを character に追加
     this->SetAnimationController(controller);

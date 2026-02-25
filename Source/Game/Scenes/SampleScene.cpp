@@ -123,7 +123,7 @@ void SampleScene::SetUpActors()
 {
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
     mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
-    Transform playerTr(DirectX::XMFLOAT3{ 12.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.07f,1.07f,1.07f });
+    Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.07f,1.07f,1.07f });
     player = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
     mainCameraComponent->target = (player->GetRootComponent());
     mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);

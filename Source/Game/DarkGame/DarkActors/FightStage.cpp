@@ -160,7 +160,7 @@ void FightStage::Initialize(const Transform& transform)
     boxComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
     boxComponent->Initialize();
 
-    BuildStage();
+    //BuildStage();
 
 
 

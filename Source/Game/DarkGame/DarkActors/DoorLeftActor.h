@@ -18,7 +18,7 @@ public:
     void Update(float deltaTime) override;
 
     // ƒvƒŒƒCƒ„[‚ª‰Ÿ‚µ‚½‚ÉŒÄ‚Ô 
-    void Interact(Player* player) override;
+    void Interact() override;
 
 private:
     std::shared_ptr<SkeletalMeshComponent> meshComponent;

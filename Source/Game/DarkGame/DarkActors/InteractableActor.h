@@ -7,5 +7,5 @@ class InteractableActor :public Actor, public IInteractable
 public:
     InteractableActor(const std::string& actorName) :Actor(actorName) {}
 
-    virtual void Interact(Player* player) override {}
+    virtual void Interact() override {}
 };
