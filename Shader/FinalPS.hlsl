@@ -85,52 +85,52 @@ float CalculatedCascadedShadowFactor(VS_OUT pin, out int cascadeIndex)
 }
 
 
-float3 apply_shadow(inout float3 color, in float4 position_world_space, in float depth_view_space, in float2 shadow_map_dimensions, in float3 rand_seed)
+float3 ApplyShadow(inout float3 color, in float4 positionWorldSpace, in float depthViewSpace, in float2 shadowMapDimensions, in float3 randSeed)
 {
-    float shadow_factor = 0.0;
+    float shadowFactor = 0.0;
 	
-	// Find a layer of cascaded view frustum volume 
-    int cascade_index = -1;
+    // カスケードされたビューフラスタムボリュームの層を見つける
+    int cascadeIndex = -1;
     for (uint layer = 0; layer < 4; ++layer)
     {
-        float distance = ((float[4]) (cascadedPlaneDistances[layer / 4]))[layer % 4];
-        if (distance > depth_view_space)
+        float distance = cascadedPlaneDistances[layer];
+        if (distance > depthViewSpace)
         {
-            cascade_index = layer;
+            cascadeIndex = layer;
             break;
         }
     }
-	// outside far panel
-    if (cascade_index == -1)
+	// 外側の遠方パネル
+    if (cascadeIndex == -1)
     {
         return color;
     }
 	
-	// world space to light view clip space, and to ndc
-    float4 position_light_space = mul(position_world_space, cascadedMatrices[cascade_index]);
-    position_light_space /= position_light_space.w;
-	// ndc to texture space
-    position_light_space.x = position_light_space.x * +0.5 + 0.5;
-    position_light_space.y = position_light_space.y * -0.5 + 0.5;
+	// ワールド空間からライトビュークリップ空間へ、そしてNDCへ
+    float4 positionLightSpace = mul(positionWorldSpace, cascadedMatrices[cascadeIndex]);
+    positionLightSpace /= positionLightSpace.w;
+	// ndc からテクスチャ空間へ
+    positionLightSpace.x = positionLightSpace.x * +0.5 + 0.5;
+    positionLightSpace.y = positionLightSpace.y * -0.5 + 0.5;
 
 #if 1
-	// Hard shadows
-    shadow_factor = cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(position_light_space.xy, cascade_index), position_light_space.z - shadowDepthBias).x;
+	// 硬い影
+    shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
 #else
-	// Soft shadows
-    const float2 sample_scale = (0.5 * effect_data.shadow_filter_radius) / shadow_map_dimensions;
+	// ソフトシャドウ
+    const float2 sampleScale = (0.5 * shadow_filter_radius) / shadowMapDimensions;
     float accum = 0.0;
-    for (uint sample_index = 0; sample_index < effect_data.shadow_sample_count; ++sample_index)
+    for (uint sample_index = 0; sample_index < shadow_sample_count; ++sample_index)
     {
-        float2 sample_offset;
-        float4 seed = float4(rand_seed, sample_index);
+        float2 sampleOffset;
+        float4 seed = float4(randSeed, sample_index);
         uint random = (uint) (64.0 * frac(sin(dot(seed, float4(12.9898, 78.233, 45.164, 94.673))) * 43758.5453)) % 64;
-        sample_offset = poisson_samples[random] * sample_scale;
+        sampleOffset = poisson_samples[random] * sampleScale;
 
-        float2 sample_position = position_light_space.xy + sample_offset;
-        accum += cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(sample_position, cascade_index), position_light_space.z - shadowDepthBias).x;
+        float2 sample_position = positionLightSpace.xy + sampleOffset;
+        accum += cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(sample_position, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
     }
-    shadow_factor = accum / effect_data.shadow_sample_count;
+    shadowFactor = accum / shadow_sample_count;
 #endif
 	
 #if 1
@@ -143,11 +143,11 @@ float3 apply_shadow(inout float3 color, in float4 position_world_space, in float
             { 0, 0, 1 },
             { 1, 1, 0 },
         };
-        return color * lerp(shadowColor, 1.0, shadow_factor) * colors[cascade_index];
+        return color * lerp(shadowColor, 1.0, shadowFactor) * colors[cascadeIndex];
     }
 #endif
 	
-    return color * lerp(shadowColor, 1.0, shadow_factor);
+    return color * lerp(shadowColor, 1.0, shadowFactor);
 }
 
 
@@ -245,10 +245,12 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     // ndc -> world 
     float4 position_world_space = mul(positionNdc, inverseViewProjection);
+    position_world_space /= position_world_space.w;
 
+#if 0
     // 影係数を計算
     int cascadeIndex = -1;
-    //float shadowFactor = CalculatedCascadedShadowFactor(pin, cascadeIndex);
+    float shadowFactor = CalculatedCascadedShadowFactor(pin, cascadeIndex);
     
     if (cascadeIndex > -1)
     {
@@ -268,17 +270,18 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
         if (enableCascadedShadowMaps)
         {
-
-            // Apply cascade shadow mapping
-            color.rgb = apply_shadow(color.rgb, position_world_space, positionViewSpace.z, shadow_map_dimensions, positionNdc.xyz);
-
-
-            //color.rgb *= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
+            color.rgb *= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
 
             //float3 shadow= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
             //return float4(shadow, 1);
         }
     }
+#else
+    if (enableCascadedShadowMaps)
+    {
+        color.rgb = ApplyShadow(color.rgb, position_world_space, (positionViewSpace.z), shadow_map_dimensions, positionNdc.xyz);
+    }
+#endif
 
 #if 1
     // フォグの処理

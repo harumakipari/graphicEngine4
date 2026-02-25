@@ -18,6 +18,7 @@
 #include <memory>
 #include <unordered_map>
 
+#include "Graphics/Shadow/ShadowMap.h"
 #include "UI/UIManager.h"
 
 
@@ -123,6 +124,8 @@ protected:
     std::unique_ptr<FrameBuffer> imGuiGizmoBuffer;
 
     std::unique_ptr<CascadedShadowMaps> cascadedShadowMaps;
+    std::unique_ptr<cascaded_shadow_map> cascaded_shadow_map;
+
     std::unique_ptr<MultipleRenderTargets> multipleRenderTargets;
     std::unique_ptr<GBuffer> gBufferRenderTarget;
     std::unique_ptr<SkyMap> skyMap;

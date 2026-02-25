@@ -131,7 +131,7 @@ CascadedShadowMaps::CascadedShadowMaps(ID3D11Device* device, UINT width, UINT he
 }
 
 void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& cameraView, const DirectX::XMFLOAT4X4& cameraProjection, const DirectX::XMFLOAT4& lightDirection,
-    const float criticalDepthValue/* この値が 0 の場合、カメラの遠方パネル距離が使用される。*/, UINT cbSlot)
+    const float criticalDepthValue/* この値が 0 の場合、カメラの遠方パネル距離が使用される。*/, const UINT cbSlot)
 {
     // 現在のレンダー状態を保存
     immediateContext->RSGetViewports(&savedViewportCount, savedViewports);

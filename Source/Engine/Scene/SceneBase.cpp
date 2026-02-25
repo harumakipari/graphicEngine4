@@ -84,8 +84,10 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    //CascadedShadowMaps
+    //カスケードシャドウマップ
     cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
+
+    cascaded_shadow_map = std::make_unique<class cascaded_shadow_map>(device, 1024 * 4, 1024 * 4);
 
     D3D11_TEXTURE2D_DESC texture2dDesc;
     //テクスチャをロード
@@ -439,6 +441,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     }
 
     // 影を作る処理
+#if 1
     cascadedShadowMaps->Clear(immediateContext);
     cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), criticalDepthValue, 3/*cbSlot*/);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
@@ -448,6 +451,18 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     sceneRender.CastShadowRender(immediateContext, queues.shadowCasters);
     cascadedShadowMaps->Deactivate(immediateContext);
 
+#else
+    cascaded_shadow_map->clear(immediateContext);
+    RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
+    RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
+    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+    cascaded_shadow_map->make(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), criticalDepthValue, [&]()
+        {
+            sceneRender.currentRenderPath = RenderPath::Shadow;
+            sceneRender.CastShadowRender(immediateContext, queues.shadowCasters);
+        });
+
+#endif // 0
     // ライティングのパス
     {
         //multipleRenderTargets->Clear(immediateContext);
@@ -497,6 +512,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     postEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get());
     sceneEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get(), gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
         gBufferRenderTarget->depthStencilShaderResourceView, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)], cascadedShadowMaps->depthMap().Get());
+    //sceneEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get(), gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
+    //    gBufferRenderTarget->depthStencilShaderResourceView, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)], cascaded_shadow_map->depth_map().Get());
 #endif
 
     // フォーワードの透明描画
@@ -520,12 +537,12 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF);
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_FRONT);
     sceneRender.currentRenderPath = RenderPath::Forward;
-  //  sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ここで警告出る
+    //  sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ここで警告出る
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
     RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Forward;
-   // sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ここで警告出る
+    // sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ここで警告出る
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
 
@@ -600,9 +617,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
 
         ID3D11ShaderResourceView* shader_resource_views[]
         {
-            //  gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],   // colorMap
              frameBuffer->shaderResourceViews[0].Get(),//colorMap   こっちライティング済み
-             //multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)],//colorMap   こっちライティング済み
               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
               gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
@@ -611,9 +626,10 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
               sceneEffectManager->GetOutput("SSAOEffect"),
               sceneEffectManager->GetOutput("SSREffect"),
               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],   // emissiveMap
+              //cascaded_shadow_map->depth_map().Get(),   //cascadedShadowMaps
               cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
         };
-        immediateContext->PSSetShaderResources(8, 1, cascadedShadowMaps->depthMap().GetAddressOf());
+        //immediateContext->PSSetShaderResources(8, 1, cascadedShadowMaps->depthMap().GetAddressOf());
 
         // メインフレームバッファとブルームエフェクトを組み合わせて描画
         fullscreenQuad->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());

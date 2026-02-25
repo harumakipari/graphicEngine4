@@ -5,6 +5,13 @@
 #include "Components/Effect/ParticleComponent.h"
 #include "Engine/Scene/Scene.h"
 
+
+auto ConvertRHtoLH = [](DirectX::XMFLOAT3 v)
+    {
+        v.x *= -1.0f;
+        return v;
+    };
+
 void FightStage::Initialize(const Transform& transform)
 {
     std::string parentName = "staticMeshComponent";
@@ -19,7 +26,7 @@ void FightStage::Initialize(const Transform& transform)
     // ポイントライトコンポーネントを追加
     for (int i = 0; i < static_cast<int>(lightsData.size()); ++i)
     {
-        continue; // とりあえずポイントライトは無効化
+        //continue; // とりあえずポイントライトは無効化
         const auto& light = lightsData[i];
 
         std::string compName = "pointLightComponent_" + std::to_string(i);
@@ -27,7 +34,8 @@ void FightStage::Initialize(const Transform& transform)
         auto pointLightComponent =
             this->AddComponent<PointLightComponent>(compName, parentName);
 
-        pointLightComponent->SetRelativeLocationDirect(light.position);
+        DirectX::XMFLOAT3 pos = ConvertRHtoLH(light.position);
+        pointLightComponent->SetRelativeLocationDirect(pos);
         pointLightComponent->SetColor(light.color);
         pointLightComponent->SetRange(light.range);
         pointLightComponent->SetIntensity(light.intensity);
@@ -38,7 +46,14 @@ void FightStage::Initialize(const Transform& transform)
     {
         if (point.name == "Spawn_Door_Left")
         {
-            Transform doorLeftTr{ XMFLOAT3{point.worldPosition},point.worldRotation,point.worldScale };
+            DirectX::XMFLOAT3 pos = ConvertRHtoLH(point.worldPosition);
+
+            Transform doorLeftTr{
+                pos,
+                point.worldRotation,  
+                point.worldScale
+            };
+
             auto stage = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DoorLeftActor>("door_Left", doorLeftTr);
 
 #if 0
@@ -54,7 +69,8 @@ void FightStage::Initialize(const Transform& transform)
             // 湯気のエフェクト
             steamComponent = this->AddComponent<ParticleComponent>("steamComponent", parentName);
             steamComponent->Load("./Data/Effect/Files/Pot_SteamEffect.json");
-            steamComponent->SetRelativeLocationDirect(point.worldPosition);
+            DirectX::XMFLOAT3 pos = ConvertRHtoLH(point.worldPosition);
+            steamComponent->SetRelativeLocationDirect(pos);
             // ループ再生設定
             ParticleComponent::AddSettings settings
             {
