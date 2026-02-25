@@ -46,17 +46,17 @@ void Player::Initialize(const Transform& transform)
         "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd_Start.glb",
         "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd.glb",
         "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd_Stop.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_A.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_B.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_C.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_D.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Ability_R.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Emote_Ice_Sculpture.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Back.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Front.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Left.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Right.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Death.glb",
+        //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_A.glb",
+        //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_B.glb",
+        //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_C.glb",
+        //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_D.glb",
+        //"./Data/Models/Characters/Aurora_FrozenHealth/Ability_R.glb",
+        //"./Data/Models/Characters/Aurora_FrozenHealth/Emote_Ice_Sculpture.glb",
+        //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Back.glb",
+        //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Front.glb",
+        //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Left.glb",
+        //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Right.glb",
+        //"./Data/Models/Characters/Aurora_FrozenHealth/Death.glb",
     };
 
     //skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
@@ -106,8 +106,8 @@ void Player::Initialize(const Transform& transform)
     capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
     capsuleComponent->SetLayer(CollisionLayer::Player);
     capsuleComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
-    capsuleComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::None);
-    capsuleComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::None);
+    capsuleComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+    capsuleComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::Block);
     capsuleComponent->SetCollisionOffsetY(height * 0.5f);
     capsuleComponent->SetIsVisibleDebugBox(false);
     capsuleComponent->Initialize();
@@ -137,7 +137,7 @@ void Player::Initialize(const Transform& transform)
 
     // 移動用コンポーネントを追加
     characterMovementComponent = this->AddComponent<CharacterMovementComponent>("movementComponent", "skeletalComponent");
-    characterMovementComponent->SetUseGravity(false);
+    //characterMovementComponent->SetUseGravity(false);
 
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", "skeletalComponent");

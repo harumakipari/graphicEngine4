@@ -129,7 +129,7 @@ public:
         if (ImGui::TreeNode((name_ + "   Debug Info").c_str()))
         {
             ImGui::Text("Children: %zu", attachChildren_.size());
-            ImGui::Text("Parent: %s", attachParent_.lock() ? attachParent_.lock()->name().c_str() : "None");
+            ImGui::Text("Parent: %s", attachParent_.lock() ? attachParent_.lock()->GetName().c_str() : "None");
             ImGui::TreePop();
         }
 #endif

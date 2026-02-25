@@ -458,10 +458,10 @@ static inline bool operator==(const std::shared_ptr<Actor>& actor, const std::st
 
 static inline bool operator==(const std::shared_ptr<SceneComponent>& component, const std::string& name)
 {
-    return component->name() == name;
+    return component->GetName() == name;
 }
 
 static inline bool operator==(const std::shared_ptr<Component>& component, const std::string& name)
 {
-    return component->name() == name;
+    return component->GetName() == name;
 }

@@ -10,9 +10,7 @@ enum class CollisionLayer :uint32_t
     WorldStatic ,
     Player ,
     Enemy ,
-    Oden ,      // おでん
     Convex ,
-    OdenHoverTarget , // おでんのゲームのカーソルのターゲット
 
     WorldProps , // stage の object
     Camera ,   // カメラ

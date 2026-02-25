@@ -5,12 +5,12 @@
 #include "Components/Effect/ParticleComponent.h"
 #include "Engine/Scene/Scene.h"
 
-
-auto ConvertRHtoLH = [](DirectX::XMFLOAT3 v)
+auto convertRHtoLh = [](DirectX::XMFLOAT3 v)
     {
         v.x *= -1.0f;
         return v;
     };
+
 
 void FightStage::Initialize(const Transform& transform)
 {
@@ -34,7 +34,7 @@ void FightStage::Initialize(const Transform& transform)
         auto pointLightComponent =
             this->AddComponent<PointLightComponent>(compName, parentName);
 
-        DirectX::XMFLOAT3 pos = ConvertRHtoLH(light.position);
+        DirectX::XMFLOAT3 pos = convertRHtoLh(light.position);
         pointLightComponent->SetRelativeLocationDirect(pos);
         pointLightComponent->SetColor(light.color);
         pointLightComponent->SetRange(light.range);
@@ -46,16 +46,15 @@ void FightStage::Initialize(const Transform& transform)
     {
         if (point.name == "Spawn_Door_Left")
         {
-            DirectX::XMFLOAT3 pos = ConvertRHtoLH(point.worldPosition);
+            DirectX::XMFLOAT3 pos = convertRHtoLh(point.worldPosition);
 
             Transform doorLeftTr{
                 pos,
-                point.worldRotation,  
+                point.worldRotation,
                 point.worldScale
             };
 
             auto stage = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DoorLeftActor>("door_Left", doorLeftTr);
-
 #if 0
             std::shared_ptr<SkeletalMeshComponent> door = AddComponent<SkeletalMeshComponent>("Left_Door", parentName);
             door->SetModel("./Data/Models/DarkStageAssets/Door_Large/SM_Door_Large_01.gltf");
@@ -69,7 +68,7 @@ void FightStage::Initialize(const Transform& transform)
             // 湯気のエフェクト
             steamComponent = this->AddComponent<ParticleComponent>("steamComponent", parentName);
             steamComponent->Load("./Data/Effect/Files/Pot_SteamEffect.json");
-            DirectX::XMFLOAT3 pos = ConvertRHtoLH(point.worldPosition);
+            DirectX::XMFLOAT3 pos = convertRHtoLh(point.worldPosition);
             steamComponent->SetRelativeLocationDirect(pos);
             // ループ再生設定
             ParticleComponent::AddSettings settings
@@ -95,12 +94,53 @@ void FightStage::Initialize(const Transform& transform)
 
 
     // 影用のスタティックメッシュコンポーネントを追加
-    std::shared_ptr<StaticMeshComponent> castStaticMeshComponent = this->AddComponent<class StaticMeshComponent>("castShadowModel",parentName);
+    std::shared_ptr<StaticMeshComponent> castStaticMeshComponent = this->AddComponent<class StaticMeshComponent>("castShadowModel", parentName);
     castStaticMeshComponent->SetModel("./Data/Models/DarkStageShadow/DarkStageShadow.gltf");
-    //castStaticMeshComponent->SetModel("./Data/Models/DarkStageShadow_1/0224.glb")v;
-    //castStaticMeshComponent->SetModel("./Data/Models/DarkStageShadow_1/DarkStageShadow.gltf");
     castStaticMeshComponent->SetIsVisible(false);
 
+
+    auto stageCollisionModel = this->AddComponent<StaticMeshComponent>("collisionModel", parentName);
+    stageCollisionModel->SetModel("./Data/Models/DarkStage_Collision/DarkStage_Collision.gltf", true);
+    stageCollisionModel->SetIsCastShadow(false);
+    stageCollisionModel->SetIsVisible(false);
+    auto nodes = stageCollisionModel->model->GetNodes();
+    for (auto node : nodes)
+    {
+        DirectX::XMVECTOR S, R, T;
+
+        bool ok = DirectX::XMMatrixDecompose(
+            &S,
+            &R,
+            &T,
+            DirectX::XMLoadFloat4x4(&node.globalTransform)
+        );
+
+        DirectX::XMFLOAT3 worldScale;
+        DirectX::XMFLOAT4 worldRotation;
+        DirectX::XMFLOAT3 worldPosition;
+
+        if (ok)
+        {
+            XMStoreFloat3(&worldScale, S);
+            XMStoreFloat4(&worldRotation, R);
+            XMStoreFloat3(&worldPosition, T);
+        }
+        auto box = AddComponent<BoxComponent>(node.name, parentName);
+
+        DirectX::XMFLOAT3 pos = convertRHtoLh(worldPosition);
+
+        box->SetHalfBoxExtent(worldScale);
+        box->SetRelativeLocationDirect(pos);
+        box->SetRelativeRotationDirect(worldRotation);
+
+        box->SetStatic(true);
+        box->SetLayer(CollisionLayer::WorldStatic);
+        box->SetResponseToLayer(
+            CollisionLayer::Player,
+            CollisionComponent::CollisionResponse::Block);
+
+        box->Initialize();
+    }
 #if 0
     // 当たり判定
     // メッシュ
@@ -110,6 +150,7 @@ void FightStage::Initialize(const Transform& transform)
     triangleMeshComponent->CreateConvexMeshFromModel(staticMeshComponent.get());
 #else
 
+    // 床の当たり判定用のボックスコリジョンコンポーネント
     std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "staticMeshComponent");
     boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(40.0f, 0.2f, 40.0f));
     //boxComponent->SetCollisionOffsetY(-4.5f);
@@ -118,6 +159,10 @@ void FightStage::Initialize(const Transform& transform)
     boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
     boxComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
     boxComponent->Initialize();
+
+    BuildStage();
+
+
 
 #endif // 0 // 当たり判定
 
@@ -149,4 +194,44 @@ void FightStage::Update(float elapsedTime)
     //    }
     //}
 
+}
+
+
+void FightStage::BuildStage()
+{
+    float stageHalfSize = 40.0f;
+    float wallHeight = 5.0f;
+    float wallThickness = 0.5f;
+
+    CreateWall("wallFront",
+        { stageHalfSize, wallHeight, wallThickness },
+        { 0.0f, wallHeight, stageHalfSize });
+
+    CreateWall("wallBack",
+        { stageHalfSize, wallHeight, wallThickness },
+        { 0.0f, wallHeight, -stageHalfSize });
+
+    CreateWall("wallRight",
+        { wallThickness, wallHeight, stageHalfSize },
+        { stageHalfSize, wallHeight, 0.0f });
+
+    CreateWall("wallLeft",
+        { wallThickness, wallHeight, stageHalfSize },
+        { -stageHalfSize, wallHeight, 0.0f });
+}
+
+std::shared_ptr<BoxComponent> FightStage::CreateWall(const std::string& name, const DirectX::XMFLOAT3& halfExtent, const DirectX::XMFLOAT3& position)
+{
+    auto wall = AddComponent<BoxComponent>(name, GetRootComponent()->GetName());
+
+    wall->SetHalfBoxExtent(halfExtent);
+    wall->SetRelativeLocationDirect(position);
+    wall->SetStatic(true);
+    wall->SetLayer(CollisionLayer::WorldStatic);
+    wall->SetResponseToLayer(
+        CollisionLayer::Player,
+        CollisionComponent::CollisionResponse::Block);
+
+    wall->Initialize();
+    return wall;
 }

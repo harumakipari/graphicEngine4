@@ -105,7 +105,6 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = DirectX::CreateDDSTextureFromFile(device, L"./Data/ShaderTextures/_noise_3d.dds", resource.ReleaseAndGetAddressOf(), noise3d.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-
     // UIマネージャーを初期化
     uiManager = std::make_unique<UIManager>();
 

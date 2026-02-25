@@ -59,7 +59,7 @@ void Actor::DestroyComponentByName(const std::string& name)
         return;
     }
 
-    if (rootComponent_ && rootComponent_->name() == name)
+    if (rootComponent_ && rootComponent_->GetName() == name)
     {
         // rootComponent‚Ìíœ‚Í‹Ö~
         Logger::Warning(Logger::LogCategory::System, u8"rootComponent‚Ííœ‚Å‚«‚Ü‚¹‚ñB");
@@ -77,7 +77,7 @@ void Actor::DestroyComponentByName(const std::string& name)
     auto it = std::remove_if(ownedComponents_.begin(), ownedComponents_.end(),
         [&](const std::shared_ptr<Component>& comp)
         {
-            if (comp->name() == name) {
+            if (comp->GetName() == name) {
                 comp->Destroy(); // ã‚Å’è‹`‚µ‚½ Destroy ŒÄ‚Ô
                 return true;     // erase ‘ÎÛ‚É‚·‚é
             }

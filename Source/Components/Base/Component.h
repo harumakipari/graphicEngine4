@@ -86,7 +86,7 @@ public:
 
     virtual void DrawImGuiInspector() {}
 
-    const std::string& name() const
+    const std::string& GetName() const
     {
         return name_;
     }

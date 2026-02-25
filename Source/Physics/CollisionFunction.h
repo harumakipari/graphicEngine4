@@ -8,9 +8,41 @@
 #include "Game/Actors/Camera/Camera.h"
 #include "Graphics/Core/Graphics.h"
 
-
 namespace CollisionFunction
 {
+    inline bool SphereRayCast(
+        const DirectX::XMFLOAT3& rayStart,
+        const DirectX::XMFLOAT3& rayEnd,
+        HitResultWithActor& result,
+        float radius = 0.3f,
+        uint32_t collisionLayer = 0xFFFFFF)
+    {
+        using namespace DirectX;
+
+        XMVECTOR start = XMLoadFloat3(&rayStart);
+        XMVECTOR end = XMLoadFloat3(&rayEnd);
+
+        XMVECTOR dirVec = XMVectorSubtract(end, start);
+
+        float distance = XMVectorGetX(XMVector3Length(dirVec));
+
+        if (distance <= 0.0001f)
+            return false;
+
+        dirVec = XMVector3Normalize(dirVec);
+
+        XMFLOAT3 rayDir;
+        XMStoreFloat3(&rayDir, dirVec);
+
+        return Physics::Instance().SphereCast(
+            rayStart,
+            rayDir,
+            distance,
+            radius,
+            result,
+            collisionLayer);
+    }
+
     inline bool RaycastFromMouse(const DirectX::XMFLOAT2& mouseCursor, HitResultWithActor& result, uint32_t collisionLayer = 0xFFFFFF)
     {
         float screenWidth, screenHeight, viewportX, viewportY;

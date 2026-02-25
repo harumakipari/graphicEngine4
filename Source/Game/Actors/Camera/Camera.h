@@ -153,14 +153,7 @@ public:
 
 
 private:
-    DirectX::XMFLOAT3 offset = { 0.6f,11.4f,-15.4f };
-    DirectX::XMFLOAT3 cameraMin = { -11.0f,0.0f,-8.0f };
-    DirectX::XMFLOAT3 cameraMax = { 11.0f,0.0f,7.0f };
 
-    float distanceX = 0.0f;
-    float distanceY = 0.0f;
-    float distanceZ = 0.0f;
-    float elapsedTime = 0.0f;
 
 
     bool didShake = false;
