@@ -23,27 +23,7 @@ void ApplyHeightFog(float3 position /*world_space*/, inout float density)
     const float heightScale = fogHeightFalloff;
     density *= exp(-(position.y - groundLevel) * heightScale);
 }
-float GetDensity(float3 position /*world_space*/)
-{
-    float density = 1;
-	
-#if 1
-    const float time = elapsedTime * timeScale;
 
-    const float3 noiseVelocity = normalize(float3(1, 0, 0));
-    float noise = 0.5 * noise3dMap.Sample(samplerStates[LINEAR], position * noiseScale + noiseVelocity * time).x + 0.5;
-	
-    const float noiseIntensityOffset = 0.2;
-    const float noiseIntensity = fogDensity;
-	
-    noise = saturate(noise - noiseIntensityOffset) * noiseIntensity;
-    density = saturate(noise);
-#endif
-	
-    ApplyHeightFog(position, density);
-
-    return density;
-}
 float GetLightAttenuation(float3 positionWorldSpace)
 {
     float depth = length(positionWorldSpace - cameraPositon.xyz);
@@ -51,7 +31,7 @@ float GetLightAttenuation(float3 positionWorldSpace)
     int cascadeIndex = -1;
     for (uint layer = 0; layer < 4; ++layer)
     {
-        float distance = ((float[4]) (cascadedPlaneDistances[layer / 4]))[layer % 4];
+        float distance = cascadedPlaneDistances[layer];
         if (distance > depth)
         {
             cascadeIndex = layer;

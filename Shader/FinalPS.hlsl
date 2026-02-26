@@ -49,7 +49,7 @@ float CalculatedCascadedShadowFactor(VS_OUT pin, out int cascadeIndex)
     positionWorldSpace = positionWorldSpace / positionWorldSpace.w;
 
     // カスケードビューフラスタムボリュームのレイヤーを見つける
-    float depthViewSpace = abs(positionViewSpace.z); // view 空間の z はカメラからの距離
+    float depthViewSpace = (positionViewSpace.z); // view 空間の z はカメラからの距離
     // カメラからの距離からどのカスケードを使用するか選択する
     cascadeIndex = -1;
 
@@ -349,7 +349,6 @@ float4 main(VS_OUT pin) : SV_TARGET
 
         color.rgb += ssrTexture.Sample(samplerStates[LINEAR_CLAMP], pin.texcoord).rgb;
     }
-#endif
 
     // SSAOの処理
     const float radius = 4.0;
@@ -388,6 +387,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     {
         color *= occlusion;
     }
+#endif
 
     // トーンマップ
     color.rgb = JodieReinhardToneMap(color.rgb);

@@ -15,6 +15,8 @@ enum class CollisionLayer :uint32_t
     WorldProps , // stage の object
     Camera ,   // カメラ
 
+    Interactable,  // プレイヤーが近づいてインタラクトできるもの
+
     Everything = 0xFFFFFF,
 };
 

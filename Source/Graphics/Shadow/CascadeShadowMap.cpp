@@ -12,6 +12,25 @@
 // ビュー行列 + プロジェクション行列からワールド空間でのフラスタム8頂点を取得する
 std::array<DirectX::XMFLOAT4, 8> ExtractFrustumCorners(const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection)
 {
+    const DirectX::XMMATRIX VP_ = XMMatrixInverse(NULL, XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
+
+    std::array<DirectX::XMFLOAT4, 8> frustum_corners;
+    size_t index = 0;
+    for (size_t x = 0; x < 2; ++x)
+    {
+        for (size_t y = 0; y < 2; ++y)
+        {
+            for (size_t z = 0; z < 2; ++z)
+            {
+                DirectX::XMFLOAT4 pt = { 2.0f * x - 1.0f, 2.0f * y - 1.0f, 2.0f * z - 1.0f, 1.0f };
+                XMStoreFloat4(&pt, XMVector3TransformCoord(XMLoadFloat4(&pt), VP_));
+                frustum_corners.at(index++) = pt;
+            }
+        }
+    }
+    return frustum_corners;
+
+
     // NDC空間の8頂点
     std::array<DirectX::XMFLOAT4, 8> frustumCorners =
     {
@@ -127,7 +146,6 @@ CascadedShadowMaps::CascadedShadowMaps(ID3D11Device* device, UINT width, UINT he
         hr = device->CreateShaderResourceView(shadowMapTexture.Get(), &desc, debugCascadeSRVs[i].GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
-
 }
 
 void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& cameraView, const DirectX::XMFLOAT4X4& cameraProjection, const DirectX::XMFLOAT4& lightDirection,
@@ -227,6 +245,7 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
             maxZ *= zDepthScale;
         }
 #endif
+
         // ライト射影行列
         DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicOffCenterLH(minX, maxX, minY, maxY, minZ, maxZ);
         DirectX::XMStoreFloat4x4(&cascadedMatrices.at(cascadeIndex), V * P);

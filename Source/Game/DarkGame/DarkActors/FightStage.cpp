@@ -20,7 +20,8 @@ void FightStage::Initialize(const Transform& transform)
 
     std::shared_ptr<StaticMeshComponent> staticMeshComponent = this->AddComponent<class StaticMeshComponent>(parentName);
     staticMeshComponent->SetModel("./Data/Models/DarkStage0223_3/DarkStage.gltf", true);
-    staticMeshComponent->SetIsCastShadow(false);
+    //staticMeshComponent->SetModel("./Data/Models/DarkStage_0226/DUN_DungeonExample_MAP.gltf", true);
+    //staticMeshComponent->SetIsCastShadow(false);
     //staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
     auto lightsData = staticMeshComponent->model->GetPointLights();
     // ポイントライトコンポーネントを追加
@@ -94,9 +95,9 @@ void FightStage::Initialize(const Transform& transform)
 
 
     // 影用のスタティックメッシュコンポーネントを追加
-    std::shared_ptr<StaticMeshComponent> castStaticMeshComponent = this->AddComponent<class StaticMeshComponent>("castShadowModel", parentName);
-    castStaticMeshComponent->SetModel("./Data/Models/DarkStageShadow/DarkStageShadow.gltf");
-    castStaticMeshComponent->SetIsVisible(false);
+    //std::shared_ptr<StaticMeshComponent> castStaticMeshComponent = this->AddComponent<class StaticMeshComponent>("castShadowModel", parentName);
+    //castStaticMeshComponent->SetModel("./Data/Models/DarkStageShadow/DarkStageShadow.gltf");
+    //castStaticMeshComponent->SetIsVisible(false);
 
 
     auto stageCollisionModel = this->AddComponent<StaticMeshComponent>("collisionModel", parentName);
@@ -125,21 +126,21 @@ void FightStage::Initialize(const Transform& transform)
             XMStoreFloat4(&worldRotation, R);
             XMStoreFloat3(&worldPosition, T);
         }
-        auto box = AddComponent<BoxComponent>(node.name, parentName);
+        //auto box = AddComponent<BoxComponent>(node.name, parentName);
 
-        DirectX::XMFLOAT3 pos = convertRHtoLh(worldPosition);
+        //DirectX::XMFLOAT3 pos = convertRHtoLh(worldPosition);
 
-        box->SetHalfBoxExtent(worldScale);
-        box->SetRelativeLocationDirect(pos);
-        box->SetRelativeRotationDirect(worldRotation);
+        //box->SetHalfBoxExtent(worldScale);
+        //box->SetRelativeLocationDirect(pos);
+        //box->SetRelativeRotationDirect(worldRotation);
 
-        box->SetStatic(true);
-        box->SetLayer(CollisionLayer::WorldStatic);
-        box->SetResponseToLayer(
-            CollisionLayer::Player,
-            CollisionComponent::CollisionResponse::Block);
+        //box->SetStatic(true);
+        //box->SetLayer(CollisionLayer::WorldStatic);
+        //box->SetResponseToLayer(
+        //    CollisionLayer::Player,
+        //    CollisionComponent::CollisionResponse::Block);
 
-        box->Initialize();
+        //box->Initialize();
     }
 #if 0
     // 当たり判定
@@ -152,7 +153,7 @@ void FightStage::Initialize(const Transform& transform)
 
     // 床の当たり判定用のボックスコリジョンコンポーネント
     std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "staticMeshComponent");
-    boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(40.0f, 0.2f, 40.0f));
+    boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(80.0f, 0.2f, 80.0f));
     //boxComponent->SetCollisionOffsetY(-4.5f);
     boxComponent->SetStatic(true);
     boxComponent->SetLayer(CollisionLayer::WorldStatic);

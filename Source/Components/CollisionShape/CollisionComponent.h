@@ -23,7 +23,7 @@ public:
         Block    // ’Ê’m{‰Ÿ‚µo‚µ
     };
 
-    CollisionComponent(const std::string& name, std::shared_ptr<Actor> owner) : SceneComponent(name, owner) {}
+    CollisionComponent(const std::string& name, const std::shared_ptr<Actor>& owner) : SceneComponent(name, owner) {}
 
     // Œ»İ‚Ìİ’è‚ğæ“¾
     uint32_t GetCollisionLayer() const { return collisionLayer_; }

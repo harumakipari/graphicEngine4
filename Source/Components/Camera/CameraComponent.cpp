@@ -10,8 +10,13 @@ const DirectX::XMFLOAT4X4& TPSCameraComponent::GetView()
 
     XMFLOAT3 basePos{ 0,0,0 };
     if (!target.expired())
+    {
         basePos = target.lock()->GetComponentWorldTransform().GetLocation();
-
+    }
+    else
+    {
+        
+    }
     XMVECTOR focus =
         XMLoadFloat3(&basePos) +
         XMVectorSet(targetOffset.x, targetOffset.y, targetOffset.z, 0);

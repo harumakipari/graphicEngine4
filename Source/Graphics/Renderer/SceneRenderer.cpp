@@ -370,6 +370,9 @@ void SceneRenderer::CastShadowRender(ID3D11DeviceContext* immediateContext, cons
 
         meshComponent->UpdateConstantBuffer(immediateContext);
 
+        //meshComponent->CastShadow(immediateContext, worldMat);
+
+#if 1
         if (meshComponent->model->mode ==
             InterleavedGltfModel::Mode::SkeltalMesh)
         {
@@ -387,6 +390,8 @@ void SceneRenderer::CastShadowRender(ID3D11DeviceContext* immediateContext, cons
                 worldMat,
                 meshComponent->modelNodes);
         }
+
+#endif // 0
     }
 
 
@@ -882,11 +887,7 @@ void SceneRenderer::CastShadow(ID3D11DeviceContext* immediateContext, const Mesh
 
 #if 1 //CASCADED_SHADOW_MAPS
                 std::string pipelineName;
-                if (material.overridePipelineName.has_value())
-                {
-                    pipelineName = *material.overridePipelineName;
-                }
-                else if (meshComponent->overrideCascadeShadowPipelineName.has_value())
+                if (meshComponent->overrideCascadeShadowPipelineName.has_value())
                 {
                     pipelineName = *meshComponent->overrideCascadeShadowPipelineName;
                 }
@@ -942,7 +943,6 @@ void SceneRenderer::CastShadowWithStaticBatching(ID3D11DeviceContext* immediateC
 
     immediateContext->PSSetShaderResources(0, 1, model->materialResourceView.GetAddressOf());
 
-    // CASCADED_SHADOW_MAPS
     immediateContext->VSSetShader(model->vertexShaderCSM.Get(), nullptr, 0);
     immediateContext->GSSetShader(model->geometryShaderCSM.Get(), nullptr, 0);
 
@@ -1021,6 +1021,22 @@ void SceneRenderer::CastShadowWithStaticBatching(ID3D11DeviceContext* immediateC
             material.data.emissiveTexture.index,
             material.data.occlusionTexture.index,
         };
+
+#if 1 //CASCADED_SHADOW_MAPS
+        std::string pipelineName;
+        if (meshComponent->overrideCascadeShadowPipelineName.has_value())
+        {
+            pipelineName = *meshComponent->overrideCascadeShadowPipelineName;
+        }
+        else
+        {
+            pipelineName = GetPipelineName(currentRenderPath, static_cast<MaterialAlphaMode>(material.data.alphaMode), static_cast<ModelMode>(model->mode));
+        }
+        pipeLineStateSet->BindPipeLineState(immediateContext, pipelineName);
+        immediateContext->PSSetShader(nullptr, nullptr, 0);
+#endif // 0
+
+
         ID3D11ShaderResourceView* nullShaderResourceView{};
         std::vector<ID3D11ShaderResourceView*> shaderResourceViews(_countof(textureIndices));
         for (int textureIndex = 0; textureIndex < shaderResourceViews.size(); ++textureIndex)

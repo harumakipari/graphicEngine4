@@ -19,7 +19,7 @@ void LightManager::Initialize(ID3D11Device* device)
 
 void LightManager::Update(float deltaTime)
 {
-    SetDirectionalLight(lightDirection, lightColor);
+    SetDirectionalLight(constants.lightDirection, lightColor);
 
     renderPointLights.clear();
 
@@ -42,7 +42,7 @@ void LightManager::Update(float deltaTime)
     constants.directionalLightEnable = directionalLightEnable;
     constants.pointLightCount = pointLightCount;
     constants.lightColor = lightColor;
-    constants.lightDirection = lightDirection;
+    //constants.lightDirection = lightDirection;
     constants.directionalLightEnable = static_cast<int>(directionalLightEnable);
     constants.pointLightEnable = static_cast<int>(pointLightEnable);
     // デフォルト初期化
@@ -87,7 +87,7 @@ void LightManager::DrawGUI()
 #ifdef USE_IMGUI
     //ImGui::Checkbox("useDeferredRendering", &useDeferredRendering);
     ImGui::Checkbox("directionalLightEnable", &directionalLightEnable);
-    ImGui::SliderFloat3("Light Direction", &lightDirection.x, -1.0f, 1.0f);
+    ImGui::SliderFloat3("Light Direction", &constants.lightDirection.x, -1.0f, 1.0f);
     ImGui::SliderFloat3("Light Color", &lightColor.x, -1.0f, 1.0f);
     ImGui::SliderFloat("IBL Intensity", &iblIntensity, 0.0f, 20.0f);
     ImGui::SliderFloat("Light Intensity", &lightColor.w, 0.0f, 20.0f);

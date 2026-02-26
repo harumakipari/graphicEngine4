@@ -196,7 +196,6 @@ public:
             {
                 HRESULT hr = CreatePsFromCSO(device, psFilename.c_str(), material.replacedPixelShader.GetAddressOf());
                 _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
             }
         }
     }

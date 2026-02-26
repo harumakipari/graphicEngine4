@@ -271,6 +271,10 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
         ViewConstants data = camera->GetViewConstants();
         sceneRender.UpdateViewConstants(immediateContext, data);
     }
+    else
+    {
+        Logger::Error(U8("ƒJƒƒ‰‚ª‚È‚¢"));
+    }
     UpdateConstantBuffer(immediateContext);
 #ifdef USE_IMGUI
     //imGuiGizmoBuffer->Clear(immediateContext);
@@ -416,9 +420,9 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     auto queues = sceneRender.BuildRenderQueues();
 
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-    //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
     //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_FRONT);
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+    //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Deferred;
     sceneRender.RenderOpaque(immediateContext, queues.deferredOpaque);
     ExecuteHooks(RenderPass::Opaque, immediateContext);
@@ -437,6 +441,10 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
         ViewConstants data = camera->GetViewConstants();
         cameraView = data.view;
         cameraProjection = data.projection;
+    }
+    else
+    {
+        Logger::Error(U8("ƒJƒƒ‰‚ª‚È‚¢"));
     }
 
     // ‰e‚ğì‚éˆ—
@@ -591,7 +599,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     if (useDrawDebug)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+     //   Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         DebugDrawManager::Render(immediateContext);
         ExecuteHooks(RenderPass::Debug, immediateContext);
     }

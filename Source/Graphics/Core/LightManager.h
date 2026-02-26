@@ -42,15 +42,15 @@ public:
 
     void SetDirectionalLight(const DirectX::XMFLOAT4& dir, const DirectX::XMFLOAT4& color)
     {
-        lightDirection = dir;
+        constants.lightDirection = dir;
         lightColor = color;
     }
 
     void DrawGUI();
 
-    const DirectX::XMFLOAT4& GetLightDirection() const { return lightDirection; }
+    const DirectX::XMFLOAT4& GetLightDirection() const { return constants.lightDirection; }
 private:
-    DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
+    //DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
     DirectX::XMFLOAT4 lightColor{ 1.0f,1.0f,1.0f,3.8f };
     //float iblIntensity = 3.418f;  //Image Basesd Lighting‚Ì‹­“x
     float iblIntensity = 0.001f;  //Image Basesd Lighting‚Ì‹­“x
