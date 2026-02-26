@@ -165,7 +165,7 @@ float3 CalculatedFogColor(VS_OUT pin)
     if (enableBlur)
     {
         // 深度取得
-        float depth = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).x;
+        float depth = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
     
         float accumulatedRadiance = 0.0;
         float accumulatedWeight = 0.0;
@@ -186,7 +186,7 @@ float3 CalculatedFogColor(VS_OUT pin)
                 float domainGaussian = exp(-distance / sigma);
 
                 // 深度による重みでぼかす (深度が近い → 重み大、深度が違う → 重みほぼ0）
-                float sampledDepth = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord).x;
+                float sampledDepth = depthTexture.Sample(samplerStates[POINT], texcoord).x;
                 distance = (depth - sampledDepth) * (depth - sampledDepth);
                 const float sigma2 = 0.0001;
                 float rangeGaussian = exp(-distance / sigma2);
@@ -233,12 +233,23 @@ float4 main(VS_OUT pin) : SV_TARGET
     // シーンからライティング済みのカラーテクスチャ
     float4 color = colorTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
 
+#if 0
     // シーンから深度値を取得
     float depth = depthTexture.SampleLevel(samplerStates[POINT], pin.texcoord, 0);
     //return float4(depth, 1, 0, 1);
 
     // uv -> ndc 
     float4 positionNdc = CalculatedPositionNDC(pin);
+#else
+    float depth_ndc = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
+
+    float4 positionNdc;
+	// texture space to ndc
+    positionNdc.x = pin.texcoord.x * +2 - 1;
+    positionNdc.y = pin.texcoord.y * -2 + 1;
+    positionNdc.z = depth_ndc;
+    positionNdc.w = 1;
+#endif
     // ndc -> view 
     float4 positionViewSpace = mul(positionNdc, inverseProjection); // ndc → clip 
     positionViewSpace = positionViewSpace / positionViewSpace.w; // clip -> view 
@@ -289,7 +300,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     {
        // color.rgb = apply_volumetric_fog(color.rgb, position_world_space.xyz);
 
-        float curr_depth = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).x;
+        float curr_depth = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
         float4 sum = float4(0.0, 0.0, 0.0, 0.0);
         float4 sample;
         float radius = 4.0;
@@ -354,7 +365,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     const float radius = 4.0;
     const float sigma = 2.0 * radius * radius;
     const float sigma2 = 0.01;
-
+    float depth = depthTexture.SampleLevel(samplerStates[POINT], pin.texcoord, 0);
     float curr_depth = depth;
     float weight = 0.0;
 	
@@ -371,7 +382,7 @@ float4 main(VS_OUT pin) : SV_TARGET
             float distance = i * i + j * j;
             float domain_gaussian = exp(-distance / sigma);
 			
-            float sample_depth = depthTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], uv, 0).x;
+            float sample_depth = depthTexture.SampleLevel(samplerStates[POINT], uv, 0).x;
             distance = (curr_depth - sample_depth) * (curr_depth - sample_depth);
             float range_gaussian = exp(-distance / sigma2);
 			

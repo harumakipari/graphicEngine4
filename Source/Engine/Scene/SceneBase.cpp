@@ -215,7 +215,7 @@ bool SceneBase::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
 
     // シーンエフェクト
     {
-        if (!sceneEffectManager.get())
+        //if (!sceneEffectManager.get())
         {
             Logger::Log(U8("シーンエフェクトを作成しました！"));
             sceneEffectManager = std::make_unique<SceneEffectManager>();

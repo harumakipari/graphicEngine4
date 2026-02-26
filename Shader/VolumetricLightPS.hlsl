@@ -89,7 +89,7 @@ float4 DitheredRayMarch(float2 screenPos, float3 rayStart, float3 rayDir, float 
     {
         float atten = GetLightAttenuation(currentPosition);
 		
-		//float density = get_density(current_position);
+		//float density = get_density(currentPosition);
         float density = 1;
 #if 1
         const float time = elapsedTime * timeScale;
@@ -100,7 +100,7 @@ float4 DitheredRayMarch(float2 screenPos, float3 rayStart, float3 rayDir, float 
         float noise = 0.5 * noise3dMap.Sample(samplerStates[LINEAR], position).x + 0.5;
         const float sharpnessFactor = 1.0;
         noise = pow(noise, sharpnessFactor);
-        const float noiseIntensityOffset = 0.0;
+        const float noiseIntensityOffset = 0.2;
         const float noiseIntensity = fogDensity;
         density = max(0, noise - noiseIntensityOffset) * noiseIntensity;
 #endif
@@ -175,7 +175,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     rayDir /= rayLength;
 	
 #if 1
-    const float maxRayLength = 1000;
+    const float maxRayLength = fogCutoffDistance;
     rayLength = min(rayLength, maxRayLength);
 #endif
 	
