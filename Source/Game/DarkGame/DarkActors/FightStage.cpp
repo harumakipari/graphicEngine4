@@ -43,6 +43,8 @@ void FightStage::Initialize(const Transform& transform)
         pointLightComponent->SetColor(light.color);
         pointLightComponent->SetRange(light.range);
         pointLightComponent->SetIntensity(light.intensity);
+
+        break;
     }
 
 

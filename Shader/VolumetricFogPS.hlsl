@@ -4,25 +4,14 @@
 #include "Sampler.hlsli"
 
 Texture2D depthTexture : register(t0);
-Texture2DArray cascadedShadowMaps : register(t1);
+Texture2D positionMap : register(t1);
+Texture2DArray cascadedShadowMaps : register(t2);
 Texture3D noise3D : register(t31); // ノイズテクスチャ
 
 // この霧ポイントが影の中か、光の中か判別する関数
-float SunlightRadiance(float3 position,VS_OUT pin)
+float SunlightRadiance(float3 worldPositon)
 {
-    //float depthNdc = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).x;
-    //float4 positionNdc;
-    //// テクスチャ座標 → NDC 座標変換
-    //positionNdc.x = pin.texcoord.x * +2 - 1;
-    //positionNdc.y = pin.texcoord.y * -2 + 1;
-    //positionNdc.z = depthNdc;
-    //positionNdc.w = 1;
-    
-    // // NDC 空間 → View 空間へ変換
-    //float4 positionViewSpace = mul(positionNdc, inverseProjection);
-    //positionViewSpace = positionViewSpace / positionViewSpace.w;
-
-    float4 posView = mul(float4(position, 1.0), view);
+    float4 posView = mul(float4(worldPositon, 1.0), view);
     float depthViewSpace = posView.z;
 
     //// ndc -> world space
@@ -44,7 +33,7 @@ float SunlightRadiance(float3 position,VS_OUT pin)
 
     // フォグ内のワールド座標をライト空間（クリップ空間）へ変換
     //　world 空間 -> Light Clip 空間 (各カスケードに対応する Light View Projection 空間)
-    float4 positionLightSpace = mul(float4(position.xyz, 1.0), cascadedMatrices[cascadeIndex]);
+    float4 positionLightSpace = mul(float4(worldPositon.xyz, 1.0), cascadedMatrices[cascadeIndex]);
     positionLightSpace /= positionLightSpace.w; // Light Clip 空間 -> ndc 空間
     // ndc 空間 -> テクスチャ座標　
     positionLightSpace.x = positionLightSpace.x * +0.5 + 0.5;
@@ -52,7 +41,7 @@ float SunlightRadiance(float3 position,VS_OUT pin)
     
     // シャドウマップの深度と現在ピクセルの深度を比較
     // 1.0 -> 光が当たっている　0.0 -> 影の中
-    return cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
+    return cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x + 0.01;
 }
 
 // 高さによる霧の濃度変化
@@ -98,7 +87,7 @@ float DitheredRayMarch(float2 screenPos, float3 rayStart, float3 rayDir, float r
     for (int i = 0; i < stepCount; ++i)
     {
         // 太陽光のチェック
-        float radiance = SunlightRadiance(currentPosition ,pin);
+        float radiance = SunlightRadiance(currentPosition);
         // 霧密度
         float density = fogDensity;
 #if 1
@@ -135,11 +124,13 @@ float main(VS_OUT pin) : SV_TARGET
 {
     // 深度を取得
     float depth = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
-
     // テクスチャ座標 -> world 空間
+#if 0
     float4 position = mul(float4(pin.texcoord.x * 2.0 - 1.0, -pin.texcoord.y * 2.0 + 1.0, depth, 1.0), inverseViewProjection);
     position = position / position.w; // world 空間
-
+#else
+    float4 position = positionMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord); // world 空間
+#endif 
     // レイを生成
     float3 rayStart = cameraPositon.xyz;
     float3 rayDir = position.xyz - rayStart;

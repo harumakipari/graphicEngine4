@@ -156,7 +156,54 @@ float4 CalculatedPositionNDC(VS_OUT pin)
     positionNdc.w = 1;
     return positionNdc;
 }
+// CSM 用の影係数を計算する関数
+float CalculatedCascadedShadowFactor(VS_OUT pin, out int cascadeIndex)
+{
+    // uv -> ndc 
+    float4 positionNdc = CalculatedPositionNDC(pin);
+    // ndc -> view 
+    float4 positionViewSpace = mul(positionNdc, inverseProjection); // ndc → clip 
+    positionViewSpace = positionViewSpace / positionViewSpace.w; // clip -> view 
 
+    // ndc -> world space
+    float4 positionWorldSpace = mul(positionNdc, inverseViewProjection);
+    positionWorldSpace = positionWorldSpace / positionWorldSpace.w;
+
+    // カスケードビューフラスタムボリュームのレイヤーを見つける
+    float depthViewSpace = (positionViewSpace.z); // view 空間の z はカメラからの距離
+    // カメラからの距離からどのカスケードを使用するか選択する
+    cascadeIndex = -1;
+
+    for (uint layer = 0; layer < 4; ++layer)
+    {
+        float distance = cascadedPlaneDistances[layer];
+        if (distance > depthViewSpace)
+        {
+            cascadeIndex = layer;
+            break;
+        }
+
+    }
+
+    float shadowFactor = 1.0;
+
+    if (cascadeIndex == -1)
+        cascadeIndex = 3;
+
+    if (cascadeIndex > -1)
+    {
+        //　world 空間 -> Light Clip 空間 (各カスケードに対応する Light View Projection 空間)
+        float4 positionLightSpace = mul(positionWorldSpace, cascadedMatrices[cascadeIndex]);
+        positionLightSpace /= positionLightSpace.w; // Light Clip 空間 -> ndc 空間
+        // ndc 空間 -> texture 空間
+        positionLightSpace.x = positionLightSpace.x * +0.5 + 0.5;
+        positionLightSpace.y = positionLightSpace.y * -0.5 + 0.5;
+        // シャドウマップの深度と現在ピクセルの深度を比較
+        shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
+        return shadowFactor; // 影の中
+    }
+    return shadowFactor; // 光が当たっている
+}
 float CalculatedCascadedShadowFactor(VS_OUT pin)
 {
     // CASCADED_SHADOW_MAPS

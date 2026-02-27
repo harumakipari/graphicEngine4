@@ -259,6 +259,7 @@
     <ClCompile Include="Source\Components\Elastic\ElasticComponent.cpp" />
     <ClCompile Include="Source\Components\Game\LifeTimeComponent.cpp" />
     <ClCompile Include="Source\Components\Render\MeshComponent.cpp" />
+    <ClCompile Include="Source\Components\Render\PointLightComponent.cpp" />
     <ClCompile Include="Source\Core\Actor.cpp" />
     <ClCompile Include="Source\Core\ActorManager.cpp" />
     <ClCompile Include="Source\Core\CoreColor.cpp" />
@@ -429,6 +430,7 @@
     <ClInclude Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.h" />
     <ClInclude Include="Source\Game\Actors\WaterSphere\WaterSphere.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\InteractableActor.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStagePointLightActor.h" />
     <ClInclude Include="Source\Game\DarkGame\Interactable.h" />
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />

@@ -4,7 +4,8 @@
 #include "Sampler.hlsli"
 
 Texture2D depthMap : register(t0);
-Texture2DArray shadowMap : register(t1);
+Texture2D positionMap : register(t1);
+Texture2DArray shadowMap : register(t2);
 Texture2D noise2dMap : register(t30);
 Texture3D noise3dMap : register(t31);
 
@@ -47,12 +48,14 @@ float GetDensity(float3 position /*world_space*/)
 float GetLightAttenuation(float3 positionWorldSpace)
 {
     float depth = length(positionWorldSpace - cameraPositon.xyz);
-	
+    float4 posView = mul(float4(positionWorldSpace, 1.0), view);
+    float depthViewSpace = posView.z;
+
     int cascadeIndex = -1;
     for (uint layer = 0; layer < 4; ++layer)
     {
         float distance = cascadedPlaneDistances[layer];
-        if (distance > depth)
+        if (distance > depthViewSpace)
         {
             cascadeIndex = layer;
             break;
@@ -79,6 +82,9 @@ float GetLightAttenuation(float3 positionWorldSpace)
 #endif	
     return atten;
 }
+
+
+
 float4 DitheredRayMarch(float2 screenPos, float3 rayStart, float3 rayDir, float rayLength)
 {
 #if 1
@@ -180,12 +186,18 @@ float4 main(VS_OUT pin) : SV_TARGET
     positionNdc.w = 1;
 
 	// ndcからワールド空間へ
-    float4 positionWorldSpace = mul(positionNdc,inverseViewProjection);
+    float4 positionWorldSpace = mul(positionNdc, inverseViewProjection);
     positionWorldSpace = positionWorldSpace / positionWorldSpace.w;
-	
+
+    positionWorldSpace = positionMap.Sample(samplerStates[LINEAR], pin.texcoord); // 直接ワールド空間の位置をテクスチャから取得する
+
     float3 rayStart = cameraPositon.xyz;
     float3 rayDir = positionWorldSpace.xyz - cameraPositon.xyz;
-	
+
+    // ndc -> view 
+    float4 positionViewSpace = mul(positionNdc, inverseProjection); // ndc → clip 
+    positionViewSpace = positionViewSpace / positionViewSpace.w; // clip -> view 
+
 #if 0
 	// 遠近投影行列から近距離値と遠距離値を抽出する
 	float near = -projection._43 / projection._33;

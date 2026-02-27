@@ -12,10 +12,10 @@ void FogEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height
 {
     fogCBuffer = std::make_unique<ConstantBuffer<FogConstants>>(device);
     fullScreenQuad = std::make_unique<FullScreenQuad>(device);
-    //fogBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false, DXGI_FORMAT_R16_FLOAT);
-    fogBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false);
-    //HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", fogPS.ReleaseAndGetAddressOf());
-    HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricLightPS.cso", fogPS.ReleaseAndGetAddressOf());
+    fogBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false, DXGI_FORMAT_R16_FLOAT);
+    //fogBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false);
+    HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", fogPS.ReleaseAndGetAddressOf());
+    //HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricLightPS.cso", fogPS.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     D3D11_TEXTURE2D_DESC texture2dDesc;
@@ -54,6 +54,7 @@ void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourc
     ID3D11ShaderResourceView* shaderResourceViews[]
     {
         gbufferDepth,       //depthMap
+        gBufferPosition,    //worldPosition
         shadowMap,          //cascadedShadowMaps
     };
     fullScreenQuad->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), fogPS.Get());

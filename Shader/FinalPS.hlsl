@@ -3,7 +3,7 @@
 #include "Sampler.hlsli"
 
 Texture2D colorTexture : register(t0);
-
+Texture2D positionTexture : register(t1);
 Texture2D depthTexture : register(t3);
 Texture2D bloomTexture : register(t4);
 Texture2D fogTexture : register(t5);
@@ -33,56 +33,6 @@ float4 CalculatedPositionNDC(VS_OUT pin)
     positionNdc.w = 1;
     return positionNdc;
 }
-
-// CSM 用の影係数を計算する関数
-float CalculatedCascadedShadowFactor(VS_OUT pin, out int cascadeIndex)
-{
-    // uv -> ndc 
-    float4 positionNdc = CalculatedPositionNDC(pin);
-    // ndc -> view 
-    float4 positionViewSpace = mul(positionNdc, inverseProjection); // ndc → clip 
-    positionViewSpace = positionViewSpace / positionViewSpace.w; // clip -> view 
-
-    // ndc -> world space
-    float4 positionWorldSpace = mul(positionNdc, inverseViewProjection);
-    positionWorldSpace = positionWorldSpace / positionWorldSpace.w;
-
-    // カスケードビューフラスタムボリュームのレイヤーを見つける
-    float depthViewSpace = (positionViewSpace.z); // view 空間の z はカメラからの距離
-    // カメラからの距離からどのカスケードを使用するか選択する
-    cascadeIndex = -1;
-
-    for (uint layer = 0; layer < 4; ++layer)
-    {
-        float distance = cascadedPlaneDistances[layer];
-        if (distance > depthViewSpace)
-        {
-            cascadeIndex = layer;
-            break;
-        }
-
-    }
-
-    float shadowFactor = 1.0;
-
-    if (cascadeIndex == -1)
-        cascadeIndex = 3;
-
-    if (cascadeIndex > -1)
-    {
-        //　world 空間 -> Light Clip 空間 (各カスケードに対応する Light View Projection 空間)
-        float4 positionLightSpace = mul(positionWorldSpace, cascadedMatrices[cascadeIndex]);
-        positionLightSpace /= positionLightSpace.w; // Light Clip 空間 -> ndc 空間
-        // ndc 空間 -> texture 空間
-        positionLightSpace.x = positionLightSpace.x * +0.5 + 0.5;
-        positionLightSpace.y = positionLightSpace.y * -0.5 + 0.5;
-        // シャドウマップの深度と現在ピクセルの深度を比較
-        shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
-        return shadowFactor; // 影の中
-    }
-    return shadowFactor; // 光が当たっている
-}
-
 
 float3 ApplyShadow(inout float3 color, in float4 positionWorldSpace, in float depthViewSpace, in float2 shadowMapDimensions, in float3 randSeed)
 {
@@ -150,64 +100,6 @@ float3 ApplyShadow(inout float3 color, in float4 positionWorldSpace, in float de
 }
 
 
-
-
-// フォグ結果を「深度付きバイラテラルブラー」する
-float3 CalculatedFogColor(VS_OUT pin)
-{
-    uint2 depthMapDimensions;
-    uint depthMipLevel = 0, numberOfSamples, levels;
-    fogTexture.GetDimensions(depthMipLevel, depthMapDimensions.x, depthMapDimensions.y, numberOfSamples);
-    //depthTexture.GetDimensions(depthMipLevel, depthMapDimensions.x, depthMapDimensions.y, numberOfSamples);
-    
-    float fogFacter = 0;
-    if (enableBlur)
-    {
-        // 深度取得
-        float depth = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
-    
-        float accumulatedRadiance = 0.0;
-        float accumulatedWeight = 0.0;
-        const float radius = 4.0;
-        // 周囲のピクセルを確認　9*9 
-        for (float x = -radius; x <= radius; x += 1.0)
-        {
-            for (float y = -radius; y <= radius; y += 1.0)
-            {
-                float2 offset = float2(x, y) / depthMapDimensions;
-                float2 texcoord = pin.texcoord + offset;
-                
-                float sampledRadiance = fogTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord).x;
-
-                // 距離による重みでぼかす（近いピクセルほど影響大、遠いほど影響小）
-                float distance = x * x + y * y;
-                const float sigma = 2.0 * radius * radius;
-                float domainGaussian = exp(-distance / sigma);
-
-                // 深度による重みでぼかす (深度が近い → 重み大、深度が違う → 重みほぼ0）
-                float sampledDepth = depthTexture.Sample(samplerStates[POINT], texcoord).x;
-                distance = (depth - sampledDepth) * (depth - sampledDepth);
-                const float sigma2 = 0.0001;
-                float rangeGaussian = exp(-distance / sigma2);
-
-                // 重み付き加算
-                accumulatedRadiance += sampledRadiance * domainGaussian * rangeGaussian;
-                accumulatedWeight += domainGaussian * rangeGaussian;
-            }
-        }
-        // 正規化されたバイラテラルブラー結果
-        fogFacter = accumulatedRadiance / max(accumulatedWeight, 0.00001f);
-    }
-    else
-    {
-        fogFacter = fogTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).x;
-    }
-
-    // fogColor.rgb → フォグの色  fogColor.a → 全体強度  fogFacter→ レイマーチ結果（ブラー済）
-    float3 finalFogColor = fogColor.rgb * fogColor.a * max(0, fogFacter);
-    return finalFogColor;
-}
-
 // トーンマップ
 float3 JodieReinhardToneMap(float3 c)
 {
@@ -215,6 +107,63 @@ float3 JodieReinhardToneMap(float3 c)
     float3 tc = c / (c + 1.0);
 
     return lerp(c / (l + 1.0), tc, tc);
+}
+
+// 
+float3 CalculatedFogColor(float2 uv, float depth)
+{
+    uint2 depthMapDimensions;
+    uint depthMipLevel = 0, numberOfSamples, levels;
+    fogTexture.GetDimensions(depthMipLevel, depthMapDimensions.x, depthMapDimensions.y, numberOfSamples);
+    
+    float fogFacter = 0;
+    if (enableBlur)
+    {
+        float accumulatedRadiance = 0.0;
+        float accumulatedWeight = 0.0;
+        const float radius = 4.0;
+        for (float x = -radius; x <= radius; x += 1.0)
+        {
+            for (float y = -radius; y <= radius; y += 1.0)
+            {
+                float2 offset = float2(x, y) / depthMapDimensions;
+                float2 texcoord = uv + offset;
+                
+                float sampledRadiance = fogTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord).x;
+
+                float distance = x * x + y * y;
+                const float sigma = 2.0 * radius * radius;
+                float domainGaussian = exp(-distance / sigma);
+
+#if 1
+                float sampledDepth = depthTexture.Sample(samplerStates[POINT], texcoord).x;
+                distance = (depth - sampledDepth) * (depth - sampledDepth);
+                const float sigma2 = 0.0001;
+                float rangeGaussian = exp(-distance / sigma2);
+#else
+                float sampledDepthNdc = depthTexture.Sample(samplerStates[POINT], texcoord).x;
+                // NDC → View に変換
+                float4 ndc = float4(texcoord.x * 2 - 1, texcoord.y * -2 + 1, sampledDepthNdc, 1);
+                float4 view = mul(ndc, inverseProjection);
+                view /= view.w;
+                const float sigma2 = 0.0001;
+                float sampledLinearDepth = view.z;
+                float diff = depth - sampledLinearDepth;
+                float rangeGaussian = exp(-(diff * diff) / sigma2);
+#endif
+                accumulatedRadiance += sampledRadiance * domainGaussian * rangeGaussian;
+                accumulatedWeight += domainGaussian * rangeGaussian;
+            }
+        }
+        fogFacter = accumulatedRadiance / max(accumulatedWeight, 0.00001f);
+    }
+    else
+    {
+        fogFacter = fogTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], uv).x;
+    }
+
+    float3 finalFogColor = fogColor.rgb * fogColor.a * max(0, fogFacter);
+    return finalFogColor;
 }
 
 float4 main(VS_OUT pin) : SV_TARGET
@@ -232,23 +181,16 @@ float4 main(VS_OUT pin) : SV_TARGET
     // シーンからライティング済みのカラーテクスチャ
     float4 color = colorTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
 
-#if 0
     // シーンから深度値を取得
-    float depth = depthTexture.SampleLevel(samplerStates[POINT], pin.texcoord, 0);
-    //return float4(depth, 1, 0, 1);
-
-    // uv -> ndc 
-    float4 positionNdc = CalculatedPositionNDC(pin);
-#else
     float depthNdc = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
 
     float4 positionNdc;
-	// texture space -> ndc
+    // uv -> ndc 
     positionNdc.x = pin.texcoord.x * +2 - 1;
     positionNdc.y = pin.texcoord.y * -2 + 1;
     positionNdc.z = depthNdc;
     positionNdc.w = 1;
-#endif
+
     // ndc -> view 
     float4 positionViewSpace = mul(positionNdc, inverseProjection); // ndc → clip 
     positionViewSpace = positionViewSpace / positionViewSpace.w; // clip -> view 
@@ -257,60 +199,25 @@ float4 main(VS_OUT pin) : SV_TARGET
     float4 positionWorldSpace = mul(positionNdc, inverseViewProjection);
     positionWorldSpace /= positionWorldSpace.w;
 
-#if 0
-    // 影係数を計算
-    int cascadeIndex = -1;
-    float shadowFactor = CalculatedCascadedShadowFactor(pin, cascadeIndex);
-    
-    if (cascadeIndex > -1)
-    {
-        float3 layerColor = 1;
-#if 1 //カスケードの色分け（デバッグ用）
-        if (colorizeCascadedLayer)
-        {
-            const float3 layerColors[4] =
-            {
-                { 1, 0, 0 },
-                { 0, 1, 0 },
-                { 0, 0, 1 },
-                { 1, 1, 0 },
-            };
-            layerColor = layerColors[cascadeIndex];
-        }
-#endif
-        if (enableCascadedShadowMaps)
-        {
-            color.rgb *= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
-
-            //float3 shadow= lerp(shadowColor, 1.0, shadowFactor) * layerColor;
-            //return float4(shadow, 1);
-        }
-    }
-#else
     if (enableCascadedShadowMaps)
     {
         color.rgb = ApplyShadow(color.rgb, positionWorldSpace, (positionViewSpace.z), shadowMapDimensions, positionNdc.xyz);
     }
-#endif
 
-#if 1
+#if 0
     // フォグの処理
     if (enableFog)
     {
-       // color.rgb = apply_volumetric_fog(color.rgb, position_world_space.xyz);
-
-        float curr_depth = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
+        float curr_depth = depthNdc;
         float4 sum = float4(0.0, 0.0, 0.0, 0.0);
         float4 sample;
         float radius = 4.0;
         float2 pos;
         float i, j;
         float sigma = 2.0 * radius * radius;
-        float domain_gaussian = 0.0;
+        float domainGaussian = 0.0;
         float weight = 0.0;
         float distance = 0.0;
-        float sample_depth;
-        float range_gaussian;
         float sigma2 = 0.01;
         for (i = -radius; i <= radius; i += 1.0)
         {
@@ -323,26 +230,36 @@ float4 main(VS_OUT pin) : SV_TARGET
                 sample = fogTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pos);
 
                 distance = i * i + j * j;
-                domain_gaussian = exp(-distance / sigma);
+                domainGaussian = exp(-distance / sigma);
 			
-                sample_depth = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pos).x;
-                distance = (curr_depth - sample_depth) * (curr_depth - sample_depth);
-                range_gaussian = exp(-distance / sigma2);
+                float sampleDepth = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pos).x;
+                distance = (curr_depth - sampleDepth) * (curr_depth - sampleDepth);
+                float rangeGaussian = exp(-distance / sigma2);
 			
-                sum += sample * domain_gaussian * range_gaussian;
-                weight += domain_gaussian * range_gaussian;
+                sum += sample * domainGaussian * rangeGaussian;
+                weight += domainGaussian * rangeGaussian;
             }
         }
-        float4 volumetric_light_color = sum / weight;
+        float4 volumetricLightColor = sum / weight;
 	
 	    //return volumetric_light_color;
 	
-        color.rgb = color.rgb /** volumetric_light_color.a */ + volumetric_light_color.rgb;
+        color.rgb = color.rgb /** volumetric_light_color.a */ + volumetricLightColor.rgb;
 
         //float3 fogColor = CalculatedFogColor(pin);
         //color.rgb += fogColor;
         //return float4(fogColor, 1);
     }
+
+#else
+    if (enableFog)
+    {
+        float linearDepth = positionViewSpace.z;
+        //float3 fogColor = CalculatedFogColor(pin.texcoord, linearDepth);
+        float3 fogColor = CalculatedFogColor(pin.texcoord, depthNdc);
+        color.rgb += fogColor;
+    }
+#endif
 
     // ブルーム処理
     if (enableBloom)
@@ -364,11 +281,10 @@ float4 main(VS_OUT pin) : SV_TARGET
     const float radius = 4.0;
     const float sigma = 2.0 * radius * radius;
     const float sigma2 = 0.01;
-    float depth = depthTexture.SampleLevel(samplerStates[POINT], pin.texcoord, 0);
-    float curr_depth = depth;
+    float currDepth = depthNdc;
     float weight = 0.0;
 	
-    float accumulated_occlusion = 0;
+    float accumulatedOcclusion = 0;
 	
     for (float i = -radius; i <= radius; i += 1.0)
     {
@@ -379,25 +295,24 @@ float4 main(VS_OUT pin) : SV_TARGET
             float2 uv = float2(pin.texcoord.x + dx, pin.texcoord.y + dy);
 			
             float distance = i * i + j * j;
-            float domain_gaussian = exp(-distance / sigma);
+            float domainGaussian = exp(-distance / sigma);
 			
-            float sample_depth = depthTexture.SampleLevel(samplerStates[POINT], uv, 0).x;
-            distance = (curr_depth - sample_depth) * (curr_depth - sample_depth);
-            float range_gaussian = exp(-distance / sigma2);
+            float sampleDepth = depthTexture.SampleLevel(samplerStates[POINT], uv, 0).x;
+            distance = (currDepth - sampleDepth) * (currDepth - sampleDepth);
+            float rangeGaussian = exp(-distance / sigma2);
 			
-			// Sample occlusion(ambient) factor
-            float sample_occlusion = ssaoTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], uv, 0).x;
-            accumulated_occlusion += sample_occlusion * domain_gaussian * range_gaussian;
+			//  サンプル遮蔽（環境）係数
+            float sampleOcclusion = ssaoTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], uv, 0).x;
+            accumulatedOcclusion += sampleOcclusion * domainGaussian * rangeGaussian;
 
-            weight += domain_gaussian * range_gaussian;
+            weight += domainGaussian * rangeGaussian;
         }
     }
-    float occlusion = accumulated_occlusion / weight;
     //if (pin.texcoord.x > split_u)
     {
+        float occlusion = accumulatedOcclusion / weight;
         color *= occlusion;
     }
-#endif
 
     // トーンマップ
     color.rgb = JodieReinhardToneMap(color.rgb);

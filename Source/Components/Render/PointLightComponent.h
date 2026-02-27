@@ -10,18 +10,7 @@ public:
 
     virtual ~PointLightComponent() = default;
 
-    virtual void Tick(float deltaTime)override
-    {
-#if _DEBUG
-        DirectX::XMFLOAT3 pos = GetComponentLocation();
-        DebugDrawManager::DrawSphere(
-            pos,
-            0.1f,
-            DirectX::XMFLOAT4(color.x, color.y, color.z, 1.0f),
-            0.0f
-        );
-#endif
-    }
+    void Tick(float deltaTime)override;
 
     virtual void DrawImGuiInspector() override
     {

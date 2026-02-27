@@ -3,21 +3,16 @@
 
 #ifdef USE_IMGUI
 #define IMGUI_ENABLE_DOCKING
-#include "imgui.h"
 #endif
 
 #include "Components/Audio/CoreAudioSourceComponent.h"
-#include "Graphics/Core/Graphics.h"
-#include "Graphics/Core/RenderState.h"
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
 #include "Engine/Utility/Time.h"
 
-#include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Dessert/Pudding.h"
 #include "Game/Actors/Enemy/Boss/BossEnemy.h"
 #include "Game/Actors/Player/Player.h"
-#include "Game/Actors/Stage/ElasticBuilding.h"
 #include "Game/Actors/Stage/Cloth.h"
 
 
@@ -25,7 +20,6 @@
 #include "Game/DarkGame/DarkActors/FightStage.h"
 
 
-#include "Graphics/PostProcess/BloomEffect.h"
 #include "Physics/CollisionSystem.h"
 #include "UI/UIManager.h"
 #include "UI/Game/Pause.h"
@@ -37,7 +31,8 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     //lightDirection = { -1.0f, -1.0f, -0.02f, 0.0f };
 
     lightDirection = { -0.441f, -0.47f, 0.64f, 0.0f };   // ‰¡‚Ì‘‹‚©‚ç‚ÌŒõ
-    lightDirection = { 0.382f, -0.882f, 0.112f, 0.0f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
+    lightDirection = { 0.03f, -0.15f, 0.23f, 0.0f };   // ‰¡‚Ì‘‹‚©‚ç‚ÌŒõ
+    //lightDirection = { 0.382f, -0.882f, 0.112f, 0.0f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
     //lightDirection = { 1.0f, -1.0f, 0.0f, 0.0f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
     lightDirection = { 0.545f, -0.86f, -0.526f, 0.0f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
     lightColor = { 1.0f, 1.0f, 1.0f, 3.0f };
