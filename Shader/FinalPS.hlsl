@@ -220,14 +220,14 @@ float3 JodieReinhardToneMap(float3 c)
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
-    uint mipLevel = 0, width, height, number_of_level, levels;
-    colorTexture.GetDimensions(mipLevel, width, height, number_of_level);
+    uint mipLevel = 0, width, height, numberOfLevel, levels;
+    colorTexture.GetDimensions(mipLevel, width, height, numberOfLevel);
 
-    uint2 depth_map_dimensions;
-    depthTexture.GetDimensions(mipLevel, depth_map_dimensions.x, depth_map_dimensions.y, number_of_level);
+    uint2 depthMapDimensions;
+    depthTexture.GetDimensions(mipLevel, depthMapDimensions.x, depthMapDimensions.y, numberOfLevel);
 
-    uint2 shadow_map_dimensions;
-    cascadedShadowMaps.GetDimensions(mipLevel, shadow_map_dimensions.x, shadow_map_dimensions.y, number_of_level, levels);
+    uint2 shadowMapDimensions;
+    cascadedShadowMaps.GetDimensions(mipLevel, shadowMapDimensions.x, shadowMapDimensions.y, numberOfLevel, levels);
 
 
     // シーンからライティング済みのカラーテクスチャ
@@ -241,22 +241,22 @@ float4 main(VS_OUT pin) : SV_TARGET
     // uv -> ndc 
     float4 positionNdc = CalculatedPositionNDC(pin);
 #else
-    float depth_ndc = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
+    float depthNdc = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
 
     float4 positionNdc;
-	// texture space to ndc
+	// texture space -> ndc
     positionNdc.x = pin.texcoord.x * +2 - 1;
     positionNdc.y = pin.texcoord.y * -2 + 1;
-    positionNdc.z = depth_ndc;
+    positionNdc.z = depthNdc;
     positionNdc.w = 1;
 #endif
     // ndc -> view 
     float4 positionViewSpace = mul(positionNdc, inverseProjection); // ndc → clip 
     positionViewSpace = positionViewSpace / positionViewSpace.w; // clip -> view 
-
+    //return float4((positionViewSpace.z) / 100.0, 0, 0, 1);
     // ndc -> world 
-    float4 position_world_space = mul(positionNdc, inverseViewProjection);
-    position_world_space /= position_world_space.w;
+    float4 positionWorldSpace = mul(positionNdc, inverseViewProjection);
+    positionWorldSpace /= positionWorldSpace.w;
 
 #if 0
     // 影係数を計算
@@ -290,7 +290,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 #else
     if (enableCascadedShadowMaps)
     {
-        color.rgb = ApplyShadow(color.rgb, position_world_space, (positionViewSpace.z), shadow_map_dimensions, positionNdc.xyz);
+        color.rgb = ApplyShadow(color.rgb, positionWorldSpace, (positionViewSpace.z), shadowMapDimensions, positionNdc.xyz);
     }
 #endif
 
@@ -317,8 +317,8 @@ float4 main(VS_OUT pin) : SV_TARGET
         {
             for (j = -radius; j <= radius; j += 1.0)
             {
-                float dx = i / depth_map_dimensions.x;
-                float dy = j / depth_map_dimensions.y;
+                float dx = i / depthMapDimensions.x;
+                float dy = j / depthMapDimensions.y;
                 pos.x = pin.texcoord.x + dx;
                 pos.y = pin.texcoord.y + dy;
                 sample = fogTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pos);

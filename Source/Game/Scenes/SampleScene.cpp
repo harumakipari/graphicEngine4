@@ -37,7 +37,8 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     //lightDirection = { -1.0f, -1.0f, -0.02f, 0.0f };
     lightDirection = { -.0f, -1.0f, 1.0f, 0.0f };   // â°ÇÃëãÇ©ÇÁÇÃåı
     lightDirection = { 1.0f, -1.0f, 0.0f, 0.0f };   // è„ÇÃëãÇ©ÇÁÇÃåı
-    lightColor = { 1.0f, 1.0f, 1.0f, 14.62f };
+    lightColor = { 1.0f, 1.0f, 1.0f, 3.0f };
+    //lightColor = { 1.0f, 1.0f, 1.0f, 14.62f };
 
     SceneBase::Initialize(device, width, height, props);
 

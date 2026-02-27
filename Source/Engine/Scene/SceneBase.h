@@ -65,7 +65,7 @@ public:
 private:
     void ForwardRender(ID3D11DeviceContext* immediateContext);
 
-    void DeferredRender(ID3D11DeviceContext* immediateContext);
+    void DeferredRender(ID3D11DeviceContext* immediateContext, const ViewConstants& viewConstants);
 
     void Draw(ID3D11DeviceContext* immediateContext);
 

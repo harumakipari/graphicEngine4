@@ -169,7 +169,6 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     }
 #endif // 0
 
-
     dummyTexture = std::make_shared<UIImageComponent>("./Data/Textures/UI/Oden_seane_change.png", "backGround");
     dummyTexture->SetSize({ 1920, 1080 });
 
@@ -266,9 +265,10 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
 
 void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
 {
+    ViewConstants data = {};
     if (auto camera = cameraManager->GetRenderCamera(this))
     {
-        ViewConstants data = camera->GetViewConstants();
+        data = camera->GetViewConstants();
         sceneRender.UpdateViewConstants(immediateContext, data);
     }
     else
@@ -286,7 +286,7 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
     }
     else
     {
-        DeferredRender(immediateContext);
+        DeferredRender(immediateContext, data);
     }
     Draw(immediateContext);
 #ifdef USE_IMGUI
@@ -408,10 +408,9 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     }
 }
 
-void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
+void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const ViewConstants& viewConstants)
 {
-    //auto camera = CameraManager::GetRenderCamera(this);
-    auto camera = cameraManager->GetRenderCamera(this);
+    //auto camera = cameraManager->GetRenderCamera(this);
 
     // ディファードレンダリング
     gBufferRenderTarget->Clear(immediateContext);
@@ -436,6 +435,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     DirectX::XMFLOAT4X4 cameraView;
     DirectX::XMFLOAT4X4 cameraProjection;
 
+#if 0
     if (camera)
     {
         ViewConstants data = camera->GetViewConstants();
@@ -446,6 +446,10 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     {
         Logger::Error(U8("カメラがない"));
     }
+#else
+    cameraView = viewConstants.view;
+    cameraProjection = viewConstants.projection;
+#endif // 0
 
     // 影を作る処理
 #if 1
@@ -481,11 +485,11 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
         // スカイマップを描画
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-        if (camera)
-        {
-            ViewConstants data = camera->GetViewConstants();
-            skyMap->Blit(immediateContext, data.viewProjection);
-        }
+        //if (camera)
+        //{
+        //    ViewConstants data = camera->GetViewConstants();
+        skyMap->Blit(immediateContext, viewConstants.viewProjection);
+        //}
         ExecuteHooks(RenderPass::Sky, immediateContext);
 
         //dummyTexture->Draw(immediateContext);
@@ -599,7 +603,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext)
     if (useDrawDebug)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-     //   Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        //   Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         DebugDrawManager::Render(immediateContext);
         ExecuteHooks(RenderPass::Debug, immediateContext);
     }

@@ -200,12 +200,21 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
         center.y /= corners.size();
         center.z /= corners.size();
 
+        //using namespace DirectX;
+        //DirectX::XMVECTOR lightDir = DirectX::XMVector3Normalize(XMLoadFloat4(&lightDirection));
+        //DirectX::XMMATRIX V = XMMatrixLookAtLH(
+        //    XMVectorSet(center.x, center.y, center.z, 1.0f) - lightDir,
+        //    XMVectorSet(center.x, center.y, center.z, 1.0f),
+        //    XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+#if 1
         // ライトビュー行列作成
         DirectX::XMMATRIX V;
         V = DirectX::XMMatrixLookAtLH(
             DirectX::XMVectorSet(center.x - lightDirection.x, center.y - lightDirection.y, center.z - lightDirection.z, 1.0f),
             DirectX::XMVectorSet(center.x, center.y, center.z, 1.0f),
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+
+#endif // 0
 
         // AABB計算（ライト空間）
         float minX = (std::numeric_limits<float>::max)();
