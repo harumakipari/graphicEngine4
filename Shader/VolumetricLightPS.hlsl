@@ -5,7 +5,6 @@
 
 Texture2D depthMap : register(t0);
 Texture2DArray shadowMap : register(t1);
-
 Texture2D noise2dMap : register(t30);
 Texture3D noise3dMap : register(t31);
 

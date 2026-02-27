@@ -1,4 +1,3 @@
-#include "LineSegment.hlsli"
 #include "GltfModel.hlsli"
 
 

@@ -1,3 +1,4 @@
+#include "Constants.hlsli"
 #include "GltfModel.hlsli"
 struct VS_ClOTH_IN
 {

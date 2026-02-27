@@ -19,7 +19,7 @@ float3 RotateVector(float3 v, float3 axis, float angle)
     return cosA * v + (1 - cosA) * dot(axis, v) * axis + sinA * cross(axis, v);
 }
 
-float3 RodriguesRotate(float3 v, float3 axis, float cosA, float sinA)
+float3 RodriguezRotate(float3 v, float3 axis, float cosA, float sinA)
 {
     return cosA * v + sinA * cross(axis, v) + (1.0 - cosA) * dot(axis, v) * axis;
 }

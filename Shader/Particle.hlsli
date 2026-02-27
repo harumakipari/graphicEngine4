@@ -15,9 +15,9 @@ cbuffer PARTICLE_SYSTEM_CONSTANTS : register(b9)
     float4 emissionEndColor;//色変化後の色
     
     float currentTime; // 現在の時間
-    float deltaTime; // フレーム間の経過時間
+    float deltaTimesss; // フレーム間の経過時間
     float _noiseScale; // ノイズスケール 
-    float gravity; // 重力
+    float gravitysss; // 重力
     
     uint2 spriteSheetGrid; // スプライトシートのグリッドサイズ 
     uint maxParticleCount; // 粒子の最大数 (再確認用)

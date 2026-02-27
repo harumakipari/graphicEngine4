@@ -19,7 +19,7 @@ struct PipeLineStateDesc
 
     BLEND_STATE               blendState = BLEND_STATE::NONE;
     DEPTH_STATE               depthState = DEPTH_STATE::ZT_ON_ZW_ON;
-    RASTERRIZER_STATE         rasterState = RASTERRIZER_STATE::SOLID_CULL_BACK;
+    RASTERIZE_STATE         rasterState = RASTERIZE_STATE::SOLID_CULL_BACK;
     SAMPLER_STATE             samplerState = SAMPLER_STATE::LINEAR;
 };
 

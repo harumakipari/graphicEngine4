@@ -1403,8 +1403,8 @@ void ClothSimulate::Render(ID3D11DeviceContext* immediateContext, const DirectX:
 
                 const Material& material = materials.at(primitive.material);
 
-                //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
-                RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+                //RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
+                RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
 
                 const int textureIndices[] =
                 {
@@ -1433,7 +1433,7 @@ void ClothSimulate::Render(ID3D11DeviceContext* immediateContext, const DirectX:
                 {
                     immediateContext->Draw(primitive.vertexBufferView.sizeInBytes / primitive.vertexBufferView.strideInBytes, 0);
                 }
-                RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+                RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
 
             }
         }

@@ -501,6 +501,9 @@
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DoorLeftActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\Shadow\ShadowMap.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -816,6 +819,7 @@
     <ClInclude Include="Source\Game\DarkGame\DarkActors\InteractableActor.h" />
     <ClInclude Include="Source\Game\DarkGame\Interactable.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DoorLeftActor.h" />
+    <ClInclude Include="Source\Graphics\Shadow\ShadowMap.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -891,9 +895,6 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GltfModelDissolvePS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\GltfModelEmitParticlePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GltfModelInstancedBatchingCsmVS.hlsl">
@@ -1091,9 +1092,6 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\imageBasedLighting.hlsli">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shader\LineSegment.hlsli">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\Particle.hlsli">

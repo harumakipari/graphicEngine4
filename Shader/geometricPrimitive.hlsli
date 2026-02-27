@@ -10,9 +10,3 @@ cbuffer OBJECT_CONSTANT_BUFFER:register(b0)
     float4 materialColor;
 };
 
-//cbuffer SCENE_CONSTANT_BUFFER : register(b1)
-//{
-//    row_major float4x4 viewProjection;
-//    float4 lightDirection;
-//}
-#include "Constants.hlsli"

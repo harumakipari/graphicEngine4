@@ -1,7 +1,6 @@
 #ifndef _SAMPLER_STATE
 #define _SAMPLER_STATE
 
-
 SamplerState samplerStates[7] : register(s0);
 
 #define POINT 0

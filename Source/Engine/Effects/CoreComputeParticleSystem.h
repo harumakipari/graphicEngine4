@@ -71,12 +71,11 @@ public:
 	//汎用情報定義
 	struct CommonConstants
 	{
-		float deltaTime;					//経過時間
 		DirectX::XMUINT2 textureSplitCount;	//テクスチャの分割数
 		UINT systemNumParticles;			//パーティクル総数
 		UINT totalEmitCount;				//現在のフレームでのパーティクル総生成数
 		UINT maxEmitParticles;				//現在のフレームでのパーティクル最大生成数
-		UINT commonDummy[2];
+		UINT commonDummy[3];
 	};
 
 	//バイトニックソート情報定義

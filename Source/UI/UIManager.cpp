@@ -56,7 +56,7 @@ void UIManager::Draw(ID3D11DeviceContext* immediateContext)const
     }
 
     //RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
-    //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+    //RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
     //RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
 
     //FontManager::GetUIFont()->End(immediateContext);

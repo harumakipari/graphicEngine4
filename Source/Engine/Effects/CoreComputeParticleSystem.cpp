@@ -220,7 +220,6 @@ void CoreComputeParticleSystem::PixelEmitBegin(ID3D11DeviceContext* immediateCon
 
         //定数バッファ更新
         CommonConstants constant;
-        constant.deltaTime = deltaTime;
         constant.textureSplitCount = textureSplitCount;
         constant.systemNumParticles = numParticles;
         constant.totalEmitCount = static_cast<UINT>(emitParticles.size());
@@ -280,7 +279,6 @@ void CoreComputeParticleSystem::Update(ID3D11DeviceContext* immediateContext, fl
     {
         //定数バッファ更新
         CommonConstants constant;
-        constant.deltaTime = deltaTime;
         constant.textureSplitCount = textureSplitCount;
         constant.systemNumParticles = numParticles;
         constant.totalEmitCount = static_cast<UINT>(emitParticles.size());

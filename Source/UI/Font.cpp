@@ -619,7 +619,7 @@ void Font::End(ID3D11DeviceContext* context)
     context->RSSetState(rasterizerState.Get());
     context->PSSetSamplers(0, 1, samplerState.GetAddressOf());
     RenderState::BindBlendState(Graphics::GetDeviceContext(), BLEND_STATE::ALPHA);
-    RenderState::BindRasterizerState(Graphics::GetDeviceContext(), RASTERRIZER_STATE::SOLID_CULL_NONE);
+    RenderState::BindRasterizerState(Graphics::GetDeviceContext(), RASTERIZE_STATE::SOLID_CULL_NONE);
     RenderState::BindDepthStencilState(Graphics::GetDeviceContext(), DEPTH_STATE::ZT_OFF_ZW_OFF);
 
     // 頂点バッファ設定

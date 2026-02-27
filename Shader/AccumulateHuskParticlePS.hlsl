@@ -1,3 +1,4 @@
+#include "Constants.hlsli"
 #include "GltfModel.hlsli"
 #include "Lights.hlsli"
 

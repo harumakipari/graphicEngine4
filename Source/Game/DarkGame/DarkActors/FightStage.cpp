@@ -30,7 +30,7 @@ void FightStage::Initialize(const Transform& transform)
     // ポイントライトコンポーネントを追加
     for (int i = 0; i < static_cast<int>(lightsData.size()); ++i)
     {
-        continue; // とりあえずポイントライトは無効化
+        //continue; // とりあえずポイントライトは無効化
         const auto& light = lightsData[i];
 
         std::string compName = "pointLightComponent_" + std::to_string(i);

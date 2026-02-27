@@ -1,3 +1,4 @@
+#include "Constants.hlsli"
 #include "ElasticConstants.hlsli"
 #include "GltfModel.hlsli"
 
@@ -75,14 +76,14 @@ VS_OUT main(VS_IN vin)
 
 #endif
         // Rodriguesでローカルオフセットを回転
-        rotatedOffset = RodriguesRotate(localOffset, rotAxis, cosAngle, sinAngle);
+        rotatedOffset = RodriguezRotate(localOffset, rotAxis, cosAngle, sinAngle);
         
         // 法線／接線も同じ回転を適用する（まずワールドに変換しておく）
         outNormal = normalize(mul(vin.normal.xyz, (float3x3) world));
         outTangent = normalize(mul(vin.tangent.xyz, (float3x3) world));
 
-        outNormal = RodriguesRotate(outNormal, rotAxis, cosAngle, sinAngle);
-        outTangent = RodriguesRotate(outTangent, rotAxis, cosAngle, sinAngle);
+        outNormal = RodriguezRotate(outNormal, rotAxis, cosAngle, sinAngle);
+        outTangent = RodriguezRotate(outTangent, rotAxis, cosAngle, sinAngle);
     }
     else
     {
@@ -134,9 +135,9 @@ VS_OUT main(VS_IN vin)
         float s = sin(angle);
         float c = cos(angle);
 
-        rotatedOffset = RodriguesRotate(localOffset, rotAxis, c, s);
-        localNormal = RodriguesRotate(localNormal, rotAxis, c, s);
-        localTangent = RodriguesRotate(localTangent, rotAxis, c, s);
+        rotatedOffset = RodriguezRotate(localOffset, rotAxis, c, s);
+        localNormal = RodriguezRotate(localNormal, rotAxis, c, s);
+        localTangent = RodriguezRotate(localTangent, rotAxis, c, s);
     }
 
     float3 deformedLocalPos = bezierPos + rotatedOffset;

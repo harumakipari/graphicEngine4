@@ -82,7 +82,7 @@ VS_OUT_CSM main(VS_IN vin, uint instanceId : SV_INSTANCEID)
         float sinAngle = sin(useAngle);
 #endif
         // Rodriguesでローカルオフセットを回転
-        rotatedOffset = RodriguesRotate(localOffset, rotAxis, cosAngle, sinAngle);
+        rotatedOffset = RodriguezRotate(localOffset, rotAxis, cosAngle, sinAngle);
     }
     // ⑥ 変形頂点
     float3 deformedPos = bezierPos + rotatedOffset;

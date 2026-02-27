@@ -4,8 +4,8 @@
 cbuffer SCENE_CONSTANT_BUFFER : register(b1)
 {
     float elapsedTime;
-    float deltaTimess;
-    float gravityss;
+    float deltaTime;
+    float gravity;
 }
 
 cbuffer SHADER_CONSTANT_BUFFER : register(b9)
@@ -24,13 +24,11 @@ cbuffer SHADER_CONSTANT_BUFFER : register(b9)
     bool colorizeCascadedLayer = false;
 
 }
-// CASCADED_SHADOW_MAPS
 cbuffer CSM_CONSTANTS : register(b3)
 {
     row_major float4x4 cascadedMatrices[4];
     float4 cascadedPlaneDistances;
 }
-// FOG
 cbuffer FOG_CONSTANTS_BUFFER : register(b8)
 {
     float4 fogColor;
@@ -45,7 +43,6 @@ cbuffer FOG_CONSTANTS_BUFFER : register(b8)
     float noiseScale;
     bool enableDither;
 }
-
 cbuffer VOLUMETRIC_CLOUDSCAPES_CONSTANT_BUFFER : register(b5)
 {
     float2 windDirection;
@@ -58,10 +55,10 @@ cbuffer VOLUMETRIC_CLOUDSCAPES_CONSTANT_BUFFER : register(b5)
     float rainCloudAbsorptionScale;
     float cloudTypeScale;
     
-    float earthRadius; // earth radius
+    float earthRadius; 
     float horizonDistanceScale;
-    float lowFreqyentlyPerlinWorleySamplingScale;
-    float highFreqyentlyWorleySamplingScale;
+    float lowFrequentlyPerlinMorleySamplingScale;
+    float highFrequentlyMorleySamplingScale;
     float cloudDensityLongDistanceScale;
     bool enablePowderedSugarEffect;
     

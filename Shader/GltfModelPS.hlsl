@@ -1,6 +1,7 @@
 #include "GltfModel.hlsli"
 #include "imageBasedLighting.hlsli"
 #include "BidirectionalReflectanceDistributionFunction.hlsli"
+#include "Constants.hlsli"
 #include "Lights.hlsli"
 
 #define BASECOLOR_TEXTURE 0 

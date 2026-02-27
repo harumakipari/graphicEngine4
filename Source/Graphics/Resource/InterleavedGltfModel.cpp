@@ -1692,7 +1692,7 @@ void InterleavedGltfModel::Render(ID3D11DeviceContext* immediateContext, const D
                 {
                     immediateContext->PSSetShader(pipeline.pixelShader ? pipeline.pixelShader.Get() : pixelShader.Get(), nullptr, 0);
                 }
-                RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+                RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
                 bool passed = false;
                 switch (pass)
                 {
@@ -1874,7 +1874,7 @@ void InterleavedGltfModel::BatchRender(ID3D11DeviceContext* immediateContext, co
             material.data.occlusionTexture.index,
         };
         //RenderState::BindRasterizerState(immediateContext, RASTER_STATE::SOLID_CULL_NONE);
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
 
         ID3D11ShaderResourceView* nullShaderResourceView{};
         std::vector<ID3D11ShaderResourceView*> shaderResourceViews(_countof(textureIndices));
@@ -1978,7 +1978,7 @@ void InterleavedGltfModel::InstancedStaticBatchRender(ID3D11DeviceContext* immed
             material.data.emissiveTexture.index,
             material.data.occlusionTexture.index,
         };
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
 
         ID3D11ShaderResourceView* nullShaderResourceView{};
         std::vector<ID3D11ShaderResourceView*> shaderResourceViews(_countof(textureIndices));

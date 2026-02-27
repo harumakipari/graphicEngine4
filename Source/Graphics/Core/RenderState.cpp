@@ -18,7 +18,7 @@ void RenderState::Initialize()
         samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;// V座標（Y軸方向）のラッピング（繰り返し）
         samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;// W座標のラッピング（繰り返し）
         samplerDesc.MipLODBias = 0.0f;// ミップマップのバイアス設定
-        samplerDesc.MaxAnisotropy =1;// 最大異方性サンプリング数（画質を向上させる）
+        samplerDesc.MaxAnisotropy = 1;// 最大異方性サンプリング数（画質を向上させる）
         samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;// 比較関数
         samplerDesc.BorderColor[0] = 0;// 境界色（透明）
         samplerDesc.BorderColor[1] = 0;
@@ -159,7 +159,7 @@ void RenderState::Initialize()
         samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
         samplerDesc.MipLODBias = 0;
         samplerDesc.MaxAnisotropy = 16;
-        samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL; 
+        samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
         samplerDesc.BorderColor[0] = 1;
         samplerDesc.BorderColor[1] = 1;
         samplerDesc.BorderColor[2] = 1;
@@ -172,7 +172,7 @@ void RenderState::Initialize()
 
 
     // 深度テストやステンシルバッファの設定を行う（画面の奥行きを扱う）
-    // 深度テストON、深度書き込みON
+    // 深度テストON、深度書き込みON ZT_ON_ZW_ON
     {
         D3D11_DEPTH_STENCIL_DESC depthStencilDesc{};
         depthStencilDesc.DepthEnable = TRUE;// 深度テストを有効にする
@@ -181,7 +181,7 @@ void RenderState::Initialize()
         hr = device->CreateDepthStencilState(&depthStencilDesc, depthStencilStates[static_cast<size_t>(DEPTH_STATE::ZT_ON_ZW_ON)].GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
-    // 深度テストON、深度書き込みOFF
+    // 深度テストON、深度書き込みOFF ZT_ON_ZW_OFF
     {
         D3D11_DEPTH_STENCIL_DESC depthStencilDesc{};
         depthStencilDesc.DepthEnable = TRUE;// 深度テストを有効にする
@@ -190,7 +190,7 @@ void RenderState::Initialize()
         hr = device->CreateDepthStencilState(&depthStencilDesc, depthStencilStates[static_cast<size_t>(DEPTH_STATE::ZT_ON_ZW_OFF)].GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
-    // 深度テストOFF、深度書き込みON
+    // 深度テストOFF、深度書き込みON ZT_OFF_ZW_ON
     {
         D3D11_DEPTH_STENCIL_DESC depthStencilDesc{};
         depthStencilDesc.DepthEnable = FALSE;// 深度テストを無効にする
@@ -199,7 +199,7 @@ void RenderState::Initialize()
         hr = device->CreateDepthStencilState(&depthStencilDesc, depthStencilStates[static_cast<size_t>(DEPTH_STATE::ZT_OFF_ZW_ON)].GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
-    // 深度テストOFF、深度書き込みOFF
+    // 深度テストOFF、深度書き込みOFF ZT_OFF_ZW_OFF
     {
         D3D11_DEPTH_STENCIL_DESC depthStencilDesc{};
         depthStencilDesc.DepthEnable = FALSE; // 深度テストを無効にする
@@ -210,9 +210,9 @@ void RenderState::Initialize()
     }
 
     // ブレンディングステートを作成する処理
-    D3D11_BLEND_DESC blendDesc{}; // 新しいブレンディングの設定を行うための構造体
-    // 無効なブレンド設定（ブレンドなし）
+    // BLEND_STATE::NONE ブレンドなしの設定
     {
+        D3D11_BLEND_DESC blendDesc = {};
         blendDesc.AlphaToCoverageEnable = FALSE; // AlphaToCoverageを無効にする
         blendDesc.IndependentBlendEnable = FALSE; // 複数のターゲットを使わない
         blendDesc.RenderTarget[0].BlendEnable = FALSE; // ブレンドを無効にする
@@ -227,8 +227,9 @@ void RenderState::Initialize()
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr)); // 作成に成功したか確認
     }
 
-    // アルファブレンド設定 (透過処理)
+    // BLEND_STATE::ALPHA アルファブレンド設定 (透過処理)
     {
+        D3D11_BLEND_DESC blendDesc = {};
         blendDesc.AlphaToCoverageEnable = FALSE; // AlphaToCoverageを無効にする（透明度でマスクをかけない）
         blendDesc.IndependentBlendEnable = FALSE; // 複数のレンダターターゲットを使わない
         blendDesc.RenderTarget[0].BlendEnable = TRUE; // 透過を有効にする
@@ -240,14 +241,15 @@ void RenderState::Initialize()
         blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD; // アルファ用の演算は加算
         blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL; // 色のすべてのチャネルを書き込む
         hr = device->CreateBlendState(&blendDesc, blendStates[static_cast<size_t>(BLEND_STATE::ALPHA)].GetAddressOf()); // 上記設定を使ってブレンディングステートを作成
-        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr)); // 作成に成功したかチェック    }
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
-    // 加算ブレンド設定
+    // BLEND_STATE::ADD 加算ブレンド設定
     {
+        D3D11_BLEND_DESC blendDesc = {};
         blendDesc.AlphaToCoverageEnable = FALSE; // AlphaToCoverageを無効にする
         blendDesc.IndependentBlendEnable = FALSE; // 複数ターゲットを使わない
         blendDesc.RenderTarget[0].BlendEnable = TRUE; // ブレンドを有効にする
-        blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA; // 宛先の色をソースとして使用
+        blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
         blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE; // 宛先ブレンドはゼロ（色を加算する）
         blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD; // ブレンド演算は加算
         blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO; // アルファのソースは常に1
@@ -255,15 +257,16 @@ void RenderState::Initialize()
         blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD; // アルファ演算は加算
         blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL; // 色全体を書き込む
         hr = device->CreateBlendState(&blendDesc, blendStates[static_cast<size_t>(BLEND_STATE::ADD)].GetAddressOf()); // 加算ブレンド設定を作成
-        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr)); // 作成に成功したかチェック
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
-
+    // BLEND_STATE::MULTIPLY 乗算ブレンド設定
     {
+        D3D11_BLEND_DESC blendDesc = {};
         blendDesc.AlphaToCoverageEnable = FALSE;
         blendDesc.IndependentBlendEnable = FALSE;
         blendDesc.RenderTarget[0].BlendEnable = TRUE;
-        blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ZERO; //D3D11_BLEND_DEST_COLOR
-        blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_SRC_COLOR; //D3D11_BLEND_SRC_COLOR
+        blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ZERO;
+        blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_SRC_COLOR;
         blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
         blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_DEST_ALPHA;
         blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
@@ -273,67 +276,54 @@ void RenderState::Initialize()
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
 
-    // MULTIPLE_RENDER_TARGETS
-    // アルファブレンド設定 (透過処理)
-    blendDesc.AlphaToCoverageEnable = FALSE;
-    blendDesc.IndependentBlendEnable = TRUE;
-    blendDesc.RenderTarget[0].BlendEnable = TRUE;
-    blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-    blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-    blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-    blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-    blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
-    blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-    blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    blendDesc.RenderTarget[1].BlendEnable = FALSE;
-    blendDesc.RenderTarget[1].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    blendDesc.RenderTarget[2].BlendEnable = FALSE;
-    blendDesc.RenderTarget[2].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    blendDesc.RenderTarget[3].BlendEnable = FALSE;
-    blendDesc.RenderTarget[3].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    blendDesc.RenderTarget[4].BlendEnable = FALSE;
-    blendDesc.RenderTarget[4].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    blendDesc.RenderTarget[5].BlendEnable = FALSE;
-    blendDesc.RenderTarget[5].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    blendDesc.RenderTarget[6].BlendEnable = FALSE;
-    blendDesc.RenderTarget[6].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    blendDesc.RenderTarget[7].BlendEnable = FALSE;
-    blendDesc.RenderTarget[7].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    hr = device->CreateBlendState(&blendDesc, blendStates[static_cast<size_t>(BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    // BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA 乗算ブレンド設定（アルファチャンネルを考慮して複数のレンダターゲットに対応）
+    {
+        D3D11_BLEND_DESC blendDesc = {};
+        blendDesc.AlphaToCoverageEnable = FALSE;
+        blendDesc.IndependentBlendEnable = TRUE;
+        blendDesc.RenderTarget[0].BlendEnable = TRUE;
+        blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+        blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+        blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+        blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+        blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+        blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+        blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+        for (int i = 1; i < 8; ++i)
+        {
+            blendDesc.RenderTarget[i].BlendEnable = FALSE;
+            blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+        }
+        hr = device->CreateBlendState(&blendDesc, blendStates[static_cast<size_t>(BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA)].GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
 
-    // MULTIPLE_RENDER_TARGETS
-    // 無効なブレンド設定（ブレンドなし）
-    blendDesc.AlphaToCoverageEnable = FALSE;
-    blendDesc.IndependentBlendEnable = TRUE;
-    blendDesc.RenderTarget[0].BlendEnable = FALSE; // ブレンドを無効にする
-    blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-    blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
-    blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD; // ブレンド演算は加算
-    blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE; // アルファのソースは常に1
-    blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO; // アルファの宛先は0
-    blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD; // アルファ演算は加算
-    blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL; // 色全体を書き込む
-    blendDesc.RenderTarget[1].BlendEnable = FALSE;
-    blendDesc.RenderTarget[1].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    blendDesc.RenderTarget[2].BlendEnable = FALSE;
-    blendDesc.RenderTarget[2].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    blendDesc.RenderTarget[3].BlendEnable = FALSE;
-    blendDesc.RenderTarget[3].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    blendDesc.RenderTarget[4].BlendEnable = FALSE;
-    blendDesc.RenderTarget[4].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    blendDesc.RenderTarget[5].BlendEnable = FALSE;
-    blendDesc.RenderTarget[5].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    blendDesc.RenderTarget[6].BlendEnable = FALSE;
-    blendDesc.RenderTarget[6].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    blendDesc.RenderTarget[7].BlendEnable = FALSE;
-    blendDesc.RenderTarget[7].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    hr = device->CreateBlendState(&blendDesc, blendStates[static_cast<size_t>(BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    // BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE 無効なブレンド設定（ブレンドなし）
+    {
+        D3D11_BLEND_DESC blendDesc = {};
+        blendDesc.AlphaToCoverageEnable = FALSE;
+        blendDesc.IndependentBlendEnable = TRUE;
+        blendDesc.RenderTarget[0].BlendEnable = FALSE; // ブレンドを無効にする
+        blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+        blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
+        blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD; // ブレンド演算は加算
+        blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE; // アルファのソースは常に1
+        blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO; // アルファの宛先は0
+        blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD; // アルファ演算は加算
+        blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL; // 色全体を書き込む
+        for (int i = 1; i < 8; ++i)
+        {
+            blendDesc.RenderTarget[i].BlendEnable = FALSE;
+            blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+        }
+        hr = device->CreateBlendState(&blendDesc, blendStates[static_cast<size_t>(BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE)].GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
 
     // ラスタライザーステートの作成
     {
-        D3D11_RASTERIZER_DESC rasterizerDesc{}; // ラスタライザの設定
+        // RASTERIZE_STATE::SOLID_CULL_BACK 
+        D3D11_RASTERIZER_DESC rasterizerDesc = {}; // ラスタライザの設定
         rasterizerDesc.FillMode = D3D11_FILL_SOLID; // 塗りつぶしモード
         rasterizerDesc.CullMode = D3D11_CULL_BACK; // 背面カリング（裏面を描画しない）
         rasterizerDesc.FrontCounterClockwise = TRUE; // 順方向は時計回り
@@ -344,35 +334,35 @@ void RenderState::Initialize()
         rasterizerDesc.ScissorEnable = FALSE; // スクリーンの切り抜きを無効にする
         rasterizerDesc.MultisampleEnable = FALSE; // マルチサンプルアンチエイリアスを無効にする
         rasterizerDesc.AntialiasedLineEnable = FALSE; // ラインアンチエイリアスを無効にする
-        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERRIZER_STATE::SOLID_CULL_BACK)].GetAddressOf()); // ラスタライザーステート作成
+        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERIZE_STATE::SOLID_CULL_BACK)].GetAddressOf()); // ラスタライザーステート作成
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr)); // 作成成功を確認
 
         // ワイヤーフレーム描画のラスタライザーステート設定
         rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME; // ワイヤーフレーム描画に変更
         rasterizerDesc.CullMode = D3D11_CULL_BACK; // 背面カリングを有効にする
         rasterizerDesc.AntialiasedLineEnable = TRUE; // アンチエイリアス線を有効にする
-        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERRIZER_STATE::WIREFRAME_CULL_BACK)].GetAddressOf()); // ワイヤーフレーム設定のラスタライザーステートを作成
+        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERIZE_STATE::WIREFRAME_CULL_BACK)].GetAddressOf()); // ワイヤーフレーム設定のラスタライザーステートを作成
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr)); // 作成成功を確認
 
         // 前面カリングのラスタライザーステート設定
         rasterizerDesc.FillMode = D3D11_FILL_SOLID;
         rasterizerDesc.CullMode = D3D11_CULL_FRONT;
         rasterizerDesc.AntialiasedLineEnable = FALSE;
-        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERRIZER_STATE::SOLID_CULL_FRONT)].GetAddressOf());
+        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERIZE_STATE::SOLID_CULL_FRONT)].GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
         // ワイヤーフレーム描画（前面カリング）のラスタライザーステート設定
         rasterizerDesc.FillMode = D3D11_FILL_SOLID;
         rasterizerDesc.CullMode = D3D11_CULL_NONE;
         rasterizerDesc.AntialiasedLineEnable = TRUE; // アンチエイリアス線を有効にする
-        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERRIZER_STATE::SOLID_CULL_NONE)].GetAddressOf()); // カリングなしのワイヤーフレーム設定
+        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERIZE_STATE::SOLID_CULL_NONE)].GetAddressOf()); // カリングなしのワイヤーフレーム設定
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr)); // 作成成功を確認
 
         // ワイヤーフレーム描画（カリングなし）のラスタライザーステート設定
         rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME; // ワイヤーフレーム描画に変更
         rasterizerDesc.CullMode = D3D11_CULL_NONE; // カリングなし
         rasterizerDesc.AntialiasedLineEnable = TRUE; // アンチエイリアス線を有効にする
-        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERRIZER_STATE::WIREFRAME_CULL_NONE)].GetAddressOf()); // カリングなしのワイヤーフレーム設定
+        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERIZE_STATE::WIREFRAME_CULL_NONE)].GetAddressOf()); // カリングなしのワイヤーフレーム設定
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr)); // 作成成功を確認
 
         // スクリーン切り抜き有効のラスタライザーステート設定
@@ -381,7 +371,7 @@ void RenderState::Initialize()
         rasterizerDesc.ScissorEnable = TRUE;
         rasterizerDesc.FrontCounterClockwise = FALSE;
         rasterizerDesc.AntialiasedLineEnable = FALSE;
-        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<int>(RASTERRIZER_STATE::USE_SCISSOR_RECTS)].GetAddressOf());
+        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<int>(RASTERIZE_STATE::USE_SCISSOR_RECTS)].GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
 

@@ -235,7 +235,7 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
     RenderState::BindSamplerStates(immediateContext);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
 
     // IBL
     immediateContext->PSSetShaderResources(32, 1, environmentTextures[0].GetAddressOf());
@@ -376,7 +376,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
 
     // スカイマップを描画
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
     skyMap->Blit(immediateContext, data.viewProjection);
     ExecuteHooks(RenderPass::Sky, immediateContext);
 
@@ -386,7 +386,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     // オブジェクトを描画
     RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Forward;
     sceneRender.RenderOpaque(immediateContext, queues.deferredOpaque);
     sceneRender.RenderOpaque(immediateContext, queues.forwardOpaque);
@@ -402,13 +402,13 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
 #if _DEBUG
     if (useDrawDebug)
     {
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
         Physics::Instance().Render(data.view, data.projection, { lightManager->GetLightDirection().x,lightManager->GetLightDirection().y,lightManager->GetLightDirection().z });
         DebugDrawManager::Render(immediateContext);
         ExecuteHooks(RenderPass::Debug, immediateContext);
     }
 #endif
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
     // PARTICLES
     {
         ProfileScopedSection_2(0, "Particles", ImGuiControl::Profiler::Green);
@@ -416,7 +416,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
         //深度ステンシルステート設定
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF, 1);
         //ラスタライザ設定
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
 
         // パーティクル描画
         EffectManager::Render(immediateContext);
@@ -425,7 +425,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     }
 
 
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
     multipleRenderTargets->Deactivate(immediateContext);
 
 
@@ -443,7 +443,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), criticalDepthValue, 3/*cbSlot*/);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
     sceneRender.currentRenderPath = RenderPath::Shadow;
     sceneRender.CastShadowRender(immediateContext, queues.shadowCasters);
     cascadedShadowMaps->Deactivate(immediateContext);
@@ -452,7 +452,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     {
         RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
 
         sceneEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)], multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::NORMAL)],
             multipleRenderTargets->depthStencilShaderResourceView, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::POSITION)], cascadedShadowMaps->depthMap().Get());
@@ -486,9 +486,9 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     auto queues = sceneRender.BuildRenderQueues();
 
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
-    //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_FRONT);
-    //RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
+    //RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_FRONT);
+    //RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Deferred;
     sceneRender.RenderOpaque(immediateContext, queues.deferredOpaque);
     ExecuteHooks(RenderPass::Opaque, immediateContext);
@@ -496,7 +496,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     sceneRender.RenderMask(immediateContext, queues.deferredMask);
     ExecuteHooks(RenderPass::Mask, immediateContext);
 
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
     gBufferRenderTarget->Deactivate(immediateContext);
 
     DirectX::XMFLOAT4X4 cameraView;
@@ -524,7 +524,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), criticalDepthValue, 3/*cbSlot*/);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
     sceneRender.currentRenderPath = RenderPath::Shadow;
     sceneRender.CastShadowRender(immediateContext, queues.shadowCasters);
     cascadedShadowMaps->Deactivate(immediateContext);
@@ -533,7 +533,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     cascaded_shadow_map->clear(immediateContext);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
     cascaded_shadow_map->make(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), criticalDepthValue, [&]()
         {
             sceneRender.currentRenderPath = RenderPath::Shadow;
@@ -551,7 +551,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
 
         // スカイマップを描画
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
         //if (camera)
         //{
         //    ViewConstants data = camera->GetViewConstants();
@@ -563,7 +563,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
 
         RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
 
         ID3D11ShaderResourceView* shaderResourceViews[]
         {
@@ -606,19 +606,19 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
 #if 0
     RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
     sceneRender.currentRenderPath = RenderPath::Forward;
     sceneRender.RenderBlend(immediateContext); // ここで警告出る
 #else
 
     RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF);
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_FRONT);
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_FRONT);
     sceneRender.currentRenderPath = RenderPath::Forward;
     //  sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ここで警告出る
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Forward;
     // sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ここで警告出る
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
@@ -628,7 +628,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     // フォワードの描画
     {
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
         sceneRender.RenderOpaque(immediateContext, queues.forwardOpaque);
         sceneRender.RenderMask(immediateContext, queues.forwardMask);
         RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
@@ -652,7 +652,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
         //深度ステンシルステート設定
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF, 1);
         //ラスタライザ設定
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
 
         //定数バッファ更新
 
@@ -669,13 +669,13 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
 #if _DEBUG
     if (useDrawDebug)
     {
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::WIREFRAME_CULL_NONE);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
         //   Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         DebugDrawManager::Render(immediateContext);
         ExecuteHooks(RenderPass::Debug, immediateContext);
     }
 #endif
-    RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_BACK);
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
 
     frameBuffer->Deactivate(immediateContext);
     //multipleRenderTargets->Deactivate(immediateContext);
@@ -688,7 +688,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     {
         RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
         //postEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get());
         //sceneEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get(), gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
         //    gBufferRenderTarget->depthStencilShaderResourceView, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)], cascadedShadowMaps->depthMap().Get());
@@ -720,7 +720,7 @@ void SceneBase::Draw(ID3D11DeviceContext* immediateContext)
     // UI描画
     {
         RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
-        RenderState::BindRasterizerState(immediateContext, RASTERRIZER_STATE::SOLID_CULL_NONE);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
         RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
 
         // 画像を表示

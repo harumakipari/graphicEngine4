@@ -174,7 +174,7 @@ public:
             { "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         };
         desc.primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-        desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_BACK;
+        desc.rasterState = RASTERIZE_STATE::SOLID_CULL_BACK;
         desc.depthState = DEPTH_STATE::ZT_ON_ZW_ON;
         hr = CreateVsFromCSO(device, "./Shader/GltfModelStaticBatchingVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
 
@@ -282,7 +282,7 @@ public:
         desc.primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
         hr = CreateVsFromCSO(device, "./Shader/GltfModelVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-        desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_NONE;
+        desc.rasterState = RASTERIZE_STATE::SOLID_CULL_NONE;
         desc.depthState = DEPTH_STATE::ZT_ON_ZW_ON;
 
         // SkeletalMesh forward Opaque —p
@@ -364,7 +364,7 @@ public:
             hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
-            desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_NONE;
+            desc.rasterState = RASTERIZE_STATE::SOLID_CULL_NONE;
             AddPipeLineState("elasticBuildingDeferred", desc);
         }
 
@@ -398,7 +398,7 @@ public:
             hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
-            desc.rasterState = RASTERRIZER_STATE::SOLID_CULL_NONE;
+            desc.rasterState = RASTERIZE_STATE::SOLID_CULL_NONE;
             AddPipeLineState("cloth", desc);
 
 #endif // 0

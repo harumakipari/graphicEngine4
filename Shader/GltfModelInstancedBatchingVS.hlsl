@@ -1,3 +1,4 @@
+#include "Constants.hlsli"
 #include "GltfModel.hlsli"
 
 VS_OUT main(INSTANCE_VS_IN vsIn)

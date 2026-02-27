@@ -1,4 +1,3 @@
-//#include "Constants.hlsli"
 
 //パーティクルスレッド数
 static const int NumParticleThread = 1024;
@@ -73,7 +72,6 @@ static const uint IndirectArgumentsDrawIndirect = 44;
 //  汎用情報
 cbuffer COMPUTE_PARTICLE_COMMON_CONSTANT_BUFFER : register(b10)
 {
-    float deltaTime;
     uint2 textureSplitCount;
     uint systemNumParticles;
     uint totalEmitCount;

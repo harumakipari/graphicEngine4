@@ -38,12 +38,12 @@ static const float timeOffset = 10000.0;
 
 float4 SampleLowFrequencyNoises(float3 samplePoint, float mipLevel)
 {
-    return lowFrequencyPerlinWorleyTexture.SampleLevel(linearMirrorSamplerState, samplePoint * lowFreqyentlyPerlinWorleySamplingScale, mipLevel);
+    return lowFrequencyPerlinWorleyTexture.SampleLevel(linearMirrorSamplerState, samplePoint * lowFrequentlyPerlinMorleySamplingScale, mipLevel);
 }
 
 float3 SampleHighFrequencyNoises(float3 samplePoint, float mipLevel)
 {
-    return highFrequencyWorleyTexture.SampleLevel(linearMirrorSamplerState, samplePoint * highFreqyentlyWorleySamplingScale, mipLevel);
+    return highFrequencyWorleyTexture.SampleLevel(linearMirrorSamplerState, samplePoint * highFrequentlyMorleySamplingScale, mipLevel);
 }
 
 float3 SampleWeatherData(float2 samplePoint)
