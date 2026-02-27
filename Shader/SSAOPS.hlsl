@@ -32,7 +32,7 @@ float4 main(float4 sv_position : SV_POSITION, float2 texcoord : TEXCOORD) : SV_T
     }
 #endif	
     float4 ndc;
-    ndc.xy = uv_to_ndc(texcoord);
+    ndc.xy = UvToNdc(texcoord);
     ndc.z = depth;
     ndc.w = 1.0;
 
@@ -58,7 +58,7 @@ float4 main(float4 sv_position : SV_POSITION, float2 texcoord : TEXCOORD) : SV_T
 		// Find a view-space scene intersection point on the ray.
         float4 intersection = mul(float4(sample_position, 1.0), projection); // from view to clip-space
         intersection /= intersection.w; // from clip-space to ndc
-        intersection.z = depthTexture.SampleLevel(samplerStates[LINEAR_BORDER_WHITE], ndc_to_uv(intersection).xy, 0);
+        intersection.z = depthTexture.SampleLevel(samplerStates[LINEAR_BORDER_WHITE], NdcToUv(intersection).xy, 0);
         intersection = mul(intersection, inverseProjection); // from ndc to view-space
         intersection /= intersection.w; // perspective divide
 		

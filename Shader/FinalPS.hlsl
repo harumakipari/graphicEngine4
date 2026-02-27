@@ -1,7 +1,6 @@
 #include "FullScreenQuad.hlsli"
 #include "Constants.hlsli"
 #include "Sampler.hlsli"
-#include "Lights.hlsli"
 
 Texture2D colorTexture : register(t0);
 

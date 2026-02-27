@@ -33,10 +33,6 @@ StructuredBuffer<ClothVertex> clothVerticesSRV : register(t0);
 StructuredBuffer<ClothEdge> clothEdges : register(t1);
 RWStructuredBuffer<ClothVertex> clothVerticesUAV : register(u0);
 
-//StructuredBuffer<ClothVertex> preclothVertices : register(t0);
-//StructuredBuffer<ClothEdge> clothEdges : register(t1);
-
-//RWStructuredBuffer<ClothVertex> currentclothVertices : register(u0);
 
 #define CLOTH_EDGES_PER_VERTEX 4
 #define SPRING_FORCE 20000.0

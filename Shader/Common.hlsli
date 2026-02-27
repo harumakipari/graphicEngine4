@@ -1,13 +1,13 @@
 
 
-float2 uv_to_ndc(float2 uv)
+float2 UvToNdc(float2 uv)
 {
     float2 ndc;
     ndc.x = 2.0 * uv.x - 1.0;
     ndc.y = 1.0 - 2.0 * uv.y;
     return ndc;
 }
-float4 ndc_to_uv(float4 ndc)
+float4 NdcToUv(float4 ndc)
 {
     float4 uv;
     uv.x = 0.5 + 0.5 * ndc.x;
@@ -16,11 +16,11 @@ float4 ndc_to_uv(float4 ndc)
     uv.w = ndc.w;
     return uv;
 }
-float4 view_to_uv(float3 pos, column_major float4x4 projection_transform)
+float4 ViewToUv(float3 pos, column_major float4x4 projectionTransform)
 {
-    float4 ndc = mul(float4(pos, 1.0), projection_transform);
+    float4 ndc = mul(float4(pos, 1.0), projectionTransform);
     ndc /= ndc.w;
-    return ndc_to_uv(ndc);
+    return NdcToUv(ndc);
 }
 
 

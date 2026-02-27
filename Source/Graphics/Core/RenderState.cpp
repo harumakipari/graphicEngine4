@@ -321,8 +321,8 @@ void RenderState::Initialize()
     }
 
     // ラスタライザーステートの作成
+    // RASTERIZE_STATE::SOLID_CULL_BACK 後面カリングのラスタライザーステート設定
     {
-        // RASTERIZE_STATE::SOLID_CULL_BACK 
         D3D11_RASTERIZER_DESC rasterizerDesc = {}; // ラスタライザの設定
         rasterizerDesc.FillMode = D3D11_FILL_SOLID; // 塗りつぶしモード
         rasterizerDesc.CullMode = D3D11_CULL_BACK; // 背面カリング（裏面を描画しない）
@@ -332,45 +332,77 @@ void RenderState::Initialize()
         rasterizerDesc.SlopeScaledDepthBias = 0; // 傾斜スケールの深度バイアス
         rasterizerDesc.DepthClipEnable = TRUE; // 深度クリップを有効にする
         rasterizerDesc.ScissorEnable = FALSE; // スクリーンの切り抜きを無効にする
-        rasterizerDesc.MultisampleEnable = FALSE; // マルチサンプルアンチエイリアスを無効にする
+        rasterizerDesc.MultisampleEnable = TRUE; 
         rasterizerDesc.AntialiasedLineEnable = FALSE; // ラインアンチエイリアスを無効にする
         hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERIZE_STATE::SOLID_CULL_BACK)].GetAddressOf()); // ラスタライザーステート作成
-        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr)); // 作成成功を確認
-
-        // ワイヤーフレーム描画のラスタライザーステート設定
-        rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME; // ワイヤーフレーム描画に変更
-        rasterizerDesc.CullMode = D3D11_CULL_BACK; // 背面カリングを有効にする
-        rasterizerDesc.AntialiasedLineEnable = TRUE; // アンチエイリアス線を有効にする
-        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERIZE_STATE::WIREFRAME_CULL_BACK)].GetAddressOf()); // ワイヤーフレーム設定のラスタライザーステートを作成
-        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr)); // 作成成功を確認
-
-        // 前面カリングのラスタライザーステート設定
-        rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-        rasterizerDesc.CullMode = D3D11_CULL_FRONT;
-        rasterizerDesc.AntialiasedLineEnable = FALSE;
-        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERIZE_STATE::SOLID_CULL_FRONT)].GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
 
-        // ワイヤーフレーム描画（前面カリング）のラスタライザーステート設定
-        rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-        rasterizerDesc.CullMode = D3D11_CULL_NONE;
-        rasterizerDesc.AntialiasedLineEnable = TRUE; // アンチエイリアス線を有効にする
-        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERIZE_STATE::SOLID_CULL_NONE)].GetAddressOf()); // カリングなしのワイヤーフレーム設定
-        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr)); // 作成成功を確認
-
-        // ワイヤーフレーム描画（カリングなし）のラスタライザーステート設定
+    // RASTERIZE_STATE::WIREFRAME_CULL_NONE  ワイヤーフレーム描画（カリングなし）のラスタライザーステート設定
+    {
+        D3D11_RASTERIZER_DESC rasterizerDesc = {}; // ラスタライザの設定
         rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME; // ワイヤーフレーム描画に変更
         rasterizerDesc.CullMode = D3D11_CULL_NONE; // カリングなし
+        rasterizerDesc.FrontCounterClockwise = TRUE; // 順方向は時計回り
+        rasterizerDesc.DepthBias = 0; // 深度バイアス（今回はなし）
+        rasterizerDesc.DepthBiasClamp = 0; // 深度バイアスの制限
+        rasterizerDesc.SlopeScaledDepthBias = 0; // 傾斜スケールの深度バイアス
+        rasterizerDesc.DepthClipEnable = TRUE; // 深度クリップを有効にする
+        rasterizerDesc.ScissorEnable = FALSE; // スクリーンの切り抜きを無効にする
+        rasterizerDesc.MultisampleEnable = TRUE;
         rasterizerDesc.AntialiasedLineEnable = TRUE; // アンチエイリアス線を有効にする
         hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERIZE_STATE::WIREFRAME_CULL_NONE)].GetAddressOf()); // カリングなしのワイヤーフレーム設定
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr)); // 作成成功を確認
+    }
 
-        // スクリーン切り抜き有効のラスタライザーステート設定
+    // RASTERIZE_STATE::SOLID_CULL_FRONT  前面カリングのラスタライザーステート設定
+    {
+        D3D11_RASTERIZER_DESC rasterizerDesc = {}; // ラスタライザの設定
+        rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+        rasterizerDesc.CullMode = D3D11_CULL_FRONT;
+        rasterizerDesc.AntialiasedLineEnable = FALSE;
+        rasterizerDesc.FrontCounterClockwise = TRUE; // 順方向は時計回り
+        rasterizerDesc.DepthBias = 0; // 深度バイアス（今回はなし）
+        rasterizerDesc.DepthBiasClamp = 0; // 深度バイアスの制限
+        rasterizerDesc.SlopeScaledDepthBias = 0; // 傾斜スケールの深度バイアス
+        rasterizerDesc.DepthClipEnable = TRUE; // 深度クリップを有効にする
+        rasterizerDesc.ScissorEnable = FALSE; // スクリーンの切り抜きを無効にする
+        rasterizerDesc.MultisampleEnable = TRUE;
+        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERIZE_STATE::SOLID_CULL_FRONT)].GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
+
+    // RASTERIZE_STATE::SOLID_CULL_NONE カリングなしのラスタライザーステート設定
+    {
+        D3D11_RASTERIZER_DESC rasterizerDesc = {}; // ラスタライザの設定
+        rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+        rasterizerDesc.CullMode = D3D11_CULL_NONE;
+        rasterizerDesc.FrontCounterClockwise = TRUE; // 順方向は時計回り
+        rasterizerDesc.DepthBias = 0; // 深度バイアス（今回はなし）
+        rasterizerDesc.DepthBiasClamp = 0; // 深度バイアスの制限
+        rasterizerDesc.SlopeScaledDepthBias = 0; // 傾斜スケールの深度バイアス
+        rasterizerDesc.DepthClipEnable = TRUE; // 深度クリップを有効にする
+        rasterizerDesc.ScissorEnable = FALSE; // スクリーンの切り抜きを無効にする
+        rasterizerDesc.MultisampleEnable = TRUE;
+        rasterizerDesc.AntialiasedLineEnable = FALSE; 
+        hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<size_t>(RASTERIZE_STATE::SOLID_CULL_NONE)].GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr)); // 作成成功を確認
+    }
+
+    // RASTERIZE_STATE::USE_SCISSOR_RECTS スクリーン切り抜き有効のラスタライザーステート設定
+    {
+        D3D11_RASTERIZER_DESC rasterizerDesc = {}; // ラスタライザの設定
         rasterizerDesc.FillMode = D3D11_FILL_SOLID;
         rasterizerDesc.CullMode = D3D11_CULL_BACK;
         rasterizerDesc.ScissorEnable = TRUE;
-        rasterizerDesc.FrontCounterClockwise = FALSE;
+        rasterizerDesc.FrontCounterClockwise = TRUE;
         rasterizerDesc.AntialiasedLineEnable = FALSE;
+        rasterizerDesc.FrontCounterClockwise = TRUE; // 順方向は時計回り
+        rasterizerDesc.DepthBias = 0; // 深度バイアス（今回はなし）
+        rasterizerDesc.DepthBiasClamp = 0; // 深度バイアスの制限
+        rasterizerDesc.SlopeScaledDepthBias = 0; // 傾斜スケールの深度バイアス
+        rasterizerDesc.DepthClipEnable = TRUE; // 深度クリップを有効にする
+        rasterizerDesc.MultisampleEnable = TRUE;
         hr = device->CreateRasterizerState(&rasterizerDesc, rasterizerState[static_cast<int>(RASTERIZE_STATE::USE_SCISSOR_RECTS)].GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }

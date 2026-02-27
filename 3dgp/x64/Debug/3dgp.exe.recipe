@@ -16,9 +16,6 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothCS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothSimulateCopyCS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothSimulateVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
@@ -56,9 +53,6 @@
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticleUpdateCS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\DiscoTunnelPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildingCsmVS.cso</FullPath>
