@@ -19,10 +19,10 @@ void FightStage::Initialize(const Transform& transform)
     auto scene = GetOwnerScene();
 
     std::shared_ptr<StaticMeshComponent> staticMeshComponent = this->AddComponent<class StaticMeshComponent>(parentName);
-    //staticMeshComponent->SetModel("./Data/Models/DarkStage0223_3/DarkStage.gltf", true);
+    staticMeshComponent->SetModel("./Data/Models/DarkStage0223_3/DarkStage.gltf", true);
     //staticMeshComponent->SetModel("./Data/Models/DarkStage0226_1/DarkStage.gltf", true);
     //staticMeshComponent->SetModel("./Data/Models/DarkStage0226_1/untitled.gltf", true);
-    staticMeshComponent->SetModel("./Data/Models/MedievalDungeon.glb", true);
+    //staticMeshComponent->SetModel("./Data/Models/MedievalDungeon.glb", true);
     //staticMeshComponent->SetModel("./Data/Models/DarkStage_0226/DUN_DungeonExample_MAP.gltf", true);
     //staticMeshComponent->SetIsCastShadow(false);
     //staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
@@ -30,7 +30,7 @@ void FightStage::Initialize(const Transform& transform)
     // ポイントライトコンポーネントを追加
     for (int i = 0; i < static_cast<int>(lightsData.size()); ++i)
     {
-        //continue; // とりあえずポイントライトは無効化
+        continue; // とりあえずポイントライトは無効化
         const auto& light = lightsData[i];
 
         std::string compName = "pointLightComponent_" + std::to_string(i);

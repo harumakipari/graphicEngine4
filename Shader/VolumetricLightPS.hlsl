@@ -23,6 +23,27 @@ void ApplyHeightFog(float3 position /*world_space*/, inout float density)
     const float heightScale = fogHeightFalloff;
     density *= exp(-(position.y - groundLevel) * heightScale);
 }
+float GetDensity(float3 position /*world_space*/)
+{
+    float density = 1;
+	
+#if 1
+    const float time = elapsedTime * timeScale;
+
+    const float3 noiseVelocity = normalize(float3(1, 0, 0));
+    float noise = 0.5 * noise3dMap.Sample(samplerStates[LINEAR], position * noiseScale + noiseVelocity * time).x + 0.5;
+	
+    const float noiseIntensityOffset = 0.2;
+    const float noiseIntensity = fogDensity;
+	
+    noise = saturate(noise - noiseIntensityOffset) * noiseIntensity;
+    density = saturate(noise);
+#endif
+	
+    ApplyHeightFog(position, density);
+
+    return density;
+}
 
 float GetLightAttenuation(float3 positionWorldSpace)
 {
@@ -42,6 +63,8 @@ float GetLightAttenuation(float3 positionWorldSpace)
     {
         return 1;
     }
+
+
     float4 positionLightSpace = mul(float4(positionWorldSpace, 1.0), cascadedMatrices[cascadeIndex]);
     positionLightSpace /= positionLightSpace.w;
 
@@ -89,7 +112,7 @@ float4 DitheredRayMarch(float2 screenPos, float3 rayStart, float3 rayDir, float 
     {
         float atten = GetLightAttenuation(currentPosition);
 		
-		//float density = get_density(currentPosition);
+        //float density = GetDensity(currentPosition);
         float density = 1;
 #if 1
         const float time = elapsedTime * timeScale;
@@ -100,7 +123,7 @@ float4 DitheredRayMarch(float2 screenPos, float3 rayStart, float3 rayDir, float 
         float noise = 0.5 * noise3dMap.Sample(samplerStates[LINEAR], position).x + 0.5;
         const float sharpnessFactor = 1.0;
         noise = pow(noise, sharpnessFactor);
-        const float noiseIntensityOffset = 0.2;
+        const float noiseIntensityOffset = 0.0;
         const float noiseIntensity = fogDensity;
         density = max(0, noise - noiseIntensityOffset) * noiseIntensity;
 #endif

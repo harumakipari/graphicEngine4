@@ -2,7 +2,7 @@
 #define _SAMPLER_STATE
 
 
-SamplerState samplerStates[8] : register(s0);
+SamplerState samplerStates[7] : register(s0);
 
 #define POINT 0
 #define LINEAR 1

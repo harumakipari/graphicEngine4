@@ -10,107 +10,165 @@ void RenderState::Initialize()
     HRESULT hr{ S_OK };
     ID3D11Device* device = Graphics::GetDevice();
 
-    //サンプラーステートオブジェクトを生成（テクスチャの取り扱い方法）
-    // 画像のサンプリング（テクスチャのピクセルを取得するため）を行うための設定を作成します。
-    D3D11_SAMPLER_DESC samplerDesc;
+    // POINT_WRAP サンプラー（テクスチャの拡大縮小に最近傍補間を使用し、テクスチャ座標が0.0から1.0の範囲を超える場合は繰り返す）
+    {
+        D3D11_SAMPLER_DESC samplerDesc = {};
+        samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+        samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;// U座標（X軸方向）のラッピング（繰り返し）
+        samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;// V座標（Y軸方向）のラッピング（繰り返し）
+        samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;// W座標のラッピング（繰り返し）
+        samplerDesc.MipLODBias = 0.0f;// ミップマップのバイアス設定
+        samplerDesc.MaxAnisotropy =1;// 最大異方性サンプリング数（画質を向上させる）
+        samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;// 比較関数
+        samplerDesc.BorderColor[0] = 0;// 境界色（透明）
+        samplerDesc.BorderColor[1] = 0;
+        samplerDesc.BorderColor[2] = 0;
+        samplerDesc.BorderColor[3] = 0;
+        samplerDesc.MinLOD = 0;
+        samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+        hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::POINT)].GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
 
-    // ポイントサンプラー（ピクセルごとにそのままの値を取得）
-    samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;// U座標（X軸方向）のラッピング（繰り返し）
-    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;// V座標（Y軸方向）のラッピング（繰り返し）
-    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;// W座標のラッピング（繰り返し）
-    samplerDesc.MipLODBias = 0;// ミップマップのバイアス設定
-    samplerDesc.MaxAnisotropy = 16;// 最大異方性サンプリング数（画質を向上させる）
-    samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;// 比較関数
-    samplerDesc.BorderColor[0] = 0;// 境界色（透明）
-    samplerDesc.BorderColor[1] = 0;
-    samplerDesc.BorderColor[2] = 0;
-    samplerDesc.BorderColor[3] = 0;
-    samplerDesc.MinLOD = 0;
-    samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-    hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::POINT)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    // LINEAR_WRAP サンプラー（テクスチャの拡大縮小に線形補間を使用し、テクスチャ座標が0.0から1.0の範囲を超える場合は繰り返す）
+    {
+        D3D11_SAMPLER_DESC samplerDesc = {};
+        samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;// U座標（X軸方向）のラッピング（繰り返し）
+        samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;// V座標（Y軸方向）のラッピング（繰り返し）
+        samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;// W座標のラッピング（繰り返し）
+        samplerDesc.MipLODBias = 0.0f;// ミップマップのバイアス設定
+        samplerDesc.MaxAnisotropy = 1;// 最大異方性サンプリング数（画質を向上させる）
+        samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;// 比較関数
+        samplerDesc.BorderColor[0] = 0;// 境界色（透明）
+        samplerDesc.BorderColor[1] = 0;
+        samplerDesc.BorderColor[2] = 0;
+        samplerDesc.BorderColor[3] = 0;
+        samplerDesc.MinLOD = 0;
+        samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+        hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR)].GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
 
-    // 線形フィルターサンプラー（滑らかな画像の変換）
-    samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;// U座標（X軸方向）のラッピング（繰り返し）
-    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;// V座標（Y軸方向）のラッピング（繰り返し）
-    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;// W座標のラッピング（繰り返し）
-    hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    // ANISOTROPIC_WRAP サンプラー（テクスチャの拡大縮小に異方性フィルタリングを使用し、テクスチャ座標が0.0から1.0の範囲を超える場合は繰り返す）
+    {
+        D3D11_SAMPLER_DESC samplerDesc = {};
+        samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+        samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;// U座標（X軸方向）のラッピング（繰り返し）
+        samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;// V座標（Y軸方向）のラッピング（繰り返し）
+        samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;// W座標のラッピング（繰り返し）
+        samplerDesc.MipLODBias = 0.0f;// ミップマップのバイアス設定
+        samplerDesc.MaxAnisotropy = 8;// 最大異方性サンプリング数（画質を向上させる）
+        samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;// 比較関数
+        samplerDesc.BorderColor[0] = 0;// 境界色（透明）
+        samplerDesc.BorderColor[1] = 0;
+        samplerDesc.BorderColor[2] = 0;
+        samplerDesc.BorderColor[3] = 0;
+        samplerDesc.MinLOD = 0;
+        samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+        hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::ANISOTROPIC)].GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
 
-    // 異方性フィルターサンプラー（高画質なテクスチャを表示）
-    samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
-    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;// U座標（X軸方向）のラッピング（繰り返し）
-    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;// V座標（Y軸方向）のラッピング（繰り返し）
-    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;// W座標のラッピング（繰り返し）
-    hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::ANISOTROPIC)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    // LINEAR_BORDER_BLACK サンプラー（テクスチャの拡大縮小に線形補間を使用し、テクスチャ座標が0.0から1.0の範囲を超える場合は境界色（黒）で塗りつぶす）
+    {
+        D3D11_SAMPLER_DESC samplerDesc = {};
+        samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+        samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+        samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+        samplerDesc.MipLODBias = 0.0f;// ミップマップのバイアス設定
+        samplerDesc.MaxAnisotropy = 1;// 最大異方性サンプリング数（画質を向上させる）
+        samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;// 比較関数
+        samplerDesc.BorderColor[0] = 0;
+        samplerDesc.BorderColor[1] = 0;
+        samplerDesc.BorderColor[2] = 0;
+        samplerDesc.BorderColor[3] = 1;
+        samplerDesc.MinLOD = 0;
+        samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+        hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_BLACK)].GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
 
-    // 線形フィルターサンプラー（滑らかな画像の変換）境界線　黒色
-    samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
-    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
-    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-    samplerDesc.BorderColor[0] = 0;
-    samplerDesc.BorderColor[1] = 0;
-    samplerDesc.BorderColor[2] = 0;
-    samplerDesc.BorderColor[3] = 0;
-    hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_BLACK)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    // LINEAR_BORDER_WHITE サンプラー（テクスチャの拡大縮小に線形補間を使用し、テクスチャ座標が0.0から1.0の範囲を超える場合は境界色（白）で塗りつぶす）
+    {
+        D3D11_SAMPLER_DESC samplerDesc = {};
+        samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+        samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+        samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+        samplerDesc.MipLODBias = 0.0f;// ミップマップのバイアス設定
+        samplerDesc.MaxAnisotropy = 1;// 最大異方性サンプリング数（画質を向上させる）
+        samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;// 比較関数
+        samplerDesc.BorderColor[0] = 1;
+        samplerDesc.BorderColor[1] = 1;
+        samplerDesc.BorderColor[2] = 1;
+        samplerDesc.BorderColor[3] = 1;
+        samplerDesc.MinLOD = 0;
+        samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+        hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_WHITE)].GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
 
-    // 線形フィルターサンプラー（滑らかな画像の変換）境界線　白色
-    samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
-    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
-    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-    samplerDesc.BorderColor[0] = 1;
-    samplerDesc.BorderColor[1] = 1;
-    samplerDesc.BorderColor[2] = 1;
-    samplerDesc.BorderColor[3] = 1;
-    hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_WHITE)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    // LINEAR_CLAMP サンプラー（テクスチャの拡大縮小に線形補間を使用し、テクスチャ座標が0.0から1.0の範囲を超える場合は最も近い有効なテクスチャ座標でサンプリング）
+    {
+        D3D11_SAMPLER_DESC samplerDesc = {};
+        samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+        samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+        samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+        samplerDesc.MipLODBias = 0.0f;// ミップマップのバイアス設定
+        samplerDesc.MaxAnisotropy = 1;// 最大異方性サンプリング数（画質を向上させる）
+        samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;// 比較関数
+        samplerDesc.BorderColor[0] = 0;
+        samplerDesc.BorderColor[1] = 0;
+        samplerDesc.BorderColor[2] = 0;
+        samplerDesc.BorderColor[3] = 0;
+        samplerDesc.MinLOD = 0;
+        samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+        hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_CLAMP)].GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
 
-    samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-    samplerDesc.BorderColor[0] = 0;
-    samplerDesc.BorderColor[1] = 0;
-    samplerDesc.BorderColor[2] = 0;
-    samplerDesc.BorderColor[3] = 0;
-    hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_CLAMP)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    // LINEAR_MIRROR サンプラー（テクスチャの拡大縮小に線形補間を使用し、テクスチャ座標が0.0から1.0の範囲を超える場合は鏡面反射のように繰り返す）
+    {
+        D3D11_SAMPLER_DESC samplerDesc = {};
+        samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+        samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+        samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+        samplerDesc.MipLODBias = 0;
+        samplerDesc.MaxAnisotropy = 1;
+        samplerDesc.BorderColor[0] = 0;
+        samplerDesc.BorderColor[1] = 0;
+        samplerDesc.BorderColor[2] = 0;
+        samplerDesc.BorderColor[3] = 0;
+        samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+        samplerDesc.MinLOD = 0;
+        samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+        hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_MIRROR)].GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
 
-    // VOLUMETRIC_CLOUDSCAPES
-    samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
-    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
-    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
-    samplerDesc.BorderColor[0] = 0;
-    samplerDesc.BorderColor[1] = 0;
-    samplerDesc.BorderColor[2] = 0;
-    samplerDesc.BorderColor[3] = 0;
-    hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_MIRROR)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    // SHADOW
-    samplerDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
-    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
-    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
-    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-    samplerDesc.MipLODBias = 0;// CascadeShadowMaps
-    samplerDesc.MaxAnisotropy = 16;// CascadeShadowMaps
-    samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL; //D3D11_COMPARISON_LESS_EQUAL
-    samplerDesc.BorderColor[0] = 1;
-    samplerDesc.BorderColor[1] = 1;
-    samplerDesc.BorderColor[2] = 1;
-    samplerDesc.BorderColor[3] = 1;
-    samplerDesc.MinLOD = 0;// CascadeShadowMaps
-    samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;// CascadeShadowMaps
-    hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::COMPARISON_LINEAR_BORDER_WHITE)].GetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
+    // COMPARISON_LINEAR_BORDER_WHITE サンプラー（テクスチャの拡大縮小に線形補間を使用し、テクスチャ座標が0.0から1.0の範囲を超える場合は境界色（白）で塗りつぶし、比較関数を使用してシャドウマッピングなどに利用）
+    {
+        D3D11_SAMPLER_DESC samplerDesc = {};
+        samplerDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+        samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+        samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+        samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+        samplerDesc.MipLODBias = 0;
+        samplerDesc.MaxAnisotropy = 16;
+        samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL; 
+        samplerDesc.BorderColor[0] = 1;
+        samplerDesc.BorderColor[1] = 1;
+        samplerDesc.BorderColor[2] = 1;
+        samplerDesc.BorderColor[3] = 1;
+        samplerDesc.MinLOD = 0.0f;
+        samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+        hr = device->CreateSamplerState(&samplerDesc, samplerStates[static_cast<size_t>(SAMPLER_STATE::COMPARISON_LINEAR_BORDER_WHITE)].GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
 
 
     // 深度テストやステンシルバッファの設定を行う（画面の奥行きを扱う）
@@ -339,7 +397,9 @@ void RenderState::SetSamplerState(ID3D11DeviceContext* immediateContext)
     immediateContext->PSSetSamplers(2, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::ANISOTROPIC)].GetAddressOf());
     immediateContext->PSSetSamplers(3, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_BLACK)].GetAddressOf());
     immediateContext->PSSetSamplers(4, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_WHITE)].GetAddressOf());
-    immediateContext->PSSetSamplers(5, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::COMPARISON_LINEAR_BORDER_WHITE)].GetAddressOf());
+    immediateContext->PSSetSamplers(5, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_CLAMP)].GetAddressOf());
+    immediateContext->PSSetSamplers(6, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_MIRROR)].GetAddressOf());
+    immediateContext->PSSetSamplers(7, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::COMPARISON_LINEAR_BORDER_WHITE)].GetAddressOf());
 
     // コンピュートシェーダー
     immediateContext->CSSetSamplers(0, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::POINT)].GetAddressOf());
@@ -347,7 +407,9 @@ void RenderState::SetSamplerState(ID3D11DeviceContext* immediateContext)
     immediateContext->CSSetSamplers(2, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::ANISOTROPIC)].GetAddressOf());
     immediateContext->CSSetSamplers(3, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_BLACK)].GetAddressOf());
     immediateContext->CSSetSamplers(4, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_WHITE)].GetAddressOf());
-    immediateContext->CSSetSamplers(5, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::COMPARISON_LINEAR_BORDER_WHITE)].GetAddressOf());
+    immediateContext->CSSetSamplers(5, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_CLAMP)].GetAddressOf());
+    immediateContext->CSSetSamplers(6, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_MIRROR)].GetAddressOf());
+    immediateContext->CSSetSamplers(7, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::COMPARISON_LINEAR_BORDER_WHITE)].GetAddressOf());
 
     // ジオメトリックシェーダー
     immediateContext->GSSetSamplers(0, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::POINT)].GetAddressOf());
@@ -355,6 +417,8 @@ void RenderState::SetSamplerState(ID3D11DeviceContext* immediateContext)
     immediateContext->GSSetSamplers(2, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::ANISOTROPIC)].GetAddressOf());
     immediateContext->GSSetSamplers(3, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_BLACK)].GetAddressOf());
     immediateContext->GSSetSamplers(4, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_WHITE)].GetAddressOf());
-    immediateContext->GSSetSamplers(5, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::COMPARISON_LINEAR_BORDER_WHITE)].GetAddressOf());
+    immediateContext->GSSetSamplers(5, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_CLAMP)].GetAddressOf());
+    immediateContext->GSSetSamplers(6, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_MIRROR)].GetAddressOf());
+    immediateContext->GSSetSamplers(7, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::COMPARISON_LINEAR_BORDER_WHITE)].GetAddressOf());
 
 }

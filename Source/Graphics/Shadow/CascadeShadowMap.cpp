@@ -199,14 +199,7 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
         center.x /= corners.size();
         center.y /= corners.size();
         center.z /= corners.size();
-
-        //using namespace DirectX;
-        //DirectX::XMVECTOR lightDir = DirectX::XMVector3Normalize(XMLoadFloat4(&lightDirection));
-        //DirectX::XMMATRIX V = XMMatrixLookAtLH(
-        //    XMVectorSet(center.x, center.y, center.z, 1.0f) - lightDir,
-        //    XMVectorSet(center.x, center.y, center.z, 1.0f),
-        //    XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-#if 1
+#if 0
         // ライトビュー行列作成
         DirectX::XMMATRIX V;
         V = DirectX::XMMatrixLookAtLH(
@@ -214,6 +207,21 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
             DirectX::XMVectorSet(center.x, center.y, center.z, 1.0f),
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 
+#else
+
+        using namespace DirectX;
+        DirectX::XMVECTOR lightDir = DirectX::XMVector3Normalize(XMLoadFloat4(&lightDirection));
+        DirectX::XMMATRIX V = XMMatrixLookAtLH(
+            XMVectorSet(center.x, center.y, center.z, 1.0f) - lightDir,
+            XMVectorSet(center.x, center.y, center.z, 1.0f),
+            XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+
+        //XMVECTOR lightPos = XMVectorScale(lightDir, -1000.0f);
+
+        //XMMATRIX V = XMMatrixLookAtLH(
+        //    lightPos,
+        //    XMVectorZero(),
+        //    XMVectorSet(0, 1, 0, 0));
 #endif // 0
 
         // AABB計算（ライト空間）
@@ -234,6 +242,35 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
             maxZ = std::max<float>(maxZ, corner.z);
         }
 
+
+#if 1
+        // ===== テクセルスナップ開始 =====
+
+        float shadowMapResolution = 4096.0f;
+
+        float cascadeWidth = maxX - minX;
+        float cascadeHeight = maxY - minY;
+
+        float texelSizeX = cascadeWidth / shadowMapResolution;
+        float texelSizeY = cascadeHeight / shadowMapResolution;
+
+        // ライト空間中心
+        float centerX = (minX + maxX) * 0.5f;
+        float centerY = (minY + maxY) * 0.5f;
+
+        // テクセル単位でスナップ
+        centerX = floor(centerX / texelSizeX) * texelSizeX;
+        centerY = floor(centerY / texelSizeY) * texelSizeY;
+
+        // min/max再計算
+        minX = centerX - cascadeWidth * 0.5f;
+        maxX = centerX + cascadeWidth * 0.5f;
+        minY = centerY - cascadeHeight * 0.5f;
+        maxY = centerY + cascadeHeight * 0.5f;
+
+        // ===== テクセルスナップ終了 =====
+
+#endif // 1
 #if 1
         // Z拡張（シャドウ欠け防止）
         zDepthScale = std::max<float>(1.0f, zDepthScale);

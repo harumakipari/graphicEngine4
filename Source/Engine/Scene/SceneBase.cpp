@@ -87,7 +87,7 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     //カスケードシャドウマップ
     cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
 
-    cascaded_shadow_map = std::make_unique<class cascaded_shadow_map>(device, 1024 * 4, 1024 * 4);
+    //cascaded_shadow_map = std::make_unique<class cascaded_shadow_map>(device, 1024 * 4, 1024 * 4);
 
     D3D11_TEXTURE2D_DESC texture2dDesc;
     //テクスチャをロード
@@ -265,7 +265,9 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
 
 void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
 {
+    UpdateConstantBuffer(immediateContext);
     ViewConstants data = {};
+#if 1
     if (auto camera = cameraManager->GetRenderCamera(this))
     {
         data = camera->GetViewConstants();
@@ -275,7 +277,72 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
     {
         Logger::Error(U8("カメラがない"));
     }
-    UpdateConstantBuffer(immediateContext);
+#else
+    using namespace DirectX;
+    static DirectX::XMFLOAT3 target = { 0.0f, 0.0f, 10.0f };
+    static float distance = 15.0f;
+    static float yaw = 0.0f;     // 水平回転
+    static float pitch = 0.3f;   // 上下回転
+
+#ifdef USE_IMGUI
+    ImGui::Begin("Debug Camera");
+
+    ImGui::DragFloat3("Target", &target.x, 0.1f);
+    ImGui::DragFloat("Distance", &distance, 0.1f, 1.0f, 200.0f);
+    ImGui::DragFloat("Yaw", &yaw, 0.01f);
+    ImGui::DragFloat("Pitch", &pitch, 0.01f, -1.5f, 1.5f);
+
+    ImGui::End();
+#endif
+    // ===== 行列生成 =====
+
+    XMVECTOR targetV = XMLoadFloat3(&target);
+
+    // 球面座標 → forward方向
+    XMVECTOR forward = XMVectorSet(
+        cosf(pitch) * sinf(yaw),
+        sinf(pitch),
+        cosf(pitch) * cosf(yaw),
+        0.0f
+    );
+
+    // eye = target - forward * distance
+    XMVECTOR eyeV = targetV - forward * distance;
+    XMVECTOR up = XMVectorSet(0, 1, 0, 0);
+    // View
+    XMMATRIX view = XMMatrixLookAtLH(eyeV, targetV, up);
+
+    // Projection
+    float fov = XMConvertToRadians(60.0f);
+    float aspect = 1280.0f / 720.0f;   
+    float nearZ = 0.1f;
+    float farZ = 500.0f;
+
+    XMMATRIX projection = XMMatrixPerspectiveFovLH(fov, aspect, nearZ, farZ);
+
+    // 組み立て
+    XMMATRIX viewProjection = view * projection;
+
+    // 逆行列
+    XMMATRIX invProjection = XMMatrixInverse(nullptr, projection);
+    XMMATRIX invView = XMMatrixInverse(nullptr, view);
+    XMMATRIX invViewProjection = XMMatrixInverse(nullptr, viewProjection);
+
+    // ストア
+    XMStoreFloat4x4(&data.view, view);
+    XMStoreFloat4x4(&data.projection, projection);
+    XMStoreFloat4x4(&data.viewProjection, viewProjection);
+    XMStoreFloat4x4(&data.invProjection, invProjection);
+    XMStoreFloat4x4(&data.invView, invView);
+    XMStoreFloat4x4(&data.invViewProjection, invViewProjection);
+
+    // cameraPosition
+    XMStoreFloat4(&data.cameraPosition, eyeV);
+
+    // 定数バッファ更新
+    sceneRender.UpdateViewConstants(immediateContext, data);
+
+#endif // 0
 #ifdef USE_IMGUI
     //imGuiGizmoBuffer->Clear(immediateContext);
     //imGuiGizmoBuffer->Activate(immediateContext);
