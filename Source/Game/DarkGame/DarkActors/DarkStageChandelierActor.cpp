@@ -36,8 +36,16 @@ void DarkStageChandelierActor::Initialize(const Transform& transform)
         auto pointLightActor = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStagePointLightActor>("pointLight", pointLightTr);
         pointLightActor->SetPointLightData(pos, light.color, light.intensity, light.range);
 #endif // 0
-
     }
-
 }
+
+void DarkStageChandelierActor::Update(float deltaTime)
+{
+    swingTime += deltaTime;
+
+    float angle = sinf(swingTime * swingSpeed) * swingAngle;
+    DirectX::XMFLOAT3 rot = { angle, 0.0f, 0.0f }; // XŽ²‰ñ“]‚Å—h‚ç‚·
+    chandelierMeshComponent->SetRelativeEulerRotationDirect(rot);
+}
+
 

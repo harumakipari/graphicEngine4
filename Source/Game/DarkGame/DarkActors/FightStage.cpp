@@ -78,19 +78,24 @@ void FightStage::Initialize(const Transform& transform)
         }
         if (point.name == "Spawn_Particle_Steam")
         {
-            // 湯気のエフェクト
-            steamComponent = this->AddComponent<ParticleComponent>("steamComponent", parentName);
-            steamComponent->Load("./Data/Effect/Files/Pot_SteamEffect.json");
-            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
-            steamComponent->SetRelativeLocationDirect(pos);
-            // ループ再生設定
-            ParticleComponent::AddSettings settings
+            for (int i = 0; i < 3; i++)
             {
-                .loop = true, // ループ再生
-                //.startDelay = 0.5f // 再生開始遅延時間
-            };
-            steamComponent->SetAddSettings(settings);
-            steamComponent->Play();
+                // 湯気のエフェクト
+                auto steamComponent = this->AddComponent<ParticleComponent>("steamComponent", parentName);
+                steamComponent->Load("./Data/Effect/Files/Pot_SteamEffect.json");
+                DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+                steamComponent->SetRelativeLocationDirect(pos);
+                // ループ再生設定
+                float delay = 0.1f * i; // 0.2秒ずつ遅らせる
+                ParticleComponent::AddSettings settings
+                {
+                    .loop = true, // ループ再生
+                    .startDelay = delay, // 再生開始遅延時間
+                };
+                steamComponent->SetAddSettings(settings);
+                steamComponent->Play();
+
+            }
         }
         if (point.name == "Spawn_Chandelier")
         {
@@ -105,17 +110,6 @@ void FightStage::Initialize(const Transform& transform)
             auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageChandelierActor>("chandelier", chandelierTr);
         }
     }
-
-    //staticMeshComponent->SetModel("./Data/Models/Dark_Stage0204/untitled.gltf", true);
-    //staticMeshComponent->SetModel("./Data/Models/Dark_Stage/Mesh/untitled.gltf", true);
-    //staticMeshComponent->SetModel("./Data/Models/boss_fight_stage/scene.gltf", true);
-    //staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
-    //staticMeshComponent->overrideDeferredPipelineName = "deferredFightStage";
-    //staticMeshComponent->hueShift = 191.8f;
-    //staticMeshComponent->saturation = 0.8f;
-    //staticMeshComponent->brightness = 1.0f;
-    //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GltfModelFightStagePS.cso", staticMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
-    //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
 
     // //影用のスタティックメッシュコンポーネントを追加
@@ -150,21 +144,21 @@ void FightStage::Initialize(const Transform& transform)
             XMStoreFloat4(&worldRotation, R);
             XMStoreFloat3(&worldPosition, T);
         }
-        //auto box = AddComponent<BoxComponent>(node.name, parentName);
+        auto box = AddComponent<BoxComponent>(node.name, parentName);
 
-        //DirectX::XMFLOAT3 pos = convertRHtoLh(worldPosition);
+        DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(worldPosition);
 
-        //box->SetHalfBoxExtent(worldScale);
-        //box->SetRelativeLocationDirect(pos);
-        //box->SetRelativeRotationDirect(worldRotation);
+        box->SetHalfBoxExtent(worldScale);
+        box->SetRelativeLocationDirect(pos);
+        box->SetRelativeRotationDirect(worldRotation);
 
-        //box->SetStatic(true);
-        //box->SetLayer(CollisionLayer::WorldStatic);
-        //box->SetResponseToLayer(
-        //    CollisionLayer::Player,
-        //    CollisionComponent::CollisionResponse::Block);
+        box->SetStatic(true);
+        box->SetLayer(CollisionLayer::WorldStatic);
+        box->SetResponseToLayer(
+            CollisionLayer::Player,
+            CollisionComponent::CollisionResponse::Block);
 
-        //box->Initialize();
+        box->Initialize();
     }
 #if 0
     // 当たり判定
@@ -178,6 +172,7 @@ void FightStage::Initialize(const Transform& transform)
     // 床の当たり判定用のボックスコリジョンコンポーネント
     std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "staticMeshComponent");
     boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(80.0f, 0.2f, 80.0f));
+    boxComponent->SetRelativeLocationDirect({ 0.0f,-0.2f,0.0f });
     //boxComponent->SetCollisionOffsetY(-4.5f);
     boxComponent->SetStatic(true);
     boxComponent->SetLayer(CollisionLayer::WorldStatic);

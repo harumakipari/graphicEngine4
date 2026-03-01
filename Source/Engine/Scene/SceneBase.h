@@ -100,7 +100,7 @@ protected:
     struct ShaderConstants
     {
         float shadowColor = 0.422f;
-        float shadowDepthBias = 0.000f;
+        float shadowDepthBias = -0.001f;
         float pads[2];
 
         int enableSsao = true;

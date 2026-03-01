@@ -33,8 +33,8 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     lightDirection = { -0.441f, -0.47f, 0.64f, 0.0f };   // ‰¡‚Ì‘‹‚©‚ç‚ÌŒõ
     lightDirection = { 0.03f, -0.15f, 0.23f, 0.0f };   // ‰¡‚Ì‘‹‚©‚ç‚ÌŒõ
     //lightDirection = { 0.382f, -0.882f, 0.112f, 0.0f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
-    //lightDirection = { 1.0f, -1.0f, 0.0f, 0.0f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
     lightDirection = { 0.545f, -0.86f, -0.526f, 0.0f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
+    //lightDirection = { 1.0f, -1.0f, -0.008f, 0.0f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
     lightColor = { 1.0f, 1.0f, 1.0f, 3.0f };
     //lightColor = { 1.0f, 1.0f, 1.0f, 14.62f };
 

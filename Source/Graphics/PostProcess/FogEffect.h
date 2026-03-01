@@ -14,14 +14,14 @@ public:
     {
         float fogColor[4] = { 1.000f,1.000f, 1.000f, 1.000f }; // w: fog intensity
 
-        float fogDensity = 7.0f;
+        float fogDensity = 1.2f;
         float fogHeightFalloff = 0.05f;
         float groundLevel = 0.0f;
-        float fogCutoffDistance = 500.0f;
+        float fogCutoffDistance = 80.0f;
 
         float mieScatteringFactor = 0.55f;
-        float timeScale = 0.35f;
-        float noiseScale = 0.2f;
+        float timeScale = 0.9f;
+        float noiseScale = 0.5f;
         int enableDither = 1;
     };
 

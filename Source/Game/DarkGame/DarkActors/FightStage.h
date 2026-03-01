@@ -36,6 +36,5 @@ private:
 
 
 private:
-    std::shared_ptr<ParticleComponent> steamComponent;  // 湯気のエフェクト
 
 };
