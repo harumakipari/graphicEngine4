@@ -11,6 +11,8 @@ void DarkStagePointLightActor::Initialize(const Transform& transform)
     sphereMeshComponent = this->AddComponent<SkeletalMeshComponent>("sphereMeshComponent", parentName);
     sphereMeshComponent->SetModel("./Data/Models/Primitives/Sphere.glb");
     sphereMeshComponent->overrideDeferredPipelineName = "pointLightSkeletalMesh";
+    sphereMeshComponent->SetIsCastShadow(false);    // 影を落とさないようにする
+    sphereMeshComponent->SetRelativeScaleDirect({ 0.01f,0.01f,0.01f });
 }
 
 // ポイントライトのデータを一括で設定する関数
@@ -18,14 +20,9 @@ void DarkStagePointLightActor::SetPointLightData(const DirectX::XMFLOAT3 positio
 {
     if (pointLightComponent)
     {
-        pointLightComponent->SetRelativeLocationDirect(position);
         pointLightComponent->SetColor(color);
         pointLightComponent->SetIntensity(intensity);
         pointLightComponent->SetRange(range);
-    }
-    if (sphereMeshComponent)
-    {
-        sphereMeshComponent->SetRelativeLocationDirect(position);
     }
 }
 

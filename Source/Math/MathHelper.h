@@ -11,6 +11,13 @@
 
 namespace MathHelper
 {
+    static DirectX::XMFLOAT3 ConvertRHtoLh(DirectX::XMFLOAT3 v)
+    {
+        v.x *= -1.0f;
+        return v;
+    };
+
+
     static bool VectorContainsNanOrInfinite(DirectX::FXMVECTOR v)
     {
         DirectX::XMVECTOR isInvalid = DirectX::XMVectorOrInt(DirectX::XMVectorIsNaN(v), DirectX::XMVectorIsInfinite(v));
@@ -61,7 +68,7 @@ namespace MathHelper
 
     inline float RandomRange(float min, float max)
     {
-        if (min >= max) 
+        if (min >= max)
         {
             std::swap(min, max);
         }
@@ -85,9 +92,9 @@ namespace MathHelper
         return dist(gen);
     }
 
-    enum class RotationSequence 
+    enum class RotationSequence
     {
-        zyx, zxy, xyz, xzy, yxz, yzx 
+        zyx, zxy, xyz, xzy, yxz, yzx
     };
 
     // クォータニオンから角度に変更する
@@ -221,7 +228,7 @@ namespace MathHelper
     }
 
     // 三点から法線計算
-    inline DirectX::XMFLOAT3 ComputeTriangleNormal(const DirectX::XMFLOAT3& p1,const DirectX::XMFLOAT3& p2,const DirectX::XMFLOAT3&p3)
+    inline DirectX::XMFLOAT3 ComputeTriangleNormal(const DirectX::XMFLOAT3& p1, const DirectX::XMFLOAT3& p2, const DirectX::XMFLOAT3& p3)
     {
         using namespace DirectX;
         XMVECTOR a = XMLoadFloat3(&p1);

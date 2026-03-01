@@ -171,7 +171,7 @@ public:
     void SetModel(const std::string& filename, bool isSaveVerticesData = false)override
     {
         ID3D11Device* device = Graphics::GetDevice();
-        model = std::make_shared<InterleavedGltfModel>(device, filename, InterleavedGltfModel::Mode::SkeltalMesh, isSaveVerticesData);
+        model = std::make_shared<InterleavedGltfModel>(device, filename, InterleavedGltfModel::Mode::SkeletalMesh, isSaveVerticesData);
         modelNodes = model->GetNodes();
     }
 
@@ -242,7 +242,7 @@ public:
     void SetModel(const std::string& filename, bool isSaveVerticesData = false)override
     {
         ID3D11Device* device = Graphics::GetDevice();
-        model = std::make_shared<MorphModel>(device, filename, MorphModel::Mode::SkeltalMesh, isSaveVerticesData);
+        model = std::make_shared<MorphModel>(device, filename, MorphModel::Mode::SkeletalMesh, isSaveVerticesData);
         modelNodes = model->GetNodes();
     }
 

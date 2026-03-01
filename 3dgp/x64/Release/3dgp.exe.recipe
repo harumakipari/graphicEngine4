@@ -16,9 +16,6 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothCS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothSimulateCopyCS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ClothSimulateVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
@@ -58,16 +55,10 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticleUpdateCS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\DiscoTunnelPS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildingCsmVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildsVS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPS.cso</FullPath>
@@ -125,9 +116,6 @@
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelDissolvePS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelEmitParticlePS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelFightStagePS.cso</FullPath>
@@ -190,19 +178,16 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelForwardTransparencyPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\PointLightModelPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\PrimitiveRendererPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\PrimitiveRendererVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\RoundedLoadingPS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\SsaoPS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ScreenSpaceProjectionMappingPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ShaderToyPS.cso</FullPath>
@@ -248,6 +233,9 @@
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricFogPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\VolumetricLightPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\WiredShapeRendererPS.cso</FullPath>

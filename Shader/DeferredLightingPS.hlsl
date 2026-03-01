@@ -27,11 +27,17 @@ float4 main(VS_OUT pin) : SV_TARGET
     
     sampled = emissiveMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
     float3 emissive = sampled.xyz;
-    float skymap = sampled.w;
+    float skymap =sampled.w;
+    float emissiveFlag = skymap;
 
     if (skymap == 1)
     { // 何も書き込まれていなかったら スカイマップのために
         discard;
+    }
+
+    if (emissiveFlag == 2)
+    {
+        return float4(emissive * 10.0, 1);
     }
 
     const float3 f0 = lerp(0.04, baseColor.rgb, metallicFactor);

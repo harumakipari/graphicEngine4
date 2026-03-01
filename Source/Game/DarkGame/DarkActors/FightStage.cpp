@@ -1,16 +1,12 @@
 #include "pch.h"
 #include  "FightStage.h"
 
+#include "DarkStageChandelierActor.h"
 #include "DarkStagePointLightActor.h"
 #include "DoorLeftActor.h"
 #include "Components/Effect/ParticleComponent.h"
 #include "Engine/Scene/Scene.h"
 
-auto convertRHtoLh = [](DirectX::XMFLOAT3 v)
-    {
-        v.x *= -1.0f;
-        return v;
-    };
 
 
 void FightStage::Initialize(const Transform& transform)
@@ -20,8 +16,8 @@ void FightStage::Initialize(const Transform& transform)
     auto scene = GetOwnerScene();
 
     std::shared_ptr<StaticMeshComponent> staticMeshComponent = this->AddComponent<class StaticMeshComponent>(parentName);
-    staticMeshComponent->SetModel("./Data/Models/DarkStage0223_3/DarkStage.gltf", true);
-    //staticMeshComponent->SetModel("./Data/Models/DarkStage0226_1/DarkStage.gltf", true);
+    staticMeshComponent->SetModel("./Data/Models/Dark_Stage0301/DarkStage.gltf", true);
+    //staticMeshComponent->SetModel("./Data/Models/DarkStage0223_3/DarkStage.gltf", true);
     //staticMeshComponent->SetModel("./Data/Models/DarkStage0226_1/untitled.gltf", true);
     //staticMeshComponent->SetModel("./Data/Models/MedievalDungeon.glb", true);
     //staticMeshComponent->SetModel("./Data/Models/DarkStage_0226/DUN_DungeonExample_MAP.gltf", true);
@@ -34,23 +30,23 @@ void FightStage::Initialize(const Transform& transform)
         const auto& light = lightsData[i];
         //continue; // とりあえずポイントライトは無効化
 
-#if 1
+#if 0
         std::string compName = "pointLightComponent_" + std::to_string(i);
         auto pointLightComponent =
             this->AddComponent<PointLightComponent>(compName, parentName);
 
-        DirectX::XMFLOAT3 pos = convertRHtoLh(light.position);
+        DirectX::XMFLOAT3 pos = convertRHtoLh(light.worldPosition);
         pointLightComponent->SetRelativeLocationDirect(pos);
         pointLightComponent->SetColor(light.color);
         pointLightComponent->SetRange(light.range);
         pointLightComponent->SetIntensity(light.intensity);
 #else
-        DirectX::XMFLOAT3 pos = (light.position);
+        DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(light.worldPosition);
 
         Transform pointLightTr{
             pos,
-            {0.0f,0.0f,0.0f,1.0f},
-            {1.0f,1.0f,1.0f}
+            light.worldRotation,
+            light.worldScale
         };
         auto pointLightActor = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStagePointLightActor>("pointLight", pointLightTr);
         pointLightActor->SetPointLightData(pos, light.color, light.intensity, light.range);
@@ -63,7 +59,7 @@ void FightStage::Initialize(const Transform& transform)
     {
         if (point.name == "Spawn_Door_Left")
         {
-            DirectX::XMFLOAT3 pos = convertRHtoLh(point.worldPosition);
+            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
             Transform doorLeftTr{
                 pos,
@@ -85,7 +81,7 @@ void FightStage::Initialize(const Transform& transform)
             // 湯気のエフェクト
             steamComponent = this->AddComponent<ParticleComponent>("steamComponent", parentName);
             steamComponent->Load("./Data/Effect/Files/Pot_SteamEffect.json");
-            DirectX::XMFLOAT3 pos = convertRHtoLh(point.worldPosition);
+            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
             steamComponent->SetRelativeLocationDirect(pos);
             // ループ再生設定
             ParticleComponent::AddSettings settings
@@ -95,6 +91,18 @@ void FightStage::Initialize(const Transform& transform)
             };
             steamComponent->SetAddSettings(settings);
             steamComponent->Play();
+        }
+        if (point.name == "Spawn_Chandelier")
+        {
+            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+
+            Transform chandelierTr{
+                pos,
+                point.worldRotation,
+                point.worldScale
+            };
+
+            auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageChandelierActor>("chandelier", chandelierTr);
         }
     }
 

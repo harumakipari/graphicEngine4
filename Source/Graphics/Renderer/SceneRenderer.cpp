@@ -44,7 +44,7 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext, const st
         meshComponent->UpdatePlusAlphaConstants(immediateContext);
 
         if (meshComponent->model->mode ==
-            InterleavedGltfModel::Mode::SkeltalMesh)
+            InterleavedGltfModel::Mode::SkeletalMesh)
         {
             Draw(immediateContext,
                 meshComponent,
@@ -115,7 +115,7 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext, const st
         meshComponent->UpdatePlusAlphaConstants(immediateContext);
 
         if (meshComponent->model->mode ==
-            InterleavedGltfModel::Mode::SkeltalMesh)
+            InterleavedGltfModel::Mode::SkeletalMesh)
         {
             Draw(
                 immediateContext,
@@ -160,7 +160,7 @@ void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext, const std:
         meshComponent->UpdatePlusAlphaConstants(immediateContext);
 
         if (meshComponent->model->mode ==
-            InterleavedGltfModel::Mode::SkeltalMesh)
+            InterleavedGltfModel::Mode::SkeletalMesh)
         {
             Draw(immediateContext,
                 meshComponent,
@@ -221,7 +221,7 @@ void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext, const std:
             }
 
 
-            if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeltalMesh)
+            if (meshComponent->model->mode == InterleavedGltfModel::Mode::SkeletalMesh)
             {// 
                 Draw(immediateContext, meshComponent, worldMat, meshComponent->modelNodes, InterleavedGltfModel::RenderPass::Mask);
             }
@@ -256,7 +256,7 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext, const std
         meshComponent->UpdatePlusAlphaConstants(immediateContext);
 
         if (meshComponent->model->mode ==
-            InterleavedGltfModel::Mode::SkeltalMesh)
+            InterleavedGltfModel::Mode::SkeletalMesh)
         {
             Draw(immediateContext,
                 meshComponent,
@@ -336,7 +336,7 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext, const std
         }
 
         if (meshComponent->model->mode ==
-            InterleavedGltfModel::Mode::SkeltalMesh)
+            InterleavedGltfModel::Mode::SkeletalMesh)
         {
             Draw(immediateContext,
                 meshComponent,
@@ -374,7 +374,7 @@ void SceneRenderer::CastShadowRender(ID3D11DeviceContext* immediateContext, cons
 
 #if 1
         if (meshComponent->model->mode ==
-            InterleavedGltfModel::Mode::SkeltalMesh)
+            InterleavedGltfModel::Mode::SkeletalMesh)
         {
             CastShadow(immediateContext,
                 meshComponent,

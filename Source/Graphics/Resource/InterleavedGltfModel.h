@@ -41,15 +41,15 @@ class InterleavedGltfModel
     MeshComponent* meshComponent;
     std::string filename;
 public:
-    enum class Mode
+    enum class Mode :uint8_t
     {
-        SkeltalMesh,
+        SkeletalMesh,
         StaticMesh,
         InstancedStaticMesh,
     };
 
 
-    enum class RenderPass
+    enum class RenderPass :uint8_t
     {
         Opaque,// 不透明オブジェクト
         Mask, // マスク処理
@@ -78,7 +78,6 @@ public:
 
     // Instance で使用する
     void SetMeshComponent(MeshComponent* mesh) { this->meshComponent = mesh; }
-
     AABB GetAABB()const;
 
     DirectX::XMFLOAT3 GetModelSize() const;
@@ -143,7 +142,12 @@ public:
     // ライト
     struct GltfPointLightData
     {
-        DirectX::XMFLOAT3 position;
+        DirectX::XMFLOAT4X4 worldTransform;
+
+        DirectX::XMFLOAT3 worldPosition;
+        DirectX::XMFLOAT4 worldRotation;
+        DirectX::XMFLOAT3 worldScale;
+
         DirectX::XMFLOAT3 color;
         float intensity;
         float range; // directional は無視
@@ -152,7 +156,10 @@ public:
         void serialize(T& archive)
         {
             archive(
-                cereal::make_nvp("position", position),
+                cereal::make_nvp("worldTransform", worldTransform),
+                cereal::make_nvp("worldPosition", worldPosition),
+                cereal::make_nvp("worldRotation", worldRotation),
+                cereal::make_nvp("worldScale", worldScale),
                 cereal::make_nvp("color", color),
                 cereal::make_nvp("intensity", intensity),
                 cereal::make_nvp("range", range)
@@ -370,7 +377,7 @@ public:
     };
     std::vector<BatchMesh> batchMeshes;
     //const bool staticBatching;
-    Mode mode = Mode::SkeltalMesh;
+    Mode mode = Mode::SkeletalMesh;
 
     // INTERLEAVED_GLTF_MODEL
     std::vector<Microsoft::WRL::ComPtr<ID3D11Buffer>> buffers;

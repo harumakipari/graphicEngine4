@@ -1453,7 +1453,7 @@ void ShapeMatchingModel::CreateAndUploadResources(ID3D11Device* device)
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     }
-    else if (mode == Mode::SkeltalMesh)
+    else if (mode == Mode::SkeletalMesh)
     {
         D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
         {

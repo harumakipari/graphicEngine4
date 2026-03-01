@@ -39,7 +39,7 @@ class MorphModel :public InterleavedGltfModel
     MeshComponent* meshComponent;
     std::string filename;
 public:
-    MorphModel(ID3D11Device* device, const std::string& filename, Mode mode = Mode::SkeltalMesh, bool isSaveVerticesData = false);
+    MorphModel(ID3D11Device* device, const std::string& filename, Mode mode = Mode::SkeletalMesh, bool isSaveVerticesData = false);
     virtual ~MorphModel() = default;
 
     // Instance ‚ÅŽg—p‚·‚é
@@ -272,7 +272,7 @@ public:
     };
     std::vector<BatchMesh> batchMeshes;
     //const bool staticBatching;
-    Mode mode = Mode::SkeltalMesh;
+    Mode mode = Mode::SkeletalMesh;
 
     // INTERLEAVED_GLTF_MODEL
     std::vector<Microsoft::WRL::ComPtr<ID3D11Buffer>> buffers;

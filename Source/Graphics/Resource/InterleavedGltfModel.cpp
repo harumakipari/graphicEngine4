@@ -273,14 +273,24 @@ void InterleavedGltfModel::FetchLightNodes(const tinygltf::Model& model)
 
         GltfPointLightData pl;
 
-        // ÉmÅ[Éhå¥ì_Ç world Ç…ïœä∑
-        DirectX::XMStoreFloat3(
-            &pl.position,
-            DirectX::XMVector3Transform(
-                DirectX::XMVectorZero(),
-                DirectX::XMLoadFloat4x4(&node.globalTransform)
-            )
+        // world transform ï€ë∂
+        pl.worldTransform = node.globalTransform;
+
+        DirectX::XMVECTOR S, R, T;
+
+        bool ok = DirectX::XMMatrixDecompose(
+            &S,
+            &R,
+            &T,
+            DirectX::XMLoadFloat4x4(&node.globalTransform)
         );
+
+        if (ok)
+        {
+            DirectX::XMStoreFloat3(&pl.worldScale, S);
+            DirectX::XMStoreFloat4(&pl.worldRotation, R);
+            DirectX::XMStoreFloat3(&pl.worldPosition, T);
+        }
 
         pl.color = gl.color;
         pl.intensity = gl.intensity;
@@ -1511,7 +1521,7 @@ void InterleavedGltfModel::CreateAndUploadResources(ID3D11Device* device)
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     }
-    else if (mode == Mode::SkeltalMesh)
+    else if (mode == Mode::SkeletalMesh)
     {
         D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
         {

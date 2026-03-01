@@ -181,7 +181,7 @@ void BloomEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResou
 void BloomEffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
-    ImGui::SliderFloat(U8("輝き抽出の閾値"), &bloomExtractionThreshold, 0.0f, 5.0f);
+    ImGui::SliderFloat(U8("輝き抽出の閾値"), &bloomExtractionThreshold, 0.0f, 20.0f);
     ImGui::SliderFloat(U8("輝きの強度"), &bloomIntensity, 0.0f, 5.0f);
 #endif
 }
