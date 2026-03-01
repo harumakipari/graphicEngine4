@@ -43,7 +43,7 @@ public:
     {
         // 描画用コンポーネントを追加
         skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
-        skeltalMeshComponent->SetModel("./Data/Debug/Primitives/sphere.glb", false);
+        skeltalMeshComponent->SetModel("./Data/Models/Primitives/sphere.glb", false);
 
         SetPosition(transform.GetLocation());
         SetQuaternionRotation(transform.GetRotation());

@@ -146,7 +146,7 @@ void MorphScene::SetUpActors()
     //auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaterSphere>("morphModel", buildTr);
     auto sphere = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("sphere", buildTr);
     auto model=sphere->AddComponent<SkeletalMeshComponent>("skeletalMesh");
-    model->SetModel("./Data/Debug/Primitives/sphere.glb");
+    model->SetModel("./Data/Models/Primitives/sphere.glb");
     
     //building->AddComponent<StaticMeshComponent>("cloth")->SetModel("./Data/Models/ClothFlag/pole.gltf");
 

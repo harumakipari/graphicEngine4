@@ -504,6 +504,12 @@
     <ClCompile Include="Source\Graphics\Shadow\ShadowMap.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Components\Render\PointLightComponent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStagePointLightActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -820,6 +826,7 @@
     <ClInclude Include="Source\Game\DarkGame\Interactable.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DoorLeftActor.h" />
     <ClInclude Include="Source\Graphics\Shadow\ShadowMap.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStagePointLightActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -853,12 +860,6 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\ComputeParticleUpdateCS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\DiscoTunnelPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FinalPassPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\FullScreenQuadPS.hlsl">
@@ -945,12 +946,6 @@
     <FxCompile Include="Shader\ParticleVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\RoundedLoadingPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\ScreenSpaceProjectionMappingPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\ShaderToyPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -997,9 +992,6 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\ClothCS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\ClothSimulateCopyCS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\ClothSimulateVS.hlsl">
@@ -1071,6 +1063,9 @@
     <FxCompile Include="Shader\VolumetricLightPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\PointLightModelPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ComputeParticle.hlsli">
@@ -1100,12 +1095,6 @@
     <None Include="Shader\PerlinWorleyNoise.hlsli">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shader\ProjectionMapping.hlsli">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shader\ScreenSpaceProjectionMapping.hlsli">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shader\ShaderToy.hlsli">
       <Filter>Shaders</Filter>
     </None>
@@ -1128,9 +1117,6 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\Sampler.hlsli">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shader\PbdParticleData.hlsli">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\Common.hlsli">

@@ -39,14 +39,14 @@ public:
     {
         // 描画用コンポーネントを追加
         skeltalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeltalComponent");
-        skeltalMeshComponent->SetModel("./Data/Debug/Primitives/cube.glb");
+        skeltalMeshComponent->SetModel("./Data/Models/Primitives/cube.glb");
         //skeltalMeshComponent->SetIsVisible(false);
         pointComponent = this->AddComponent<class SkeletalMeshComponent>("pointComponent");
-        pointComponent->SetModel("./Data/Debug/Primitives/sphere.glb");
+        pointComponent->SetModel("./Data/Models/Primitives/sphere.glb");
         pointComponent->SetWorldLocationDirect({ 0.0f,5.0f,0.0f });
         pointComponent->SetIsVisible(false);
         bezierComponent = this->AddComponent<class SkeletalMeshComponent>("bezierComponent");
-        bezierComponent->SetModel("./Data/Debug/Primitives/platQube.glb");
+        bezierComponent->SetModel("./Data/Models/Primitives/platQube.glb");
         bezierComponent->SetWorldScaleDirect({ 0.2f,0.2f,0.2f });
         bezierComponent->SetIsVisible(false);
         buildComponent = this->AddComponent<class SkeletalMeshComponent>("buildComponent");

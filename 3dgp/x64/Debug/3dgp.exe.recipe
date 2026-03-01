@@ -61,9 +61,6 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildsVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPassPS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
@@ -181,19 +178,16 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelForwardTransparencyPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\PointLightModelPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\PrimitiveRendererPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\PrimitiveRendererVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\RoundedLoadingPS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\SsaoPS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ScreenSpaceProjectionMappingPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ShaderToyPS.cso</FullPath>

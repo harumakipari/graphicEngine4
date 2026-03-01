@@ -39,17 +39,17 @@ void Player::Initialize(const Transform& transform)
 
     const std::vector<std::string> animationFilenames =
     {
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_A.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_B.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Level_Start.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd_Start.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_A.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_B.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Level_Start.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd_Start.glb",
         "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd_Stop.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_A.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_B.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_C.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_D.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Ability_R.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd_Stop.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_A.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_B.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_C.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_D.glb",
+        "./Data/Models/Characters/Aurora_FrozenHealth/Ability_R.glb",
         //"./Data/Models/Characters/Aurora_FrozenHealth/Emote_Ice_Sculpture.glb",
         //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Back.glb",
         //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Front.glb",
@@ -63,17 +63,17 @@ void Player::Initialize(const Transform& transform)
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
     controller->AddAnimation("Idle", 0);
-    //controller->AddAnimation("Idle_Noise_A", 1);
-    //controller->AddAnimation("Idle_Noise_B", 2);
-    //controller->AddAnimation("Level_Start", 3);
-    //controller->AddAnimation("Jog_Fwd_Start", 4);
-    controller->AddAnimation("Jog_Fwd", 1);
-    //controller->AddAnimation("Jog_Fwd_Stop", 6);
-    //controller->AddAnimation("Primary_Attack_Fast_A", 7);
-    //controller->AddAnimation("Primary_Attack_Fast_B", 8);
-    //controller->AddAnimation("Primary_Attack_Fast_C", 9);
-    //controller->AddAnimation("Primary_Attack_Fast_D", 10);
-    //controller->AddAnimation("Ability_R", 11);
+    controller->AddAnimation("Idle_Noise_A", 1);
+    controller->AddAnimation("Idle_Noise_B", 2);
+    controller->AddAnimation("Level_Start", 3);
+    controller->AddAnimation("Jog_Fwd_Start", 4);
+    controller->AddAnimation("Jog_Fwd", 5);
+    controller->AddAnimation("Jog_Fwd_Stop", 6);
+    controller->AddAnimation("Primary_Attack_Fast_A", 7);
+    controller->AddAnimation("Primary_Attack_Fast_B", 8);
+    controller->AddAnimation("Primary_Attack_Fast_C", 9);
+    controller->AddAnimation("Primary_Attack_Fast_D", 10);
+    controller->AddAnimation("Ability_R", 11);
     //controller->AddAnimation("Emote_Ice_Sculpture", 12);
     //controller->AddAnimation("HitReact_Back", 13);
     //controller->AddAnimation("HitReact_Front", 14);

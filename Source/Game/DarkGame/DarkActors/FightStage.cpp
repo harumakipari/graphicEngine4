@@ -1,6 +1,7 @@
 #include "pch.h"
 #include  "FightStage.h"
 
+#include "DarkStagePointLightActor.h"
 #include "DoorLeftActor.h"
 #include "Components/Effect/ParticleComponent.h"
 #include "Engine/Scene/Scene.h"
@@ -30,11 +31,11 @@ void FightStage::Initialize(const Transform& transform)
     // ポイントライトコンポーネントを追加
     for (int i = 0; i < static_cast<int>(lightsData.size()); ++i)
     {
-        //continue; // とりあえずポイントライトは無効化
         const auto& light = lightsData[i];
+        //continue; // とりあえずポイントライトは無効化
 
+#if 1
         std::string compName = "pointLightComponent_" + std::to_string(i);
-
         auto pointLightComponent =
             this->AddComponent<PointLightComponent>(compName, parentName);
 
@@ -43,8 +44,18 @@ void FightStage::Initialize(const Transform& transform)
         pointLightComponent->SetColor(light.color);
         pointLightComponent->SetRange(light.range);
         pointLightComponent->SetIntensity(light.intensity);
+#else
+        DirectX::XMFLOAT3 pos = (light.position);
 
-        break;
+        Transform pointLightTr{
+            pos,
+            {0.0f,0.0f,0.0f,1.0f},
+            {1.0f,1.0f,1.0f}
+        };
+        auto pointLightActor = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStagePointLightActor>("pointLight", pointLightTr);
+        pointLightActor->SetPointLightData(pos, light.color, light.intensity, light.range);
+#endif // 0
+
     }
 
 

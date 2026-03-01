@@ -148,7 +148,7 @@ inline std::string GetPipelineName(const RenderPath renderPath, const MaterialAl
     default:
         break;
     }
-    // TODO:000ここに出力ウィンドウを出す
+    Logger::Error(U8("当てはまるシェーダーがありません"));
     return "";
 }
 
@@ -339,6 +339,15 @@ public:
             AddPipeLineState("deferredBlendSkeletalMesh", desc);
         }
 
+        // ポイントライト 用　
+        {
+            hr = CreatePsFromCSO(device, "./Shader/PointLightModelPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
+            AddPipeLineState("pointLightSkeletalMesh", desc);
+        }
+
         // キャラクターの髪の毛 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelCharacterHairPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
@@ -388,21 +397,6 @@ public:
             AddPipeLineState("CascadeShadowMapElasticBuilding", desc);
         }
 
-        // cloth これ使えてない
-        {
-#if 0
-            desc.inputLayout = nullptr;
-            desc.geometryShader = nullptr;
-            hr = CreateVsFromCSO(device, "./Shader/ClothVS.cso", desc.vertexShader.ReleaseAndGetAddressOf(), desc.inputLayout.ReleaseAndGetAddressOf(), inputElementDesc, _countof(inputElementDesc));
-            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
-            desc.rasterState = RASTERIZE_STATE::SOLID_CULL_NONE;
-            AddPipeLineState("cloth", desc);
-
-#endif // 0
-        }
 
     }
 

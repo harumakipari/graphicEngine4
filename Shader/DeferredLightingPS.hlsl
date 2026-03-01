@@ -52,10 +52,10 @@ float4 main(VS_OUT pin) : SV_TARGET
         {
             float3 LP = position.xyz - pointLights[i].position.xyz; // world space “_ŒõŒ¹‚Ì•ûŒü
             float len = length(LP);
-            if (len >= pointLights[i].range)
-            {
-                continue;
-            }
+            //if (len >= pointLights[i].range)
+            //{
+            //    continue;
+            //}
             float attenuateLength = saturate(1.0 - len / pointLights[i].range);
             float attenuation = attenuateLength * attenuateLength;
             LP /= len;
