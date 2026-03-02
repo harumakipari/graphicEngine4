@@ -44,9 +44,9 @@ private:
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> ssaoKernelPoints;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> ssaoNoise;
 
-    float radius = 1.0f;
-    float bias = 0.0f;
-    float power = 0.00f;
+    float radius = 0.2f;
+    float bias = 0.15f;
+    float power = 0.02f;
     float split_u = 0.0f;
 
 };

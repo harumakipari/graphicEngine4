@@ -6,7 +6,7 @@ void DarkStageChandelierActor::Initialize(const Transform& transform)
     std::string parentName = "chandelierMesh";
 
     // シャンデリアのモデルを追加
-    chandelierMeshComponent = this->AddComponent<SkeletalMeshComponent>( parentName);
+    chandelierMeshComponent = this->AddComponent<SkeletalMeshComponent>(parentName);
     chandelierMeshComponent->SetModel("./Data/Models/DarkStageAssets/Chandelier/Chandelier.gltf");
     chandelierMeshComponent->SetIsCastShadow(false);    // 影を落とさないようにする
 
@@ -37,6 +37,23 @@ void DarkStageChandelierActor::Initialize(const Transform& transform)
         pointLightActor->SetPointLightData(pos, light.color, light.intensity, light.range);
 #endif // 0
     }
+
+    for (auto point : chandelierMeshComponent->model->spawnPoints)
+    {
+        // エミッションを発生させるためにモデルを追加
+        auto sphereMeshComponent = this->AddComponent<SkeletalMeshComponent>("sphereMeshComponent", parentName);
+        sphereMeshComponent->SetModel("./Data/Models/Primitives/Sphere.glb");
+        sphereMeshComponent->overrideDeferredPipelineName = "pointLightSkeletalMesh";
+        sphereMeshComponent->SetIsCastShadow(false);    // 影を落とさないようにする
+        sphereMeshComponent->SetRelativeScaleDirect({ 0.01f,0.01f,0.01f });
+        DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+        pos.y = -1.5f; // ろうそくの位置に合わせて微調整
+        sphereMeshComponent->SetRelativeLocationDirect(pos);
+        sphereMeshComponent->SetRelativeRotationDirect(point.worldRotation);
+        sphereMeshComponent->cpuColor = { 1,0.2f,0,1 };
+        sphereMeshComponent->emissionPower = 6.0f;
+    }
+
 }
 
 void DarkStageChandelierActor::Update(float deltaTime)

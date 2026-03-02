@@ -13,6 +13,9 @@ void DarkStagePointLightActor::Initialize(const Transform& transform)
     sphereMeshComponent->overrideDeferredPipelineName = "pointLightSkeletalMesh";
     sphereMeshComponent->SetIsCastShadow(false);    // 影を落とさないようにする
     sphereMeshComponent->SetRelativeScaleDirect({ 0.01f,0.01f,0.01f });
+    sphereMeshComponent->cpuColor = { 1,0.2f,0,1 };
+    sphereMeshComponent->emissionPower = 10.0f;
+
 }
 
 // ポイントライトのデータを一括で設定する関数

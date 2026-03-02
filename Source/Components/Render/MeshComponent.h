@@ -102,7 +102,7 @@ public:
             ImGui::SliderFloat("brightness", &brightness, 0.1f, +2.0f);
             ImGui::SliderFloat("dissolve", &dissolve, 0.0f, 1.0f);
             ImGui::ColorEdit4("cpuColor", &cpuColor.x);
-            ImGui::SliderFloat("emissionPower", &emissionPower, 0.0f, 10.0f);
+            ImGui::SliderFloat("emissionPower", &emissionPower, 0.0f, 20.0f);
             ImGui::SliderFloat4("morphWeight", &plusAlphaCBuffer->data.morphWeights.x, 0.0f, 1.0f);
             ImGui::SliderInt("value", &plusAlphaCBuffer->data.value, 0, 10);
             ImGui::TreePop();

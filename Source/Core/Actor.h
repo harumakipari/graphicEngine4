@@ -80,7 +80,33 @@ public:
         // Debugチェック1: 自分自身の確認
         _ASSERT_EXPR(sharedThis != nullptr, "shared_from_this() returned nullptr!");
 
-        std::shared_ptr<T> newComponent = std::make_shared<T>(name, sharedThis);
+
+#if 1
+        //------------------------------------------------------
+        // ① ユニーク名生成
+        //------------------------------------------------------
+        std::string finalName = name;
+        int suffix = 1;
+
+        auto nameExists = [&](const std::string& checkName)
+            {
+                return std::any_of(
+                    ownedComponents_.begin(),
+                    ownedComponents_.end(),
+                    [&](const std::shared_ptr<Component>& comp)
+                    {
+                        return comp->GetName() == checkName;
+                    });
+            };
+
+        while (nameExists(finalName))
+        {
+            finalName = name + "_" + std::to_string(suffix++);
+        }
+
+#endif // 0
+
+        std::shared_ptr<T> newComponent = std::make_shared<T>(finalName, sharedThis);
         _ASSERT_EXPR(newComponent != nullptr, "Failed to create new SceneComponent!");
         //std::shared_ptr<T> newComponent = std::make_shared<T>(name, this);
 
