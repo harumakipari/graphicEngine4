@@ -124,7 +124,6 @@ protected:
     std::unique_ptr<FrameBuffer> imGuiGizmoBuffer;
 
     std::unique_ptr<CascadedShadowMaps> cascadedShadowMaps;
-    std::unique_ptr<cascaded_shadow_map> cascaded_shadow_map;
 
     std::unique_ptr<MultipleRenderTargets> multipleRenderTargets;
     std::unique_ptr<GBuffer> gBufferRenderTarget;

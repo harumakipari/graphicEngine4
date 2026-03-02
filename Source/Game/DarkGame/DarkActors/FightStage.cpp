@@ -98,8 +98,8 @@ void FightStage::Initialize(const Transform& transform)
 
             }
         }
-        if (point.name == "Spawn_Chandelier")
-        {
+        if (point.name.rfind("Spawn_Chandelier", 0) == 0) 
+        {// 名前が "Spawn_Chandelier" で始まる場合、シャンデリアを配置
             DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
             Transform chandelierTr{
@@ -110,20 +110,8 @@ void FightStage::Initialize(const Transform& transform)
 
             auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageChandelierActor>("chandelier", chandelierTr);
         }
-        else if (point.name == "Spawn_Chandelier_1")
-        {
-            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
-
-            Transform chandelierTr{
-                pos,
-                point.worldRotation,
-                point.worldScale
-            };
-
-            auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageChandelierActor>("chandelier", chandelierTr);
-        }
-        else if (point.name == "Spawn_Candelabra")
-        {
+        else if (point.name.rfind("Spawn_Candelabra", 0) == 0)
+        {// 名前が "Spawn_Candelabra" で始まる場合、燭台を配置
             DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
             Transform candelabraTr{

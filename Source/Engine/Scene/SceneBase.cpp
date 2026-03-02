@@ -85,9 +85,8 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //カスケードシャドウマップ
-    cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024 * 4, 1024 * 4);
+    cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024, 1024, 4);
 
-    //cascaded_shadow_map = std::make_unique<class cascaded_shadow_map>(device, 1024 * 4, 1024 * 4);
 
     D3D11_TEXTURE2D_DESC texture2dDesc;
     //テクスチャをロード
@@ -314,7 +313,7 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
 
     // Projection
     float fov = XMConvertToRadians(60.0f);
-    float aspect = 1280.0f / 720.0f;   
+    float aspect = 1280.0f / 720.0f;
     float nearZ = 0.1f;
     float farZ = 500.0f;
 

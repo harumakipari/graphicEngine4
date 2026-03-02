@@ -160,39 +160,8 @@ private:
     DirectX::XMVECTOR ResolveCameraCollision(
         DirectX::FXMVECTOR focus,
         DirectX::FXMVECTOR idealEye
-    )
-    {
-        using namespace DirectX;
+    );
 
-        XMFLOAT3 f, e;
-        XMStoreFloat3(&f, focus);
-        XMStoreFloat3(&e, idealEye);
-
-        XMFLOAT3 dir = {
-            e.x - f.x,
-            e.y - f.y,
-            e.z - f.z
-        };
-
-        float len = sqrtf(dir.x * dir.x + dir.z * dir.z + dir.y * dir.y);
-        if (len < 0.001f)
-            return idealEye;
-
-        dir.x /= len; dir.y /= len; dir.z /= len;
-
-        HitResult hit;
-        if (Physics::Instance().RayCast(
-            f, dir, len,
-            hit,
-            CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
-        {
-            // ­‚µŽè‘O‚Éo‚·
-            XMVECTOR h = XMLoadFloat3(&hit.position);
-            return h - XMVectorScale(XMLoadFloat3(&dir), 0.2f);
-        }
-
-        return idealEye;
-    }
 
     static float WrapAngle(float a)
     {

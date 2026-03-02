@@ -5,6 +5,17 @@
 
 void MainCamera::Update(float deltaTime)
 {
+
+    if (auto target = mainCameraComponent->target.lock())
+    {
+        auto actor = target->GetOwner();
+        
+    }
+
+
+
+
+
     // ƒvƒŒƒCƒ„[‚ÌˆÚ“®•ûŒü‚ðŽæ“¾
     XMFLOAT3 moveDir = {};
 

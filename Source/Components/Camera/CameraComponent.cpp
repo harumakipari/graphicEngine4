@@ -2,10 +2,65 @@
 #include "CameraComponent.h"
 
 #include "Core/Actor.h"
+#include "Physics/CollisionFunction.h"
 
 
 const DirectX::XMFLOAT4X4& TPSCameraComponent::GetView() 
 {
+    using namespace DirectX;
+
+    auto targetActor = target.lock();
+    if (!targetActor)
+        return view;
+
+    // ==========================
+    // ① pivot（注視点）
+    // ==========================
+    XMFLOAT3 targetPos = targetActor->GetOwner()->GetPosition();
+
+    XMVECTOR pivot = XMLoadFloat3(&targetPos) +
+        XMLoadFloat3(&targetOffset);
+
+    // ==========================
+    // ② カメラ理想位置
+    // ==========================
+    XMVECTOR forward =
+        XMVectorSet(
+            sinf(yaw) * cosf(pitch),
+            sinf(pitch),
+            cosf(yaw) * cosf(pitch),
+            0.0f);
+
+    XMVECTOR idealEye = pivot - forward * distance;
+
+    // ==========================
+    // ③ 衝突補正（←ここで呼ぶ）
+    // ==========================
+    XMVECTOR resolvedEye =
+        ResolveCameraCollision(pivot, idealEye);
+
+    // ==========================
+    // ④ 補間（超重要）
+    // ==========================
+    static XMVECTOR currentEye = resolvedEye;
+    currentEye = XMVectorLerp(
+        currentEye,
+        resolvedEye,
+        0.15f); // 調整可
+
+    // ==========================
+    // ⑤ View行列生成
+    // ==========================
+    XMMATRIX V =
+        XMMatrixLookAtLH(
+            currentEye,
+            pivot,
+            XMVectorSet(0, 1, 0, 0));
+
+    XMStoreFloat4x4(&view, V);
+    return view;
+
+#if 0
     using namespace DirectX;
 
     XMFLOAT3 basePos{ 0,0,0 };
@@ -15,7 +70,7 @@ const DirectX::XMFLOAT4X4& TPSCameraComponent::GetView()
     }
     else
     {
-        
+
     }
     XMVECTOR focus =
         XMLoadFloat3(&basePos) +
@@ -53,6 +108,39 @@ const DirectX::XMFLOAT4X4& TPSCameraComponent::GetView()
     return view;
 
 
+#endif // 0
+
+}
+
+
+DirectX::XMVECTOR TPSCameraComponent::ResolveCameraCollision(
+    DirectX::FXMVECTOR focus,
+    DirectX::FXMVECTOR idealEye
+)
+{
+    using namespace DirectX;
+
+    XMFLOAT3 f, e;
+    XMStoreFloat3(&f, focus);
+    XMStoreFloat3(&e, idealEye);
+
+    HitResultWithActor hit;
+
+    if (CollisionFunction::SphereRayCast(
+        f,
+        e,
+        hit,
+        0.35f, // ← カメラ半径（重要）
+        CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
+    {
+        XMVECTOR h = XMLoadFloat3(&hit.hitPoint);
+        XMVECTOR n = XMLoadFloat3(&hit.normal);
+
+        // 少し手前に出す
+        return h + XMVectorScale(n, 0.05f);
+    }
+
+    return idealEye;
 }
 
 // 自動随従する

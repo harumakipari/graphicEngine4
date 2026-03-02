@@ -88,6 +88,7 @@ void Player::Initialize(const Transform& transform)
     stateMachine_ = std::make_shared<StateMachine>();
     stateMachine_->RegisterState(std::make_unique<PlayerIdleState>(this));
     stateMachine_->RegisterState(std::make_unique<PlayerRunningState>(this));
+    stateMachine_->RegisterState(std::make_unique<PlayerAttackingState>(this));
 
     // ステートマシンを character に追加
     //this->SetStateMachine(stateMachine);

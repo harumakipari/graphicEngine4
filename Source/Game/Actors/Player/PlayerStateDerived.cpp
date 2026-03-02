@@ -14,6 +14,13 @@ void PlayerIdleState::Enter()
 
 void PlayerIdleState::Execute(float deltaTime)
 {
+    // 攻撃入力チェック
+    if (InputSystem::GetInputState("Attack", InputStateMask::Trigger))
+    {
+        player->GetStateMachine()->ChangeState("Attack");
+        return;
+    }
+
     // 入力があれば走るステートに変更
     auto inputComp = player->inputComponent;
     DirectX::XMFLOAT3 dir = inputComp->GetMoveInput();
@@ -37,6 +44,13 @@ void PlayerRunningState::Enter()
 
 void PlayerRunningState::Execute(float deltaTime)
 {
+    // 攻撃入力チェック
+    if (InputSystem::GetInputState("Attack", InputStateMask::Trigger))
+    {
+        player->GetStateMachine()->ChangeState("Attack");
+        return;
+    }
+
     // 入力がなければ待機ステートに変更
     auto inputComp = player->inputComponent;
     DirectX::XMFLOAT3 dir = inputComp->GetMoveInput();
@@ -51,3 +65,20 @@ void PlayerRunningState::Exit()
 {
 }
 
+void PlayerAttackingState::Enter()
+{
+    owner->PlayAnimation("Primary_Attack_Fast_A", false, true, 0.1f);
+}
+
+void PlayerAttackingState::Execute(float deltaTime)
+{
+    // アニメーションが終わったら待機ステートに変更
+    if (!owner->GetAnimationController()->IsPlayAnimation())
+    {
+        player->GetStateMachine()->ChangeState("Idle");
+    }
+}
+
+void PlayerAttackingState::Exit()
+{
+}
