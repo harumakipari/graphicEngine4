@@ -16,12 +16,12 @@ public:
     }
 
     void ApplyAll(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal,
-        ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* shadowMap)
+        ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* gBufferPbrValue, ID3D11ShaderResourceView* shadowMap)
     {
         for (auto& effect : effects | std::views::values)
         {
             if (effect->IsEnabled())
-                effect->Apply(immediateContext, gbufferColor, gbufferNormal, gbufferDepth, gBufferPosition, shadowMap);
+                effect->Apply(immediateContext, gbufferColor, gbufferNormal, gbufferDepth, gBufferPosition, gBufferPbrValue,shadowMap);
         }
     }
 

@@ -17,7 +17,7 @@ void SSREffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 }
 
-void SSREffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal, ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* shadowMap)
+void SSREffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal, ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* gBufferPbrValue, ID3D11ShaderResourceView* shadowMap)
 {
     ssrCBuffer->data.reflectionIntensity = reflectionIntensity;
     ssrCBuffer->data.maxDistance = maxDistance;
@@ -37,6 +37,7 @@ void SSREffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourc
         gBufferPosition,        //gBufferPosition
         gbufferNormal,          //gbufferNormal
         gbufferColor,           //gbufferColor
+        gBufferPbrValue         //gBufferPbrValue
     };
     fullScreenQuad->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), ssrPS.Get());
 

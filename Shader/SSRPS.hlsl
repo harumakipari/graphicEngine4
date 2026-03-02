@@ -5,15 +5,16 @@
 Texture2D positionTexture : register(t0); // ワールド空間
 Texture2D normalTexture : register(t1); // ワールド空間
 Texture2D colorTexture : register(t2);
+Texture2D materialTexture : register(t3); // x:metallic y:occlusion z:roughness w:occlusionStrength
 
 
 cbuffer SSR_CONSTANTS_BUFFER : register(b5)
 {
-    float reflectionIntensity;      // 反射の強さ
-    float maxDistance;              // 最大反射距離
-    float resolution;               // 探索の粗さ
-    int steps;                      // 二分探索の回数
-    float thickness;                // ヒット判定の厚みの許容範囲
+    float reflectionIntensity; // 反射の強さ
+    float maxDistance; // 最大反射距離
+    float resolution; // 探索の粗さ
+    int steps; // 二分探索の回数
+    float thickness; // ヒット判定の厚みの許容範囲
 }
 
 float2 NdcToUv(float2 ndc)
@@ -41,9 +42,11 @@ float3 main(VS_OUT pin) : SV_TARGET
     
     float4 position = positionTexture.Sample(samplerStates[LINEAR_BORDER_WHITE], pin.texcoord); // world空間
     float3 normal = normalTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).xyz; // world空間
+    float4 materialValue = materialTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
+    float roughness = materialValue.z;
 
     // world 空間　→　view 空間
-    float4 positionView = mul(position, view);  
+    float4 positionView = mul(position, view);
     float3 normalView = normalize(mul(float4(normal, 0), view).xyz);
 
     float4 positionFrom = positionView;
@@ -128,7 +131,7 @@ float3 main(VS_OUT pin) : SV_TARGET
 
         // ヒット判定
         if (depth > 0 && depth < thickness)
-        {// レイが GBuffer の位置より奥で thickness 以内
+        { // レイが GBuffer の位置より奥で thickness 以内
             hit0 = 1;
             break;
         }
@@ -176,6 +179,12 @@ float3 main(VS_OUT pin) : SV_TARGET
     visibility *= positionTo.w;
     visibility *= (uv.x < 0 || uv.x > 1 || uv.y < 0 || uv.y > 1) ? 0 : 1;
     visibility = clamp(visibility, 0, 1);
+
+#if 1
+	// roughness減衰（単純エネルギー近似）
+    visibility = lerp(visibility, 0, roughness * roughness);
+#endif
+
 
     // フレネル＋色取得
     float fresnel = saturate(FSchlick(0.04, max(0, dot(reflection, normalView.xyz))));

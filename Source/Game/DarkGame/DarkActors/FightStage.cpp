@@ -25,12 +25,21 @@ void FightStage::Initialize(const Transform& transform)
     //staticMeshComponent->SetIsCastShadow(false);
     //staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
     auto lightsData = staticMeshComponent->model->GetPointLights();
+
+
+    //for (auto& material : staticMeshComponent->model->materials)
+    //{
+    //    if (material.name == "M_Aurora_Hair_Blonde_FrozenHearth")
+    //    {// 床だったら
+
+    //    }
+    //}
+
     // ポイントライトコンポーネントを追加
     for (int i = 0; i < static_cast<int>(lightsData.size()); ++i)
     {
         const auto& light = lightsData[i];
         //continue; // とりあえずポイントライトは無効化
-
 #if 0
         std::string compName = "pointLightComponent_" + std::to_string(i);
         auto pointLightComponent =

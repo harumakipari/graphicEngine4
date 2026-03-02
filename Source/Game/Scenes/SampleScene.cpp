@@ -140,6 +140,17 @@ void SampleScene::SetUpActors()
     //Transform enemyTr(DirectX::XMFLOAT3{ 6.7f,-2.45f,5.6f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
     //auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("enemy", enemyTr);
 
+    Transform dustParticleTr(DirectX::XMFLOAT3{ -27.0f,0.0f,11.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto dustParticleActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("dustParticle", dustParticleTr);
+    auto dustParticle=dustParticleActor->AddComponent<ParticleComponent>("dustComponent");
+    dustParticle->Load("./Data/Effect/Files/DustEffect.json");
+    ParticleComponent::AddSettings settings
+    {
+        .loop = true, // ƒ‹[ƒvÄ¶
+    };
+    dustParticle->SetAddSettings(settings);
+    dustParticle->Play();
+
     cameraManager->SetDebugCamera(debugCameraActor);
 }
 

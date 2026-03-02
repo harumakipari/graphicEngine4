@@ -151,7 +151,7 @@ protected:
 
     bool useDrawDebug = true;
 
-    float criticalDepthValue = 215.0f;
+    float criticalDepthValue = 247.0f;
 
     SIZE framebufferDimensions = {};
 
