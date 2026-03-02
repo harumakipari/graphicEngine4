@@ -510,6 +510,12 @@
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStagePointLightActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageChandelierActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageCandelabraActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -827,6 +833,8 @@
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DoorLeftActor.h" />
     <ClInclude Include="Source\Graphics\Shadow\ShadowMap.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStagePointLightActor.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageChandelierActor.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageCandelabraActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

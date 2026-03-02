@@ -27,7 +27,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     
     sampled = emissiveMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
     float3 emissive = sampled.xyz;
-    float skymap =sampled.w;
+    float skymap = sampled.w;
     float emissiveFlag = skymap;
 
     if (skymap == 1)
@@ -62,8 +62,31 @@ float4 main(VS_OUT pin) : SV_TARGET
             //{
             //    continue;
             //}
+
             float attenuateLength = saturate(1.0 - len / pointLights[i].range);
+#if 0
+            /*	
+            		Distance	Kc		Kl		Kq
+            		7			1		0.7		1.8
+            		13			1		0.35	0.44
+            		20			1		0.22	0.2
+            		32			1		0.14	0.07
+            		50			1		0.09	0.032
+            		65			1		0.07	0.017
+            		100			1		0.045	0.0075
+            		160			1		0.027	0.0028
+            		200			1		0.022	0.0019
+            		325			1		0.014	0.0007
+            		600			1		0.007	0.0002
+            		3250		1		0.0014	0.000007	
+            */
+            float Kc = 1.0; // attenuation_constant
+            float Kl = 0.045; // attenuation_linear
+            float Kq = 0.0075; // attenuation_quadratic
+            float attenuation = saturate(1.0 / (Kc + Kl * attenuateLength + Kq * (attenuateLength * attenuateLength)));
+#else
             float attenuation = attenuateLength * attenuateLength;
+#endif
             LP /= len;
             const float pNoV = max(0.0, dot(N, V));
             const float pNoL = max(0.0, dot(N, LP));

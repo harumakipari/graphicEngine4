@@ -179,7 +179,8 @@ float4 main(VS_OUT pin) : SV_TARGET
 
 
     // シーンからライティング済みのカラーテクスチャ
-    float4 color = colorTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
+    float4 sceneColor = colorTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
+    float4 color = sceneColor;
 
     // シーンから深度値を取得
     float depthNdc = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
@@ -204,54 +205,7 @@ float4 main(VS_OUT pin) : SV_TARGET
         color.rgb = ApplyShadow(color.rgb, positionWorldSpace, (positionViewSpace.z), shadowMapDimensions, positionNdc.xyz);
     }
 
-#if 0
-    // フォグの処理
-    if (enableFog)
-    {
-        float curr_depth = depthNdc;
-        float4 sum = float4(0.0, 0.0, 0.0, 0.0);
-        float4 sample;
-        float radius = 4.0;
-        float2 pos;
-        float i, j;
-        float sigma = 2.0 * radius * radius;
-        float domainGaussian = 0.0;
-        float weight = 0.0;
-        float distance = 0.0;
-        float sigma2 = 0.01;
-        for (i = -radius; i <= radius; i += 1.0)
-        {
-            for (j = -radius; j <= radius; j += 1.0)
-            {
-                float dx = i / depthMapDimensions.x;
-                float dy = j / depthMapDimensions.y;
-                pos.x = pin.texcoord.x + dx;
-                pos.y = pin.texcoord.y + dy;
-                sample = fogTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pos);
 
-                distance = i * i + j * j;
-                domainGaussian = exp(-distance / sigma);
-			
-                float sampleDepth = depthTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pos).x;
-                distance = (curr_depth - sampleDepth) * (curr_depth - sampleDepth);
-                float rangeGaussian = exp(-distance / sigma2);
-			
-                sum += sample * domainGaussian * rangeGaussian;
-                weight += domainGaussian * rangeGaussian;
-            }
-        }
-        float4 volumetricLightColor = sum / weight;
-	
-	    //return volumetric_light_color;
-	
-        color.rgb = color.rgb /** volumetric_light_color.a */ + volumetricLightColor.rgb;
-
-        //float3 fogColor = CalculatedFogColor(pin);
-        //color.rgb += fogColor;
-        //return float4(fogColor, 1);
-    }
-
-#else
     if (enableFog)
     {
         float linearDepth = positionViewSpace.z;
@@ -259,7 +213,6 @@ float4 main(VS_OUT pin) : SV_TARGET
         float3 fogColor = CalculatedFogColor(pin.texcoord, depthNdc);
         color.rgb += fogColor;
     }
-#endif
 
     // ブルーム処理
     if (enableBloom)
@@ -315,8 +268,22 @@ float4 main(VS_OUT pin) : SV_TARGET
     }
 
     // トーンマップ
-    color.rgb = JodieReinhardToneMap(color.rgb);
+    //color.rgb = JodieReinhardToneMap(color.rgb);
 
 
-    return color;
+    float4 finalColor = color;
+
+    // 分割表示
+    if (pin.texcoord.x < split_u)
+    {
+        // 左側はポストなし
+        finalColor = sceneColor;
+    }
+
+    // トーンマップは共通にする
+    finalColor.rgb = JodieReinhardToneMap(finalColor.rgb);
+
+
+    return finalColor;
+
 }
