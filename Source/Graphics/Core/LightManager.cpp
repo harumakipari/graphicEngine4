@@ -69,6 +69,29 @@ void LightManager::Initialize(ID3D11Device* device)
             10.f
         };
     }
+
+    // 溶けた蝋の共有ライト
+    {
+        sharedLights["MeltedWaxLight"] =
+        {
+            DirectX::XMFLOAT4(1.0f, 0.630757093f, 0.219526187f, 1.27999997f),
+            7.5f
+        };
+    }
+
+    // スタンド式火鉢の共有ライト
+    {
+        sharedLights["BottomStandingBrazier"] =
+        {
+            DirectX::XMFLOAT4(0.959999979f, 0.523895442f, 0.240151942f, 1.0f),
+            8.0f
+        };
+        sharedLights["TopStandingBrazier"] =
+        {
+            DirectX::XMFLOAT4(1.0f, 0.545724452f, 0.25015831f, 1.5999999f),
+            8.0f
+        };
+    }
 }
 
 void LightManager::Update(float deltaTime)

@@ -148,6 +148,30 @@ void DarkStage::Initialize(const Transform& transform)
 
             auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageGroundBrazierActor>("GroundBrazier", candelabraTr);
         }
+        else if (point.name.rfind("Spawn_Melted_Wax", 0) == 0)
+        {// 名前が "Spawn_Melted_Wax" で始まる場合、溶けた蝋を配置
+            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+
+            Transform candelabraTr{
+                pos,
+                {0,0,0,1},
+                point.worldScale
+            };
+
+            auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageMeltedWaxActor>("MeltedWax", candelabraTr);
+        }
+        else if (point.name.rfind("Spawn_Standing_Brazier", 0) == 0)
+        {// 名前が "Spawn_Standing_Brazier" で始まる場合、スタンド式火鉢を配置
+            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+
+            Transform candelabraTr{
+                pos,
+                {0,0,0,1},
+                point.worldScale
+            };
+
+            auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageStandingBrazierActor>("StandingBrazier", candelabraTr);
+        }
         else if (point.name.rfind("Spawn_Barrel", 0) == 0)
         {
             DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);

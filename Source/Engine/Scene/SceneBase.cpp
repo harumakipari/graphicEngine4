@@ -894,9 +894,10 @@ void SceneBase::DrawPostEffectTab()
     ImGui::Checkbox("Enable Fog", &enableFog);
     ImGui::Checkbox("Enable CSM", &enableCascadedShadowMaps);
     ImGui::SliderFloat("split_u", &shaderCBuffer->data.splitU, 0.0f, +1.0f);
-    ImGui::SliderFloat(U8("色相調整"), &shaderCBuffer->data.hueShift, 0.0f, +360.0f);
-    ImGui::SliderFloat(U8("彩度調整"), &shaderCBuffer->data.saturation, 0.0f, +2.0f);
-    ImGui::SliderFloat(U8("明度調整"), &shaderCBuffer->data.brightness, 0.0f, +2.0f);
+    ImGui::SliderFloat(U8("色相調整"), &shaderCBuffer->data.hueShift, -1.0f, +1.0f);
+    ImGui::SliderFloat(U8("彩度調整"), &shaderCBuffer->data.saturation, -1.0f, +1.0f);
+    ImGui::SliderFloat(U8("明度調整"), &shaderCBuffer->data.brightness, -1.0f, +1.0f);
+    ImGui::SliderFloat(U8("コントラスト調整"), &shaderCBuffer->data.contrast, -1.0f, +1.0f);
     ImGui::SliderFloat(U8("焦点距離"), &shaderCBuffer->data.focusDistance, 0.01f, 1000.0f);
     ImGui::SliderFloat(U8("被写界深度範囲"), &shaderCBuffer->data.dofRange, 1.0f, 500.0f);
     //ImGui::SliderFloat("focus_distance", &depth_of_field_constant.focus_distance, get_near_clip_distance(), get_far_clip_distance());

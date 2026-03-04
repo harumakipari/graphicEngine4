@@ -356,13 +356,13 @@
 		{
 			"lights": [
 				{
-					"name": "PointLight1",
+					"name": "BottomStandingBrazier",
 					"type": "point",
 					"color": [ 0.959999979, 0.523895442, 0.240151942 ],
 					"range": 8
 				},
 				{
-					"name": "PointLight",
+					"name": "TopStandingBrazier",
 					"type": "point",
 					"color": [ 1, 0.545724452, 0.25015831 ],
 					"intensity": 1.5999999,

@@ -17,8 +17,11 @@ cbuffer SHADER_CONSTANT_BUFFER : register(b9)
 
     float saturation; // 彩度調整
     float brightness; // 明度調整
+    float contrast; // コントラスト調整
     float focusDistance; // 焦点距離
+
     float dofRange ; // 被写界深度範囲
+    float3 aligns;  
 
     bool enableSSAO;
     bool enableCascadedShadowMaps;

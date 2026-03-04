@@ -313,7 +313,7 @@
 		{
 			"lights": [
 				{
-					"name": "PointLight",
+					"name": "MeltedWaxLight",
 					"type": "point",
 					"color": [ 1, 0.630757093, 0.219526187 ],
 					"intensity": 1.27999997,

@@ -285,21 +285,10 @@ float4 main(VS_OUT pin) : SV_TARGET
         // トーンマップは共通にする
         finalColor.rgb = JodieReinhardToneMap(finalColor.rgb);
 
-        // フィルター
-        // RGB > HSVに変換
-        finalColor.rgb = RGB2HSV(finalColor.rgb);
+	    // 色相、彩度、明度、コントラストを調整する。
+        finalColor.rgb = HueSaturation(finalColor.rgb, hueShift, saturation);
+        finalColor.rgb = BrightnessContrast(finalColor.rgb, brightness, contrast);
 
-        // 色相調整
-        finalColor.r += hueShift;
-
-        // 彩度調整
-        finalColor.rgb *= saturation;
-
-        // 明度調整
-        finalColor.rgb *= brightness;
-
-        // HSV > RGBに変換
-        finalColor.rgb = HSV2RGB(finalColor.rgb);
     }
 
 
