@@ -16,18 +16,59 @@ void LightManager::Initialize(ID3D11Device* device)
     _ASSERT_EXPR(device != nullptr, L"Device is null in LightManager::Initialize");
     lightCBuffer = std::make_unique<ConstantBuffer<LightConstants>>(device);
 
-
-    sharedLights["MainChandelier"] =
+    // シャンデリアの共有ライト
     {
-        DirectX::XMFLOAT4(1.0f, 0.584078431f, 0.254152089f, 2.39999986f),
-        10.0f
-    };
+        sharedLights["MainChandelier"] =
+        {
+            DirectX::XMFLOAT4(1.0f, 0.584078431f, 0.254152089f, 2.39999986f),
+            10.0f
+        };
 
-    sharedLights["CandleChandelier"] =
+        sharedLights["CandleChandelier"] =
+        {
+            DirectX::XMFLOAT4(1.0f, 0.491020888f, 0.234550565f, 2.39999986f),
+            1.5f
+        };
+    }
+
+    // 燭台の共有ライト
     {
-        DirectX::XMFLOAT4(1.0f, 0.491020888f, 0.234550565f, 2.39999986f),
-        1.5f
-    };
+        sharedLights["TopCandelabra"] =
+        {
+            DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.309468925f, 2.0f),
+            3.5f
+        };
+
+        sharedLights["SideCandelabra"] =
+        {
+            DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.309468925f, 1.19999993f),
+            1.0f
+        };
+    }
+
+    // 火鉢の共有ライト
+    {
+        sharedLights["BrazierCenterBig"] =
+        {
+            DirectX::XMFLOAT4(1.0f, 0.533276379f, 0.258182853f, 1.43999994f),
+            10.f
+        };
+
+        sharedLights["BrazierCenterSmall"] =
+        {
+            DirectX::XMFLOAT4(1.0f, 0.533276379f, 0.258182853f, 1.5999999f),
+            8.0f
+        };
+    }
+
+    // 地面の火鉢の共有ライト
+    {
+        sharedLights["GroundBrazierLight"] =
+        {
+            DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.258182883f, 2.39999986f),
+            10.f
+        };
+    }
 }
 
 void LightManager::Update(float deltaTime)

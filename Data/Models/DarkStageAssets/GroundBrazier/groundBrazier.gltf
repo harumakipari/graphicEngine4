@@ -289,7 +289,7 @@
 			{
 				"KHR_lights_punctual":
 				{
-					"light": 1
+					"light": 0
 				}
 			}
 		},
@@ -360,7 +360,7 @@
 		{
 			"lights": [
 				{
-					"name": "PointLight",
+					"name": "GroundBrazierLight",
 					"type": "point",
 					"color": [ 1, 0.577580452, 0.258182883 ],
 					"intensity": 2.39999986,

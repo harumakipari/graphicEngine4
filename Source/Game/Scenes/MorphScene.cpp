@@ -22,7 +22,7 @@
 
 
 #include "Physics/Physics.h"
-#include "Game/DarkGame/DarkActors/FightStage.h"
+#include "Game/DarkGame/DarkActors/DarkStage.h"
 
 #include "Game/Actors/WaterSphere/WaterSphere.h"
 

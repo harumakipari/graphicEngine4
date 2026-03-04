@@ -360,14 +360,14 @@
 		{
 			"lights": [
 				{
-					"name": "PointLight",
+					"name": "BrazierCenterBig",
 					"type": "point",
 					"color": [ 1, 0.533276379, 0.258182853 ],
 					"intensity": 1.43999994,
 					"range": 10
 				},
 				{
-					"name": "PointLight1",
+					"name": "BrazierCenterSmall",
 					"type": "point",
 					"color": [ 1, 0.533276379, 0.258182883 ],
 					"intensity": 1.5999999,

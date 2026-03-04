@@ -17,7 +17,7 @@
 
 
 #include "Physics/Physics.h"
-#include "Game/DarkGame/DarkActors/FightStage.h"
+#include "Game/DarkGame/DarkActors/DarkStage.h"
 
 
 #include "Physics/CollisionSystem.h"
@@ -130,7 +130,7 @@ void SampleScene::SetUpActors()
     Logger::Log(U8("sampleシーンのカメラ設定される。"));
 
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<FightStage>("stage", stageTr); // 元のモデルの scale を 0.4f
+    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStage>("stage", stageTr); // 元のモデルの scale を 0.4f
 
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });

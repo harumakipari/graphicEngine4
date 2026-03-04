@@ -20,7 +20,7 @@
 
 
 #include "Physics/Physics.h"
-#include "Game/DarkGame/DarkActors/FightStage.h"
+#include "Game/DarkGame/DarkActors/DarkStage.h"
 
 
 #include "Physics/CollisionSystem.h"

@@ -1,28 +1,29 @@
 #include "pch.h"
-#include "DarkStageCandelabraActor.h"
+#include "DarkStageGroundBrazierActor.h"
 
+#include "Components/Render/PointLightComponent.h"
 #include "Engine/Scene/SceneBase.h"
 
-void DarkStageCandelabraActor::Initialize(const Transform& transform)
+void DarkStageGroundBrazierActor::Initialize(const Transform& transform)
 {
     std::string parentName = "candelabraMesh";
 
-    // 燭台のモデルを追加
-    candelabraMeshComponent = this->AddComponent<SkeletalMeshComponent>(parentName);
-    candelabraMeshComponent->SetModel("./Data/Models/DarkStageAssets/Candelabra/Candelabra.gltf");
-    candelabraMeshComponent->SetIsCastShadow(false);    // 影を落とさないようにする
+    // 火鉢のモデルを追加
+    brazierMeshComponent = this->AddComponent<SkeletalMeshComponent>(parentName);
+    brazierMeshComponent->SetModel("./Data/Models/DarkStageAssets/GroundBrazier/groundBrazier.gltf");
+    brazierMeshComponent->SetIsCastShadow(false);    // 影を落とさないようにする
 
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
     auto lightManager = scene->GetLightManager();
 
 
-    auto lightsData = candelabraMeshComponent->model->GetPointLights();
+    auto lightsData = brazierMeshComponent->model->GetPointLights();
     // ポイントライトコンポーネントを追加
     for (int i = 0; i < static_cast<int>(lightsData.size()); ++i)
     {
         const auto& light = lightsData[i];
-#if 1
-        std::string compName = "pointLightComponent_" + std::to_string(i);
+
+        std::string compName = "pointLightComponent_" + light.name + std::to_string(i);
         auto pointLightComponent =
             this->AddComponent<PointLightComponent>(compName, parentName);
 
@@ -31,23 +32,10 @@ void DarkStageCandelabraActor::Initialize(const Transform& transform)
         // ライトの名前からライトマネージャーの共有ライトを取得して設定
         pointLightComponent->SetSharedParam(&lightManager->GetSharedLight(light.name));
 
-        //pointLightComponent->SetColor(light.color);
-        //pointLightComponent->SetRange(light.range);
-        //pointLightComponent->SetIntensity(light.intensity);
-#else
-        DirectX::XMFLOAT3 pos = convertRHtoLh(light.worldPosition);
 
-        Transform pointLightTr{
-            pos,
-            light.worldRotation,
-            light.worldScale
-        };
-        auto pointLightActor = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStagePointLightActor>("pointLight", pointLightTr);
-        pointLightActor->SetPointLightData(pos, light.color, light.intensity, light.range);
-#endif // 0
     }
 
-    for (auto point : candelabraMeshComponent->model->spawnPoints)
+    for (auto point : brazierMeshComponent->model->spawnPoints)
     {
         // エミッションを発生させるためにモデルを追加
         auto sphereMeshComponent = this->AddComponent<SkeletalMeshComponent>("sphereMeshComponent", parentName);

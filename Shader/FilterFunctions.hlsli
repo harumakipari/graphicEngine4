@@ -99,3 +99,44 @@ float3 HSV2RGB(float3 hsv)
     return rgb;
 }
 
+// 明るさとコントラストの調整関数
+float3 BrightnessContrast(float3 fragmentColor, float brightness, float contrast)
+{
+	//明るさ - コントラスト効果
+    //明るさ - コントラスト効果により、レンダリングされた画像の明るさとコントラストを変更できます。
+    //明るさ: 画像の明るさ。範囲は -1 から 1 です（-1 は完全な黒、0 は変化なし、1 は完全な白）。
+	//コントラスト：画像のコントラスト。範囲は-1から1（-1は完全な灰色、0は変化なし、1は最大コントラスト）。
+    fragmentColor += brightness;
+    if (contrast > 0.0)
+    {
+        fragmentColor = (fragmentColor - 0.5) / (1.0 - contrast) + 0.5;
+    }
+    else if (contrast < 0.0)
+    {
+        fragmentColor = (fragmentColor - 0.5) * (1.0 + contrast) + 0.5;
+    }
+    return fragmentColor;
+}
+
+// 色相と彩度の調整関数
+float3 HueSaturation(float3 fragmentColor, float hue, float saturation)
+{
+	//色相 - 彩度効果
+    //色相 - 彩度効果により、レンダリングされた画像の色相と彩度を変更できます。
+    //色相: 画像の色相。範囲は -1 から 1 です（-1 は負方向の 180 度、0 は変更なし、1 は正方向の 180 度）。
+	//彩度：画像の彩度。範囲は-1から1（-1は濃灰、0は変化なし、1は最大彩度）。
+    float angle = hue * 3.14159265;
+    float s = sin(angle), c = cos(angle);
+    float3 weights = (float3(2.0 * c, -sqrt(3.0) * s - c, sqrt(3.0) * s - c) + 1.0) / 3.0;
+    fragmentColor = float3(dot(fragmentColor, weights.xyz), dot(fragmentColor, weights.zxy), dot(fragmentColor, weights.yzx));
+    float average = (fragmentColor.r + fragmentColor.g + fragmentColor.b) / 3.0;
+    if (saturation > 0.0)
+    {
+        fragmentColor += (average - fragmentColor) * (1.0 - 1.0 / (1.001 - saturation));
+    }
+    else
+    {
+        fragmentColor += (average - fragmentColor) * (-saturation);
+    }
+    return fragmentColor;
+}

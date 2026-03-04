@@ -1,15 +1,17 @@
 #include "pch.h"
-#include  "FightStage.h"
+#include  "DarkStage.h"
 
 #include "DarkStageBarrelActor.h"
+#include "DarkStageBrazierActor.h"
 #include "DarkStageCandelabraActor.h"
 #include "DarkStageChandelierActor.h"
+#include "DarkStageGroundBrazierActor.h"
 #include "DarkStagePointLightActor.h"
 #include "DoorLeftActor.h"
 #include "Components/Effect/ParticleComponent.h"
 #include "Engine/Scene/Scene.h"
 
-void FightStage::Initialize(const Transform& transform)
+void DarkStage::Initialize(const Transform& transform)
 {
     std::string parentName = "staticMeshComponent";
 
@@ -110,18 +112,42 @@ void FightStage::Initialize(const Transform& transform)
 
             auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageChandelierActor>("chandelier", chandelierTr);
         }
-        //else if (point.name.rfind("Spawn_Candelabra", 0) == 0)
-        //{// 名前が "Spawn_Candelabra" で始まる場合、燭台を配置
-        //    DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+        else if (point.name.rfind("Spawn_Candelabra", 0) == 0)
+        {// 名前が "Spawn_Candelabra" で始まる場合、燭台を配置
+            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
-        //    Transform candelabraTr{
-        //        pos,
-        //        point.worldRotation,
-        //        point.worldScale
-        //    };
+            Transform candelabraTr{
+                pos,
+                point.worldRotation,
+                point.worldScale
+            };
 
-        //    auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageCandelabraActor>("candelabra", candelabraTr);
-        //}
+            auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageCandelabraActor>("candelabra", candelabraTr);
+        }
+        else if (point.name.rfind("Spawn_Brazier", 0) == 0)
+        {// 名前が "Spawn_Brazier" で始まる場合、火鉢を配置
+            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+
+            Transform candelabraTr{
+                pos,
+                point.worldRotation,
+                point.worldScale
+            };
+
+            auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageBrazierActor>("brazier", candelabraTr);
+        }
+        else if (point.name.rfind("Spawn_GroundBrazier", 0) == 0)
+        {// 名前が "Spawn_GroundBrazier" で始まる場合、地面の火鉢を配置
+            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+
+            Transform candelabraTr{
+                pos,
+                point.worldRotation,
+                point.worldScale
+            };
+
+            auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageGroundBrazierActor>("GroundBrazier", candelabraTr);
+        }
         else if (point.name.rfind("Spawn_Barrel", 0) == 0)
         {
             DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
@@ -229,7 +255,7 @@ void FightStage::Initialize(const Transform& transform)
 #endif // 0
 }
 
-void FightStage::Update(float elapsedTime)
+void DarkStage::Update(float elapsedTime)
 {
     //if (steamComponent)
     //{
@@ -242,7 +268,7 @@ void FightStage::Update(float elapsedTime)
 }
 
 
-void FightStage::BuildStage()
+void DarkStage::BuildStage()
 {
     float stageHalfSize = 40.0f;
     float wallHeight = 5.0f;
@@ -265,7 +291,7 @@ void FightStage::BuildStage()
         { -stageHalfSize, wallHeight, 0.0f });
 }
 
-std::shared_ptr<BoxComponent> FightStage::CreateWall(const std::string& name, const DirectX::XMFLOAT3& halfExtent, const DirectX::XMFLOAT3& position)
+std::shared_ptr<BoxComponent> DarkStage::CreateWall(const std::string& name, const DirectX::XMFLOAT3& halfExtent, const DirectX::XMFLOAT3& position)
 {
     auto wall = AddComponent<BoxComponent>(name, GetRootComponent()->GetName());
 

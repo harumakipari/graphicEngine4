@@ -6,7 +6,7 @@
 
 class ParticleComponent;
 
-class FightStage :public Actor
+class DarkStage :public Actor
 {
 public:
     struct WallData
@@ -22,7 +22,7 @@ public:
         { {3,3,3}, {5,3,5} },
     };
 public:
-    explicit FightStage(const std::string& actorName) :Actor(actorName) {}
+    explicit DarkStage(const std::string& actorName) :Actor(actorName) {}
 
     void Initialize(const Transform& transform)override;
 
