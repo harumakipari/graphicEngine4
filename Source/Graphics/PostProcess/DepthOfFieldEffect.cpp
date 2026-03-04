@@ -3,11 +3,17 @@
 
 #include "Graphics/Core/RenderState.h"
 #include "Graphics/Core/Shader.h"
+#ifdef USE_IMGUI
+#define IMGUI_ENABLE_DOCKING
+#include "imgui.h"
+#endif
+
 
 void DepthOfFieldEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height)
 {
     fullScreenQuad = std::make_unique<FullScreenQuad>(device);
-    depthOfFieldBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false, DXGI_FORMAT_R32_FLOAT);
+    depthOfFieldBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false);
+    finalBokehBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false);
 
     for (size_t downsampled_index = 0; downsampled_index < downsampledCount; ++downsampled_index)
     {
@@ -15,7 +21,7 @@ void DepthOfFieldEffect::Initialize(ID3D11Device* device, uint32_t width, uint32
         gaussianBlur[downsampled_index][1] = std::make_unique<FrameBuffer>(device, width >> downsampled_index, height >> downsampled_index, false);
     }
 
-    HRESULT hr = CreatePsFromCSO(device, "./Shader/.cso", bokehPS.ReleaseAndGetAddressOf());
+    HRESULT hr = CreatePsFromCSO(device, "./Shader/DepthOfFieldPS.cso", bokehPS.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     hr = CreatePsFromCSO(device, "./Shader/GaussianBlurDownSamplingPS.cso", gaussianBlurDownsamplingPs.ReleaseAndGetAddressOf());
@@ -91,64 +97,21 @@ void DepthOfFieldEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11Shad
 
 
     // Gaussian blur シーンのライト済みテクスチャをダウンサンプリングしてからブラーをかける
-    // Efficient Gaussian blur with linear sampling
-    // Downsampling
-    gaussianBlur[0][0]->Clear(immediateContext, 0, 0, 0, 1);
-    gaussianBlur[0][0]->Activate(immediateContext);
-    fullScreenQuad->Blit(immediateContext, &gBufferColor, 0, 1, gaussianBlurDownsamplingPs.Get());
-    gaussianBlur[0][0]->Deactivate(immediateContext);
-    immediateContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
-
-    // Ping-pong gaussian blur
     gaussianBlur[0][1]->Clear(immediateContext, 0, 0, 0, 1);
     gaussianBlur[0][1]->Activate(immediateContext);
-    fullScreenQuad->Blit(immediateContext, gaussianBlur[0][0]->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurHorizontalPs.Get());
+    fullScreenQuad->Blit(immediateContext,&gBufferColor, 0, 1, gaussianBlurHorizontalPs.Get());
     gaussianBlur[0][1]->Deactivate(immediateContext);
     immediateContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
 
-    gaussianBlur[0][0]->Clear(immediateContext, 0, 0, 0, 1);
-    gaussianBlur[0][0]->Activate(immediateContext);
-    fullScreenQuad->Blit(immediateContext, gaussianBlur[0][1]->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurVerticalPs.Get());
-    gaussianBlur[0][0]->Deactivate(immediateContext);
-    immediateContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
-
-    for (size_t downsampled_index = 1; downsampled_index < downsampledCount; ++downsampled_index)
-    {
-        // Downsampling
-        gaussianBlur[downsampled_index][0]->Clear(immediateContext, 0, 0, 0, 1);
-        gaussianBlur[downsampled_index][0]->Activate(immediateContext);
-        fullScreenQuad->Blit(immediateContext, gaussianBlur[downsampled_index - 1][0]->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurDownsamplingPs.Get());
-        gaussianBlur[downsampled_index][0]->Deactivate(immediateContext);
-        immediateContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
-
-        // Ping-pong gaussian blur
-        gaussianBlur[downsampled_index][1]->Clear(immediateContext, 0, 0, 0, 1);
-        gaussianBlur[downsampled_index][1]->Activate(immediateContext);
-        fullScreenQuad->Blit(immediateContext, gaussianBlur[downsampled_index][0]->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurHorizontalPs.Get());
-        gaussianBlur[downsampled_index][1]->Deactivate(immediateContext);
-        immediateContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
-
-        gaussianBlur[downsampled_index][0]->Clear(immediateContext, 0, 0, 0, 1);
-        gaussianBlur[downsampled_index][0]->Activate(immediateContext);
-        fullScreenQuad->Blit(immediateContext, gaussianBlur[downsampled_index][1]->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurVerticalPs.Get());
-        gaussianBlur[downsampled_index][0]->Deactivate(immediateContext);
-        immediateContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
-    }
-
-    // Downsampling
     depthOfFieldBuffer->Clear(immediateContext, 0, 0, 0, 1);
     depthOfFieldBuffer->Activate(immediateContext);
-    std::vector<ID3D11ShaderResourceView*> shader_resource_views;
-    for (size_t downsampled_index = 0; downsampled_index < downsampledCount; ++downsampled_index)
-    {
-        shader_resource_views.push_back(gaussianBlur[downsampled_index][0]->shaderResourceViews[0].Get());
-    }
-    fullScreenQuad->Blit(immediateContext, shader_resource_views.data(), 0, downsampledCount, gaussianBlurUpsamplingPs.Get());
+    fullScreenQuad->Blit(immediateContext, gaussianBlur[0][1]->shaderResourceViews[0].GetAddressOf(), 0, 1, gaussianBlurVerticalPs.Get());
     depthOfFieldBuffer->Deactivate(immediateContext);
     immediateContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
 
-    depthOfFieldBuffer->Clear(immediateContext, 1, 1, 1, 1);
-    depthOfFieldBuffer->Activate(immediateContext);
+
+    finalBokehBuffer->Clear(immediateContext, 1, 1, 1, 1);
+    finalBokehBuffer->Activate(immediateContext);
 
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
@@ -161,17 +124,29 @@ void DepthOfFieldEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11Shad
     };
     fullScreenQuad->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), bokehPS.Get());
 
-    depthOfFieldBuffer->Deactivate(immediateContext);
+    finalBokehBuffer->Deactivate(immediateContext);
 
     ID3D11ShaderResourceView* null_shader_resource_views[] =
     {
         NULL, NULL, NULL,
     };
     immediateContext->PSSetShaderResources(0, _countof(null_shader_resource_views), null_shader_resource_views);
+
+    immediateContext->PSSetShaderResources(0, downsampledCount, cachedShaderResourceViews);
+
+    for (UINT i = 0; i < downsampledCount; ++i)
+    {
+        if (cachedShaderResourceViews[i])
+        {
+            cachedShaderResourceViews[i]->Release();
+        }
+    }
 }
 
 void DepthOfFieldEffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
+    ImGui::Image(depthOfFieldBuffer->shaderResourceViews[0].Get(), { 256, 256 }, { 0, 0 }, { 1, 1 });
+    ImGui::Image(finalBokehBuffer->shaderResourceViews[0].Get(), { 256, 256 }, { 0, 0 }, { 1, 1 });
 #endif
 }

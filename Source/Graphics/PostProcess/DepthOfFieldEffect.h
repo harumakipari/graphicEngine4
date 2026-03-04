@@ -23,7 +23,7 @@ public:
     // 出力（次のエフェクトや最終合成に渡す用） 
     ID3D11ShaderResourceView* GetOutputSRV()const override
     {
-        return depthOfFieldBuffer->shaderResourceViews[0].Get();
+        return finalBokehBuffer->shaderResourceViews[0].Get();
     }
 
     // UI 調整 (ImGui)
@@ -31,6 +31,7 @@ public:
 
 private:
     std::unique_ptr<FrameBuffer> depthOfFieldBuffer;
+    std::unique_ptr<FrameBuffer> finalBokehBuffer;
     std::unique_ptr<FullScreenQuad> fullScreenQuad;
     static constexpr size_t downsampledCount = 6;
     std::unique_ptr<FrameBuffer> gaussianBlur[downsampledCount][2];

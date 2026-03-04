@@ -9,6 +9,7 @@ float4 main(float4 position : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARG
 
 #if 1
 // ５回のサンプリングで９ピクセル分をカバーする
+    //const float offset[3] = { 0.0, 8.0, 12.0 };
     const float offset[3] = { 0.0, 1.3846153846, 3.2307692308 };
     const float weight[3] = { 0.2270270270, 0.3162162162, 0.0702702703 };
 
