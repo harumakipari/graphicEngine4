@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "DarkStageChandelierActor.h"
 
+#include "Engine/Scene/SceneBase.h"
+
 void DarkStageChandelierActor::Initialize(const Transform& transform)
 {
     std::string parentName = "chandelierMesh";
@@ -10,21 +12,33 @@ void DarkStageChandelierActor::Initialize(const Transform& transform)
     chandelierMeshComponent->SetModel("./Data/Models/DarkStageAssets/Chandelier/Chandelier.gltf");
     chandelierMeshComponent->SetIsCastShadow(false);    // 影を落とさないようにする
 
+    auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
+
+    auto lightManager = scene->GetLightManager();
+
+
+
     auto lightsData = chandelierMeshComponent->model->GetPointLights();
     // ポイントライトコンポーネントを追加
     for (int i = 0; i < static_cast<int>(lightsData.size()); ++i)
     {
         const auto& light = lightsData[i];
+
+        
 #if 1
         std::string compName = "pointLightComponent_" + std::to_string(i);
         auto pointLightComponent =
             this->AddComponent<PointLightComponent>(compName, parentName);
 
+        // ライトの名前からライトマネージャーの共有ライトを取得して設定
+        pointLightComponent->SetSharedParam(&lightManager->GetSharedLight(light.name));
+
+
         DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(light.worldPosition);
         pointLightComponent->SetRelativeLocationDirect(pos);
-        pointLightComponent->SetColor(light.color);
-        pointLightComponent->SetRange(light.range);
-        pointLightComponent->SetIntensity(light.intensity);
+        //pointLightComponent->SetColor(light.color);
+        //pointLightComponent->SetRange(light.range);
+        //pointLightComponent->SetIntensity(light.intensity);
 #else
         DirectX::XMFLOAT3 pos = convertRHtoLh(light.worldPosition);
 

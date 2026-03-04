@@ -51,15 +51,6 @@ void FightStage::Initialize(const Transform& transform)
         pointLightComponent->SetRange(light.range);
         pointLightComponent->SetIntensity(light.intensity);
 #else
-        DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(light.worldPosition);
-
-        Transform pointLightTr{
-            pos,
-            light.worldRotation,
-            light.worldScale
-        };
-        auto pointLightActor = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStagePointLightActor>("pointLight", pointLightTr);
-        pointLightActor->SetPointLightData(pos, light.color, light.intensity, light.range);
 #endif // 0
 
     }
@@ -119,18 +110,18 @@ void FightStage::Initialize(const Transform& transform)
 
             auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageChandelierActor>("chandelier", chandelierTr);
         }
-        else if (point.name.rfind("Spawn_Candelabra", 0) == 0)
-        {// 名前が "Spawn_Candelabra" で始まる場合、燭台を配置
-            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+        //else if (point.name.rfind("Spawn_Candelabra", 0) == 0)
+        //{// 名前が "Spawn_Candelabra" で始まる場合、燭台を配置
+        //    DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
-            Transform candelabraTr{
-                pos,
-                point.worldRotation,
-                point.worldScale
-            };
+        //    Transform candelabraTr{
+        //        pos,
+        //        point.worldRotation,
+        //        point.worldScale
+        //    };
 
-            auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageCandelabraActor>("candelabra", candelabraTr);
-        }
+        //    auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageCandelabraActor>("candelabra", candelabraTr);
+        //}
         else if (point.name.rfind("Spawn_Barrel", 0) == 0)
         {
             DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);

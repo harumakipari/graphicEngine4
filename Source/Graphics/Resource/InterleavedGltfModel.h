@@ -152,6 +152,8 @@ public:
         float intensity;
         float range; // directional は無視
 
+        std::string name; // ポイントライトのデータの名前。ノードの名前ではない
+
         template<class T>
         void serialize(T& archive)
         {
@@ -162,7 +164,8 @@ public:
                 cereal::make_nvp("worldScale", worldScale),
                 cereal::make_nvp("color", color),
                 cereal::make_nvp("intensity", intensity),
-                cereal::make_nvp("range", range)
+                cereal::make_nvp("range", range),
+                cereal::make_nvp("name", name)
             );
         }
     };
@@ -176,6 +179,7 @@ public:
         DirectX::XMFLOAT3 color;
         float intensity;
         float range; // directional は無視
+        std::string name;
 
         template<class T>
         void serialize(T& archive)
@@ -184,7 +188,8 @@ public:
                 cereal::make_nvp("type", type),
                 cereal::make_nvp("color", color),
                 cereal::make_nvp("intensity", intensity),
-                cereal::make_nvp("range", range)
+                cereal::make_nvp("range", range),
+                cereal::make_nvp("name", name)
             );
         }
     };

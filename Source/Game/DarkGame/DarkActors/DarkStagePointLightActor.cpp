@@ -18,14 +18,4 @@ void DarkStagePointLightActor::Initialize(const Transform& transform)
 
 }
 
-// ポイントライトのデータを一括で設定する関数
-void DarkStagePointLightActor::SetPointLightData(const DirectX::XMFLOAT3 position, const DirectX::XMFLOAT3 color, const float intensity, const float range)
-{
-    if (pointLightComponent)
-    {
-        pointLightComponent->SetColor(color);
-        pointLightComponent->SetIntensity(intensity);
-        pointLightComponent->SetRange(range);
-    }
-}
 

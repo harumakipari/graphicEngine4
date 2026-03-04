@@ -6,14 +6,20 @@
 
 class Scene;
 
+struct SharedLightParam
+{
+    DirectX::XMFLOAT4 color;
+    float range;
+};
+
 class LightManager
 {
 public:
     struct PointLight
     {
         DirectX::XMFLOAT4 position{ 0.0f,0.0f,0.0f,0.0f };
-        DirectX::XMFLOAT4 color{ 1.0f,0.0f,0.0f,1.0f };
-        float range = 0.5f;
+        DirectX::XMFLOAT4 color{ 1.0f,0.0f,0.0f,0.0f };
+        float range = 0.0f;
         float pads[3] = {};
     };
 
@@ -28,6 +34,10 @@ public:
         PointLight pointsLight[32];
     };
 
+    SharedLightParam& GetSharedLight(const std::string& name)
+    {
+        return sharedLights[name];
+    }
 public:
     void Initialize(ID3D11Device* device);
     void Update(float deltaTime);
@@ -52,44 +62,9 @@ public:
 private:
     //DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
     DirectX::XMFLOAT4 lightColor{ 1.0f,1.0f,1.0f,3.8f };
-    //float iblIntensity = 3.418f;  //Image Basesd Lightingの強度
     float iblIntensity = 0.001f;  //Image Basesd Lightingの強度
 
-    DirectX::XMFLOAT4 pointLightPosition[8] =
-    {
-        { -2.0f,  2.0f, 0.0f, 10.0f },
-        { -1.0f,  2.0f, 0.0f, 10.0f },
-        { 0.0f,  2.0f, 0.0f, 10.0f },
-        { 1.0f,  2.0f, 0.0f, 10.0f },
-        { 2.0f,  2.0f, 0.0f, 10.0f },
-        { 3.0f,  2.0f, 0.0f, 10.0f },
-        { 4.0f,  2.0f, 0.0f, 10.0f },
-        { 5.0f,  2.0f, 0.0f, 10.0f },
-    };
 
-    DirectX::XMFLOAT4 pointLightColor[8] =
-    {
-        { 1.0f, 0.0f, 0.0f, 10.0f },  // 赤
-        { 0.0f, 1.0f, 0.0f, 10.0f },  // 緑
-        { 0.0f, 0.0f, 1.0f, 10.0f },  // 青
-        { 1.0f, 1.0f, 0.0f, 10.0f },  // 黄
-        { 1.0f, 0.0f, 1.0f, 10.0f },  // マゼンタ
-        { 0.0f, 1.0f, 1.0f, 10.0f },  // シアン
-        { 1.0f, 0.5f, 0.0f, 10.0f },  // オレンジ
-        { 0.5f, 0.0f, 1.0f, 10.0f },  // 紫
-    };
-
-    float pointLightRange[8] =
-    {
-        3.0f,
-        3.0f,
-        3.0f,
-        3.0f,
-        3.0f,
-        3.0f,
-        3.0f,
-        3.0f,
-    };
     bool directionalLightEnable = true; // 平行光源の on / off
     bool pointLightEnable = true;
     int pointLightCount = 32;
@@ -103,4 +78,6 @@ private:
     std::vector<PointLight> scenePointLights;
 
     std::unique_ptr<ConstantBuffer<LightConstants>> lightCBuffer;
+
+    std::unordered_map<std::string, SharedLightParam> sharedLights;
 };

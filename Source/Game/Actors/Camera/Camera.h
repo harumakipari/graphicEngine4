@@ -94,10 +94,10 @@ public:
 
         DirectX::XMStoreFloat4x4(&viewConstants.invView, DirectX::XMMatrixInverse(NULL, V));
 
-        viewConstants.cameraClipDistance.x = mainCameraComponent->GetNearClipDistance();
-        viewConstants.cameraClipDistance.y = mainCameraComponent->GetFarClipDistance();
-        viewConstants.cameraClipDistance.z = mainCameraComponent->GetNearClipDistance() * mainCameraComponent->GetFarClipDistance();
-        viewConstants.cameraClipDistance.w = mainCameraComponent->GetFarClipDistance() - mainCameraComponent->GetNearClipDistance();
+        viewConstants.cameraClipDistance.x = debugCameraComponent->GetNearClipDistance();
+        viewConstants.cameraClipDistance.y = debugCameraComponent->GetFarClipDistance();
+        viewConstants.cameraClipDistance.z = debugCameraComponent->GetNearClipDistance() * debugCameraComponent->GetFarClipDistance();
+        viewConstants.cameraClipDistance.w = debugCameraComponent->GetFarClipDistance() - debugCameraComponent->GetNearClipDistance();
 
         return viewConstants;
     }

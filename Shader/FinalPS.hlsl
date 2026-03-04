@@ -293,10 +293,10 @@ float4 main(VS_OUT pin) : SV_TARGET
         finalColor.r += hueShift;
 
         // Ê“x’²®
-        finalColor.g *= saturation;
+        finalColor.rgb *= saturation;
 
         // –¾“x’²®
-        finalColor.b *= brightness;
+        finalColor.rgb *= brightness;
 
         // HSV > RGB‚É•ÏŠ·
         finalColor.rgb = HSV2RGB(finalColor.rgb);

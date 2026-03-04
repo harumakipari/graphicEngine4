@@ -15,6 +15,19 @@ void LightManager::Initialize(ID3D11Device* device)
     int a = 0;
     _ASSERT_EXPR(device != nullptr, L"Device is null in LightManager::Initialize");
     lightCBuffer = std::make_unique<ConstantBuffer<LightConstants>>(device);
+
+
+    sharedLights["MainChandelier"] =
+    {
+        DirectX::XMFLOAT4(1.0f, 0.584078431f, 0.254152089f, 2.39999986f),
+        10.0f
+    };
+
+    sharedLights["CandleChandelier"] =
+    {
+        DirectX::XMFLOAT4(1.0f, 0.491020888f, 0.234550565f, 2.39999986f),
+        1.5f
+    };
 }
 
 void LightManager::Update(float deltaTime)
@@ -92,9 +105,24 @@ void LightManager::DrawGUI()
     ImGui::SliderFloat("IBL Intensity", &iblIntensity, 0.0f, 20.0f);
     ImGui::SliderFloat("Light Intensity", &lightColor.w, 0.0f, 20.0f);
     ImGui::Checkbox("pointLightEnable", &pointLightEnable);
-    ImGui::SliderInt("Point Light Count", &pointLightCount, 0, 8);
+    ImGui::SliderInt("Point Light Count", &pointLightCount, 0, 32);
     if (debugPointLights.size() != static_cast<size_t>(pointLightCount))
         debugPointLights.resize(pointLightCount); // å¬êîÇçáÇÌÇπÇÈ
+
+    if (ImGui::TreeNode(U8("ã§óLÉâÉCÉg")))
+    {
+        for (auto& [name, light] : sharedLights)
+        {
+            if (ImGui::TreeNode(name.c_str()))
+            {
+                ImGui::ColorEdit3("Color", &light.color.x);
+                ImGui::SliderFloat("Intensity", &light.color.w, 0.0f, 30.0f);
+                ImGui::SliderFloat("Range", &light.range, 0.0f, 20.0f);
+                ImGui::TreePop();
+            }
+        }
+        ImGui::TreePop();
+    }
 
 #if 0
     for (int i = 0; i < pointLightCount; i++)

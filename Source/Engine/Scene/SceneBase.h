@@ -62,6 +62,8 @@ public:
             hook(immediateContext);
     }
 
+    // ライトマネージャーへのアクセス関数
+    LightManager* GetLightManager() const { return lightManager.get(); }
 private:
     void ForwardRender(ID3D11DeviceContext* immediateContext);
 

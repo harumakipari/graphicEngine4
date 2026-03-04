@@ -243,6 +243,7 @@ void InterleavedGltfModel::FetchLights(const tinygltf::Model& model)
         {
             gl.color = { 1, 1, 1 };
         }
+        gl.name = light.name;
 
         gl.intensity = static_cast<float>(light.intensity);
         gl.range = static_cast<float>(light.range);
@@ -295,6 +296,7 @@ void InterleavedGltfModel::FetchLightNodes(const tinygltf::Model& model)
         pl.color = gl.color;
         pl.intensity = gl.intensity;
         pl.range = gl.range;
+        pl.name = gl.name;
 
         pointLights.push_back(pl);
     }

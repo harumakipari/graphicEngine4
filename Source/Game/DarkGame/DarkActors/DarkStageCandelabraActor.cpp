@@ -22,9 +22,10 @@ void DarkStageCandelabraActor::Initialize(const Transform& transform)
 
         DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(light.worldPosition);
         pointLightComponent->SetRelativeLocationDirect(pos);
-        pointLightComponent->SetColor(light.color);
-        pointLightComponent->SetRange(light.range);
-        pointLightComponent->SetIntensity(light.intensity);
+
+        //pointLightComponent->SetColor(light.color);
+        //pointLightComponent->SetRange(light.range);
+        //pointLightComponent->SetIntensity(light.intensity);
 #else
         DirectX::XMFLOAT3 pos = convertRHtoLh(light.worldPosition);
 
