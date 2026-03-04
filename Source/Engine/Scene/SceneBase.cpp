@@ -934,6 +934,7 @@ void SceneBase::DrawPostEffectTab()
     ImGui::Checkbox("Enable Blur", &enableBlur);
     ImGui::Checkbox("Enable Fog", &enableFog);
     ImGui::Checkbox("Enable CSM", &enableCascadedShadowMaps);
+    ImGui::SliderFloat("split_u", &shaderCBuffer->data.splitU, 0.0f, +1.0f);
 
     sceneEffectManager->DrawGui();
     postEffectManager->DrawGui();

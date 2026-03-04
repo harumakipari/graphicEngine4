@@ -53,7 +53,6 @@ void SSAOEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResour
     ssaoCBuffer->data.radius = radius;
     ssaoCBuffer->data.power = power;
     ssaoCBuffer->data.bias = bias;
-    ssaoCBuffer->data.split_u = split_u;
 #endif // 0
     ssaoCBuffer->Activate(immediateContext, 5);
 
@@ -94,7 +93,6 @@ void SSAOEffect::DrawDebugUI()
     ImGui::Checkbox("enable", &enabled);
     ImGui::SliderFloat("radius", &radius, 0.0f, +1.0f);
     ImGui::SliderFloat("bias", &bias, 0.0f, +1.0f);
-    ImGui::SliderFloat("split_u", &split_u, 0.0f, +1.0f);
     ImGui::SliderFloat("power", &power, 0.0f, +1.0f);
 #endif
 }

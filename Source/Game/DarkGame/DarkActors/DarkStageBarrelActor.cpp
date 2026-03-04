@@ -7,7 +7,7 @@ void DarkStageBarrelActor::Initialize(const Transform& transform)
 
     // ’M‚Ìƒ‚ƒfƒ‹‚ð’Ç‰Á
     barrelMeshComponent = this->AddComponent<SkeletalMeshComponent>(parentName);
-    barrelMeshComponent->SetModel("./Data/Models/DarkStageAssets/Candelabra/Candelabra.gltf");
+    barrelMeshComponent->SetModel("./Data/Models/DarkStageAssets/Barrel/SM_Barrel_01.gltf");
     barrelMeshComponent->SetIsCastShadow(false);    // ‰e‚ð—Ž‚Æ‚³‚È‚¢‚æ‚¤‚É‚·‚é
 
     // ’M‚Ì‚ª‚ê‚«‚ÉŽg—p‚·‚éƒ‚ƒfƒ‹
@@ -36,4 +36,36 @@ void DarkStageBarrelActor::Initialize(const Transform& transform)
     convexComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
     convexComponent->SetActive(false);
     convexComponent->CreateConvexMeshFromModel(barrelConvexMeshComponent.get());
+}
+
+void DarkStageBarrelActor::Update(float deltaTime)
+{
+#if 0
+    // Œ³X‚Ì” ‚Ì“–‚½‚è”»’è‚ðÁ‚·
+    boxComponent->DisableCollision();
+    this->ScheduleDestroyComponentByName("boxComponent");
+
+    //this->ScheduleDestroyComponentByName("boxComponent");
+    //this->DestroyComponentByName("boxComponent");
+    //// ƒr[ƒ€‚ðÁ‚·
+    //beam->SetValid(false);
+    // Š¢âI‚ð“–‚½‚è”»’è‚É“ü‚ê‚é
+    if (convexComponent)
+    {
+        convexComponent->AddToScene(); // ‚±‚±‚Å physx ‚Ì scene ‚É’Ç‰Á‚·‚é@‚±‚±‚Ü‚Å‚Í•¨—‰‰ŽZ‚Ìl—¶‚É“ü‚ê‚½‚­‚È‚¢‚©‚ç
+        convexComponent->SetKinematic(false);
+        convexComponent->SetActive(true);
+    }
+#endif // 0
+}
+
+void DarkStageBarrelActor::DrawImGuiDetails()
+{
+#ifdef USE_IMGUI
+    //if (ImGui::TreeNode("DarkStageBarrelActor"))
+    //{
+    //    ImGui::Text("This is a barrel that can be destroyed.");
+    //    ImGui::TreePop();
+    //}
+#endif
 }

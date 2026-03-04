@@ -12,7 +12,8 @@ cbuffer SHADER_CONSTANT_BUFFER : register(b9)
 {
     float shadowColor;
     float shadowDepthBias;
-    float2 paddings;
+    float splitU;
+    float align;
 
     bool enableSSAO;
     bool enableCascadedShadowMaps;
@@ -55,7 +56,7 @@ cbuffer VOLUMETRIC_CLOUDSCAPES_CONSTANT_BUFFER : register(b5)
     float rainCloudAbsorptionScale;
     float cloudTypeScale;
     
-    float earthRadius; 
+    float earthRadius;
     float horizonDistanceScale;
     float lowFrequentlyPerlinMorleySamplingScale;
     float highFrequentlyMorleySamplingScale;

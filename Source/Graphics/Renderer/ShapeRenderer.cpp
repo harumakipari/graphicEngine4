@@ -173,7 +173,7 @@ void ShapeRenderer::DrawCylinder(ID3D11DeviceContext* immediateContext, const Di
 
     // ƒJƒvƒZƒ‹‚Ì‰~’Œ•”•ª
     {
-        DirectX::XMMATRIX S = DirectX::XMMatrixScaling(radius, radius, height); 
+        DirectX::XMMATRIX S = DirectX::XMMatrixScaling(radius, height, radius);
         DirectX::XMMATRIX world = S * T;
         DirectX::XMFLOAT4X4 m;
         DirectX::XMStoreFloat4x4(&m, world);

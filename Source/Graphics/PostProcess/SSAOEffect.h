@@ -13,7 +13,7 @@ public:
         float radius = 1.0f;
         float bias = 0.0f;
         float power = 1.0f;
-        float split_u = 0.0f;
+        float pad;
     };
 
 public:
@@ -47,6 +47,5 @@ private:
     float radius = 0.2f;
     float bias = 0.15f;
     float power = 0.02f;
-    float split_u = 0.0f;
 
 };

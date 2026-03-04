@@ -84,7 +84,7 @@ void DebugDrawManager::DrawCylinder(
     DebugDrawCommand command{};
     command.type = DebugDrawType::Cylinder;
     command.position = pos;
-    command.size = DirectX::XMFLOAT3{ radius, height, 0.0f };
+    command.size = DirectX::XMFLOAT3{ radius, height, radius };
     command.color = color;
     command.lifetime = life;
     commands_.push_back(command);

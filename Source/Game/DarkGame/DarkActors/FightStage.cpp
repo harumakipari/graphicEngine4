@@ -1,14 +1,13 @@
 #include "pch.h"
 #include  "FightStage.h"
 
+#include "DarkStageBarrelActor.h"
 #include "DarkStageCandelabraActor.h"
 #include "DarkStageChandelierActor.h"
 #include "DarkStagePointLightActor.h"
 #include "DoorLeftActor.h"
 #include "Components/Effect/ParticleComponent.h"
 #include "Engine/Scene/Scene.h"
-
-
 
 void FightStage::Initialize(const Transform& transform)
 {
@@ -17,6 +16,7 @@ void FightStage::Initialize(const Transform& transform)
     auto scene = GetOwnerScene();
 
     std::shared_ptr<StaticMeshComponent> staticMeshComponent = this->AddComponent<class StaticMeshComponent>(parentName);
+    //staticMeshComponent->SetModel("./Data/Models/DarkStage0302/DarkStage.gltf", true);
     staticMeshComponent->SetModel("./Data/Models/DarkStage_0302/DarkStage.gltf", true);
     //staticMeshComponent->SetModel("./Data/Models/DarkStage0223_3/DarkStage.gltf", true);
     //staticMeshComponent->SetModel("./Data/Models/DarkStage0226_1/untitled.gltf", true);
@@ -86,7 +86,7 @@ void FightStage::Initialize(const Transform& transform)
             door->SetRelativeScaleDirect(point.worldScale);
 #endif // 0
         }
-        if (point.name == "Spawn_Particle_Steam")
+        else if (point.name == "Spawn_Particle_Steam")
         {
             for (int i = 0; i < 3; i++)
             {
@@ -107,7 +107,7 @@ void FightStage::Initialize(const Transform& transform)
 
             }
         }
-        if (point.name.rfind("Spawn_Chandelier", 0) == 0) 
+        else if (point.name.rfind("Spawn_Chandelier", 0) == 0)
         {// 名前が "Spawn_Chandelier" で始まる場合、シャンデリアを配置
             DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
@@ -130,6 +130,18 @@ void FightStage::Initialize(const Transform& transform)
             };
 
             auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageCandelabraActor>("candelabra", candelabraTr);
+        }
+        else if (point.name.rfind("Spawn_Barrel", 0) == 0)
+        {
+            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+
+            Transform barrelTr{
+                pos,
+                point.worldRotation,
+                point.worldScale
+            };
+
+            auto barrel = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageBarrelActor>("barrel", barrelTr);
         }
     }
 

@@ -8,6 +8,9 @@ public:
     virtual ~DarkStageBarrelActor() = default;
     void Initialize(const Transform& transform)override;
 
+    void Update(float deltaTime) override;
+
+    void DrawImGuiDetails() override;
 private:
     // ’M‚Ìƒ‚ƒfƒ‹
     std::shared_ptr<SkeletalMeshComponent> barrelMeshComponent;

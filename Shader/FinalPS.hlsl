@@ -19,7 +19,7 @@ cbuffer SSAO_CONSTANTS_BUFFER : register(b5)
     float radius;
     float bias;
     float power;
-    float split_u;
+    float pad;
 }
 
 // texcoord -> ndc 空間に変換
@@ -274,7 +274,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     float4 finalColor = color;
 
     // 分割表示
-    if (pin.texcoord.x < split_u)
+    if (pin.texcoord.x < splitU)
     {
         // 左側はポストなし
         finalColor = sceneColor;

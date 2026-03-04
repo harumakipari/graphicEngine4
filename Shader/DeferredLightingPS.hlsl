@@ -81,8 +81,8 @@ float4 main(VS_OUT pin) : SV_TARGET
             		3250		1		0.0014	0.000007	
             */
             float Kc = 1.0; // attenuation_constant
-            float Kl = 0.045; // attenuation_linear
-            float Kq = 0.0075; // attenuation_quadratic
+            float Kl = 0.7; // attenuation_linear
+            float Kq = 1.8; // attenuation_quadratic
             float attenuation = saturate(1.0 / (Kc + Kl * attenuateLength + Kq * (attenuateLength * attenuateLength)));
 #else
             float attenuation = attenuateLength * attenuateLength;

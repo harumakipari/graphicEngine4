@@ -101,7 +101,8 @@ protected:
     {
         float shadowColor = 0.422f;
         float shadowDepthBias = -0.001f;
-        float pads[2];
+        float splitU = 0.0f;
+        float pad;
 
         int enableSsao = true;
         int enableCascadedShadowMaps = true;

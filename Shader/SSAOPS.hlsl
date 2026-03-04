@@ -15,7 +15,7 @@ cbuffer SSAO_CONSTANTS_BUFFER : register(b5)
     float radius;
     float bias;
     float power;
-    float split_u;
+    float pad;
 }
 
 
