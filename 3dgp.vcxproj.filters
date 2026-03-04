@@ -516,6 +516,9 @@
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageCandelabraActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageBarrelActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -835,6 +838,7 @@
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStagePointLightActor.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageChandelierActor.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageCandelabraActor.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageBarrelActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -927,12 +931,6 @@
     <FxCompile Include="Shader\HighFreqWorleyCS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\InitializeParticleCS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\IntegrateParticleCS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\LineSegmentPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -943,15 +941,6 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\LuminanceExtranctionPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\ParticleGS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\ParticlePS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\ParticleVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\ShaderToyPS.hlsl">
@@ -1095,9 +1084,6 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\imageBasedLighting.hlsli">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shader\Particle.hlsli">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\PerlinWorleyNoise.hlsli">

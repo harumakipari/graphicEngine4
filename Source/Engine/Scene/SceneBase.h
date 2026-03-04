@@ -102,7 +102,11 @@ protected:
         float shadowColor = 0.422f;
         float shadowDepthBias = -0.001f;
         float splitU = 0.0f;
-        float pad;
+        float	hueShift = 0.0f;;	// 色相調整
+
+        float	saturation = 1.0f;	// 彩度調整
+        float	brightness = 1.0f;	// 明度調整
+        XMFLOAT2 paddings; // 16バイト境界に合わせるためのパディング
 
         int enableSsao = true;
         int enableCascadedShadowMaps = true;
@@ -169,14 +173,8 @@ protected:
 
     std::unordered_map<RenderPass, std::vector<RenderHook>> renderHooks;
 
-    // シーンのカラーを途中で送る時に使用
-    Microsoft::WRL::ComPtr<ID3D11Texture2D> sceneColorBuffer;
-    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> sceneColorSRV;
-    Microsoft::WRL::ComPtr<ID3D11Texture2D> sceneColorStencilBuffer;
 
 
 
 
-    //　dummyTextureを一旦入れる
-    std::shared_ptr<UIImageComponent> dummyTexture;
 };

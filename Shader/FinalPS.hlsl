@@ -1,6 +1,7 @@
 #include "FullScreenQuad.hlsli"
 #include "Constants.hlsli"
 #include "Sampler.hlsli"
+#include "FilterFunctions.hlsli"
 
 Texture2D colorTexture : register(t0);
 Texture2D positionTexture : register(t1);
@@ -280,8 +281,27 @@ float4 main(VS_OUT pin) : SV_TARGET
         finalColor = sceneColor;
     }
 
-    // トーンマップは共通にする
-    finalColor.rgb = JodieReinhardToneMap(finalColor.rgb);
+    {
+        // トーンマップは共通にする
+        finalColor.rgb = JodieReinhardToneMap(finalColor.rgb);
+
+        // フィルター
+        // RGB > HSVに変換
+        finalColor.rgb = RGB2HSV(finalColor.rgb);
+
+        // 色相調整
+        finalColor.r += hueShift;
+
+        // 彩度調整
+        finalColor.g *= saturation;
+
+        // 明度調整
+        finalColor.b *= brightness;
+
+        // HSV > RGBに変換
+        finalColor.rgb = HSV2RGB(finalColor.rgb);
+    }
+
 
 
     return finalColor;

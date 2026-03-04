@@ -13,7 +13,11 @@ cbuffer SHADER_CONSTANT_BUFFER : register(b9)
     float shadowColor;
     float shadowDepthBias;
     float splitU;
-    float align;
+    float hueShift; // 色相調整
+
+    float saturation; // 彩度調整
+    float brightness; // 明度調整
+    float2 paddings; // 16バイトアラインメントのためのパディング
 
     bool enableSSAO;
     bool enableCascadedShadowMaps;

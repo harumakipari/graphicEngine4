@@ -73,14 +73,13 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, static_cast<uint32_t>(width), height, 3);
 
     frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
-    imGuiGizmoBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
+    //imGuiGizmoBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
 
     // GBUFFER
     gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
     hr = CreatePsFromCSO(device, "./Shader/DeferredLightingPS.cso", deferredPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    //hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
     hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
@@ -128,48 +127,6 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         imageSize.y
     );
     Logger::Log(U8("UI Render viewport ") + std::to_string(imageMin.x) + std::to_string(imageMin.y) + std::to_string(imageSize.x) + std::to_string(imageSize.y));
-
-#if 0
-    // シーンカラーテクスチャを送るのに使用する
-    {
-        D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc{};
-
-        // シーンカラー用
-        Microsoft::WRL::ComPtr<ID3D11Resource> colorResource;
-        frameBuffer->shaderResourceViews[0]->GetResource(colorResource.GetAddressOf());
-
-        hr = colorResource->QueryInterface<ID3D11Texture2D>(sceneColorBuffer.GetAddressOf());
-        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-        sceneColorBuffer->GetDesc(&texture2dDesc);
-        _ASSERT_EXPR(
-            texture2dDesc.Format == DXGI_FORMAT_R8G8B8A8_UNORM ||
-            texture2dDesc.Format == DXGI_FORMAT_B8G8R8A8_UNORM ||
-            texture2dDesc.Format == DXGI_FORMAT_R16G16B16A16_FLOAT,
-            "scene color must be a color format"
-        );
-
-        texture2dDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-        texture2dDesc.CPUAccessFlags = 0;
-        texture2dDesc.MiscFlags = 0;
-
-        hr = device->CreateTexture2D(&texture2dDesc, nullptr, sceneColorStencilBuffer.GetAddressOf());
-        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-        shaderResourceViewDesc.Format = texture2dDesc.Format;
-        shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-        shaderResourceViewDesc.Texture2D.MipLevels = 1;
-
-        hr = device->CreateShaderResourceView(
-            sceneColorStencilBuffer.Get(),
-            &shaderResourceViewDesc,
-            sceneColorSRV.GetAddressOf()
-        );
-        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    }
-#endif // 0
-
-    dummyTexture = std::make_shared<UIImageComponent>("./Data/Textures/UI/Oden_seane_change.png", "backGround");
-    dummyTexture->SetSize({ 1920, 1080 });
 
     return true;
 }
@@ -935,6 +892,9 @@ void SceneBase::DrawPostEffectTab()
     ImGui::Checkbox("Enable Fog", &enableFog);
     ImGui::Checkbox("Enable CSM", &enableCascadedShadowMaps);
     ImGui::SliderFloat("split_u", &shaderCBuffer->data.splitU, 0.0f, +1.0f);
+    ImGui::SliderFloat(U8("色相調整"), &shaderCBuffer->data.hueShift, 0.0f, +360.0f);
+    ImGui::SliderFloat(U8("彩度調整"), &shaderCBuffer->data.saturation, 0.0f, +2.0f);
+    ImGui::SliderFloat(U8("明度調整"), &shaderCBuffer->data.brightness, 0.0f, +2.0f);
 
     sceneEffectManager->DrawGui();
     postEffectManager->DrawGui();

@@ -53,7 +53,7 @@ cbuffer PRIMITIVE_CONSTANT_BUFFER : register(b0)
     int material;
     bool hasTangent;
     int skin;
-    int padding;
+    int align;
     
     row_major float4x4 inverseTransposeWorld;
 }
@@ -63,15 +63,15 @@ cbuffer PLUS_ALPHA_CONSTANT_BUFFER : register(b5)
 {
     float4 cpuColor; // 色をCPU側で指定する用　（ダメージ当たったときとか）
 
-    float hueShift; // 色相調整
-    float saturation; // 彩度調整
-    float brightness; // 明度調整
+    float modelHueShift; // 色相調整
+    float modelSaturation; // 彩度調整
+    float modelBrightness; // 明度調整
     float dissolve; // ディゾルブ用
 
     float4 morphWeights;
 
     float emissionPower; // 自己発光の強さ
-    int value;  // チーム制作で追加した
+    int value; // チーム制作で追加した
 }
 
 
@@ -135,7 +135,7 @@ struct PS_OUT
 {
     float4 normal : SV_TARGET1;
     float4 color : SV_TARGET3;
-    float4 position : SV_TARGET4;   // world position
+    float4 position : SV_TARGET4; // world position
 };
 
 struct GBUFFER_PS_OUT

@@ -117,13 +117,13 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         color.rgb = RGB2HSV(color.rgb);
 
     // F‘Š’²®
-        color.r += hueShift;
+        color.r += modelHueShift;
 
     // Ê“x’²®
-        color.g *= saturation;
+        color.g *= modelSaturation;
 
     // –¾“x’²®
-        color.b *= brightness;
+        color.b *= modelBrightness;
 
     // HSV > RGB ‚É•ÏŠ·
         color.rgb = HSV2RGB(color.rgb);
