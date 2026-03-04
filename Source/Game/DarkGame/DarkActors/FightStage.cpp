@@ -16,8 +16,8 @@ void FightStage::Initialize(const Transform& transform)
     auto scene = GetOwnerScene();
 
     std::shared_ptr<StaticMeshComponent> staticMeshComponent = this->AddComponent<class StaticMeshComponent>(parentName);
-    //staticMeshComponent->SetModel("./Data/Models/DarkStage0302/DarkStage.gltf", true);
-    staticMeshComponent->SetModel("./Data/Models/DarkStage_0302/DarkStage.gltf", true);
+    staticMeshComponent->SetModel("./Data/Models/DarkStage0302/DarkStage.gltf", true);
+    //staticMeshComponent->SetModel("./Data/Models/DarkStage_0302/DarkStage.gltf", true);
     //staticMeshComponent->SetModel("./Data/Models/DarkStage0223_3/DarkStage.gltf", true);
     //staticMeshComponent->SetModel("./Data/Models/DarkStage0226_1/untitled.gltf", true);
     //staticMeshComponent->SetModel("./Data/Models/MedievalDungeon.glb", true);

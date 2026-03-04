@@ -55,6 +55,8 @@ public:
         return projection;
     }
 
+    float GetNearClipDistance() const { return nearZ; }
+    float GetFarClipDistance() const { return farZ; }
 public:
     float yaw = 0.0f;
     float pitch = DirectX::XMConvertToRadians(-12.0f);

@@ -314,6 +314,7 @@
     <ClCompile Include="Source\Graphics\Effect\HuskParticle.cpp" />
     <ClCompile Include="Source\Graphics\Effect\Particles.cpp" />
     <ClCompile Include="Source\Graphics\Environment\SkyMap.cpp" />
+    <ClCompile Include="Source\Graphics\PostProcess\DepthOfFieldEffect.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\FogEffect.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\FrameBuffer.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\FullScreenQuad.cpp" />
@@ -461,6 +462,7 @@
     <ClInclude Include="Source\Graphics\Effect\Particles.h" />
     <ClInclude Include="Source\Graphics\Environment\SkyMap.h" />
     <ClInclude Include="Source\Graphics\PostProcess\BloomEffect.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\DepthOfFieldEffect.h" />
     <ClInclude Include="Source\Graphics\PostProcess\FogEffect.h" />
     <ClInclude Include="Source\Graphics\PostProcess\FrameBuffer.h" />
     <ClInclude Include="Source\Graphics\PostProcess\FullScreenQuad.h" />
@@ -598,6 +600,12 @@
     <FxCompile Include="Shader\ComputeParticleUpdateCS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\DepthOfFieldPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\ElasticBuildingCsmVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>

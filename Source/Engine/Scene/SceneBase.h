@@ -106,7 +106,8 @@ protected:
 
         float	saturation = 1.0f;	// 彩度調整
         float	brightness = 1.0f;	// 明度調整
-        XMFLOAT2 paddings; // 16バイト境界に合わせるためのパディング
+        float focusDistance = 5.0f; // 焦点距離
+        float dofRange = 5.0f;  // 被写界深度範囲
 
         int enableSsao = true;
         int enableCascadedShadowMaps = true;

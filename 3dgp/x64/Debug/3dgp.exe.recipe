@@ -55,6 +55,9 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ComputeParticleUpdateCS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\DepthOfFieldPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ElasticBuildingCsmVS.cso</FullPath>
     </ContentFile>
     <ContentFile>

@@ -53,6 +53,12 @@ public:
 
         DirectX::XMStoreFloat4x4(&viewConstants.invView, DirectX::XMMatrixInverse(NULL, V));
         viewConstants.cameraPosition = { viewConstants.invView._41, viewConstants.invView._42, viewConstants.invView._43,1.0f };
+
+        viewConstants.cameraClipDistance.x = mainCameraComponent->GetNearClipDistance();
+		viewConstants.cameraClipDistance.y = mainCameraComponent->GetFarClipDistance();
+		viewConstants.cameraClipDistance.z = mainCameraComponent->GetNearClipDistance() * mainCameraComponent->GetFarClipDistance();
+		viewConstants.cameraClipDistance.w = mainCameraComponent->GetFarClipDistance() - mainCameraComponent->GetNearClipDistance();
+
         return viewConstants;
     }
 protected:
@@ -87,6 +93,12 @@ public:
         DirectX::XMStoreFloat4x4(&viewConstants.invViewProjection, DirectX::XMMatrixInverse(NULL, V * P));
 
         DirectX::XMStoreFloat4x4(&viewConstants.invView, DirectX::XMMatrixInverse(NULL, V));
+
+        viewConstants.cameraClipDistance.x = mainCameraComponent->GetNearClipDistance();
+        viewConstants.cameraClipDistance.y = mainCameraComponent->GetFarClipDistance();
+        viewConstants.cameraClipDistance.z = mainCameraComponent->GetNearClipDistance() * mainCameraComponent->GetFarClipDistance();
+        viewConstants.cameraClipDistance.w = mainCameraComponent->GetFarClipDistance() - mainCameraComponent->GetNearClipDistance();
+
         return viewConstants;
     }
 private:

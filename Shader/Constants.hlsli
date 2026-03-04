@@ -17,7 +17,8 @@ cbuffer SHADER_CONSTANT_BUFFER : register(b9)
 
     float saturation; // 彩度調整
     float brightness; // 明度調整
-    float2 paddings; // 16バイトアラインメントのためのパディング
+    float focusDistance; // 焦点距離
+    float dofRange ; // 被写界深度範囲
 
     bool enableSSAO;
     bool enableCascadedShadowMaps;
@@ -80,6 +81,7 @@ cbuffer VIEW_CONSTANTS_BUFFER : register(b4)
     row_major float4x4 inverseProjection;
     row_major float4x4 inverseViewProjection;
     row_major float4x4 invView;
+    float4 cameraClipDistance;
 }
 
 #endif
