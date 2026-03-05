@@ -10,6 +10,7 @@ Texture2D bloomTexture : register(t4);
 Texture2D fogTexture : register(t5);
 Texture2D ssaoTexture : register(t6);
 Texture2D ssrTexture : register(t7);
+Texture2D bokehTexture : register(t8);
 Texture2DArray cascadedShadowMaps : register(t9);
 
 Texture3D noise3D : register(t20); // ノイズテクスチャ
@@ -169,6 +170,8 @@ float3 CalculatedFogColor(float2 uv, float depth)
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
+    return bokehTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
+
     uint mipLevel = 0, width, height, numberOfLevel, levels;
     colorTexture.GetDimensions(mipLevel, width, height, numberOfLevel);
 

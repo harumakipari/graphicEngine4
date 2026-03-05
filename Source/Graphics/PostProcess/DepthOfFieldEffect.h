@@ -23,7 +23,7 @@ public:
     // 出力（次のエフェクトや最終合成に渡す用） 
     ID3D11ShaderResourceView* GetOutputSRV()const override
     {
-        return finalBokehBuffer->shaderResourceViews[0].Get();
+        return depthOfFieldBuffer->shaderResourceViews[0].Get();
     }
 
     // UI 調整 (ImGui)

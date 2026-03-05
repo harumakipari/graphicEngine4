@@ -660,8 +660,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
               sceneEffectManager->GetOutput("FogEffect"),
               sceneEffectManager->GetOutput("SSAOEffect"),
               sceneEffectManager->GetOutput("SSREffect"),
-              gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],   // emissiveMap
-              //cascaded_shadow_map->depth_map().Get(),   //cascadedShadowMaps
+              sceneEffectManager->GetOutput("DepthOfFieldEffect"), // 被写界深度のために、ぼやけたクスチャ
+              //gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],   // emissiveMap
               cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
         };
         //immediateContext->PSSetShaderResources(8, 1, cascadedShadowMaps->depthMap().GetAddressOf());
