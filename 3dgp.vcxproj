@@ -397,6 +397,7 @@
     <ClInclude Include="Source\Engine\Debug\Logger.h" />
     <ClInclude Include="Source\Engine\Debug\LoggerConfig.h" />
     <ClInclude Include="Source\Engine\Debug\SceneEditor.h" />
+    <ClInclude Include="Source\Engine\Debug\ScopedTimer.h" />
     <ClInclude Include="Source\Engine\Easing\Easing.h" />
     <ClInclude Include="Source\Engine\Easing\TestEasingHandler.h" />
     <ClInclude Include="Source\Engine\Effects\CoreComputeParticleSystem.h" />

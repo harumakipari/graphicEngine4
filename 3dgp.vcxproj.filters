@@ -486,9 +486,6 @@
     <ClCompile Include="Source\Game\Actors\WaterSphere\ShapeMatchingModel.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\DarkGame\DarkActors\FightStage.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Game\Actors\Camera\Camera.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -517,6 +514,18 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageBarrelActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageBrazierActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageGroundBrazierActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\PostProcess\DepthOfFieldEffect.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -790,7 +799,6 @@
     <ClInclude Include="Source\Game\Actors\Player\PlayerStateDerived.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\Boss\BossEnemy.h" />
     <ClInclude Include="Source\Game\Actors\Enemy\Boss\BossState.h" />
-    <ClInclude Include="Source\Game\DarkGame\DarkActors\FightStage.h" />
     <ClInclude Include="Source\Graphics\Renderer\PrimitiveRenderer.h" />
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\Graphics\Renderer\PrimitiveShapeRenderer.h" />
@@ -839,6 +847,11 @@
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageChandelierActor.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageCandelabraActor.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageBarrelActor.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageBrazierActor.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageGroundBrazierActor.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStage.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\DepthOfFieldEffect.h" />
+    <ClInclude Include="Source\Engine\Debug\ScopedTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -1061,6 +1074,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\PointLightModelPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\DepthOfFieldPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

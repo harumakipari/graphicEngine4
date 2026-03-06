@@ -2445,7 +2445,6 @@ void InterleavedGltfModel::ExtractAnimations(const tinygltf::Model& transmission
         }
     }
 
-    Logger::Log(Logger::LogCategory::System, "animations Before Count: " + std::to_string(animations.size()));
 
     for (Animation& animation : animations)
     {
@@ -2457,7 +2456,6 @@ void InterleavedGltfModel::ExtractAnimations(const tinygltf::Model& transmission
         }
     }
 
-    Logger::Log(Logger::LogCategory::System, "animations After Count: " + std::to_string(animations.size()));
 }
 
 void InterleavedGltfModel::AppendAnimations(const std::vector<std::string>& filenames)

@@ -2267,7 +2267,6 @@ void MorphModel::ExtractAnimations(const tinygltf::Model& transmission_model)
         }
     }
 
-    Logger::Log(Logger::LogCategory::System, "animations Before Count: " + std::to_string(animations.size()));
 
     for (Animation& animation : animations)
     {
@@ -2279,7 +2278,6 @@ void MorphModel::ExtractAnimations(const tinygltf::Model& transmission_model)
         }
     }
 
-    Logger::Log(Logger::LogCategory::System, "animations After Count: " + std::to_string(animations.size()));
 }
 
 void MorphModel::AppendAnimations(const std::vector<std::string>& filenames)

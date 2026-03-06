@@ -19,3 +19,4 @@
 
 
 #include "Engine/Debug/Logger.h"
+#include "Engine/Debug/ScopedTimer.h"

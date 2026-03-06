@@ -27,6 +27,7 @@
 
 bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
+    PROFILE_FUNCTION();
     // ライトの方向と色を設定
     //lightDirection = { -1.0f, -1.0f, -0.02f, 0.0f };
 
@@ -38,13 +39,19 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     //lightDirection = { 1.0f, -1.0f, -0.008f, 0.0f };   // 上の窓からの光
     lightColor = { 1.0f, 1.0f, 1.0f, 3.0f };
     //lightColor = { 1.0f, 1.0f, 1.0f, 14.62f };
-
-    SceneBase::Initialize(device, width, height, props);
-
-    Physics::Instance().Initialize();
-
-    //アクターをセット
-    SetUpActors();
+    {
+        //PROFILE_SCOPE("SceneBase Init");
+        SceneBase::Initialize(device, width, height, props);
+    }
+    {
+        //PROFILE_SCOPE("Physics Init");
+        Physics::Instance().Initialize();
+    }
+    {
+        PROFILE_SCOPE("SetUpActors Init");
+        //アクターをセット
+        SetUpActors();
+    }
 
     return true;
 }
@@ -120,38 +127,61 @@ void SampleScene::Update(float deltaTime)
 
 void SampleScene::SetUpActors()
 {
-    auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
-    mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
-    Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.07f,1.07f,1.07f });
-    player = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
+    {
+        PROFILE_SCOPE("Create MainCamera");
+        auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
+        mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
+        SetActiveCamera(mainCameraActor);
+    }
+    {
+        PROFILE_SCOPE("Create Player");
+        Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.07f,1.07f,1.07f });
+        player = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
+    }
+
     mainCameraComponent->target = (player->GetRootComponent());
     mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
-    SetActiveCamera(mainCameraActor);
+
     Logger::Log(U8("sampleシーンのカメラ設定される。"));
 
-    Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStage>("stage", stageTr); // 元のモデルの scale を 0.4f
-
-    auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
-    debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
-
-    auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
-    pauseActor->SetRetrySceneName("SampleScene");
-    //Transform enemyTr(DirectX::XMFLOAT3{ 6.7f,-2.45f,5.6f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
-    //auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("enemy", enemyTr);
-
-    Transform dustParticleTr(DirectX::XMFLOAT3{ -27.0f,0.0f,11.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto dustParticleActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("dustParticle", dustParticleTr);
-    auto dustParticle=dustParticleActor->AddComponent<ParticleComponent>("dustComponent");
-    dustParticle->Load("./Data/Effect/Files/DustEffect.json");
-    ParticleComponent::AddSettings settings
     {
-        .loop = true, // ループ再生
-    };
-    dustParticle->SetAddSettings(settings);
-    dustParticle->Play();
+        PROFILE_SCOPE("Create Stage");
+        Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStage>("stage", stageTr); // 元のモデルの scale を 0.4f
+    }
 
-    cameraManager->SetDebugCamera(debugCameraActor);
+    {
+        PROFILE_SCOPE("Create DebugCamera");
+        auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
+        debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
+        cameraManager->SetDebugCamera(debugCameraActor);
+    }
+
+    {
+        PROFILE_SCOPE("Create Pause");
+        auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
+        pauseActor->SetRetrySceneName("SampleScene");
+    }
+
+    {
+        PROFILE_SCOPE("Create Enemy");
+        Transform enemyTr(DirectX::XMFLOAT3{ 6.7f,-2.45f,5.6f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
+        auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("enemy", enemyTr);
+    }
+
+    {
+        PROFILE_SCOPE("Create DustParticle");
+        Transform dustParticleTr(DirectX::XMFLOAT3{ -27.0f,0.0f,11.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        auto dustParticleActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("dustParticle", dustParticleTr);
+        auto dustParticle = dustParticleActor->AddComponent<ParticleComponent>("dustComponent");
+        dustParticle->Load("./Data/Effect/Files/DustEffect.json");
+        ParticleComponent::AddSettings settings
+        {
+            .loop = true, // ループ再生
+        };
+        dustParticle->SetAddSettings(settings);
+        dustParticle->Play();
+    }
 }
 
 bool SampleScene::Uninitialize(ID3D11Device* device)
