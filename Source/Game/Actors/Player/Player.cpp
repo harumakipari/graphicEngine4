@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "Player.h"
-#include <float.h>
 
 #ifdef USE_IMGUI
 #define IMGUI_ENABLE_DOCKING
@@ -13,7 +12,6 @@
 
 #include "Components/Render/PointLightComponent.h"
 
-// UIで追加
 #include "PlayerStateDerived.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Engine/Scene/Scene.h"
@@ -24,93 +22,112 @@
 void Player::Initialize(const Transform& transform)
 {
     // 描画用コンポーネントを追加
-    skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
-    skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle.gltf");
-    for (auto& material : skeletalMeshComponent->model->materials)
     {
-        //material.data.alphaMode = 2;    // 全てforwardで描画したいからBLENDに変更する
+        PROFILE_SCOPE("Create PlayerModel");
 
-        if (material.name == "M_Aurora_Hair_Blonde_FrozenHearth")
-        {// 髪の毛だったら
-            //material.overridePipelineName = "characterHairForward";
-            //material.data.alphaMode = 2;
+        skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
+        skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/animation.gltf");
+        //skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle.gltf");
+#if 0
+        for (auto& material : skeletalMeshComponent->model->materials)
+        {
+            //material.data.alphaMode = 2;    // 全てforwardで描画したいからBLENDに変更する
+
+            if (material.name == "M_Aurora_Hair_Blonde_FrozenHearth")
+            {// 髪の毛だったら
+                //material.overridePipelineName = "characterHairForward";
+                //material.data.alphaMode = 2;
+            }
         }
+
+#endif // 0
+    }
+    {
+        PROFILE_SCOPE("Create PlayerAnimationController");
+        const std::vector<std::string> animationFilenames =
+        {
+            //"./Data/Models/Characters/Aurora_FrozenHealth/animation.glb",
+
+            //"./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_A.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_B.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/Level_Start.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd_Start.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd_Stop.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_A.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_B.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_C.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_D.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/Ability_R.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/Emote_Ice_Sculpture.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Back.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Front.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Left.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Right.glb",
+            //"./Data/Models/Characters/Aurora_FrozenHealth/Death.glb",
+        };
+
+        //skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
+        //skeletalMeshComponent->AppendAnimations(animationFilenames);
+        // アニメーションコントローラーを作成
+        auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
+        controller->AddAnimation("Idle", 8);
+        controller->AddAnimation("Idle_Noise_A", 1);
+        controller->AddAnimation("Idle_Noise_B", 2);
+        controller->AddAnimation("Level_Start", 3);
+        controller->AddAnimation("Jog_Fwd_Start", 4);
+        controller->AddAnimation("Jog_Fwd", 11);
+        controller->AddAnimation("Jog_Fwd_Stop", 6);
+        controller->AddAnimation("Primary_Attack_Fast_A", 15);
+        controller->AddAnimation("Primary_Attack_Fast_B", 8);
+        controller->AddAnimation("Primary_Attack_Fast_C", 9);
+        controller->AddAnimation("Primary_Attack_Fast_D", 10);
+        controller->AddAnimation("Ability_R", 11);
+        //controller->AddAnimation("Emote_Ice_Sculpture", 12);
+        //controller->AddAnimation("HitReact_Back", 13);
+        //controller->AddAnimation("HitReact_Front", 14);
+        //controller->AddAnimation("HitReact_Left", 15);
+        //controller->AddAnimation("HitReact_Right", 16);
+        //controller->AddAnimation("Death", 17);
+
+        // アニメーションコントローラーを character に追加
+        this->SetAnimationController(controller);
     }
 
-    const std::vector<std::string> animationFilenames =
     {
-        "./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_A.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Idle_Noise_B.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Level_Start.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd_Start.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Jog_Fwd_Stop.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_A.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_B.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_C.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Primary_Attack_Fast_D.glb",
-        "./Data/Models/Characters/Aurora_FrozenHealth/Ability_R.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Emote_Ice_Sculpture.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Back.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Front.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Left.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/HitReact_Right.glb",
-        //"./Data/Models/Characters/Aurora_FrozenHealth/Death.glb",
-    };
+        PROFILE_SCOPE("Create PlayerStateMachine");
+        // ステートマシンを作成
+        stateMachine_ = std::make_shared<StateMachine>();
+        stateMachine_->RegisterState(std::make_unique<PlayerIdleState>(this));
+        stateMachine_->RegisterState(std::make_unique<PlayerRunningState>(this));
+        stateMachine_->RegisterState(std::make_unique<PlayerAttackingState>(this));
 
-    //skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
-    skeletalMeshComponent->AppendAnimations(animationFilenames);
-    // アニメーションコントローラーを作成
-    auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
-    controller->AddAnimation("Idle", 0);
-    controller->AddAnimation("Idle_Noise_A", 1);
-    controller->AddAnimation("Idle_Noise_B", 2);
-    controller->AddAnimation("Level_Start", 3);
-    controller->AddAnimation("Jog_Fwd_Start", 4);
-    controller->AddAnimation("Jog_Fwd", 5);
-    controller->AddAnimation("Jog_Fwd_Stop", 6);
-    controller->AddAnimation("Primary_Attack_Fast_A", 7);
-    controller->AddAnimation("Primary_Attack_Fast_B", 8);
-    controller->AddAnimation("Primary_Attack_Fast_C", 9);
-    controller->AddAnimation("Primary_Attack_Fast_D", 10);
-    controller->AddAnimation("Ability_R", 11);
-    //controller->AddAnimation("Emote_Ice_Sculpture", 12);
-    //controller->AddAnimation("HitReact_Back", 13);
-    //controller->AddAnimation("HitReact_Front", 14);
-    //controller->AddAnimation("HitReact_Left", 15);
-    //controller->AddAnimation("HitReact_Right", 16);
-    //controller->AddAnimation("Death", 17);
-
-    // アニメーションコントローラーを character に追加
-    this->SetAnimationController(controller);
-
-    // ステートマシンを作成
-    stateMachine_ = std::make_shared<StateMachine>();
-    stateMachine_->RegisterState(std::make_unique<PlayerIdleState>(this));
-    stateMachine_->RegisterState(std::make_unique<PlayerRunningState>(this));
-    stateMachine_->RegisterState(std::make_unique<PlayerAttackingState>(this));
-
-    // ステートマシンを character に追加
-    //this->SetStateMachine(stateMachine);
-    // 初期ステートを設定
-    stateMachine_->ChangeState("Idle");
+        // ステートマシンを character に追加
+        //this->SetStateMachine(stateMachine);
+        // 初期ステートを設定
+        stateMachine_->ChangeState("Idle");
+    }
 
 
-    // 敵からの攻撃を受ける当たり判定用のコンポーネントを追加
-    std::shared_ptr<CapsuleComponent> capsuleComponent = this->AddComponent<class CapsuleComponent>("capsuleComponent", "skeletalComponent");
-    DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
-    height = size.y;
-    radius = size.x * 0.5f;
-    capsuleComponent->SetRadiusAndHeight(radius, height);
-    capsuleComponent->SetMass(mass);
-    capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
-    capsuleComponent->SetLayer(CollisionLayer::Player);
-    capsuleComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
-    capsuleComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-    capsuleComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::Block);
-    capsuleComponent->SetCollisionOffsetY(height * 0.5f);
-    capsuleComponent->SetIsVisibleDebugBox(false);
-    capsuleComponent->Initialize();
+    {
+        PROFILE_SCOPE("Create PlayerCollision");
+
+        // 敵からの攻撃を受ける当たり判定用のコンポーネントを追加
+        std::shared_ptr<CapsuleComponent> capsuleComponent = this->AddComponent<class CapsuleComponent>("capsuleComponent", "skeletalComponent");
+        DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
+        height = size.y;
+        radius = size.x * 0.5f;
+        capsuleComponent->SetRadiusAndHeight(radius, height);
+        capsuleComponent->SetMass(mass);
+        capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+        capsuleComponent->SetLayer(CollisionLayer::Player);
+        capsuleComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
+        capsuleComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+        capsuleComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::Block);
+        capsuleComponent->SetCollisionOffsetY(height * 0.5f);
+        capsuleComponent->SetIsVisibleDebugBox(false);
+        capsuleComponent->Initialize();
+    }
 
 #if 0
     // ポイントライトコンポーネントを追加
@@ -120,7 +137,6 @@ void Player::Initialize(const Transform& transform)
     pointLightComponent->SetRange(1.5f);
     pointLightComponent->SetIntensity(10.0f);
 
-#endif // 0
     AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
         {
             if (auto item = std::dynamic_pointer_cast<Stage>(hitPair.second->GetActor()))
@@ -130,21 +146,25 @@ void Player::Initialize(const Transform& transform)
             //std::string a = hitPair.second->GetActor()->GetName() + "is hit player";
             //OutputDebugStringA(a.c_str());
         });
+#endif // 0
 
 
-    // 入力用のコンポーネントを追加
-    inputComponent = this->AddComponent<class InputComponent>("inputComponent", "skeletalComponent");
+    {
+        PROFILE_SCOPE("Create PlayerComponent");
 
-    // 移動用コンポーネントを追加
-    characterMovementComponent = this->AddComponent<CharacterMovementComponent>("movementComponent", "skeletalComponent");
-    //characterMovementComponent->SetUseGravity(false);
+        // 入力用のコンポーネントを追加
+        inputComponent = this->AddComponent<class InputComponent>("inputComponent", "skeletalComponent");
 
-    // 回転用コンポーネントを追加
-    rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", "skeletalComponent");
+        // 移動用コンポーネントを追加
+        characterMovementComponent = this->AddComponent<CharacterMovementComponent>("movementComponent", "skeletalComponent");
+        //characterMovementComponent->SetUseGravity(false);
 
-    particleComponent = AddComponent<ParticleComponent>("particleComponent", "skeletalComponent");
-    particleComponent->Load("./Data/Effect/Files/heartTestEffect.json");
+        // 回転用コンポーネントを追加
+        rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", "skeletalComponent");
 
+        particleComponent = AddComponent<ParticleComponent>("particleComponent", "skeletalComponent");
+        particleComponent->Load("./Data/Effect/Files/heartTestEffect.json");
+    }
 }
 
 

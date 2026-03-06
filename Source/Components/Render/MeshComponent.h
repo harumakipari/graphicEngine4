@@ -23,6 +23,7 @@
 #include "Graphics/Resource/InterleavedGltfModel.h"
 #include "Engine/Utility/Win32Utils.h"
 #include "Game/Actors/WaterSphere/MorphModel.h"
+#include "Graphics/Resource/AssetManager.h"
 #include "Graphics/Resource/Texture.h"
 
 class Actor;
@@ -170,7 +171,8 @@ public:
     void SetModel(const std::string& filename, bool isSaveVerticesData = false)override
     {
         ID3D11Device* device = Graphics::GetDevice();
-        model = std::make_shared<InterleavedGltfModel>(device, filename, ModelTypes::ModelMode::SkeletalMesh, isSaveVerticesData);
+        //model = std::make_shared<InterleavedGltfModel>(device, filename, ModelTypes::ModelMode::SkeletalMesh, isSaveVerticesData);
+        model = AssetManager::Get().LoadModel(device, filename, ModelTypes::ModelMode::SkeletalMesh, isSaveVerticesData);
         modelNodes = model->GetNodes();
     }
 
@@ -297,13 +299,11 @@ public:
         if (auto parent = attachParent_.lock())
         {
             DirectX::XMFLOAT4X4 parentWorld = parent->GetComponentWorldTransform().ToWorldTransform();
-            //return model->GetJointWorldPosition(name, model->nodes, parentWorld);
             return model->GetJointWorldPosition(name, modelNodes, parentWorld);
         }
         else
         {
             DirectX::XMFLOAT4X4 world = GetComponentWorldTransform().ToWorldTransform();
-            //return model->GetJointWorldPosition(name, model->nodes, world);
             return model->GetJointWorldPosition(name, modelNodes, world);
         }
 
@@ -325,7 +325,7 @@ public:
     void SetModel(const std::string& filename, bool isSaveVerticesData = false)override
     {
         ID3D11Device* device = Graphics::GetDevice();
-        model = std::make_shared<InterleavedGltfModel>(device, filename, ModelTypes::ModelMode::StaticMesh, isSaveVerticesData);
+        model = AssetManager::Get().LoadModel(device, filename, ModelTypes::ModelMode::StaticMesh, isSaveVerticesData);
         modelNodes = model->GetNodes();
     }
 

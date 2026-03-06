@@ -86,6 +86,8 @@ float4 main(VS_OUT pin) : SV_TARGET
             float attenuation = saturate(1.0 / (Kc + Kl * attenuateLength + Kq * (attenuateLength * attenuateLength)));
 #else
             float attenuation = attenuateLength * attenuateLength;
+            //float attenuation = saturate(1 - attenuateLength / pointLights[i].range);
+            //attenuation *= attenuation;
 #endif
             LP /= len;
             const float pNoV = max(0.0, dot(N, V));

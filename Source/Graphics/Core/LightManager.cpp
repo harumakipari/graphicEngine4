@@ -24,13 +24,13 @@ void LightManager::Initialize(ID3D11Device* device)
     {
         sharedLights["MainChandelier"] =
             std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.584078431f, 0.254152089f, 2.39999986f),
+                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.584078431f, 0.254152089f, 1.0f),
             10.0f
                 });
 
         sharedLights["CandleChandelier"] =
             std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.491020888f, 0.234550565f, 2.39999986f),
+                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.491020888f, 0.234550565f, 0.3f),
             1.5f
                 });
     }
@@ -40,14 +40,14 @@ void LightManager::Initialize(ID3D11Device* device)
         sharedLights["TopCandelabra"] =
             std::make_shared<SharedLightParam>(
                 SharedLightParam{
-            DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.309468925f, 2.0f),
+            DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.309468925f, 0.8f),
             3.5f
                 });
 
         sharedLights["SideCandelabra"] =
             std::make_shared<SharedLightParam>(
                 SharedLightParam{
-            DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.309468925f, 1.19999993f),
+            DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.309468925f, 0.3f),
             1.0f
                 });
     }
@@ -57,13 +57,13 @@ void LightManager::Initialize(ID3D11Device* device)
         sharedLights["BrazierCenterBig"] =
             std::make_shared<SharedLightParam>(
                 SharedLightParam{
-            DirectX::XMFLOAT4(1.0f, 0.533276379f, 0.258182853f, 1.43999994f),
+            DirectX::XMFLOAT4(1.0f, 0.533276379f, 0.258182853f, 1.2f),
             10.f
                 });
 
         sharedLights["BrazierCenterSmall"] =
             std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.533276379f, 0.258182853f, 1.5999999f),
+                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.533276379f, 0.258182853f, 0.8f),
             8.0f
                 });
     }
@@ -72,7 +72,7 @@ void LightManager::Initialize(ID3D11Device* device)
     {
         sharedLights["GroundBrazierLight"] =
             std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.258182883f, 2.39999986f),
+                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.258182883f, 0.8f),
             10.f
                 });
     }
@@ -81,7 +81,7 @@ void LightManager::Initialize(ID3D11Device* device)
     {
         sharedLights["MeltedWaxLight"] =
             std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.630757093f, 0.219526187f, 1.27999997f),
+                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.630757093f, 0.219526187f, 0.4f),
             7.5f
                 });
     }
@@ -95,7 +95,7 @@ void LightManager::Initialize(ID3D11Device* device)
                 });
         sharedLights["TopStandingBrazier"] =
             std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.545724452f, 0.25015831f, 1.5999999f),
+                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.545724452f, 0.25015831f, 0.8f),
             8.0f
                 });
     }

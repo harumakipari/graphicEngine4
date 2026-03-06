@@ -30,3 +30,5 @@ AssetManager::LoadModel(ID3D11Device* device, const std::string& filename, Model
 
     return model;
 }
+
+

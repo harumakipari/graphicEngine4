@@ -3,17 +3,21 @@
 #include <memory>
 #include <string>
 
+#include "InterleavedGltfModel.h"
 #include "ModelType.h"
 
-class InterleavedGltfModel;
-
+struct AnimationAsset
+{
+    std::vector<InterleavedGltfModel::Animation> animations;
+};
 class AssetManager
 {
 public:
     static AssetManager& Get();
 
     std::shared_ptr<InterleavedGltfModel> LoadModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData = false);
-private:
 
+private:
+    // モデルのキャッシュ。キーはファイルパス
     std::unordered_map<std::string,std::weak_ptr<InterleavedGltfModel>> modelCache;
 };
