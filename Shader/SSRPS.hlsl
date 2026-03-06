@@ -3,7 +3,7 @@
 #include "Constants.hlsli"
 
 Texture2D positionTexture : register(t0); // ワールド空間
-Texture2D normalTexture : register(t1); // ワールド空間
+Texture2D normalTexture : register(t1); // ワールド空間 w成分はSSRを使うかどうか 0:使わない 1:使う
 Texture2D colorTexture : register(t2);
 Texture2D materialTexture : register(t3); // x:metallic y:occlusion z:roughness w:occlusionStrength
 
@@ -41,9 +41,17 @@ float3 main(VS_OUT pin) : SV_TARGET
     positionTexture.GetDimensions(mipLevel, dimensions.x, dimensions.y, numberOfLevels);
     
     float4 position = positionTexture.Sample(samplerStates[LINEAR_BORDER_WHITE], pin.texcoord); // world空間
-    float3 normal = normalTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).xyz; // world空間
+    float4 sampled = normalTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
+    float3 normal = sampled.xyz; // world空間
     float4 materialValue = materialTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
     float roughness = materialValue.z;
+
+    int useSsr = sampled.w; // 0:SSRを使わない 1:SSRを使う
+
+    if (useSsr == 0)
+    { // SSRを使わない場合は 反射色を足さないでそのまま返す
+        return float3(0, 0, 0); // SSR なし
+    }
 
     // world 空間　→　view 空間
     float4 positionView = mul(position, view);

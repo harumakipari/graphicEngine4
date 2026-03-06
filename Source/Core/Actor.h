@@ -379,7 +379,7 @@ public:
     {
 #ifdef USE_IMGUI
 
-        if (ImGui::TreeNode(actorName.c_str()))
+        if (ImGui::TreeNodeEx(actorName.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
         {
             // isValid チェックボックスを追加
             ImGui::Checkbox("isValid", &isActive);

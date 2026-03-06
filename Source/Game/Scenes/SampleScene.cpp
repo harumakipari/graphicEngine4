@@ -37,8 +37,7 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     //lightDirection = { 0.545f, -0.86f, -0.526f, 0.0f };   // 上の窓からの光
     lightDirection = { 0.9f, -0.64f, -0.058f, 0.0f };   // 上の窓からの光
     //lightDirection = { 1.0f, -1.0f, -0.008f, 0.0f };   // 上の窓からの光
-    lightColor = { 1.0f, 1.0f, 1.0f, 3.0f };
-    //lightColor = { 1.0f, 1.0f, 1.0f, 14.62f };
+    lightColor = { 1.0f, 1.0f, 1.0f, 1.5f };
     {
         //PROFILE_SCOPE("SceneBase Init");
         SceneBase::Initialize(device, width, height, props);
@@ -137,14 +136,17 @@ void SampleScene::SetUpActors()
         mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
     }
     SetActiveCamera(mainCameraActor);
-
     Logger::Log(U8("sampleシーンのカメラ設定される。"));
 
-    {
-        PROFILE_SCOPE("Create Stage");
-        Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-        auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStage>("stage", stageTr); // 元のモデルの scale を 0.4f
-    }
+
+    std::thread stageThread = std::thread([&]()
+        {
+            PROFILE_SCOPE("Create Stage");
+            Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+            auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStage>("stage", stageTr); // 元のモデルの scale を 0.4f
+        });
+
+
 
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
@@ -169,6 +171,8 @@ void SampleScene::SetUpActors()
     dustParticle->SetAddSettings(settings);
     dustParticle->Play();
     cameraManager->SetDebugCamera(debugCameraActor);
+
+    stageThread.join();
 }
 
 bool SampleScene::Uninitialize(ID3D11Device* device)

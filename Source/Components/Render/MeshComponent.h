@@ -86,7 +86,6 @@ public:
         plusAlphaCBuffer->data.dissolve = dissolve;
         plusAlphaCBuffer->data.cpuColor = cpuColor;
         plusAlphaCBuffer->data.emissionPower = emissionPower;
-        plusAlphaCBuffer->data.value = value;
         plusAlphaCBuffer->Activate(immediateContext, 5);
     }
 
@@ -104,7 +103,7 @@ public:
             ImGui::ColorEdit4("cpuColor", &cpuColor.x);
             ImGui::SliderFloat("emissionPower", &emissionPower, 0.0f, 20.0f);
             ImGui::SliderFloat4("morphWeight", &plusAlphaCBuffer->data.morphWeights.x, 0.0f, 1.0f);
-            ImGui::SliderInt("value", &plusAlphaCBuffer->data.value, 0, 10);
+            CheckboxInt("Use SSR", &plusAlphaCBuffer->data.useSsr);
             ImGui::TreePop();
         }
 #endif
@@ -137,7 +136,7 @@ public:
         DirectX::XMFLOAT4 morphWeights = { 0.0f,0.0f,0.0f,0.0f };  // モーフモデルに使用する weight 0.0f ~ 1.0f
 
         float emissionPower; // 自己発光の強さ
-        int value = 0;
+        int useSsr = 1; // SSRを使うかどうか 0:使わない 1:使う
     };
     std::unique_ptr<ConstantBuffer<PlusAlphaConstants>> plusAlphaCBuffer;
 
@@ -148,7 +147,6 @@ public:
     DirectX::XMFLOAT4 cpuColor = { 1.0f,1.0f,1.0f,1.0f }; // 色をCPU側で指定する用　（ダメージ当たったときとか）
     float emissionPower = 1.0f; // 自己発光の強さ
     float morphWeight = 0.0f;   // モーフモデルに使用する weight  0.0f ~ 1.0f 
-    int value = 0;
 
 protected:
     //描画するかどうか

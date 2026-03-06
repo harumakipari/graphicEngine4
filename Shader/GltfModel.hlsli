@@ -71,7 +71,7 @@ cbuffer PLUS_ALPHA_CONSTANT_BUFFER : register(b5)
     float4 morphWeights;
 
     float emissionPower; // 自己発光の強さ
-    int value; // チーム制作で追加した
+    int useMeshSsr;  // SSRを使うかどうか 0:使わない 1:使う
 }
 
 
@@ -140,7 +140,7 @@ struct PS_OUT
 
 struct GBUFFER_PS_OUT
 {
-    float4 gbuffer1Normal : SV_TARGET1; // world gbuffer1Normal  w:未使用
+    float4 gbuffer1Normal : SV_TARGET1; // world gbuffer1Normal  w:useMeshSsr
     float4 material : SV_TARGET2; // x:metallic y:occlusion z:roughness w:occlusionStrength
     float4 gbuffer3Color : SV_TARGET3;
     float4 position : SV_TARGET4; // world position

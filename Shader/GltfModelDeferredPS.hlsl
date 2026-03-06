@@ -89,7 +89,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
     }
 
-    pout.gbuffer1Normal = float4(N.xyz, 0);  // world space
+    pout.gbuffer1Normal = float4(N.xyz, useMeshSsr);  // world space
 
     //pout.gbuffer1.xy = EncodeOctahedralNormal(N);
 
@@ -97,7 +97,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
 
     pout.position = pin.wPosition; // world space 
 
-    pout.emissive = float4(emissiveFactor, 0); // 元々wは１だったがスカイマップなどの時に使用するため０に変更
+    pout.emissive = float4(emissiveFactor, 0); // wの値 : スカイマップ１それ以外０
 
 
     pout.material = float4(metallicFactor, occlusionFactor, roughnessFactor, occlusionStrength);

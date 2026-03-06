@@ -57,6 +57,7 @@ float4 main(VS_OUT pin) : SV_TARGET
         for (int i = 0; i < pointLightCount; i++)
         {
             float3 LP = position.xyz - pointLights[i].position.xyz; // world space “_ŒõŒ¹‚Ì•ûŒü
+            //LP = pointLights[i].position.xyz - position.xyz;
             float len = length(LP);
             //if (len >= pointLights[i].range)
             //{
@@ -86,8 +87,12 @@ float4 main(VS_OUT pin) : SV_TARGET
             float attenuation = saturate(1.0 / (Kc + Kl * attenuateLength + Kq * (attenuateLength * attenuateLength)));
 #else
             float attenuation = attenuateLength * attenuateLength;
-            //float attenuation = saturate(1 - attenuateLength / pointLights[i].range);
-            //attenuation *= attenuation;
+
+            //float rangeFade = saturate(1.0 - len / pointLights[i].range);
+            //rangeFade *= rangeFade;
+
+            //float attenuation = 1.0 / (1.0 + len * len * 0.05);
+            //attenuation *= rangeFade;
 #endif
             LP /= len;
             const float pNoV = max(0.0, dot(N, V));
@@ -104,7 +109,8 @@ float4 main(VS_OUT pin) : SV_TARGET
                 const float NoH = max(0.0, dot(N, H));
                 const float HoV = max(0.0, dot(H, V));
 
-                pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * lerp(1.0, attenuation, 0.3);
+                pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * lerp(1.0, attenuation, 0.5);
+                //pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * attenuation;
                 pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * attenuation;
             }
         }

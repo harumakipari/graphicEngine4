@@ -100,7 +100,7 @@ public:
 #ifdef USE_IMGUI
         inspectorEuler_ = GetRelativeEulerRotation();
 
-        if (ImGui::TreeNode((name_ + "  Transform").c_str()))
+        if (ImGui::TreeNodeEx((name_ + "  Transform").c_str(), ImGuiTreeNodeFlags_DefaultOpen))
         {
             ImGui::DragFloat3("Relative Location", &relativeLocation_.x, 0.1f);
 

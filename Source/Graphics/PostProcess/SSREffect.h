@@ -43,7 +43,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D11PixelShader> ssrPS;
     std::unique_ptr<ConstantBuffer<SSRConstantBuffer>> ssrCBuffer;
 
-    float reflectionIntensity = 0.3f;
+    float reflectionIntensity = 1.0f;
     float maxDistance = 1.3f;
     float resolution = 0.25f;
     int steps = 5;

@@ -27,6 +27,7 @@ void Player::Initialize(const Transform& transform)
 
         skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
         skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/animation.gltf");
+        skeletalMeshComponent->plusAlphaCBuffer->data.useSsr = 0;   // SSR‚ðƒIƒt‚É‚·‚é
         //skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle.gltf");
 #if 0
         for (auto& material : skeletalMeshComponent->model->materials)
@@ -147,7 +148,6 @@ void Player::Initialize(const Transform& transform)
             //OutputDebugStringA(a.c_str());
         });
 #endif // 0
-
 
     {
         PROFILE_SCOPE("Create PlayerComponent");

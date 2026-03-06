@@ -111,7 +111,7 @@ float3 JodieReinhardToneMap(float3 c)
     return lerp(c / (l + 1.0), tc, tc);
 }
 
-// 
+
 float3 CalculatedFogColor(float2 uv, float depth)
 {
     uint2 depthMapDimensions;

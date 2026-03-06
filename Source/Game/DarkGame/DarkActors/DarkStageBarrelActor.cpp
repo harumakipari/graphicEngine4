@@ -62,10 +62,9 @@ void DarkStageBarrelActor::Update(float deltaTime)
 void DarkStageBarrelActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
-    //if (ImGui::TreeNode("DarkStageBarrelActor"))
-    //{
-    //    ImGui::Text("This is a barrel that can be destroyed.");
-    //    ImGui::TreePop();
-    //}
+    if (ImGui::Button(U8("”j‰ó")))
+    {
+
+    }
 #endif
 }

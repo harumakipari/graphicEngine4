@@ -102,16 +102,16 @@ protected:
     struct ShaderConstants
     {
         float shadowColor = 0.422f;
-        float shadowDepthBias = -0.001f;
+        float shadowDepthBias = -0.00207f;
         float splitU = 0.0f;
-        float	hueShift = 0.0f;;	// 色相調整 -1 から 1 （-1 は負方向の 180 度、0 は変更なし、1 は正方向の 180 度）
+        float	hueShift = -0.028f;	// 色相調整 -1 から 1 （-1 は負方向の 180 度、0 は変更なし、1 は正方向の 180 度）
 
-        float	saturation = 0.0f;	// 彩度調整（-1は濃灰、0は変化なし、1は最大彩度）
-        float	brightness = 0.0f;	// 明度調整（-1 は完全な黒、0 は変化なし、1 は完全な白）
-        float	contrast = 0.0f;	// コントラスト調整（-1は完全な灰色、0は変化なし、1は最大コントラスト）
-        float focusDistance = 5.0f; // 焦点距離
+        float	saturation = -0.027f;	// 彩度調整（-1は濃灰、0は変化なし、1は最大彩度）
+        float	brightness = 0.02f;	// 明度調整（-1 は完全な黒、0 は変化なし、1 は完全な白）
+        float	contrast = 0.065f;	// コントラスト調整（-1は完全な灰色、0は変化なし、1は最大コントラスト）
+        float focusDistance = 4.6f; // 焦点距離
 
-        float dofRange = 65.0f;  // 被写界深度範囲
+        float dofRange = 80.0f;  // 被写界深度範囲
         DirectX::XMFLOAT3 paddings;
 
         int enableSsao = true;

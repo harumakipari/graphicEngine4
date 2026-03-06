@@ -103,7 +103,7 @@ public:
         ImGui_ImplDX11_InvalidateDeviceObjects();
         ImGui_ImplDX11_CreateDeviceObjects();
         ImGuiIO& io = ImGui::GetIO();
-        //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;   // ドッキングを有効にする
 #endif // 1
 
         ImGui::StyleColorsDark();

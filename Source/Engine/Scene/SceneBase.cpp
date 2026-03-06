@@ -71,7 +71,6 @@ bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     fullscreenQuad = std::make_unique<FullScreenQuad>(device);
 
-    // MULTIPLE_RENDER_TARGETS
     multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, static_cast<uint32_t>(width), height, 3);
 
     frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
@@ -151,7 +150,7 @@ void SceneBase::Update(float deltaTime)
 }
 
 
-bool SceneBase::OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height)
+bool SceneBase::OnSizeChanged(ID3D11Device* device, const UINT64 width, UINT height)
 {
     framebufferDimensions.cx = static_cast<LONG>(width);
     framebufferDimensions.cy = static_cast<LONG>(height);
@@ -225,7 +224,6 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
 {
     UpdateConstantBuffer(immediateContext);
     ViewConstants data = {};
-#if 1
     if (auto camera = cameraManager->GetRenderCamera(this))
     {
         data = camera->GetViewConstants();
@@ -235,72 +233,7 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
     {
         Logger::Error(U8("カメラがない"));
     }
-#else
-    using namespace DirectX;
-    static DirectX::XMFLOAT3 target = { 0.0f, 0.0f, 10.0f };
-    static float distance = 15.0f;
-    static float yaw = 0.0f;     // 水平回転
-    static float pitch = 0.3f;   // 上下回転
 
-#ifdef USE_IMGUI
-    ImGui::Begin("Debug Camera");
-
-    ImGui::DragFloat3("Target", &target.x, 0.1f);
-    ImGui::DragFloat("Distance", &distance, 0.1f, 1.0f, 200.0f);
-    ImGui::DragFloat("Yaw", &yaw, 0.01f);
-    ImGui::DragFloat("Pitch", &pitch, 0.01f, -1.5f, 1.5f);
-
-    ImGui::End();
-#endif
-    // ===== 行列生成 =====
-
-    XMVECTOR targetV = XMLoadFloat3(&target);
-
-    // 球面座標 → forward方向
-    XMVECTOR forward = XMVectorSet(
-        cosf(pitch) * sinf(yaw),
-        sinf(pitch),
-        cosf(pitch) * cosf(yaw),
-        0.0f
-    );
-
-    // eye = target - forward * distance
-    XMVECTOR eyeV = targetV - forward * distance;
-    XMVECTOR up = XMVectorSet(0, 1, 0, 0);
-    // View
-    XMMATRIX view = XMMatrixLookAtLH(eyeV, targetV, up);
-
-    // Projection
-    float fov = XMConvertToRadians(60.0f);
-    float aspect = 1280.0f / 720.0f;
-    float nearZ = 0.1f;
-    float farZ = 500.0f;
-
-    XMMATRIX projection = XMMatrixPerspectiveFovLH(fov, aspect, nearZ, farZ);
-
-    // 組み立て
-    XMMATRIX viewProjection = view * projection;
-
-    // 逆行列
-    XMMATRIX invProjection = XMMatrixInverse(nullptr, projection);
-    XMMATRIX invView = XMMatrixInverse(nullptr, view);
-    XMMATRIX invViewProjection = XMMatrixInverse(nullptr, viewProjection);
-
-    // ストア
-    XMStoreFloat4x4(&data.view, view);
-    XMStoreFloat4x4(&data.projection, projection);
-    XMStoreFloat4x4(&data.viewProjection, viewProjection);
-    XMStoreFloat4x4(&data.invProjection, invProjection);
-    XMStoreFloat4x4(&data.invView, invView);
-    XMStoreFloat4x4(&data.invViewProjection, invViewProjection);
-
-    // cameraPosition
-    XMStoreFloat4(&data.cameraPosition, eyeV);
-
-    // 定数バッファ更新
-    sceneRender.UpdateViewConstants(immediateContext, data);
-
-#endif // 0
 #ifdef USE_IMGUI
     //imGuiGizmoBuffer->Clear(immediateContext);
     //imGuiGizmoBuffer->Activate(immediateContext);
@@ -851,37 +784,23 @@ void SceneBase::DrawSceneSettingsTab()
 
 void SceneBase::DrawInspector()
 {
-    // 右側
     ImGuiViewport* viewport = ImGui::GetMainViewport();
     const float right_panel_width = 400.0f;
-    //ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x + viewport->WorkSize.x - right_panel_width, viewport->WorkPos.y));
-    //ImGui::SetNextWindowSize(ImVec2(right_panel_width, viewport->WorkSize.y));
-    ImGui::Begin("Inspector", nullptr/*, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove*/);
 
-    if (ImGui::BeginTabBar("InspectorTabs"))
-    {
-        if (ImGui::BeginTabItem("Actor"))
-        {
-            if (selectedActor_) selectedActor_->DrawImGuiInspector();
-            else ImGui::Text("No actor selected.");
-            ImGui::EndTabItem();
-        }
+    // Actor Inspector
+    ImGui::Begin("Actor Inspector");
+    if (selectedActor_) selectedActor_->DrawImGuiInspector();
+    else ImGui::Text("No actor selected.");
+    ImGui::End();
 
-        if (ImGui::BeginTabItem("PostEffect"))
-        {
-            DrawPostEffectTab();
-            ImGui::EndTabItem();
-        }
+    // PostEffect
+    ImGui::Begin("PostEffect");
+    DrawPostEffectTab();
+    ImGui::End();
 
-        if (ImGui::BeginTabItem("Scene"))
-        {
-            DrawSceneSettingsTab();
-            ImGui::EndTabItem();
-        }
-
-
-        ImGui::EndTabBar();
-    }
+    // Scene Settings
+    ImGui::Begin("Scene");
+    DrawSceneSettingsTab();
     ImGui::End();
 }
 
@@ -915,7 +834,7 @@ void SceneBase::DrawPostEffectTab()
         ImGui::SliderFloat("Z Mult", &cascadedShadowMaps->zDepthScale, 1.0f, 100.0f);
         ImGui::Checkbox("Fit To Cascade", &cascadedShadowMaps->fitToCascade);
         ImGui::SliderFloat("Shadow Color", &shaderCBuffer->data.shadowColor, 0.0f, 1.0f);
-        ImGui::DragFloat("Depth Bias", &shaderCBuffer->data.shadowDepthBias, 0.00001f, 0.0f, 0.01f, "%.8f");
+        ImGui::DragFloat("Depth Bias", &shaderCBuffer->data.shadowDepthBias, 0.00001f, -0.01f, 0.01f, "%.8f");
         bool colorize = shaderCBuffer->data.colorizeCascadedLayer != 0;
         if (ImGui::Checkbox("Colorize Layer", &colorize))
         {
