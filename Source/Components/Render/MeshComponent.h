@@ -1,5 +1,4 @@
-#ifndef MESH_COMPONENT_H
-#define MESH_COMPONENT_H
+#pragma once
 
 // C++ ïWèÄÉâÉCÉuÉâÉä
 #include <memory>
@@ -171,7 +170,7 @@ public:
     void SetModel(const std::string& filename, bool isSaveVerticesData = false)override
     {
         ID3D11Device* device = Graphics::GetDevice();
-        model = std::make_shared<InterleavedGltfModel>(device, filename, InterleavedGltfModel::Mode::SkeletalMesh, isSaveVerticesData);
+        model = std::make_shared<InterleavedGltfModel>(device, filename, ModelTypes::ModelMode::SkeletalMesh, isSaveVerticesData);
         modelNodes = model->GetNodes();
     }
 
@@ -242,7 +241,7 @@ public:
     void SetModel(const std::string& filename, bool isSaveVerticesData = false)override
     {
         ID3D11Device* device = Graphics::GetDevice();
-        model = std::make_shared<MorphModel>(device, filename, MorphModel::Mode::SkeletalMesh, isSaveVerticesData);
+        model = std::make_shared<MorphModel>(device, filename, ModelTypes::ModelMode::SkeletalMesh, isSaveVerticesData);
         modelNodes = model->GetNodes();
     }
 
@@ -326,7 +325,7 @@ public:
     void SetModel(const std::string& filename, bool isSaveVerticesData = false)override
     {
         ID3D11Device* device = Graphics::GetDevice();
-        model = std::make_shared<InterleavedGltfModel>(device, filename, InterleavedGltfModel::Mode::StaticMesh, isSaveVerticesData);
+        model = std::make_shared<InterleavedGltfModel>(device, filename, ModelTypes::ModelMode::StaticMesh, isSaveVerticesData);
         modelNodes = model->GetNodes();
     }
 
@@ -359,4 +358,3 @@ public:
 
 
 
-#endif  //MESH_COMPONENT_H

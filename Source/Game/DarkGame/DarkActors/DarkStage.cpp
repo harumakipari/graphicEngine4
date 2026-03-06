@@ -60,6 +60,7 @@ void DarkStage::Initialize(const Transform& transform)
     }
 
 
+#if 1
     {
         PROFILE_SCOPE("Create StageActor");
 
@@ -191,6 +192,8 @@ void DarkStage::Initialize(const Transform& transform)
             }
         }
     }
+#endif // 1
+
 
 
     // //影用のスタティックメッシュコンポーネントを追加

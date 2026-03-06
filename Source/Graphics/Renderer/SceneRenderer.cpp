@@ -44,7 +44,7 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext, const st
         meshComponent->UpdatePlusAlphaConstants(immediateContext);
 
         if (meshComponent->model->mode ==
-            InterleavedGltfModel::Mode::SkeletalMesh)
+            ModelTypes::ModelMode::SkeletalMesh)
         {
             Draw(immediateContext,
                 meshComponent,
@@ -160,7 +160,7 @@ void SceneRenderer::RenderMask(ID3D11DeviceContext* immediateContext, const std:
         meshComponent->UpdatePlusAlphaConstants(immediateContext);
 
         if (meshComponent->model->mode ==
-            InterleavedGltfModel::Mode::SkeletalMesh)
+            ModelTypes::ModelMode::SkeletalMesh)
         {
             Draw(immediateContext,
                 meshComponent,
@@ -256,7 +256,7 @@ void SceneRenderer::RenderBlend(ID3D11DeviceContext* immediateContext, const std
         meshComponent->UpdatePlusAlphaConstants(immediateContext);
 
         if (meshComponent->model->mode ==
-            InterleavedGltfModel::Mode::SkeletalMesh)
+            ModelTypes::ModelMode::SkeletalMesh)
         {
             Draw(immediateContext,
                 meshComponent,
@@ -374,7 +374,7 @@ void SceneRenderer::CastShadowRender(ID3D11DeviceContext* immediateContext, cons
 
 #if 1
         if (meshComponent->model->mode ==
-            InterleavedGltfModel::Mode::SkeletalMesh)
+            ModelTypes::ModelMode::SkeletalMesh)
         {
             CastShadow(immediateContext,
                 meshComponent,
@@ -605,7 +605,7 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
 void SceneRenderer::DrawWithStaticBatching(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes, InterleavedGltfModel::RenderPass pass) const
 {
 #if 1
-    _ASSERT_EXPR(meshComponent->model->mode == InterleavedGltfModel::Mode::StaticMesh, L"This function only works with static_batching data.");
+    _ASSERT_EXPR(meshComponent->model->mode == ModelTypes::ModelMode::StaticMesh, L"This function only works with static_batching data.");
     // Še MeshComponent ‚Ì model ‚ðŽæ‚èo‚·
     const InterleavedGltfModel* model = meshComponent->model.get();
     immediateContext->PSSetShaderResources(0, 1, model->materialResourceView.GetAddressOf());
@@ -936,10 +936,10 @@ void SceneRenderer::CastShadow(ID3D11DeviceContext* immediateContext, const Mesh
     immediateContext->PSSetShader(nullptr, nullptr, 0);
 }
 
-void SceneRenderer::CastShadowWithStaticBatching(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes)
+void SceneRenderer::CastShadowWithStaticBatching(ID3D11DeviceContext* immediateContext, const MeshComponent* meshComponent, const DirectX::XMFLOAT4X4& world, const std::vector<InterleavedGltfModel::Node>& animatedNodes) const
 {
     const InterleavedGltfModel* model = meshComponent->model.get();
-    _ASSERT_EXPR(model->mode == InterleavedGltfModel::Mode::StaticMesh, L"This function only works with static_batching data.");
+    _ASSERT_EXPR(model->mode == ModelTypes::ModelMode::StaticMesh, L"This function only works with static_batching data.");
 
     immediateContext->PSSetShaderResources(0, 1, model->materialResourceView.GetAddressOf());
 

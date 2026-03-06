@@ -16,11 +16,11 @@
 #include "Graphics/Core/GltfDxgiHelper.h"
 #include "Components/Render/MeshComponent.h"
 
-MorphModel::MorphModel(ID3D11Device* device, const std::string& filename, Mode mode, bool isSaveVerticesData) : filename(filename), mode(mode), isSaveVerticesData(isSaveVerticesData)
+MorphModel::MorphModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData) : filename(filename), mode(mode), isSaveVerticesData(isSaveVerticesData)
 {
     std::filesystem::path cerealFilename(filename);
 #if 1
-    cerealFilename.replace_extension(mode == Mode::StaticMesh || mode == Mode::InstancedStaticMesh ? "batchCereal" : "cereal");
+    cerealFilename.replace_extension(mode == ModelTypes::ModelMode::StaticMesh || mode == ModelTypes::ModelMode::InstancedStaticMesh ? "batchCereal" : "cereal");
     if (std::filesystem::exists(cerealFilename.c_str()))
     {
         std::ifstream ifs(cerealFilename.c_str(), std::ios::binary);
@@ -88,7 +88,7 @@ MorphModel::MorphModel(ID3D11Device* device, const std::string& filename, Mode m
         FetchMaterials(device, *gltfModel);
         FetchTextures(device, *gltfModel);
 
-        if (mode == Mode::StaticMesh || mode == Mode::InstancedStaticMesh)
+        if (mode == ModelTypes::ModelMode::StaticMesh || mode == ModelTypes::ModelMode::InstancedStaticMesh)
         {
             FetchAndBatchMeshes(device, *gltfModel);
         }
@@ -1155,7 +1155,7 @@ void MorphModel::CreateAndUploadResources(ID3D11Device* device)
     D3D11_SUBRESOURCE_DATA subresourceData = {};
 
     // Create and upload vertex and index buffers on GPU
-    if (mode == Mode::StaticMesh || mode == Mode::InstancedStaticMesh)
+    if (mode == ModelTypes::ModelMode::StaticMesh || mode == ModelTypes::ModelMode::InstancedStaticMesh)
     {
         for (BatchMesh& batchMesh : batchMeshes)
         {
@@ -1252,7 +1252,7 @@ void MorphModel::CreateAndUploadResources(ID3D11Device* device)
     }
 
     // Instance Buffer ÇçÏÇÈ
-    if (mode == Mode::InstancedStaticMesh)
+    if (mode == ModelTypes::ModelMode::InstancedStaticMesh)
     {
         D3D11_BUFFER_DESC bufferDesc = {};
 #if 1 // Ç±ÇÍìÆÇ≠Ç∆Ç´
@@ -1322,7 +1322,7 @@ void MorphModel::CreateAndUploadResources(ID3D11Device* device)
         }
     }
 
-    if (mode == Mode::StaticMesh)
+    if (mode == ModelTypes::ModelMode::StaticMesh)
     {
         D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
         {
@@ -1337,7 +1337,7 @@ void MorphModel::CreateAndUploadResources(ID3D11Device* device)
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     }
-    else if (mode == Mode::SkeletalMesh)
+    else if (mode == ModelTypes::ModelMode::SkeletalMesh)
     {
         D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
         {
@@ -1365,7 +1365,7 @@ void MorphModel::CreateAndUploadResources(ID3D11Device* device)
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     }
-    else if (mode == Mode::InstancedStaticMesh)
+    else if (mode == ModelTypes::ModelMode::InstancedStaticMesh)
     {
         D3D11_INPUT_ELEMENT_DESC instancedStaticMeshInputElementDesc[] =
         {
@@ -1414,11 +1414,11 @@ void MorphModel::CreateAndUploadResources(ID3D11Device* device)
 
 void MorphModel::Render(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& world, const std::vector<Node>& animated_nodes, RenderPass pass, const PipeLineStateDesc& pipeline)
 {
-    if (mode == Mode::StaticMesh)
+    if (mode == ModelTypes::ModelMode::StaticMesh)
     {
         return BatchRender(immediateContext, world, pass, pipeline);
     }
-    else if (mode == Mode::InstancedStaticMesh)
+    else if (mode == ModelTypes::ModelMode::InstancedStaticMesh)
     {
         return InstancedStaticBatchRender(immediateContext/*, world*/, pass, pipeline);
     }
@@ -1602,7 +1602,7 @@ void MorphModel::Render(ID3D11DeviceContext* immediateContext, const DirectX::XM
 // INTERLEAVED_GLTF_MODEL
 void MorphModel::BatchRender(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& world, RenderPass pass, const PipeLineStateDesc& pipeline)
 {
-    _ASSERT_EXPR(mode == Mode::StaticMesh, L"This function only works with static_batching data.");
+    _ASSERT_EXPR(mode == ModelTypes::ModelMode::StaticMesh, L"This function only works with static_batching data.");
 
     immediateContext->PSSetShaderResources(0, 1, materialResourceView.GetAddressOf());
 
@@ -1732,7 +1732,7 @@ void MorphModel::BatchRender(ID3D11DeviceContext* immediateContext, const Direct
 
 void MorphModel::InstancedStaticBatchRender(ID3D11DeviceContext* immediateContext/*, const DirectX::XMFLOAT4X4& world*/, RenderPass pass, const PipeLineStateDesc& pipeline)
 {
-    _ASSERT_EXPR(mode == Mode::InstancedStaticMesh, L"This function only works with instance_static_batching data.");
+    _ASSERT_EXPR(mode == ModelTypes::ModelMode::InstancedStaticMesh, L"This function only works with instance_static_batching data.");
 
     immediateContext->PSSetShaderResources(0, 1, materialResourceView.GetAddressOf());
 
@@ -1836,7 +1836,7 @@ void MorphModel::InstancedStaticBatchRender(ID3D11DeviceContext* immediateContex
 
 void MorphModel::CastShadowBatch(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& world)
 {
-    _ASSERT_EXPR(mode == Mode::StaticMesh, L"This function only works with static_batching data.");
+    _ASSERT_EXPR(mode == ModelTypes::ModelMode::StaticMesh, L"This function only works with static_batching data.");
 
     immediateContext->PSSetShaderResources(0, 1, materialResourceView.GetAddressOf());
 
@@ -1901,11 +1901,11 @@ void MorphModel::CastShadowBatch(ID3D11DeviceContext* immediateContext, const Di
 
 void MorphModel::CastShadow(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& world, const std::vector<Node>& animatedNodes)
 {
-    if (mode == Mode::InstancedStaticMesh)
+    if (mode == ModelTypes::ModelMode::InstancedStaticMesh)
     {
         return;
     }
-    if (mode == Mode::StaticMesh)
+    if (mode == ModelTypes::ModelMode::StaticMesh)
     {
         return CastShadowBatch(immediateContext, world);
     }

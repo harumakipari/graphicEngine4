@@ -42,7 +42,7 @@ public:
     DirectX::XMMATRIX ComputeApq(const std::vector<int>& cluster, const DirectX::XMVECTOR& pc,
                                  const DirectX::XMVECTOR& qc);
     DirectX::XMMATRIX ExtractRotationApprox(const DirectX::XMMATRIX& A);
-    ShapeMatchingModel(ID3D11Device* device, const std::string& filename, Mode mode = Mode::SkeletalMesh, bool isSaveVerticesData = false);
+    ShapeMatchingModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode = ModelTypes::ModelMode::SkeletalMesh, bool isSaveVerticesData = false);
     virtual ~ShapeMatchingModel() = default;
 
     // Instance ‚ÅŽg—p‚·‚é
@@ -286,7 +286,7 @@ public:
     };
     std::vector<BatchMesh> batchMeshes;
     //const bool staticBatching;
-    Mode mode = Mode::SkeletalMesh;
+    ModelTypes::ModelMode mode = ModelTypes::ModelMode::SkeletalMesh;
 
     // INTERLEAVED_GLTF_MODEL
     std::vector<Microsoft::WRL::ComPtr<ID3D11Buffer>> buffers;

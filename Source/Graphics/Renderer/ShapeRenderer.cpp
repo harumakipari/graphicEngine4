@@ -29,13 +29,13 @@ void ShapeRenderer::Initialize(ID3D11Device* device)
     hr = CreatePsFromCSO(device, "./Shader/LineSegmentPS.cso", pixelShader.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    sphere = std::make_unique<InterleavedGltfModel>(device, "./Data/Models/Primitives/sphere.glb",InterleavedGltfModel::Mode::SkeletalMesh);
-    capsule = std::make_unique<InterleavedGltfModel>(device, "./Data/Models/Primitives/capsule.glb", InterleavedGltfModel::Mode::SkeletalMesh);
-    topHalfSphere = std::make_unique<InterleavedGltfModel>(device, "./Data/Models/Primitives/topHalfSphere.glb", InterleavedGltfModel::Mode::SkeletalMesh);
-    bottomHalfSphere = std::make_unique<InterleavedGltfModel>(device, "./Data/Models/Primitives/bottomHalfSphere.glb", InterleavedGltfModel::Mode::SkeletalMesh);
-    cylinder = std::make_unique<InterleavedGltfModel>(device, "./Data/Models/Primitives/cylinder.glb", InterleavedGltfModel::Mode::SkeletalMesh);
-    cube = std::make_unique<InterleavedGltfModel>(device, "./Data/Models/Primitives/cube.glb", InterleavedGltfModel::Mode::SkeletalMesh);
-    cubeCenter = std::make_unique<InterleavedGltfModel>(device, "./Data/Models/Primitives/boxCenter.glb", InterleavedGltfModel::Mode::SkeletalMesh);
+    sphere = std::make_unique<InterleavedGltfModel>(device, "./Data/Models/Primitives/sphere.glb", ModelTypes::ModelMode::SkeletalMesh);
+    capsule = std::make_unique<InterleavedGltfModel>(device, "./Data/Models/Primitives/capsule.glb", ModelTypes::ModelMode::SkeletalMesh);
+    topHalfSphere = std::make_unique<InterleavedGltfModel>(device, "./Data/Models/Primitives/topHalfSphere.glb", ModelTypes::ModelMode::SkeletalMesh);
+    bottomHalfSphere = std::make_unique<InterleavedGltfModel>(device, "./Data/Models/Primitives/bottomHalfSphere.glb", ModelTypes::ModelMode::SkeletalMesh);
+    cylinder = std::make_unique<InterleavedGltfModel>(device, "./Data/Models/Primitives/cylinder.glb", ModelTypes::ModelMode::SkeletalMesh);
+    cube = std::make_unique<InterleavedGltfModel>(device, "./Data/Models/Primitives/cube.glb", ModelTypes::ModelMode::SkeletalMesh);
+    cubeCenter = std::make_unique<InterleavedGltfModel>(device, "./Data/Models/Primitives/boxCenter.glb", ModelTypes::ModelMode::SkeletalMesh);
 
     std::vector<InterleavedGltfModel::Material>& sphereMaterials = sphere->materials;
     std::vector<InterleavedGltfModel::Material>& capsuleMaterials = capsule->materials;

@@ -51,11 +51,11 @@ bool _NullLoadImageData(tinygltf::Image*, const int, std::string*, std::string*,
 {
     return true;
 }
-InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::string& filename, Mode mode, bool isSaveVerticesData) : filename(filename), mode(mode), isSaveVerticesData(isSaveVerticesData)
+InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData) : filename(filename), mode(mode), isSaveVerticesData(isSaveVerticesData)
 {
     std::filesystem::path cerealFilename(filename);
 #if 1
-    cerealFilename.replace_extension(mode == Mode::StaticMesh || mode == Mode::InstancedStaticMesh ? "batchCereal" : "cereal");
+    cerealFilename.replace_extension(mode == ModelTypes::ModelMode::StaticMesh || mode == ModelTypes::ModelMode::InstancedStaticMesh ? "batchCereal" : "cereal");
     if (std::filesystem::exists(cerealFilename.c_str()))
     {
         std::ifstream ifs(cerealFilename.c_str(), std::ios::binary);
@@ -130,7 +130,7 @@ InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::stri
         FetchMaterials(device, *gltfModel);
         FetchTextures(device, *gltfModel);
 
-        if (mode == Mode::StaticMesh || mode == Mode::InstancedStaticMesh)
+        if (mode == ModelTypes::ModelMode::StaticMesh || mode == ModelTypes::ModelMode::InstancedStaticMesh)
         {
             FetchAndBatchMeshes(device, *gltfModel);
         }
@@ -1339,8 +1339,8 @@ void InterleavedGltfModel::CreateAndUploadResources(ID3D11Device* device)
     D3D11_BUFFER_DESC bufferDesc = {};
     D3D11_SUBRESOURCE_DATA subresourceData = {};
 
-    // Create and upload vertex and index buffers on GPU
-    if (mode == Mode::StaticMesh || mode == Mode::InstancedStaticMesh)
+    // GPU上で頂点バッファとインデックスバッファを作成してアップロードする
+    if (mode == ModelTypes::ModelMode::StaticMesh || mode == ModelTypes::ModelMode::InstancedStaticMesh)
     {
         for (BatchMesh& batchMesh : batchMeshes)
         {
@@ -1437,7 +1437,7 @@ void InterleavedGltfModel::CreateAndUploadResources(ID3D11Device* device)
     }
 
     // Instance Buffer を作る
-    if (mode == Mode::InstancedStaticMesh)
+    if (mode == ModelTypes::ModelMode::InstancedStaticMesh)
     {
         D3D11_BUFFER_DESC bufferDesc = {};
 #if 1 // これ動くとき
@@ -1507,7 +1507,7 @@ void InterleavedGltfModel::CreateAndUploadResources(ID3D11Device* device)
         }
     }
 
-    if (mode == Mode::StaticMesh)
+    if (mode == ModelTypes::ModelMode::StaticMesh)
     {
         D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
         {
@@ -1523,7 +1523,7 @@ void InterleavedGltfModel::CreateAndUploadResources(ID3D11Device* device)
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     }
-    else if (mode == Mode::SkeletalMesh)
+    else if (mode == ModelTypes::ModelMode::SkeletalMesh)
     {
         D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
         {
@@ -1543,7 +1543,7 @@ void InterleavedGltfModel::CreateAndUploadResources(ID3D11Device* device)
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     }
-    else if (mode == Mode::InstancedStaticMesh)
+    else if (mode == ModelTypes::ModelMode::InstancedStaticMesh)
     {
         D3D11_INPUT_ELEMENT_DESC instancedStaticMeshInputElementDesc[] =
         {
@@ -1592,11 +1592,11 @@ void InterleavedGltfModel::CreateAndUploadResources(ID3D11Device* device)
 
 void InterleavedGltfModel::Render(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& world, const std::vector<Node>& animated_nodes, RenderPass pass, const PipeLineStateDesc& pipeline)
 {
-    if (mode == Mode::StaticMesh)
+    if (mode == ModelTypes::ModelMode::StaticMesh)
     {
         return BatchRender(immediateContext, world, pass, pipeline);
     }
-    else if (mode == Mode::InstancedStaticMesh)
+    else if (mode == ModelTypes::ModelMode::InstancedStaticMesh)
     {
         return InstancedStaticBatchRender(immediateContext/*, world*/, pass, pipeline);
     }
@@ -1777,10 +1777,10 @@ void InterleavedGltfModel::Render(ID3D11DeviceContext* immediateContext, const D
         traverse(nodeIndex);
     }
 }
-// INTERLEAVED_GLTF_MODEL
+
 void InterleavedGltfModel::BatchRender(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& world, RenderPass pass, const PipeLineStateDesc& pipeline)
 {
-    _ASSERT_EXPR(mode == Mode::StaticMesh, L"This function only works with static_batching data.");
+    _ASSERT_EXPR(mode == ModelTypes::ModelMode::StaticMesh, L"This function only works with static_batching data.");
 
     immediateContext->PSSetShaderResources(0, 1, materialResourceView.GetAddressOf());
 
@@ -1910,7 +1910,7 @@ void InterleavedGltfModel::BatchRender(ID3D11DeviceContext* immediateContext, co
 
 void InterleavedGltfModel::InstancedStaticBatchRender(ID3D11DeviceContext* immediateContext/*, const DirectX::XMFLOAT4X4& world*/, RenderPass pass, const PipeLineStateDesc& pipeline)
 {
-    _ASSERT_EXPR(mode == Mode::InstancedStaticMesh, L"This function only works with instance_static_batching data.");
+    _ASSERT_EXPR(mode == ModelTypes::ModelMode::InstancedStaticMesh, L"This function only works with instance_static_batching data.");
 
     immediateContext->PSSetShaderResources(0, 1, materialResourceView.GetAddressOf());
 
@@ -2014,7 +2014,7 @@ void InterleavedGltfModel::InstancedStaticBatchRender(ID3D11DeviceContext* immed
 
 void InterleavedGltfModel::CastShadowBatch(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& world)
 {
-    _ASSERT_EXPR(mode == Mode::StaticMesh, L"This function only works with static_batching data.");
+    _ASSERT_EXPR(mode == ModelTypes::ModelMode::StaticMesh, L"This function only works with static_batching data.");
 
     immediateContext->PSSetShaderResources(0, 1, materialResourceView.GetAddressOf());
 
@@ -2079,11 +2079,11 @@ void InterleavedGltfModel::CastShadowBatch(ID3D11DeviceContext* immediateContext
 
 void InterleavedGltfModel::CastShadow(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& world, const std::vector<Node>& animatedNodes)
 {
-    if (mode == Mode::InstancedStaticMesh)
+    if (mode == ModelTypes::ModelMode::InstancedStaticMesh)
     {
         return;
     }
-    if (mode == Mode::StaticMesh)
+    if (mode == ModelTypes::ModelMode::StaticMesh)
     {
         return CastShadowBatch(immediateContext, world);
     }

@@ -273,7 +273,7 @@ public:
     Renderer()
     {
         ID3D11Device* device = Graphics::GetDevice();
-        itemModel = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/Items/PickUpEnergyCore/pick_up_item.gltf", InterleavedGltfModel::Mode::InstancedStaticMesh);
+        itemModel = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/Items/PickUpEnergyCore/pick_up_item.gltf", ModelTypes::ModelMode::InstancedStaticMesh);
 
         viewBuffer = std::make_unique<ConstantBuffer<ViewConstants>>(device);
     }

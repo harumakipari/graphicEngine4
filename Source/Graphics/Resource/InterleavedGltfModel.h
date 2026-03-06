@@ -26,6 +26,7 @@
 #include <cereal/types/unordered_map.hpp>
 
 
+#include "ModelType.h"
 #include "Physics/Collider.h"
 #include "Graphics/Core/PipelineState.h"
 
@@ -41,12 +42,6 @@ class InterleavedGltfModel
     MeshComponent* meshComponent;
     std::string filename;
 public:
-    enum class Mode :uint8_t
-    {
-        SkeletalMesh,
-        StaticMesh,
-        InstancedStaticMesh,
-    };
 
 
     enum class RenderPass :uint8_t
@@ -73,7 +68,7 @@ public:
     CoordinateSystem modelCoordinateSystem = CoordinateSystem::RH_Y_UP;
 
     InterleavedGltfModel() = default;
-    InterleavedGltfModel(ID3D11Device* device, const std::string& filename, Mode mode, bool isSaveVerticesData = false);
+    InterleavedGltfModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData = false);
     virtual ~InterleavedGltfModel() = default;
 
     // Instance ‚ÅŽg—p‚·‚é
@@ -381,8 +376,7 @@ public:
         }
     };
     std::vector<BatchMesh> batchMeshes;
-    //const bool staticBatching;
-    Mode mode = Mode::SkeletalMesh;
+    ModelTypes::ModelMode mode = ModelTypes::ModelMode::SkeletalMesh;
 
     // INTERLEAVED_GLTF_MODEL
     std::vector<Microsoft::WRL::ComPtr<ID3D11Buffer>> buffers;
