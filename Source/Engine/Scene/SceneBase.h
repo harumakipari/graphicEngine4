@@ -111,7 +111,7 @@ protected:
         float	contrast = 0.0f;	// コントラスト調整（-1は完全な灰色、0は変化なし、1は最大コントラスト）
         float focusDistance = 5.0f; // 焦点距離
 
-        float dofRange = 5.0f;  // 被写界深度範囲
+        float dofRange = 65.0f;  // 被写界深度範囲
         DirectX::XMFLOAT3 paddings;
 
         int enableSsao = true;
