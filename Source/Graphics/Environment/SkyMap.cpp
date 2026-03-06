@@ -17,15 +17,14 @@ SkyMap::SkyMap(ID3D11Device* device, const wchar_t* filename, bool generateMips)
     // テクスチャがキューブマップかどうか判定
     if (texture2dDesc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE)
     {
-        isTexturecube = true;
+        isTextureCube = true;
     }
 
     // 頂点シェーダーの読み込み
     hr = CreateVsFromCSO(device, "./Shader/SkyMapVS.cso", skyMapVs.GetAddressOf(), NULL, NULL, 0);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     // ピクセルシェーダーの読み込み（通常のスカイマップ用）
-    hr = CreatePsFromCSO(device, "./Shader/SkyMapGBufferPS.cso", skyMapPs.GetAddressOf());
-    //hr = CreatePsFromCSO(device, "./Shader/SkyMapPS.cso", skyMapPs.GetAddressOf());
+    hr = CreatePsFromCSO(device, "./Shader/SkyMapPS.cso", skyMapPs.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     // ピクセルシェーダーの読み込み（スカイボックス用）
     hr = CreatePsFromCSO(device, "./Shader/SkyBoxPS.cso", skyBoxPs.GetAddressOf());
@@ -33,7 +32,7 @@ SkyMap::SkyMap(ID3D11Device* device, const wchar_t* filename, bool generateMips)
 
     // 定数バッファの作成（シェーダーに渡すデータを格納する）
     D3D11_BUFFER_DESC bufferDesc{};
-    bufferDesc.ByteWidth = sizeof(Constants);// 定数バッファのサイズ
+    bufferDesc.ByteWidth = sizeof(SkyMapConstants);// 定数バッファのサイズ
     bufferDesc.Usage = D3D11_USAGE_DEFAULT; // GPU からのみアクセス可能
     bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; // 定数バッファとしてバインド
     bufferDesc.CPUAccessFlags = 0;
@@ -56,11 +55,11 @@ void SkyMap::Blit(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4
     // 頂点シェーダーをセット
     immediateContext->VSSetShader(skyMapVs.Get(), 0, 0);
     // ピクセルシェーダーをセット（キューブマップかどうかで切り替え）
-    immediateContext->PSSetShader(isTexturecube ? skyBoxPs.Get() : skyMapPs.Get(), 0, 0);
+    immediateContext->PSSetShader(isTextureCube ? skyBoxPs.Get() : skyMapPs.Get(), 0, 0);
     // スカイマップのテクスチャをシェーダーにセット
     immediateContext->PSSetShaderResources(0, 1, shaderResourceView.GetAddressOf());
     // シェーダーに渡す行列データを作成
-    Constants data;
+    SkyMapConstants data;
     //カメラの ViewProjection 行列の逆行列を求めて、スカイマップのシェーダー用に保存する処理 
 
 

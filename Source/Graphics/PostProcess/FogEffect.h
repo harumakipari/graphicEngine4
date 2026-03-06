@@ -12,17 +12,19 @@ class FogEffect :public SceneEffectBase
 public:
     struct FogConstants
     {
-        float fogColor[4] = { 0.5f,0.5f, 0.5f, 1.000f }; // w: fog intensity
+        float fogColor[4] = { 0.5f,0.5f, 0.5f, 0.77f }; // w: fog intensity
 
-        float fogDensity = 1.1f;
-        float fogHeightFalloff = 0.05f;
-        float groundLevel = 0.0f;
+        float fogDensity = 0.72f;
+        float fogHeightFalloff = 0.027f;
+        float groundLevel = 28.0f;
         float fogCutoffDistance = 80.0f;
 
         float mieScatteringFactor = 0.55f;
         float timeScale = 0.9f;
         float noiseScale = 0.5f;
         int enableDither = 1;
+        
+        float globalFogIntensity = 0.034f;// 全体にフォグをどれくらいかけるか
     };
 
 public:

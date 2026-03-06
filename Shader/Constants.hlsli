@@ -51,6 +51,8 @@ cbuffer FOG_CONSTANTS_BUFFER : register(b8)
     float timeScale;
     float noiseScale;
     bool enableDither;
+
+    float globalFogIntensity;
 }
 cbuffer VOLUMETRIC_CLOUDSCAPES_CONSTANT_BUFFER : register(b5)
 {

@@ -13,7 +13,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     R /= R.w; // to world
     float3 v = normalize(R.xyz);
 
-	// Blinn/Newell Latitude Mapping
+	// ブリン／ニューウェル緯度マッピング
     const float PI = 3.14159265358979;
     float2 sample_point;
     sample_point.x = (atan2(v.z, v.x) + PI) / (PI * 2.0);

@@ -1,10 +1,8 @@
 #include "SkyMap.hlsli"
+#include "FilterFunctions.hlsli"
+#include "Sampler.hlsli"
 
-#define POINT 0
-#define LINEAR 1
-#define ANISOTROPIC 2
-SamplerState sampler_states[3] : register(s0);
-TextureCube skybox : register(t0); // latitude-longitude mapped texture
+TextureCube skybox : register(t0); //  緯度経度マッピングされたテクスチャ
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
@@ -12,6 +10,10 @@ float4 main(VS_OUT pin) : SV_TARGET
     R /= R.w;
 
     const float lod = 0;
-    return skybox.SampleLevel(sampler_states[LINEAR], R.xyz, lod);
+    float4 skyColor = skybox.SampleLevel(samplerStates[LINEAR], R.xyz, lod);
+
+    skyColor.rgb = BrightnessContrast(skyColor.rgb, 0.5, 1.5);
+
+    return skyColor;
 }
 

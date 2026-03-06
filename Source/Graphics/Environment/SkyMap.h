@@ -32,13 +32,14 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> skyBoxPs;
 
 	// 定数バッファ（シェーダーに渡すデータ）
-	struct Constants
+    struct SkyMapConstants
 	{
 		DirectX::XMFLOAT4X4 inverseViewProjection;// ビュープロジェクション行列の逆行列
+		//float 
 	};
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer;
 
 	//テクスチャがキューブマップかどうかを判定するフラグ
-	bool isTexturecube = false;
+	bool isTextureCube = false;
 };

@@ -26,7 +26,7 @@
 class SceneBase : public Scene
 {
 public:
-    enum class RenderPass
+    enum class RenderPass :uint8_t
     {
         Sky,
         Opaque,

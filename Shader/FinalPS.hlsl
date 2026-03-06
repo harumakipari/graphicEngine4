@@ -112,7 +112,7 @@ float3 JodieReinhardToneMap(float3 c)
 }
 
 
-float3 CalculatedFogColor(float2 uv, float depth)
+float3 CalculatedFogColor(float2 uv, float depth, float3 sceneColor)
 {
     uint2 depthMapDimensions;
     uint depthMipLevel = 0, numberOfSamples, levels;
@@ -164,8 +164,20 @@ float3 CalculatedFogColor(float2 uv, float depth)
         fogFacter = fogTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], uv).x;
     }
 
+#if 1
+    float fogStrength = fogFacter * fogColor.a;
+
+    float transmittance = exp(-fogStrength);
+
+    float3 finalColor =
+    sceneColor * transmittance +
+    fogColor.rgb * (1 - transmittance);
+
+    return finalColor;
+#else
     float3 finalFogColor = fogColor.rgb * fogColor.a * max(0, fogFacter);
     return finalFogColor;
+#endif
 }
 
 float4 main(VS_OUT pin) : SV_TARGET
@@ -213,9 +225,12 @@ float4 main(VS_OUT pin) : SV_TARGET
     if (enableFog)
     {
         float linearDepth = positionViewSpace.z;
-        //float3 fogColor = CalculatedFogColor(pin.texcoord, linearDepth);
-        float3 fogColor = CalculatedFogColor(pin.texcoord, depthNdc);
-        color.rgb += fogColor;
+
+        float3 fogColor = CalculatedFogColor(pin.texcoord, depthNdc, color.rgb);
+        color.rgb = fogColor;
+
+        //float3 fogColor = CalculatedFogColor(pin.texcoord, depthNdc);
+        //color.rgb += fogColor;
     }
 
     // ÉuÉãÅ[ÉÄèàóù

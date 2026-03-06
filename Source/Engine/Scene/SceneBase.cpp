@@ -23,7 +23,7 @@
 #include "UI/FontManager.h"
 
 
-bool SceneBase::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
+bool SceneBase::Initialize(ID3D11Device* device, const UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
     sceneCBuffer = std::make_unique<ConstantBuffer<FrameConstants>>(device);
     shaderCBuffer = std::make_unique<ConstantBuffer<ShaderConstants>>(device);
@@ -806,6 +806,12 @@ void SceneBase::DrawInspector()
 
 void SceneBase::DrawPostEffectTab()
 {
+    //CheckboxInt("Enable SSAO", &shaderCBuffer->data.enableSsao);
+    //CheckboxInt("Enable SSR", &shaderCBuffer->data.enableSsr);
+    //CheckboxInt("Enable Bloom", &shaderCBuffer->data.enableBloom);
+    //CheckboxInt("Enable Blur", &shaderCBuffer->data.enableBlur);
+    //CheckboxInt("Enable Fog", &shaderCBuffer->data.enableFog);
+    //CheckboxInt("Enable CSM", &shaderCBuffer->data.enableCascadedShadowMaps);
     ImGui::Checkbox("Enable SSAO", &enableSSAO);
     ImGui::Checkbox("Enable SSR", &enableSSR);
     ImGui::Checkbox("Enable Bloom", &enableBloom);
