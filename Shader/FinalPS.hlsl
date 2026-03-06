@@ -135,13 +135,13 @@ float3 CalculatedFogColor(float2 uv, float depth)
 
                 float distance = x * x + y * y;
                 const float sigma = 2.0 * radius * radius;
-                float domainGaussian = exp(-distance / sigma);
+                float domainGaussian = exp(-distance / sigma); // ガウシアン関数で距離に基づく重みを計算
 
 #if 1
                 float sampledDepth = depthTexture.Sample(samplerStates[POINT], texcoord).x;
                 distance = (depth - sampledDepth) * (depth - sampledDepth);
                 const float sigma2 = 0.0001;
-                float rangeGaussian = exp(-distance / sigma2);
+                float rangeGaussian = exp(-distance / sigma2); // ガウシアン関数で深度差に基づく重みを計算
 #else
                 float sampledDepthNdc = depthTexture.Sample(samplerStates[POINT], texcoord).x;
                 // NDC → View に変換

@@ -30,7 +30,10 @@ void DarkStageBrazierActor::Initialize(const Transform& transform)
         DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(light.worldPosition);
         pointLightComponent->SetRelativeLocationDirect(pos);
         // ライトの名前からライトマネージャーの共有ライトを取得して設定
-        pointLightComponent->SetSharedParam(&lightManager->GetSharedLight(light.name));
+        if (auto shared = lightManager->FindSharedLight(light.name))
+        {
+            pointLightComponent->SetSharedParam(shared);
+        }
 
 
     }
@@ -80,7 +83,10 @@ void DarkStageMeltedWaxActor::Initialize(const Transform& transform)
         DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(light.worldPosition);
         pointLightComponent->SetRelativeLocationDirect(pos);
         // ライトの名前からライトマネージャーの共有ライトを取得して設定
-        pointLightComponent->SetSharedParam(&lightManager->GetSharedLight(light.name));
+        if (auto shared = lightManager->FindSharedLight(light.name))
+        {
+            pointLightComponent->SetSharedParam(shared);
+        }
 
 
     }
@@ -130,8 +136,10 @@ void DarkStageStandingBrazierActor::Initialize(const Transform& transform)
         DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(light.worldPosition);
         pointLightComponent->SetRelativeLocationDirect(pos);
         // ライトの名前からライトマネージャーの共有ライトを取得して設定
-        pointLightComponent->SetSharedParam(&lightManager->GetSharedLight(light.name));
-
+        if (auto shared = lightManager->FindSharedLight(light.name))
+        {
+            pointLightComponent->SetSharedParam(shared);
+        }
 
     }
 

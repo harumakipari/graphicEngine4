@@ -16,18 +16,20 @@ void DarkStage::Initialize(const Transform& transform)
     std::string parentName = "staticMeshComponent";
 
     auto scene = GetOwnerScene();
-
-    std::shared_ptr<StaticMeshComponent> staticMeshComponent = this->AddComponent<class StaticMeshComponent>(parentName);
-    staticMeshComponent->SetModel("./Data/Models/DarkStage0302/DarkStage.gltf", true);
-    //staticMeshComponent->SetModel("./Data/Models/DarkStage_0302/DarkStage.gltf", true);
-    //staticMeshComponent->SetModel("./Data/Models/DarkStage0223_3/DarkStage.gltf", true);
-    //staticMeshComponent->SetModel("./Data/Models/DarkStage0226_1/untitled.gltf", true);
-    //staticMeshComponent->SetModel("./Data/Models/MedievalDungeon.glb", true);
-    //staticMeshComponent->SetModel("./Data/Models/DarkStage_0226/DUN_DungeonExample_MAP.gltf", true);
-    //staticMeshComponent->SetIsCastShadow(false);
-    //staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
+    std::shared_ptr<StaticMeshComponent> staticMeshComponent;
+    {
+        PROFILE_SCOPE("Create StageModel");
+        staticMeshComponent = this->AddComponent<class StaticMeshComponent>(parentName);
+        staticMeshComponent->SetModel("./Data/Models/DarkStage0302/DarkStage.gltf", true);
+        //staticMeshComponent->SetModel("./Data/Models/DarkStage_0302/DarkStage.gltf", true);
+        //staticMeshComponent->SetModel("./Data/Models/DarkStage0223_3/DarkStage.gltf", true);
+        //staticMeshComponent->SetModel("./Data/Models/DarkStage0226_1/untitled.gltf", true);
+        //staticMeshComponent->SetModel("./Data/Models/MedievalDungeon.glb", true);
+        //staticMeshComponent->SetModel("./Data/Models/DarkStage_0226/DUN_DungeonExample_MAP.gltf", true);
+        //staticMeshComponent->SetIsCastShadow(false);
+        //staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
+    }
     auto lightsData = staticMeshComponent->model->GetPointLights();
-
 
     //for (auto& material : staticMeshComponent->model->materials)
     //{
@@ -58,131 +60,135 @@ void DarkStage::Initialize(const Transform& transform)
     }
 
 
-    for (auto point : staticMeshComponent->model->spawnPoints)
     {
-        if (point.name == "Spawn_Door_Left")
-        {
-            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+        PROFILE_SCOPE("Create StageActor");
 
-            Transform doorLeftTr{
-                pos,
-                point.worldRotation,
-                point.worldScale
-            };
-
-            auto stage = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DoorLeftActor>("door_Left", doorLeftTr);
-#if 0
-            std::shared_ptr<SkeletalMeshComponent> door = AddComponent<SkeletalMeshComponent>("Left_Door", parentName);
-            door->SetModel("./Data/Models/DarkStageAssets/Door_Large/SM_Door_Large_01.gltf");
-            door->SetRelativeLocationDirect(point.worldPosition);
-            door->SetRelativeRotationDirect(point.worldRotation);
-            door->SetRelativeScaleDirect(point.worldScale);
-#endif // 0
-        }
-        else if (point.name == "Spawn_Particle_Steam")
+        for (auto point : staticMeshComponent->model->spawnPoints)
         {
-            for (int i = 0; i < 3; i++)
+            if (point.name == "Spawn_Door_Left")
             {
-                // 湯気のエフェクト
-                auto steamComponent = this->AddComponent<ParticleComponent>("steamComponent", parentName);
-                steamComponent->Load("./Data/Effect/Files/Pot_SteamEffect.json");
                 DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
-                steamComponent->SetRelativeLocationDirect(pos);
-                // ループ再生設定
-                float delay = 0.1f * i; // 0.2秒ずつ遅らせる
-                ParticleComponent::AddSettings settings
-                {
-                    .loop = true, // ループ再生
-                    .startDelay = delay, // 再生開始遅延時間
+
+                Transform doorLeftTr{
+                    pos,
+                    point.worldRotation,
+                    point.worldScale
                 };
-                steamComponent->SetAddSettings(settings);
-                steamComponent->Play();
 
+                auto stage = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DoorLeftActor>("door_Left", doorLeftTr);
+#if 0
+                std::shared_ptr<SkeletalMeshComponent> door = AddComponent<SkeletalMeshComponent>("Left_Door", parentName);
+                door->SetModel("./Data/Models/DarkStageAssets/Door_Large/SM_Door_Large_01.gltf");
+                door->SetRelativeLocationDirect(point.worldPosition);
+                door->SetRelativeRotationDirect(point.worldRotation);
+                door->SetRelativeScaleDirect(point.worldScale);
+#endif // 0
             }
-        }
-        else if (point.name.rfind("Spawn_Chandelier", 0) == 0)
-        {// 名前が "Spawn_Chandelier" で始まる場合、シャンデリアを配置
-            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+            else if (point.name == "Spawn_Particle_Steam")
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    // 湯気のエフェクト
+                    auto steamComponent = this->AddComponent<ParticleComponent>("steamComponent", parentName);
+                    steamComponent->Load("./Data/Effect/Files/Pot_SteamEffect.json");
+                    DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+                    steamComponent->SetRelativeLocationDirect(pos);
+                    // ループ再生設定
+                    float delay = 0.1f * i; // 0.2秒ずつ遅らせる
+                    ParticleComponent::AddSettings settings
+                    {
+                        .loop = true, // ループ再生
+                        .startDelay = delay, // 再生開始遅延時間
+                    };
+                    steamComponent->SetAddSettings(settings);
+                    steamComponent->Play();
 
-            Transform chandelierTr{
-                pos,
-                point.worldRotation,
-                point.worldScale
-            };
+                }
+            }
+            else if (point.name.rfind("Spawn_Chandelier", 0) == 0)
+            {// 名前が "Spawn_Chandelier" で始まる場合、シャンデリアを配置
+                DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
-            auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageChandelierActor>("chandelier", chandelierTr);
-        }
-        else if (point.name.rfind("Spawn_Candelabra", 0) == 0)
-        {// 名前が "Spawn_Candelabra" で始まる場合、燭台を配置
-            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+                Transform chandelierTr{
+                    pos,
+                    point.worldRotation,
+                    point.worldScale
+                };
 
-            Transform candelabraTr{
-                pos,
-                point.worldRotation,
-                point.worldScale
-            };
+                auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageChandelierActor>("chandelier", chandelierTr);
+            }
+            else if (point.name.rfind("Spawn_Candelabra", 0) == 0)
+            {// 名前が "Spawn_Candelabra" で始まる場合、燭台を配置
+                DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
-            auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageCandelabraActor>("candelabra", candelabraTr);
-        }
-        else if (point.name.rfind("Spawn_Brazier", 0) == 0)
-        {// 名前が "Spawn_Brazier" で始まる場合、火鉢を配置
-            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+                Transform candelabraTr{
+                    pos,
+                    point.worldRotation,
+                    point.worldScale
+                };
 
-            Transform candelabraTr{
-                pos,
-                point.worldRotation,
-                point.worldScale
-            };
+                auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageCandelabraActor>("candelabra", candelabraTr);
+            }
+            else if (point.name.rfind("Spawn_Brazier", 0) == 0)
+            {// 名前が "Spawn_Brazier" で始まる場合、火鉢を配置
+                DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
-            auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageBrazierActor>("brazier", candelabraTr);
-        }
-        else if (point.name.rfind("Spawn_GroundBrazier", 0) == 0)
-        {// 名前が "Spawn_GroundBrazier" で始まる場合、地面の火鉢を配置
-            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+                Transform candelabraTr{
+                    pos,
+                    point.worldRotation,
+                    point.worldScale
+                };
 
-            Transform candelabraTr{
-                pos,
-                point.worldRotation,
-                point.worldScale
-            };
+                auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageBrazierActor>("brazier", candelabraTr);
+            }
+            else if (point.name.rfind("Spawn_GroundBrazier", 0) == 0)
+            {// 名前が "Spawn_GroundBrazier" で始まる場合、地面の火鉢を配置
+                DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
-            auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageGroundBrazierActor>("GroundBrazier", candelabraTr);
-        }
-        else if (point.name.rfind("Spawn_Melted_Wax", 0) == 0)
-        {// 名前が "Spawn_Melted_Wax" で始まる場合、溶けた蝋を配置
-            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+                Transform candelabraTr{
+                    pos,
+                    point.worldRotation,
+                    point.worldScale
+                };
 
-            Transform candelabraTr{
-                pos,
-                {0,0,0,1},
-                point.worldScale
-            };
+                auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageGroundBrazierActor>("GroundBrazier", candelabraTr);
+            }
+            else if (point.name.rfind("Spawn_Melted_Wax", 0) == 0)
+            {// 名前が "Spawn_Melted_Wax" で始まる場合、溶けた蝋を配置
+                DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
-            auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageMeltedWaxActor>("MeltedWax", candelabraTr);
-        }
-        else if (point.name.rfind("Spawn_Standing_Brazier", 0) == 0)
-        {// 名前が "Spawn_Standing_Brazier" で始まる場合、スタンド式火鉢を配置
-            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+                Transform candelabraTr{
+                    pos,
+                    {0,0,0,1},
+                    point.worldScale
+                };
 
-            Transform candelabraTr{
-                pos,
-                {0,0,0,1},
-                point.worldScale
-            };
+                auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageMeltedWaxActor>("MeltedWax", candelabraTr);
+            }
+            else if (point.name.rfind("Spawn_Standing_Brazier", 0) == 0)
+            {// 名前が "Spawn_Standing_Brazier" で始まる場合、スタンド式火鉢を配置
+                DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
-            auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageStandingBrazierActor>("StandingBrazier", candelabraTr);
-        }
-        else if (point.name.rfind("Spawn_Barrel", 0) == 0)
-        {
-            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+                Transform candelabraTr{
+                    pos,
+                    {0,0,0,1},
+                    point.worldScale
+                };
 
-            Transform barrelTr{
-                pos,
-                point.worldRotation,
-                point.worldScale
-            };
+                auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageStandingBrazierActor>("StandingBrazier", candelabraTr);
+            }
+            else if (point.name.rfind("Spawn_Barrel", 0) == 0)
+            {
+                DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
-            auto barrel = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageBarrelActor>("barrel", barrelTr);
+                Transform barrelTr{
+                    pos,
+                    point.worldRotation,
+                    point.worldScale
+                };
+
+                auto barrel = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageBarrelActor>("barrel", barrelTr);
+            }
         }
     }
 
@@ -193,47 +199,51 @@ void DarkStage::Initialize(const Transform& transform)
     //castStaticMeshComponent->SetIsVisible(false);
 
 
-    auto stageCollisionModel = this->AddComponent<StaticMeshComponent>("collisionModel", parentName);
-    stageCollisionModel->SetModel("./Data/Models/DarkStage_Collision/DarkStage_Collision.gltf", true);
-    stageCollisionModel->SetIsCastShadow(false);
-    stageCollisionModel->SetIsVisible(false);
-    auto nodes = stageCollisionModel->model->GetNodes();
-    for (auto node : nodes)
     {
-        DirectX::XMVECTOR S, R, T;
+        PROFILE_SCOPE("Create StageCollision");
 
-        bool ok = DirectX::XMMatrixDecompose(
-            &S,
-            &R,
-            &T,
-            DirectX::XMLoadFloat4x4(&node.globalTransform)
-        );
-
-        DirectX::XMFLOAT3 worldScale;
-        DirectX::XMFLOAT4 worldRotation;
-        DirectX::XMFLOAT3 worldPosition;
-
-        if (ok)
+        auto stageCollisionModel = this->AddComponent<StaticMeshComponent>("collisionModel", parentName);
+        stageCollisionModel->SetModel("./Data/Models/DarkStage_Collision/DarkStage_Collision.gltf", true);
+        stageCollisionModel->SetIsCastShadow(false);
+        stageCollisionModel->SetIsVisible(false);
+        auto nodes = stageCollisionModel->model->GetNodes();
+        for (auto node : nodes)
         {
-            XMStoreFloat3(&worldScale, S);
-            XMStoreFloat4(&worldRotation, R);
-            XMStoreFloat3(&worldPosition, T);
+            DirectX::XMVECTOR S, R, T;
+
+            bool ok = DirectX::XMMatrixDecompose(
+                &S,
+                &R,
+                &T,
+                DirectX::XMLoadFloat4x4(&node.globalTransform)
+            );
+
+            DirectX::XMFLOAT3 worldScale;
+            DirectX::XMFLOAT4 worldRotation;
+            DirectX::XMFLOAT3 worldPosition;
+
+            if (ok)
+            {
+                XMStoreFloat3(&worldScale, S);
+                XMStoreFloat4(&worldRotation, R);
+                XMStoreFloat3(&worldPosition, T);
+            }
+            auto box = AddComponent<BoxComponent>(node.name, parentName);
+
+            DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(worldPosition);
+
+            box->SetHalfBoxExtent(worldScale);
+            box->SetRelativeLocationDirect(pos);
+            box->SetRelativeRotationDirect(worldRotation);
+
+            box->SetStatic(true);
+            box->SetLayer(CollisionLayer::WorldStatic);
+            box->SetResponseToLayer(
+                CollisionLayer::Player,
+                CollisionComponent::CollisionResponse::Block);
+
+            box->Initialize();
         }
-        auto box = AddComponent<BoxComponent>(node.name, parentName);
-
-        DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(worldPosition);
-
-        box->SetHalfBoxExtent(worldScale);
-        box->SetRelativeLocationDirect(pos);
-        box->SetRelativeRotationDirect(worldRotation);
-
-        box->SetStatic(true);
-        box->SetLayer(CollisionLayer::WorldStatic);
-        box->SetResponseToLayer(
-            CollisionLayer::Player,
-            CollisionComponent::CollisionResponse::Block);
-
-        box->Initialize();
     }
 #if 0
     // 当たり判定
@@ -244,39 +254,26 @@ void DarkStage::Initialize(const Transform& transform)
     triangleMeshComponent->CreateConvexMeshFromModel(staticMeshComponent.get());
 #else
 
-    // 床の当たり判定用のボックスコリジョンコンポーネント
-    std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "staticMeshComponent");
-    boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(80.0f, 0.2f, 80.0f));
-    boxComponent->SetRelativeLocationDirect({ 0.0f,-0.2f,0.0f });
-    //boxComponent->SetCollisionOffsetY(-4.5f);
-    boxComponent->SetStatic(true);
-    boxComponent->SetLayer(CollisionLayer::WorldStatic);
-    boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-    boxComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
-    boxComponent->Initialize();
+    {
+        PROFILE_SCOPE("Create FloorCollision");
 
-    //BuildStage();
+        // 床の当たり判定用のボックスコリジョンコンポーネント
+        std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "staticMeshComponent");
+        boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(80.0f, 0.2f, 80.0f));
+        boxComponent->SetRelativeLocationDirect({ 0.0f,-0.2f,0.0f });
+        //boxComponent->SetCollisionOffsetY(-4.5f);
+        boxComponent->SetStatic(true);
+        boxComponent->SetLayer(CollisionLayer::WorldStatic);
+        boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        boxComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
+        boxComponent->Initialize();
+    }
+
 
 
 
 #endif // 0 // 当たり判定
 
-#if 0
-    // 湯気のエフェクト
-    auto steamComponent = this->AddComponent<ParticleComponent>("steamComponent", parentName);
-    DirectX::XMFLOAT3 potPosition = staticMeshComponent->model->GetJointLocalPosition("SM_FirePot_01", staticMeshComponent->model->GetNodes());
-    steamComponent->Load("./Data/Effect/Files/Steam_Pot_Effect.json");
-    steamComponent->SetRelativeLocationDirect(potPosition);
-    // ループ再生設定
-    ParticleComponent::AddSettings settings
-    {
-        .loop = true, // ループ再生
-        //.startDelay = 0.5f // 再生開始遅延時間
-    };
-    steamComponent->SetAddSettings(settings);
-    steamComponent->Play();
-
-#endif // 0
 }
 
 void DarkStage::Update(float elapsedTime)

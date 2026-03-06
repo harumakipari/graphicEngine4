@@ -14,7 +14,12 @@ public:
 
     void Tick(float deltaTime)override;
 
-    void SetSharedParam(SharedLightParam* shared) { this->sharedParam = shared; }
+    void SetSharedParam(const std::shared_ptr<SharedLightParam>& shared)
+    {
+        int a = 0;
+        this->sharedParam = shared;
+        a = 1;
+    }
 
     virtual void DrawImGuiInspector() override
     {
@@ -68,5 +73,5 @@ private:
     //DirectX::XMFLOAT4 color{ 1,1,1,1 };
     //float range = 3.0f;
     bool enable = true;
-    SharedLightParam* sharedParam = nullptr;
+    std::shared_ptr<SharedLightParam> sharedParam;
 };

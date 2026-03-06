@@ -34,9 +34,13 @@ public:
         PointLight pointsLight[32];
     };
 
-    SharedLightParam& GetSharedLight(const std::string& name)
+    std::shared_ptr<SharedLightParam> FindSharedLight(const std::string& name)
     {
-        return sharedLights[name];
+        auto it = sharedLights.find(name);
+        if (it == sharedLights.end())
+            return nullptr;
+
+        return it->second;
     }
 public:
     void Initialize(ID3D11Device* device);
@@ -79,5 +83,5 @@ private:
 
     std::unique_ptr<ConstantBuffer<LightConstants>> lightCBuffer;
 
-    std::unordered_map<std::string, SharedLightParam> sharedLights;
+    std::unordered_map<std::string, std::shared_ptr<SharedLightParam>> sharedLights;
 };

@@ -30,7 +30,10 @@ void DarkStageGroundBrazierActor::Initialize(const Transform& transform)
         DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(light.worldPosition);
         pointLightComponent->SetRelativeLocationDirect(pos);
         // ライトの名前からライトマネージャーの共有ライトを取得して設定
-        pointLightComponent->SetSharedParam(&lightManager->GetSharedLight(light.name));
+        if (const auto shared = lightManager->FindSharedLight(light.name))
+        {
+            pointLightComponent->SetSharedParam(shared);
+        }
 
 
     }

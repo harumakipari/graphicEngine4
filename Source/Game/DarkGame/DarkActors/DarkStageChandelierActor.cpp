@@ -31,7 +31,10 @@ void DarkStageChandelierActor::Initialize(const Transform& transform)
             this->AddComponent<PointLightComponent>(compName, parentName);
 
         // ライトの名前からライトマネージャーの共有ライトを取得して設定
-        pointLightComponent->SetSharedParam(&lightManager->GetSharedLight(light.name));
+        if (auto shared = lightManager->FindSharedLight(light.name))
+        {
+            pointLightComponent->SetSharedParam(shared);
+        }
 
 
         DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(light.worldPosition);
