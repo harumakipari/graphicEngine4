@@ -651,7 +651,7 @@ void SceneBase::DrawGui()
     uiManager->DrawImGUi();
     EffectEditor::DrawGUI();
     DrawShortcutInfo();
-
+    skyMap->DrawImGui();
     cascadedShadowMaps->DrawImGui();
 #endif
 }

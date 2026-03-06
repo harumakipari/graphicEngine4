@@ -23,4 +23,6 @@ struct GS_OUT_CUBOID
 cbuffer sky_map_constant_buffer : register(b0)
 {
     row_major float4x4 inverse_view_projection;
+    float skyMapBrightness; // 明度調整
+    float skyMapContrast; // コントラスト調整
 };

@@ -59,7 +59,6 @@ void SkyMap::Blit(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4
     // スカイマップのテクスチャをシェーダーにセット
     immediateContext->PSSetShaderResources(0, 1, shaderResourceView.GetAddressOf());
     // シェーダーに渡す行列データを作成
-    SkyMapConstants data;
     //カメラの ViewProjection 行列の逆行列を求めて、スカイマップのシェーダー用に保存する処理 
 
 
@@ -73,4 +72,15 @@ void SkyMap::Blit(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4
     // 使用したシェーダーを解除（後の描画に影響を与えないようにする）
     immediateContext->VSSetShader(NULL, 0, 0);
     immediateContext->PSSetShader(NULL, 0, 0);
+}
+
+// ImGui を使ってスカイマップのパラメータを調整する関数
+void SkyMap::DrawImGui()
+{
+#ifdef USE_IMGUI
+    ImGui::Begin(U8("スカイマップ"));
+    ImGui::SliderFloat(U8("明度調整"), &data.brightness, -1.0f, +1.0f);
+    ImGui::SliderFloat(U8("コントラスト調整"), &data.contrast, -1.0f, +1.0f);
+    ImGui::End();
+#endif
 }

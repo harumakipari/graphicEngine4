@@ -12,7 +12,8 @@ float4 main(VS_OUT pin) : SV_TARGET
     const float lod = 0;
     float4 skyColor = skybox.SampleLevel(samplerStates[LINEAR], R.xyz, lod);
 
-    skyColor.rgb = BrightnessContrast(skyColor.rgb, 0.5, 1.5);
+    skyColor.rgb = BrightnessContrast(skyColor.rgb, skyMapBrightness, skyMapContrast);
+    //skyColor.rgb *= 3.0f;
 
     return skyColor;
 }
