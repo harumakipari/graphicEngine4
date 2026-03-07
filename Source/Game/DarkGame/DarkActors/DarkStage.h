@@ -1,4 +1,5 @@
 #pragma once
+#include "DarkStageAsset.h"
 #include "Core/Actor.h"
 #include "Components/Render/MeshComponent.h"
 #include "Components/CollisionShape/ShapeComponent.h"
@@ -15,9 +16,15 @@ public:
 
     void Update(float elapsedTime)override;
 
-private:
+    void SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr<StageAsset> stageCandelabraAsset, std::shared_ptr<StageAsset> stageBrazierAsset, std::shared_ptr<StageAsset> stageGroundBrazierAsset, std::shared_ptr<StageAsset> stageMeltedWaxAsset, std::shared_ptr<StageAsset> stageStandingBrazierAsset);
 
+private:
+    std::string parentName = "RootComponent";
 
 private:
 
 };
+
+
+
+

@@ -143,9 +143,12 @@ void SceneBase::Update(float deltaTime)
 
 #ifdef _DEBUG
     if (InputSystem::GetInputState("F8", InputStateMask::Trigger))
-    {
+    {// デバッグカメラとゲームカメラの切り替え
         cameraManager->ToggleCamera();
     }
+
+
+
 #endif // !_DEBUG
 }
 

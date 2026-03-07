@@ -247,32 +247,11 @@ private:
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceViews[8];
 
 private:
-    DirectX::XMFLOAT2 pos = {};
-    DirectX::XMFLOAT2 size = { 1280,720 };
-    DirectX::XMFLOAT4 colors = {};
-    float  angle = {};
-    int samplerState = 0;
-
-    // keyFrameの変数
-    //回転軸と回転角度の定義
-    DirectX::XMVECTOR rotationAxis = DirectX::XMVectorSet(1, 0, 0, 0);
-    float rotationAngle = 1.5f;
-    //位置のX座標を設定
-    DirectX::XMFLOAT3 translation = { 300.0f,0.0f,0.0f };
-
-    //ブレンドの比率   アニメーションの
-    float blendRate = 0.5f;
-
-
-    //輝度
-    float threshold = 0.8f;
-    float gaussiamSigma = 1.0f;
-    float bloomIntenssity = 1.0f;
-    float exposure = 1.2f;
-
     BOOL fullscreenMode{ FALSE };
     BOOL vsync{ FALSE };
     BOOL tearing_supported{ FALSE };
+
+
 
     RECT windowed_rect;
     DWORD windowed_style;

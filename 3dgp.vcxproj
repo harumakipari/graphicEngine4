@@ -431,6 +431,7 @@
     <ClInclude Include="Source\Game\Actors\Stage\Cloth.h" />
     <ClInclude Include="Source\Game\Actors\Stage\ClothSimulate.h" />
     <ClInclude Include="Source\Game\Actors\Stage\ElasticBuilding.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageAsset.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageBarrelActor.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageBrazierActor.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageCandelabraActor.h" />

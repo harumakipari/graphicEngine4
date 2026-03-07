@@ -4,7 +4,7 @@
 #include "Components/Render/PointLightComponent.h"
 #include "Engine/Scene/SceneBase.h"
 
-void DarkStageGroundBrazierActor::Initialize(const Transform& transform)
+void DarkStageGroundBrazierActor::SetModel(const std::shared_ptr<StageAsset>& stageAsset)
 {
     std::string parentName = "candelabraMesh";
 

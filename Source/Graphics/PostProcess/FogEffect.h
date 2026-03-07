@@ -12,7 +12,7 @@ class FogEffect :public SceneEffectBase
 public:
     struct FogConstants
     {
-        float fogColor[4] = { 0.5f,0.5f, 0.5f, 0.77f }; // w: fog intensity
+        float fogColor[4] = { 0.5f,0.5f, 0.65f, 0.77f }; // w: fog intensity
 
         float fogDensity = 0.72f;
         float fogHeightFalloff = 0.027f;

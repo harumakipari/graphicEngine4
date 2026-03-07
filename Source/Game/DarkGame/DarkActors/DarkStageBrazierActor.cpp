@@ -4,7 +4,7 @@
 #include "Components/Render/PointLightComponent.h"
 #include "Engine/Scene/SceneBase.h"
 
-void DarkStageBrazierActor::Initialize(const Transform& transform)
+void DarkStageBrazierActor::SetModel(const std::shared_ptr<StageAsset>& stageAsset)
 {
     std::string parentName = "candelabraMesh";
 
@@ -57,7 +57,7 @@ void DarkStageBrazierActor::Initialize(const Transform& transform)
 }
 
 
-void DarkStageMeltedWaxActor::Initialize(const Transform& transform)
+void DarkStageMeltedWaxActor::SetModel(const std::shared_ptr<StageAsset>& stageAsset)
 {
     std::string parentName = "metedWaxMesh";
 
@@ -110,7 +110,7 @@ void DarkStageMeltedWaxActor::Initialize(const Transform& transform)
 }
 
 // スタンド式火鉢のモデル
-void DarkStageStandingBrazierActor::Initialize(const Transform& transform)
+void DarkStageStandingBrazierActor::SetModel(const std::shared_ptr<StageAsset>& stageAsset)
 {
     std::string parentName = "standingBrazierMesh";
 

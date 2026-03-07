@@ -5,11 +5,15 @@
 
 void DarkStageCandelabraActor::Initialize(const Transform& transform)
 {
+
+}
+void DarkStageCandelabraActor::SetModel(const std::shared_ptr<StageAsset>& stageAsset)
+{
     std::string parentName = "candelabraMesh";
 
     // 燭台のモデルを追加
     candelabraMeshComponent = this->AddComponent<SkeletalMeshComponent>(parentName);
-    candelabraMeshComponent->SetModel("./Data/Models/DarkStageAssets/Candelabra/Candelabra.gltf");
+    candelabraMeshComponent->model = stageAsset->model;
     candelabraMeshComponent->SetIsCastShadow(false);    // 影を落とさないようにする
 
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
@@ -50,7 +54,7 @@ void DarkStageCandelabraActor::Initialize(const Transform& transform)
 #endif // 0
     }
 
-    for (auto point : candelabraMeshComponent->model->spawnPoints)
+    for (auto point : stageAsset->spawnPoints)
     {
         // エミッションを発生させるためにモデルを追加
         auto sphereMeshComponent = this->AddComponent<SkeletalMeshComponent>("sphereMeshComponent", parentName);

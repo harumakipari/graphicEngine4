@@ -528,6 +528,9 @@
     <ClCompile Include="Source\Graphics\PostProcess\DepthOfFieldEffect.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\Resource\AssetManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -719,9 +722,6 @@
     <ClInclude Include="Source\Game\Actors\Camera\Camera.h">
       <Filter>Sources\Game\Actors\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Resource\ModelResource.h">
-      <Filter>Sources\Graphics\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Components\Game\LifeTimeComponent.h">
       <Filter>Sources\Components\Game</Filter>
     </ClInclude>
@@ -852,6 +852,9 @@
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStage.h" />
     <ClInclude Include="Source\Graphics\PostProcess\DepthOfFieldEffect.h" />
     <ClInclude Include="Source\Engine\Debug\ScopedTimer.h" />
+    <ClInclude Include="Source\Graphics\Resource\AssetManager.h" />
+    <ClInclude Include="Source\Graphics\Resource\ModelType.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageAsset.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

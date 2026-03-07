@@ -213,6 +213,7 @@ void InputSystem::Initialize()
     inputKeys["Backspace"].emplace_back(std::make_unique<Keyboard>(VK_BACK));
     inputKeys["Backspace"].emplace_back(std::make_unique<Keyboard>(XINPUT_GAMEPAD_B));
     inputKeys["Enter"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_A));
+    inputKeys["1"].emplace_back(std::make_unique<Keyboard>('1'));
 
     inputKeys["ok"].emplace_back(std::make_unique<Mouse>(VK_LBUTTON));
     inputKeys["ok"].emplace_back(std::make_unique<Keyboard>(VK_RETURN));

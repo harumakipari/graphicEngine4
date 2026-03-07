@@ -28,6 +28,33 @@
 bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
     PROFILE_FUNCTION();
+
+    loadStageThread = std::thread([&]()
+        {
+            PROFILE_SCOPE("Load StageModel");
+            stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage0302/DarkStage.gltf",
+                ModelTypes::ModelMode::StaticMesh);
+            stageAsset->spawnPoints = stageAsset->model->spawnPoints;
+        });
+    loadStageAssetsThread = std::thread([&]()
+    {
+        PROFILE_SCOPE("Load StageAssetModel");
+            stageCandelabraAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/Candelabra/Candelabra.gltf", ModelTypes::ModelMode::StaticMesh);
+            stageCandelabraAsset->spawnPoints = stageCandelabraAsset->model->spawnPoints;
+
+            stageBrazierAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/Brazier/Brazier.gltf", ModelTypes::ModelMode::StaticMesh);
+            stageBrazierAsset->spawnPoints = stageBrazierAsset->model->spawnPoints;
+
+            stageGroundBrazierAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/GroundBrazier/groundBrazier.gltf", ModelTypes::ModelMode::StaticMesh);
+            stageGroundBrazierAsset->spawnPoints = stageGroundBrazierAsset->model->spawnPoints;
+
+            stageMeltedWaxAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/MeltedWax/MeltedWax.gltf", ModelTypes::ModelMode::StaticMesh);
+            stageMeltedWaxAsset->spawnPoints = stageMeltedWaxAsset->model->spawnPoints;
+
+            stageStandingBrazierAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/StandingBrazier/StandingBrazier.gltf", ModelTypes::ModelMode::StaticMesh);
+            stageStandingBrazierAsset->spawnPoints = stageStandingBrazierAsset->model->spawnPoints;
+        });
+
     // ライトの方向と色を設定
     //lightDirection = { -1.0f, -1.0f, -0.02f, 0.0f };
 
@@ -35,9 +62,11 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     lightDirection = { 0.03f, -0.15f, 0.23f, 0.0f };   // 横の窓からの光
     //lightDirection = { 0.382f, -0.882f, 0.112f, 0.0f };   // 上の窓からの光
     //lightDirection = { 0.545f, -0.86f, -0.526f, 0.0f };   // 上の窓からの光
+
     lightDirection = { 0.9f, -0.64f, -0.058f, 0.0f };   // 上の窓からの光
+
     //lightDirection = { 1.0f, -1.0f, -0.008f, 0.0f };   // 上の窓からの光
-    lightColor = { 1.0f, 1.0f, 1.0f, 1.5f };
+    lightColor = { 1.0f, 0.8f, 1.0f, 4.1f };
     {
         //PROFILE_SCOPE("SceneBase Init");
         SceneBase::Initialize(device, width, height, props);
@@ -57,6 +86,7 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
 
 void SampleScene::Start()
 {
+#if 0
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
     audioComp->SetSource(L"./Data/Sound/BGM/game.wav");
@@ -82,6 +112,8 @@ void SampleScene::Start()
     gauge->SetSize({ 300, 40 });
 
     uiManager->Add(gauge);
+
+#endif // 0
 
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
@@ -139,13 +171,6 @@ void SampleScene::SetUpActors()
     Logger::Log(U8("sampleシーンのカメラ設定される。"));
 
 
-    std::thread stageThread = std::thread([&]()
-        {
-            PROFILE_SCOPE("Create Stage");
-            Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-            auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStage>("stage", stageTr); // 元のモデルの scale を 0.4f
-        });
-
 
 
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
@@ -171,8 +196,16 @@ void SampleScene::SetUpActors()
     dustParticle->SetAddSettings(settings);
     dustParticle->Play();
     cameraManager->SetDebugCamera(debugCameraActor);
+    loadStageThread.join();
+    loadStageAssetsThread.join();
+    {
+        PROFILE_SCOPE("Create Stage");
+        Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStage>("stage", stageTr); // 元のモデルの scale を 0.4f
+        stage->SetModel(stageAsset, stageCandelabraAsset, stageBrazierAsset, stageGroundBrazierAsset, stageMeltedWaxAsset, stageStandingBrazierAsset);
+    }
 
-    stageThread.join();
+
 }
 
 bool SampleScene::Uninitialize(ID3D11Device* device)
