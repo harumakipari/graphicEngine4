@@ -249,14 +249,12 @@ private:
 private:
     BOOL fullscreenMode{ FALSE };
     BOOL vsync{ FALSE };
-    BOOL tearing_supported{ FALSE };
+    BOOL tearingSupported{ FALSE };
 
+    bool enableImGui = false;   // ImGui‚Ì—LŒø‰»ƒtƒ‰ƒO
 
-
-    RECT windowed_rect;
-    DWORD windowed_style;
-
-    //std::unique_ptr<GameManager> gameManager;
+    RECT windowedRect;
+    DWORD windowedStyle;
 
     std::unique_ptr<CoreComputeParticleSystem> particleSystem;
 

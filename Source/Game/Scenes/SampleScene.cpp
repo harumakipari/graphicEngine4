@@ -149,7 +149,7 @@ void SampleScene::Update(float deltaTime)
     if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
     {
         const char* types[] = { "0", "1" };
-        SceneTransitionManager::Instance().RequestTransition("PuddingGameScene");
+        SceneTransitionManager::Instance().RequestTransition("SampleScene");
 
         //Scene::_transition("LoadingScene", { std::make_pair("preload", "PuddingGameScene"), std::make_pair("type", types[rand() % 2]) });
     }

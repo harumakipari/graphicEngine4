@@ -22,7 +22,7 @@
 
 
 //コンストラクタ：ウィンドウハンドルを受け取って初期化
-Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fullscreen), windowed_style(static_cast<DWORD>(GetWindowLongPtrW(hwnd, GWL_STYLE)))
+Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fullscreen), windowedStyle(static_cast<DWORD>(GetWindowLongPtrW(hwnd, GWL_STYLE)))
 {
 #ifndef _DEBUG
     fullscreenMode = true;
@@ -37,7 +37,7 @@ Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fu
 #endif
 
 #ifdef USE_IMGUI
-    static bool enableImGui = true;
+    enableImGui = true;
 #endif
 }
 
@@ -113,6 +113,9 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
 
 #ifdef USE_IMGUI
     ProfileNewFrame();
+
+
+
 #endif
 
     if ((GetAsyncKeyState(VK_RETURN) & 1) && (GetAsyncKeyState(VK_MENU) & 0x8000))
@@ -120,8 +123,12 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
         Graphics::StylizeWindow(!Graphics::fullscreenMode);
     }
 
-
-
+#ifdef _DEBUG
+    if (InputSystem::GetInputState("F1", InputStateMask::Trigger))
+    {// ImGuiの有効化トグル
+        enableImGui = !enableImGui;
+    }
+#endif
     {
         ProfileScopedSection_2(0, "InputUpdate", ImGuiControl::Profiler::Green);
         //入力システム更新
@@ -184,34 +191,37 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
 
 
 #ifdef USE_IMGUI
+    if (enableImGui)
     {
-        ImGui::PushFont(fontJP);
-        ProfileScopedSection_2(0, "ImGui", ImGuiControl::Profiler::Yellow);
-        Scene::_drawGUI();
-        ImGui::PopFont();
+        {
+            ImGui::PushFont(fontJP);
+            ProfileScopedSection_2(0, "ImGui", ImGuiControl::Profiler::Yellow);
+            Scene::_drawGUI();
+            ImGui::PopFont();
 
-    }
-    ImGui::Begin("ImGUI");
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        }
+        ImGui::Begin("ImGUI");
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 #if 1
-    ImGui::Text("Video memory usage %d MB", Graphics::VideoMemoryUsage());
+        ImGui::Text("Video memory usage %d MB", Graphics::VideoMemoryUsage());
 #endif
-    ImGui::Text("ALT+ENTER to change window mode");
+        ImGui::Text("ALT+ENTER to change window mode");
 
-    ImGui::End();
+        ImGui::End();
 #endif
 
 
 #if 0
 #ifdef USE_IMGUI
-    ImGui::Render();
-    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+        ImGui::Render();
+        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 #endif
 
-    //UINT sync_interval{ 0 };
-    //swap_chain->Present(sync_interval, 0);
+        //UINT sync_interval{ 0 };
+        //swap_chain->Present(sync_interval, 0);
 #endif
 
+    }
 
 }
 
