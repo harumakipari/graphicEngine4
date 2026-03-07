@@ -45,9 +45,10 @@ public:
 
     virtual void Update(float deltaTime) override;
 
-    void UpdateConstantBuffer(ID3D11DeviceContext* immediateContext);
+    // 定数バッファの更新処理をシーンごとにカスタマイズできるようにするための仮想関数
+    virtual void UpdateConstants(ID3D11DeviceContext* immediateContext, float deltaTime){}
 
-    virtual void Render(ID3D11DeviceContext* immediateContext, float delta_time) override;
+    virtual void Render(ID3D11DeviceContext* immediateContext, float deltaTime) override;
 
     virtual bool Uninitialize(ID3D11Device* device) override;
     virtual bool OnSizeChanged(ID3D11Device* device, UINT64 width, UINT height) override;
@@ -66,7 +67,10 @@ public:
 
     // ライトマネージャーへのアクセス関数
     LightManager* GetLightManager() const { return lightManager.get(); }
+
 private:
+    void UpdateConstantBuffer(ID3D11DeviceContext* immediateContext, float deltaTime);
+
     void ForwardRender(ID3D11DeviceContext* immediateContext);
 
     void DeferredRender(ID3D11DeviceContext* immediateContext, const ViewConstants& viewConstants);
@@ -98,6 +102,8 @@ protected:
     {
         float elapsedTime = 0.0f;
         float deltaTime = 0.0f;
+        DirectX::XMFLOAT2 iResolution = { 1280.0f,720.0f }; // 画面解像度
+
         float gravity = -9.8f;
     };
 
@@ -143,13 +149,16 @@ protected:
     std::unique_ptr<SkyMap> skyMap;
     std::unique_ptr<LightManager> lightManager;
     std::unique_ptr<PostEffectManager> postEffectManager;
-    /*static inline */std::unique_ptr<SceneEffectManager> sceneEffectManager;
+    std::unique_ptr<SceneEffectManager> sceneEffectManager;
     std::unique_ptr<SceneRenderer> sceneRenderer_;
 
     Microsoft::WRL::ComPtr<ID3D11PixelShader> finalPs;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> deferredPs;
 
-    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> environmentTextures[8];
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> environmentTextures[4];
+
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> starTexture;   // 星のテクスチャ
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> skyNoiseTexture;   // 空のノイズテクスチャ
 
     DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
     DirectX::XMFLOAT4 lightColor{ 1.0f, 1.0f, 1.0f, 20.1f };

@@ -31,6 +31,9 @@ public:
 
     void Update(float deltaTime) override;
 
+    // 定数バッファの更新処理をシーンごとにカスタマイズできるようにするための仮想関数
+    void UpdateConstants(ID3D11DeviceContext* immediateContext, float deltaTime)override;
+
     bool Uninitialize(ID3D11Device* device) override;
 
     void DrawGui() override;
@@ -41,7 +44,40 @@ public:
     static inline Scene::Autoenrollment<SampleScene> _autoenrollment;
 
 private:
-    std::shared_ptr<StageAsset> stageAsset= std::make_shared<StageAsset>();
+    struct SkyShaderConstants
+    {
+        DirectX::XMFLOAT3 topColor= { 0.0f, 0.0f, 0.0f };
+        float scrollSpeed = 0.03f;
+
+        DirectX::XMFLOAT3 bottomColor= { 0.025f,0.016f,0.73f };
+        float cloudIntensity= 0.6f;
+
+        DirectX::XMFLOAT3 sunColor = { 1.0f, 0.95f, 0.75f };
+        float sunSize = 0.98f;
+
+        DirectX::XMFLOAT3 cloudColor = { 1.0f, 1.0f, 1.0f };
+        float cloudThreshold= 0.5f;
+
+        float starScale= 1.3f;
+        DirectX::XMFLOAT2 starOffset= { 0.0f,0.0f };
+        float starIntensity= 4.4f;
+
+        DirectX::XMFLOAT3 moonColor= { 0.98f,1.0f,0.0f };
+        float moonRadius= 0.09f;
+
+        DirectX::XMFLOAT2 moonPos= { 0.1f,0.1f };
+        DirectX::XMFLOAT2 moonOffset= { 1.00/*5*/,1.0f };
+
+        DirectX::XMFLOAT3 startAuroraColor= { 0.0f,0.0f,0.0f };
+        float value=15.5f;
+
+        DirectX::XMFLOAT3 endAuroraColor= { 0.0f,0.0f,0.0f };
+        float value1= 1.2f;
+    };
+    std::unique_ptr<ConstantBuffer<SkyShaderConstants>> skyShaderConstantsBuffer;
+    Microsoft::WRL::ComPtr<ID3D11PixelShader> darkStageSkyPS;
+
+    std::shared_ptr<StageAsset> stageAsset = std::make_shared<StageAsset>();
     std::shared_ptr<StageAsset> stageCandelabraAsset = std::make_shared<StageAsset>();
     std::shared_ptr<StageAsset> stageBrazierAsset = std::make_shared<StageAsset>();
     std::shared_ptr<StageAsset> stageGroundBrazierAsset = std::make_shared<StageAsset>();

@@ -37,8 +37,8 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
             stageAsset->spawnPoints = stageAsset->model->spawnPoints;
         });
     loadStageAssetsThread = std::thread([&]()
-    {
-        PROFILE_SCOPE("Load StageAssetModel");
+        {
+            PROFILE_SCOPE("Load StageAssetModel");
             stageCandelabraAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/Candelabra/Candelabra.gltf", ModelTypes::ModelMode::StaticMesh);
             stageCandelabraAsset->spawnPoints = stageCandelabraAsset->model->spawnPoints;
 
@@ -81,18 +81,34 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
         SetUpActors();
     }
 
+
+    skyShaderConstantsBuffer = std::make_unique<ConstantBuffer<SkyShaderConstants>>(device);
+    HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/DarkStageSkyPS.cso", darkStageSkyPS.GetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+    RegisterRenderHook(RenderPass::Sky, [&](ID3D11DeviceContext* immediateContext)
+        {
+            ID3D11ShaderResourceView* shaderResourceViews[]
+            {
+                nullptr
+            };
+            fullscreenQuad->Blit(immediateContext, shaderResourceViews, 0, 1, darkStageSkyPS.Get());
+
+
+        });
+
     return true;
 }
 
 void SampleScene::Start()
 {
-#if 0
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
     audioComp->SetSource(L"./Data/Sound/BGM/game.wav");
     audioComp->SetLoop(true);
     audioComp->Play();
     //audioComp->SetVolume(0.2f);
+#if 0
 
     std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("./Data/Textures/UI/icon_chara.png", "image");
     image->SetWorldPosition({ 50, 50 });
@@ -156,6 +172,12 @@ void SampleScene::Update(float deltaTime)
     //#endif // !_DEBUG
 }
 
+// 定数バッファの更新処理をシーンごとにカスタマイズできるようにするための仮想関数
+void SampleScene::UpdateConstants(ID3D11DeviceContext* immediateContext, float deltaTime)
+{
+    skyShaderConstantsBuffer->Activate(immediateContext, 12);
+}
+
 void SampleScene::SetUpActors()
 {
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
@@ -217,5 +239,36 @@ bool SampleScene::Uninitialize(ID3D11Device* device)
 
 void SampleScene::DrawGui()
 {
+#ifdef USE_IMGUI
     SceneBase::DrawGui();
+    ImGui::Begin("SkyShader");
+
+    ImGui::ColorEdit3("topColor", &skyShaderConstantsBuffer->data.topColor.x);
+    ImGui::ColorEdit3("bottomColor", &skyShaderConstantsBuffer->data.bottomColor.x);
+    ImGui::ColorEdit3("sunColor", &skyShaderConstantsBuffer->data.sunColor.x);
+    ImGui::ColorEdit3("cloudColor", &skyShaderConstantsBuffer->data.cloudColor.x);
+    ImGui::DragFloat("cloudThreshold", &skyShaderConstantsBuffer->data.cloudThreshold, 0.01f);
+    ImGui::DragFloat("sunSize", &skyShaderConstantsBuffer->data.sunSize, 0.1f);
+    ImGui::DragFloat("cloudIntensity", &skyShaderConstantsBuffer->data.cloudIntensity, 0.1f);
+    ImGui::DragFloat("scrollSpeed", &skyShaderConstantsBuffer->data.scrollSpeed, 0.01f);
+
+    ImGui::DragFloat("starScale", &skyShaderConstantsBuffer->data.starScale, 0.01f);
+    ImGui::DragFloat2("starOffset", &skyShaderConstantsBuffer->data.starOffset.x, 0.1f);
+    ImGui::DragFloat("starIntensity", &skyShaderConstantsBuffer->data.starIntensity, 0.1f);
+
+    ImGui::ColorEdit3("moonColor", &skyShaderConstantsBuffer->data.moonColor.x);
+    ImGui::DragFloat("moonRadius", &skyShaderConstantsBuffer->data.moonRadius, 0.01f);
+
+    ImGui::DragFloat2("moonPos", &skyShaderConstantsBuffer->data.moonPos.x, 0.1f);
+    ImGui::DragFloat2("moonOffset", &skyShaderConstantsBuffer->data.moonOffset.x, 0.01f);
+
+    ImGui::ColorEdit3("startAuroraColor", &skyShaderConstantsBuffer->data.startAuroraColor.x);
+    ImGui::DragFloat("value", &skyShaderConstantsBuffer->data.value, 0.01f);
+
+    ImGui::ColorEdit3("endAuroraColor", &skyShaderConstantsBuffer->data.endAuroraColor.x);
+    ImGui::DragFloat("value1", &skyShaderConstantsBuffer->data.value1, 0.01f);
+
+    ImGui::End();
+#endif
+
 }

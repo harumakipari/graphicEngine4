@@ -5,6 +5,8 @@ cbuffer SCENE_CONSTANT_BUFFER : register(b1)
 {
     float elapsedTime;
     float deltaTime;
+    float2 iResolution; // ‰æ–Ê‰ð‘œ“x
+
     float gravity;
 }
 

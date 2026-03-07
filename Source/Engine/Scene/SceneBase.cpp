@@ -99,9 +99,15 @@ bool SceneBase::Initialize(ID3D11Device* device, const UINT64 width, UINT height
     hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/lut_sheen_e.dds", environmentTextures[3].ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-
+    // フォグなどの使用するノイズテクスチャ
     Microsoft::WRL::ComPtr<ID3D11Resource> resource;
     hr = DirectX::CreateDDSTextureFromFile(device, L"./Data/ShaderTextures/_noise_3d.dds", resource.ReleaseAndGetAddressOf(), noise3d.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+    // 空に使用するテクスチャ
+    hr = LoadTextureFromFile(device, L"./Data/ShaderTextures/starTex.DDS", starTexture.ReleaseAndGetAddressOf(), &texture2dDesc);
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    hr = LoadTextureFromFile(device, L"./Data/ShaderTextures/skyNoiseTex.png", skyNoiseTexture.ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     // UIマネージャーを初期化
@@ -138,6 +144,9 @@ void SceneBase::Update(float deltaTime)
 
     sceneCBuffer->data.elapsedTime += deltaTime;
     sceneCBuffer->data.deltaTime = deltaTime;
+    float width, height;
+    Graphics::GetScreenSize(width, height);
+    sceneCBuffer->data.iResolution = { width,height };
 
     uiManager->Update(deltaTime);
 
@@ -146,9 +155,6 @@ void SceneBase::Update(float deltaTime)
     {// デバッグカメラとゲームカメラの切り替え
         cameraManager->ToggleCamera();
     }
-
-
-
 #endif // !_DEBUG
 }
 
@@ -181,6 +187,7 @@ bool SceneBase::OnSizeChanged(ID3D11Device* device, const UINT64 width, UINT hei
             sceneEffectManager->AddEffect(std::make_unique<FogEffect>());
             sceneEffectManager->AddEffect(std::make_unique<SSAOEffect>());
             sceneEffectManager->AddEffect(std::make_unique<SSREffect>());
+            sceneEffectManager->AddEffect(std::make_unique<DepthOfFieldEffect>());
             sceneEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
         }
     }
@@ -190,8 +197,10 @@ bool SceneBase::OnSizeChanged(ID3D11Device* device, const UINT64 width, UINT hei
     return true;
 }
 
-void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
+void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext,float deltaTime)
 {
+    UpdateConstants(immediateContext, deltaTime);
+
     RenderState::BindSamplerStates(immediateContext);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
@@ -202,6 +211,12 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
     immediateContext->PSSetShaderResources(33, 1, environmentTextures[1].GetAddressOf());
     immediateContext->PSSetShaderResources(34, 1, environmentTextures[2].GetAddressOf());
     immediateContext->PSSetShaderResources(35, 1, environmentTextures[3].GetAddressOf());
+
+    // テクスチャをセット
+    immediateContext->PSSetShaderResources(20, 1, noise3d.GetAddressOf());
+    immediateContext->PSSetShaderResources(21, 1, skyNoiseTexture.GetAddressOf());
+    immediateContext->PSSetShaderResources(22, 1, starTexture.GetAddressOf());
+
 
     D3D11_VIEWPORT viewport;
     UINT num_viewports{ 1 };
@@ -223,9 +238,9 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext)
 }
 
 
-void SceneBase::Render(ID3D11DeviceContext* immediateContext, float delta_time)
+void SceneBase::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
-    UpdateConstantBuffer(immediateContext);
+    UpdateConstantBuffer(immediateContext, deltaTime);
     ViewConstants data = {};
     if (auto camera = cameraManager->GetRenderCamera(this))
     {
@@ -574,7 +589,6 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     //multipleRenderTargets->Deactivate(immediateContext);
 
 
-    immediateContext->PSSetShaderResources(20, 1, noise3d.GetAddressOf());
 
 
     // FINAL_PASS
