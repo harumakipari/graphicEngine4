@@ -31,6 +31,8 @@ public:
         int directionalLightEnable = 1;// ïΩçsåıåπÇÃ on / off
         int pointLightEnable = 1;
         int pointLightCount = 0;
+        DirectX::XMFLOAT3 rimColor={ 0.3f,0.5f,1.0f };
+        float rimIntensity = 0.56f;
         PointLight pointsLight[32];
     };
 

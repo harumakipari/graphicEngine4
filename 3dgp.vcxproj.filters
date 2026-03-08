@@ -1082,6 +1082,9 @@
     <FxCompile Include="Shader\DepthOfFieldPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\DarkStageSkyPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ComputeParticle.hlsli">
@@ -1151,6 +1154,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\Font.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\ShaderFunctions.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

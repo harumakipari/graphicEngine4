@@ -4,6 +4,7 @@
 #include "BidirectionalReflectanceDistributionFunction.hlsli"
 #include "Lights.hlsli"
 #include "Sampler.hlsli"
+#include "ShaderFunctions.hlsli"
 
 Texture2D normalMap : register(t0);
 Texture2D materialMap : register(t1);
@@ -45,7 +46,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     const float alphaRoughness = roughnessFactor * roughnessFactor;
     const float3 cDiff = lerp(baseColor.rgb, 0.0, metallicFactor);
 
-    const float3 N = normal;
+    const float3 N = normalize(normal);
     const float3 V = normalize(cameraPositon.xyz - position.xyz);
     
 
@@ -56,8 +57,8 @@ float4 main(VS_OUT pin) : SV_TARGET
     {
         for (int i = 0; i < pointLightCount; i++)
         {
-            float3 LP = position.xyz - pointLights[i].position.xyz; // world space “_ŒõŒ¹‚Ì•ûŒü
-            //LP = pointLights[i].position.xyz - position.xyz;
+            float3 LP = pointLights[i].position.xyz - position.xyz;
+            //float3 LP = position.xyz - pointLights[i].position.xyz; // world space “_ŒõŒ¹‚Ì•ûŒü
             float len = length(LP);
             //if (len >= pointLights[i].range)
             //{
@@ -65,7 +66,7 @@ float4 main(VS_OUT pin) : SV_TARGET
             //}
 
             float attenuateLength = saturate(1.0 - len / pointLights[i].range);
-#if 0
+#if 1
             /*	
             		Distance	Kc		Kl		Kq
             		7			1		0.7		1.8
@@ -81,23 +82,29 @@ float4 main(VS_OUT pin) : SV_TARGET
             		600			1		0.007	0.0002
             		3250		1		0.0014	0.000007	
             */
+
             float Kc = 1.0; // attenuation_constant
-            float Kl = 0.7; // attenuation_linear
-            float Kq = 1.8; // attenuation_quadratic
-            float attenuation = saturate(1.0 / (Kc + Kl * attenuateLength + Kq * (attenuateLength * attenuateLength)));
+            float Kl = 0.35; // attenuation_linear
+            float Kq = 0.44; // attenuation_quadratic
+
+            //float Kc = 1.0; // attenuation_constant
+            //float Kl = 0.7; // attenuation_linear
+            //float Kq = 1.8; // attenuation_quadratic
+            float attenuation = saturate(1.0 / (Kc + Kl * len + Kq * (len * len)));
 #else
             float attenuation = attenuateLength * attenuateLength;
 
-            //float rangeFade = saturate(1.0 - len / pointLights[i].range);
-            //rangeFade *= rangeFade;
+            //float distanceAtt = 1.0 / (1.0 + len * len);
+            //float rangeAtt = saturate(1.0 - len / pointLights[i].range);
+            //rangeAtt *= rangeAtt;
 
-            //float attenuation = 1.0 / (1.0 + len * len * 0.05);
-            //attenuation *= rangeFade;
+            //float attenuation = distanceAtt * rangeAtt;
+
 #endif
             LP /= len;
             const float pNoV = max(0.0, dot(N, V));
-            const float pNoL = max(0.0, dot(N, LP));
-            // float pNoL = max(0, 0.5 * dot(N, LP) + 0.5);
+            //const float pNoL = max(0.0, dot(N, LP));
+            float pNoL = max(0, 0.8 * dot(N, LP) + 0.8);
 
             if (pNoV > 0.0 || pNoL > 0.0) // “_ŒõŒ¹‚É‚Í•ûŒü‚ª‚È‚¢‚½‚ß
             {
@@ -109,8 +116,8 @@ float4 main(VS_OUT pin) : SV_TARGET
                 const float NoH = max(0.0, dot(N, H));
                 const float HoV = max(0.0, dot(H, V));
 
-                pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * lerp(1.0, attenuation, 0.3);
-                //pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * attenuation;
+                //pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * lerp(1.0, attenuation, 0.3);
+                pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * attenuation;
                 pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * attenuation;
             }
         }
@@ -124,7 +131,8 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 L = normalize(-lightDirection.xyz);
     float3 Li = float3(colorLight.x, colorLight.y, colorLight.z) * colorLight.w; // Œõ‚Ì‹P‚« 
 
-    const float NoL = max(0, 0.8 * dot(N, L) + 0.8);
+    const float NoL = max(0, dot(N, L));
+    //const float NoL = max(0, 0.5 * dot(N, L) + 0.5);
     const float NoV = max(0.0, dot(N, V));
 
     if (directionalLightEnable != 0)
@@ -155,7 +163,14 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     //    diffuse = lerp(totalDiffuse, totalDiffuse * occlusionFactor, occlusionStrength);
     //  specular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
-    float3 Lo = totalDiffuse + totalSpecular + emissive;
+
+#if 1
+    float rimPower = lightDirection.w;
+    float3 rim = CalcRimLight(N, V, rimColor.rgb, rimPower) * rimIntensity;
+    if (baseColor.a < 1.0)
+        rim = 0;
+#endif
+    float3 Lo = totalDiffuse + totalSpecular + emissive + rim;
 
     //return float4(baseColor);
 

@@ -135,7 +135,7 @@ void Player::Initialize(const Transform& transform)
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
     // ポイントライトコンポーネントを追加
     auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", "skeletalComponent");
-    pointLightComponent->SetRelativeLocationDirect({ 0.0f, 1.5f, -0.3f });
+    pointLightComponent->SetRelativeLocationDirect({ 0.0f, 1.5f, 0.6f });
     auto lightManager = scene->GetLightManager();
     // ライトの名前からライトマネージャーの共有ライトを取得して設定
     if (auto shared = lightManager->FindSharedLight("PlayerPointLight"))

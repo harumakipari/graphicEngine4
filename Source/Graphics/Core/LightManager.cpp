@@ -24,13 +24,13 @@ void LightManager::Initialize(ID3D11Device* device)
     {
         sharedLights["MainChandelier"] =
             std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.584078431f, 0.254152089f, 1.0f),
+                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.584078431f, 0.254152089f, 2.4f),
             10.0f
                 });
 
         sharedLights["CandleChandelier"] =
             std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.491020888f, 0.234550565f, 0.3f),
+                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.491020888f, 0.234550565f, 2.4f),
             1.5f
                 });
     }
@@ -40,14 +40,14 @@ void LightManager::Initialize(ID3D11Device* device)
         sharedLights["TopCandelabra"] =
             std::make_shared<SharedLightParam>(
                 SharedLightParam{
-            DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.309468925f, 0.8f),
+            DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.309468925f, 3.5f),
             3.5f
                 });
 
         sharedLights["SideCandelabra"] =
             std::make_shared<SharedLightParam>(
                 SharedLightParam{
-            DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.309468925f, 0.3f),
+            DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.309468925f, 1.2f),
             1.0f
                 });
     }
@@ -57,13 +57,13 @@ void LightManager::Initialize(ID3D11Device* device)
         sharedLights["BrazierCenterBig"] =
             std::make_shared<SharedLightParam>(
                 SharedLightParam{
-            DirectX::XMFLOAT4(1.0f, 0.533276379f, 0.258182853f, 1.2f),
+            DirectX::XMFLOAT4(1.0f, 0.533276379f, 0.258182853f, 1.44f),
             10.f
                 });
 
         sharedLights["BrazierCenterSmall"] =
             std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.533276379f, 0.258182853f, 0.8f),
+                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.533276379f, 0.258182853f, 1.6f),
             8.0f
                 });
     }
@@ -81,7 +81,7 @@ void LightManager::Initialize(ID3D11Device* device)
     {
         sharedLights["MeltedWaxLight"] =
             std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.630757093f, 0.219526187f, 0.4f),
+                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.630757093f, 0.219526187f, 1.28f),
             7.5f
                 });
     }
@@ -95,7 +95,7 @@ void LightManager::Initialize(ID3D11Device* device)
                 });
         sharedLights["TopStandingBrazier"] =
             std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.545724452f, 0.25015831f, 0.8f),
+                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.545724452f, 0.25015831f, 1.6f),
             8.0f
                 });
     }
@@ -105,7 +105,7 @@ void LightManager::Initialize(ID3D11Device* device)
         sharedLights["PlayerPointLight"] =
             std::make_shared<SharedLightParam>(
                 SharedLightParam{ DirectX::XMFLOAT4(0.959999979f, 0.523895442f, 0.240151942f, 5.0f),
-            3.0f
+            3.1f
                 });
     }
 }
@@ -181,7 +181,11 @@ void LightManager::DrawGUI()
     //ImGui::Checkbox("useDeferredRendering", &useDeferredRendering);
     ImGui::Checkbox("directionalLightEnable", &directionalLightEnable);
     ImGui::SliderFloat3("Light Direction", &constants.lightDirection.x, -1.0f, 1.0f);
-    ImGui::SliderFloat3("Light Color", &lightColor.x, -1.0f, 1.0f);
+    ImGui::ColorEdit3("Light Color", &lightColor.x);
+    ImGui::ColorEdit3("Rim Color", &constants.rimColor.x);
+    ImGui::SliderFloat("Rim Intensity", &constants.rimIntensity, 0.0f, 30.0f);
+    ImGui::SliderFloat("Rim Power", &constants.lightDirection.w, 0.0f, 30.0f);
+
     ImGui::SliderFloat("IBL Intensity", &iblIntensity, 0.0f, 20.0f);
     ImGui::SliderFloat("Light Intensity", &lightColor.w, 0.0f, 20.0f);
     ImGui::Checkbox("pointLightEnable", &pointLightEnable);

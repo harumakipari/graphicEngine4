@@ -2,6 +2,7 @@
 #include "imageBasedLighting.hlsli"
 #include "BidirectionalReflectanceDistributionFunction.hlsli"
 #include "Lights.hlsli"
+#include "ShaderFunctions.hlsli"
 
 #define BASE_COLOR_TEXTURE 0 
 #define METALLIC_ROUGHNESS_TEXTURE 1 
@@ -103,8 +104,8 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
             float attenuation = attenuateLength * attenuateLength;
             LP /= len;
             const float pNoV = max(0.0, dot(N, V));
-            const float pNoL = max(0.0, dot(N, LP));
-            // float pNoL = max(0, 0.5 * dot(N, LP) + 0.5);
+            //const float pNoL = max(0.0, dot(N, LP));
+            float pNoL = max(0, 0.5 * dot(N, LP) + 0.5);
             if (pNoV > 0.0 || pNoL > 0.0)
             {
                 const float3 R = reflect(-LP, N);
@@ -116,7 +117,7 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
                 const float HoV = max(0.0, dot(H, V));
 
                 pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV);
-                pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH);
+                pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) ;
             }
         }
     }
@@ -161,7 +162,10 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 
     float3 emissive = emissiveFactor;
 
-    float3 Lo = totalDiffuse + totalSpecular + emissive;
+    float rimPower = lightDirection.w;
+    float3 rim = CalcRimLight(N, V, rimColor.rgb, rimPower) * rimIntensity;
+
+    float3 Lo = totalDiffuse + totalSpecular + emissive + rim;
 	
     return float4(Lo, baseColorFactor.a);
 

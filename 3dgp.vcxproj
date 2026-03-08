@@ -919,6 +919,7 @@
     <None Include="Shader\PerlinWorleyNoise.hlsli" />
     <None Include="Shader\PrimitiveRenderer.hlsli" />
     <None Include="Shader\Sampler.hlsli" />
+    <None Include="Shader\ShaderFunctions.hlsli" />
     <None Include="Shader\ShaderToy.hlsli" />
     <None Include="Shader\SkyMap.hlsli" />
     <None Include="Shader\SolidShapeRenderer.hlsli" />

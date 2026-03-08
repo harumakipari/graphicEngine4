@@ -3,6 +3,7 @@
 #include "BidirectionalReflectanceDistributionFunction.hlsli"
 #include "Constants.hlsli"
 #include "Lights.hlsli"
+#include "ShaderFunctions.hlsli"
 
 #define BASECOLOR_TEXTURE 0 
 #define METALLIC_ROUGHNESS_TEXTURE 1 
@@ -127,8 +128,8 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
                 const float NoH = max(0.0, dot(N, H));
                 const float HoV = max(0.0, dot(H, V));
 
-                pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV);
-                pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH);
+                pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * lerp(1.0, attenuation, 0.3);
+                pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * attenuation;
             }
         }
     }
@@ -173,9 +174,12 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
 
     float3 emissive = emissiveFactor;
 
-    float3 Lo = totalDiffuse + totalSpecular + emissive;
-	
-    pout.color = float4(Lo, baseColorFactor.a) ;
+    float rimPower = lightDirection.w;
+    float3 rim = CalcRimLight(N, V, rimColor.rgb, rimPower) * rimIntensity;
+
+    float3 Lo = totalDiffuse + totalSpecular + emissive + rim;
+
+    pout.color = float4(Lo, baseColorFactor.a);
     pout.normal = float4(N.xyz, 0); // world ‹óŠÔ
     pout.position = pin.wPosition; // world ‹óŠÔ
     return pout;
