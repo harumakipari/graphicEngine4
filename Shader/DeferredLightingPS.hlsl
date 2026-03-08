@@ -83,13 +83,13 @@ float4 main(VS_OUT pin) : SV_TARGET
             		3250		1		0.0014	0.000007	
             */
 
-            float Kc = 1.0; // attenuation_constant
-            float Kl = 0.35; // attenuation_linear
-            float Kq = 0.44; // attenuation_quadratic
-
             //float Kc = 1.0; // attenuation_constant
-            //float Kl = 0.7; // attenuation_linear
-            //float Kq = 1.8; // attenuation_quadratic
+            //float Kl = 0.35; // attenuation_linear
+            //float Kq = 0.44; // attenuation_quadratic
+
+            float Kc = 1.0; // attenuation_constant
+            float Kl = 0.7; // attenuation_linear
+            float Kq = 1.8; // attenuation_quadratic
             float attenuation = saturate(1.0 / (Kc + Kl * len + Kq * (len * len)));
 #else
             float attenuation = attenuateLength * attenuateLength;
@@ -103,8 +103,8 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
             LP /= len;
             const float pNoV = max(0.0, dot(N, V));
-            //const float pNoL = max(0.0, dot(N, LP));
-            float pNoL = max(0, 0.8 * dot(N, LP) + 0.8);
+            const float pNoL = max(0.0, dot(N, LP));
+            //float pNoL = max(0, 0.8 * dot(N, LP) + 0.8);
 
             if (pNoV > 0.0 || pNoL > 0.0) // “_ŒõŒ¹‚É‚Í•ûŒü‚ª‚È‚¢‚½‚ß
             {
@@ -131,8 +131,8 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 L = normalize(-lightDirection.xyz);
     float3 Li = float3(colorLight.x, colorLight.y, colorLight.z) * colorLight.w; // Œõ‚Ì‹P‚« 
 
-    const float NoL = max(0, dot(N, L));
-    //const float NoL = max(0, 0.5 * dot(N, L) + 0.5);
+    //const float NoL = max(0, dot(N, L));
+    float NoL = saturate(dot(N, L) * 0.5 + 0.5);
     const float NoV = max(0.0, dot(N, V));
 
     if (directionalLightEnable != 0)
@@ -164,13 +164,13 @@ float4 main(VS_OUT pin) : SV_TARGET
     //    diffuse = lerp(totalDiffuse, totalDiffuse * occlusionFactor, occlusionStrength);
     //  specular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
 
-#if 1
+#if 0
     float rimPower = lightDirection.w;
     float3 rim = CalcRimLight(N, V, rimColor.rgb, rimPower) * rimIntensity;
     if (baseColor.a < 1.0)
         rim = 0;
 #endif
-    float3 Lo = totalDiffuse + totalSpecular + emissive + rim;
+    float3 Lo = totalDiffuse + totalSpecular + emissive/* + rim*/;
 
     //return float4(baseColor);
 

@@ -173,11 +173,11 @@ PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     totalSpecular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
 
     float3 emissive = emissiveFactor;
-
+#if 0
     float rimPower = lightDirection.w;
     float3 rim = CalcRimLight(N, V, rimColor.rgb, rimPower) * rimIntensity;
-
-    float3 Lo = totalDiffuse + totalSpecular + emissive + rim;
+#endif
+    float3 Lo = totalDiffuse + totalSpecular + emissive/* + rim*/;
 
     pout.color = float4(Lo, baseColorFactor.a);
     pout.normal = float4(N.xyz, 0); // world ‹óŠÔ

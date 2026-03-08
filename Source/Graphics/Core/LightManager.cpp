@@ -182,8 +182,8 @@ void LightManager::DrawGUI()
     ImGui::Checkbox("directionalLightEnable", &directionalLightEnable);
     ImGui::SliderFloat3("Light Direction", &constants.lightDirection.x, -1.0f, 1.0f);
     ImGui::ColorEdit3("Light Color", &lightColor.x);
-    ImGui::ColorEdit3("Rim Color", &constants.rimColor.x);
-    ImGui::SliderFloat("Rim Intensity", &constants.rimIntensity, 0.0f, 30.0f);
+    //ImGui::ColorEdit3("Rim Color", &constants.rimColor.x);
+    //ImGui::SliderFloat("Rim Intensity", &constants.rimIntensity, 0.0f, 30.0f);
     ImGui::SliderFloat("Rim Power", &constants.lightDirection.w, 0.0f, 30.0f);
 
     ImGui::SliderFloat("IBL Intensity", &iblIntensity, 0.0f, 20.0f);

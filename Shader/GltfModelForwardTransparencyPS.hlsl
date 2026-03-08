@@ -94,19 +94,56 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     {
         for (int i = 0; i < pointLightCount; i++)
         {
-            float3 LP = pin.wPosition.xyz - pointLights[i].position.xyz;
+            float3 LP = pointLights[i].position.xyz - pin.wPosition.xyz;
+            //float3 LP = position.xyz - pointLights[i].position.xyz; // world space ì_åıåπÇÃï˚å¸
             float len = length(LP);
-            if (len >= pointLights[i].range)
-            {
-                continue;
-            }
+            //if (len >= pointLights[i].range)
+            //{
+            //    continue;
+            //}
+
             float attenuateLength = saturate(1.0 - len / pointLights[i].range);
+#if 1
+            /*	
+            		Distance	Kc		Kl		Kq
+            		7			1		0.7		1.8
+            		13			1		0.35	0.44
+            		20			1		0.22	0.2
+            		32			1		0.14	0.07
+            		50			1		0.09	0.032
+            		65			1		0.07	0.017
+            		100			1		0.045	0.0075
+            		160			1		0.027	0.0028
+            		200			1		0.022	0.0019
+            		325			1		0.014	0.0007
+            		600			1		0.007	0.0002
+            		3250		1		0.0014	0.000007	
+            */
+
+            //float Kc = 1.0; // attenuation_constant
+            //float Kl = 0.35; // attenuation_linear
+            //float Kq = 0.44; // attenuation_quadratic
+
+            float Kc = 1.0; // attenuation_constant
+            float Kl = 0.7; // attenuation_linear
+            float Kq = 1.8; // attenuation_quadratic
+            float attenuation = saturate(1.0 / (Kc + Kl * len + Kq * (len * len)));
+#else
             float attenuation = attenuateLength * attenuateLength;
+
+            //float distanceAtt = 1.0 / (1.0 + len * len);
+            //float rangeAtt = saturate(1.0 - len / pointLights[i].range);
+            //rangeAtt *= rangeAtt;
+
+            //float attenuation = distanceAtt * rangeAtt;
+
+#endif
             LP /= len;
             const float pNoV = max(0.0, dot(N, V));
-            //const float pNoL = max(0.0, dot(N, LP));
-            float pNoL = max(0, 0.5 * dot(N, LP) + 0.5);
-            if (pNoV > 0.0 || pNoL > 0.0)
+            const float pNoL = max(0.0, dot(N, LP));
+            //float pNoL = max(0, 0.8 * dot(N, LP) + 0.8);
+
+            if (pNoV > 0.0 || pNoL > 0.0) // ì_åıåπÇ…ÇÕï˚å¸Ç™Ç»Ç¢ÇΩÇﬂ
             {
                 const float3 R = reflect(-LP, N);
                 const float3 H = normalize(V + LP);
@@ -116,12 +153,12 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
                 const float NoH = max(0.0, dot(N, H));
                 const float HoV = max(0.0, dot(H, V));
 
-                pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV);
-                pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) ;
+                //pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * lerp(1.0, attenuation, 0.3);
+                pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * attenuation;
+                pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * attenuation;
             }
         }
     }
-
     // ïΩçsåıåπÇÃèàóù
     float3 diffuse = 0;
     float3 specular = 0;
@@ -130,7 +167,7 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     float3 L = normalize(-lightDirection.xyz);
     float3 Li = float3(colorLight.x, colorLight.y, colorLight.z) * colorLight.w; //  åıÇÃãPÇ´
 
-    const float NoL = max(0, 0.5 * dot(N, L) + 0.5);
+    float NoL = saturate(dot(N, L) * 0.5 + 0.5);
     const float NoV = max(0, dot(N, V));
 
     if (directionalLightEnable != 0)
@@ -161,11 +198,11 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     totalSpecular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
 
     float3 emissive = emissiveFactor;
-
+#if 0 
     float rimPower = lightDirection.w;
     float3 rim = CalcRimLight(N, V, rimColor.rgb, rimPower) * rimIntensity;
-
-    float3 Lo = totalDiffuse + totalSpecular + emissive + rim;
+#endif
+    float3 Lo = totalDiffuse + totalSpecular + emissive /*+ rim*/;
 	
     return float4(Lo, baseColorFactor.a);
 
