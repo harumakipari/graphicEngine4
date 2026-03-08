@@ -105,7 +105,7 @@ bool SceneBase::Initialize(ID3D11Device* device, const UINT64 width, UINT height
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     // 空に使用するテクスチャ
-    hr = LoadTextureFromFile(device, L"./Data/ShaderTextures/starTex.DDS", starTexture.ReleaseAndGetAddressOf(), &texture2dDesc);
+    hr = LoadTextureFromFile(device, L"./Data/ShaderTextures/starTex.png", starTexture.ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     hr = LoadTextureFromFile(device, L"./Data/ShaderTextures/skyNoiseTex.png", skyNoiseTexture.ReleaseAndGetAddressOf(), &texture2dDesc);
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));

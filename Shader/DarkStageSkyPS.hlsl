@@ -38,16 +38,42 @@ cbuffer SKY_CONSTANT_BUFFER : register(b12)
     float value1;
 };
 
-Texture2D<float4> starTexture : register(t21);
-Texture2D<float4> noiseTexture : register(t22);
+Texture2D<float4> noiseTexture : register(t21);
+Texture2D<float4> starTexture : register(t22);
 
+float Hash21(float2 p)
+{
+    p = frac(p * float2(443.8975, 397.2973));
+    p += dot(p, p + 19.19);
+    return frac(p.x * p.y);
+}
+
+float StarLayer(float2 uv, float scale, float threshold)
+{
+    float2 starUV = uv * scale;
+
+    float2 id = floor(starUV);
+    float2 gv = frac(starUV) - 0.5;
+
+    float n = Hash21(id);
+
+    float d = length(gv);
+
+    float star = smoothstep(0.05, 0.0, d);
+
+    float mask = step(threshold, n);
+
+    float twinkle = sin(elapsedTime * 3 + n * 100) * 0.5 + 0.5;
+
+    return star * mask * twinkle;
+}
 float4 main(VS_OUT pin) : SV_TARGET
 {
     float2 uv = pin.texcoord;
 
  // ---- 空のグラデーション（上半分のみ） ----
     // uv.y: 0.5～1.0 の部分 → newY: 0～1 にマッピング
-    float newY = saturate((uv.y - 0.0) * 2.0);
+    float newY = saturate((uv.y - 0.5) * 2.0);
 
     float3 sky = lerp(topColor, bottomColor, newY);
 #if 0
@@ -66,14 +92,16 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 color = sky;
 
 // --- 星 ---
-    //float star = pow(starTexture.Sample(samplerStates[LINEAR], uv * starScale + starOffset).r, 8);
+    //float twinkle = sin(elapsedTime * 5 + uv.x * 200 + uv.y * 300) * 0.5 + 0.5;
+    //float star = pow(starTexture.Sample(samplerStates[LINEAR], uv * starScale + starOffset).r, 6) * twinkle;
     //color += star * starIntensity;
-    float twinkle = sin(elapsedTime * 5 + uv.x * 200 + uv.y * 300) * 0.5 + 0.5;
-    float star = pow(starTexture.Sample(samplerStates[LINEAR], uv * starScale + starOffset).r, 6) * twinkle;
-    //float starVisibility = smoothstep(0.3, 0.6, uv.y);
-    color += star * starIntensity;
 
+    float star1 = StarLayer(uv, 100, 0.98);
+    float star2 = StarLayer(uv, 200, 0.985);
+    float star3 = StarLayer(uv, 400, 0.99);
 
+    float stars = star1 + star2 + star3;
+    color += stars * starIntensity;
 // --- 月 ---
 
     float aspect = iResolution.x / iResolution.y;
@@ -82,15 +110,6 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     float2 moonPosCorrected = float2((moonPos.x - 0.5) * aspect + 0.5, moonPos.y);
 
-#if 0
-    float d = length(uvCorrected - moonPosCorrected);
-    float moonMask = smoothstep(moonRadius, moonRadius - 0.01, d);
-    float3 MoonColor = moonColor * moonMask;
-    float moonGlow = exp(-d * 20.0);
-    color += MoonColor * moonGlow * 0.2;
-    float moonTex = noiseTexture.Sample(samplerStates[LINEAR], uv * 4 + iTime * 0.02).r;
-    color = lerp(color, moonColor, moonMask * (0.7 + moonTex * 0.3));
-#else
 // 外側の大円（外側の光）
     float dOuter = length(uvCorrected - moonPosCorrected);
     float outer = 1.0 - smoothstep(moonRadius, moonRadius + 0.005, dOuter);
@@ -147,6 +166,5 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
     return float4(color + cloud * 0.5, 1.0);
 
-#endif
 
 }

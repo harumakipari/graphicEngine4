@@ -4,16 +4,7 @@ struct VS_OUT
     float2 texcoord : TEXCOORD;
 };
 
-cbuffer SHADERTOY_CONSTANTS : register(b7)
-{
-    float4 iResolution;
-    float4 iMouse; // TOOD
-    float4 iChannelResolution[4]; // TODO
-    float iTime;
-    float iFrame; // TODO
-    float iPad0;
-    float iPad1;
-}
+#include "Constants.hlsli"
 
 
 typedef float2 vec2;
@@ -78,7 +69,8 @@ void mainImage(out float4 fragColor, in float2 fragCoord)
     float2 uv = fragCoord.xy / iResolution.xy - 0.5;
     uv.y *= iResolution.y / iResolution.x;
     float3 dir = float3(uv * zoom, 1.0);
-    float time = iTime * speed + 0.25;
+    float time = elapsedTime * speed + 0.25;
+    float2 iMouse = float2(0.1, 0.1); // マウス位置を初期化
 
 // マウス回転
     float a1 = 0.5 + iMouse.x / iResolution.x * 2.0;

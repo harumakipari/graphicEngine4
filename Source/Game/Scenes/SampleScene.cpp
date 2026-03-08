@@ -83,7 +83,9 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
 
 
     skyShaderConstantsBuffer = std::make_unique<ConstantBuffer<SkyShaderConstants>>(device);
-    HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/DarkStageSkyPS.cso", darkStageSkyPS.GetAddressOf());
+    //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/DarkStageSkyPS.cso", darkStageSkyPS.GetAddressOf());
+    //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/ShaderToySky2.cso", darkStageSkyPS.GetAddressOf());
+    HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/ShaderToySkyPS.cso", darkStageSkyPS.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     RegisterRenderHook(RenderPass::Sky, [&](ID3D11DeviceContext* immediateContext)
@@ -193,13 +195,13 @@ void SampleScene::SetUpActors()
     Logger::Log(U8("sampleシーンのカメラ設定される。"));
 
 
-
-
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
+#if 0
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
     pauseActor->SetRetrySceneName("SampleScene");
+#endif // 0
 
     {
         PROFILE_SCOPE("Create Enemy");

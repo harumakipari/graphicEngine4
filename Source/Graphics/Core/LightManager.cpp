@@ -99,6 +99,15 @@ void LightManager::Initialize(ID3D11Device* device)
             8.0f
                 });
     }
+
+    // プレイヤーのポイントライト
+    {
+        sharedLights["PlayerPointLight"] =
+            std::make_shared<SharedLightParam>(
+                SharedLightParam{ DirectX::XMFLOAT4(0.959999979f, 0.523895442f, 0.240151942f, 5.0f),
+            3.0f
+                });
+    }
 }
 
 void LightManager::Update(float deltaTime)
@@ -184,7 +193,7 @@ void LightManager::DrawGUI()
     {
         for (auto& [name, light] : sharedLights)
         {
-            if (ImGui::TreeNode(name.c_str()))
+            if (ImGui::TreeNodeEx(name.c_str(),ImGuiTreeNodeFlags_DefaultOpen))
             {
                 ImGui::ColorEdit3("Color", &light->color.x);
                 ImGui::SliderFloat("Intensity", &light->color.w, 0.0f, 30.0f);

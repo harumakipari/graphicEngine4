@@ -15,6 +15,7 @@
 #include "PlayerStateDerived.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Engine/Scene/Scene.h"
+#include "Engine/Scene/SceneBase.h"
 #include "Game/Actors/Camera/Camera.h"
 #include "Game/Actors/Stage/Stage.h"
 #include "Game/DarkGame/Interactable.h"
@@ -130,13 +131,18 @@ void Player::Initialize(const Transform& transform)
         capsuleComponent->Initialize();
     }
 
-#if 0
+#if 1
+    auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
     // ポイントライトコンポーネントを追加
     auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", "skeletalComponent");
-    pointLightComponent->SetRelativeLocationDirect({ 0.4f, 2.1f, 0.3f });
-    pointLightComponent->SetColor({ 1.0f, 1.0f, 1.0f });
-    pointLightComponent->SetRange(1.5f);
-    pointLightComponent->SetIntensity(10.0f);
+    pointLightComponent->SetRelativeLocationDirect({ 0.0f, 1.5f, -0.3f });
+    auto lightManager = scene->GetLightManager();
+    // ライトの名前からライトマネージャーの共有ライトを取得して設定
+    if (auto shared = lightManager->FindSharedLight("PlayerPointLight"))
+    {
+        pointLightComponent->SetSharedParam(shared);
+    }
+
 
     AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
         {

@@ -1,19 +1,11 @@
+#include "Constants.hlsli"
+
 struct VS_OUT
 {
     float4 position : SV_POSITION;
     float2 texcoord : TEXCOORD;
 };
 
-cbuffer SHADERTOY_CONSTANTS : register(b7)
-{
-    float4 iResolution;
-    float4 iMouse; // TOOD
-    float4 iChannelResolution[4]; // TODO
-    float iTime;
-    float iFrame; // TODO
-    float iPad0;
-    float iPad1;
-}
 
 
 typedef float2 vec2;
@@ -147,9 +139,10 @@ void mainImage(out float4 fragColor, in float2 fragCoord)
     const int NUM_LAYERS = 4;
 
     float2 uv = (fragCoord - iResolution.xy * 0.5) / iResolution.y;
+    float2 iMouse = float2(0.1, 0.1); // マウス位置を初期化
     float2 M = iMouse.xy / iResolution.xy - 0.5;
 
-    float t = iTime * 0.1;
+    float t = elapsedTime * 0.1;
     float s = sin(t);
     float c = cos(t);
     float2x2 rot = float2x2(c, -s, s, c);
@@ -163,13 +156,13 @@ void mainImage(out float4 fragColor, in float2 fragCoord)
         float z = frac(t + i);
         float size = lerp(15.0, 1.0, z);
         float fade = S(0.0, 0.6, z) * S(1.0, 0.8, z);
-        m += fade * NetLayer(st * size - M * z, i, iTime);
+        m += fade * NetLayer(st * size - M * z, i, elapsedTime);
     }
 
     //float fft = iChannel0.Load(int3(70, 0, 0)).x;
     //float glow = -uv.y * fft * 2.0;
 
-    float fft = sin(iTime * 2.0) * 0.5 + 0.5; // 0.0～1.0の周期的な値に置き換え
+    float fft = sin(elapsedTime * 2.0) * 0.5 + 0.5; // 0.0～1.0の周期的な値に置き換え
     float glow = -uv.y * fft * 2.0;
     
     float3 baseCol = float3(s, cos(t * 0.4), -sin(t * 0.24)) * 0.4 + 0.6;
@@ -177,7 +170,7 @@ void mainImage(out float4 fragColor, in float2 fragCoord)
 
     col *= 1.0 - dot(uv, uv);
 
-    float tt = fmod(iTime, 230.0);
+    float tt = fmod(elapsedTime, 230.0);
     col *= S(0.0, 20.0, tt) * S(224.0, 200.0, tt);
 
     fragColor = float4(col, 1.0);
