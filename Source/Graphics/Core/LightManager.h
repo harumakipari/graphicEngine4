@@ -35,8 +35,8 @@ public:
         int pointLightEnable = 1;
         int pointLightCount = 0;
         DirectX::XMFLOAT3 rimColor={ 0.3f,0.5f,1.0f };
-        float rimIntensity = 0.56f;
-        float rimPower;
+        float rimIntensity = 0.112f;
+        float rimPower=3.0f;
         float kc = 1.0f;
         float kl = 0.7f;
         float kq = 1.8f;
@@ -69,7 +69,7 @@ public:
         lightColor = color;
     }
 
-    void DrawGUI();
+    void DrawGui();
 
     const DirectX::XMFLOAT4& GetLightDirection() const { return constants.lightDirection; }
 private:

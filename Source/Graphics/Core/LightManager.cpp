@@ -32,6 +32,20 @@ static AttenuationPreset presets[] =
     {600,  1.0f, 0.007f, 0.0002f},
     {3250, 1.0f, 0.0014f,0.000007f},
 };
+std::unordered_map<std::string, const char*> lightDisplayNames =
+{
+    {"MainChandelier", U8("メインシャンデリア")},
+    {"CandleChandelier", U8("キャンドルシャンデリア")},
+    {"TopCandelabra", U8("燭台 上")},
+    {"SideCandelabra", U8("燭台 横")},
+    {"BrazierCenterBig", U8("火鉢 中央 大")},
+    {"BrazierCenterSmall", U8("火鉢 中央 小")},
+    {"GroundBrazierLight", U8("地面 火鉢")},
+    {"MeltedWaxLight", U8("溶けた蝋")},
+    {"BottomStandingBrazier", U8("スタンド火鉢 下")},
+    {"TopStandingBrazier", U8("スタンド火鉢 上")},
+    {"PlayerPointLight", U8("プレイヤーライト")}
+};
 
 void LightManager::Initialize(ID3D11Device* device)
 {
@@ -131,14 +145,6 @@ void LightManager::Initialize(ID3D11Device* device)
             3.1f
                 });
     }
-    // カメラのポイントライト
-    {
-        sharedLights["CameraPointLight"] =
-            std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(0.3f,0.5f,1.0f , 0.5f),
-            3.1f
-                });
-    }
 }
 
 void LightManager::Update(float deltaTime)
@@ -226,24 +232,24 @@ void LightManager::CollectPointLightsFromScene(const Scene& scene)
     }
 }
 
-void LightManager::DrawGUI()
+void LightManager::DrawGui()
 {
 #ifdef USE_IMGUI
-    //ImGui::Checkbox("useDeferredRendering", &useDeferredRendering);
-    ImGui::Checkbox("directionalLightEnable", &directionalLightEnable);
-    ImGui::SliderFloat3("Light Direction", &constants.lightDirection.x, -1.0f, 1.0f);
-    ImGui::ColorEdit3("Light Color", &lightColor.x);
-    ImGui::ColorEdit3("Rim Color", &constants.rimColor.x);
-    ImGui::SliderFloat("Rim Intensity", &constants.rimIntensity, 0.0f, 30.0f);
-    ImGui::SliderFloat("Rim Power", &constants.rimPower, 0.0f, 30.0f);
-    ImGui::SliderFloat("diffuse Light Rate", &constants.lightDirection.w, 0.0f, 1.0f);
-    ImGui::SliderFloat("IBL Intensity", &iblIntensity, 0.0f, 20.0f);
-    ImGui::SliderFloat("Light Intensity", &lightColor.w, 0.0f, 20.0f);
-    ImGui::Checkbox("pointLightEnable", &pointLightEnable);
-    ImGui::SliderInt("Point Light Count", &pointLightCount, 0, PointLightMaxCount);
-    static int currentPreset = 11; // 3250
-    ImGui::Checkbox("Show Light Range", &showLightRange);
-    if (ImGui::Combo("PointLight Distance", &currentPreset,
+    ImGui::Checkbox(U8("平行光源 有効"), &directionalLightEnable);
+    ImGui::SliderFloat3(U8("ライト方向"), &constants.lightDirection.x, -1.0f, 1.0f);
+    ImGui::ColorEdit3(U8("ライト色"), &lightColor.x);
+    ImGui::ColorEdit3(U8("リムライト色"), &constants.rimColor.x);
+    ImGui::SliderFloat(U8("リム強度"), &constants.rimIntensity, 0.0f, 30.0f);
+    ImGui::SliderFloat(U8("リムパワー"), &constants.rimPower, 0.0f, 30.0f);
+    ImGui::SliderFloat(U8("距離減衰"), &constants.lightDirection.w, 0.0f, 1.0f);
+    ImGui::SliderFloat(U8("IBL 強度"), &iblIntensity, 0.0f, 20.0f);
+    ImGui::SliderFloat(U8("ライト強度"), &lightColor.w, 0.0f, 20.0f);
+    ImGui::Checkbox(U8("ポイントライト 有効"), &pointLightEnable);
+    ImGui::SliderInt(U8("ポイントライト数"), &pointLightCount, 0, PointLightMaxCount);
+
+    ImGui::Checkbox(U8("ライト範囲表示"), &showLightRange);
+    static int currentPreset = 0; // 7
+    if (ImGui::Combo(U8("ポイントライト距離"), &currentPreset,
         "7\0"
         "13\0"
         "20\0"
@@ -273,11 +279,16 @@ void LightManager::DrawGUI()
     {
         for (auto& [name, light] : sharedLights)
         {
-            if (ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+            const char* displayName = name.c_str();
+
+            if (lightDisplayNames.contains(name))
+                displayName = lightDisplayNames[name];
+
+            if (ImGui::TreeNodeEx(displayName, ImGuiTreeNodeFlags_DefaultOpen))
             {
-                ImGui::ColorEdit3("Color", &light->color.x);
-                ImGui::SliderFloat("Intensity", &light->color.w, 0.0f, 30.0f);
-                ImGui::SliderFloat("Range", &light->range, 0.0f, 20.0f);
+                ImGui::ColorEdit3(U8("色"), &light->color.x);
+                ImGui::SliderFloat(U8("強度"), &light->color.w, 0.0f, 30.0f);
+                ImGui::SliderFloat(U8("範囲"), &light->range, 0.0f, 20.0f);
                 ImGui::TreePop();
             }
         }

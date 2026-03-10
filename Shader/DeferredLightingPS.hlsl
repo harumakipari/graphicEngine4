@@ -118,6 +118,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
                 pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * lerp(1.0, attenuation, lightDirection.w);
                 //pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * attenuation;
+                //pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * lerp(1.0, attenuation, lightDirection.w);
                 pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * attenuation;
             }
         }
@@ -164,13 +165,12 @@ float4 main(VS_OUT pin) : SV_TARGET
     //    diffuse = lerp(totalDiffuse, totalDiffuse * occlusionFactor, occlusionStrength);
     //  specular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
 
-#if 0
-    float rimPower = lightDirection.w;
+#if 1
     float3 rim = CalcRimLight(N, V, rimColor.rgb, rimPower) * rimIntensity;
     if (baseColor.a < 1.0)
         rim = 0;
 #endif
-    float3 Lo = totalDiffuse + totalSpecular + emissive/* + rim*/;
+    float3 Lo = totalDiffuse + totalSpecular + emissive + rim;
 
     //return float4(baseColor);
 

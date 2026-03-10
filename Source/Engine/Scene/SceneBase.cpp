@@ -796,7 +796,7 @@ void SceneBase::DrawSceneSettingsTab()
     {
         ImGui::Checkbox("useDeferredRendering", &useDeferredRendering);
         ImGui::Checkbox("useDrawDebug", &useDrawDebug);
-        lightManager->DrawGUI();
+        lightManager->DrawGui();
 
 
     }
