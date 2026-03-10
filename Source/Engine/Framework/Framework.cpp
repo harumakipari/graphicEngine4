@@ -174,9 +174,8 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
     // レンダーターゲット設定
     Graphics::SetRenderTargets();
 
-
     // SCENE_TRANSITION
-    //if (!skipRendering)
+    if (!skipRendering)
     {
         {
             ProfileScopedSection_2(0, "Render", ImGuiControl::Profiler::Red);
@@ -190,9 +189,9 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
     }
 
 
-#ifdef USE_IMGUI
     if (enableImGui)
     {
+#ifdef USE_IMGUI
         {
             ImGui::PushFont(fontJP);
             ProfileScopedSection_2(0, "ImGui", ImGuiControl::Profiler::Yellow);
@@ -206,6 +205,7 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
         ImGui::Text("Video memory usage %d MB", Graphics::VideoMemoryUsage());
 #endif
         ImGui::Text("ALT+ENTER to change window mode");
+        ImGui::Text("F1 ImGui on/off");
 
         ImGui::End();
 #endif
@@ -220,9 +220,7 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
         //UINT sync_interval{ 0 };
         //swap_chain->Present(sync_interval, 0);
 #endif
-
     }
-
 }
 
 bool Framework::Uninitialize()

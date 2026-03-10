@@ -125,6 +125,7 @@ void Player::Initialize(const Transform& transform)
         capsuleComponent->SetLayer(CollisionLayer::Player);
         capsuleComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
         capsuleComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+        capsuleComponent->SetResponseToLayer(CollisionLayer::WorldProps, CollisionComponent::CollisionResponse::Block);
         capsuleComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::Block);
         capsuleComponent->SetCollisionOffsetY(height * 0.5f);
         capsuleComponent->SetIsVisibleDebugBox(false);
@@ -144,15 +145,15 @@ void Player::Initialize(const Transform& transform)
     }
 
 
-    AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
-        {
-            if (auto item = std::dynamic_pointer_cast<Stage>(hitPair.second->GetActor()))
-            {
-                return;
-            }
-            //std::string a = hitPair.second->GetActor()->GetName() + "is hit player";
-            //OutputDebugStringA(a.c_str());
-        });
+    //AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
+    //    {
+    //        if (auto item = std::dynamic_pointer_cast<Stage>(hitPair.second->GetActor()))
+    //        {
+    //            return;
+    //        }
+    //        //std::string a = hitPair.second->GetActor()->GetName() + "is hit player";
+    //        //OutputDebugStringA(a.c_str());
+    //    });
 #endif // 0
 
     {

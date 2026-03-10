@@ -16,8 +16,24 @@ void DarkStageCandelabraActor::SetModel(const std::shared_ptr<StageAsset>& stage
     candelabraMeshComponent->model = stageAsset->model;
     candelabraMeshComponent->SetIsCastShadow(false);    // ‰e‚ð—Ž‚Æ‚³‚È‚¢‚æ‚¤‚É‚·‚é
 
+#if 0
+    // ƒTƒCƒY‚ðŽæ“¾
+    DirectX::XMFLOAT3 size = stageAsset->model->GetModelSize();
+    std::shared_ptr<BoxComponent> boxComponent = AddComponent<BoxComponent>("collision", parentName);
+    boxComponent->SetBoxExtent(size);
+    boxComponent->SetCollisionOffsetY(size.y * 0.5f);
+    boxComponent->SetCollisionOffsetX(-size.x * 0.5f);
+    boxComponent->SetCollisionOffsetZ(-size.z * 0.5f);
+    boxComponent->SetStatic(true);
+    boxComponent->SetLayer(CollisionLayer::Interactable);
+    boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+    boxComponent->Initialize();
+#endif // 0
+
+
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
     auto lightManager = scene->GetLightManager();
+
 
 
     auto lightsData = candelabraMeshComponent->model->GetPointLights();

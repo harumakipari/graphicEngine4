@@ -11,15 +11,13 @@ enum class CollisionLayer :uint32_t
     Player ,
     Enemy ,
     Convex ,
-
     WorldProps , // stage の object
     Camera ,   // カメラ
-
     Interactable,  // プレイヤーが近づいてインタラクトできるもの
 
-    Everything = 0xFFFFFF,
+    Max,
 };
-
+constexpr uint32_t COLLISION_EVERYTHING = 0xFFFFFFFF;
 
 
 namespace CollisionHelper

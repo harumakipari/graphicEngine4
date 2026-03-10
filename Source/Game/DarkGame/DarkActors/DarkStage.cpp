@@ -20,11 +20,12 @@ void DarkStage::Initialize(const Transform& transform)
     //castStaticMeshComponent->SetIsVisible(false);
 
 
+#if 0
     {
         PROFILE_SCOPE("Create StageCollision");
 
         auto stageCollisionModel = this->AddComponent<StaticMeshComponent>("collisionModel", parentName);
-        stageCollisionModel->SetModel("./Data/Models/DarkStage_Collision/DarkStage_Collision.gltf", true);
+        stageCollisionModel->SetModel("./Data/Models/DarkStage_Collision/DarkStage_Collision.glb", true);
         stageCollisionModel->SetIsCastShadow(false);
         stageCollisionModel->SetIsVisible(false);
         auto nodes = stageCollisionModel->model->GetNodes();
@@ -66,6 +67,8 @@ void DarkStage::Initialize(const Transform& transform)
             box->Initialize();
         }
     }
+#endif // 0
+
 #if 0
     // ìñÇΩÇËîªíË
     // ÉÅÉbÉVÉÖ
@@ -165,7 +168,7 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
             if (point.name == "Spawn_Door_Left")
             {
                 DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
-#if 1
+#if 0
                 std::shared_ptr<SkeletalMeshComponent> door = AddComponent<SkeletalMeshComponent>("Left_Door", parentName);
                 door->SetModel("./Data/Models/DarkStageAssets/Door_Large/SM_Door_Large_01.gltf");
                 door->SetRelativeLocationDirect(pos);
@@ -181,6 +184,17 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
                 auto stage = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DoorLeftActor>("door_Left", doorLeftTr);
 
 #endif // 0
+            }
+            else if (point.name == "Spawn_Door_Right")
+            {
+                DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+                Transform doorRightTr{
+            pos,
+                    point.worldRotation,
+                    point.worldScale
+                };
+
+                auto stage = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DoorRightActor>("door_Right", doorRightTr);
             }
             else if (point.name == "Spawn_Particle_Steam")
             {

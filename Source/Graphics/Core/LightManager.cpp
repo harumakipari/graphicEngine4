@@ -37,10 +37,10 @@ std::unordered_map<std::string, const char*> lightDisplayNames =
     {"MainChandelier", U8("メインシャンデリア")},
     {"CandleChandelier", U8("キャンドルシャンデリア")},
     {"TopCandelabra", U8("燭台 上")},
-    {"SideCandelabra", U8("燭台 横")},
-    {"BrazierCenterBig", U8("火鉢 中央 大")},
-    {"BrazierCenterSmall", U8("火鉢 中央 小")},
-    {"GroundBrazierLight", U8("地面 火鉢")},
+    {"SideCandelabra", U8("燭台 左右")},
+    {"BrazierCenterBig", U8("かご 火鉢 大")},
+    {"BrazierCenterSmall", U8("かご 火鉢 小")},
+    {"GroundBrazierLight", U8("三角形 火鉢")},
     {"MeltedWaxLight", U8("溶けた蝋")},
     {"BottomStandingBrazier", U8("スタンド火鉢 下")},
     {"TopStandingBrazier", U8("スタンド火鉢 上")},
@@ -172,7 +172,6 @@ void LightManager::Update(float deltaTime)
     constants.directionalLightEnable = directionalLightEnable;
     constants.pointLightCount = pointLightCount;
     constants.lightColor = lightColor;
-    //constants.lightDirection = lightDirection;
     constants.directionalLightEnable = static_cast<int>(directionalLightEnable);
     constants.pointLightEnable = static_cast<int>(pointLightEnable);
     // デフォルト初期化

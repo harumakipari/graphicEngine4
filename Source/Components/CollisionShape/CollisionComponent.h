@@ -59,11 +59,14 @@ public:
     // ˆø”‚Ì‘ŠŽè‚Æ‚Í‚Ç‚ñ‚È”½‰ž‚ð‚·‚é‚©‚ðŽæ“¾‚·‚éŠÖ”
     CollisionResponse GetResponseTo(const CollisionComponent* other)const
     {
-        auto it = responseTable_.find(other->GetCollisionLayer());
+        uint32_t layer = other->GetCollisionLayer();
+
+        auto it = responseTable_.find(layer);
         if (it != responseTable_.end())
         {
             return it->second;
         }
+
         return CollisionResponse::None;
     }
 

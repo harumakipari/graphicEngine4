@@ -89,7 +89,6 @@ private:
 
     std::unique_ptr<PBD::System> pbd;
 
-    std::unique_ptr<ClothSimulate> clothSimulate;
 
     std::shared_ptr<InterleavedGltfModel> model;
 
