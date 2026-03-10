@@ -12,8 +12,11 @@ struct SharedLightParam
     float range;
 };
 
+
 class LightManager
 {
+    const static inline int PointLightMaxCount = 40;
+
 public:
     struct PointLight
     {
@@ -33,7 +36,7 @@ public:
         int pointLightCount = 0;
         //DirectX::XMFLOAT3 rimColor={ 0.3f,0.5f,1.0f };
         //float rimIntensity = 0.56f;
-        PointLight pointsLight[32];
+        PointLight pointsLight[PointLightMaxCount];
     };
 
     std::shared_ptr<SharedLightParam> FindSharedLight(const std::string& name)

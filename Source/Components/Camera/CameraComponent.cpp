@@ -48,6 +48,15 @@ const DirectX::XMFLOAT4X4& TPSCameraComponent::GetView()
         resolvedEye,
         0.15f); // ’²®‰Â
 
+    // š’Ç‰Á
+    XMFLOAT3 eye3;
+    XMStoreFloat3(&eye3, currentEye);
+
+    if (auto owner = owner_.lock())
+    {
+        owner->SetPosition(eye3);
+    }
+
     // ==========================
     // ‡D Views—ñ¶¬
     // ==========================

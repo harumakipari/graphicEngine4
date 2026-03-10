@@ -108,6 +108,14 @@ void LightManager::Initialize(ID3D11Device* device)
             3.1f
                 });
     }
+    // カメラのポイントライト
+    {
+        sharedLights["CameraPointLight"] =
+            std::make_shared<SharedLightParam>(
+                SharedLightParam{ DirectX::XMFLOAT4(0.3f,0.5f,1.0f , 0.5f),
+            3.1f
+                });
+    }
 }
 
 void LightManager::Update(float deltaTime)
@@ -184,12 +192,13 @@ void LightManager::DrawGUI()
     ImGui::ColorEdit3("Light Color", &lightColor.x);
     //ImGui::ColorEdit3("Rim Color", &constants.rimColor.x);
     //ImGui::SliderFloat("Rim Intensity", &constants.rimIntensity, 0.0f, 30.0f);
-    ImGui::SliderFloat("Rim Power", &constants.lightDirection.w, 0.0f, 30.0f);
+    //ImGui::SliderFloat("Rim Power", &constants.lightDirection.w, 0.0f, 30.0f);
+    ImGui::SliderFloat("diffuse Light Rate", &constants.lightDirection.w, 0.0f, 1.0f);
 
     ImGui::SliderFloat("IBL Intensity", &iblIntensity, 0.0f, 20.0f);
     ImGui::SliderFloat("Light Intensity", &lightColor.w, 0.0f, 20.0f);
     ImGui::Checkbox("pointLightEnable", &pointLightEnable);
-    ImGui::SliderInt("Point Light Count", &pointLightCount, 0, 32);
+    ImGui::SliderInt("Point Light Count", &pointLightCount, 0, PointLightMaxCount);
     if (debugPointLights.size() != static_cast<size_t>(pointLightCount))
         debugPointLights.resize(pointLightCount); // 個数を合わせる
 
@@ -197,7 +206,7 @@ void LightManager::DrawGUI()
     {
         for (auto& [name, light] : sharedLights)
         {
-            if (ImGui::TreeNodeEx(name.c_str(),ImGuiTreeNodeFlags_DefaultOpen))
+            if (ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
             {
                 ImGui::ColorEdit3("Color", &light->color.x);
                 ImGui::SliderFloat("Intensity", &light->color.w, 0.0f, 30.0f);

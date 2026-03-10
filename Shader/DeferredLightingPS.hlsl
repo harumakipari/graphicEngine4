@@ -66,7 +66,7 @@ float4 main(VS_OUT pin) : SV_TARGET
             //}
 
             float attenuateLength = saturate(1.0 - len / pointLights[i].range);
-#if 1
+#if 0
             /*	
             		Distance	Kc		Kl		Kq
             		7			1		0.7		1.8
@@ -84,8 +84,8 @@ float4 main(VS_OUT pin) : SV_TARGET
             */
 
             //float Kc = 1.0; // attenuation_constant
-            //float Kl = 0.35; // attenuation_linear
-            //float Kq = 0.44; // attenuation_quadratic
+            //float Kl = 0.014; // attenuation_linear
+            //float Kq = 0.0007; // attenuation_quadratic
 
             float Kc = 1.0; // attenuation_constant
             float Kl = 0.7; // attenuation_linear
@@ -116,8 +116,8 @@ float4 main(VS_OUT pin) : SV_TARGET
                 const float NoH = max(0.0, dot(N, H));
                 const float HoV = max(0.0, dot(H, V));
 
-                //pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * lerp(1.0, attenuation, 0.3);
-                pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * attenuation;
+                pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * lerp(1.0, attenuation, lightDirection.w);
+                //pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * attenuation;
                 pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * attenuation;
             }
         }

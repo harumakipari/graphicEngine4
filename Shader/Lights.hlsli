@@ -27,5 +27,5 @@ cbuffer LIGHT_CONSTANT_BUFFER : register(b11)
     int pointLightCount;
     //float3 rimColor;
     //float rimIntensity;
-    PointLights pointLights[32];
+    PointLights pointLights[40];
 };

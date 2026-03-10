@@ -2,6 +2,30 @@
 #include "Camera.h"
 
 #include "Components/Controller/ControllerComponent.h"
+#include "Engine/Scene/SceneBase.h"
+
+void Camera::Initialize(const Transform& transform)
+{
+    mainCameraComponent = this->AddComponent<class TPSCameraComponent>("mainCamera");
+    mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(35), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
+    //mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(45), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 1.1f, 100.0f);
+
+#if 0
+    auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
+    // ポイントライトコンポーネントを追加
+    auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", "mainCamera");
+    pointLightComponent->SetRelativeLocationDirect({ 0.0f, 1.5f, 0.6f });
+    auto lightManager = scene->GetLightManager();
+    // ライトの名前からライトマネージャーの共有ライトを取得して設定
+    if (auto shared = lightManager->FindSharedLight("CameraPointLight"))
+    {
+        pointLightComponent->SetSharedParam(shared);
+    }
+
+
+#endif // 0
+}
+
 
 void MainCamera::Update(float deltaTime)
 {
@@ -11,7 +35,6 @@ void MainCamera::Update(float deltaTime)
         auto actor = target->GetOwner();
         
     }
-
 
 
 
