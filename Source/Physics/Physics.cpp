@@ -658,7 +658,7 @@ void Physics::Render(const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4&
     // •`‰æ
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
-    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
+    //RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
 
     shapeRenderer->Render(immediateContext, view, projection, lightDirection);
     primitiveRenderer->Render(immediateContext, view, projection, D3D11_PRIMITIVE_TOPOLOGY_LINELIST);

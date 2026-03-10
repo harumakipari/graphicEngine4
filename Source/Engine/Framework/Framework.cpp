@@ -14,7 +14,7 @@
 #include "Engine/Input/InputSystem.h"
 #include "Graphics/Renderer/ShapeRenderer.h"
 #include "Engine/Audio/CoreAudio.h"
-#include "Engine/Debug/DebugDrawManager.h"
+#include "Engine/Debug/DebugRender.h"
 #include "Engine/Debug/Logger.h"
 #include "Engine/Effects/EffectEditor.h"
 #include "Engine/Effects/EffectManager.h"
@@ -98,7 +98,7 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
     CoreAudio::Update(deltaTime);
 
     // デバックコマンド更新
-    DebugDrawManager::Tick(deltaTime);
+    DebugRender::Tick(deltaTime);
 
     SceneTransitionManager::Instance().Update(deltaTime);
 

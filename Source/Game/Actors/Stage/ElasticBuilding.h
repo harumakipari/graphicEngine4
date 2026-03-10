@@ -6,7 +6,7 @@
 #include "Components/Effect/ParticleComponent.h"
 #include "Components/Elastic/ElasticComponent.h"
 #include "Engine/Audio/CoreAudio.h"
-#include "Engine/Debug/DebugDrawManager.h"
+#include "Engine/Debug/DebugRender.h"
 
 class ElasticBuilding : public Actor
 {

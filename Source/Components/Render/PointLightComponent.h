@@ -1,6 +1,6 @@
 #pragma once
 #include "Components/Base/SceneComponent.h"
-#include "Engine/Debug/DebugDrawManager.h"
+#include "Engine/Debug/DebugRender.h"
 #include "Graphics/Core/LightManager.h"
 
 class PointLightComponent :public SceneComponent

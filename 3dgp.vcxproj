@@ -268,7 +268,7 @@
     <ClCompile Include="Source\Engine\Audio\Audio.cpp" />
     <ClCompile Include="Source\Engine\Audio\CoreAudio.cpp" />
     <ClCompile Include="Source\Engine\Camera\CameraManager.cpp" />
-    <ClCompile Include="Source\Engine\Debug\DebugDrawManager.cpp" />
+    <ClCompile Include="Source\Engine\Debug\DebugRender.cpp" />
     <ClCompile Include="Source\Engine\Debug\EditorGizmo.cpp" />
     <ClCompile Include="Source\Engine\Debug\Logger.cpp" />
     <ClCompile Include="Source\Engine\Debug\SceneEditor.cpp" />
@@ -393,7 +393,7 @@
     <ClInclude Include="Source\Engine\Camera\CameraConstants.h" />
     <ClInclude Include="Source\Engine\Camera\CameraManager.h" />
     <ClInclude Include="Source\Engine\Debug\Assert.h" />
-    <ClInclude Include="Source\Engine\Debug\DebugDrawManager.h" />
+    <ClInclude Include="Source\Engine\Debug\DebugRender.h" />
     <ClInclude Include="Source\Engine\Debug\EditorGizmo.h" />
     <ClInclude Include="Source\Engine\Debug\Logger.h" />
     <ClInclude Include="Source\Engine\Debug\LoggerConfig.h" />

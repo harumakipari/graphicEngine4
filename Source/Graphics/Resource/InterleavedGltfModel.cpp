@@ -1704,7 +1704,7 @@ void InterleavedGltfModel::Render(ID3D11DeviceContext* immediateContext, const D
                 {
                     immediateContext->PSSetShader(pipeline.pixelShader ? pipeline.pixelShader.Get() : pixelShader.Get(), nullptr, 0);
                 }
-                RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
+                //RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
                 bool passed = false;
                 switch (pass)
                 {

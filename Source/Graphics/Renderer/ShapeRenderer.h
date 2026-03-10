@@ -75,6 +75,8 @@ public:
     * @param color 描画色（RGBA）
     */
     static void DrawSphere(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, const DirectX::XMFLOAT4& color);
+    static void DrawDebugSphere(ID3D11DeviceContext* context, const DirectX::XMFLOAT3& center, float radius,
+                         const DirectX::XMFLOAT4& color, int segments);
 
     /**
     * @brief カプセルを描画する（位置のみ）
@@ -196,6 +198,7 @@ private:
 
     // プリミティブ用のモデル
     static inline std::unique_ptr<InterleavedGltfModel> sphere = nullptr; /**< 球モデル */
+    static inline std::unique_ptr<InterleavedGltfModel> circle = nullptr; /**< 円モデル */
     static inline std::unique_ptr<InterleavedGltfModel> topHalfSphere = nullptr; /**< 半球（上）モデル */
     static inline std::unique_ptr<InterleavedGltfModel> bottomHalfSphere = nullptr; /**< 半球（下）モデル */
     static inline std::unique_ptr<InterleavedGltfModel> cylinder = nullptr; /**< 円柱モデル */

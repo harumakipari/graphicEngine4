@@ -2,7 +2,7 @@
 #include "ElasticComponent.h"
 #include "Core/Actor.h"
 #include "Engine/Camera/CameraConstants.h"
-#include "Engine/Debug/DebugDrawManager.h"
+#include "Engine/Debug/DebugRender.h"
 #include "Engine/Input/InputSystem.h"
 #include "Engine/Utility/Time.h"
 #include "Game/Actors/Camera/Camera.h"
@@ -116,9 +116,9 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
     elasticConstants.p3 = { p3Current.x,p3Current.y,p3Current.z,1.0f };
 
 
-    DebugDrawManager::DrawSphere({ elasticConstants.p1.x,elasticConstants.p1.y,elasticConstants.p1.z }, 0.03f, { 1, 0, 0, 1 });
-    DebugDrawManager::DrawSphere({ elasticConstants.p2.x,elasticConstants.p2.y,elasticConstants.p2.z }, 0.03f, { 0, 1, 0, 1 });
-    DebugDrawManager::DrawSphere({ elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z }, 0.03f, { 0, 0, 1, 1 });
+    DebugRender::DrawSphere({ elasticConstants.p1.x,elasticConstants.p1.y,elasticConstants.p1.z }, 0.03f, { 1, 0, 0, 1 });
+    DebugRender::DrawSphere({ elasticConstants.p2.x,elasticConstants.p2.y,elasticConstants.p2.z }, 0.03f, { 0, 1, 0, 1 });
+    DebugRender::DrawSphere({ elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z }, 0.03f, { 0, 0, 1, 1 });
 }
 
 bool ElasticMeshComponent::UpdateFromMouse(float deltaTime)
@@ -163,7 +163,7 @@ bool ElasticMeshComponent::UpdateFromMouse(float deltaTime)
             intersectPos = { 0.0f,0.0f,0.0f };
             buildCurveDir = { 0.0f,0.0f,0.0f };
         }
-        DebugDrawManager::DrawSphere(result.hitPoint, 1.03f, { 1, 1, 0, 1 });
+        DebugRender::DrawSphere(result.hitPoint, 1.03f, { 1, 1, 0, 1 });
 
         // これでマウスのpositionによって、建物を曲げる方向を見つける
         XMVECTOR BuildCurveDir = XMLoadFloat3(&buildCurveDir);
@@ -278,12 +278,12 @@ void  ElasticMeshComponent::GetSurfacePositionTangent(DirectX::XMFLOAT3& surface
     DirectX::XMStoreFloat3(&surfacePosition, surfacePos);
 
     // 表面
-    DebugDrawManager::DrawSphere(surfacePosition, 0.03f, { 1,1,0,1 });
+    DebugRender::DrawSphere(surfacePosition, 0.03f, { 1,1,0,1 });
     // 接線
     XMVECTOR Debug = XMVectorAdd(p3, Tangent);
     XMFLOAT3 debugPos;
     XMStoreFloat3(&debugPos, Debug);
-    DebugDrawManager::DrawLine({ elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z },
+    DebugRender::DrawLine({ elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z },
         debugPos, { 1,0,1,1 });
 
     XMStoreFloat3(&tangent, Tangent);

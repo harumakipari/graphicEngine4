@@ -81,6 +81,7 @@ private:
 
     bool directionalLightEnable = true; // 平行光源の on / off
     bool pointLightEnable = true;
+    bool showLightRange = true; // ポイントライトの範囲をデバッグ表示するか
     int pointLightCount = 40;
 
     LightConstants constants = {};

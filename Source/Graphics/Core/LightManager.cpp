@@ -179,17 +179,22 @@ void LightManager::Update(float deltaTime)
 #endif // 1
 
 #ifdef _DEBUG
-    for (int i = 0; i < pointLightCount; i++)
+    if (showLightRange)
     {
-        auto& light = constants.pointsLight[i];
+        for (int i = 0; i < pointLightCount; i++)
+        {
+            auto& light = constants.pointsLight[i];
 
-        float range = sqrt(1.0f / constants.kq);
+            float range = sqrt(1.0f / constants.kq);
 
-        DebugDrawManager::DrawSphere(
-            { light.position.x,light.position.y, light.position.z },
-            range,
-            { 1,1,0,1 } // ‰©F
-        );
+            DebugRender::DrawSphere({ light.position.x,light.position.y, light.position.z }, 0.2f, { 1,1,1,1 });
+            DebugRender::DrawSphere(
+                { light.position.x,light.position.y, light.position.z },
+                range,
+                light.color
+                , 0.0f, true
+            );
+        }
     }
 #endif // _DEBUG
 }
@@ -236,8 +241,8 @@ void LightManager::DrawGUI()
     ImGui::SliderFloat("Light Intensity", &lightColor.w, 0.0f, 20.0f);
     ImGui::Checkbox("pointLightEnable", &pointLightEnable);
     ImGui::SliderInt("Point Light Count", &pointLightCount, 0, PointLightMaxCount);
-    static int currentPreset = 9; // 325
-
+    static int currentPreset = 11; // 3250
+    ImGui::Checkbox("Show Light Range", &showLightRange);
     if (ImGui::Combo("PointLight Distance", &currentPreset,
         "7\0"
         "13\0"

@@ -112,6 +112,56 @@ void ShapeRenderer::DrawSphere(ID3D11DeviceContext* immediateContext, const Dire
     sphere->Render(immediateContext, world,{},InterleavedGltfModel::RenderPass::All);
 }
 
+void ShapeRenderer::DrawDebugSphere(
+    ID3D11DeviceContext* context,
+    const DirectX::XMFLOAT3& center,
+    float radius,
+    const DirectX::XMFLOAT4& color,
+    int segments)
+{
+    using namespace DirectX;
+
+    const float step = XM_2PI / segments;
+
+    std::vector<XMFLOAT3> circleXY;
+    std::vector<XMFLOAT3> circleXZ;
+    std::vector<XMFLOAT3> circleYZ;
+
+    circleXY.reserve(segments + 1);
+    circleXZ.reserve(segments + 1);
+    circleYZ.reserve(segments + 1);
+
+    for (int i = 0; i <= segments; i++)
+    {
+        float angle = step * i;
+
+        float x = cosf(angle) * radius;
+        float y = sinf(angle) * radius;
+
+        // XY
+        circleXY.emplace_back(
+            center.x + x,
+            center.y + y,
+            center.z);
+
+        // XZ
+        circleXZ.emplace_back(
+            center.x + x,
+            center.y,
+            center.z + y);
+
+        // YZ
+        circleYZ.emplace_back(
+            center.x,
+            center.y + x,
+            center.z + y);
+    }
+
+    DrawSegment(context, color, circleXY, Type::Line);
+    DrawSegment(context, color, circleXZ, Type::Line);
+    DrawSegment(context, color, circleYZ, Type::Line);
+}
+
 // ƒJƒvƒZƒ‹•`‰æ
 void ShapeRenderer::DrawCapsule(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, float height, const DirectX::XMFLOAT4& color)
 {

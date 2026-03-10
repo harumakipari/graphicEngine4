@@ -6,7 +6,7 @@
 #endif
 #include <DDSTextureLoader.h>
 
-#include "Engine/Debug/DebugDrawManager.h"
+#include "Engine/Debug/DebugRender.h"
 #include "Engine/Debug/EditorGizmo.h"
 #include "Engine/Debug/SceneEditor.h"
 #include "Engine/Effects/EffectEditor.h"
@@ -197,7 +197,7 @@ bool SceneBase::OnSizeChanged(ID3D11Device* device, const UINT64 width, UINT hei
     return true;
 }
 
-void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext,float deltaTime)
+void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
     UpdateConstants(immediateContext, deltaTime);
 
@@ -311,9 +311,11 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
 #if _DEBUG
     if (useDrawDebug)
     {
-        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         Physics::Instance().Render(data.view, data.projection, { lightManager->GetLightDirection().x,lightManager->GetLightDirection().y,lightManager->GetLightDirection().z });
-        DebugDrawManager::Render(immediateContext);
+        DebugRender::Render(immediateContext);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
+        DebugRender::WiredRender(immediateContext);
         ExecuteHooks(RenderPass::Debug, immediateContext);
     }
 #endif
@@ -577,9 +579,11 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
 #if _DEBUG
     if (useDrawDebug)
     {
-        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
-        DebugDrawManager::Render(immediateContext);
+        DebugRender::Render(immediateContext);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
+        DebugRender::WiredRender(immediateContext);
         ExecuteHooks(RenderPass::Debug, immediateContext);
     }
 #endif

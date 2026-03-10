@@ -1,13 +1,13 @@
 #include "pch.h"
-#include "DebugDrawManager.h"
+#include "DebugRender.h"
 
 #include "Graphics/Renderer/ShapeRenderer.h"
 
-void DebugDrawManager::DrawSphere(
+void DebugRender::DrawSphere(
     const DirectX::XMFLOAT3& pos,
     float radius,
     const DirectX::XMFLOAT4& color,
-    float life)
+    float life, bool wired)
 {
     DebugDrawCommand command{};
     command.type = DebugDrawType::Sphere;
@@ -15,14 +15,21 @@ void DebugDrawManager::DrawSphere(
     command.size = DirectX::XMFLOAT3{ radius, radius, radius };
     command.color = color;
     command.lifetime = life;
-    commands_.push_back(command);
+    if (wired)
+    {
+        wiredCommands_.push_back(command);
+    }
+    else
+    {
+        commands_.push_back(command);
+    }
 }
 
-void DebugDrawManager::DrawBox(
+void DebugRender::DrawBox(
     const DirectX::XMFLOAT3& pos,
     const DirectX::XMFLOAT3& size,
     const DirectX::XMFLOAT4& color,
-    float life)
+    float life, bool wired)
 {
     DebugDrawCommand command{};
     command.type = DebugDrawType::Box;
@@ -30,15 +37,22 @@ void DebugDrawManager::DrawBox(
     command.size = size;
     command.color = color;
     command.lifetime = life;
-    commands_.push_back(command);
+    if (wired)
+    {
+        wiredCommands_.push_back(command);
+    }
+    else
+    {
+        commands_.push_back(command);
+    }
 }
 
-void DebugDrawManager::DrawCapsule(
+void DebugRender::DrawCapsule(
     const DirectX::XMFLOAT3& startPos,
     const DirectX::XMFLOAT3& endPos,
     float radius,
     const DirectX::XMFLOAT4& color,
-    float life)
+    float life, bool wired)
 {
     DebugDrawCommand command{};
     command.type = DebugDrawType::Capsule;
@@ -53,14 +67,21 @@ void DebugDrawManager::DrawCapsule(
     command.size = DirectX::XMFLOAT3{ radius, height, 0.0f };
     command.color = color;
     command.lifetime = life;
-    commands_.push_back(command);
+    if (wired)
+    {
+        wiredCommands_.push_back(command);
+    }
+    else
+    {
+        commands_.push_back(command);
+    }
 }
 
-void DebugDrawManager::DrawLine(
+void DebugRender::DrawLine(
     const DirectX::XMFLOAT3& startPos,
     const DirectX::XMFLOAT3& endPos,
     const DirectX::XMFLOAT4& color,
-    float life)
+    float life, bool wired)
 {
     DebugDrawCommand command{};
     command.type = DebugDrawType::Line;
@@ -71,15 +92,22 @@ void DebugDrawManager::DrawLine(
     command.size = DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f };
     command.color = color;
     command.lifetime = life;
-    commands_.push_back(command);
+    if (wired)
+    {
+        wiredCommands_.push_back(command);
+    }
+    else
+    {
+        commands_.push_back(command);
+    }
 }
 
-void DebugDrawManager::DrawCylinder(
+void DebugRender::DrawCylinder(
     const DirectX::XMFLOAT3& pos,
     float radius,
     float height,
     const DirectX::XMFLOAT4& color,
-    float life)
+    float life, bool wired)
 {
     DebugDrawCommand command{};
     command.type = DebugDrawType::Cylinder;
@@ -87,10 +115,17 @@ void DebugDrawManager::DrawCylinder(
     command.size = DirectX::XMFLOAT3{ radius, height, radius };
     command.color = color;
     command.lifetime = life;
-    commands_.push_back(command);
+    if (wired)
+    {
+        wiredCommands_.push_back(command);
+    }
+    else
+    {
+        commands_.push_back(command);
+    }
 }
 
-void DebugDrawManager::Tick(float deltaTime)
+void DebugRender::Tick(float deltaTime)
 {
 #if 0 // ライフタイムいる時に使用する
     for (auto it = commands_.begin(); it != commands_.end(); )
@@ -108,12 +143,12 @@ void DebugDrawManager::Tick(float deltaTime)
     }
 
 #endif // 0 // ライフタイムいる時に使用する
-
+    wiredCommands_.clear();
     commands_.clear();
 
 }
 
-void DebugDrawManager::Render(ID3D11DeviceContext* immediateContext)
+void DebugRender::Render(ID3D11DeviceContext* immediateContext)
 {
     for (auto& cmd : commands_)
     {
@@ -138,7 +173,56 @@ void DebugDrawManager::Render(ID3D11DeviceContext* immediateContext)
             ShapeRenderer::DrawLineSegment(
                 immediateContext,
                 cmd.position,
-                cmd.endPosition,cmd.color);
+                cmd.endPosition, cmd.color);
+            break;
+        case DebugDrawType::Capsule:
+            ShapeRenderer::DrawCapsule(
+                immediateContext,
+                cmd.position,
+                cmd.size.x,
+                cmd.size.y,
+                cmd.color);
+            break;
+        case DebugDrawType::Cylinder:
+            ShapeRenderer::DrawCylinder(
+                immediateContext,
+                cmd.position,
+                cmd.size.x,
+                cmd.size.y,
+                cmd.color);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+void DebugRender::WiredRender(ID3D11DeviceContext* immediateContext)
+{
+    for (auto& cmd : wiredCommands_)
+    {
+        switch (cmd.type)
+        {
+        case DebugDrawType::Sphere:
+            ShapeRenderer::DrawDebugSphere(
+                immediateContext,
+                cmd.position,
+                cmd.size.x,
+                cmd.color,32);
+            break;
+        case DebugDrawType::Box:
+            ShapeRenderer::DrawBoxCenter(
+                immediateContext,
+                cmd.position,
+                DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f },
+                cmd.size,
+                cmd.color);
+            break;
+        case DebugDrawType::Line:
+            ShapeRenderer::DrawLineSegment(
+                immediateContext,
+                cmd.position,
+                cmd.endPosition, cmd.color);
             break;
         case DebugDrawType::Capsule:
             ShapeRenderer::DrawCapsule(
