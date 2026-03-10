@@ -187,7 +187,7 @@ void LightManager::Update(float deltaTime)
 
             float range = sqrt(1.0f / constants.kq);
 
-            DebugRender::DrawSphere({ light.position.x,light.position.y, light.position.z }, 0.2f, { 1,1,1,1 });
+            DebugRender::DrawSphere({ light.position.x,light.position.y, light.position.z }, 0.1f, { 1,1,1,1 });
             DebugRender::DrawSphere(
                 { light.position.x,light.position.y, light.position.z },
                 range,
