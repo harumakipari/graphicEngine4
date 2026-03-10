@@ -28,14 +28,18 @@ public:
 
     struct LightConstants
     {
-        DirectX::XMFLOAT4 lightDirection = {};
-        DirectX::XMFLOAT4 lightColor = {};
+        DirectX::XMFLOAT4 lightDirection = {};// w:attenuation Rate
+        DirectX::XMFLOAT4 lightColor = {}; //w colorPower
         float iblIntensity = 1.0f;
         int directionalLightEnable = 1;// 平行光源の on / off
         int pointLightEnable = 1;
         int pointLightCount = 0;
-        //DirectX::XMFLOAT3 rimColor={ 0.3f,0.5f,1.0f };
-        //float rimIntensity = 0.56f;
+        DirectX::XMFLOAT3 rimColor={ 0.3f,0.5f,1.0f };
+        float rimIntensity = 0.56f;
+        float rimPower;
+        float kc = 1.0f;
+        float kl = 0.7f;
+        float kq = 1.8f;
         PointLight pointsLight[PointLightMaxCount];
     };
 
@@ -77,7 +81,7 @@ private:
 
     bool directionalLightEnable = true; // 平行光源の on / off
     bool pointLightEnable = true;
-    int pointLightCount = 32;
+    int pointLightCount = 40;
 
     LightConstants constants = {};
     // GPUに送る最終のポイントライト情報

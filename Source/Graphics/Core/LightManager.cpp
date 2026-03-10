@@ -9,6 +9,29 @@
 #include "imgui.h"
 #endif
 
+struct AttenuationPreset
+{
+    float distance;
+    float kc;
+    float kl;
+    float kq;
+};
+
+static AttenuationPreset presets[] =
+{
+    {7,    1.0f, 0.7f,   1.8f},
+    {13,   1.0f, 0.35f,  0.44f},
+    {20,   1.0f, 0.22f,  0.2f},
+    {32,   1.0f, 0.14f,  0.07f},
+    {50,   1.0f, 0.09f,  0.032f},
+    {65,   1.0f, 0.07f,  0.017f},
+    {100,  1.0f, 0.045f, 0.0075f},
+    {160,  1.0f, 0.027f, 0.0028f},
+    {200,  1.0f, 0.022f, 0.0019f},
+    {325,  1.0f, 0.014f, 0.0007f},
+    {600,  1.0f, 0.007f, 0.0002f},
+    {3250, 1.0f, 0.0014f,0.000007f},
+};
 
 void LightManager::Initialize(ID3D11Device* device)
 {
@@ -154,6 +177,21 @@ void LightManager::Update(float deltaTime)
             (i < renderPointLights.size()) ? renderPointLights[i] : PointLight{};
     }
 #endif // 1
+
+#ifdef _DEBUG
+    for (int i = 0; i < pointLightCount; i++)
+    {
+        auto& light = constants.pointsLight[i];
+
+        float range = sqrt(1.0f / constants.kq);
+
+        DebugDrawManager::DrawSphere(
+            { light.position.x,light.position.y, light.position.z },
+            range,
+            { 1,1,0,1 } // â©êF
+        );
+    }
+#endif // _DEBUG
 }
 
 void LightManager::Apply(ID3D11DeviceContext* immediateContext, int slot) const
@@ -190,15 +228,39 @@ void LightManager::DrawGUI()
     ImGui::Checkbox("directionalLightEnable", &directionalLightEnable);
     ImGui::SliderFloat3("Light Direction", &constants.lightDirection.x, -1.0f, 1.0f);
     ImGui::ColorEdit3("Light Color", &lightColor.x);
-    //ImGui::ColorEdit3("Rim Color", &constants.rimColor.x);
-    //ImGui::SliderFloat("Rim Intensity", &constants.rimIntensity, 0.0f, 30.0f);
-    //ImGui::SliderFloat("Rim Power", &constants.lightDirection.w, 0.0f, 30.0f);
+    ImGui::ColorEdit3("Rim Color", &constants.rimColor.x);
+    ImGui::SliderFloat("Rim Intensity", &constants.rimIntensity, 0.0f, 30.0f);
+    ImGui::SliderFloat("Rim Power", &constants.rimPower, 0.0f, 30.0f);
     ImGui::SliderFloat("diffuse Light Rate", &constants.lightDirection.w, 0.0f, 1.0f);
-
     ImGui::SliderFloat("IBL Intensity", &iblIntensity, 0.0f, 20.0f);
     ImGui::SliderFloat("Light Intensity", &lightColor.w, 0.0f, 20.0f);
     ImGui::Checkbox("pointLightEnable", &pointLightEnable);
     ImGui::SliderInt("Point Light Count", &pointLightCount, 0, PointLightMaxCount);
+    static int currentPreset = 9; // 325
+
+    if (ImGui::Combo("PointLight Distance", &currentPreset,
+        "7\0"
+        "13\0"
+        "20\0"
+        "32\0"
+        "50\0"
+        "65\0"
+        "100\0"
+        "160\0"
+        "200\0"
+        "325\0"
+        "600\0"
+        "3250\0"))
+    {
+        constants.kc = presets[currentPreset].kc;
+        constants.kl = presets[currentPreset].kl;
+        constants.kq = presets[currentPreset].kq;
+    }
+
+    ImGui::SliderFloat("Kc", &constants.kc, 0.0f, 2.0f);
+    ImGui::SliderFloat("Kl", &constants.kl, 0.0f, 1.0f);
+    ImGui::SliderFloat("Kq", &constants.kq, 0.0f, 2.0f);
+
     if (debugPointLights.size() != static_cast<size_t>(pointLightCount))
         debugPointLights.resize(pointLightCount); // å¬êîÇçáÇÌÇπÇÈ
 

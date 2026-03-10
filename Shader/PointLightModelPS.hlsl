@@ -7,8 +7,8 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     emissive *= emissionPower;
     pout.position = pin.wPosition; // world 空間
     float3 N = normalize(pin.wNormal.xyz);
-    pout.gbuffer1Normal = float4(N.xyz, 0); // world 空間
-    pout.gbuffer3Color = float4(1, 1, 1, 1); // 仮。点光源はemissiveで色をつけるからここでは白にしておく
+    pout.gBuffer1Normal = float4(N.xyz, 0); // world 空間
+    pout.gBuffer3Color = float4(1, 1, 1, 1); // 仮。点光源はemissiveで色をつけるからここでは白にしておく
     // 元々wは１だったがスカイマップなどの時に使用するため、２は点光源であることを示すフラグ
     pout.emissive = float4(emissive, 2); 
     pout.material = float4(0.0, 0.0, 0.0, 0.0);

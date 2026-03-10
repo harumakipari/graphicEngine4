@@ -38,7 +38,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     if (emissiveFlag == 2)
     {
-        return float4(emissive * 10.0, 1);
+        return float4(emissive * 10.0, 1);// ‚±‚êsphereEmissive‚ÉŽg—p
     }
 
     const float3 f0 = lerp(0.04, baseColor.rgb, metallicFactor);
@@ -66,7 +66,7 @@ float4 main(VS_OUT pin) : SV_TARGET
             //}
 
             float attenuateLength = saturate(1.0 - len / pointLights[i].range);
-#if 0
+#if 1
             /*	
             		Distance	Kc		Kl		Kq
             		7			1		0.7		1.8
@@ -87,18 +87,18 @@ float4 main(VS_OUT pin) : SV_TARGET
             //float Kl = 0.014; // attenuation_linear
             //float Kq = 0.0007; // attenuation_quadratic
 
-            float Kc = 1.0; // attenuation_constant
-            float Kl = 0.7; // attenuation_linear
-            float Kq = 1.8; // attenuation_quadratic
+            //float Kc = 1.0; // attenuation_constant
+            //float Kl = 0.7; // attenuation_linear
+            //float Kq = 1.8; // attenuation_quadratic
             float attenuation = saturate(1.0 / (Kc + Kl * len + Kq * (len * len)));
 #else
-            float attenuation = attenuateLength * attenuateLength;
+            //float attenuation = attenuateLength * attenuateLength;
 
-            //float distanceAtt = 1.0 / (1.0 + len * len);
-            //float rangeAtt = saturate(1.0 - len / pointLights[i].range);
-            //rangeAtt *= rangeAtt;
+            float distanceAtt = 1.0 / (1.0 + len * len);
+            float rangeAtt = saturate(1.0 - len / pointLights[i].range);
+            rangeAtt *= rangeAtt;
 
-            //float attenuation = distanceAtt * rangeAtt;
+            float attenuation = distanceAtt * rangeAtt;
 
 #endif
             LP /= len;

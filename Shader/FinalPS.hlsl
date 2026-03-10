@@ -187,12 +187,8 @@ float4 main(VS_OUT pin) : SV_TARGET
     uint mipLevel = 0, width, height, numberOfLevel, levels;
     colorTexture.GetDimensions(mipLevel, width, height, numberOfLevel);
 
-    uint2 depthMapDimensions;
-    depthTexture.GetDimensions(mipLevel, depthMapDimensions.x, depthMapDimensions.y, numberOfLevel);
-
     uint2 shadowMapDimensions;
     cascadedShadowMaps.GetDimensions(mipLevel, shadowMapDimensions.x, shadowMapDimensions.y, numberOfLevel, levels);
-
 
     // シーンからライティング済みのカラーテクスチャ
     float4 sceneColor = colorTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
@@ -280,7 +276,6 @@ float4 main(VS_OUT pin) : SV_TARGET
             weight += domainGaussian * rangeGaussian;
         }
     }
-    //if (pin.texcoord.x > split_u)
     {
         float occlusion = accumulatedOcclusion / weight;
         color *= occlusion;

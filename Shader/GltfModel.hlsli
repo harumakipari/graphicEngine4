@@ -140,9 +140,9 @@ struct PS_OUT
 
 struct GBUFFER_PS_OUT
 {
-    float4 gbuffer1Normal : SV_TARGET1; // world gbuffer1Normal  w:useMeshSsr
+    float4 gBuffer1Normal : SV_TARGET1; // world gBuffer1Normal  w:useMeshSsr
     float4 material : SV_TARGET2; // x:metallic y:occlusion z:roughness w:occlusionStrength
-    float4 gbuffer3Color : SV_TARGET3;
+    float4 gBuffer3Color : SV_TARGET3;
     float4 position : SV_TARGET4; // world position
     float4 emissive : SV_TARGET5; // w:何かを書き込んでいたら０にするそれ以外は１　スカイマップなどの時に使用 
 };

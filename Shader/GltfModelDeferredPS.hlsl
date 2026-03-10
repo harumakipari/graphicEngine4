@@ -89,11 +89,11 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
     }
 
-    pout.gbuffer1Normal = float4(N.xyz, useMeshSsr);  // world space
+    pout.gBuffer1Normal = float4(N.xyz, useMeshSsr);  // world space
 
     //pout.gbuffer1.xy = EncodeOctahedralNormal(N);
 
-    pout.gbuffer3Color = baseColorFactor;
+    pout.gBuffer3Color = baseColorFactor;
 
     pout.position = pin.wPosition; // world space 
 
