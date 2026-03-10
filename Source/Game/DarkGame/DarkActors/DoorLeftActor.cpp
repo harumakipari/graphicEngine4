@@ -11,7 +11,7 @@ void DoorLeftActor::Initialize(const Transform& transform)
     // ドアのサイズを取得
     DirectX::XMFLOAT3 size = meshComponent->GetModelSize();
 
-#if 0
+#if 1
     // ドアの当たり判定用のコリジョンコンポーネントを追加
     std::shared_ptr<BoxComponent> boxComponent = AddComponent<BoxComponent>("DoorCollision", parentName);
     boxComponent->SetBoxExtent(size);
@@ -65,7 +65,7 @@ void DoorRightActor::Initialize(const Transform& transform)
     // ドアのサイズを取得
     DirectX::XMFLOAT3 size = meshComponent->GetModelSize();
 
-#if 0
+#if 1
     // ドアの当たり判定用のコリジョンコンポーネントを追加
     std::shared_ptr<BoxComponent> boxComponent = AddComponent<BoxComponent>("DoorCollision", parentName);
     boxComponent->SetBoxExtent(size);
@@ -74,8 +74,10 @@ void DoorRightActor::Initialize(const Transform& transform)
     boxComponent->SetCollisionOffsetX(-size.x * 0.5f);
     boxComponent->SetCollisionOffsetZ(-size.z * 0.5f);
     boxComponent->SetStatic(true);
-    boxComponent->SetLayer(CollisionLayer::WorldProps);
-    boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+    boxComponent->SetLayer(CollisionLayer::WorldStatic);
+    //boxComponent->SetLayer(CollisionLayer::WorldProps);
+    boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Trigger);
+    //boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
     boxComponent->Initialize();
 #endif
     //// ドアにトリガー用のコリジョンコンポーネントを追加

@@ -20,7 +20,7 @@ void DarkStage::Initialize(const Transform& transform)
     //castStaticMeshComponent->SetIsVisible(false);
 
 
-#if 0
+#if 1
     {
         PROFILE_SCOPE("Create StageCollision");
 

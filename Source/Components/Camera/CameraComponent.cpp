@@ -139,7 +139,7 @@ DirectX::XMVECTOR TPSCameraComponent::ResolveCameraCollision(
         f,
         e,
         hit,
-        0.35f, // ← カメラ半径（重要）
+        0.35f, //
         CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
     {
         XMVECTOR h = XMLoadFloat3(&hit.hitPoint);

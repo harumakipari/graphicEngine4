@@ -204,6 +204,7 @@ void SampleScene::SetUpActors()
         auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("enemy", enemyTr);
     }
 
+#if 0
     Transform dustParticleTr(DirectX::XMFLOAT3{ -27.0f,0.0f,11.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto dustParticleActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("dustParticle", dustParticleTr);
     auto dustParticle = dustParticleActor->AddComponent<ParticleComponent>("dustComponent");
@@ -214,6 +215,8 @@ void SampleScene::SetUpActors()
     };
     dustParticle->SetAddSettings(settings);
     dustParticle->Play();
+#endif // 0
+
     cameraManager->SetDebugCamera(debugCameraActor);
     loadStageThread.join();
     loadStageAssetsThread.join();

@@ -16,12 +16,19 @@ cbuffer LIGHT_CONSTANT_BUFFER : register(b11)
     int directionalLightEnable; // ïΩçsåıåπÇÃ on / off
     int pointLightEnable;
     int pointLightCount;
+
     float3 rimColor;
     float rimIntensity;
+
     float rimPower;
     float Kc;
     float Kl;
     float Kq;
+
+    float diffuseIntensity;
+    float specularIntensity;
+    float2 value;
+
     PointLights pointLights[40];
 };
 

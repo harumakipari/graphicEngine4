@@ -30,16 +30,24 @@ public:
     {
         DirectX::XMFLOAT4 lightDirection = {};// w:attenuation Rate
         DirectX::XMFLOAT4 lightColor = {}; //w colorPower
+
         float iblIntensity = 1.0f;
         int directionalLightEnable = 1;// ïΩçsåıåπÇÃ on / off
         int pointLightEnable = 1;
         int pointLightCount = 0;
-        DirectX::XMFLOAT3 rimColor={ 0.3f,0.5f,1.0f };
+
+        DirectX::XMFLOAT3 rimColor = { 0.3f,0.5f,1.0f };
         float rimIntensity = 0.112f;
-        float rimPower=3.0f;
+
+        float rimPower = 3.0f;
         float kc = 1.0f;
         float kl = 0.7f;
         float kq = 1.8f;
+
+        float diffuseIntensity = 1.0f;
+        float specularIntensity = 1.0f;
+        DirectX::XMFLOAT2 pads = {};
+
         PointLight pointsLight[PointLightMaxCount];
     };
 

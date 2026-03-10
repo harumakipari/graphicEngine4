@@ -525,12 +525,12 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF);
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_FRONT);
     sceneRender.currentRenderPath = RenderPath::Forward;
-    //  sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // Ç±Ç±Ç≈åxçêèoÇÈ
+    sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // Ç±Ç±Ç≈åxçêèoÇÈ
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Forward;
-    // sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // Ç±Ç±Ç≈åxçêèoÇÈ
+     sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // Ç±Ç±Ç≈åxçêèoÇÈ
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
 

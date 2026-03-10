@@ -119,8 +119,8 @@ float4 main(VS_OUT pin) : SV_TARGET
 
                 pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * lerp(1.0, attenuation, lightDirection.w);
                 //pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * attenuation;
-                //pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * lerp(1.0, attenuation, lightDirection.w);
-                pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * attenuation;
+                pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * lerp(1.0, attenuation, lightDirection.w);
+                //pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * attenuation;
             }
         }
     }
@@ -160,8 +160,9 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 totalDiffuse = diffuse + pointDiffuse + iblDiffuse;
     float3 totalSpecular = specular + pointSpecular + iblSpecular;
 
-    totalDiffuse = totalDiffuse * occlusionFactor;
-    totalSpecular = totalSpecular * occlusionFactor;
+
+    totalDiffuse = totalDiffuse * occlusionFactor * diffuseIntensity;
+    totalSpecular = totalSpecular * occlusionFactor * specularIntensity;
 
     //    diffuse = lerp(totalDiffuse, totalDiffuse * occlusionFactor, occlusionStrength);
     //  specular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
