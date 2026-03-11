@@ -31,7 +31,7 @@ public:
         DirectX::XMFLOAT4 lightDirection = {};// w:attenuation Rate
         DirectX::XMFLOAT4 lightColor = {}; //w colorPower
 
-        float iblIntensity = 1.0f;
+        float iblIntensity = 2.5f;
         int directionalLightEnable = 1;// 平行光源の on / off
         int pointLightEnable = 1;
         int pointLightCount = 0;
@@ -45,9 +45,9 @@ public:
         float kq = 1.8f;
 
         float diffuseIntensity = 1.0f;
-        float specularIntensity = 1.0f;
+        float specularIntensity = 0.72f;
         float pointLightDiffuseIntensity = 1.0f;
-        float pointLightSpecularIntensity = 1.0f;
+        float pointLightSpecularIntensity = 0.3f;
 
         PointLight pointsLight[PointLightMaxCount];
     };
@@ -85,8 +85,6 @@ private:
     //DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
     DirectX::XMFLOAT4 lightColor{ 1.0f,1.0f,1.0f,3.8f };
     //float iblIntensity = 0.001f;  //Image Basesd Lightingの強度
-    float iblIntensity = 1.01f;  //Image Basesd Lightingの強度
-
 
     bool directionalLightEnable = true; // 平行光源の on / off
     bool pointLightEnable = true;

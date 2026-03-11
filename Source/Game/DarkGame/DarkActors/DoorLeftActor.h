@@ -20,8 +20,10 @@ public:
     // ƒvƒŒƒCƒ„[‚ª‰Ÿ‚µ‚½‚ÉŒÄ‚Ô 
     void Interact() override;
 
+    void DrawImGuiDetails() override; 
+
 private:
-    std::shared_ptr<SkeletalMeshComponent> meshComponent;
+    std::shared_ptr<SkeletalMeshComponent> leftMeshComponent;
     bool isOpening = false;
     float openAngle = 0.0f;
 

@@ -44,6 +44,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     const float3 f0 = lerp(0.04, baseColor.rgb, metallicFactor);
     const float3 f90 = 1.0;
+    roughnessFactor = max(roughnessFactor, 0.3); // 最低値を作ることで、極端に鋭いスペキュラーを防止する
     const float alphaRoughness = roughnessFactor * roughnessFactor;
     const float3 cDiff = lerp(baseColor.rgb, 0.0, metallicFactor);
 
@@ -119,9 +120,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
                 float attenuationRate = lightDirection.w;
                 pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * lerp(1.0, attenuation, attenuationRate);
-                //pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * attenuation;
                 pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * lerp(1.0, attenuation, attenuationRate);
-                //pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * attenuation;
             }
         }
     }
@@ -174,7 +173,10 @@ float4 main(VS_OUT pin) : SV_TARGET
     if (baseColor.a < 1.0)
         rim = 0;
 #endif
-    float3 Lo = totalDiffuse + totalSpecular + emissive + rim;
+    float3 ambient = baseColor.rgb * 0.05;
+
+
+    float3 Lo = totalDiffuse + totalSpecular + emissive + rim + ambient;
 
     //return float4(baseColor);
 

@@ -98,29 +98,46 @@ public:
     void DrawImGuiInspector() override
     {
 #ifdef USE_IMGUI
-        inspectorEuler_ = GetRelativeEulerRotation();
+        inspectorEuler_ = GetRelativeEulerRotation(); // ここをコメントアウトするかで、ImGuiがバグるか変わる。
 
         if (ImGui::TreeNodeEx((name_ + "  Transform").c_str(), ImGuiTreeNodeFlags_DefaultOpen))
         {
             ImGui::DragFloat3("Relative Location", &relativeLocation_.x, 0.1f);
 
-            ImGui::DragFloat3("RelativeAngle", &inspectorEuler_.x, 1.0f);
-            inspectorEuler_.x = MathHelper::ClampEulerAngle(inspectorEuler_.x);
-            inspectorEuler_.y = MathHelper::ClampEulerAngle(inspectorEuler_.y);
-            inspectorEuler_.z = MathHelper::ClampEulerAngle(inspectorEuler_.z);
+            static bool editingRotation = false;
 
-            DirectX::XMFLOAT3 eulerRadNew =
+            DirectX::XMFLOAT3 prevEuler = inspectorEuler_;
+
+            if (ImGui::DragFloat3("RelativeAngle", &inspectorEuler_.x, 1.0f))
             {
-                DirectX::XMConvertToRadians(inspectorEuler_.x),
-                DirectX::XMConvertToRadians(inspectorEuler_.y),
-                DirectX::XMConvertToRadians(inspectorEuler_.z)
-            };
+                editingRotation = true;
 
-            DirectX::XMVECTOR rotationVec = DirectX::XMQuaternionRotationRollPitchYaw(eulerRadNew.x, eulerRadNew.y, eulerRadNew.z);
-            DirectX::XMFLOAT4 orientation = GetRelativeRotation();
-            DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
-            DirectX::XMStoreFloat4(&orientation, rotationVec);
-            SetRelativeRotationDirect(orientation);
+                DirectX::XMFLOAT3 delta =
+                {
+                    inspectorEuler_.x - prevEuler.x,
+                    inspectorEuler_.y - prevEuler.y,
+                    inspectorEuler_.z - prevEuler.z
+                };
+
+                DirectX::XMVECTOR q = DirectX::XMLoadFloat4(&GetRelativeRotation());
+
+                DirectX::XMVECTOR dq = DirectX::XMQuaternionRotationRollPitchYaw(
+                    DirectX::XMConvertToRadians(delta.x),
+                    DirectX::XMConvertToRadians(delta.y),
+                    DirectX::XMConvertToRadians(delta.z)
+                );
+
+                q = DirectX::XMQuaternionMultiply(q, dq);
+
+                DirectX::XMFLOAT4 newRot;
+                DirectX::XMStoreFloat4(&newRot, q);
+
+                SetRelativeRotationDirect(newRot);
+            }
+            else
+            {
+                editingRotation = false;
+            }
             ImGui::DragFloat3("Relative Scale", &relativeScale_.x, 0.01f, 0.01f, 100.0f);
             ImGui::TreePop();
         }
@@ -490,7 +507,7 @@ private:
 
     // 指定された component が、このコンポーネントの祖先（親、祖父母など）であるかを判定する関数。
     // component が祖先であれば true を返し、それ以外は false を返す。
-    bool IsAttachAbove(SceneComponent* component)
+    bool IsAttachAbove(const SceneComponent* component) const
     {
         // 親から辿っていって、指定された component に一致するかをチェック
         for (SceneComponent* parent = attachParent_.lock().get(); parent; parent = parent->attachParent_.lock().get())
@@ -510,8 +527,7 @@ private:
 public:
     virtual void UpdateComponentToWorld(UpdateTransformFlags updateTransformFlags = UpdateTransformFlags::None, TeleportType teleport = TeleportType::None) override final;
 
-    virtual void Tick(float deltaTime) {}
-
+    void Tick(float deltaTime) override {}
 
     virtual void Initialize()override {};
 

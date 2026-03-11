@@ -144,7 +144,6 @@ void Player::Initialize(const Transform& transform)
         pointLightComponent->SetSharedParam(shared);
     }
 
-
     //AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
     //    {
     //        if (auto item = std::dynamic_pointer_cast<Stage>(hitPair.second->GetActor()))

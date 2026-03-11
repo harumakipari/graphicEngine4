@@ -141,7 +141,7 @@ void LightManager::Initialize(ID3D11Device* device)
     {
         sharedLights["PlayerPointLight"] =
             std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(0.959999979f, 0.523895442f, 0.240151942f, 5.0f),
+                SharedLightParam{ DirectX::XMFLOAT4(0.959999979f, 0.523895442f, 0.240151942f, 20.0f),
             3.1f
                 });
     }
@@ -168,7 +168,6 @@ void LightManager::Update(float deltaTime)
     }
 
     constants.pointLightCount = static_cast<int>(renderPointLights.size());
-    constants.iblIntensity = iblIntensity;
     constants.directionalLightEnable = directionalLightEnable;
     constants.pointLightCount = pointLightCount;
     constants.lightColor = lightColor;
@@ -245,7 +244,7 @@ void LightManager::DrawGui()
     ImGui::SliderFloat(U8("Specular 強度"), &constants.specularIntensity, 0.0f, 2.0f);
     ImGui::SliderFloat(U8("ポイントライト Diffuse 強度"), &constants.pointLightDiffuseIntensity, 0.0f, 2.0f);
     ImGui::SliderFloat(U8("ポイントライト Specular 強度"), &constants.pointLightSpecularIntensity, 0.0f, 2.0f);
-    ImGui::SliderFloat(U8("IBL 強度"), &iblIntensity, 0.0f, 20.0f);
+    ImGui::SliderFloat(U8("IBL 強度"), &constants.iblIntensity, 0.0f, 20.0f);
     ImGui::SliderFloat(U8("ライト強度"), &lightColor.w, 0.0f, 20.0f);
     ImGui::Checkbox(U8("ポイントライト 有効"), &pointLightEnable);
     ImGui::SliderInt(U8("ポイントライト数"), &pointLightCount, 0, PointLightMaxCount);
