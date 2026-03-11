@@ -60,7 +60,6 @@ float4 main(VS_OUT pin) : SV_TARGET
         for (int i = 0; i < pointLightCount; i++)
         {
             float3 LP = pointLights[i].position.xyz - position.xyz;
-            //float3 LP = position.xyz - pointLights[i].position.xyz; // world space “_ŒõŒ¹‚Ì•ûŒü
             float len = length(LP);
             //if (len >= pointLights[i].range)
             //{
@@ -85,14 +84,7 @@ float4 main(VS_OUT pin) : SV_TARGET
             		3250		1		0.0014	0.000007	
             */
 
-            //float Kc = 1.0; // attenuation_constant
-            //float Kl = 0.014; // attenuation_linear
-            //float Kq = 0.0007; // attenuation_quadratic
-
-            //float Kc = 1.0; // attenuation_constant
-            //float Kl = 0.7; // attenuation_linear
-            //float Kq = 1.8; // attenuation_quadratic
-            float attenuation = saturate(1.0 / (Kc + Kl * len + Kq * (len * len)));
+            float attenuation = saturate(1.0 / (kc + kl * len + kq * (len * len)));
 #else
             //float attenuation = attenuateLength * attenuateLength;
 
@@ -106,7 +98,6 @@ float4 main(VS_OUT pin) : SV_TARGET
             LP /= len;
             const float pNoV = max(0.0, dot(N, V));
             const float pNoL = max(0.0, dot(N, LP));
-            //float pNoL = max(0, 0.8 * dot(N, LP) + 0.8);
 
             if (pNoV > 0.0 || pNoL > 0.0) // “_ŒõŒ¹‚É‚Í•ûŒü‚ª‚È‚¢‚½‚ß
             {
@@ -175,10 +166,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
     float3 ambient = baseColor.rgb * 0.05;
 
+    float3 lo = totalDiffuse + totalSpecular + emissive + rim + ambient;
 
-    float3 Lo = totalDiffuse + totalSpecular + emissive + rim + ambient;
-
-    //return float4(baseColor);
-
-    return float4(Lo, 1.0f);
+    return float4(lo, 1.0f);
 }

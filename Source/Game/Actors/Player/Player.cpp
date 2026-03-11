@@ -30,15 +30,16 @@ void Player::Initialize(const Transform& transform)
         skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/animation.gltf");
         skeletalMeshComponent->plusAlphaCBuffer->data.useSsr = 0;   // SSRをオフにする
         //skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle.gltf");
-#if 0
+#if 1
         for (auto& material : skeletalMeshComponent->model->materials)
         {
-            //material.data.alphaMode = 2;    // 全てforwardで描画したいからBLENDに変更する
-
             if (material.name == "M_Aurora_Hair_Blonde_FrozenHearth")
             {// 髪の毛だったら
-                //material.overridePipelineName = "characterHairForward";
-                //material.data.alphaMode = 2;
+                material.overridePipelineName = "characterFurAndHairSkeletalMesh";
+            }
+            else if (material.name == "M_Aurora_Fur_FrozenHearth")
+            {// 髪の毛だったら
+                material.overridePipelineName = "characterFurAndHairSkeletalMesh";
             }
         }
 
@@ -136,7 +137,7 @@ void Player::Initialize(const Transform& transform)
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
     // ポイントライトコンポーネントを追加
     auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", "skeletalComponent");
-    pointLightComponent->SetRelativeLocationDirect({ 0.0f, 1.5f, 0.6f });
+    pointLightComponent->SetRelativeLocationDirect({ 0.0f, 1.5f, 1.0f });
     auto lightManager = scene->GetLightManager();
     // ライトの名前からライトマネージャーの共有ライトを取得して設定
     if (auto shared = lightManager->FindSharedLight("PlayerPointLight"))

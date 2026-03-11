@@ -348,12 +348,12 @@ public:
             AddPipeLineState("pointLightSkeletalMesh", desc);
         }
 
-        // キャラクターの髪の毛 用
+        // deferred キャラクターの髪の毛とかファー 用
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelCharacterHairPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelHairOrFarDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
-            AddPipeLineState("characterHairForward", desc);
+            //desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
+            AddPipeLineState("characterFurAndHairSkeletalMesh", desc);
         }
 
         // elasticBuilding forward Blend 用

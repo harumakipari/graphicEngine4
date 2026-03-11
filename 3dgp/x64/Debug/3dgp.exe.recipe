@@ -109,9 +109,6 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelBaseColorPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelCharacterHairPS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelCsmGS.cso</FullPath>
     </ContentFile>
     <ContentFile>
@@ -125,6 +122,9 @@
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelFightStagePS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelHairOrFurDeferredPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GltfModelInstancedBatchingCsmVS.cso</FullPath>

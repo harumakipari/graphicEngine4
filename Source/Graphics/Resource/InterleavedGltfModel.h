@@ -42,8 +42,6 @@ class InterleavedGltfModel
     MeshComponent* meshComponent;
     std::string filename;
 public:
-
-
     enum class RenderPass :uint8_t
     {
         Opaque,// 不透明オブジェクト

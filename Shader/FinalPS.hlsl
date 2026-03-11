@@ -182,8 +182,6 @@ float3 CalculatedFogColor(float2 uv, float depth, float3 sceneColor)
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
-    //return bokehTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
-
     uint mipLevel = 0, width, height, numberOfLevel, levels;
     colorTexture.GetDimensions(mipLevel, width, height, numberOfLevel);
 
@@ -317,11 +315,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 	    // 色相、彩度、明度、コントラストを調整する。
         finalColor.rgb = HueSaturation(finalColor.rgb, hueShift, saturation);
         finalColor.rgb = BrightnessContrast(finalColor.rgb, brightness, contrast);
-
     }
 
-
-
     return finalColor;
-
 }

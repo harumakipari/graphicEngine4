@@ -21,9 +21,9 @@ cbuffer LIGHT_CONSTANT_BUFFER : register(b11)
     float rimIntensity;
 
     float rimPower;
-    float Kc;
-    float Kl;
-    float Kq;
+    float kc; // attenuationConstant
+    float kl; // attenuationLinear
+    float kq; // attenuationQuadratic
 
     float diffuseIntensity;
     float specularIntensity;
