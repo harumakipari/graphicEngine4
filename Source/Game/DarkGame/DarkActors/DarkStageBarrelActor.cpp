@@ -16,39 +16,41 @@ void DarkStageBarrelActor::Initialize(const Transform& transform)
     barrelConvexMeshComponent->SetIsVisible(false);
 
     // 最初の壊れる前の箱の当たり判定
-    auto boxComponent = AddComponent<BoxComponent>("boxComponent", parentName);
+    preBoxComponent = AddComponent<BoxComponent>("boxComponent", parentName);
     DirectX::XMFLOAT3 size = barrelMeshComponent->model->GetModelSize();
-    boxComponent->SetBoxExtent(size);
+    preBoxComponent->SetBoxExtent(size);
     float height = size.y * 0.5f;
-    boxComponent->SetCollisionOffsetY(height);
-    boxComponent->SetStatic(true);
-    boxComponent->SetLayer(CollisionLayer::WorldStatic);
-    boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-    boxComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
-    boxComponent->Initialize();
+    preBoxComponent->SetCollisionOffsetY(height);
+    preBoxComponent->SetStatic(true);
+    preBoxComponent->SetLayer(CollisionLayer::WorldProps);
+    preBoxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+    preBoxComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
+    preBoxComponent->Initialize();
 
     // 樽の瓦礫
-    auto convexComponent = AddComponent<ConvexCollisionComponent>("convexComponent", parentName);
+    convexComponent = AddComponent<ConvexCollisionComponent>("convexComponent", parentName);
     convexComponent->SetLayer(CollisionLayer::Convex);
     convexComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
     convexComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+    convexComponent->SetResponseToLayer(CollisionLayer::WorldProps, CollisionComponent::CollisionResponse::Block);
     convexComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::Block);
     convexComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
-    convexComponent->SetActive(false);
+    //convexComponent->SetActive(false);
     convexComponent->CreateConvexMeshFromModel(barrelConvexMeshComponent.get());
+    convexComponent->AddToScene(); // ここで physx の scene に追加する　ここまでは物理演算の考慮に入れたくないから
+    convexComponent->SetKinematic(true);
+    convexComponent->SetActive(true);
 }
 
 void DarkStageBarrelActor::Update(float deltaTime)
 {
-#if 0
-    // 元々の箱の当たり判定を消す
-    boxComponent->DisableCollision();
-    this->ScheduleDestroyComponentByName("boxComponent");
+}
 
-    //this->ScheduleDestroyComponentByName("boxComponent");
-    //this->DestroyComponentByName("boxComponent");
-    //// ビームを消す
-    //beam->SetValid(false);
+void DarkStageBarrelActor::BreakBarrel()
+{
+    // 元々の箱の当たり判定を消す
+    preBoxComponent->DisableCollision();
+    RequestDestroyComponent("boxComponent");
     // 瓦礫を当たり判定に入れる
     if (convexComponent)
     {
@@ -56,7 +58,14 @@ void DarkStageBarrelActor::Update(float deltaTime)
         convexComponent->SetKinematic(false);
         convexComponent->SetActive(true);
     }
-#endif // 0
+
+    // 瓦礫のモデルを表示する
+    if (auto convexMesh = std::dynamic_pointer_cast<SkeletalMeshComponent>(FindComponentByName("barrelConvexMesh")))
+    {
+        convexMesh->SetIsVisible(true);
+    }
+    // 元のモデルを消す
+    barrelMeshComponent->SetIsVisible(false);
 }
 
 void DarkStageBarrelActor::DrawImGuiDetails()
@@ -64,7 +73,7 @@ void DarkStageBarrelActor::DrawImGuiDetails()
 #ifdef USE_IMGUI
     if (ImGui::Button(U8("破壊")))
     {
-
+        BreakBarrel();
     }
 #endif
 }

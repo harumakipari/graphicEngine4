@@ -67,18 +67,27 @@ void PlayerRunningState::Exit()
 
 void PlayerAttackingState::Enter()
 {
-    owner->PlayAnimation("Primary_Attack_Fast_A", false, true, 0.1f);
+    player->characterMovementComponent->SetSpeed(0.0f); // 攻撃中は移動速度を0にする
+    player->PlayAnimation("Primary_Attack_Fast_A", false, true, 0.1f);
 }
 
 void PlayerAttackingState::Execute(float deltaTime)
 {
-    // アニメーションが終わったら待機ステートに変更
     if (!owner->GetAnimationController()->IsPlayAnimation())
     {
-        player->GetStateMachine()->ChangeState("Idle");
+        auto dir = player->inputComponent->GetMoveInput();
+        if (MathHelper::Length(dir) > 0.01f)
+        {
+            player->GetStateMachine()->ChangeState("Running");
+        }
+        else
+        {
+            player->GetStateMachine()->ChangeState("Idle");
+        }
     }
 }
 
 void PlayerAttackingState::Exit()
 {
+    player->characterMovementComponent->ResetSpeed(); // 攻撃が終わったら移動速度をリセットする
 }

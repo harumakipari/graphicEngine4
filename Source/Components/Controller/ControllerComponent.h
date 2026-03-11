@@ -83,6 +83,12 @@ public:
     {
         return velocity_;
     }
+
+    // ‘¬‚³‚ğİ’è‚·‚é
+    void SetSpeed(const float speed) { this->speed_ = speed; }
+
+    // ‘¬‚³‚ğƒŠƒZƒbƒg‚·‚é
+    void ResetSpeed() { this->speed_ = 5.0f; }
 private:
     // ó‘Ô
     DirectX::XMFLOAT3 velocity_{ 0,0,0 };

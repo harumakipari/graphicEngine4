@@ -7,7 +7,6 @@
 #include "DarkStageChandelierActor.h"
 #include "DarkStageGroundBrazierActor.h"
 #include "DarkStagePointLightActor.h"
-#include "DoorLeftActor.h"
 #include "Components/Effect/ParticleComponent.h"
 #include "Engine/Scene/Scene.h"
 
@@ -163,37 +162,9 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
     {
         PROFILE_SCOPE("Create StageActor");
 
-        DoorLeftActor* leftDoor = nullptr;
-        DoorRightActor* rightDoor = nullptr;
 
         for (auto point : stageAsset->spawnPoints)
         {
-#if 0
-            if (point.name == "Spawn_Door_Left")
-            {
-                DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
-                Transform doorLeftTr{
-            pos,
-                    point.worldRotation,
-                    point.worldScale
-                };
-                auto stage = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DoorLeftActor>("door_Left", doorLeftTr);
-                leftDoor = stage.get();
-            }
-            else if (point.name == "Spawn_Door_Right")
-            {
-                DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
-                Transform doorRightTr{
-            pos,
-                    point.worldRotation,
-                    point.worldScale
-                };
-
-                auto stage = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DoorRightActor>("door_Right", doorRightTr);
-                rightDoor = stage.get();
-            }
-#endif // 0
-
             if (point.name == "Spawn_Particle_Steam")
             {
                 for (int i = 0; i < 3; i++)
@@ -345,11 +316,7 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
                 auto barrel = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageBarrelActor>("barrel", barrelTr);
             }
         }
-        //if (leftDoor && rightDoor)
-        //{
-        //    auto door = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DoorActor>("door");
-        //    door->SetDoors(leftDoor, rightDoor);
-        //}
+
 
     }
 #endif // 1

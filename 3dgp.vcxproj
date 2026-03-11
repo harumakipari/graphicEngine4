@@ -294,7 +294,7 @@
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageChandelierActor.cpp" />
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageGroundBrazierActor.cpp" />
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStagePointLightActor.cpp" />
-    <ClCompile Include="Source\Game\DarkGame\DarkActors\DoorLeftActor.cpp" />
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DoorActor.cpp" />
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStage.cpp" />
     <ClCompile Include="Source\Game\Actors\Player\Player.cpp" />
     <ClCompile Include="Source\Game\Actors\Player\PlayerStateDerived.cpp" />
@@ -437,7 +437,7 @@
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageCandelabraActor.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageChandelierActor.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageGroundBrazierActor.h" />
-    <ClInclude Include="Source\Game\DarkGame\DarkActors\DoorLeftActor.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DoorActor.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStage.h" />
     <ClInclude Include="Source\Game\Actors\Stage\TestSoftBody.h" />
     <ClInclude Include="Source\Game\Actors\Stage\Stage.h" />

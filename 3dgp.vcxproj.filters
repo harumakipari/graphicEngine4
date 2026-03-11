@@ -423,9 +423,6 @@
     <ClCompile Include="Source\Engine\Audio\CoreAudio.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Debug\DebugDrawManager.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\Debug\EditorGizmo.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -495,7 +492,7 @@
     <ClCompile Include="Source\Components\Render\MeshComponent.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\DarkGame\DarkActors\DoorLeftActor.cpp">
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DoorActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\Shadow\ShadowMap.cpp">
@@ -529,6 +526,9 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\Resource\AssetManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Debug\DebugRender.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -816,7 +816,6 @@
     <ClInclude Include="Source\Components\Audio\CoreAudioSourceComponent.h" />
     <ClInclude Include="Source\Components\Render\PointLightComponent.h" />
     <ClInclude Include="Source\Engine\Audio\CoreAudio.h" />
-    <ClInclude Include="Source\Engine\Debug\DebugDrawManager.h" />
     <ClInclude Include="Source\Engine\Debug\EditorGizmo.h" />
     <ClInclude Include="Source\UI\UIManager.h" />
     <ClInclude Include="Source\Graphics\Renderer\SpriteRenderer.h" />
@@ -841,7 +840,7 @@
     <ClInclude Include="Source\Engine\Debug\LoggerConfig.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\InteractableActor.h" />
     <ClInclude Include="Source\Game\DarkGame\Interactable.h" />
-    <ClInclude Include="Source\Game\DarkGame\DarkActors\DoorLeftActor.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DoorActor.h" />
     <ClInclude Include="Source\Graphics\Shadow\ShadowMap.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStagePointLightActor.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageChandelierActor.h" />
@@ -855,6 +854,7 @@
     <ClInclude Include="Source\Graphics\Resource\AssetManager.h" />
     <ClInclude Include="Source\Graphics\Resource\ModelType.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageAsset.h" />
+    <ClInclude Include="Source\Engine\Debug\DebugRender.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

@@ -18,7 +18,7 @@
 
 #include "Physics/Physics.h"
 #include "Game/DarkGame/DarkActors/DarkStage.h"
-#include "Game/DarkGame/DarkActors/DoorLeftActor.h"
+#include "Game/DarkGame/DarkActors/DoorActor.h"
 
 
 #include "Physics/CollisionSystem.h"

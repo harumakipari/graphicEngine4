@@ -44,9 +44,9 @@ public:
         float kl = 0.7f;
         float kq = 1.8f;
 
-        float diffuseIntensity = 1.0f;
-        float specularIntensity = 0.72f;
-        float pointLightDiffuseIntensity = 1.0f;
+        float diffuseIntensity = 1.4f;
+        float specularIntensity = 0.3f;
+        float pointLightDiffuseIntensity = 0.9f;
         float pointLightSpecularIntensity = 0.3f;
 
         PointLight pointsLight[PointLightMaxCount];

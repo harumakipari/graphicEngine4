@@ -11,7 +11,15 @@ public:
     void Update(float deltaTime) override;
 
     void DrawImGuiDetails() override;
+
+private:
+    // ’M‚ª‰ó‚ê‚éˆ—
+    void BreakBarrel();
 private:
     // ’M‚Ìƒ‚ƒfƒ‹
     std::shared_ptr<SkeletalMeshComponent> barrelMeshComponent;
+    // Å‰‚Ì‰ó‚ê‚é‘O‚Ì” ‚Ì“–‚½‚è”»’è
+    std::shared_ptr<BoxComponent> preBoxComponent;
+    // ’M‚ª‰ó‚ê‚½Œã‚Ì“–‚½‚è”»’è
+    std::shared_ptr<ConvexCollisionComponent> convexComponent;
 };

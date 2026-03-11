@@ -287,6 +287,13 @@ namespace MathHelper
         return std::sqrt(dx * dx + dy * dy + dz * dz);
     }
 
+    // 長さ計算（Vector3）
+    inline float Length(
+        const DirectX::XMFLOAT3& a)
+    {
+        return DirectX::XMVectorGetX(DirectX::XMVector3Length(DirectX::XMLoadFloat3(&a)));
+    }
+
     // 正規化（Vector3）
     inline DirectX::XMFLOAT3 Normalize(const DirectX::XMFLOAT3& v)
     {
