@@ -52,24 +52,55 @@ void DoorActor::Initialize(const Transform& transform)
 
 void DoorActor::Update(float deltaTime)
 {
-    if (doorState != DoorState::Opening)
-        return;
-
     float delta = openSpeed * deltaTime;
-    openAngle += delta;
 
-    if (openAngle >= 90)
+    switch (doorState)
     {
-        delta -= (openAngle - 90);
-        doorState = DoorState::Open;
-    }
 
-    leftHinge->AddLocalRotation({ 0,-delta,0 });
-    rightHinge->AddLocalRotation({ 0,delta,0 });
+    case DoorState::Opening:
+
+        openAngle += delta;
+
+        if (openAngle >= 90)
+        {
+            delta -= (openAngle - 90);
+            doorState = DoorState::Open;
+        }
+
+        leftHinge->AddLocalRotation({ 0,-delta,0 });
+        rightHinge->AddLocalRotation({ 0, delta,0 });
+
+        break;
+
+
+    case DoorState::Closing:
+
+        openAngle -= delta;
+
+        if (openAngle <= 0)
+        {
+            delta -= (0 - openAngle);
+            doorState = DoorState::Closed;
+        }
+
+        leftHinge->AddLocalRotation({ 0, delta,0 });
+        rightHinge->AddLocalRotation({ 0,-delta,0 });
+
+        break;
+
+    default:
+        break;
+    }
 }
 
 void DoorActor::Interact()
 {
-    if (doorState == DoorState::Closed)
+    if (doorState == DoorState::Closed || doorState == DoorState::Closing)
+    {
         doorState = DoorState::Opening;
+    }
+    else if (doorState == DoorState::Open || doorState == DoorState::Opening)
+    {
+        doorState = DoorState::Closing;
+    }
 }

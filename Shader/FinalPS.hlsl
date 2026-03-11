@@ -283,19 +283,22 @@ float4 main(VS_OUT pin) : SV_TARGET
 
 
     // DOFの処理
-    // 深度からview space Z
-    float viewSpaceZ = positionViewSpace.z;
+    if (enableDof)
+    {
+        // 深度からview space Z
+        float viewSpaceZ = positionViewSpace.z;
 
-    // ブレンド係数
-    float alpha = abs(viewSpaceZ - focusDistance) / dofRange;
-    alpha = saturate(alpha);
+        // ブレンド係数
+        float alpha = abs(viewSpaceZ - focusDistance) / dofRange;
+        alpha = saturate(alpha);
 
-    // 色取得
-    float3 originColor = color.rgb;
-    float3 bokehColor = bokehTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).rgb;
+        // 色取得
+        float3 originColor = color.rgb;
+        float3 bokehColor = bokehTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).rgb;
 
-    // DOF合成
-    color.rgb = lerp(originColor, bokehColor, alpha);
+        // DOF合成
+        color.rgb = lerp(originColor, bokehColor, alpha);
+    }
 
 
     float4 finalColor = color;

@@ -32,6 +32,7 @@ cbuffer SHADER_CONSTANT_BUFFER : register(b9)
 
     bool enableBloom;
     bool enableBlur;
+    bool enableDof;
     bool colorizeCascadedLayer = false;
 
 }

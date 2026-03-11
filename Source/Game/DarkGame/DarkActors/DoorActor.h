@@ -32,7 +32,8 @@ private:
     {
         Closed,
         Opening,
-        Open
+        Open,
+        Closing
     };
 
     DoorState doorState = DoorState::Closed;
