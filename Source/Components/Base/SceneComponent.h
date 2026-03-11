@@ -547,11 +547,8 @@ public:
 
     bool isDirty = true;
 
-
-    // テストのちに削除
-    DirectX::XMFLOAT4 afterRotation = { 0.0f,0.0f,0.0f,1.0f }; // クォータニオン
-    DirectX::XMFLOAT4 beforeRotation = { 0.0f,0.0f,0.0f,1.0f }; // クォータニオン
-    float lerpTime = 0.0f;
+    // ワールド空間でのこのコンポーネントの回転をオフセット分だけ加算する
+    void AddLocalRotation(const DirectX::XMFLOAT3& offset);
 
 
 };

@@ -18,6 +18,7 @@
 
 #include "Physics/Physics.h"
 #include "Game/DarkGame/DarkActors/DarkStage.h"
+#include "Game/DarkGame/DarkActors/DoorLeftActor.h"
 
 
 #include "Physics/CollisionSystem.h"
@@ -189,6 +190,8 @@ void SampleScene::SetUpActors()
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("sampleシーンのカメラ設定される。"));
 
+    Transform doorTr(DirectX::XMFLOAT3{ -6.0f,0.0f,11.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto doorActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DoorActor>("doorActor", doorTr);
 
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });

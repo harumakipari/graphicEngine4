@@ -110,7 +110,7 @@ float Time::TimeStamp() const  // in seconds
 void Time::DrawImGui()
 {
 #ifdef USE_IMGUI
-	if (ImGui::Begin("Time"))
+	if (ImGui::Begin(U8("Time")))
 	{
 		ImGui::Text("DeltaTime : %.4f", Time::DeltaTime());
 		ImGui::Text("Unscaled : %.4f", Time::UnscaledDeltaTime());

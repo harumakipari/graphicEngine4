@@ -163,27 +163,22 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
     {
         PROFILE_SCOPE("Create StageActor");
 
+        DoorLeftActor* leftDoor = nullptr;
+        DoorRightActor* rightDoor = nullptr;
+
         for (auto point : stageAsset->spawnPoints)
         {
+#if 0
             if (point.name == "Spawn_Door_Left")
             {
                 DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
-#if 0
-                std::shared_ptr<SkeletalMeshComponent> door = AddComponent<SkeletalMeshComponent>("Left_Door", parentName);
-                door->SetModel("./Data/Models/DarkStageAssets/Door_Large/SM_Door_Large_01.gltf");
-                door->SetRelativeLocationDirect(pos);
-                door->SetRelativeRotationDirect(point.worldRotation);
-                door->SetRelativeScaleDirect(point.worldScale);
-#else
                 Transform doorLeftTr{
             pos,
                     point.worldRotation,
                     point.worldScale
                 };
-
                 auto stage = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DoorLeftActor>("door_Left", doorLeftTr);
-
-#endif // 0
+                leftDoor = stage.get();
             }
             else if (point.name == "Spawn_Door_Right")
             {
@@ -195,8 +190,11 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
                 };
 
                 auto stage = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DoorRightActor>("door_Right", doorRightTr);
+                rightDoor = stage.get();
             }
-            else if (point.name == "Spawn_Particle_Steam")
+#endif // 0
+
+            if (point.name == "Spawn_Particle_Steam")
             {
                 for (int i = 0; i < 3; i++)
                 {
@@ -221,22 +219,12 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
             {// 名前が "Spawn_Chandelier" で始まる場合、シャンデリアを配置
                 DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
-#if 1
-                Transform chandelierTr{
-    pos,
-    point.worldRotation,
-    point.worldScale
+                Transform chandelierTr{pos,
+                    point.worldRotation,
+                    point.worldScale
                 };
 
                 auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageChandelierActor>("chandelier", chandelierTr);
-
-#else
-                std::shared_ptr<StaticMeshComponent> door = AddComponent<StaticMeshComponent>("Chandelier", parentName);
-                door->SetModel("./Data/Models/DarkStageAssets/Chandelier/Chandelier.gltf");
-                door->SetRelativeLocationDirect(pos);
-                door->SetRelativeRotationDirect(point.worldRotation);
-                door->SetRelativeScaleDirect(point.worldScale);
-#endif // 0
 
             }
             else if (point.name.rfind("Spawn_Candelabra", 0) == 0)
@@ -357,6 +345,12 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
                 auto barrel = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageBarrelActor>("barrel", barrelTr);
             }
         }
+        //if (leftDoor && rightDoor)
+        //{
+        //    auto door = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DoorActor>("door");
+        //    door->SetDoors(leftDoor, rightDoor);
+        //}
+
     }
 #endif // 1
 }

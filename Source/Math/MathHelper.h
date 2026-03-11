@@ -17,7 +17,6 @@ namespace MathHelper
         return v;
     };
 
-
     static bool VectorContainsNanOrInfinite(DirectX::FXMVECTOR v)
     {
         DirectX::XMVECTOR isInvalid = DirectX::XMVectorOrInt(DirectX::XMVectorIsNaN(v), DirectX::XMVectorIsInfinite(v));
@@ -288,6 +287,48 @@ namespace MathHelper
         return std::sqrt(dx * dx + dy * dy + dz * dz);
     }
 
+    // ê≥ãKâªÅiVector3Åj
+    inline DirectX::XMFLOAT3 Normalize(const DirectX::XMFLOAT3& v)
+    {
+        using namespace DirectX;
+
+        XMVECTOR vec = XMLoadFloat3(&v);
+        vec = XMVector3Normalize(vec);
+
+        XMFLOAT3 out;
+        XMStoreFloat3(&out, vec);
+        return out;
+    }
+
+    // ì‡êœÅiVector3Åj
+    inline float Dot(
+        const DirectX::XMFLOAT3& a,
+        const DirectX::XMFLOAT3& b
+    )
+    {
+        using namespace DirectX;
+
+        XMVECTOR va = XMLoadFloat3(&a);
+        XMVECTOR vb = XMLoadFloat3(&b);
+
+        return XMVectorGetX(XMVector3Dot(va, vb));
+    }
+
+    // à¯Ç´éZ a-b
+    inline DirectX::XMFLOAT3 Subtract(
+        const DirectX::XMFLOAT3& a,
+        const DirectX::XMFLOAT3& b)
+    {
+        return { a.x - b.x, a.y - b.y, a.z - b.z };
+    }
+
+    // â¡éZ a+b
+    inline DirectX::XMFLOAT3 Add(
+        const DirectX::XMFLOAT3& a,
+        const DirectX::XMFLOAT3& b)
+    {
+        return { a.x + b.x, a.y + b.y, a.z + b.z };
+    }
 
 }
 

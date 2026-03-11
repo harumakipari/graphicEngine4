@@ -233,3 +233,27 @@ void SceneComponent::AddWorldOffset(const DirectX::XMFLOAT3& offset)
     UpdateWorldMatrix();
 #endif
 }
+
+void SceneComponent::AddLocalRotation(const DirectX::XMFLOAT3& offset)
+{
+    using namespace DirectX;
+
+    // 現在の回転
+    XMVECTOR q = XMLoadFloat4(&relativeRotation_);
+
+    // オフセット回転（degree → rad）
+    XMVECTOR dq = XMQuaternionRotationRollPitchYaw(
+        XMConvertToRadians(offset.x),
+        XMConvertToRadians(offset.y),
+        XMConvertToRadians(offset.z)
+    );
+
+    // 回転を合成
+    q = XMQuaternionMultiply(q, dq);
+
+    // 保存
+    XMStoreFloat4(&relativeRotation_, q);
+
+    // Transform更新フラグ
+    componentToWorldTransformUpdate_ = false;
+}

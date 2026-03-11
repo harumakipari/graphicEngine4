@@ -201,7 +201,7 @@ void Profiler::DrawUI()
     auto& style = ImGui::GetStyle();
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0);
-    ImGui::Begin("Profiler", &m_isWindowOpen);
+    ImGui::Begin(("Profiler"), &m_isWindowOpen);
 
     //-------------------------------------------------------------------------
     // Controls

@@ -145,7 +145,7 @@ private:
     DirectX::XMFLOAT3 color = { 1.0f,1.0f,1.0f };
 
     // インタラクト対象検索
-    IInteractable* FindInteractable() const;
+    IInteractable* FindInteractable() ;
 
 public:
     // 描画用コンポーネントを追加

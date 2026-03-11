@@ -697,7 +697,7 @@ void SceneBase::DrawDockSpace()
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 
-    ImGui::Begin("DockSpaceRoot", nullptr, window_flags);
+    ImGui::Begin(U8("DockSpaceRoot"), nullptr, window_flags);
     ImGui::PopStyleVar(2);
 
     ImGuiID dockspace_id = ImGui::GetID("MainDockSpace");
@@ -719,7 +719,7 @@ void SceneBase::DrawShortcutInfo()
     ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always);
     ImGui::SetNextWindowBgAlpha(0.25f); // 透明度（0.0f ～ 1.0f）
 
-    ImGui::Begin("ShortcutInfo", nullptr,
+    ImGui::Begin(U8("ショートカット"), nullptr,
         ImGuiWindowFlags_NoTitleBar |
         ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_AlwaysAutoResize |
@@ -732,6 +732,7 @@ void SceneBase::DrawShortcutInfo()
     ImGui::Text(U8("ショートカットキー:"));
     ImGui::BulletText("Alt + Enter  : fullscreen");
     ImGui::BulletText("F8           : debugCamera");
+    ImGui::BulletText("F1           : imGui On/Off");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 #if 0
     ImGui::Text("Video memory usage %d MB", video_memory_usage());
@@ -773,7 +774,7 @@ void SceneBase::DrawOutliner()
     const float left_panel_width = 300.0f;
     //ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x, viewport->WorkPos.y));
     //ImGui::SetNextWindowSize(ImVec2(left_panel_width, viewport->WorkSize.y));
-    ImGui::Begin("Actor Outliner", nullptr/*, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove*/);
+    ImGui::Begin(U8("Actor Outliner"), nullptr/*, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove*/);
 
     for (auto& actor : this->GetActorManager()->GetAllActors())
     {
@@ -792,7 +793,7 @@ void SceneBase::DrawSceneSettingsTab()
     // -------------------------
 // Light Settings
 // -------------------------
-    if (ImGui::CollapsingHeader("Light Settings", ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader(U8("Light Settings"), ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Checkbox("useDeferredRendering", &useDeferredRendering);
         ImGui::Checkbox("useDrawDebug", &useDrawDebug);
@@ -810,18 +811,18 @@ void SceneBase::DrawInspector()
     const float right_panel_width = 400.0f;
 
     // Actor Inspector
-    ImGui::Begin("Actor Inspector");
+    ImGui::Begin(U8("Actor Inspector"));
     if (selectedActor_) selectedActor_->DrawImGuiInspector();
     else ImGui::Text("No actor selected.");
     ImGui::End();
 
     // PostEffect
-    ImGui::Begin("PostEffect");
+    ImGui::Begin(U8("PostEffect"));
     DrawPostEffectTab();
     ImGui::End();
 
     // Scene Settings
-    ImGui::Begin("Scene");
+    ImGui::Begin(U8("Scene"));
     DrawSceneSettingsTab();
     ImGui::End();
 }

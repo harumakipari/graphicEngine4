@@ -194,6 +194,13 @@ void Player::Update(float elapsedTime)
     {
         Logger::Log("RTが押された");
     }
+    if (InputSystem::GetInputState("ok", InputStateMask::Trigger))
+    {
+        if (IInteractable* interactable = FindInteractable())
+        {
+            interactable->Interact();
+        }
+    }
 
 #if 1
     auto intent = inputComponent->GetIntent();
@@ -565,16 +572,26 @@ void Player::Hit()
 
 
 // インタラクト対象検索
-IInteractable* Player::FindInteractable() const
+IInteractable* Player::FindInteractable()
 {
     float bestDist = 2.0f;
     IInteractable* best = nullptr;
 
+    DirectX::XMFLOAT3 forward = GetForward(); // プレイヤー前方向
+
     for (auto& actor : GetOwnerScene()->GetActorManager()->GetAllActors())
     {
         auto interactable = dynamic_cast<IInteractable*>(actor.get());
-
         if (!interactable) continue;
+
+        DirectX::XMFLOAT3 dir = MathHelper::Normalize(
+            MathHelper::Subtract(actor->GetPosition(), GetPosition())
+        );
+
+        float dot = MathHelper::Dot(forward, dir);
+
+        // 前方60度以内
+        if (dot < 0.5f) continue;
 
         float dist = MathHelper::Distance(GetPosition(), actor->GetPosition());
 
@@ -590,7 +607,7 @@ IInteractable* Player::FindInteractable() const
 
 
 
-//スティックの入力値から移動ベクトルを取得
+//スティックの入力値から移動ベクトルを取得 
 DirectX::XMFLOAT3 Player::GetMoveVec()
 {
     //pad.Acquire();

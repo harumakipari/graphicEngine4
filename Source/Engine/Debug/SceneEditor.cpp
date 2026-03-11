@@ -5,7 +5,7 @@
 
 void SceneEditor::Draw()
 {
-    ImGui::Begin("Scene Transition");
+    ImGui::Begin(U8("ƒV[ƒ“‘JˆÚ"));
 
     ImGui::Text("Scenes");
     ImGui::Separator();
