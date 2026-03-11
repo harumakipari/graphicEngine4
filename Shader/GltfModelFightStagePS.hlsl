@@ -128,11 +128,11 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     // HSV > RGB に変換
         color.rgb = HSV2RGB(color.rgb);
     }
-    pout.gBuffer3Color = color;
+    pout.albedo = color;
     //pout.position = mul(pin.wPosition, view); // to viewSpace
     //pout.gbuffer1Normal = mul(float4(N.xyz, 0), view); //to viewSpace;
     pout.position = pin.wPosition; // to viewSpace
-    pout.gBuffer1Normal = float4(N.xyz, 0); //to viewSpace;
+    pout.gBuffer3Normal = float4(N.xyz, 0); //to viewSpace;
     pout.emissive = float4(emissiveFactor, 0); // 元々wは１だったがスカイマップなどの時に使用するため０に変更
     pout.material = float4(metallicFactor, occlusionFactor, roughnessFactor, occlusionStrength);
     

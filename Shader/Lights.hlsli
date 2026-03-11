@@ -27,7 +27,8 @@ cbuffer LIGHT_CONSTANT_BUFFER : register(b11)
 
     float diffuseIntensity;
     float specularIntensity;
-    float2 value;
+    float pointLightDiffuseIntensity;
+    float pointLightSpecularIntensity;
 
     PointLights pointLights[40];
 };

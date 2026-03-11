@@ -46,7 +46,8 @@ public:
 
         float diffuseIntensity = 1.0f;
         float specularIntensity = 1.0f;
-        DirectX::XMFLOAT2 pads = {};
+        float pointLightDiffuseIntensity = 1.0f;
+        float pointLightSpecularIntensity = 1.0f;
 
         PointLight pointsLight[PointLightMaxCount];
     };

@@ -243,6 +243,8 @@ void LightManager::DrawGui()
     ImGui::SliderFloat(U8("距離減衰"), &constants.lightDirection.w, 0.0f, 1.0f);
     ImGui::SliderFloat(U8("Diffuse 強度"), &constants.diffuseIntensity, 0.0f, 2.0f);
     ImGui::SliderFloat(U8("Specular 強度"), &constants.specularIntensity, 0.0f, 2.0f);
+    ImGui::SliderFloat(U8("ポイントライト Diffuse 強度"), &constants.pointLightDiffuseIntensity, 0.0f, 2.0f);
+    ImGui::SliderFloat(U8("ポイントライト Specular 強度"), &constants.pointLightSpecularIntensity, 0.0f, 2.0f);
     ImGui::SliderFloat(U8("IBL 強度"), &iblIntensity, 0.0f, 20.0f);
     ImGui::SliderFloat(U8("ライト強度"), &lightColor.w, 0.0f, 20.0f);
     ImGui::Checkbox(U8("ポイントライト 有効"), &pointLightEnable);

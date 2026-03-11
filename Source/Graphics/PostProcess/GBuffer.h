@@ -184,8 +184,6 @@ private:
         DXGI_FORMAT_R16G16B16A16_FLOAT, // emmisive
         DXGI_FORMAT_R16G16B16A16_FLOAT, // Position
     };
-
-
 };
 
 #endif // !GBUFFER_H

@@ -39,7 +39,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     if (emissiveFlag == 2)
     {
         //return float4(emissive * rimPower, 1);// これsphereEmissiveに使用
-        return float4(emissive * 7.8, 1);// これsphereEmissiveに使用
+        return float4(emissive * 7.8, 1); // これsphereEmissiveに使用
     }
 
     const float3 f0 = lerp(0.04, baseColor.rgb, metallicFactor);
@@ -117,9 +117,10 @@ float4 main(VS_OUT pin) : SV_TARGET
                 const float NoH = max(0.0, dot(N, H));
                 const float HoV = max(0.0, dot(H, V));
 
-                pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * lerp(1.0, attenuation, lightDirection.w);
+                float attenuationRate = lightDirection.w;
+                pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * lerp(1.0, attenuation, attenuationRate);
                 //pointDiffuse += pLi * pNoL * BrdfLambertian(f0, f90, cDiff, HoV) * attenuation;
-                pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * lerp(1.0, attenuation, lightDirection.w);
+                pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * lerp(1.0, attenuation, attenuationRate);
                 //pointSpecular += pLi * pNoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, pNoL, pNoV, NoH) * attenuation;
             }
         }
@@ -157,8 +158,9 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 iblDiffuse = IblRadianceLambertian(N, V, roughnessFactor, cDiff, f0) * iblIntensity;
     float3 iblSpecular = IblRadianceGgx(N, V, roughnessFactor, f0) * iblIntensity;
 #endif
-    float3 totalDiffuse = diffuse + pointDiffuse + iblDiffuse;
-    float3 totalSpecular = specular + pointSpecular + iblSpecular;
+
+    float3 totalDiffuse = diffuse + (pointDiffuse * pointLightDiffuseIntensity) + iblDiffuse;
+    float3 totalSpecular = specular + (pointSpecular * pointLightSpecularIntensity) + iblSpecular;
 
 
     totalDiffuse = totalDiffuse * occlusionFactor * diffuseIntensity;
