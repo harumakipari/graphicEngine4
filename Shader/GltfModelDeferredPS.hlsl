@@ -89,7 +89,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
     }
 
-    pout.gBuffer3Normal = float4(N.xyz, useMeshSsr);  // world space
+    pout.gBuffer3Normal = float4(N.xyz, objectType);  // world space
 
     //pout.gbuffer1.xy = EncodeOctahedralNormal(N);
 
@@ -98,7 +98,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
 
     pout.position = pin.wPosition; // world space 
 
-    pout.emissive = float4(emissiveFactor, 0); // wの値 : スカイマップ１それ以外０
+    pout.emissive = float4(emissiveFactor, 0); // wの値 : スカイマップ１それ以外０    2: emissiveFlagとして使用
 
 
 

@@ -916,6 +916,7 @@
     <None Include="Shader\GltfModel.hlsli" />
     <None Include="Shader\imageBasedLighting.hlsli" />
     <None Include="Shader\Lights.hlsli" />
+    <None Include="Shader\ModelType.hlsli" />
     <None Include="Shader\PerlinWorleyNoise.hlsli" />
     <None Include="Shader\PrimitiveRenderer.hlsli" />
     <None Include="Shader\Sampler.hlsli" />

@@ -17,3 +17,11 @@ enum class MaterialType :int
     Fur,
     Skin,
 };
+
+enum class ObjectType :int
+{
+    Default = 0,
+    Player,
+    Enemy,
+    Stage,
+};

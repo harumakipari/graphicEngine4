@@ -28,7 +28,8 @@ void Player::Initialize(const Transform& transform)
 
         skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
         skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/animation.gltf");
-        skeletalMeshComponent->plusAlphaCBuffer->data.useSsr = 0;   // SSRをオフにする
+        skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Player;   // オブジェクトの種類を Player に設定
+
         //skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle.gltf");
 #if 1
         for (auto& material : skeletalMeshComponent->model->materials)

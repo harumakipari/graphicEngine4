@@ -1,6 +1,7 @@
 #include "Sampler.hlsli"
 #include "FullScreenQuad.hlsli"
 #include "Constants.hlsli"
+#include "ModelType.hlsli"
 
 Texture2D positionTexture : register(t0); // ワールド空間
 Texture2D normalTexture : register(t1); // ワールド空間 w成分はSSRを使うかどうか 0:使わない 1:使う
@@ -46,10 +47,10 @@ float3 main(VS_OUT pin) : SV_TARGET
     float4 materialValue = materialTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
     float roughness = materialValue.y;
 
-    int useSsr = sampled.w; // 0:SSRを使わない 1:SSRを使う
+    int objectType = sampled.w; // 0:通常 1:プレイヤー 2:エネミー 3:stage
 
-    if (useSsr == 0)
-    { // SSRを使わない場合は 反射色を足さないでそのまま返す
+    if (objectType == OBJECT_PLAYER)
+    { // プレイヤーはSSRを使用しない
         return float3(0, 0, 0); // SSR なし
     }
 

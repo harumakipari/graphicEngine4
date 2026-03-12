@@ -46,11 +46,6 @@ struct VS_OUT
     float2 texcoord : TEXCOORD;
 };
 
-static const int MATERIAL_DEFAULT = 0;
-static const int MATERIAL_HAIR = 1;
-static const int MATERIAL_FUR = 2;
-static const int MATERIAL_SKIN = 3;
-
 cbuffer PRIMITIVE_CONSTANT_BUFFER : register(b0)
 {
     row_major float4x4 world;
@@ -76,7 +71,7 @@ cbuffer PLUS_ALPHA_CONSTANT_BUFFER : register(b5)
     float4 morphWeights;
 
     float emissionPower; // 自己発光の強さ
-    int useMeshSsr;  // SSRを使うかどうか 0:使わない 1:使う
+    int objectType; // オブジェクトの種類 0:通常 1:プレイヤーとか
 }
 
 

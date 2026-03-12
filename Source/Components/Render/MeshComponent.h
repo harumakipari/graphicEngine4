@@ -32,14 +32,6 @@ class Actor;
 class MeshComponent :public SceneComponent
 {
 public:
-    enum class ObjectType : uint8_t
-    {
-        Player,
-        Enemy,
-        Stage,
-        
-    };
-
     PipeLineStateDesc pipeLineState_;   // これ使ってないから後で消す
     std::optional<std::string> overrideDeferredPipelineName;
     std::optional<std::string> overrideForwardPipelineName;
@@ -111,7 +103,6 @@ public:
             ImGui::ColorEdit4("cpuColor", &cpuColor.x);
             ImGui::SliderFloat("emissionPower", &emissionPower, 0.0f, 20.0f);
             ImGui::SliderFloat4("morphWeight", &plusAlphaCBuffer->data.morphWeights.x, 0.0f, 1.0f);
-            CheckboxInt("Use SSR", &plusAlphaCBuffer->data.useSsr);
             ImGui::TreePop();
         }
 #endif
@@ -144,7 +135,7 @@ public:
         DirectX::XMFLOAT4 morphWeights = { 0.0f,0.0f,0.0f,0.0f };  // モーフモデルに使用する weight 0.0f ~ 1.0f
 
         float emissionPower; // 自己発光の強さ
-        int useSsr = 1; // SSRを使うかどうか 0:使わない 1:使う
+        ObjectType objectType = ObjectType::Default; // オブジェクトの種類
     };
     std::unique_ptr<ConstantBuffer<PlusAlphaConstants>> plusAlphaCBuffer;
 
