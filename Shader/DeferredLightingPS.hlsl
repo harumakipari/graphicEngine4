@@ -143,6 +143,8 @@ float4 main(VS_OUT pin) : SV_TARGET
             specular += Li * NoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, NoL, NoV, NoH);
         }
     }
+
+
 #endif
     
 #if 1   // ‰æ‘œƒx[ƒX‚ÌÆ–¾

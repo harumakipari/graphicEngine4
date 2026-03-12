@@ -19,7 +19,6 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
 
     const MaterialConstants m = materials[material];
 
-
     float4 baseColorFactor = m.pbrMetallicRoughness.baseColorFactor;
     const int baseColorTexture = m.pbrMetallicRoughness.basecolorTexture.index;
     if (baseColorTexture > -1)
@@ -87,7 +86,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         float3 normalFactor = sampled.xyz;
         normalFactor = (normalFactor * 2.0) - 1.0;
         normalFactor = normalize(normalFactor * float3(m.normalTexture.scale, m.normalTexture.scale, 1.0));
-        N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
+        //N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
     }
 
     pout.gBuffer3Normal = float4(N.xyz, objectType); // world space
@@ -99,10 +98,11 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
 
     pout.position = pin.wPosition; // world space 
 
-    pout.emissive = float4(emissiveFactor, 0); // wの値 : スカイマップ１それ以外０
+    pout.emissive = float4(emissiveFactor, 0); // wの値 : スカイマップ１それ以外０    2: emissiveFlagとして使用
 
 
-    pout.material = float4(metallicFactor, roughnessFactor, occlusionFactor, occlusionStrength);
+
+    pout.material = float4(metallicFactor, roughnessFactor, occlusionFactor, materialType /*マテリアルタイプ*/);
     
     return pout;
 }

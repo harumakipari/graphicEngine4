@@ -246,7 +246,8 @@ float4 main(VS_OUT pin) : SV_TARGET
     // SSAOの処理
     const float radius = 4.0;
     const float sigma = 2.0 * radius * radius;
-    const float sigma2 = 0.01;
+    const float sigma2 = 0.01; // 深度の差に対してどれくらい敏感に反応するかを決定するパラメータ
+    // この値が小さいほど、わずかな段差でも「エッジ」と見なしてぼかさなくなる
     float currDepth = depthNdc;
     float weight = 0.0;
 	
@@ -261,11 +262,11 @@ float4 main(VS_OUT pin) : SV_TARGET
             float2 uv = float2(pin.texcoord.x + dx, pin.texcoord.y + dy);
 			
             float distance = i * i + j * j;
-            float domainGaussian = exp(-distance / sigma);
+            float domainGaussian = exp(-distance / sigma); // ガウシアン関数で距離に基づく重みを計算
 			
             float sampleDepth = depthTexture.SampleLevel(samplerStates[POINT], uv, 0).x;
             distance = (currDepth - sampleDepth) * (currDepth - sampleDepth);
-            float rangeGaussian = exp(-distance / sigma2);
+            float rangeGaussian = exp(-distance / sigma2); // ガウシアン関数で深度差に基づく重みを計算
 			
 			//  サンプル遮蔽（環境）係数
             float sampleOcclusion = ssaoTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], uv, 0).x;

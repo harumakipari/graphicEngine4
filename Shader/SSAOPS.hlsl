@@ -21,8 +21,8 @@ cbuffer SSAO_CONSTANTS_BUFFER : register(b5)
 
 float4 main(float4 svPosition : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TARGET
 {
-    float3 normal = sceneNormalTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], texcoord, 0).xyz; // world space
-    normal = mul(float4(normal, 0), view).xyz; // from world to view-space
+    float3 normal = sceneNormalTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], texcoord, 0).xyz; // worldãÛä‘
+    normal = mul(float4(normal, 0), view).xyz; //Å@worldãÛä‘ -> viewãÛä‘
 
     float depth = depthTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], texcoord, 0);
 #if 1
@@ -35,9 +35,8 @@ float4 main(float4 svPosition : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TA
     ndc.xy = UvToNdc(texcoord);
     ndc.z = depth;
     ndc.w = 1.0;
-
 	
-	// from ndc to view-space
+	// ndc -> viewãÛä‘Å@
     float4 position = mul(ndc, inverseProjection);
     position /= position.w;
 	
@@ -65,7 +64,7 @@ float4 main(float4 svPosition : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TA
 		// Alchemy AO
         float3 v = intersection.xyz - position.xyz;
         const float beta =bias; // bias distance
-        const float epsilon = 0.001;
+        const float epsilon = 0.001; //Å@É[ÉçèúéZÇñhé~Ç∑ÇÈÇΩÇﬂÇÃè¨Ç≥Ç»íl
         occlusion += max(0, dot(normal, v) - position.z * beta) / (dot(v, v) + epsilon);
     }
 	
