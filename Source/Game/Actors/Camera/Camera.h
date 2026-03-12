@@ -16,12 +16,6 @@
 class Camera :public Actor
 {
 public:
-    enum class EProjectionType :uint8_t
-    {
-        Perspective,
-        Orthographic
-    };
-public:
     //引数付きコンストラクタ
     Camera(const std::string& actorName) :Actor(actorName)
     {
@@ -32,11 +26,9 @@ public:
     virtual void Initialize(const Transform& transform)override;
 
 
-    virtual ViewConstants GetViewConstants(/*EProjectionType type = EProjectionType::Perspective*/) const
+    virtual ViewConstants GetViewConstants() const
     {
         ViewConstants viewConstants;
-        //DirectX::XMFLOAT3 cameraPosition = mainCameraComponent->GetComponentLocation();
-        //viewConstants.cameraPosition = { cameraPosition.x,cameraPosition.y,cameraPosition.z,1.0f };
         viewConstants.view = mainCameraComponent->GetView();
         viewConstants.projection = mainCameraComponent->GetProjection();
 
@@ -50,10 +42,13 @@ public:
         DirectX::XMStoreFloat4x4(&viewConstants.invView, DirectX::XMMatrixInverse(NULL, V));
         viewConstants.cameraPosition = { viewConstants.invView._41, viewConstants.invView._42, viewConstants.invView._43,1.0f };
 
+        //DirectX::XMFLOAT3 cameraPosition =GetPosition();
+        //viewConstants.cameraPosition = { cameraPosition.x,cameraPosition.y,cameraPosition.z,1.0f };
+
         viewConstants.cameraClipDistance.x = mainCameraComponent->GetNearClipDistance();
-		viewConstants.cameraClipDistance.y = mainCameraComponent->GetFarClipDistance();
-		viewConstants.cameraClipDistance.z = mainCameraComponent->GetNearClipDistance() * mainCameraComponent->GetFarClipDistance();
-		viewConstants.cameraClipDistance.w = mainCameraComponent->GetFarClipDistance() - mainCameraComponent->GetNearClipDistance();
+        viewConstants.cameraClipDistance.y = mainCameraComponent->GetFarClipDistance();
+        viewConstants.cameraClipDistance.z = mainCameraComponent->GetNearClipDistance() * mainCameraComponent->GetFarClipDistance();
+        viewConstants.cameraClipDistance.w = mainCameraComponent->GetFarClipDistance() - mainCameraComponent->GetNearClipDistance();
 
         return viewConstants;
     }

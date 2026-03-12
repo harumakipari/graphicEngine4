@@ -5,72 +5,15 @@
 #include "Physics/CollisionFunction.h"
 
 
-const DirectX::XMFLOAT4X4& TPSCameraComponent::GetView() 
+const DirectX::XMFLOAT4X4& TPSCameraComponent::GetView()
 {
     using namespace DirectX;
-
-    auto targetActor = target.lock();
-    if (!targetActor)
-        return view;
-
-    // ==========================
-    // ① pivot（注視点）
-    // ==========================
-    XMFLOAT3 targetPos = targetActor->GetOwner()->GetPosition();
-
-    XMVECTOR pivot = XMLoadFloat3(&targetPos) +
-        XMLoadFloat3(&targetOffset);
-
-    // ==========================
-    // ② カメラ理想位置
-    // ==========================
-    XMVECTOR forward =
-        XMVectorSet(
-            sinf(yaw) * cosf(pitch),
-            sinf(pitch),
-            cosf(yaw) * cosf(pitch),
-            0.0f);
-
-    XMVECTOR idealEye = pivot - forward * distance;
-
-    // ==========================
-    // ③ 衝突補正（←ここで呼ぶ）
-    // ==========================
-    XMVECTOR resolvedEye =
-        ResolveCameraCollision(pivot, idealEye);
-
-    // ==========================
-    // ④ 補間（超重要）
-    // ==========================
-    static XMVECTOR currentEye = resolvedEye;
-    currentEye = XMVectorLerp(
-        currentEye,
-        resolvedEye,
-        0.15f); // 調整可
-
-    // ★追加
-    XMFLOAT3 eye3;
-    XMStoreFloat3(&eye3, currentEye);
-
-    if (auto owner = owner_.lock())
+    if (cameraLock)
     {
-        owner->SetPosition(eye3);
+        return view;
     }
 
-    // ==========================
-    // ⑤ View行列生成
-    // ==========================
-    XMMATRIX V =
-        XMMatrixLookAtLH(
-            currentEye,
-            pivot,
-            XMVectorSet(0, 1, 0, 0));
-
-    XMStoreFloat4x4(&view, V);
-    return view;
-
-#if 0
-    using namespace DirectX;
+#if 0 // こっち当たり判定を考慮していない。
 
     XMFLOAT3 basePos{ 0,0,0 };
     if (!target.expired())
@@ -116,7 +59,65 @@ const DirectX::XMFLOAT4X4& TPSCameraComponent::GetView()
 
     return view;
 
+#else
+    auto targetActor = target.lock();
+    if (!targetActor)
+        return view;
 
+    // ==========================
+    // ① pivot（注視点）
+    // ==========================
+    XMFLOAT3 targetPos = targetActor->GetOwner()->GetPosition();
+
+    XMVECTOR pivot = XMLoadFloat3(&targetPos) +
+        XMLoadFloat3(&targetOffset);
+
+    // ==========================
+    // ② カメラ理想位置
+    // ==========================
+    XMVECTOR forward =
+        XMVectorSet(
+            sinf(yaw) * cosf(pitch),
+            sinf(pitch),
+            cosf(yaw) * cosf(pitch),
+            0.0f);
+
+    XMVECTOR idealEye = pivot - forward * distance + XMLoadFloat3(&cameraOffset);;
+
+    // ==========================
+    // ③ 衝突補正
+    // ==========================
+    XMVECTOR resolvedEye =
+        ResolveCameraCollision(pivot, idealEye);
+
+    // ==========================
+    // ④ 補間
+    // ==========================
+    static XMVECTOR currentEye = resolvedEye;
+    currentEye = XMVectorLerp(
+        currentEye,
+        resolvedEye,
+        0.15f); // 調整可
+
+    XMFLOAT3 eye3;
+    XMStoreFloat3(&eye3, currentEye);
+
+    if (auto owner = owner_.lock())
+    {
+        owner->SetPosition(eye3);
+    }
+
+    // ==========================
+    // ⑤ View行列生成
+    // ==========================
+    XMMATRIX V =
+        XMMatrixLookAtLH(
+            currentEye,
+            pivot,
+            XMVectorSet(0, 1, 0, 0));
+
+    XMStoreFloat4x4(&view, V);
+    return view;
 #endif // 0
 
 }

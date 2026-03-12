@@ -75,12 +75,11 @@ protected:
 };
 
 
-// Transformを更新しない三人称視点のカメラ
+// 三人称視点のカメラ
 class TPSCameraComponent : public CameraComponent
 {
 public:
     TPSCameraComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :CameraComponent(name, owner) {}
-
 
     void Tick(float deltaTime) override
     {
@@ -96,29 +95,31 @@ public:
     virtual void DrawImGuiInspector() override
     {
 #ifdef USE_IMGUI
-
         SceneComponent::DrawImGuiInspector();
         if (ImGui::TreeNode((name_ + "  camera").c_str()))
         {
-            ImGui::DragFloat3("targetOffset", &targetOffset.x, 0.1f);
-            ImGui::DragFloat("fovY", &fovY, 0.1f);
-            ImGui::SliderFloat("nearZ", &nearZ, 0.01f, 100.0f);
-            ImGui::DragFloat("farZ", &farZ, 0.1f);
-            ImGui::SliderFloat("distance", &distance, 0.01f, 100.0f);
-            // ===== yaw / pitch を degree 表示 =====
+            ImGui::DragFloat3(U8("注視点のオフセット"), &targetOffset.x, 0.1f);
+            ImGui::DragFloat3(U8("カメラの位置のオフセット"), &cameraOffset.x, 0.1f);
+            // ===== yaw / pitch / fov を degree 表示 =====
             float yawDeg = DirectX::XMConvertToDegrees(yaw);
             float pitchDeg = DirectX::XMConvertToDegrees(pitch);
-
+            float fovDeg = DirectX::XMConvertToDegrees(fovY);
+            if (ImGui::DragFloat("FOV (deg)", &fovDeg, 0.5f, 10.0f, 120.0f))
+            {
+                fovY = DirectX::XMConvertToRadians(fovDeg);
+            }
             if (ImGui::DragFloat("yaw (deg)", &yawDeg, 0.5f))
             {
                 yaw = DirectX::XMConvertToRadians(yawDeg);
             }
-
             if (ImGui::DragFloat("pitch (deg)", &pitchDeg, 0.5f))
             {
                 pitch = DirectX::XMConvertToRadians(pitchDeg);
             }
-
+            ImGui::SliderFloat("nearZ", &nearZ, 0.01f, 100.0f);
+            ImGui::DragFloat("farZ", &farZ, 0.1f);
+            ImGui::SliderFloat("distance", &distance, 0.01f, 100.0f);
+            ImGui::Checkbox("Camera Lock", &cameraLock);
             ImGui::SliderFloat(U8("追従するスピード"), &autoFollowStrength, 0.05f, 10.0f);
 
             ImGui::TreePop();
@@ -153,7 +154,8 @@ public:
     }
 
     float distance = 4.5f;
-    DirectX::XMFLOAT3 targetOffset = { 0.0f, 1.5f, 0.0f };
+    DirectX::XMFLOAT3 targetOffset = { 0.0f, 1.5f, 0.0f }; // 注視点のオフセット。キャラクターの頭あたりを注視するために Y を 1.5f くらいにしている
+    DirectX::XMFLOAT3 cameraOffset = { 0.0f, 0.0f, 0.0f }; // カメラの位置を微調整するためのオフセット
 
 
 
@@ -186,6 +188,7 @@ private:
     float distanceTo = 0.0f;
 
     EasingRunner easingComponent;
+    bool cameraLock = false;
 };
 
 
