@@ -1576,7 +1576,7 @@ void InterleavedGltfModel::CreateAndUploadResources(ID3D11Device* device)
     bufferDesc.CPUAccessFlags = 0;
     bufferDesc.MiscFlags = 0;
     bufferDesc.StructureByteStride = 0;
-    hr = device->CreateBuffer(&bufferDesc, nullptr, primitiveCbuffer.ReleaseAndGetAddressOf());
+    hr = device->CreateBuffer(&bufferDesc, nullptr, primitiveCBuffer.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     bufferDesc.ByteWidth = sizeof(PrimitiveJointConstants);
@@ -1688,12 +1688,7 @@ void InterleavedGltfModel::Render(ID3D11DeviceContext* immediateContext, const D
 
                 DirectX::XMStoreFloat4x4(&primitiveData.world, DirectX::XMLoadFloat4x4(&node.globalTransform) * C * DirectX::XMLoadFloat4x4(&world));
                 DirectX::XMStoreFloat4x4(&primitiveData.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&world))));
-                immediateContext->UpdateSubresource(primitiveCbuffer.Get(), 0, 0, &primitiveData, 0, 0);
-                immediateContext->VSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
-                immediateContext->PSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
 
-                //int currentMaterialIndex = primitive.GetCurrentMaterialIndex();
-                //auto& material = materials[currentMaterialIndex];
                 const Material& material = materials.at(primitive.material);
                 //ここで設定
                 if (material.replacedPixelShader)
@@ -1704,7 +1699,14 @@ void InterleavedGltfModel::Render(ID3D11DeviceContext* immediateContext, const D
                 {
                     immediateContext->PSSetShader(pipeline.pixelShader ? pipeline.pixelShader.Get() : pixelShader.Get(), nullptr, 0);
                 }
-                //RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
+
+                // ここでマテリアル種類を渡す
+                primitiveData.materialType = static_cast<int>(material.materialType);
+                immediateContext->UpdateSubresource(primitiveCBuffer.Get(), 0, 0, &primitiveData, 0, 0);
+                immediateContext->VSSetConstantBuffers(0, 1, primitiveCBuffer.GetAddressOf());
+                immediateContext->PSSetConstantBuffers(0, 1, primitiveCBuffer.GetAddressOf());
+
+
                 bool passed = false;
                 switch (pass)
                 {
@@ -1841,9 +1843,9 @@ void InterleavedGltfModel::BatchRender(ID3D11DeviceContext* immediateContext, co
         DirectX::XMStoreFloat4x4(&primitiveData.world, C * DirectX::XMLoadFloat4x4(&world));
         DirectX::XMStoreFloat4x4(&primitiveData.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(NULL, C * DirectX::XMLoadFloat4x4(&world))));
 
-        immediateContext->UpdateSubresource(primitiveCbuffer.Get(), 0, 0, &primitiveData, 0, 0);
-        immediateContext->VSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
-        immediateContext->PSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
+        immediateContext->UpdateSubresource(primitiveCBuffer.Get(), 0, 0, &primitiveData, 0, 0);
+        immediateContext->VSSetConstantBuffers(0, 1, primitiveCBuffer.GetAddressOf());
+        immediateContext->PSSetConstantBuffers(0, 1, primitiveCBuffer.GetAddressOf());
 
         const Material& material = materials.at(batchMesh.material);
 
@@ -1942,9 +1944,9 @@ void InterleavedGltfModel::InstancedStaticBatchRender(ID3D11DeviceContext* immed
         primitiveData.skin = -1;
         //primitiveData.emission = emission;
         //primitiveData.world = world;
-        immediateContext->UpdateSubresource(primitiveCbuffer.Get(), 0, 0, &primitiveData, 0, 0);
-        immediateContext->VSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
-        immediateContext->PSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
+        immediateContext->UpdateSubresource(primitiveCBuffer.Get(), 0, 0, &primitiveData, 0, 0);
+        immediateContext->VSSetConstantBuffers(0, 1, primitiveCBuffer.GetAddressOf());
+        immediateContext->PSSetConstantBuffers(0, 1, primitiveCBuffer.GetAddressOf());
         UINT stride = sizeof(BatchMesh::Vertex);
         UINT offset = 0;
         immediateContext->IASetVertexBuffers(0, 1, buffers.at(batchMesh.vertexBufferView.buffer).GetAddressOf(), &stride, &offset);
@@ -2040,9 +2042,9 @@ void InterleavedGltfModel::CastShadowBatch(ID3D11DeviceContext* immediateContext
         primitiveData.hasTangent = batchMesh.has("TANGENT");
         primitiveData.skin = -1;
         primitiveData.world = world;
-        immediateContext->UpdateSubresource(primitiveCbuffer.Get(), 0, 0, &primitiveData, 0, 0);
-        immediateContext->VSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
-        immediateContext->PSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
+        immediateContext->UpdateSubresource(primitiveCBuffer.Get(), 0, 0, &primitiveData, 0, 0);
+        immediateContext->VSSetConstantBuffers(0, 1, primitiveCBuffer.GetAddressOf());
+        immediateContext->PSSetConstantBuffers(0, 1, primitiveCBuffer.GetAddressOf());
 
         const Material& material = materials.at(batchMesh.material);
         const int textureIndices[]
@@ -2135,9 +2137,9 @@ void InterleavedGltfModel::CastShadow(ID3D11DeviceContext* immediateContext, con
                 primitiveData.hasTangent = primitive.has("TANGENT");
                 primitiveData.skin = node.skin;
                 DirectX::XMStoreFloat4x4(&primitiveData.world, DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&world));
-                immediateContext->UpdateSubresource(primitiveCbuffer.Get(), 0, 0, &primitiveData, 0, 0);
-                immediateContext->VSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
-                immediateContext->PSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
+                immediateContext->UpdateSubresource(primitiveCBuffer.Get(), 0, 0, &primitiveData, 0, 0);
+                immediateContext->VSSetConstantBuffers(0, 1, primitiveCBuffer.GetAddressOf());
+                immediateContext->PSSetConstantBuffers(0, 1, primitiveCBuffer.GetAddressOf());
 
                 // ここでモデル座標系を変換する？
                 //座標系の変換を行う
@@ -2182,9 +2184,9 @@ void InterleavedGltfModel::CastShadow(ID3D11DeviceContext* immediateContext, con
                 DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
 
                 DirectX::XMStoreFloat4x4(&primitiveData.world, DirectX::XMLoadFloat4x4(&node.globalTransform) * C * DirectX::XMLoadFloat4x4(&world));
-                immediateContext->UpdateSubresource(primitiveCbuffer.Get(), 0, 0, &primitiveData, 0, 0);
-                immediateContext->VSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
-                immediateContext->PSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
+                immediateContext->UpdateSubresource(primitiveCBuffer.Get(), 0, 0, &primitiveData, 0, 0);
+                immediateContext->VSSetConstantBuffers(0, 1, primitiveCBuffer.GetAddressOf());
+                immediateContext->PSSetConstantBuffers(0, 1, primitiveCBuffer.GetAddressOf());
 
                 //int materialIndex = primitive.GetCurrentMaterialIndex();
 

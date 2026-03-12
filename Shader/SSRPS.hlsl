@@ -5,7 +5,7 @@
 Texture2D positionTexture : register(t0); // ワールド空間
 Texture2D normalTexture : register(t1); // ワールド空間 w成分はSSRを使うかどうか 0:使わない 1:使う
 Texture2D colorTexture : register(t2);
-Texture2D materialTexture : register(t3); // x:metallic y:occlusion z:roughness w:occlusionStrength
+Texture2D materialTexture : register(t3); // x:metallic y:roughness z:occlusion w:occlusionStrength
 
 
 cbuffer SSR_CONSTANTS_BUFFER : register(b5)
@@ -44,7 +44,7 @@ float3 main(VS_OUT pin) : SV_TARGET
     float4 sampled = normalTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
     float3 normal = sampled.xyz; // world空間
     float4 materialValue = materialTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
-    float roughness = materialValue.z;
+    float roughness = materialValue.y;
 
     int useSsr = sampled.w; // 0:SSRを使わない 1:SSRを使う
 

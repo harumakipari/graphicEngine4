@@ -234,7 +234,8 @@ void LightManager::DrawGui()
 {
 #ifdef USE_IMGUI
     ImGui::Checkbox(U8("平行光源 有効"), &directionalLightEnable);
-    ImGui::SliderFloat3(U8("ライト方向"), &constants.lightDirection.x, -1.0f, 1.0f);
+    ImGui::DragFloat3(U8("ライト方向"), &constants.lightDirection.x, 0.0001f, -1.0f, 1.0f, "%.8f");
+    //ImGui::SliderFloat3(U8("ライト方向"), &constants.lightDirection.x, -1.0f, 1.0f);
     ImGui::ColorEdit3(U8("ライト色"), &lightColor.x);
     ImGui::ColorEdit3(U8("リムライト色"), &constants.rimColor.x);
     ImGui::SliderFloat(U8("リム強度"), &constants.rimIntensity, 0.0f, 30.0f);

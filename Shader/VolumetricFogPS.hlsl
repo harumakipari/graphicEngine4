@@ -31,6 +31,12 @@ float SunlightRadiance(float3 worldPositon)
         }
     }
 
+    // カスケード外 → フォグの影響のみ
+    if (cascadeIndex < 0)
+    {
+        return globalFogIntensity;
+    }
+
     // フォグ内のワールド座標をライト空間（クリップ空間）へ変換
     //　world 空間 -> Light Clip 空間 (各カスケードに対応する Light View Projection 空間)
     float4 positionLightSpace = mul(float4(worldPositon.xyz, 1.0), cascadedMatrices[cascadeIndex]);
@@ -125,7 +131,7 @@ float main(VS_OUT pin) : SV_TARGET
     // 深度を取得
     float depth = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
     // テクスチャ座標 -> world 空間
-#if 0
+#if 1 // こっちdepthTextureから復元する方法の方だと空にも霧がかかる。positionMapから復元する方法だと空には霧がかからない。
     float4 position = mul(float4(pin.texcoord.x * 2.0 - 1.0, -pin.texcoord.y * 2.0 + 1.0, depth, 1.0), inverseViewProjection);
     position = position / position.w; // world 空間
 #else

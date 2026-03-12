@@ -35,11 +35,13 @@ void Player::Initialize(const Transform& transform)
         {
             if (material.name == "M_Aurora_Hair_Blonde_FrozenHearth")
             {// ”¯‚Ì–Ñ‚¾‚Á‚½‚ç
-                material.overridePipelineName = "characterFurAndHairSkeletalMesh";
+                //material.overridePipelineName = "characterFurAndHairSkeletalMesh";
+                material.materialType = MaterialType::Hair;
             }
             else if (material.name == "M_Aurora_Fur_FrozenHearth")
             {// ”¯‚Ì–Ñ‚¾‚Á‚½‚ç
-                material.overridePipelineName = "characterFurAndHairSkeletalMesh";
+                //material.overridePipelineName = "characterFurAndHairSkeletalMesh";
+                material.materialType = MaterialType::Fur;
             }
         }
 

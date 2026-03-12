@@ -1070,12 +1070,6 @@
     <FxCompile Include="Shader\FinalPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\GltfModelCharacterHairPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\VolumetricLightPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\PointLightModelPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -1083,6 +1077,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\DarkStageSkyPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GltfModelHairOrFurDeferredPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

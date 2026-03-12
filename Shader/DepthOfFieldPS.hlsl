@@ -12,7 +12,6 @@ float4 main(VS_OUT pin) : SV_TARGET
     //  深度値を取得
     float depth = depth_map.Sample(samplerStates[POINT], pin.texcoord);
 
-
     //  深度値から距離を求める
     //  float view_space_z = near * far / (far - depth * (far - near));
     float view_space_z = cameraClipDistance.z / (cameraClipDistance.y - depth * cameraClipDistance.w);

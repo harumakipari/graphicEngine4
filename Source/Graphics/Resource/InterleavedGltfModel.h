@@ -464,7 +464,7 @@ public:
         // nullptr なら通常のパスから自動的に決定される
         // 指定があればこの文字列のパイプラインステートを使用する
         std::optional<std::string> overridePipelineName;
-
+        MaterialType materialType = MaterialType::Default; // マテリアルの種類
         struct Cbuffer
         {
             float emissiveFactor[3] = { 0, 0, 0 };  // length 3. default [0, 0, 0]
@@ -670,11 +670,11 @@ public:
         int material{ -1 };
         int hasTangent{ 0 };
         int skin{ -1 };
-        int pad;
+        int materialType{ 0/*Default*/ };
 
         DirectX::XMFLOAT4X4 inverseTransposeWorld;  // 法線変換行列
     };
-    Microsoft::WRL::ComPtr<ID3D11Buffer> primitiveCbuffer;
+    Microsoft::WRL::ComPtr<ID3D11Buffer> primitiveCBuffer;
 
     void FetchMaterials(ID3D11Device* device, const tinygltf::Model& gltf_model);
     void FetchTextures(ID3D11Device* device, const tinygltf::Model& gltf_model);

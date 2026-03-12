@@ -442,9 +442,7 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                     primitiveCBuffer->data.material = primitive.material;
                     primitiveCBuffer->data.hasTangent = primitive.has("TANGENT");
                     primitiveCBuffer->data.skin = node.skin;
-                    //primitiveCBuffer->data.color = { model->cpuColor.x,model->cpuColor.y,model->cpuColor.z,model->alpha };
-                    //primitiveCBuffer->data.emission = model->emission;
-                    //primitiveCBuffer->data.dissolveFactor = model->disolveFactor;
+                    
 
                     //座標系の変換を行う
                     const DirectX::XMFLOAT4X4 coordinateSystemTransforms[]
@@ -490,10 +488,11 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                     DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, DirectX::XMLoadFloat4x4(&node.globalTransform) * C * DirectX::XMLoadFloat4x4(&world));
                     DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&world))));
 
+                    const InterleavedGltfModel::Material& material = model->materials.at(primitive.material);
+                    // マテリアルの種類をシェーダーに伝える
+                    primitiveCBuffer->data.materialType = static_cast<int>(material.materialType);
                     // 0番に定数バッファを送る
                     primitiveCBuffer->Activate(immediateContext, 0);
-
-                    const InterleavedGltfModel::Material& material = model->materials.at(primitive.material);
 
                     std::string pipelineName;
                     if (material.overridePipelineName.has_value())
@@ -666,19 +665,14 @@ void SceneRenderer::DrawWithStaticBatching(ID3D11DeviceContext* immediateContext
 
         DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, C * DirectX::XMLoadFloat4x4(&world));
         DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&world))));
+
+        const InterleavedGltfModel::Material& material = model->materials.at(batchMesh.material);
+
+        // マテリアルの種類をシェーダーに伝える
+        primitiveCBuffer->data.materialType = static_cast<int>(material.materialType);
         // 0番に定数バッファを送る
         primitiveCBuffer->Activate(immediateContext, 0);
 
-        //DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
-        ////primitiveData.world = world;
-        //DirectX::XMStoreFloat4x4(&primitiveData.world, C * DirectX::XMLoadFloat4x4(&world));
-        //immediateContext->UpdateSubresource(primitiveCbuffer.Get(), 0, 0, &primitiveData, 0, 0);
-        //immediateContext->VSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
-        //immediateContext->PSSetConstantBuffers(0, 1, primitiveCbuffer.GetAddressOf());
-
-        //const Material& material = materials.at(batchMesh.material);
-
-        const InterleavedGltfModel::Material& material = model->materials.at(batchMesh.material);
 
         std::string pipelineName;
         if (material.overridePipelineName.has_value())
@@ -870,11 +864,7 @@ void SceneRenderer::CastShadow(ID3D11DeviceContext* immediateContext, const Mesh
                 DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
                 DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, DirectX::XMLoadFloat4x4(&node.globalTransform) * C * DirectX::XMLoadFloat4x4(&world));
                 DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&world))));
-                // 0番に定数バッファを送る
-                primitiveCBuffer->Activate(immediateContext, 0);
-                //int materialIndex = primitive.GetCurrentMaterialIndex();
 
-                //const Material& material = materials[materialIndex];
                 const InterleavedGltfModel::Material& material = model->materials.at(primitive.material);
                 const int textureIndices[] =
                 {
@@ -884,6 +874,12 @@ void SceneRenderer::CastShadow(ID3D11DeviceContext* immediateContext, const Mesh
                     material.data.emissiveTexture.index,
                     material.data.occlusionTexture.index,
                 };
+
+                // マテリアルの種類をシェーダーに伝える
+                primitiveCBuffer->data.materialType = static_cast<int>(material.materialType);
+                // 0番に定数バッファを送る
+                primitiveCBuffer->Activate(immediateContext, 0);
+
 
 #if 1 //CASCADED_SHADOW_MAPS
                 std::string pipelineName;
@@ -1008,8 +1004,6 @@ void SceneRenderer::CastShadowWithStaticBatching(ID3D11DeviceContext* immediateC
 
         DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, C * DirectX::XMLoadFloat4x4(&world));
         DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&world))));
-        // 0番に定数バッファを送る
-        primitiveCBuffer->Activate(immediateContext, 0);
 
 
         const InterleavedGltfModel::Material& material = model->materials.at(batchMesh.material);
@@ -1021,6 +1015,12 @@ void SceneRenderer::CastShadowWithStaticBatching(ID3D11DeviceContext* immediateC
             material.data.emissiveTexture.index,
             material.data.occlusionTexture.index,
         };
+
+        // マテリアルの種類をシェーダーに伝える
+        primitiveCBuffer->data.materialType = static_cast<int>(material.materialType);
+        // 0番に定数バッファを送る
+        primitiveCBuffer->Activate(immediateContext, 0);
+
 
 #if 1 //CASCADED_SHADOW_MAPS
         std::string pipelineName;

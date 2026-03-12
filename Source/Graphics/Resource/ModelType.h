@@ -9,3 +9,11 @@ namespace ModelTypes
         InstancedStaticMesh
     };
 }
+
+enum class MaterialType :int
+{
+    Default = 0,
+    Hair,
+    Fur,
+    Skin,
+};

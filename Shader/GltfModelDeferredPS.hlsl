@@ -101,7 +101,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     pout.emissive = float4(emissiveFactor, 0); // wの値 : スカイマップ１それ以外０
 
 
-    pout.material = float4(metallicFactor, occlusionFactor, roughnessFactor, occlusionStrength);
+    pout.material = float4(metallicFactor, roughnessFactor, occlusionFactor, occlusionStrength);
     
     return pout;
 }

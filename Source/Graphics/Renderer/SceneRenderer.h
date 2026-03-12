@@ -98,7 +98,7 @@ private:
         int material{ -1 };
         int hasTangent{ 0 };
         int skin{ -1 };
-        int pad;
+        int materialType = 0; // 0:’Êí 
 
         DirectX::XMFLOAT4X4 inverseTransposeWorld;  // –@ü•ÏŠ·s—ñ
     };

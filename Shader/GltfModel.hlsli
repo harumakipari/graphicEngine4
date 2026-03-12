@@ -46,6 +46,11 @@ struct VS_OUT
     float2 texcoord : TEXCOORD;
 };
 
+static const int MATERIAL_DEFAULT = 0;
+static const int MATERIAL_HAIR = 1;
+static const int MATERIAL_FUR = 2;
+static const int MATERIAL_SKIN = 3;
+
 cbuffer PRIMITIVE_CONSTANT_BUFFER : register(b0)
 {
     row_major float4x4 world;
@@ -53,7 +58,7 @@ cbuffer PRIMITIVE_CONSTANT_BUFFER : register(b0)
     int material;
     bool hasTangent;
     int skin;
-    int align;
+    int materialType;
     
     row_major float4x4 inverseTransposeWorld;
 }
@@ -141,8 +146,8 @@ struct PS_OUT
 struct GBUFFER_PS_OUT
 {
     float4 albedo : SV_TARGET1;
-    float4 material : SV_TARGET2; // x:metallic y:occlusion z:roughness w:occlusionStrength
-    float4 gBuffer3Normal : SV_TARGET3; // world gBuffer1Normal  w:useMeshSsr
+    float4 material : SV_TARGET2; // x:metallic y:roughness z:occlusion w:materialType
+    float4 gBuffer3Normal : SV_TARGET3; // world gBuffer1Normal  w:mask ssr用
     float4 emissive : SV_TARGET4; // w:何かを書き込んでいたら０にするそれ以外は１　スカイマップなどの時に使用 2 emissiveFlagとして使用
     float4 position : SV_TARGET5; // world position
 };

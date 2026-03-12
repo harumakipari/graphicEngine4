@@ -32,6 +32,14 @@ class Actor;
 class MeshComponent :public SceneComponent
 {
 public:
+    enum class ObjectType : uint8_t
+    {
+        Player,
+        Enemy,
+        Stage,
+        
+    };
+
     PipeLineStateDesc pipeLineState_;   // ‚±‚êg‚Á‚Ä‚È‚¢‚©‚çŒã‚ÅÁ‚·
     std::optional<std::string> overrideDeferredPipelineName;
     std::optional<std::string> overrideForwardPipelineName;

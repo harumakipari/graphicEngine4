@@ -19,6 +19,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
 
     const MaterialConstants m = materials[material];
 
+
     float4 baseColorFactor = m.pbrMetallicRoughness.baseColorFactor;
     const int baseColorTexture = m.pbrMetallicRoughness.basecolorTexture.index;
     if (baseColorTexture > -1)
@@ -101,7 +102,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     pout.emissive = float4(emissiveFactor, 0); // wの値 : スカイマップ１それ以外０
 
 
-    pout.material = float4(metallicFactor, occlusionFactor, roughnessFactor, occlusionStrength);
+    pout.material = float4(metallicFactor, roughnessFactor, occlusionFactor, occlusionStrength);
     
     return pout;
 }
