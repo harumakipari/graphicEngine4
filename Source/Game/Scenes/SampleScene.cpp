@@ -34,6 +34,7 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
         {
             PROFILE_SCOPE("Load StageModel");
             stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage_0312/DarkStage.gltf",
+            //stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage0302/DarkStage.gltf",
                 ModelTypes::ModelMode::StaticMesh);
             stageAsset->spawnPoints = stageAsset->model->spawnPoints;
         });
@@ -191,8 +192,12 @@ void SampleScene::SetUpActors()
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("sampleシーンのカメラ設定される。"));
 
+    
     Transform doorTr(DirectX::XMFLOAT3{ -6.0f,0.0f,11.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto doorActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DoorActor>("doorActor", doorTr);
+    auto doorActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DoorLargeActor>("doorActor", doorTr);
+
+    Transform smallDoorTr(DirectX::XMFLOAT3{ -24.735f,0.0f,17.0f }, DirectX::XMFLOAT3{ 0.0f,-90.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto smallDoorActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DoorSmallActor>("smallDoorActor", smallDoorTr);
 
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "DoorActor.h"
 
-void DoorActor::Initialize(const Transform& transform)
+void DoorLargeActor::Initialize(const Transform& transform)
 {
     root = AddComponent<SceneComponent>("DoorRoot");
 
@@ -50,7 +50,7 @@ void DoorActor::Initialize(const Transform& transform)
     rightHinge->SetRelativeLocationDirect({ 0.0f,0,2.0f });
 }
 
-void DoorActor::Update(float deltaTime)
+void DoorLargeActor::Update(float deltaTime)
 {
     float delta = openSpeed * deltaTime;
 
@@ -93,7 +93,70 @@ void DoorActor::Update(float deltaTime)
     }
 }
 
-void DoorActor::Interact()
+void DoorLargeActor::Interact()
+{
+    if (doorState == DoorState::Closed || doorState == DoorState::Closing)
+    {
+        doorState = DoorState::Opening;
+    }
+    else if (doorState == DoorState::Open || doorState == DoorState::Opening)
+    {
+        doorState = DoorState::Closing;
+    }
+}
+
+void DoorSmallActor::Initialize(const Transform& transform)
+{
+    root = AddComponent<SceneComponent>("DoorRoot");
+    hinge = AddComponent<SceneComponent>("Hinge", "DoorRoot");
+    doorMesh = AddComponent<SkeletalMeshComponent>("Door", "Hinge");
+    // ドアのメッシュコンポーネントを追加
+    doorMesh->SetModel("./Data/Models/DarkStageAssets/Door_Small/SmallDoor.gltf");
+
+    // ドアのサイズを取得
+    DirectX::XMFLOAT3 size = doorMesh->GetModelSize();
+    // ドアの当たり判定用のコリジョンコンポーネントを追加
+    std::shared_ptr<BoxComponent> boxComponent = AddComponent<BoxComponent>("DoorCollision", "Hinge");
+    boxComponent->SetBoxExtent(size);
+    boxComponent->SetRelativeLocationDirect({ 0.0f,0.0f,-1.1f });
+    boxComponent->SetCollisionOffsetY(size.y * 0.5f);
+    boxComponent->SetCollisionOffsetX(-size.x * 0.5f);
+    boxComponent->SetCollisionOffsetZ(-size.z * 0.5f);
+    boxComponent->SetStatic(true);
+    boxComponent->SetLayer(CollisionLayer::WorldProps);
+    boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+    boxComponent->Initialize();
+}
+
+void DoorSmallActor::Update(float deltaTime)
+{
+    float delta = openSpeed * deltaTime;
+    switch (doorState)
+    {
+    case DoorState::Opening:
+        openAngle += delta;
+        if (openAngle >= 90)
+        {
+            delta -= (openAngle - 90);
+            doorState = DoorState::Open;
+        }
+        hinge->AddLocalRotation({ 0,-delta,0 });
+        break;
+    case DoorState::Closing:
+        openAngle -= delta;
+        if (openAngle <= 0)
+        {
+            delta -= (0 - openAngle);
+            doorState = DoorState::Closed;
+        }
+        hinge->AddLocalRotation({ 0, delta,0 });
+        break;
+    default:
+        break;
+    }
+}
+
+void DoorSmallActor::Interact()
 {
     if (doorState == DoorState::Closed || doorState == DoorState::Closing)
     {

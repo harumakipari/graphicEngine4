@@ -7,6 +7,7 @@
 #include "DarkStageChandelierActor.h"
 #include "DarkStageGroundBrazierActor.h"
 #include "DarkStagePointLightActor.h"
+#include "DoorActor.h"
 #include "Components/Effect/ParticleComponent.h"
 #include "Engine/Scene/Scene.h"
 

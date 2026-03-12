@@ -276,7 +276,7 @@ float4 main(VS_OUT pin) : SV_TARGET
                 distance = (currDepth - sampleDepth) * (currDepth - sampleDepth);
                 float rangeGaussian = exp(-distance / sigma2); // ガウシアン関数で深度差に基づく重みを計算
 			
-			//  サンプル遮蔽（環境）係数
+			    //  サンプル遮蔽（環境）係数
                 float sampleOcclusion = ssaoTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], uv, 0).x;
                 accumulatedOcclusion += sampleOcclusion * domainGaussian * rangeGaussian;
 
