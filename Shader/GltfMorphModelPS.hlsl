@@ -41,13 +41,13 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
         discard;
     }
     
-    float3 emmisiveFactor = m.emissiveFactor;
+    float3 emissiveFactor = m.emissiveFactor;
     const int emissiveTexture = m.emissiveTexture.index;
     if (emissiveTexture > -1)
     {
         float4 sampled = materialTextures[EMISSIVE_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(sampled.rgb, GAMMA);
-        emmisiveFactor *= sampled.rgb;
+        emissiveFactor *= sampled.rgb;
     }
     
     float roughnessFactor = m.pbrMetallicRoughness.roughnessFactor;
@@ -169,7 +169,7 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     float3 totalDiffuse = diffuse + pointDiffuse + iblDiffuse;
     float3 totalSpecular = specular + pointSpecular + iblSpecular;
 
-    float3 emmisive = emmisiveFactor;
+    float3 emissive = emissiveFactor;
     diffuse = lerp(totalDiffuse, totalDiffuse * occlusionFactor, occlusionStrength);
     specular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
 

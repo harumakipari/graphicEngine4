@@ -24,7 +24,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     float metallicFactor = sampled.x;
     float roughnessFactor = sampled.y;
     float occlusionFactor = sampled.z;
-    int materialType = sampled.w;   
+    int materialType = sampled.w;
     
     sampled = emissiveMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
     float3 emissive = sampled.xyz;
