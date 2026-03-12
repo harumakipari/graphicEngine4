@@ -36,9 +36,6 @@ void MainCamera::Update(float deltaTime)
         
     }
 
-
-
-
     // ƒvƒŒƒCƒ„[‚ÌˆÚ“®•ûŒü‚ğæ“¾
     XMFLOAT3 moveDir = {};
 

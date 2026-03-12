@@ -78,7 +78,7 @@ public:
     // true: カスケード毎にnearを変える
     bool fitToCascade = true;
     // Z拡張倍率（シャドウ欠け防止）
-    float zDepthScale = 14.4f;
+    float zDepthScale = 40.4f;
 
 private:
     // レンダー状態保存用

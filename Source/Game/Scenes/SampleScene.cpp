@@ -33,7 +33,7 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     loadStageThread = std::thread([&]()
         {
             PROFILE_SCOPE("Load StageModel");
-            stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage0302/DarkStage.gltf",
+            stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage_0312/DarkStage.gltf",
                 ModelTypes::ModelMode::StaticMesh);
             stageAsset->spawnPoints = stageAsset->model->spawnPoints;
         });
@@ -57,14 +57,15 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
         });
 
     // ƒ‰ƒCƒg‚Ì•ûŒü‚ÆF‚ğİ’è
-    lightDirection = { -0.441f, -0.47f, 0.64f, 0.84f };   // ‰¡‚Ì‘‹‚©‚ç‚ÌŒõ
-    lightDirection = { 0.03f, -0.15f, 0.23f, 0.84f };   // ‰¡‚Ì‘‹‚©‚ç‚ÌŒõ
+    lightDirection = { -0.15f, -0.483f, 0.786f, 0.9f };   // ‰¡‚Ì‘‹‚©‚ç‚ÌŒõ
+    lightDirection = { 0.03f, -0.15f, 0.23f, 0.9f };   // ‰¡‚Ì‘‹‚©‚ç‚ÌŒõ
     //lightDirection = { 0.382f, -0.882f, 0.112f, 0.0f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
     //lightDirection = { 0.545f, -0.86f, -0.526f, 0.0f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
 
     lightDirection = { 0.9f, -0.64f, -0.058f, 0.9f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
 
-    //lightDirection = { 1.0f, -1.0f, -0.008f, 0.0f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
+    lightDirection = { 1.0f, -1.0f, -0.008f, 0.9f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
+    lightDirection = { 0.722f, -0.38f, -0.0211f, 0.9f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
     lightColor = { 1.0f, 0.8f, 1.0f, 2.6f };
     {
         //PROFILE_SCOPE("SceneBase Init");

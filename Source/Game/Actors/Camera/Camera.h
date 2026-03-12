@@ -17,7 +17,7 @@ class Camera :public Actor
 {
 public:
     //引数付きコンストラクタ
-    Camera(const std::string& actorName) :Actor(actorName)
+    explicit Camera(const std::string& actorName) :Actor(actorName)
     {
     }
 

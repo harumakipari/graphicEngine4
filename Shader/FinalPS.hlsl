@@ -2,9 +2,11 @@
 #include "Constants.hlsli"
 #include "Sampler.hlsli"
 #include "FilterFunctions.hlsli"
+#include "ModelType.hlsli"
 
 Texture2D colorTexture : register(t0);
 Texture2D positionTexture : register(t1);
+Texture2D normalTexture : register(t2);
 Texture2D depthTexture : register(t3);
 Texture2D bloomTexture : register(t4);
 Texture2D fogTexture : register(t5);
@@ -16,13 +18,13 @@ Texture2DArray cascadedShadowMaps : register(t9);
 Texture3D noise3D : register(t20); // ノイズテクスチャ
 
 
-cbuffer SSAO_CONSTANTS_BUFFER : register(b5)
-{
-    float radius;
-    float bias;
-    float power;
-    float pad;
-}
+//cbuffer SSAO_CONSTANTS_BUFFER : register(b5)
+//{
+//    float radius;
+//    float bias;
+//    float power;
+//    float pad;
+//}
 
 // texcoord -> ndc 空間に変換
 float4 CalculatedPositionNDC(VS_OUT pin)
@@ -192,6 +194,10 @@ float4 main(VS_OUT pin) : SV_TARGET
     float4 sceneColor = colorTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
     float4 color = sceneColor;
 
+    // シーンから法線を取得
+    float4 sceneNormal = normalTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
+    int objectType = sceneNormal.w;
+
     // シーンから深度値を取得
     float depthNdc = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
 
@@ -244,42 +250,45 @@ float4 main(VS_OUT pin) : SV_TARGET
     }
 
     // SSAOの処理
-    const float radius = 4.0;
-    const float sigma = 2.0 * radius * radius;
-    const float sigma2 = 0.01; // 深度の差に対してどれくらい敏感に反応するかを決定するパラメータ
-    // この値が小さいほど、わずかな段差でも「エッジ」と見なしてぼかさなくなる
-    float currDepth = depthNdc;
-    float weight = 0.0;
-	
-    float accumulatedOcclusion = 0;
-	
-    for (float i = -radius; i <= radius; i += 1.0)
+    if (enableSSAO)
     {
-        for (float j = -radius; j <= radius; j += 1.0)
+        const float radius = 4.0;
+        const float sigma = 2.0 * radius * radius;
+        const float sigma2 = 0.01; // 深度の差に対してどれくらい敏感に反応するかを決定するパラメータ
+        // この値が小さいほど、わずかな段差でも「エッジ」と見なしてぼかさなくなる
+        float currDepth = depthNdc;
+        float weight = 0.0;
+	
+        float accumulatedOcclusion = 0;
+	
+        for (float i = -radius; i <= radius; i += 1.0)
         {
-            float dx = i / width;
-            float dy = j / height;
-            float2 uv = float2(pin.texcoord.x + dx, pin.texcoord.y + dy);
+            for (float j = -radius; j <= radius; j += 1.0)
+            {
+                float dx = i / width;
+                float dy = j / height;
+                float2 uv = float2(pin.texcoord.x + dx, pin.texcoord.y + dy);
 			
-            float distance = i * i + j * j;
-            float domainGaussian = exp(-distance / sigma); // ガウシアン関数で距離に基づく重みを計算
+                float distance = i * i + j * j;
+                float domainGaussian = exp(-distance / sigma); // ガウシアン関数で距離に基づく重みを計算
 			
-            float sampleDepth = depthTexture.SampleLevel(samplerStates[POINT], uv, 0).x;
-            distance = (currDepth - sampleDepth) * (currDepth - sampleDepth);
-            float rangeGaussian = exp(-distance / sigma2); // ガウシアン関数で深度差に基づく重みを計算
+                float sampleDepth = depthTexture.SampleLevel(samplerStates[POINT], uv, 0).x;
+                distance = (currDepth - sampleDepth) * (currDepth - sampleDepth);
+                float rangeGaussian = exp(-distance / sigma2); // ガウシアン関数で深度差に基づく重みを計算
 			
 			//  サンプル遮蔽（環境）係数
-            float sampleOcclusion = ssaoTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], uv, 0).x;
-            accumulatedOcclusion += sampleOcclusion * domainGaussian * rangeGaussian;
+                float sampleOcclusion = ssaoTexture.SampleLevel(samplerStates[LINEAR_BORDER_BLACK], uv, 0).x;
+                accumulatedOcclusion += sampleOcclusion * domainGaussian * rangeGaussian;
 
-            weight += domainGaussian * rangeGaussian;
+                weight += domainGaussian * rangeGaussian;
+            }
+        }
+        float occlusion = accumulatedOcclusion / weight;
+        if (objectType != OBJECT_PLAYER)
+        { // プレイヤーはSSAOの影響を受けないようにする
+            color *= occlusion;
         }
     }
-    {
-        float occlusion = accumulatedOcclusion / weight;
-        color *= occlusion;
-    }
-
 
     // DOFの処理
     if (enableDof)
