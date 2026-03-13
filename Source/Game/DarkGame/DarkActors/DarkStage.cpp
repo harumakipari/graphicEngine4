@@ -154,6 +154,7 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
         pointLightComponent->SetRange(light.range);
         pointLightComponent->SetIntensity(light.intensity);
 #else
+
 #endif // 0
 
     }

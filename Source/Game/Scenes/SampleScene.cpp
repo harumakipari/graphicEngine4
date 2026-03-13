@@ -19,6 +19,7 @@
 #include "Physics/Physics.h"
 #include "Game/DarkGame/DarkActors/DarkStage.h"
 #include "Game/DarkGame/DarkActors/DoorActor.h"
+#include "Game/DarkGame/DarkActors/DarkEnemy/SkeletonWarriorActor.h"
 
 
 #include "Physics/CollisionSystem.h"
@@ -33,7 +34,7 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     loadStageThread = std::thread([&]()
         {
             PROFILE_SCOPE("Load StageModel");
-            stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage_0312/DarkStage.gltf",
+            stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage0313/DarkStage.gltf",
             //stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage0302/DarkStage.gltf",
                 ModelTypes::ModelMode::StaticMesh);
             stageAsset->spawnPoints = stageAsset->model->spawnPoints;
@@ -192,7 +193,6 @@ void SampleScene::SetUpActors()
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("sampleシーンのカメラ設定される。"));
 
-    
     Transform doorTr(DirectX::XMFLOAT3{ -6.0f,0.0f,11.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto doorActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DoorLargeActor>("doorActor", doorTr);
 
@@ -209,8 +209,11 @@ void SampleScene::SetUpActors()
 
     {
         PROFILE_SCOPE("Create Enemy");
-        Transform enemyTr(DirectX::XMFLOAT3{ 6.7f,-2.45f,5.6f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
-        auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("enemy", enemyTr);
+        Transform bossTr(DirectX::XMFLOAT3{ -10.7f,-0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
+        auto boss = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("boss", bossTr);
+
+        Transform enemyTr(DirectX::XMFLOAT3{ -15.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 0.5f,1.0f,0.5f });
+        auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<SkeletonWarriorActor>("enemy", enemyTr);
     }
 
 #if 0

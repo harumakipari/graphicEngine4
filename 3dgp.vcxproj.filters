@@ -531,6 +531,9 @@
     <ClCompile Include="Source\Engine\Debug\DebugRender.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -855,6 +858,7 @@
     <ClInclude Include="Source\Graphics\Resource\ModelType.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageAsset.h" />
     <ClInclude Include="Source\Engine\Debug\DebugRender.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -1082,6 +1086,9 @@
     <FxCompile Include="Shader\GltfModelHairOrFurDeferredPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\DeferredLightingDefaultPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ComputeParticle.hlsli">
@@ -1154,6 +1161,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\ShaderFunctions.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\ModelType.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

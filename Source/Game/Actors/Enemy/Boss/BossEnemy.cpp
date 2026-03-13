@@ -11,7 +11,9 @@ void BossEnemy::Initialize(const Transform& transform)
     //skeletalMeshComponent->SetModel("./Data/Models/Characters/Savarog/Idle.gltf");
     //skeletalMeshComponent->SetModel("./Data/Models/Characters/SevarogBloodred/Idle.gltf");
     skeletalMeshComponent->SetModel("./Data/Models/Characters/SevarogBloodred/AnimationCharacters.gltf");
-    skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
+    //skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
+    skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Player;   // オブジェクトの種類を Player に設定
+
 #if 0
     const std::vector<std::string> animationFilenames =
     {
