@@ -288,7 +288,7 @@
     <ClCompile Include="Source\Game\Actors\Dessert\TargetPudding.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossEnemy.cpp" />
     <ClCompile Include="Source\Game\Actors\Enemy\Boss\BossState.cpp" />
-    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorActor.cpp" />
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorEnemy.cpp" />
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageBarrelActor.cpp" />
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageBrazierActor.cpp" />
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageCandelabraActor.cpp" />
@@ -432,7 +432,7 @@
     <ClInclude Include="Source\Game\Actors\Stage\Cloth.h" />
     <ClInclude Include="Source\Game\Actors\Stage\ClothSimulate.h" />
     <ClInclude Include="Source\Game\Actors\Stage\ElasticBuilding.h" />
-    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorActor.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorEnemy.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageAsset.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageBarrelActor.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageBrazierActor.h" />

@@ -102,6 +102,16 @@ void DebugRender::DrawLine(
     }
 }
 
+void DebugRender::DrawLightIcon(DirectX::XMFLOAT3 pos, const DirectX::XMFLOAT4 color)
+{
+    float s = 0.2f;
+
+    DrawLine({ pos.x - s, pos.y, pos.z }, { pos.x + s, pos.y, pos.z }, color);
+    DrawLine({ pos.x, pos.y - s, pos.z }, { pos.x, pos.y + s, pos.z }, color);
+    DrawLine({ pos.x, pos.y, pos.z - s }, { pos.x, pos.y, pos.z + s }, color);
+    DrawLine(pos, { pos.x, pos.y + 0.3f, pos.z }, color);
+}
+
 void DebugRender::DrawCylinder(
     const DirectX::XMFLOAT3& pos,
     float radius,

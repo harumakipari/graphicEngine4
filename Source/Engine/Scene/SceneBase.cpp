@@ -835,7 +835,7 @@ void SceneBase::DrawPostEffectTab()
     //CheckboxInt("Enable Bloom", &shaderCBuffer->data.enableBloom);
     //CheckboxInt("Enable Blur", &shaderCBuffer->data.enableBlur);
     //CheckboxInt("Enable Fog", &shaderCBuffer->data.enableFog);
-    //CheckboxInt("Enable CSM", &shaderCBuffer->data.enableCascadedShadowMaps);
+    CheckboxInt("Enable ToneMapping", &shaderCBuffer->data.enableToneMapping);
     ImGui::Checkbox("Enable SSAO", &enableSSAO);
     ImGui::Checkbox("Enable SSR", &enableSSR);
     ImGui::Checkbox("Enable Bloom", &enableBloom);

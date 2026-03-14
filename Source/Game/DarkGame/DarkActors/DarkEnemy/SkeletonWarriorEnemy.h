@@ -3,6 +3,22 @@
 #include "Game/Actors/Base/Character.h"
 
 
+class SwordActor : public Actor
+{
+public:
+    void Initialize(const Transform& transform) override
+    {
+    }
+};
+
+class ShieldActor : public Actor
+{
+public:
+    void Initialize(const Transform& transform) override
+    {
+    }
+};
+
 class SkeletonWarriorActor :public Character
 {
 public:
@@ -15,7 +31,8 @@ public:
 private:
     // 描画用コンポーネントを追加
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
-
+    std::shared_ptr<SkeletalMeshComponent> sword;
+    std::shared_ptr<SkeletalMeshComponent> shield;
     std::vector<DirectX::XMFLOAT3> waypoints;
     int currentWaypoint = 0;
 

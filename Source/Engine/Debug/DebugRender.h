@@ -54,10 +54,13 @@ public:
         const DirectX::XMFLOAT4& color,
         float life = 0.0f, bool wired = false);
 
+    static void DrawLightIcon(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT4 color);
+
     static void Tick(float deltaTime);
     static void Render(ID3D11DeviceContext* immediateContext);
     static void WiredRender(ID3D11DeviceContext* immediateContext);
 
+    
 private:
     static inline std::vector<DebugDrawCommand> commands_;
     static inline std::vector<DebugDrawCommand> wiredCommands_;

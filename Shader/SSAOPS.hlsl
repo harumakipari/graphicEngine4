@@ -67,8 +67,8 @@ float4 main(float4 svPosition : SV_POSITION, float2 texcoord : TEXCOORD) : SV_TA
         occlusion += max(0, dot(normal, v) - position.z * beta) / (dot(v, v) + epsilon);
     }
 	
-    const float sigma = 0.3;
+    const float sigma = 0.3; // —ÝÏ‚³‚ê‚½ŽÕ•Á’l‚ð‚Ç‚ê‚­‚ç‚¢‚Ì‹­‚³‚ÅÅI“I‚È‰e‚É”½‰f‚³‚¹‚é‚©
     occlusion = max(0.0, 1.0 - (2.0 * sigma * occlusion / kernelSize));
 	
-    return power > 0.0 ? pow(occlusion, power) : 1.0; // TODO
+    return power > 0.0 ? pow(occlusion, power) : 1.0; 
 }

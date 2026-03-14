@@ -531,7 +531,7 @@
     <ClCompile Include="Source\Engine\Debug\DebugRender.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorActor.cpp">
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorEnemy.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -858,7 +858,7 @@
     <ClInclude Include="Source\Graphics\Resource\ModelType.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageAsset.h" />
     <ClInclude Include="Source\Engine\Debug\DebugRender.h" />
-    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorActor.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

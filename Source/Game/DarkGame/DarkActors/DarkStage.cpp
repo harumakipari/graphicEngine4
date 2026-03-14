@@ -13,7 +13,6 @@
 
 void DarkStage::Initialize(const Transform& transform)
 {
-
     // //影用のスタティックメッシュコンポーネントを追加
     //std::shared_ptr<StaticMeshComponent> castStaticMeshComponent = this->AddComponent<class StaticMeshComponent>("castShadowModel", parentName);
     //castStaticMeshComponent->SetModel("./Data/Models/DarkStageShadow/DarkStageShadow.gltf");
@@ -192,7 +191,7 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
             {// 名前が "Spawn_Chandelier" で始まる場合、シャンデリアを配置
                 DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
-                Transform chandelierTr{pos,
+                Transform chandelierTr{ pos,
                     point.worldRotation,
                     point.worldScale
                 };
@@ -270,7 +269,8 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
 #if 1
                 Transform candelabraTr{
     pos,
-    {0,0,0,1},
+    //{0,0,0,1},
+                    point.worldRotation,
     point.worldScale
                 };
 

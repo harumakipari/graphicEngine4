@@ -2278,6 +2278,33 @@ DirectX::XMFLOAT3 InterleavedGltfModel::GetJointWorldPosition(/*size_t nodeIndex
     return { 0.0f,0.0f,0.0f };
 }
 
+// モデルのジョイントの matrix を返す関数
+DirectX::XMFLOAT4X4 InterleavedGltfModel::GetJointMatrix(
+    const std::string& name,
+    const std::vector<Node>& animatedNodes , const DirectX::XMFLOAT4X4& modelTransform)
+{
+    using namespace DirectX;
+
+    for (const auto& node : animatedNodes)
+    {
+        if (node.name == name)
+        {
+            XMMATRIX bone = XMLoadFloat4x4(&node.globalTransform);
+            XMMATRIX model = XMLoadFloat4x4(&modelTransform);
+
+            XMMATRIX world = bone * model;
+
+            XMFLOAT4X4 result;
+            XMStoreFloat4x4(&result, world);
+
+            return result;
+        }
+    }
+
+    XMFLOAT4X4 identity;
+    XMStoreFloat4x4(&identity, XMMatrixIdentity());
+    return identity;
+}
 // モデルのジョイントのローカル空間の position を返す関数
 DirectX::XMFLOAT3 InterleavedGltfModel::GetJointLocalPosition(/*size_t nodeIndex,*/const std::string& name, const std::vector<Node>& animatedNodes)
 {
@@ -2298,6 +2325,44 @@ DirectX::XMFLOAT3 InterleavedGltfModel::GetJointLocalPosition(/*size_t nodeIndex
     _ASSERT("Node's name is mistake or here is not your want nodes!!");
 
     return { 0.0f,0.0f,0.0f };
+}
+
+// モデルのジョイントのローカル空間の matrix を返す関数
+DirectX::XMFLOAT4X4 InterleavedGltfModel::GetJointLocalMatrix(
+    const std::string& name,
+    const std::vector<Node>& animatedNodes)
+{
+    using namespace DirectX;
+
+    for (const auto& node : animatedNodes)
+    {
+        if (node.name == name)
+        {
+            XMMATRIX T = XMMatrixTranslation(
+                node.translation.x,
+                node.translation.y,
+                node.translation.z);
+
+            XMVECTOR q = XMLoadFloat4(&node.rotation);
+            XMMATRIX R = XMMatrixRotationQuaternion(q);
+
+            XMMATRIX S = XMMatrixScaling(
+                node.scale.x,
+                node.scale.y,
+                node.scale.z);
+
+            XMMATRIX M = S * R * T;
+
+            XMFLOAT4X4 result;
+            XMStoreFloat4x4(&result, M);
+
+            return result;
+        }
+    }
+
+    XMFLOAT4X4 identity;
+    XMStoreFloat4x4(&identity, XMMatrixIdentity());
+    return identity;
 }
 
 // アニメーションを追加する関数

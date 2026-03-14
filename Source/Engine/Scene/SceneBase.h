@@ -120,7 +120,8 @@ protected:
         float focusDistance = 4.6f; // 焦点距離
 
         float dofRange = 80.0f;  // 被写界深度範囲
-        DirectX::XMFLOAT3 paddings;
+        DirectX::XMFLOAT2 paddings;
+        int enableToneMapping = 1; // トーンマッピング有効化フラグ
 
         int enableSsao = true;
         int enableCascadedShadowMaps = true;
@@ -172,6 +173,7 @@ protected:
     bool enableBloom = true;
     bool enableBlur = true;
     bool enableDof = false;
+    bool enableToneMapping = true;
 
     bool useDrawDebug = true;
 

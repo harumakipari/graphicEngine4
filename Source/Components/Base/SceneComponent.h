@@ -336,6 +336,7 @@ public:
     // ワールド空間でのこのコンポーネントのクォータニオンを設定
     void SetWorldRotationDirect(const DirectX::XMFLOAT4& newWorldRotation)
     {
+#if 0
         if (auto parent = attachParent_.lock())
         {
             parent->SetRelativeRotationDirect(newWorldRotation);
@@ -344,6 +345,31 @@ public:
         {
             SetRelativeRotationDirect(newWorldRotation);
         }
+#else
+        using namespace DirectX;
+
+        if (auto parent = attachParent_.lock())
+        {
+            XMVECTOR worldRot = XMLoadFloat4(&newWorldRotation);
+            XMFLOAT4 rot = parent->GetComponentWorldTransform().GetRotation();
+
+            XMVECTOR parentWorldRot =
+                XMLoadFloat4(&rot);
+
+            XMVECTOR parentInv = XMQuaternionInverse(parentWorldRot);
+
+            XMVECTOR localRot = XMQuaternionMultiply(parentInv, worldRot);
+
+            XMFLOAT4 relative;
+            XMStoreFloat4(&relative, localRot);
+
+            SetRelativeRotationDirect(relative);
+        }
+        else
+        {
+            SetRelativeRotationDirect(newWorldRotation);
+        }
+#endif // 0
     }
     // ワールド空間でのこのコンポーネントの角度を設定
     void SetWorldEulerRotationDirect(const DirectX::XMFLOAT3& newWorldEuler)
@@ -370,6 +396,57 @@ public:
         }
     }
 
+    // ワールド空間でのこのコンポーネントの Transform を直接設定
+    void SetWorldMatrixDirect(const DirectX::XMFLOAT4X4& worldMatrix)
+    {
+        using namespace DirectX;
+
+        XMMATRIX m = XMLoadFloat4x4(&worldMatrix);
+
+        XMVECTOR scale;
+        XMVECTOR rotation;
+        XMVECTOR translation;
+
+        XMMatrixDecompose(&scale, &rotation, &translation, m);
+
+        XMFLOAT3 pos;
+        XMFLOAT3 scl;
+        XMFLOAT4 rot;
+
+        XMStoreFloat3(&pos, translation);
+        XMStoreFloat3(&scl, scale);
+        XMStoreFloat4(&rot, rotation);
+
+        SetWorldLocationDirect(pos);
+        SetWorldRotationDirect(rot);
+        //SetWorldScaleDirect(scl);
+    }
+
+    // 親からの相対的なこのコンポーネントの Transform を直接設定
+    void SetRelativeMatrixDirect(const DirectX::XMFLOAT4X4& matrix)
+    {
+        using namespace DirectX;
+
+        XMMATRIX m = XMLoadFloat4x4(&matrix);
+
+        XMVECTOR scale;
+        XMVECTOR rotation;
+        XMVECTOR translation;
+
+        XMMatrixDecompose(&scale, &rotation, &translation, m);
+
+        XMFLOAT3 pos;
+        XMFLOAT3 scl;
+        XMFLOAT4 rot;
+
+        XMStoreFloat3(&pos, translation);
+        XMStoreFloat3(&scl, scale);
+        XMStoreFloat4(&rot, rotation);
+
+        //SetRelativeLocationDirect(pos);
+        SetRelativeRotationDirect(rot);
+        //SetRelativeScaleDirect(scl);
+    }
 
 
     // このコンポーネントが動いた時にコールバック(呼び出)される関数

@@ -318,6 +318,7 @@ float4 main(VS_OUT pin) : SV_TARGET
         finalColor = sceneColor;
     }
 
+    if (enableToneMapping == 1)
     {
         // トーンマップは共通にする
         finalColor.rgb = JodieReinhardToneMap(finalColor.rgb);
