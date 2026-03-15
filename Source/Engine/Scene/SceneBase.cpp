@@ -618,6 +618,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
               sceneEffectManager->GetOutput("SSREffect"),
               sceneEffectManager->GetOutput("DepthOfFieldEffect"), // 被写界深度のために、ぼやけたクスチャ
               //gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],   // emissiveMap
+              gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::COLOR)],   // positionMap
               cascadedShadowMaps->depthMap().Get(),   //cascadedShadowMaps
         };
         //immediateContext->PSSetShaderResources(8, 1, cascadedShadowMaps->depthMap().GetAddressOf());
@@ -830,6 +831,18 @@ void SceneBase::DrawInspector()
 
 void SceneBase::DrawPostEffectTab()
 {
+    const char* renderStepItems[] =
+    {
+        "DefaultScene",
+        "BaseColor",
+        "DirectionalLight",
+        "PointLights",
+        "Shadow",
+        "SSAO",
+        "Final"
+    };
+
+    ImGui::Combo("Render Step", &shaderCBuffer->data.renderStep, renderStepItems, IM_ARRAYSIZE(renderStepItems));
     //CheckboxInt("Enable SSAO", &shaderCBuffer->data.enableSsao);
     //CheckboxInt("Enable SSR", &shaderCBuffer->data.enableSsr);
     //CheckboxInt("Enable Bloom", &shaderCBuffer->data.enableBloom);

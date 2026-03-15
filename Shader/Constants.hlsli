@@ -23,7 +23,8 @@ cbuffer SHADER_CONSTANT_BUFFER : register(b9)
     float focusDistance; // Å“_‹——£
 
     float dofRange ; // ”íÊŠE[“x”ÍˆÍ
-    float2 aligns;
+    float aligns;
+    int renderStep;
     int enableToneMapping;
 
     bool enableSSAO;

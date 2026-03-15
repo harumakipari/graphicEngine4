@@ -103,6 +103,21 @@ public:
             ImGui::ColorEdit4("cpuColor", &cpuColor.x);
             ImGui::SliderFloat("emissionPower", &emissionPower, 0.0f, 20.0f);
             ImGui::SliderFloat4("morphWeight", &plusAlphaCBuffer->data.morphWeights.x, 0.0f, 1.0f);
+            const char* objectTypes[] =
+            {
+                "Default",
+                "Player",
+                "Enemy",
+                "Stage",
+            };
+
+            int type = static_cast<int>(plusAlphaCBuffer->data.objectType);
+
+            if (ImGui::Combo("Render Step", &type, objectTypes, IM_ARRAYSIZE(objectTypes)))
+            {
+                plusAlphaCBuffer->data.objectType = static_cast<ObjectType>(type);
+            }
+
             ImGui::TreePop();
         }
 #endif

@@ -213,10 +213,10 @@ void SampleScene::SetUpActors()
         Transform bossTr(DirectX::XMFLOAT3{ -10.7f,-0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
         auto boss = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("boss", bossTr);
     }
-#endif // 0
 
         Transform enemyTr(DirectX::XMFLOAT3{ -15.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
         auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<SkeletonWarriorActor>("enemy", enemyTr);
+#endif // 0
 
 
 #if 0

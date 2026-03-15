@@ -120,7 +120,8 @@ protected:
         float focusDistance = 4.6f; // 焦点距離
 
         float dofRange = 80.0f;  // 被写界深度範囲
-        DirectX::XMFLOAT2 paddings;
+        float align;
+        int renderStep = 0; // デバック表示用のレンダーステップ
         int enableToneMapping = 1; // トーンマッピング有効化フラグ
 
         int enableSsao = true;

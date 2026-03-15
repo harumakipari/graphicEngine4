@@ -13,7 +13,8 @@ Texture2D fogTexture : register(t5);
 Texture2D ssaoTexture : register(t6);
 Texture2D ssrTexture : register(t7);
 Texture2D bokehTexture : register(t8);
-Texture2DArray cascadedShadowMaps : register(t9);
+Texture2D sceneColorTexture : register(t9);
+Texture2DArray cascadedShadowMaps : register(t10);
 
 Texture3D noise3D : register(t20); // ノイズテクスチャ
 
@@ -200,6 +201,14 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     // シーンから深度値を取得
     float depthNdc = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
+
+    if (renderStep == 1)
+    {
+        float4 baseColor = sceneColorTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
+        return baseColor;
+    }
+
+
 
     float4 positionNdc;
     // uv -> ndc 

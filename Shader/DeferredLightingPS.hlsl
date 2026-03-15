@@ -15,6 +15,7 @@ Texture2D emissiveMap : register(t4);
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
+
     float3 normal = normalMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).xyz; // world space 
 
     float4 baseColor = colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
@@ -25,7 +26,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     float metallicFactor = sampled.x;
     float roughnessFactor = sampled.y;
     float occlusionFactor = sampled.z;
-    int materialType = sampled.w;   
+    int materialType = sampled.w;
     
     sampled = emissiveMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
     float3 emissive = sampled.xyz;
@@ -45,13 +46,16 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     const float3 f0 = lerp(0.04, baseColor.rgb, metallicFactor);
     const float3 f90 = 1.0;
-    roughnessFactor = max(roughnessFactor, 0.3); // 最低値を作ることで、極端に鋭いスペキュラーを防止する
+    //roughnessFactor = max(roughnessFactor, 0.3); // 最低値を作ることで、極端に鋭いスペキュラーを防止する
     const float alphaRoughness = roughnessFactor * roughnessFactor;
     const float3 cDiff = lerp(baseColor.rgb, 0.0, metallicFactor);
 
     const float3 N = normalize(normal);
     const float3 V = normalize(cameraPositon.xyz - position.xyz);
     
+    // 光源の数をカウント
+    int lightCount = 0;
+
 
     // 点光源の処理
     float3 pointDiffuse = 0;
@@ -66,7 +70,10 @@ float4 main(VS_OUT pin) : SV_TARGET
             //{
             //    continue;
             //}
-
+            if (len <= pointLights[i].range)
+            {
+                lightCount++;
+            }
             float attenuateLength = saturate(1.0 - len / pointLights[i].range);
 #if 1
             /*	
@@ -87,13 +94,13 @@ float4 main(VS_OUT pin) : SV_TARGET
 
             float attenuation = saturate(1.0 / (kc + kl * len + kq * (len * len)));
 #else
-            //float attenuation = attenuateLength * attenuateLength;
+            float attenuation = attenuateLength * attenuateLength;
 
-            float distanceAtt = 1.0 / (1.0 + len * len);
-            float rangeAtt = saturate(1.0 - len / pointLights[i].range);
-            rangeAtt *= rangeAtt;
+            //float distanceAtt = 1.0 / (1.0 + len * len);
+            //float rangeAtt = saturate(1.0 - len / pointLights[i].range);
+            //rangeAtt *= rangeAtt;
 
-            float attenuation = distanceAtt * rangeAtt;
+            //float attenuation = distanceAtt * rangeAtt;
 
 #endif
             LP /= len;
@@ -131,6 +138,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     if (directionalLightEnable != 0)
     {
+        lightCount++;
         if (NoL > 0.0 || NoV > 0.0)
         {
             const float3 R = reflect(-L, N);
@@ -166,7 +174,28 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
     float3 ambient = baseColor.rgb * 0.05;
 
-    float3 lo = totalDiffuse + totalSpecular + emissive + rim + ambient;
+    float3 lo = totalDiffuse + totalSpecular + (emissive * 7.8f)/* + rim + ambient*/;
+
+    int debugLightComplexity = 0;
+    if (debugLightComplexity != 0)
+    {
+        float3 color;
+
+        if (lightCount == 0)
+            color = float3(0, 0, 1);
+        else if (lightCount == 1)
+            color = float3(0, 1, 0);
+        else if (lightCount == 2)
+            color = float3(1, 1, 0);
+        else if (lightCount == 3)
+            color = float3(1, 0.5, 0);
+        else if (lightCount == 4)
+            color = float3(1, 0, 0);
+        else
+            color = float3(1, 0, 1);
+
+        return float4(color, 1);
+    }
 
     return float4(lo, 1.0f);
 }
