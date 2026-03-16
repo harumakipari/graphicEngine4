@@ -1248,16 +1248,6 @@ void InterleavedGltfModel::Animate(size_t animationIndex, float time, std::vecto
 
     if (animations.size() > 0)
     {
-#if 0
-        // ブレンドするために追加
-        float blendRate = 1.0f;
-        if (isBlendStart && time < animationBlendTime)
-        {
-            blendRate = time / animationBlendTime;
-            blendRate *= blendRate;
-        }
-#endif
-
         const Animation& animation = animations.at(animationIndex);
 
 
@@ -1273,52 +1263,22 @@ void InterleavedGltfModel::Animate(size_t animationIndex, float time, std::vecto
             float interpolationFactor = {};
             size_t keyframeIndex = indexof(timeline, time, interpolationFactor);
 
-#if 0
-            float rate = blendRate < 1.0f ? blendRate : interpolationFactor;
-#endif
             // 対象のプロパティに対して補完と適用を行う
             if (channel.targetPath == "scale")
             {
                 const std::vector<DirectX::XMFLOAT3>& scales = animation.scales.at(sampler.output);
 
-#if 0
-                DirectX::XMVECTOR S0 = DirectX::XMLoadFloat3((blendRate < 1.0f) ? &animatedNodes.at(channel.targetNode).scale : &scales.at(keyframeIndex + 0));
-                DirectX::XMVECTOR S1 = DirectX::XMLoadFloat3(&scales.at(keyframeIndex + 1));
-
-                // 線形補完でスケールを求めてノードに格納
-                DirectX::XMStoreFloat3(&animatedNodes.at(channel.targetNode).scale, DirectX::XMVectorLerp(S0, S1, rate));
-#else
                 DirectX::XMStoreFloat3(&animatedNodes.at(channel.targetNode).scale, DirectX::XMVectorLerp(XMLoadFloat3(&scales.at(keyframeIndex + 0)), DirectX::XMLoadFloat3(&scales.at(keyframeIndex + 1)), interpolationFactor));
-#endif
             }
             else if (channel.targetPath == "rotation")
             {
                 const std::vector<DirectX::XMFLOAT4>& rotations = animation.rotations.at(sampler.output);
-#if 0
-                DirectX::XMVECTOR R0 = DirectX::XMLoadFloat4((blendRate < 1.0f) ? &animatedNodes.at(channel.targetNode).rotation : &rotations.at(keyframeIndex + 0));
-                DirectX::XMVECTOR R1 = DirectX::XMLoadFloat4(&rotations.at(keyframeIndex + 1));
-
-                // slerpで回転を補完して、正規化して適用する
-                DirectX::XMStoreFloat4(&animatedNodes.at(channel.targetNode).rotation, DirectX::XMQuaternionNormalize(DirectX::XMQuaternionSlerp(R0, R1, rate)));
-#else
                 DirectX::XMStoreFloat4(&animatedNodes.at(channel.targetNode).rotation, DirectX::XMQuaternionNormalize(DirectX::XMQuaternionSlerp(DirectX::XMLoadFloat4(&rotations.at(keyframeIndex + 0)), DirectX::XMLoadFloat4(&rotations.at(keyframeIndex + 1)), interpolationFactor)));
-#endif
-
             }
             else if (channel.targetPath == "translation")
             {
                 const std::vector<DirectX::XMFLOAT3>& translations = animation.translations.at(sampler.output);
-
-#if 0
-                DirectX::XMVECTOR T0 = DirectX::XMLoadFloat3((blendRate < 1.0f) ? &animatedNodes.at(channel.targetNode).translation : &translations.at(keyframeIndex + 0));
-                DirectX::XMVECTOR T1 = DirectX::XMLoadFloat3(&translations.at(keyframeIndex + 1));
-
-                // 線形補完でトランスレーションを求めてノードに格納
-                DirectX::XMStoreFloat3(&animatedNodes.at(channel.targetNode).translation, DirectX::XMVectorLerp(T0, T1, rate));
-#else
                 DirectX::XMStoreFloat3(&animatedNodes.at(channel.targetNode).translation, DirectX::XMVectorLerp(DirectX::XMLoadFloat3(&translations.at(keyframeIndex + 0)), DirectX::XMLoadFloat3(&translations.at(keyframeIndex + 1)), interpolationFactor));
-#endif
-
             }
             else if (channel.targetPath == "weights")
             {

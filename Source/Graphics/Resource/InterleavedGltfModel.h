@@ -586,9 +586,9 @@ public:
 
         struct Channel
         {
-            int sampler = -1; // required
-            int targetNode = -1; // required (index of the node to target)
-            std::string targetPath; // required in ["translation", "rotation", "scale", "weights"]
+            int sampler = -1; // 必須
+            int targetNode = -1; // 必須（対象ノードのインデックス）
+            std::string targetPath; // ["translation", "rotation", "scale", "weights"] のいずれかが必要
 
             template<class T>
             void serialize(T& archive)
@@ -641,9 +641,10 @@ public:
         }
     };
     std::vector<Animation> animations;
+
+    void CumulateTransforms(std::vector<Node>& nodes) const;
 private:
     void FetchNodes(const tinygltf::Model& gltf_model);
-    void CumulateTransforms(std::vector<Node>& nodes) const;
     void FetchMeshes(ID3D11Device* device, const tinygltf::Model& gltf_model);
     // INTERLEAVED_GLTF_MODEL
     void FetchAndBatchMeshes(ID3D11Device* device, const tinygltf::Model& gltf_model);
@@ -721,7 +722,7 @@ public:
     //アニメーションをブレンドする関数
     void BlendAnimations(const std::vector<Node>& fromNodes, const std::vector<Node>& toNodes, float factor, std::vector<Node>& outNodes);
 
-    void Animate(size_t animation_index, float time, std::vector<Node>& animated_nodes);
+    void Animate(size_t animationIndex, float time, std::vector<Node>& animatedNodes);
 
     void CastShadow(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& world, const std::vector<Node>& animatedNodes);
 
