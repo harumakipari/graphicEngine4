@@ -67,7 +67,7 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     //lightDirection = { 0.9f, -0.64f, -0.058f, 0.9f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
 
     //lightDirection = { 1.0f, -1.0f, -0.008f, 0.9f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
-    //lightDirection = { 0.722f, -0.38f, -0.0211f, 0.9f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
+    lightDirection = { 0.722f, -0.38f, -0.0211f, 0.9f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
     lightColor = { 1.0f, 0.8f, 1.0f, 2.6f };
     {
         //PROFILE_SCOPE("SceneBase Init");
@@ -187,7 +187,7 @@ void SampleScene::SetUpActors()
         PROFILE_SCOPE("Create Player");
         Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.07f,1.07f,1.07f });
         player = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
-        mainCameraComponent->target = (player->GetRootComponent());
+        mainCameraActor->SetTarget(player->GetRootComponent());
         mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
     }
     SetActiveCamera(mainCameraActor);
@@ -199,7 +199,8 @@ void SampleScene::SetUpActors()
     Transform smallDoorTr(DirectX::XMFLOAT3{ -24.735f,0.0f,17.0f }, DirectX::XMFLOAT3{ 0.0f,-90.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto smallDoorActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DoorSmallActor>("smallDoorActor", smallDoorTr);
 
-    auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam");
+    Transform debugCameraTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam", debugCameraTr);
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
 #if 0

@@ -138,7 +138,7 @@ void MorphScene::SetUpActors()
     auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<SkeletonWarriorActor>("enemy", enemyTr);
 
     mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
-    mainCameraComponent->target = enemy->GetRootComponent();
+    mainCameraActor->SetTarget(enemy->GetRootComponent());
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("morphシーンのカメラ設定される。"));
 

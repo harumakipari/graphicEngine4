@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "DarkStageBarrelActor.h"
 
+#include "Engine/Input/InputSystem.h"
+
 void DarkStageBarrelActor::Initialize(const Transform& transform)
 {
     std::string parentName = "barrelMesh";
@@ -43,6 +45,10 @@ void DarkStageBarrelActor::Initialize(const Transform& transform)
 
 void DarkStageBarrelActor::Update(float deltaTime)
 {
+    if (InputSystem::GetInputState("Z"))
+    {
+        BreakBarrel();
+    }
 }
 
 void DarkStageBarrelActor::BreakBarrel()

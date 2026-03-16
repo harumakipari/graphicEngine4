@@ -9,10 +9,7 @@ class Scene;
 class CameraManager
 {
 public:
-    void ToggleCamera()
-    {
-        useDebugCamera = !useDebugCamera;
-    }
+    void ToggleCamera(const Scene* scene);
 
     Camera* GetRenderCamera(const Scene* scene) const;
 

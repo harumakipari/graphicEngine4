@@ -10,6 +10,7 @@
 
 
 #include "Engine/Camera/CameraConstants.h"
+#include "Engine/Camera/TPSCameraController.h"
 #include "Game/Actors/Stage/ElasticBuilding.h"
 #include "Game/DarkGame/DarkActors/DarkStage.h"
 
@@ -26,31 +27,10 @@ public:
     virtual void Initialize(const Transform& transform)override;
 
 
+
     virtual ViewConstants GetViewConstants() const
     {
-        ViewConstants viewConstants;
-        viewConstants.view = mainCameraComponent->GetView();
-        viewConstants.projection = mainCameraComponent->GetProjection();
-
-        DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&mainCameraComponent->GetProjection());
-        DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&mainCameraComponent->GetView());
-        DirectX::XMStoreFloat4x4(&viewConstants.viewProjection, V * P);
-
-        DirectX::XMStoreFloat4x4(&viewConstants.invProjection, DirectX::XMMatrixInverse(NULL, P));
-        DirectX::XMStoreFloat4x4(&viewConstants.invViewProjection, DirectX::XMMatrixInverse(NULL, V * P));
-
-        DirectX::XMStoreFloat4x4(&viewConstants.invView, DirectX::XMMatrixInverse(NULL, V));
-        viewConstants.cameraPosition = { viewConstants.invView._41, viewConstants.invView._42, viewConstants.invView._43,1.0f };
-
-        //DirectX::XMFLOAT3 cameraPosition =GetPosition();
-        //viewConstants.cameraPosition = { cameraPosition.x,cameraPosition.y,cameraPosition.z,1.0f };
-
-        viewConstants.cameraClipDistance.x = mainCameraComponent->GetNearClipDistance();
-        viewConstants.cameraClipDistance.y = mainCameraComponent->GetFarClipDistance();
-        viewConstants.cameraClipDistance.z = mainCameraComponent->GetNearClipDistance() * mainCameraComponent->GetFarClipDistance();
-        viewConstants.cameraClipDistance.w = mainCameraComponent->GetFarClipDistance() - mainCameraComponent->GetNearClipDistance();
-
-        return viewConstants;
+        return mainCameraComponent->GetViewConstants();
     }
 protected:
     std::shared_ptr<CameraComponent> mainCameraComponent;
@@ -60,37 +40,39 @@ class DebugCamera :public Camera
 {
 public:
     //引数付きコンストラクタ
-    DebugCamera(std::string actorName) :Camera(actorName) {}
+    DebugCamera(const std::string& actorName) :Camera(actorName) {}
 
     virtual ~DebugCamera() = default;
     void Initialize(const Transform& transform)override
     {
-        debugCameraComponent = this->AddComponent<class DebugCameraComponent>("debugCamera");
+        mainCameraComponent = this->AddComponent<class DebugCameraComponent>("debugCamera");
     }
 
     virtual ViewConstants GetViewConstants() const override
     {
-        ViewConstants viewConstants;
-        DirectX::XMFLOAT3 cameraPosition = GetPosition();
-        viewConstants.cameraPosition = { cameraPosition.x,cameraPosition.y,cameraPosition.z,1.0f };
-        viewConstants.view = debugCameraComponent->GetView();
-        viewConstants.projection = debugCameraComponent->GetProjection();
+        return mainCameraComponent->GetViewConstants();
 
-        DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&debugCameraComponent->GetProjection());
-        DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&debugCameraComponent->GetView());
-        DirectX::XMStoreFloat4x4(&viewConstants.viewProjection, V * P);
+        //ViewConstants viewConstants;
+        //DirectX::XMFLOAT3 cameraPosition = GetPosition();
+        //viewConstants.cameraPosition = { cameraPosition.x,cameraPosition.y,cameraPosition.z,1.0f };
+        //viewConstants.view = debugCameraComponent->GetView();
+        //viewConstants.projection = debugCameraComponent->GetProjection();
 
-        DirectX::XMStoreFloat4x4(&viewConstants.invProjection, DirectX::XMMatrixInverse(NULL, P));
-        DirectX::XMStoreFloat4x4(&viewConstants.invViewProjection, DirectX::XMMatrixInverse(NULL, V * P));
+        //DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&debugCameraComponent->GetProjection());
+        //DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&debugCameraComponent->GetView());
+        //DirectX::XMStoreFloat4x4(&viewConstants.viewProjection, V * P);
 
-        DirectX::XMStoreFloat4x4(&viewConstants.invView, DirectX::XMMatrixInverse(NULL, V));
+        //DirectX::XMStoreFloat4x4(&viewConstants.invProjection, DirectX::XMMatrixInverse(NULL, P));
+        //DirectX::XMStoreFloat4x4(&viewConstants.invViewProjection, DirectX::XMMatrixInverse(NULL, V * P));
 
-        viewConstants.cameraClipDistance.x = debugCameraComponent->GetNearClipDistance();
-        viewConstants.cameraClipDistance.y = debugCameraComponent->GetFarClipDistance();
-        viewConstants.cameraClipDistance.z = debugCameraComponent->GetNearClipDistance() * debugCameraComponent->GetFarClipDistance();
-        viewConstants.cameraClipDistance.w = debugCameraComponent->GetFarClipDistance() - debugCameraComponent->GetNearClipDistance();
+        //DirectX::XMStoreFloat4x4(&viewConstants.invView, DirectX::XMMatrixInverse(NULL, V));
 
-        return viewConstants;
+        //viewConstants.cameraClipDistance.x = debugCameraComponent->GetNearClipDistance();
+        //viewConstants.cameraClipDistance.y = debugCameraComponent->GetFarClipDistance();
+        //viewConstants.cameraClipDistance.z = debugCameraComponent->GetNearClipDistance() * debugCameraComponent->GetFarClipDistance();
+        //viewConstants.cameraClipDistance.w = debugCameraComponent->GetFarClipDistance() - debugCameraComponent->GetNearClipDistance();
+
+        //return viewConstants;
     }
 private:
     std::shared_ptr<DebugCameraComponent> debugCameraComponent;
@@ -106,7 +88,14 @@ public:
     void Initialize(const Transform& transform)override
     {
         Camera::Initialize(transform);
+        tpsController.camera =
+            static_cast<TPSCameraComponent*>(mainCameraComponent.get());
     };
+
+    void SetTarget(const std::shared_ptr<SceneComponent>& target)
+    {
+        tpsController.target = target;
+    }
 
     //更新処理
     void Update(float deltaTime)override;
@@ -158,7 +147,7 @@ public:
 
 private:
 
-
+    TPSCameraController tpsController;
 
     bool didShake = false;
 };

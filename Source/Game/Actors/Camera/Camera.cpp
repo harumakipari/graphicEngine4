@@ -8,38 +8,15 @@ void Camera::Initialize(const Transform& transform)
 {
     mainCameraComponent = this->AddComponent<class TPSCameraComponent>("mainCamera");
     mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(35), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
-    //mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(45), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 1.1f, 100.0f);
-
-#if 0
-    auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
-    // ポイントライトコンポーネントを追加
-    auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", "mainCamera");
-    pointLightComponent->SetRelativeLocationDirect({ 0.0f, 1.5f, 0.6f });
-    auto lightManager = scene->GetLightManager();
-    // ライトの名前からライトマネージャーの共有ライトを取得して設定
-    if (auto shared = lightManager->FindSharedLight("CameraPointLight"))
-    {
-        pointLightComponent->SetSharedParam(shared);
-    }
-
-
-#endif // 0
 }
 
 
 void MainCamera::Update(float deltaTime)
 {
-
-    if (auto target = mainCameraComponent->target.lock())
-    {
-        auto actor = target->GetOwner();
-        
-    }
-
-    // プレイヤーの移動方向を取得
+    // プレイヤー移動方向
     XMFLOAT3 moveDir = {};
 
-    if (auto target = mainCameraComponent->target.lock())
+    if (auto target = tpsController.target.lock())
     {
         auto actor = target->GetOwner();
 
@@ -50,10 +27,23 @@ void MainCamera::Update(float deltaTime)
     }
 
     // 右スティック
-    XMFLOAT2 rightStick =
-        InputSystem::GetRightStick();
+    XMFLOAT2 rightStick = InputSystem::GetRightStick();
 
-    // AutoFollow 呼び出し
-    //static_cast<TPSCameraComponent*>(mainCameraComponent.get())->AutoFollow(moveDir, rightStick, deltaTime);
+    // カメラ回転
+    mainCameraComponent->yaw += rightStick.x * deltaTime * 2.0f;
+    mainCameraComponent->pitch += rightStick.y * deltaTime * 2.0f;
+
+    const float limit = DirectX::XMConvertToRadians(80.0f);
+
+    mainCameraComponent->pitch =
+        std::clamp(
+            mainCameraComponent->pitch,
+            -limit,
+            limit
+        );
+
+    // Controller更新
+    tpsController.Update(deltaTime);
+
 }
 

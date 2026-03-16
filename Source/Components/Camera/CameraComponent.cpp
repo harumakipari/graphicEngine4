@@ -5,47 +5,47 @@
 #include "Physics/CollisionFunction.h"
 
 
-const DirectX::XMFLOAT4X4& TPSCameraComponent::GetView()
+const DirectX::XMFLOAT4X4& CameraComponent::GetView()
 {
     using namespace DirectX;
-    if (cameraLock)
-    {
-        return view;
-    }
 
-#if 0 // こっち当たり判定を考慮していない。
+    XMFLOAT3 pos = GetComponentLocation();
 
-    XMFLOAT3 basePos{ 0,0,0 };
-    if (!target.expired())
-    {
-        basePos = target.lock()->GetComponentWorldTransform().GetLocation();
-    }
-    else
-    {
+#if 0
+    XMVECTOR eye = XMLoadFloat3(&pos);
 
-    }
-    XMVECTOR focus =
-        XMLoadFloat3(&basePos) +
-        XMVectorSet(targetOffset.x, targetOffset.y, targetOffset.z, 0);
-
-    // yaw/pitch から forward を直接作る
     XMVECTOR forward =
         XMVector3Normalize(
             XMVectorSet(
-                cosf(pitch) * sinf(yaw),
+                sinf(yaw) * cosf(pitch),
                 sinf(pitch),
-                cosf(pitch) * cosf(yaw),
-                0
-            )
-        );
+                cosf(yaw) * cosf(pitch),
+                0));
+#else
 
-    // カメラ位置
-    XMVECTOR eye = focus - forward * distance;
-    DirectX::XMFLOAT3 eye3;
-    DirectX::XMStoreFloat3(&eye3, eye);
-    if (auto owner = owner_.lock())
+    XMFLOAT4 rot = GetComponentRotation();
+
+    XMVECTOR eye = XMLoadFloat3(&pos);
+    XMVECTOR q = XMLoadFloat4(&rot);
+
+    XMVECTOR forward = XMVector3Rotate(
+        XMVectorSet(0, 0, 1, 0),
+        q);
+
+    XMVECTOR up = XMVector3Rotate(
+        XMVectorSet(0, 1, 0, 0),
+        q);
+
+
+#endif // 0
+    XMVECTOR focus;
+    if (useLookTarget)
     {
-        owner->SetPosition(eye3);
+        focus = XMLoadFloat3(&lookTarget);
+    }
+    else
+    {
+        focus = eye + forward;
     }
 
     XMStoreFloat4x4(
@@ -54,73 +54,172 @@ const DirectX::XMFLOAT4X4& TPSCameraComponent::GetView()
             eye,
             focus,
             XMVectorSet(0, 1, 0, 0)
-        )
-    );
+        ));
 
     return view;
-
-#else
-    auto targetActor = target.lock();
-    if (!targetActor)
-        return view;
-
-    // ==========================
-    // ① pivot（注視点）
-    // ==========================
-    XMFLOAT3 targetPos = targetActor->GetOwner()->GetPosition();
-
-    XMVECTOR pivot = XMLoadFloat3(&targetPos) +
-        XMLoadFloat3(&targetOffset);
-
-    // ==========================
-    // ② カメラ理想位置
-    // ==========================
-    XMVECTOR forward =
-        XMVectorSet(
-            sinf(yaw) * cosf(pitch),
-            sinf(pitch),
-            cosf(yaw) * cosf(pitch),
-            0.0f);
-
-    XMVECTOR idealEye = pivot - forward * distance + XMLoadFloat3(&cameraOffset);;
-
-    // ==========================
-    // ③ 衝突補正
-    // ==========================
-    XMVECTOR resolvedEye =
-        ResolveCameraCollision(pivot, idealEye);
-
-    // ==========================
-    // ④ 補間
-    // ==========================
-    static XMVECTOR currentEye = resolvedEye;
-    currentEye = XMVectorLerp(
-        currentEye,
-        resolvedEye,
-        0.15f); // 調整可
-
-    XMFLOAT3 eye3;
-    XMStoreFloat3(&eye3, currentEye);
-
-    if (auto owner = owner_.lock())
-    {
-        owner->SetPosition(eye3);
-    }
-
-    // ==========================
-    // ⑤ View行列生成
-    // ==========================
-    XMMATRIX V =
-        XMMatrixLookAtLH(
-            currentEye,
-            pivot,
-            XMVectorSet(0, 1, 0, 0));
-
-    XMStoreFloat4x4(&view, V);
-    return view;
-#endif // 0
-
 }
+
+
+ViewConstants CameraComponent::GetViewConstants() 
+{
+    ViewConstants vc;
+
+    vc.view = GetView();
+    vc.projection = GetProjection();
+
+    using namespace DirectX;
+
+    XMMATRIX V = XMLoadFloat4x4(&vc.view);
+    XMMATRIX P = XMLoadFloat4x4(&vc.projection);
+
+    XMStoreFloat4x4(&vc.viewProjection, V * P);
+    XMStoreFloat4x4(&vc.invView, XMMatrixInverse(nullptr, V));
+    XMStoreFloat4x4(&vc.invProjection, XMMatrixInverse(nullptr, P));
+    XMStoreFloat4x4(&vc.invViewProjection, XMMatrixInverse(nullptr, V * P));
+
+    vc.cameraPosition =
+    {
+        vc.invView._41,
+        vc.invView._42,
+        vc.invView._43,
+        1.0f
+    };
+    XMFLOAT3 pos = GetComponentLocation();
+
+    vc.cameraPosition =
+    {
+        pos.x,
+        pos.y,
+        pos.z,
+        1.0f
+    };
+    vc.cameraClipDistance =
+    {
+        nearZ,
+        farZ,
+        nearZ * farZ,
+        farZ - nearZ
+    };
+
+    return vc;
+}
+
+//const DirectX::XMFLOAT4X4& TPSCameraComponent::GetView()
+//{
+//    using namespace DirectX;
+//    if (cameraLock)
+//    {
+//        return view;
+//    }
+//
+//#if 0 // こっち当たり判定を考慮していない。
+//
+//    XMFLOAT3 basePos{ 0,0,0 };
+//    if (!target.expired())
+//    {
+//        basePos = target.lock()->GetComponentWorldTransform().GetLocation();
+//    }
+//    else
+//    {
+//
+//    }
+//    XMVECTOR focus =
+//        XMLoadFloat3(&basePos) +
+//        XMVectorSet(targetOffset.x, targetOffset.y, targetOffset.z, 0);
+//
+//    // yaw/pitch から forward を直接作る
+//    XMVECTOR forward =
+//        XMVector3Normalize(
+//            XMVectorSet(
+//                cosf(pitch) * sinf(yaw),
+//                sinf(pitch),
+//                cosf(pitch) * cosf(yaw),
+//                0
+//            )
+//        );
+//
+//    // カメラ位置
+//    XMVECTOR eye = focus - forward * distance;
+//    DirectX::XMFLOAT3 eye3;
+//    DirectX::XMStoreFloat3(&eye3, eye);
+//    if (auto owner = owner_.lock())
+//    {
+//        owner->SetPosition(eye3);
+//    }
+//
+//    XMStoreFloat4x4(
+//        &view,
+//        XMMatrixLookAtLH(
+//            eye,
+//            focus,
+//            XMVectorSet(0, 1, 0, 0)
+//        )
+//    );
+//
+//    return view;
+//
+//#else
+//    auto targetActor = target.lock();
+//    if (!targetActor)
+//        return view;
+//
+//    // ==========================
+//    // ① pivot（注視点）
+//    // ==========================
+//    XMFLOAT3 targetPos = targetActor->GetOwner()->GetPosition();
+//
+//    XMVECTOR pivot = XMLoadFloat3(&targetPos) +
+//        XMLoadFloat3(&targetOffset);
+//
+//    // ==========================
+//    // ② カメラ理想位置
+//    // ==========================
+//    XMVECTOR forward =
+//        XMVectorSet(
+//            sinf(yaw) * cosf(pitch),
+//            sinf(pitch),
+//            cosf(yaw) * cosf(pitch),
+//            0.0f);
+//
+//    XMVECTOR idealEye = pivot - forward * distance + XMLoadFloat3(&cameraOffset);;
+//
+//    // ==========================
+//    // ③ 衝突補正
+//    // ==========================
+//    XMVECTOR resolvedEye =
+//        ResolveCameraCollision(pivot, idealEye);
+//
+//    // ==========================
+//    // ④ 補間
+//    // ==========================
+//    static XMVECTOR currentEye = resolvedEye;
+//    currentEye = XMVectorLerp(
+//        currentEye,
+//        resolvedEye,
+//        0.15f); // 調整可
+//
+//    XMFLOAT3 eye3;
+//    XMStoreFloat3(&eye3, currentEye);
+//
+//    if (auto owner = owner_.lock())
+//    {
+//        owner->SetPosition(eye3);
+//    }
+//
+//    // ==========================
+//    // ⑤ View行列生成
+//    // ==========================
+//    XMMATRIX V =
+//        XMMatrixLookAtLH(
+//            currentEye,
+//            pivot,
+//            XMVectorSet(0, 1, 0, 0));
+//
+//    XMStoreFloat4x4(&view, V);
+//    return view;
+//#endif // 0
+//
+//}
 
 
 DirectX::XMVECTOR TPSCameraComponent::ResolveCameraCollision(
@@ -207,16 +306,20 @@ void TPSCameraComponent::AutoFollow(const DirectX::XMFLOAT3& moveDir, const Dire
         deltaTime;
 }
 
-
 void DebugCameraComponent::HandleKeyboardInput(float deltaTime)
 {
     using namespace DirectX;
-    DirectX::XMFLOAT4 rotaion = GetComponentRotation();
-    DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&rotaion));
-    DirectX::XMVECTOR forward = DirectX::XMVector3TransformNormal(DirectX::XMVectorSet(0, 0, 1, 0), rotationMatrix);
-    DirectX::XMVECTOR right = rotationMatrix.r[0];
-    DirectX::XMVECTOR up = DirectX::XMVectorSet(0, 1, 0, 0);
+    XMFLOAT4 rotation = GetComponentRotation();
+    XMVECTOR q = XMLoadFloat4(&rotation);
 
+    XMVECTOR forward = XMVector3Rotate(
+        XMVectorSet(0, 0, 1, 0), q);
+
+    XMVECTOR right = XMVector3Rotate(
+        XMVectorSet(1, 0, 0, 0), q);
+
+    XMVECTOR up = XMVector3Rotate(
+        XMVectorSet(0, 1, 0, 0), q);
     DirectX::XMVECTOR move = DirectX::XMVectorZero();
 #ifdef USE_IMGUI
 
@@ -243,6 +346,8 @@ void DebugCameraComponent::HandleKeyboardInput(float deltaTime)
     DirectX::XMFLOAT3 positionLocal{};
     DirectX::XMStoreFloat3(&positionLocal, pos);
 
-    GetOwner()->SetPosition(positionLocal);
+    SetWorldLocationDirect(positionLocal);
+
+    //GetOwner()->SetPosition(positionLocal);
 
 }

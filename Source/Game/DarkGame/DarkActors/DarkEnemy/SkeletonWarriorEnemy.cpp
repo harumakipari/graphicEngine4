@@ -52,6 +52,7 @@ void SkeletonWarriorActor::Initialize(const Transform& transform)
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
         height = size.y;
         radius = size.x * 0.5f;
+        mass = 40.0f;
         capsuleComponent->SetRadiusAndHeight(radius, height);
         capsuleComponent->SetMass(mass);
         capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
@@ -73,7 +74,10 @@ void SkeletonWarriorActor::Update(float elapsedTime)
 
     //if (waypoints.empty()) return;
 
-    //DirectX::XMFLOAT3 position = GetPosition();
+    DirectX::XMFLOAT3 position = GetPosition();
+
+    position.z += 0.1f * elapsedTime;
+    SetPosition(position);
 
     //DirectX::XMFLOAT3 target = waypoints[currentWaypoint];
 

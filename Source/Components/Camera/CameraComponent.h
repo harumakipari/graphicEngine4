@@ -7,6 +7,8 @@
 // 他ライブラリ
 #include <DirectXMath.h>
 
+#include "Engine/Camera/BookmarkCamera.h"
+
 #ifdef USE_IMGUI
 #define IMGUI_ENABLE_DOCKING
 #include "imgui.h"
@@ -16,6 +18,7 @@
 #include "Components/Base/SceneComponent.h"
 #include "Components/Easing/CoreEasingComponent.h"
 #include "Core/Actor.h"
+#include "Engine/Camera/CameraConstants.h"
 #include "Engine/Input/InputSystem.h"
 
 class CameraComponent :public SceneComponent
@@ -31,7 +34,8 @@ public:
         this->nearZ = nearZ;
         this->farZ = farZ;
     }
-    virtual const DirectX::XMFLOAT4X4& GetView() = 0;
+
+    const DirectX::XMFLOAT4X4& GetView();
 
     const DirectX::XMFLOAT4X4& GetProjection()
     {
@@ -55,20 +59,35 @@ public:
         return projection;
     }
 
-    float GetNearClipDistance() const { return nearZ; }
-    float GetFarClipDistance() const { return farZ; }
+    CameraState GetState() const
+    {
+        CameraState s;
+        s.position = GetComponentLocation();
+        s.rotation = { pitch, yaw, 0 };
+        s.fov = fovY;
+        return s;
+    }
+
+    void SetState(const CameraState& s)
+    {
+        SetWorldLocationDirect(s.position);
+        pitch = s.rotation.x;
+        yaw = s.rotation.y;
+        fovY = s.fov;
+    }
+    bool useLookTarget = false;
+    DirectX::XMFLOAT3 lookTarget{};
+
+    ViewConstants GetViewConstants();
 public:
     float yaw = 0.0f;
     float pitch = DirectX::XMConvertToRadians(-12.0f);
-    std::weak_ptr<SceneComponent> target;
 
 protected:
-    //float fovY = DirectX::XMConvertToRadians(60.0f);
     float fovY = DirectX::XMConvertToRadians(10.0f);
     float aspect = 1280.f / 720.f;
     float nearZ = 0.1f;
     float farZ = 1000.f;
-
 
     DirectX::XMFLOAT4X4 view{};
     DirectX::XMFLOAT4X4 projection{};
@@ -127,7 +146,7 @@ public:
 #endif
     }
 
-    const DirectX::XMFLOAT4X4& GetView() override;
+    //const DirectX::XMFLOAT4X4& GetView() override;
 
 
     // 自動随従する
@@ -196,20 +215,22 @@ class DebugCameraComponent :public CameraComponent
 {
 public:
     DebugCameraComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :CameraComponent(name, owner) {}
-    const DirectX::XMFLOAT4X4& GetView() override
-    {
-        using namespace DirectX;
+    
 
-        XMFLOAT3 pos = GetComponentLocation();
-        XMFLOAT4 rot = GetComponentRotation();
+    //const DirectX::XMFLOAT4X4& GetView() override
+    //{
+    //    using namespace DirectX;
 
-        XMMATRIX R = XMMatrixRotationQuaternion(XMLoadFloat4(&rot));
-        XMMATRIX T = XMMatrixTranslation(pos.x, pos.y, pos.z);
+    //    XMFLOAT3 pos = GetComponentLocation();
+    //    XMFLOAT4 rot = GetComponentRotation();
 
-        XMMATRIX viewMtx = XMMatrixInverse(nullptr, R * T);
-        XMStoreFloat4x4(&view, viewMtx);
-        return view;
-    }
+    //    XMMATRIX R = XMMatrixRotationQuaternion(XMLoadFloat4(&rot));
+    //    XMMATRIX T = XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+    //    XMMATRIX viewMtx = XMMatrixInverse(nullptr, R * T);
+    //    XMStoreFloat4x4(&view, viewMtx);
+    //    return view;
+    //}
 
     void Tick(float deltaTime)override
     {
@@ -222,19 +243,17 @@ private:
     float moveSpeed = 5.0f;
     float rotateSpeed = 0.002f;
 
-    float yaw = 0.0f;
-    float pitch = 0.0f;
-
     void HandleKeyboardInput(float deltaTime);
     void HandleMouseInput(float deltaTime)
     {
+#if 0
         if (InputSystem::GetInputState("MouseRight"))
         {
             int dx, dy;
             InputSystem::GetMouseDelta(dx, dy);
 
             yaw += dx * rotateSpeed;
-            pitch += dy * rotateSpeed;
+            pitch -= dy * rotateSpeed;
 
             // 上下向きすぎ防止（重要）
             pitch = std::clamp(pitch, -DirectX::XM_PIDIV2 + 0.01f, DirectX::XM_PIDIV2 - 0.01f);
@@ -263,46 +282,46 @@ private:
         SetWorldRotationDirect(rot);
 
         return;
+#endif // 0
+
 
         if (InputSystem::GetInputState("MouseRight"))
         {
-            int deltaX, deltaY;
-            InputSystem::GetMouseDelta(deltaX, deltaY);
+                int dx, dy;
+                InputSystem::GetMouseDelta(dx, dy);
 
-            float yawDelta = deltaX * rotateSpeed;
-            float pitchDelta = deltaY * rotateSpeed;
+
+            float yawDelta = dx * rotateSpeed;
+            float pitchDelta = dy * rotateSpeed;
 
             using namespace DirectX;
 
-            XMFLOAT4 rot = GetComponentRotation();
+            //XMFLOAT4 rot = GetComponentRotation();
+            XMFLOAT4 rot = GetOwner()->GetQuaternionRotation();
             XMVECTOR q = XMLoadFloat4(&rot);
 
-            // ワールドY軸でYaw
             XMVECTOR qYaw = XMQuaternionRotationAxis(
                 XMVectorSet(0, 1, 0, 0),
                 yawDelta
             );
 
-            // ローカルX軸でPitch
             XMVECTOR right = XMVector3Rotate(
                 XMVectorSet(1, 0, 0, 0),
                 q
             );
+
             XMVECTOR qPitch = XMQuaternionRotationAxis(
                 right,
                 pitchDelta
             );
 
-            // 合成（順番超重要）
-            q = XMQuaternionNormalize(
-                XMQuaternionMultiply(qPitch, q)
-            );
-            q = XMQuaternionNormalize(
-                XMQuaternionMultiply(qYaw, q)
-            );
+            q = XMQuaternionMultiply(q, qYaw);
+            q = XMQuaternionMultiply(q, qPitch);
+
+            q = XMQuaternionNormalize(q);
 
             XMStoreFloat4(&rot, q);
-            SetWorldRotationDirect(rot);
+            GetOwner()->SetQuaternionRotation(rot);
         }
     }
 
