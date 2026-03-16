@@ -25,6 +25,7 @@
 #include "Game/DarkGame/DarkActors/DarkStage.h"
 
 #include "Game/Actors/WaterSphere/WaterSphere.h"
+#include "Game/DarkGame/DarkActors/DarkEnemy/SkeletonWarriorEnemy.h"
 
 #include "Physics/CollisionSystem.h"
 #include "UI/UIManager.h"
@@ -50,7 +51,7 @@ bool MorphScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
             }
         });
 #endif // 0
-    shapeMatchingModel  = std::make_unique<ShapeMatchingModel>(device, "./Data/Models/Morph/sphere.glb");
+    shapeMatchingModel = std::make_unique<ShapeMatchingModel>(device, "./Data/Models/Morph/sphere.glb");
 
     RegisterRenderHook(RenderPass::Opaque, [&](ID3D11DeviceContext* immediateContext)
         {
@@ -132,7 +133,12 @@ void MorphScene::SetUpActors()
 {
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MainCamera>("mainCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
+
+    Transform enemyTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,180.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<SkeletonWarriorActor>("enemy", enemyTr);
+
     mainCameraComponent->pitch = DirectX::XMConvertToRadians(.0f);
+    mainCameraComponent->target = enemy->GetRootComponent();
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("morphシーンのカメラ設定される。"));
 
@@ -145,9 +151,11 @@ void MorphScene::SetUpActors()
     Transform buildTr(DirectX::XMFLOAT3{ -5.0f,1.0f,3.0 }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     //auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaterSphere>("morphModel", buildTr);
     auto sphere = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("sphere", buildTr);
-    auto model=sphere->AddComponent<SkeletalMeshComponent>("skeletalMesh");
+    auto model = sphere->AddComponent<SkeletalMeshComponent>("skeletalMesh");
     model->SetModel("./Data/Models/Primitives/sphere.glb");
-    
+
+
+
     //building->AddComponent<StaticMeshComponent>("cloth")->SetModel("./Data/Models/ClothFlag/pole.gltf");
 
     Transform buildTr2(DirectX::XMFLOAT3{ -3.0f,0.45f,3.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });

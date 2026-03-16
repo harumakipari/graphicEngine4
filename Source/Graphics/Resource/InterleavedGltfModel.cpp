@@ -2338,6 +2338,7 @@ DirectX::XMFLOAT4X4 InterleavedGltfModel::GetJointLocalMatrix(
     {
         if (node.name == name)
         {
+            return node.globalTransform;
             XMMATRIX T = XMMatrixTranslation(
                 node.translation.x,
                 node.translation.y,

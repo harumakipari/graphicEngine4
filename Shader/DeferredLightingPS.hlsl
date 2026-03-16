@@ -174,7 +174,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
     float3 ambient = baseColor.rgb * 0.05;
 
-    float3 lo = totalDiffuse + totalSpecular + (emissive * 7.8f)/* + rim + ambient*/;
+    float3 lo = totalDiffuse + totalSpecular + (emissive)/* + rim + ambient*/;
 
     int debugLightComplexity = 0;
     if (debugLightComplexity != 0)

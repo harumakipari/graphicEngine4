@@ -64,10 +64,10 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     //lightDirection = { 0.382f, -0.882f, 0.112f, 0.0f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
     //lightDirection = { 0.545f, -0.86f, -0.526f, 0.0f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
 
-    lightDirection = { 0.9f, -0.64f, -0.058f, 0.9f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
+    //lightDirection = { 0.9f, -0.64f, -0.058f, 0.9f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
 
-    lightDirection = { 1.0f, -1.0f, -0.008f, 0.9f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
-    lightDirection = { 0.722f, -0.38f, -0.0211f, 0.9f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
+    //lightDirection = { 1.0f, -1.0f, -0.008f, 0.9f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
+    //lightDirection = { 0.722f, -0.38f, -0.0211f, 0.9f };   // ã‚Ì‘‹‚©‚ç‚ÌŒõ
     lightColor = { 1.0f, 0.8f, 1.0f, 2.6f };
     {
         //PROFILE_SCOPE("SceneBase Init");
@@ -214,9 +214,9 @@ void SampleScene::SetUpActors()
         auto boss = this->GetActorManager()->CreateAndRegisterActorWithTransform<BossEnemy>("boss", bossTr);
     }
 
+#endif // 0
         Transform enemyTr(DirectX::XMFLOAT3{ -15.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
         auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<SkeletonWarriorActor>("enemy", enemyTr);
-#endif // 0
 
 
 #if 0

@@ -141,7 +141,7 @@ void LightManager::Initialize(ID3D11Device* device)
     {
         sharedLights["PlayerPointLight"] =
             std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(0.959999979f, 0.523895442f, 0.240151942f, 20.0f),
+                SharedLightParam{ DirectX::XMFLOAT4(0.977f, 0.688f, 0.5f, 20.0f),
             3.1f
                 });
     }

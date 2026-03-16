@@ -47,6 +47,28 @@ void SkeletonWarriorActor::Update(float elapsedTime)
     Character::Update(elapsedTime);
     DirectX::XMFLOAT4X4 matrix = GetWorldTransform();
 
+
+    //// 武器のローカル行列を計算する
+    //DirectX::XMFLOAT4  weaponTransform= sword->SetWorldMatrixDirect()
+    //DirectX::XMStoreFloat4x4(&weapon.transform, S * R * T);
+
+    //// キャラクターモデルから右手ノードを検索する
+    //for (const Model::Node& node : player.model->GetNodes())
+    //{
+    //    if (strcmp(node.name, rightHandName) == 0)
+    //    {
+    //        // 右手ノードの行列と武器のローカル行列から武器のワールド行列を求める
+    //        DirectX::XMMATRIX WeaponLocalMatrix = DirectX::XMLoadFloat4x4(&weapon.transform);
+    //        DirectX::XMMATRIX RightHandGlobalMatrix = DirectX::XMLoadFloat4x4(&node.globalTransform);
+    //        DirectX::XMMATRIX PlayerWorldMatrix = DirectX::XMLoadFloat4x4(&player.transform);
+    //        DirectX::XMMATRIX HandWorld = DirectX::XMMatrixMultiply(DirectX::XMMatrixMultiply(WeaponLocalMatrix, RightHandGlobalMatrix), PlayerWorldMatrix);
+    //        //DirectX::XMMATRIX HandWorld = WeaponLocalMatrix * RightHandGlobalMatrix * PlayerWorldMatrix;
+    //        DirectX::XMStoreFloat4x4(&weapon.transform, HandWorld);
+    //        break;
+    //    }
+    //}
+
+
     //DirectX::XMFLOAT4X4 swordMatrix = skeletalMeshComponent->model->GetJointLocalMatrix("Hand_r", skeletalMeshComponent->modelNodes);
     DirectX::XMFLOAT4X4 swordMatrix = skeletalMeshComponent->model->GetJointMatrix("Hand_r", skeletalMeshComponent->modelNodes, matrix);
     //DirectX::XMFLOAT3 swordPosition = skeletalMeshComponent->model->GetJointWorldPosition("Hand_r", skeletalMeshComponent->modelNodes, matrix);
