@@ -20,6 +20,7 @@ public:
         animationNodes[1] = target_->model->GetNodes();
 
         blendAnimationNodes = target_->model->GetNodes();
+        owner = target->GetOwner();
     }
 
     void AddAnimation(const std::string& animationName, const size_t animationClip)
@@ -75,9 +76,12 @@ public:
         requestStopLoop = true;
     }
 
+    void ResetRootMotion(int newClipIndex);
+
     void DrawImGui();
 private:
     SkeletalMeshComponent* target_ = nullptr;
+    Actor* owner = nullptr;
 
     std::unordered_map<std::string, size_t> animationNameToIndex_;
 
@@ -130,6 +134,12 @@ private:
 
     // ImGuiで表示するための
     std::vector<std::string> animationImGUiOrder;
+
+    int rootNodeIndex = 0;
+    DirectX::XMFLOAT3 previousPosition = {}; // world 空間
+    DirectX::XMFLOAT3 zeroTranslation = {}; // 親ノード空間
+
+    bool enableRootMotion = false;
 };
 
 #endif  //ANIMATION_CONTROLLER_H

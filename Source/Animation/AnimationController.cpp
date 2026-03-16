@@ -4,6 +4,8 @@
 #include <imgui.h>
 #include <ranges>
 
+#include "Core/Actor.h"
+
 void AnimationController::OnUpdate(const float deltaTime)
 {
     animationTime += deltaTime * animationRate;
@@ -13,21 +15,17 @@ void AnimationController::OnUpdate(const float deltaTime)
         return;
     }
 
-    if (isBlendingAnimation && transitionTime > 0.0f)
-    {
-
-    }
-
+    // アニメーション遷移の準備
     switch (transitionState)
     {
-    case AnimationController::AnimationTransitionState::NotStarted:
+    case AnimationTransitionState::NotStarted:
         target_->model->Animate(this->animationClip, animationTime, animationNodes[0]);
         target_->model->Animate(this->animationNextClip, 0.0f, animationNodes[1]);
         transitionState = AnimationTransitionState::Inprogress;
         animationTime = 0.0f;
         blendFactor = 0.0f;
         break;
-    case AnimationController::AnimationTransitionState::Inprogress:
+    case AnimationTransitionState::Inprogress:
         if (transitionTime > 0.0f)
         {
             blendFactor = animationTime / transitionTime;     //ゼロ除算を防ぐため
@@ -47,7 +45,7 @@ void AnimationController::OnUpdate(const float deltaTime)
             //isBlendingAnimation = false;
         }
         break;
-    case AnimationController::AnimationTransitionState::Completed:
+    case AnimationTransitionState::Completed:
         // 終わったら通常時に戻す
         //isBlendingAnimation = false;
         if (target_->model->animations.at(animationClip).duration < animationTime)
@@ -78,6 +76,45 @@ void AnimationController::OnUpdate(const float deltaTime)
     // 描画に使うノードをブレンドのノードにする
     //target_->model->nodes = blendAnimationNodes;
     target_->modelNodes = blendAnimationNodes;
+
+
+    if (enableRootMotion)
+    {
+        InterleavedGltfModel::Node& node = blendAnimationNodes.at(rootNodeIndex);
+        DirectX::XMFLOAT4X4 worldTransform = owner->GetWorldTransform();
+
+        DirectX::XMFLOAT3 position = { node.globalTransform._41, node.globalTransform._42, node.globalTransform._43 }; // global space
+        DirectX::XMFLOAT3 displacement = { position.x - previousPosition.x, position.y - previousPosition.y,  position.z - previousPosition.z }; // global space
+        DirectX::XMStoreFloat3(&displacement, DirectX::XMVector3TransformNormal(DirectX::XMLoadFloat3(&displacement), DirectX::XMLoadFloat4x4(&worldTransform))); // to world space
+
+        DirectX::XMFLOAT3 translation = owner->GetPosition();
+
+        translation.x += displacement.x;
+        translation.y += displacement.y;
+        translation.z += displacement.z;
+
+        previousPosition = position;
+        //ルートノードの変換量を初期姿勢の値に設定する。これは念のために行う。
+        node.translation = zeroTranslation;
+
+        // 子ノードのグローバル変換を再帰的に更新する。
+        target_->model->CumulateTransforms(blendAnimationNodes);
+
+        owner->SetPosition(translation);
+    }
+
+
+}
+
+void AnimationController::ResetRootMotion(int newClipIndex)
+{
+    animationClip = newClipIndex;
+    animationTime = 0;
+
+    target_->model->Animate(animationClip, 0, blendAnimationNodes);
+    InterleavedGltfModel::Node& node = blendAnimationNodes.at(rootNodeIndex);
+    previousPosition = { node.globalTransform._41, node.globalTransform._42, node.globalTransform._43 }; // グローバル空間
+    zeroTranslation = node.translation;
 }
 
 void AnimationController::DrawImGui()
@@ -93,6 +130,8 @@ void AnimationController::DrawImGui()
     ImGui::Checkbox("Blend", &isBlendingAnimation);
     ImGui::SliderFloat("Blend Time", &transitionTime, 0.0f, 1.0f);
     ImGui::SliderFloat("Rate", &animationRate, 0.1f, 3.0f);
+
+    ImGui::Checkbox("enableRootMotion", &enableRootMotion);
 
     ImGui::Separator();
 

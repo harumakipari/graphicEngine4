@@ -2533,14 +2533,12 @@ void InterleavedGltfModel::ExtractAnimations(const tinygltf::Model& transmission
         }
     }
 
-
     for (Animation& animation : animations)
     {
-
-        // Find a longest animation duration in timestamp of each channel.
-        for (decltype(animation.timelines)::value_type& keyframe_timestamps : animation.timelines)
+        // 各チャンネルのタイムスタンプから、最も長いアニメーションの再生時間を特定する。
+        for (decltype(animation.timelines)::value_type& keyframeTimestamps : animation.timelines)
         {
-            animation.duration = std::max<float>(animation.duration, keyframe_timestamps.second.back());
+            animation.duration = std::max<float>(animation.duration, keyframeTimestamps.second.back());
         }
     }
 

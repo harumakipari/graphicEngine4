@@ -33,16 +33,37 @@ void SkeletonWarriorActor::Initialize(const Transform& transform)
         { -15.0f, 0.0f, 18.0f }
     };
 
+    // èÇ
     shield = AddComponent<SkeletalMeshComponent>("ShieldMesh", parentName);
     shield->SetModel("./Data/Models/Weapons/Shield/Shield.gltf");
     shield->AttachToComponent(skeletalMeshComponent, 11); // "Hand_l_end"
 
+    // åï
     sword = AddComponent<SkeletalMeshComponent>("SwordMesh", parentName);
     sword->SetModel("./Data/Models/Weapons/Sword/Sword.gltf");
     sword->AttachToComponent(skeletalMeshComponent, 16); // "Hand_r_end"
     sword->SetRelativeLocationDirect({ -0.f, -0.1f, -0.0f });
     sword->SetRelativeEulerRotationDirect({ 0.0f, 90.f, 0.0f });
     sword->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
+
+    // ìñÇΩÇËîªíË
+    {
+        std::shared_ptr<CapsuleComponent> capsuleComponent = this->AddComponent<class CapsuleComponent>("capsuleComponent", parentName);
+        DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
+        height = size.y;
+        radius = size.x * 0.5f;
+        capsuleComponent->SetRadiusAndHeight(radius, height);
+        capsuleComponent->SetMass(mass);
+        capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+        capsuleComponent->SetLayer(CollisionLayer::Enemy);
+        capsuleComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        capsuleComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+        capsuleComponent->SetResponseToLayer(CollisionLayer::WorldProps, CollisionComponent::CollisionResponse::Block);
+        capsuleComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::Block);
+        capsuleComponent->SetCollisionOffsetY(height * 0.5f);
+        capsuleComponent->SetIsVisibleDebugBox(false);
+        capsuleComponent->Initialize();
+    }
 
 }
 
