@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "DarkStageGroundBrazierActor.h"
 
+#include "Components/Effect/ParticleComponent.h"
 #include "Components/Render/PointLightComponent.h"
 #include "Engine/Scene/SceneBase.h"
 
@@ -12,6 +13,35 @@ void DarkStageGroundBrazierActor::SetModel(const std::shared_ptr<StageAsset>& st
     brazierMeshComponent = this->AddComponent<SkeletalMeshComponent>(parentName);
     brazierMeshComponent->SetModel("./Data/Models/DarkStageAssets/GroundBrazier/groundBrazier.gltf");
     brazierMeshComponent->SetIsCastShadow(false);    // 影を落とさないようにする
+
+    // 炎のエフェクト
+    auto frameEffect = this->AddComponent<ParticleComponent>("FireFrameEffect", parentName);
+    frameEffect->Load("./Data/Effect/Files/DarkStageFrameEffect.json");
+    frameEffect->SetRelativeLocationDirect({ 0.0f,1.0f,0.0f });
+    // ループ再生設定
+    //float delay = 0.1f * i; // 0.2秒ずつ遅らせる
+    ParticleComponent::AddSettings settings
+    {
+        .loop = true, // ループ再生
+        //.startDelay = delay, // 再生開始遅延時間
+    };
+    frameEffect->SetAddSettings(settings);
+    frameEffect->Play();
+
+    // 炎の後の煙エフェクト
+    auto afterFireEffect = this->AddComponent<ParticleComponent>("AfterFireFrameEffect", parentName);
+    afterFireEffect->Load("./Data/Effect/Files/DarkStageAfterFrameEffect.json");
+    afterFireEffect->SetRelativeLocationDirect({ 0.0f,1.0f,0.0f });
+    // ループ再生設定
+    float delay = 0.3f ; 
+    ParticleComponent::AddSettings settings0
+    {
+        .loop = true, // ループ再生
+        .startDelay = delay, // 再生開始遅延時間
+    };
+    afterFireEffect->SetAddSettings(settings0);
+    afterFireEffect->Play();
+
 
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
     auto lightManager = scene->GetLightManager();
@@ -52,6 +82,8 @@ void DarkStageGroundBrazierActor::SetModel(const std::shared_ptr<StageAsset>& st
         sphereMeshComponent->SetRelativeRotationDirect(point.worldRotation);
         sphereMeshComponent->cpuColor = { 1,0.2f,0,1 };
         sphereMeshComponent->emissionPower = 6.0f;
+
+
     }
 
 }
