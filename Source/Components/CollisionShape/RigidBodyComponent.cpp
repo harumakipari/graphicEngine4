@@ -279,23 +279,15 @@ void MultiRigidBodyComponent::Initialize(physx::PxPhysics* physics)
 
     animatedNodes_ = model->GetNodes();
 
-    for (size_t i = 0; i < animatedNodes_.size(); ++i)
-    {
-        //std::stringstream ss;
-        //ss << "Node " << i << " (" << animatedNodes_[i].name << ") children: ";
-        //for (auto c : animatedNodes_[i].children)
-        //    ss << c << " ";
-        //OutputDebugStringA(ss.str().c_str());
-    }
-
     ComputeGlobalTransforms(animatedNodes_);
-
 
     //// owner_ の position と rotaion を取得
     //// owner_ のTransform（ワールド空間基準）をPhysX Transformに変換
 #if 1
-    //DirectX::XMFLOAT3 pos = meshComponent_->GetOwner()->GetPosition();
-    DirectX::XMFLOAT3 pos = meshComponent_->GetRelativeLocation();
+    //DirectX::XMFLOAT4X4 world = collisionComponent_->GetComponentWorldTransform().ToWorldTransform();
+    //PxTransform ownerTransform = PhysicsHelper::ToPxTransform(world);
+
+    DirectX::XMFLOAT3 pos = meshComponent_->GetOwner()->GetPosition(); // world空間に生成しないと当たり判定がおかしくなる
     DirectX::XMFLOAT4 rot = meshComponent_->GetOwner()->GetQuaternionRotation();
     //PxVec3 pxPosition(pos.x, pos.y, pos.z);
     PxVec3 pxPosition(pos.x, pos.y, pos.z);
@@ -327,18 +319,8 @@ void MultiRigidBodyComponent::Initialize(physx::PxPhysics* physics)
         PxRigidDynamic* currentBody = physics->createRigidDynamic(worldPx);
         currentBody->userData = meshComponent_->GetOwner();
 
-        // ここでログを出す
-        {
-            //    char buf[256];
-            //    sprintf_s(buf, "[Init] Node %zu: worldPx.p = (%f, %f, %f)\n",
-            //        nodeIndex,
-            //        worldPx.p.x, worldPx.p.y, worldPx.p.z);
-            //    OutputDebugStringA(buf);
-        }
-
         std::vector<DirectX::XMFLOAT3> physicsVertices = ReturnPhysxVertices(mesh);
         PxConvexMesh* convexMesh = ToPxConvexMesh(physics, physicsVertices);
-        //PxConvexMesh* convexMesh = ToPxConvexMesh(physics, mesh.primitives[0].cachedVertices);
         bool isMeter = meshComponent_->model->isModelInMeters;
         float unitScale = isMeter ? 1.0f : 0.01f;
 
@@ -397,8 +379,8 @@ void MultiRigidBodyComponent::Initialize(physx::PxPhysics* physics)
         //curretBody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
         // 最初キネマティックとして登録する
-        //curretBody->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
-        currentBody->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
+        currentBody->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+        //currentBody->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
 
         //currentBody->setActorFlag(PxActorFlag::eVISUALIZATION, true);
         //currentBody->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);
@@ -589,28 +571,11 @@ void MultiRigidBodyComponent::Tick(float deltaTime)
     DirectX::XMFLOAT4X4 ownerTransform = meshComponent_->GetOwner()->GetWorldTransform();
     DirectX::XMMATRIX OwnerMatrix = DirectX::XMLoadFloat4x4(&ownerTransform);
 
-    static bool frag = true;
-    if (GetAsyncKeyState('N') & 0x8000)
-    {
-        frag = !frag;
-    }
-
     using namespace physx;
 #if 1
     for (const auto& [nodeIndex, body] : nodeIndexToRigidBody_)
     {
 
-        if (!frag)
-        {
-            // 動的剛体かチェック＆キャスト
-            physx::PxRigidDynamic* dynamicBody = body->is<physx::PxRigidDynamic>();
-            if (dynamicBody)
-            {
-                dynamicBody->setLinearVelocity(physx::PxVec3(0.0f, 0.0f, 0.0f));
-                dynamicBody->setAngularVelocity(physx::PxVec3(0.0f, 0.0f, 0.0f));
-            }
-        }
-        else
         {
 #if 0
             DirectX::XMFLOAT3 pos = animatedNodes_[nodeIndex].translation;

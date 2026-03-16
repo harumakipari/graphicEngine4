@@ -73,34 +73,48 @@ void AnimationController::OnUpdate(const float deltaTime)
     default:
         break;
     }
-    // 描画に使うノードをブレンドのノードにする
-    //target_->model->nodes = blendAnimationNodes;
+
+    // 描画に使うノードをブレンド結果にする
     target_->modelNodes = blendAnimationNodes;
 
-
+    // --- ルートモーション処理 ---
     if (enableRootMotion)
     {
-        InterleavedGltfModel::Node& node = blendAnimationNodes.at(rootNodeIndex);
+        InterleavedGltfModel::Node& rootNode = blendAnimationNodes.at(rootNodeIndex);
+
+        //DirectX::XMFLOAT4X4 worldTransform = owner->GetWorldTransform();
+
+        // アニメーション上のグローバル移動量
+        DirectX::XMFLOAT3 currentGlobalPos = { rootNode.globalTransform._41, rootNode.globalTransform._42, rootNode.globalTransform._43 };
+        DirectX::XMFLOAT3 delta = { currentGlobalPos.x - previousPosition.x,
+                                    currentGlobalPos.y - previousPosition.y,
+                                    currentGlobalPos.z - previousPosition.z };
+
+        // ワールド空間に変換
         DirectX::XMFLOAT4X4 worldTransform = owner->GetWorldTransform();
+        DirectX::XMStoreFloat3(&delta, DirectX::XMVector3TransformNormal(DirectX::XMLoadFloat3(&delta), DirectX::XMLoadFloat4x4(&worldTransform)));
 
-        DirectX::XMFLOAT3 position = { node.globalTransform._41, node.globalTransform._42, node.globalTransform._43 }; // global space
-        DirectX::XMFLOAT3 displacement = { position.x - previousPosition.x, position.y - previousPosition.y,  position.z - previousPosition.z }; // global space
-        DirectX::XMStoreFloat3(&displacement, DirectX::XMVector3TransformNormal(DirectX::XMLoadFloat3(&displacement), DirectX::XMLoadFloat4x4(&worldTransform))); // to world space
+        // 移動量のスケーリング（固定速度や倍率をここで調整可能）
+        float speedScale = 1.0f; // 1.0 = そのまま、0.5 = 半分、2.0 = 2倍など
+        delta.x *= speedScale;
+        delta.y *= speedScale;
+        delta.z *= speedScale;
 
+        // owner のワールド位置に加算（ルートモーションを反映）
         DirectX::XMFLOAT3 translation = owner->GetPosition();
-
-        translation.x += displacement.x;
-        translation.y += displacement.y;
-        translation.z += displacement.z;
-
-        previousPosition = position;
-        //ルートノードの変換量を初期姿勢の値に設定する。これは念のために行う。
-        node.translation = zeroTranslation;
-
-        // 子ノードのグローバル変換を再帰的に更新する。
-        target_->model->CumulateTransforms(blendAnimationNodes);
-
+        translation.x += delta.x;
+        translation.y += delta.y;
+        translation.z += delta.z;
         owner->SetPosition(translation);
+
+        // previousPosition を更新（アニメーション上の位置を追う）
+        previousPosition = currentGlobalPos;
+
+        // ルートノードはローカル初期値に戻す
+        rootNode.translation = zeroTranslation;
+
+        // 子ノードのグローバル変換を再帰的に更新
+        target_->model->CumulateTransforms(blendAnimationNodes);
     }
 
 

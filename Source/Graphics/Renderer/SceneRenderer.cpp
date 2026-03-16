@@ -36,20 +36,37 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext, const st
 
     for (auto* meshComponent : sorted)
     {
-        const auto& worldMat =
+        auto worldMat =
             meshComponent->GetComponentWorldTransform()
             .ToWorldTransform();
 
         meshComponent->UpdateConstantBuffer(immediateContext);
         meshComponent->UpdatePlusAlphaConstants(immediateContext);
 
-        if (meshComponent->model->mode ==
-            ModelTypes::ModelMode::SkeletalMesh)
+        // --- ConvexCollisionComponent があって、MeshComponent が一致する場合のみノードを置き換える ---
+        std::vector<InterleavedGltfModel::Node> animatedNodes = meshComponent->modelNodes;
+        if (auto* convex = meshComponent->GetOwner()->GetComponent<ConvexCollisionComponent>())
+        {
+            if (convex->GetMeshComponent() == meshComponent) // ←これで MeshComponent が対象か確認
+            {
+                animatedNodes = convex->GetAnimatedNodes();
+                // animationNodesがworld空間のためworldMatはモデル座標系にあった単位行列に変更すること
+                worldMat =
+                {
+                    -1,0,0,0,
+                     0,1,0,0,
+                     0,0,1,0,
+                     0,0,0,1,
+                };
+            }
+        }
+
+        if (meshComponent->model->mode == ModelTypes::ModelMode::SkeletalMesh)
         {
             Draw(immediateContext,
                 meshComponent,
                 worldMat,
-                meshComponent->modelNodes,
+                animatedNodes,
                 InterleavedGltfModel::RenderPass::Opaque);
         }
         else
@@ -57,7 +74,7 @@ void SceneRenderer::RenderOpaque(ID3D11DeviceContext* immediateContext, const st
             DrawWithStaticBatching(immediateContext,
                 meshComponent,
                 worldMat,
-                meshComponent->modelNodes,
+                animatedNodes,
                 InterleavedGltfModel::RenderPass::Opaque);
         }
     }
@@ -442,7 +459,7 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                     primitiveCBuffer->data.material = primitive.material;
                     primitiveCBuffer->data.hasTangent = primitive.has("TANGENT");
                     primitiveCBuffer->data.skin = node.skin;
-                    
+
 
                     //座標系の変換を行う
                     const DirectX::XMFLOAT4X4 coordinateSystemTransforms[]
@@ -1075,6 +1092,7 @@ RenderQueues SceneRenderer::BuildRenderQueues()
         if (!actor || !actor->IsActive() || !actor->GetRootComponent())
             continue;
 
+        // MeshComponentを収集
         std::vector<MeshComponent*> meshes;
         actor->GetComponents<MeshComponent>(meshes);
 
@@ -1116,6 +1134,8 @@ RenderQueues SceneRenderer::BuildRenderQueues()
                 queues.shadowCasters.push_back(mesh);
             }
         }
+
+
     }
 
     return queues;

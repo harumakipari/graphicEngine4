@@ -13,7 +13,7 @@ void DarkStageBarrelActor::Initialize(const Transform& transform)
     // 樽のがれきに使用するモデル
     auto barrelConvexMeshComponent = AddComponent<SkeletalMeshComponent>("barrelConvexMesh", parentName);
     barrelConvexMeshComponent->SetModel("./Data/Models/DarkStageAssets/Barrel_Convex1/Barrel_Convex1.gltf", true);
-    //barrelConvexMeshComponent->SetIsVisible(false);
+    barrelConvexMeshComponent->SetIsVisible(false);
 
     // 最初の壊れる前の箱の当たり判定
     preBoxComponent = AddComponent<BoxComponent>("boxComponent", parentName);
@@ -27,6 +27,7 @@ void DarkStageBarrelActor::Initialize(const Transform& transform)
     preBoxComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
     preBoxComponent->Initialize();
 
+
     // 樽の瓦礫
     convexComponent = AddComponent<ConvexCollisionComponent>("convexComponent", parentName);
     convexComponent->SetLayer(CollisionLayer::Convex);
@@ -35,11 +36,9 @@ void DarkStageBarrelActor::Initialize(const Transform& transform)
     convexComponent->SetResponseToLayer(CollisionLayer::WorldProps, CollisionComponent::CollisionResponse::Block);
     convexComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::Block);
     convexComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
-    //convexComponent->SetActive(false);
+    convexComponent->SetActive(false);
     convexComponent->CreateConvexMeshFromModel(barrelConvexMeshComponent.get());
-    convexComponent->AddToScene(); // ここで physx の scene に追加する　ここまでは物理演算の考慮に入れたくないから
-    //convexComponent->SetKinematic(true);
-    convexComponent->SetActive(true);
+    convexComponent->SetKinematic(true);
 }
 
 void DarkStageBarrelActor::Update(float deltaTime)
@@ -59,11 +58,11 @@ void DarkStageBarrelActor::BreakBarrel()
         convexComponent->SetActive(true);
     }
 
-    //// 瓦礫のモデルを表示する
-    //if (auto convexMesh = std::dynamic_pointer_cast<SkeletalMeshComponent>(FindComponentByName("barrelConvexMesh")))
-    //{
-    //    convexMesh->SetIsVisible(true);
-    //}
+    // 瓦礫のモデルを表示する
+    if (auto convexMesh = std::dynamic_pointer_cast<SkeletalMeshComponent>(FindComponentByName("barrelConvexMesh")))
+    {
+        convexMesh->SetIsVisible(true);
+    }
     // 元のモデルを消す
     barrelMeshComponent->SetIsVisible(false);
 }

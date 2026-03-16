@@ -549,7 +549,7 @@ private:
 class ConvexCollisionComponent :public CollisionComponent
 {
 public:
-    ConvexCollisionComponent(const std::string& name, std::shared_ptr<Actor> owner) :CollisionComponent(name, owner) {}
+    ConvexCollisionComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :CollisionComponent(name, owner) {}
 
     virtual void Initialize()override
     {
