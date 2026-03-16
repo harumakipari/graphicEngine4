@@ -2281,7 +2281,7 @@ DirectX::XMFLOAT3 InterleavedGltfModel::GetJointWorldPosition(/*size_t nodeIndex
 // モデルのジョイントの matrix を返す関数
 DirectX::XMFLOAT4X4 InterleavedGltfModel::GetJointMatrix(
     const std::string& name,
-    const std::vector<Node>& animatedNodes , const DirectX::XMFLOAT4X4& modelTransform)
+    const std::vector<Node>& animatedNodes, const DirectX::XMFLOAT4X4& modelTransform)
 {
     using namespace DirectX;
 
@@ -2293,12 +2293,37 @@ DirectX::XMFLOAT4X4 InterleavedGltfModel::GetJointMatrix(
             XMMATRIX model = XMLoadFloat4x4(&modelTransform);
 
             XMMATRIX world = bone * model;
+            //XMMATRIX world = bone;
 
             XMFLOAT4X4 result;
             XMStoreFloat4x4(&result, world);
 
             return result;
         }
+    }
+
+    XMFLOAT4X4 identity;
+    XMStoreFloat4x4(&identity, XMMatrixIdentity());
+    return identity;
+}
+// モデルのジョイントの matrix を返す関数
+DirectX::XMFLOAT4X4 InterleavedGltfModel::GetJointMatrix(
+    size_t nodeIndex,
+    const std::vector<Node>& animatedNodes, const DirectX::XMFLOAT4X4& modelTransform)
+{
+    using namespace DirectX;
+    const auto& node = animatedNodes[nodeIndex];
+    {
+        XMMATRIX bone = XMLoadFloat4x4(&node.globalTransform);
+        XMMATRIX model = XMLoadFloat4x4(&modelTransform);
+
+        XMMATRIX world = bone * model;
+        //XMMATRIX world = bone;
+
+        XMFLOAT4X4 result;
+        XMStoreFloat4x4(&result, world);
+
+        return result;
     }
 
     XMFLOAT4X4 identity;
@@ -2338,7 +2363,7 @@ DirectX::XMFLOAT4X4 InterleavedGltfModel::GetJointLocalMatrix(
     {
         if (node.name == name)
         {
-            return node.globalTransform;
+            //return node.globalTransform;
             XMMATRIX T = XMMatrixTranslation(
                 node.translation.x,
                 node.translation.y,
@@ -2359,6 +2384,41 @@ DirectX::XMFLOAT4X4 InterleavedGltfModel::GetJointLocalMatrix(
 
             return result;
         }
+    }
+
+    XMFLOAT4X4 identity;
+    XMStoreFloat4x4(&identity, XMMatrixIdentity());
+    return identity;
+}
+
+
+// モデルのジョイントのローカル空間の matrix を返す関数
+DirectX::XMFLOAT4X4 InterleavedGltfModel::GetJointLocalMatrix(
+    size_t nodeIndex,
+    const std::vector<Node>& animatedNodes)
+{
+    using namespace DirectX;
+    const auto& node = animatedNodes[nodeIndex];
+    {
+        XMMATRIX T = XMMatrixTranslation(
+            node.translation.x,
+            node.translation.y,
+            node.translation.z);
+
+        XMVECTOR q = XMLoadFloat4(&node.rotation);
+        XMMATRIX R = XMMatrixRotationQuaternion(q);
+
+        XMMATRIX S = XMMatrixScaling(
+            node.scale.x,
+            node.scale.y,
+            node.scale.z);
+
+        XMMATRIX M = T * R * S;
+
+        XMFLOAT4X4 result;
+        XMStoreFloat4x4(&result, M);
+
+        return result;
     }
 
     XMFLOAT4X4 identity;

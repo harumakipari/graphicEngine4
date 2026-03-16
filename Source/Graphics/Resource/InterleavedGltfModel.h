@@ -708,12 +708,15 @@ public:
 
     // モデルのジョイントの matrix を返す関数
     DirectX::XMFLOAT4X4 GetJointMatrix(/*size_t nodeIndex,*/const std::string& name, const std::vector<Node>& animatedNodes, const DirectX::XMFLOAT4X4& modelTransform);
+    // モデルのジョイントの matrix を返す関数
+    DirectX::XMFLOAT4X4 GetJointMatrix(size_t nodeIndex,const std::vector<Node>& animatedNodes, const DirectX::XMFLOAT4X4& modelTransform);
 
     // モデルのジョイントのローカル空間の position を返す関数
     DirectX::XMFLOAT3 GetJointLocalPosition(/*size_t nodeIndex,*/const std::string& name, const std::vector<Node>& animatedNodes);
 
     // モデルのジョイントのローカル空間の matrix を返す関数
     DirectX::XMFLOAT4X4 GetJointLocalMatrix(/*size_t nodeIndex,*/const std::string& name, const std::vector<Node>& animatedNodes);
+    DirectX::XMFLOAT4X4 GetJointLocalMatrix(size_t nodeIndex,const std::vector<Node>& animatedNodes);
 
     //アニメーションをブレンドする関数
     void BlendAnimations(const std::vector<Node>& fromNodes, const std::vector<Node>& toNodes, float factor, std::vector<Node>& outNodes);

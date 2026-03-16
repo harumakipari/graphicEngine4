@@ -26,11 +26,10 @@ void SceneComponent::UpdateComponentToWorldWithParent(SceneComponent* parent, in
     }
     componentToWorldTransformUpdate_ = true;
 
-    Transform newTransform;
     // 新しい ComponentToWorld 変換を計算する
     const Transform relativeTransform(relativeLocation_, relativeRotation_, relativeScale_);
 
-    newTransform = CalculateNewComponentToWorldTransform(relativeTransform, parent, socketNode);
+    Transform newTransform = CalculateNewComponentToWorldTransform(relativeTransform, parent, socketNode);
 
     // Transform に変更があったか判定する（浮動小数点の誤差を許容して比較）
     bool hasChanged = !GetComponentWorldTransform().Equals(newTransform, 1.0e-8f);
@@ -41,9 +40,6 @@ void SceneComponent::UpdateComponentToWorldWithParent(SceneComponent* parent, in
     {
         // Transform を更新
         componentToWorld_ = newTransform;
-
-        // 物理補正は通常更新が入ったら無効にする
-        ClearPhysicalCorrection();
 
         // 変更を子に伝播させる
         PropagateTransformUpdate(true, updateTransformFlags, teleport);

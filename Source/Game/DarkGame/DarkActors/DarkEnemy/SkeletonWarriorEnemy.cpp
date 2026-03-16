@@ -8,6 +8,7 @@ void SkeletonWarriorActor::Initialize(const Transform& transform)
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/Models/Characters/Skeleton/Skeleton.gltf");
     skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Enemy;   // オブジェクトの種類を Enemy に設定
+    skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
@@ -38,6 +39,9 @@ void SkeletonWarriorActor::Initialize(const Transform& transform)
 
     sword = AddComponent<SkeletalMeshComponent>("SwordMesh", parentName);
     sword->SetModel("./Data/Models/Weapons/Sword/Sword.gltf");
+    sword->AttachToComponent(skeletalMeshComponent, 16);
+    //sword->SetRelativeLocationDirect({ -0.1f, 0.1f, -0.05f });
+    //sword->SetRelativeEulerRotationDirect({ 0.0f, 1.57f, 0.0f });
     //DirectX::XMFLOAT4X4 swordMatrix = skeletalMeshComponent->model->GetJointMatrix("Hand_r", skeletalMeshComponent->modelNodes);
     //sword->SetRelativeMatrixDirect(swordMatrix);
 }
@@ -45,39 +49,38 @@ void SkeletonWarriorActor::Initialize(const Transform& transform)
 void SkeletonWarriorActor::Update(float elapsedTime)
 {
     Character::Update(elapsedTime);
+
+    //// 自身のワールド行列
     DirectX::XMFLOAT4X4 matrix = GetWorldTransform();
+    //DirectX::XMMATRIX PlayerWorldMatrix = DirectX::XMLoadFloat4x4(&matrix);
 
-
-    //// 武器のローカル行列を計算する
-    //DirectX::XMFLOAT4  weaponTransform= sword->SetWorldMatrixDirect()
-    //DirectX::XMStoreFloat4x4(&weapon.transform, S * R * T);
+    //// 武器のローカル行列を取得する
+    //DirectX::XMFLOAT4X4  weaponTransform = sword->GetRelativeTransform().ToWorldTransform();
+    //DirectX::XMMATRIX WeaponLocalMatrix = sword->GetRelativeTransform().ToMatrix();
 
     //// キャラクターモデルから右手ノードを検索する
-    //for (const Model::Node& node : player.model->GetNodes())
-    //{
-    //    if (strcmp(node.name, rightHandName) == 0)
-    //    {
-    //        // 右手ノードの行列と武器のローカル行列から武器のワールド行列を求める
-    //        DirectX::XMMATRIX WeaponLocalMatrix = DirectX::XMLoadFloat4x4(&weapon.transform);
-    //        DirectX::XMMATRIX RightHandGlobalMatrix = DirectX::XMLoadFloat4x4(&node.globalTransform);
-    //        DirectX::XMMATRIX PlayerWorldMatrix = DirectX::XMLoadFloat4x4(&player.transform);
-    //        DirectX::XMMATRIX HandWorld = DirectX::XMMatrixMultiply(DirectX::XMMatrixMultiply(WeaponLocalMatrix, RightHandGlobalMatrix), PlayerWorldMatrix);
-    //        //DirectX::XMMATRIX HandWorld = WeaponLocalMatrix * RightHandGlobalMatrix * PlayerWorldMatrix;
-    //        DirectX::XMStoreFloat4x4(&weapon.transform, HandWorld);
-    //        break;
-    //    }
-    //}
+    //DirectX::XMFLOAT4X4 swordMatrix = skeletalMeshComponent->model->GetJointMatrix("Hand_r", skeletalMeshComponent->modelNodes, matrix);
+    ////DirectX::XMFLOAT4X4 swordMatrix = skeletalMeshComponent->model->GetJointLocalMatrix("Hand_r", skeletalMeshComponent->modelNodes);
+    //DirectX::XMMATRIX RightHandGlobalMatrix = DirectX::XMLoadFloat4x4(&swordMatrix);
 
-
+    //DirectX::XMMATRIX HandWorld = DirectX::XMMatrixMultiply(WeaponLocalMatrix, RightHandGlobalMatrix);
+    ////DirectX::XMMATRIX HandWorld = WeaponLocalMatrix * RightHandGlobalMatrix * PlayerWorldMatrix;
+    //DirectX::XMStoreFloat4x4(&swordMatrix, HandWorld);
+    //sword->SetWorldMatrixDirect(swordMatrix);
     //DirectX::XMFLOAT4X4 swordMatrix = skeletalMeshComponent->model->GetJointLocalMatrix("Hand_r", skeletalMeshComponent->modelNodes);
-    DirectX::XMFLOAT4X4 swordMatrix = skeletalMeshComponent->model->GetJointMatrix("Hand_r", skeletalMeshComponent->modelNodes, matrix);
-    //DirectX::XMFLOAT3 swordPosition = skeletalMeshComponent->model->GetJointWorldPosition("Hand_r", skeletalMeshComponent->modelNodes, matrix);
-    sword->SetWorldMatrixDirect(swordMatrix);
+    //DirectX::XMFLOAT4X4 swordMatrix = skeletalMeshComponent->model->GetJointMatrix("Hand_r", skeletalMeshComponent->modelNodes, matrix);
+
+
+    //DirectX::XMFLOAT3 swordPosition = skeletalMeshComponent->model->GetJointLocalPosition("Hand_r_end", skeletalMeshComponent->modelNodes);
+    //sword->SetRelativeLocationDirect(swordPosition);
+
+
+    //sword->SetWorldMatrixDirect(swordMatrix);
     //sword->SetRelativeMatrixDirect(swordMatrix);
-    //DirectX::XMFLOAT4X4 shieldMatrix = skeletalMeshComponent->model->GetJointLocalMatrix("Hand_l", skeletalMeshComponent->modelNodes);
-    DirectX::XMFLOAT4X4 shieldMatrix = skeletalMeshComponent->model->GetJointMatrix("Hand_l", skeletalMeshComponent->modelNodes, matrix);
-    //shield->SetRelativeMatrixDirect(shieldMatrix);
-    shield->SetWorldMatrixDirect(shieldMatrix);
+    ////DirectX::XMFLOAT4X4 shieldMatrix = skeletalMeshComponent->model->GetJointLocalMatrix("Hand_l", skeletalMeshComponent->modelNodes);
+    //DirectX::XMFLOAT4X4 shieldMatrix = skeletalMeshComponent->model->GetJointMatrix("Hand_l", skeletalMeshComponent->modelNodes, matrix);
+    ////shield->SetRelativeMatrixDirect(shieldMatrix);
+    //shield->SetWorldMatrixDirect(shieldMatrix);
 
 
     //if (waypoints.empty()) return;

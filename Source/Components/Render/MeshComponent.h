@@ -57,6 +57,7 @@ public:
     {
     }
 
+    
     DirectX::XMFLOAT3 GetModelSize() const
     {
         AABB aabb = model->GetAABB();
@@ -188,6 +189,7 @@ public:
         modelNodes = model->GetNodes();
     }
 
+    Transform GetSocketTransform(int socketNode) const override;
 
     void AppendAnimations(const std::vector<std::string>& filenames) const
     {

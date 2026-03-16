@@ -30,24 +30,10 @@ public:
 
     virtual ~SceneComponent() {}
 
-    // 押し出された Transform を保存
-    void SetPhysicalTransform(const Transform& t)
-    {
-        physicalTransform_ = t;
-        hasPhysicalCorrection_ = true;
-    }
-
     // Tick で最終Transformを取得するときはこれを使う
     Transform GetFinalWorldTransform() const
     {
-        if (hasPhysicalCorrection_)
-            return physicalTransform_;
         return componentToWorld_;
-    }
-
-    void ClearPhysicalCorrection()
-    {
-        hasPhysicalCorrection_ = false;
     }
 
     // 消去処理
@@ -55,20 +41,15 @@ public:
 
     // 初期化時に困るから即時 Transform 更新処理
     void UpdateTransformImmediate();
-private:
+protected:
     // SceneComponent や Transform 持ちクラスに追加
     DirectX::XMFLOAT3 inspectorEuler_ = { 0,0,0 };
     bool inspectorEulerInitialized_ = false;
-
-    // 衝突押し出しで得る Transform を保存する用の変数
-    Transform physicalTransform_;
 
     // このコンポーネントのワールド空間上でのTransform
     // final Transform_　親子関係を全て考慮した最終的なTransform
     Transform componentToWorld_;     // キャッシュ
 
-    // 衝突押出の Transform が入っているか
-    bool hasPhysicalCorrection_ = false;
 protected:
     // 現在接続している親。　valid　なら　relativeLocation_ などはこのオブジェクトに対する相対値になる
     std::weak_ptr<SceneComponent> attachParent_; // 弱参照
@@ -152,7 +133,6 @@ public:
 #endif
     }
 private:
-
     // 親からの相対的な位置
     DirectX::XMFLOAT3 relativeLocation_ = { 0.0f,0.0f,0.0f };
 
@@ -188,9 +168,6 @@ private:
     // relativeScale_ を親ではなくワールド座標系に対する位置とみなす場合に true
     uint8_t absoluteScale_ : 1 = 0;
 
-    // true の場合はこのコンポーネントは描画されかつ、影も落とす
-    // false の場合は描画もされず、影も落とさない
-    uint8_t visible_ : 1 = 1;
 
 public:
     bool IsUsingAbsoluteLocation() const
@@ -466,12 +443,14 @@ public:
     // このコンポーネントにアタッチされている全ての子コンポーネントたちの Transform を更新する
     void UpdateChildTransforms(UpdateTransformFlags updateTransformFlags = UpdateTransformFlags::None, TeleportType teleport = TeleportType::None);
 
-protected:
-    // このコンポーネントの親からの相対的な Transform を返す
+        // このコンポーネントの親からの相対的な Transform を返す
     Transform GetRelativeTransform() const
     {
         return Transform(relativeLocation_, relativeRotation_, relativeScale_);
     }
+
+
+protected:
 
     // 指定されたソケットノードのワールド空間のTransformを返す
     // ソケットが見つからなかった場合は、自身の WorldTransform を返す
@@ -541,10 +520,6 @@ protected:
         }
     }
 
-    // このコンポーネントを、指定された親コンポーネントにアタッチ（接続）する
-    // parent はアタッチ先の親コンポーネント　
-    // socketNode 接続先のソケットノード番号( -1 ならデフォルト)
-    void AttachToComponent(const std::shared_ptr<SceneComponent>& parent, int socketNode);
 
     // このコンポーネントを現在の親のコンポーネントから切り離す
     void DetachFromParent();
@@ -617,9 +592,16 @@ public:
     void AttachTo(const std::shared_ptr<SceneComponent>& parent)
     {
         attachParent_ = parent;
-       parent->attachChildren_.push_back(shared_from_this());
+        parent->attachChildren_.push_back(shared_from_this());
         // もう一度確認
     }
+
+    // このコンポーネントを、指定された親コンポーネントにアタッチ（接続）する
+// parent はアタッチ先の親コンポーネント　
+// socketNode 接続先のソケットノード番号( -1 ならデフォルト)
+    void AttachToComponent(const std::shared_ptr<SceneComponent>& parent, int socketNode);
+
+
     void AddWorldOffset(const DirectX::XMFLOAT3& offset);
 
     bool isDirty = true;
