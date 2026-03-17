@@ -421,6 +421,7 @@ void CinematicCameraComponent::SaveBookmarksToFile()
         item["name"] = b.name;
 
         item["pos"] = { b.position.x, b.position.y, b.position.z };
+        item["rotation"] = { b.rotation.x, b.rotation.y, b.rotation.z,b.rotation.w };
         item["yaw"] = b.yaw;
         item["pitch"] = b.pitch;
         item["fov"] = b.fov;
@@ -456,6 +457,10 @@ void CinematicCameraComponent::LoadBookmarksFromFile()
         b.position.x = item["pos"][0];
         b.position.y = item["pos"][1];
         b.position.z = item["pos"][2];
+        b.rotation.x = item["rotation"][0];
+        b.rotation.y = item["rotation"][1];
+        b.rotation.z = item["rotation"][2];
+        b.rotation.w = item["rotation"][3];
         b.yaw = item["yaw"];
         b.pitch = item["pitch"];
         b.fov = item["fov"];

@@ -28,8 +28,8 @@ public:
     struct CameraBookmark
     {
         std::string name = "Bookmark";
-        DirectX::XMFLOAT3 position{};
-        DirectX::XMFLOAT4 rotation{};
+        DirectX::XMFLOAT3 position{ 0.0f,0.0f,0.0f };
+        DirectX::XMFLOAT4 rotation{ 0.0f,0.0f,0.0f,1.0f };
         float yaw = 0;
         float pitch = 0;
         float fov = 0;
@@ -52,6 +52,7 @@ public:
     void SaveBookmark()
     {
         bookmark.position = GetComponentLocation();
+        bookmark.rotation = GetComponentRotation();
         bookmark.yaw = yaw;
         bookmark.pitch = pitch;
         bookmark.fov = fovY;
@@ -64,6 +65,7 @@ public:
         if (!hasBookmark) return;
 
         GetOwner()->SetPosition(bookmark.position);
+        GetOwner()->SetQuaternionRotation(bookmark.rotation);
         yaw = bookmark.yaw;
         pitch = bookmark.pitch;
         fovY = bookmark.fov;
@@ -452,6 +454,9 @@ public:
         if (!useCinematic) return;
         HandleKeyboardInput(deltaTime);
         HandleMouseInput(deltaTime);
+        if (playingPath) {
+            UpdateCameraPath(deltaTime);
+        }
     }
 
     void SetIsUseCinematic(const bool useCinematic) { this->useCinematic = useCinematic; }
@@ -609,6 +614,10 @@ private:
                 ImGui::PopID();
             }
 
+            if (ImGui::Button("Play Path")) {
+                StartCameraPath();
+            }
+
             ImGui::TreePop();
         }
 #endif
@@ -645,8 +654,71 @@ private:
         UpdateRotationFromYawPitch();
     }
 
+    void StartCameraPath() {
+        if (bookmarks.empty()) return;
+        playingPath = true;
+        pathTime = 0.f;
+        currentTarget = 1; // 1つ目のブックマークに向かう
+    }
+
+    void UpdateCameraPath(float deltaTime)
+    {
+        if (currentTarget >= bookmarks.size()) {
+            playingPath = false;
+            return;
+        }
+
+        auto& src = bookmarks[currentTarget - 1];
+        auto& dst = bookmarks[currentTarget];
+
+        pathTime += deltaTime;
+        float t = std::clamp(pathTime / pathDuration, 0.f, 1.f);
+
+        // Lerp position
+        DirectX::XMFLOAT3 pos;
+        pos.x = src.position.x + (dst.position.x - src.position.x) * t;
+        pos.y = src.position.y + (dst.position.y - src.position.y) * t;
+        pos.z = src.position.z + (dst.position.z - src.position.z) * t;
+        GetOwner()->SetPosition(pos);
+
+        // SLerp rotation
+        DirectX::XMVECTOR q1 = DirectX::XMLoadFloat4(&src.rotation);
+        DirectX::XMVECTOR q2 = DirectX::XMLoadFloat4(&dst.rotation);
+
+        q1 = DirectX::XMQuaternionNormalize(q1);
+        q2 = DirectX::XMQuaternionNormalize(q2);
+
+        float dot = DirectX::XMVectorGetX(DirectX::XMVector4Dot(q1, q2));
+        if (dot < 0.f) q2 = DirectX::XMVectorNegate(q2); // 最短角度補正
+
+        DirectX::XMVECTOR q;
+        if (DirectX::XMQuaternionEqual(q1, q2)) {
+            q = q1;
+        }
+        else {
+            q = DirectX::XMQuaternionSlerp(q1, q2, t);
+        }
+
+        DirectX::XMFLOAT4 rot;
+        DirectX::XMStoreFloat4(&rot, q);
+        GetOwner()->SetQuaternionRotation(rot);
+        // Lerp FOV
+        fovY = src.fov + (dst.fov - src.fov) * t;
+
+        if (t >= 1.f) {
+            // 次のターゲットに移行
+            pathTime = 0.f;
+            currentTarget++;
+        }
+    }
+
     std::vector<CameraBookmark> bookmarks;
     static const int MAX_BOOKMARKS = 10;
+
+    bool playingPath = false;
+    float pathTime = 0.f;
+    int currentTarget = 0;
+    float pathDuration = 2.0f; // 秒単位
 };
 
 
