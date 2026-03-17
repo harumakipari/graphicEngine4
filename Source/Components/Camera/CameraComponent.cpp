@@ -53,7 +53,7 @@ const DirectX::XMFLOAT4X4& CameraComponent::GetView()
         XMMatrixLookAtLH(
             eye,
             focus,
-            XMVectorSet(0, 1, 0, 0)
+            up
         ));
 
     return view;

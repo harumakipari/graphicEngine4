@@ -30,13 +30,17 @@ void CameraManager::ToggleCamera(const Scene* scene)
             {
                 dbg->SetPosition(cam->GetPosition());
                 dbg->SetQuaternionRotation(cam->GetQuaternionRotation());
-                float fov = cam->GetCameraComponent()->GetFov();
+                auto cameraCom= cam->GetCameraComponent();
+                float fov = cameraCom->GetFov();
+                float pitch = cameraCom->GetPitch();
+                float yaw = cameraCom->GetYaw();
 
                 if (auto dbgComp=dynamic_cast <DebugCameraComponent*>(dbg->GetCameraComponent()))
                 {
                     dbgComp->SetIsUseDebug(useDebugCamera);
                     dbgComp->SetFov(fov);
-
+                    dbgComp->SetYawAndPitch(yaw, pitch);
+                    
                 }
                 //dbg->SetQuaternionRotation({0.0f,0.0f,0.0f,1.0f});
                 //CameraState caneraState=

@@ -27,7 +27,10 @@ public:
     struct CameraBookmark
     {
         DirectX::XMFLOAT3 position;
-        DirectX::XMFLOAT4 rotation;
+
+        float yaw;
+        float pitch;
+        float fov;
     };
 
     CameraBookmark bookmark;
@@ -36,7 +39,7 @@ public:
     CameraComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner) {}
 
     // パースペクティブ設定
-    void SetPerspective(float fovY, float aspect, float nearZ, float farZ)
+    void SetPerspective(const float fovY, const float aspect, const float nearZ, const float farZ)
     {
         this->fovY = fovY;
         this->aspect = aspect;
@@ -47,7 +50,10 @@ public:
     void SaveBookmark()
     {
         bookmark.position = GetComponentLocation();
-        bookmark.rotation = GetComponentRotation();
+        bookmark.yaw = yaw;
+        bookmark.pitch = pitch;
+        bookmark.fov = fovY;
+        
         hasBookmark = true;
     }
 
@@ -55,8 +61,11 @@ public:
     {
         if (!hasBookmark) return;
 
-        SetWorldLocationDirect(bookmark.position);
-        SetWorldRotationDirect(bookmark.rotation);
+        GetOwner()->SetPosition(bookmark.position);
+        yaw = bookmark.yaw;
+        pitch = bookmark.pitch;
+        fovY = bookmark.fov;
+        UpdateRotationFromYawPitch();
     }
 
     const DirectX::XMFLOAT4X4& GetView();
@@ -90,6 +99,7 @@ public:
 
     ViewConstants GetViewConstants();
 
+    // CameraActorのrotationを更新する
     void UpdateRotationFromYawPitch()
     {
         using namespace DirectX;
@@ -111,13 +121,13 @@ public:
         GetOwner()->SetQuaternionRotation(rot);
     }
 
-    void AddYaw(float v)
+    void AddYaw(const float v)
     {
         yaw += v;
         UpdateRotationFromYawPitch();
     }
 
-    void AddPitch(float v)
+    void AddPitch(const float v)
     {
         pitch += v;
 
@@ -126,6 +136,13 @@ public:
             -DirectX::XM_PIDIV2 + 0.01f,
             DirectX::XM_PIDIV2 - 0.01f);
 
+        UpdateRotationFromYawPitch();
+    }
+
+    void SetYawAndPitch(const float yaw, const float pitch)
+    {
+        this->yaw = yaw;
+        this->pitch = pitch;
         UpdateRotationFromYawPitch();
     }
 
@@ -158,7 +175,7 @@ class TPSCameraComponent : public CameraComponent
 public:
     TPSCameraComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :CameraComponent(name, owner) {}
 
-    void Tick(float deltaTime) override
+    void Tick(const float deltaTime) override
     {
         easingComponent.Tick(deltaTime);
 
@@ -211,7 +228,7 @@ public:
     void AutoFollow(const DirectX::XMFLOAT3& moveDir, const DirectX::XMFLOAT2& rightStick, float deltaTime);
 
     // カメラの距離をイージングで変化させる
-    void PlayDistance(float from, float to, float time)
+    void PlayDistance(const float from, const float to, const float time)
     {
         distanceFrom = from;
         distanceTo = to;
@@ -221,7 +238,7 @@ public:
 
         PropertyAccessor<float> accessor;
         accessor.getter = [this]() { return distanceEasingValue; };
-        accessor.setter = [this](float t)
+        accessor.setter = [this](const float t)
             {
                 distanceEasingValue = t;
                 distance = std::lerp(distanceFrom, distanceTo, t);
@@ -274,17 +291,17 @@ class DebugCameraComponent :public CameraComponent
 public:
     DebugCameraComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :CameraComponent(name, owner) {}
 
-    void Tick(float deltaTime)override
+    void Tick(const float deltaTime)override
     {
         if (!useDebug) return;
         HandleKeyboardInput(deltaTime);
         HandleMouseInput(deltaTime);
-        if (InputSystem::GetInputState("F5",InputStateMask::Trigger))
+        if (InputSystem::GetInputState("F5",InputStateMask::Release))
         {
             SaveBookmark();
         }
 
-        if (InputSystem::GetInputState("F6", InputStateMask::Trigger))
+        if (InputSystem::GetInputState("F6", InputStateMask::Release))
         {
             LoadBookmark();
         }
@@ -300,14 +317,17 @@ private:
     void HandleKeyboardInput(float deltaTime);
     void HandleMouseInput(float deltaTime)
     {
-#if 0
+#if 1
         if (InputSystem::GetInputState("MouseRight"))
         {
             int dx, dy;
             InputSystem::GetMouseDelta(dx, dy);
 
-            yaw += dx * rotateSpeed;
-            pitch -= dy * rotateSpeed;
+            AddYaw(dx * rotateSpeed);
+            AddPitch(dy * rotateSpeed);
+
+            //yaw += dx * rotateSpeed;
+            //pitch += dy * rotateSpeed;
 
             // 上下向きすぎ防止（重要）
             pitch = std::clamp(pitch, -DirectX::XM_PIDIV2 + 0.01f, DirectX::XM_PIDIV2 - 0.01f);
