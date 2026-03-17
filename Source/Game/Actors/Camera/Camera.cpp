@@ -31,7 +31,7 @@ void MainCamera::Update(float deltaTime)
 
     // ƒJƒƒ‰‰ñ“]
     mainCameraComponent->AddYaw(rightStick.x * deltaTime * 2.0f);
-    mainCameraComponent->AddPitch( rightStick.y * deltaTime * 2.0f);
+    mainCameraComponent->AddPitch( -rightStick.y * deltaTime * 2.0f);
 
     //const float limit = DirectX::XMConvertToRadians(80.0f);
 

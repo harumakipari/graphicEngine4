@@ -845,13 +845,13 @@ void SceneBase::DrawPostEffectTab()
         "SSAO",
         "Final"
     };
-
     ImGui::Combo("Render Step", &shaderCBuffer->data.renderStep, renderStepItems, IM_ARRAYSIZE(renderStepItems));
     //CheckboxInt("Enable SSAO", &shaderCBuffer->data.enableSsao);
     //CheckboxInt("Enable SSR", &shaderCBuffer->data.enableSsr);
     //CheckboxInt("Enable Bloom", &shaderCBuffer->data.enableBloom);
     //CheckboxInt("Enable Blur", &shaderCBuffer->data.enableBlur);
     //CheckboxInt("Enable Fog", &shaderCBuffer->data.enableFog);
+    ImGui::SliderFloat("objectIblIntensity", &shaderCBuffer->data.objectIblIntensity, 0.0f, +30.0f);
     CheckboxInt("Enable ToneMapping", &shaderCBuffer->data.enableToneMapping);
     ImGui::Checkbox("Enable SSAO", &enableSSAO);
     ImGui::Checkbox("Enable SSR", &enableSSR);

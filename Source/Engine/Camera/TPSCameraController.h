@@ -41,14 +41,20 @@ public:
                 cosf(yaw) * cosf(pitch),
                 0);
 
+
         XMVECTOR idealEye = pivot - forward * camera->distance;
 
-        XMVECTOR currentEye = idealEye;
+        XMVECTOR resolvedEye =
+            camera->ResolveCameraCollision(pivot, idealEye);
+
+
+        XMVECTOR currentEye = resolvedEye;
+        //XMVECTOR currentEye = idealEye;
 
         XMFLOAT3 pos;
         XMStoreFloat3(&pos, currentEye); 
 
-        //camera->SetWorldLocationDirect(pos)
+        
         camera->GetOwner()->SetPosition(pos);
         XMFLOAT3 pivot3;
         XMStoreFloat3(&pivot3, pivot);

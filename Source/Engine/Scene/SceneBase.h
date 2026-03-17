@@ -109,7 +109,7 @@ protected:
 
     struct ShaderConstants
     {
-        float shadowColor = 0.422f;
+        float shadowColor = 0.68f;
         float shadowDepthBias = -0.00207f;
         float splitU = 0.0f;
         float	hueShift = -0.028f;	// 色相調整 -1 から 1 （-1 は負方向の 180 度、0 は変更なし、1 は正方向の 180 度）
@@ -120,7 +120,7 @@ protected:
         float focusDistance = 4.6f; // 焦点距離
 
         float dofRange = 80.0f;  // 被写界深度範囲
-        float align;
+        float objectIblIntensity = 23.0f; // オブジェクトのIblIntensity (今は骸骨を明るくするために)
         int renderStep = 0; // デバック表示用のレンダーステップ
         int enableToneMapping = 1; // トーンマッピング有効化フラグ
 

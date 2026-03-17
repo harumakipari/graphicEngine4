@@ -9,7 +9,7 @@ void SkeletonWarriorActor::Initialize(const Transform& transform)
     //skeletalMeshComponent->SetModel("./Data/Models/Characters/Skeleton/Skeleton.gltf");
     skeletalMeshComponent->SetModel("./Data/Models/Characters/Skeleton/SK_Skeleton_01.gltf");
     skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Enemy;   // オブジェクトの種類を Enemy に設定
-    skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP;
+    skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP; // 手にちゃんとつけるために
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
@@ -52,7 +52,7 @@ void SkeletonWarriorActor::Initialize(const Transform& transform)
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
         height = size.y;
         radius = size.x * 0.5f;
-        mass = 40.0f;
+        mass = 60.0f;
         capsuleComponent->SetRadiusAndHeight(radius, height);
         capsuleComponent->SetMass(mass);
         capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
@@ -74,10 +74,10 @@ void SkeletonWarriorActor::Update(float elapsedTime)
 
     //if (waypoints.empty()) return;
 
-    DirectX::XMFLOAT3 position = GetPosition();
+    //DirectX::XMFLOAT3 position = GetPosition();
 
-    position.z += 0.1f * elapsedTime;
-    SetPosition(position);
+    //position.z += 0.1f * elapsedTime;
+    //SetPosition(position);
 
     //DirectX::XMFLOAT3 target = waypoints[currentWaypoint];
 

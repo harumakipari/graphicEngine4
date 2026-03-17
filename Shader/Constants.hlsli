@@ -23,7 +23,7 @@ cbuffer SHADER_CONSTANT_BUFFER : register(b9)
     float focusDistance; // 焦点距離
 
     float dofRange ; // 被写界深度範囲
-    float aligns;
+    float objectIblIntensity; //オブジェクトごとのiblIntensity
     int renderStep;
     int enableToneMapping;
 

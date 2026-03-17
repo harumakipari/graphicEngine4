@@ -16,13 +16,15 @@ Texture2D emissiveMap : register(t4);
 float4 main(VS_OUT pin) : SV_TARGET
 {
 
-    float3 normal = normalMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).xyz; // world space 
+    float4 sampled = normalMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
+    float3 normal = sampled.xyz; // world space 
+    int objectType = sampled.w;
 
     float4 baseColor = colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
 
     float3 position = positionMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).xyz; // world space
 
-    float4 sampled = materialMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
+    sampled = materialMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
     float metallicFactor = sampled.x;
     float roughnessFactor = sampled.y;
     float occlusionFactor = sampled.z;
@@ -32,6 +34,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 emissive = sampled.xyz;
     float skymap = sampled.w;
     float emissiveFlag = skymap;
+
 
     if (skymap == 1)
     { // 何も書き込まれていなかったら スカイマップのために
@@ -156,8 +159,15 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
     
 #if 1   // 画像ベースの照明
+
     float3 iblDiffuse = IblRadianceLambertian(N, V, roughnessFactor, cDiff, f0) * iblIntensity;
     float3 iblSpecular = IblRadianceGgx(N, V, roughnessFactor, f0) * iblIntensity;
+
+    if (objectType == OBJECT_ENEMY)
+    {// 敵の時は明るくする
+        iblDiffuse = IblRadianceLambertian(N, V, roughnessFactor, cDiff, f0) * objectIblIntensity;
+        iblSpecular = IblRadianceGgx(N, V, roughnessFactor, f0) * objectIblIntensity;
+    }
 #endif
 
     float3 totalDiffuse = diffuse + (pointDiffuse * pointLightDiffuseIntensity) + iblDiffuse;
@@ -174,7 +184,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
     float3 ambient = baseColor.rgb * 0.05;
 
-    float3 lo = totalDiffuse + totalSpecular + (emissive)/* + rim + ambient*/;
+    float3 lo = totalDiffuse + totalSpecular + (emissive) /* + rim + ambient*/;
 
     int debugLightComplexity = 0;
     if (debugLightComplexity != 0)

@@ -108,6 +108,7 @@ public:
     {
         using namespace DirectX;
 
+#if 0
         XMVECTOR qYaw = XMQuaternionRotationAxis(
             XMVectorSet(0, 1, 0, 0),
             yaw);
@@ -118,6 +119,12 @@ public:
 
         XMVECTOR q = XMQuaternionNormalize(
             XMQuaternionMultiply(qPitch, qYaw));
+#else
+        XMVECTOR qYaw = XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), yaw);
+        XMVECTOR right = XMVector3Rotate(XMVectorSet(1, 0, 0, 0), qYaw);
+        XMVECTOR qPitch = XMQuaternionRotationAxis(right, pitch);
+        XMVECTOR q = XMQuaternionNormalize(XMQuaternionMultiply(qPitch, qYaw));
+#endif // 0
 
         XMFLOAT4 rot;
         XMStoreFloat4(&rot, q);
@@ -137,8 +144,9 @@ public:
 
         pitch = std::clamp(
             pitch,
-            -DirectX::XM_PIDIV2 + 0.01f,
-            DirectX::XM_PIDIV2 - 0.01f);
+            DirectX::XMConvertToRadians(-60.0f),
+            DirectX::XMConvertToRadians(80.0f)
+        );
 
         UpdateRotationFromYawPitch();
     }
@@ -156,9 +164,9 @@ public:
 
     float GetFov()const { return fovY; }
 
-    void SetFov(float fov)
+    void SetFov(const float fov)
     {
-        SetPerspective(fovY, Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
+        SetPerspective(fov, Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
     }
 protected:
     float fovY = DirectX::XMConvertToRadians(35.0f);
@@ -183,11 +191,6 @@ public:
     {
         easingComponent.Tick(deltaTime);
 
-        pitch = std::clamp(
-            pitch,
-            DirectX::XMConvertToRadians(-60.0f),
-            DirectX::XMConvertToRadians(80.0f)
-        );
     }
 
     virtual void DrawImGuiInspector() override
@@ -225,12 +228,6 @@ public:
 #endif
     }
 
-    //const DirectX::XMFLOAT4X4& GetView() override;
-
-
-    // 自動随従する
-    void AutoFollow(const DirectX::XMFLOAT3& moveDir, const DirectX::XMFLOAT2& rightStick, float deltaTime);
-
     // カメラの距離をイージングで変化させる
     void PlayDistance(const float from, const float to, const float time)
     {
@@ -255,14 +252,13 @@ public:
     DirectX::XMFLOAT3 targetOffset = { 0.0f, 1.5f, 0.0f }; // 注視点のオフセット。キャラクターの頭あたりを注視するために Y を 1.5f くらいにしている
     DirectX::XMFLOAT3 cameraOffset = { 0.0f, 0.0f, 0.0f }; // カメラの位置を微調整するためのオフセット
 
-
-
-
-private:
     DirectX::XMVECTOR ResolveCameraCollision(
         DirectX::FXMVECTOR focus,
         DirectX::FXMVECTOR idealEye
     );
+
+
+private:
 
 
     static float WrapAngle(float a)
