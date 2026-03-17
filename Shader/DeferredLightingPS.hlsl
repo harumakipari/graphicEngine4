@@ -164,7 +164,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 iblSpecular = IblRadianceGgx(N, V, roughnessFactor, f0) * iblIntensity;
 
     if (objectType == OBJECT_ENEMY)
-    {// “G‚ÌŽž‚Í–¾‚é‚­‚·‚é
+    { // “G‚ÌŽž‚Í–¾‚é‚­‚·‚é
         iblDiffuse = IblRadianceLambertian(N, V, roughnessFactor, cDiff, f0) * objectIblIntensity;
         iblSpecular = IblRadianceGgx(N, V, roughnessFactor, f0) * objectIblIntensity;
     }
@@ -184,7 +184,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
     float3 ambient = baseColor.rgb * 0.05;
 
-    float3 lo = totalDiffuse + totalSpecular + (emissive) + rim + ambient;
+    float3 lo = totalDiffuse + totalSpecular + (emissive) + rim /*+ ambient*/;
 
 #if 0
     int debugLightComplexity = 0;

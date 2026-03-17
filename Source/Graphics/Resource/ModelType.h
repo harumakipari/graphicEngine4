@@ -24,4 +24,5 @@ enum class ObjectType :int
     Player,
     Enemy,
     Stage,
+    NotSSR, // SSRとかをつけたくないステージのオブジェクト
 };

@@ -31,7 +31,7 @@ public:
         DirectX::XMFLOAT4 lightDirection = {};// w:attenuation Rate
         DirectX::XMFLOAT4 lightColor = {}; //w colorPower
 
-        float iblIntensity = 2.5f;
+        float iblIntensity = 2.4f;
         int directionalLightEnable = 1;// ïΩçsåıåπÇÃ on / off
         int pointLightEnable = 1;
         int pointLightCount = 0;
@@ -44,10 +44,10 @@ public:
         float kl = 0.7f;
         float kq = 1.8f;
 
-        float diffuseIntensity = 1.4f;
-        float specularIntensity = 0.3f;
+        float diffuseIntensity = 1.272f;
+        float specularIntensity = 0.323f;
         float pointLightDiffuseIntensity = 0.9f;
-        float pointLightSpecularIntensity = 0.3f;
+        float pointLightSpecularIntensity = 0.15f;
 
         PointLight pointsLight[PointLightMaxCount];
     };

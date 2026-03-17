@@ -14,8 +14,9 @@ void DarkStageBarrelActor::Initialize(const Transform& transform)
 
     // 樽のがれきに使用するモデル
     auto barrelConvexMeshComponent = AddComponent<SkeletalMeshComponent>("barrelConvexMesh", parentName);
-    barrelConvexMeshComponent->SetModel("./Data/Models/DarkStageAssets/Barrel_Convex1/Barrel_Convex1.gltf", true);
+    barrelConvexMeshComponent->SetModel("./Data/Models/DarkStageAssets/Barrel_Convex/barrel_convex.gltf", true);
     barrelConvexMeshComponent->SetIsVisible(false);
+    barrelConvexMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::NotSSR;   // SSRを影響させたくないから
 
     // 最初の壊れる前の箱の当たり判定
     preBoxComponent = AddComponent<BoxComponent>("boxComponent", parentName);

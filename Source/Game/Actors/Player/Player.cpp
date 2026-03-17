@@ -30,7 +30,8 @@ void Player::Initialize(const Transform& transform)
         skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>(parentName);
         skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/animation.gltf");
         skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Player;   // オブジェクトの種類を Player に設定
-        skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP; // 手にちゃんとつけるために
+        //skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP; // 手にちゃんとつけるために
+        // ＜ーでもこれつけるとポイントライトが、、、
 
         //skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle.gltf");
 #if 1
@@ -191,7 +192,7 @@ void Player::Initialize(const Transform& transform)
     swordCollisionComp->SetResponseToLayer(CollisionLayer::WorldProps, CollisionComponent::CollisionResponse::Trigger);
     swordCollisionComp->SetCollisionOffsetY(height * 0.5f);
     swordCollisionComp->SetIsVisibleDebugBox(false);
-    swordCollisionComp->SetRelativeLocationDirect({ -0.f, -0.f, -0.8f });
+    swordCollisionComp->SetRelativeLocationDirect({ -0.f, -0.f, 0.8f });
     swordCollisionComp->Initialize();
     //swordCollisionComp->SetRelativeEulerRotationDirect({ 0.0f, 90.f, 0.0f });
     //swordCollisionComp->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });

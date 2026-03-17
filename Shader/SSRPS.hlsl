@@ -49,8 +49,8 @@ float3 main(VS_OUT pin) : SV_TARGET
 
     int objectType = sampled.w; // 0:通常 1:プレイヤー 2:エネミー 3:stage
 
-    if (objectType == OBJECT_PLAYER || objectType == OBJECT_ENEMY)
-    { // プレイヤーとエネミーはSSRを使わない
+    if (objectType == OBJECT_PLAYER || objectType == OBJECT_ENEMY || objectType == OBJECT_NOT_SSR)
+    { // プレイヤーとエネミーはSSRを使わない ステージのobjectでSSRをかけたくないものも追加
         return float3(0, 0, 0); // SSR なし
     }
 
