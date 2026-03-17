@@ -311,8 +311,6 @@ public:
 
 
 private:
-    float moveSpeed = 5.0f;
-    float rotateSpeed = 0.001f;
 
     void HandleKeyboardInput(float deltaTime);
     void HandleMouseInput(float deltaTime)
@@ -434,7 +432,163 @@ private:
 
 private:
     bool useDebug = false;
+    float moveSpeed = 5.0f;
+    float rotateSpeed = 0.001f;
 
+};
+
+class CinematicCameraComponent:public CameraComponent
+{
+public:
+    CinematicCameraComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :CameraComponent(name, owner) {}
+
+
+    void Tick(const float deltaTime)override
+    {
+        if (!useCinematic) return;
+        HandleKeyboardInput(deltaTime);
+        HandleMouseInput(deltaTime);
+    }
+
+    void SetIsUseCinematic(const bool useCinematic) { this->useCinematic = useCinematic; }
+
+private:
+    float moveSpeed = 5.0f;
+    float rotateSpeed = 0.001f;
+    bool useCinematic = false;
+    
+
+    void HandleKeyboardInput(float deltaTime);
+    void HandleMouseInput(float deltaTime)
+    {
+#if 1
+        if (InputSystem::GetInputState("MouseRight"))
+        {
+            int dx, dy;
+            InputSystem::GetMouseDelta(dx, dy);
+
+            AddYaw(dx * rotateSpeed);
+            AddPitch(dy * rotateSpeed);
+
+            //yaw += dx * rotateSpeed;
+            //pitch += dy * rotateSpeed;
+
+            // 上下向きすぎ防止（重要）
+            pitch = std::clamp(pitch, -DirectX::XM_PIDIV2 + 0.01f, DirectX::XM_PIDIV2 - 0.01f);
+        }
+        using namespace DirectX;
+
+        // ワールドY軸Yaw
+        XMVECTOR qYaw = XMQuaternionRotationAxis(
+            XMVectorSet(0, 1, 0, 0),
+            yaw
+        );
+
+        // ローカルX軸Pitch
+        XMVECTOR qPitch = XMQuaternionRotationAxis(
+            XMVectorSet(1, 0, 0, 0),
+            pitch
+        );
+
+        // 合成順序：Yaw → Pitch
+        XMVECTOR q = XMQuaternionNormalize(
+            XMQuaternionMultiply(qPitch, qYaw)
+        );
+
+        XMFLOAT4 rot;
+        XMStoreFloat4(&rot, q);
+        GetOwner()->SetQuaternionRotation(rot);
+        return;
+#endif // 0
+
+
+        if (InputSystem::GetInputState("MouseRight"))
+        {
+            int dx, dy;
+            InputSystem::GetMouseDelta(dx, dy);
+
+
+            float yawDelta = dx * rotateSpeed;
+            float pitchDelta = dy * rotateSpeed;
+
+            using namespace DirectX;
+
+            //XMFLOAT4 rot = GetComponentRotation();
+            XMFLOAT4 rot = GetOwner()->GetQuaternionRotation();
+            XMVECTOR q = XMLoadFloat4(&rot);
+
+            XMVECTOR qYaw = XMQuaternionRotationAxis(
+                XMVectorSet(0, 1, 0, 0),
+                yawDelta
+            );
+
+            XMVECTOR right = XMVector3Rotate(
+                XMVectorSet(1, 0, 0, 0),
+                q
+            );
+
+            XMVECTOR qPitch = XMQuaternionRotationAxis(
+                right,
+                pitchDelta
+            );
+
+            q = XMQuaternionMultiply(q, qYaw);
+            q = XMQuaternionMultiply(q, qPitch);
+
+            q = XMQuaternionNormalize(q);
+
+            XMStoreFloat4(&rot, q);
+            GetOwner()->SetQuaternionRotation(rot);
+        }
+    }
+
+    virtual void DrawImGuiInspector() override
+    {
+#ifdef USE_IMGUI
+
+        SceneComponent::DrawImGuiInspector();
+        if (ImGui::TreeNode((name_ + "  camera").c_str()))
+        {
+            ImGui::DragFloat("moveSpeed", &moveSpeed, 0.1f);
+            ImGui::DragFloat("rotateSpeed", &rotateSpeed, 0.1f);
+
+            // ===== yaw / pitch / fov を degree 表示 =====
+            float yawDeg = DirectX::XMConvertToDegrees(yaw);
+            float pitchDeg = DirectX::XMConvertToDegrees(pitch);
+            float fovDeg = DirectX::XMConvertToDegrees(fovY);
+            if (ImGui::DragFloat("FOV (deg)", &fovDeg, 0.5f, 10.0f, 120.0f))
+            {
+                fovY = DirectX::XMConvertToRadians(fovDeg);
+            }
+            if (ImGui::DragFloat("yaw (deg)", &yawDeg, 0.5f))
+            {
+                yaw = DirectX::XMConvertToRadians(yawDeg);
+            }
+            if (ImGui::DragFloat("pitch (deg)", &pitchDeg, 0.5f))
+            {
+                pitch = DirectX::XMConvertToRadians(pitchDeg);
+            }
+            ImGui::SliderFloat("nearZ", &nearZ, 0.01f, 100.0f);
+
+            ImGui::TreePop();
+        }
+#endif
+    }
+
+    void SaveBookmark(int i)
+    {
+        if (i >= bookmarks.size())
+            bookmarks.resize(i + 1);
+
+        bookmarks[i] = {
+            GetComponentLocation(),
+            yaw,
+            pitch,
+            fovY
+        };
+    }
+
+    std::vector<CameraBookmark> bookmarks;
 };
 
 

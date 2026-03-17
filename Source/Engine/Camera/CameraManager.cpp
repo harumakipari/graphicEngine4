@@ -10,7 +10,13 @@ Camera* CameraManager::GetRenderCamera(const Scene* scene) const
     {
         if (auto dbg = debugCamera.lock())
             return dbg.get();
-    } 
+    }
+
+    if (useCinematicCamera)
+    {
+        if (auto cinema = cinematicCamera.lock())
+            return cinema.get();
+    }
 
     if (auto cam = scene->GetActiveCamera())
         return cam;
@@ -50,6 +56,34 @@ void CameraManager::ToggleCamera(const Scene* scene)
                 //     DirectX::XMConvertToRadians(30.0f)
                 //};
                 //dbg->GetCameraComponent()->SetState(caneraState);
+            }
+        }
+    }
+}
+
+void CameraManager::ToggleCinematicCamera(const Scene* scene)
+{
+    useCinematicCamera = !useCinematicCamera;
+    if (useCinematicCamera)
+    {
+        if (const auto cinemaCamera = cinematicCamera.lock())
+        {
+            if (auto cam = scene->GetActiveCamera())
+            {
+                cinemaCamera->SetPosition(cam->GetPosition());
+                cinemaCamera->SetQuaternionRotation(cam->GetQuaternionRotation());
+                auto cameraCom = cam->GetCameraComponent();
+                float fov = cameraCom->GetFov();
+                float pitch = cameraCom->GetPitch();
+                float yaw = cameraCom->GetYaw();
+
+                if (auto cinemaComp = dynamic_cast <CinematicCameraComponent*>(cinemaCamera->GetCameraComponent()))
+                {
+                    cinemaComp->SetIsUseCinematic(useCinematicCamera);
+                    cinemaComp->SetFov(fov);
+                    cinemaComp->SetYawAndPitch(yaw, pitch);
+
+                }
             }
         }
     }

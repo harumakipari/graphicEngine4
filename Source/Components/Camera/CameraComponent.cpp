@@ -353,3 +353,55 @@ void DebugCameraComponent::HandleKeyboardInput(float deltaTime)
     GetOwner()->SetPosition(positionLocal);
 
 }
+
+
+void CinematicCameraComponent::HandleKeyboardInput(float deltaTime)
+{
+    using namespace DirectX;
+    XMFLOAT4 rotation = GetComponentRotation();
+    XMVECTOR q = XMLoadFloat4(&rotation);
+
+    XMVECTOR forward = XMVector3Rotate(
+        XMVectorSet(0, 0, 1, 0), q);
+
+    XMVECTOR right = XMVector3Rotate(
+        XMVectorSet(1, 0, 0, 0), q);
+
+    XMVECTOR up = XMVector3Rotate(
+        XMVectorSet(0, 1, 0, 0), q);
+    DirectX::XMVECTOR move = DirectX::XMVectorZero();
+#ifdef USE_IMGUI
+
+    if (float wheelDelta = ImGui::GetIO().MouseWheel)
+    {
+        fovY -= wheelDelta * 0.03f;
+        fovY = std::clamp(
+            fovY,
+            XMConvertToRadians(10.f),
+            XMConvertToRadians(90.f));
+        //move += forward * wheelDelta * 30.0f;
+    }
+#endif
+    if (InputSystem::GetInputState("W")) { move += forward; }
+    if (InputSystem::GetInputState("S")) { move -= forward; }
+    if (InputSystem::GetInputState("D")) { move += right; }
+    if (InputSystem::GetInputState("A")) { move -= right; }
+    //
+    if (InputSystem::GetInputState("E")) { move += up; }
+    if (InputSystem::GetInputState("Q")) { move -= up; }
+
+    if (InputSystem::GetInputState("Shift")) { move = DirectX::XMVectorScale(move, 2.5f); }
+
+    move = DirectX::XMVectorScale(move, moveSpeed * deltaTime);
+
+    DirectX::XMFLOAT3 position = GetComponentLocation();
+    DirectX::XMVECTOR pos = DirectX::XMLoadFloat3(&position);
+    pos += move;
+    DirectX::XMFLOAT3 positionLocal{};
+    DirectX::XMStoreFloat3(&positionLocal, pos);
+
+    //SetWorldLocationDirect(positionLocal);
+
+    GetOwner()->SetPosition(positionLocal);
+
+}

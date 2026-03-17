@@ -155,6 +155,10 @@ void SceneBase::Update(float deltaTime)
     {// デバッグカメラとゲームカメラの切り替え
         cameraManager->ToggleCamera(this);
     }
+    if (InputSystem::GetInputState("F7", InputStateMask::Trigger))
+    {// シネマカメラとゲームカメラの切り替え
+        cameraManager->ToggleCinematicCamera(this);
+    }
 #endif // !_DEBUG
 }
 

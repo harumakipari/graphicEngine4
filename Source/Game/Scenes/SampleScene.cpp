@@ -201,6 +201,11 @@ void SampleScene::SetUpActors()
 
     Transform debugCameraTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam", debugCameraTr);
+    cameraManager->SetDebugCamera(debugCameraActor);
+
+    Transform cinemaCameraTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto cinemaCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<CinemaCamera>("cinemaCam", cinemaCameraTr);
+    cameraManager->SetCinematicCamera(cinemaCameraActor);
 
 #if 0
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
@@ -232,7 +237,6 @@ void SampleScene::SetUpActors()
     dustParticle->Play();
 #endif // 0
 
-    cameraManager->SetDebugCamera(debugCameraActor);
     loadStageThread.join();
     loadStageAssetsThread.join();
     {

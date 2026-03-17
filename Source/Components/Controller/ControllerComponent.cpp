@@ -165,8 +165,8 @@ void InputComponent::Tick(float)
         Logger::Warning(Logger::LogCategory::System, U8("InputComponent で　scene が null です！"));
     }
 
-    if (!scene->GetCameraManager()->IsUseDebug())
-    {
+    if (!scene->GetCameraManager()->IsUseDebug() &&
+        !scene->GetCameraManager()->IsUseCinematic()) {
         // 左スティック
         float lx = InputSystem::GetLeftStick().x;
         float ly = InputSystem::GetLeftStick().y;
