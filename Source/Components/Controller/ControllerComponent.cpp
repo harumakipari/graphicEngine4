@@ -166,7 +166,8 @@ void InputComponent::Tick(float)
     }
 
     if (!scene->GetCameraManager()->IsUseDebug() &&
-        !scene->GetCameraManager()->IsUseCinematic()) {
+        !scene->GetCameraManager()->IsUseCinematic() && !scene->GetCameraManager()->IsUseMovie())
+    {
         // 左スティック
         float lx = InputSystem::GetLeftStick().x;
         float ly = InputSystem::GetLeftStick().y;

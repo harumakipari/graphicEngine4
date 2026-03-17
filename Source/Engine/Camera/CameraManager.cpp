@@ -18,6 +18,12 @@ Camera* CameraManager::GetRenderCamera(const Scene* scene) const
             return cinema.get();
     }
 
+    if (useMovieCamera)
+    {
+        if (auto movieCam = movieCamera.lock())
+            return movieCam.get();
+    }
+
     if (auto cam = scene->GetActiveCamera())
         return cam;
 
@@ -82,6 +88,35 @@ void CameraManager::ToggleCinematicCamera(const Scene* scene)
                     cinemaComp->SetIsUseCinematic(useCinematicCamera);
                     cinemaComp->SetFov(fov);
                     cinemaComp->SetYawAndPitch(yaw, pitch);
+
+                }
+            }
+        }
+    }
+}
+
+
+void CameraManager::ToggleMovieCamera(const Scene* scene)
+{
+    useMovieCamera = !useMovieCamera;
+    if (useMovieCamera)
+    {
+        if (const auto movieCam = movieCamera.lock())
+        {
+            if (auto cam = scene->GetActiveCamera())
+            {
+                movieCam->SetPosition(cam->GetPosition());
+                movieCam->SetQuaternionRotation(cam->GetQuaternionRotation());
+                auto cameraCom = cam->GetCameraComponent();
+                float fov = cameraCom->GetFov();
+                float pitch = cameraCom->GetPitch();
+                float yaw = cameraCom->GetYaw();
+
+                if (auto movieComp = dynamic_cast <MovieCameraComponent*>(movieCam->GetCameraComponent()))
+                {
+                    movieComp->SetIsUseMovie(useMovieCamera);
+                    movieComp->SetFov(fov);
+                    movieComp->SetYawAndPitch(yaw, pitch);
 
                 }
             }

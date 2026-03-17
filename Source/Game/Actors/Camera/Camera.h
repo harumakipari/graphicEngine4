@@ -63,6 +63,21 @@ public:
 
 };
 
+class MovieCamera :public Camera
+{
+public:
+    //引数付きコンストラクタ
+    MovieCamera(const std::string& actorName) :Camera(actorName) {}
+
+    virtual ~MovieCamera() = default;
+    void Initialize(const Transform& transform)override
+    {
+        mainCameraComponent = this->AddComponent<MovieCameraComponent>("movieCamera");
+    }
+
+};
+
+
 class MainCamera :public Camera
 {
 public:

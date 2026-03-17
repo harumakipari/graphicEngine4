@@ -159,6 +159,10 @@ void SceneBase::Update(float deltaTime)
     {// シネマカメラとゲームカメラの切り替え
         cameraManager->ToggleCinematicCamera(this);
     }
+    if (InputSystem::GetInputState("F6", InputStateMask::Trigger))
+    {// ムービーカメラとゲームカメラの切り替え
+        cameraManager->ToggleMovieCamera(this);
+    }
 #endif // !_DEBUG
 }
 
@@ -585,7 +589,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     if (useDrawDebug)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
-        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
+        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);

@@ -49,7 +49,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     const float3 f0 = lerp(0.04, baseColor.rgb, metallicFactor);
     const float3 f90 = 1.0;
-    //roughnessFactor = max(roughnessFactor, 0.3); // 最低値を作ることで、極端に鋭いスペキュラーを防止する
+    roughnessFactor = max(roughnessFactor, 0.3); // 最低値を作ることで、極端に鋭いスペキュラーを防止する
     const float alphaRoughness = roughnessFactor * roughnessFactor;
     const float3 cDiff = lerp(baseColor.rgb, 0.0, metallicFactor);
 
@@ -184,8 +184,9 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
     float3 ambient = baseColor.rgb * 0.05;
 
-    float3 lo = totalDiffuse + totalSpecular + (emissive) /* + rim + ambient*/;
+    float3 lo = totalDiffuse + totalSpecular + (emissive) + rim + ambient;
 
+#if 0
     int debugLightComplexity = 0;
     if (debugLightComplexity != 0)
     {
@@ -206,6 +207,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
         return float4(color, 1);
     }
+#endif
 
     return float4(lo, 1.0f);
 }

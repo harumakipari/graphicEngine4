@@ -22,13 +22,15 @@
 
 void Player::Initialize(const Transform& transform)
 {
+    std::string parentName = "skeletalComponent";
     // 描画用コンポーネントを追加
     {
         PROFILE_SCOPE("Create PlayerModel");
 
-        skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>("skeletalComponent");
+        skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>(parentName);
         skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/animation.gltf");
         skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Player;   // オブジェクトの種類を Player に設定
+        skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP; // 手にちゃんとつけるために
 
         //skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle.gltf");
 #if 1
@@ -119,7 +121,7 @@ void Player::Initialize(const Transform& transform)
         PROFILE_SCOPE("Create PlayerCollision");
 
         // 敵からの攻撃を受ける当たり判定用のコンポーネントを追加
-        std::shared_ptr<CapsuleComponent> capsuleComponent = this->AddComponent<class CapsuleComponent>("capsuleComponent", "skeletalComponent");
+        std::shared_ptr<CapsuleComponent> capsuleComponent = this->AddComponent<class CapsuleComponent>("capsuleComponent", parentName);
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
         height = size.y;
         radius = size.x * 0.5f;
@@ -139,7 +141,7 @@ void Player::Initialize(const Transform& transform)
 #if 1
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
     // ポイントライトコンポーネントを追加
-    auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", "skeletalComponent");
+    auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", parentName);
     pointLightComponent->SetRelativeLocationDirect({ 0.0f, 1.5f, 1.0f });
     auto lightManager = scene->GetLightManager();
     // ライトの名前からライトマネージャーの共有ライトを取得して設定
@@ -163,18 +165,37 @@ void Player::Initialize(const Transform& transform)
         PROFILE_SCOPE("Create PlayerComponent");
 
         // 入力用のコンポーネントを追加
-        inputComponent = this->AddComponent<class InputComponent>("inputComponent", "skeletalComponent");
+        inputComponent = this->AddComponent<class InputComponent>("inputComponent", parentName);
 
         // 移動用コンポーネントを追加
-        characterMovementComponent = this->AddComponent<CharacterMovementComponent>("movementComponent", "skeletalComponent");
+        characterMovementComponent = this->AddComponent<CharacterMovementComponent>("movementComponent", parentName);
         //characterMovementComponent->SetUseGravity(false);
 
         // 回転用コンポーネントを追加
-        rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", "skeletalComponent");
+        rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
 
-        particleComponent = AddComponent<ParticleComponent>("particleComponent", "skeletalComponent");
+        particleComponent = AddComponent<ParticleComponent>("particleComponent", parentName);
         particleComponent->Load("./Data/Effect/Files/heartTestEffect.json");
     }
+
+    // 剣に当たり判定のコンポーネントを追加
+    auto swordCollisionComp = AddComponent<CapsuleComponent>("SwordCollision", parentName);
+    DirectX::XMFLOAT3 size = {0.1f,1.2f,1.0f};
+    swordCollisionComp->AttachToComponent(skeletalMeshComponent, 180); // "VB root_weapon"
+    swordCollisionComp->SetRadiusAndHeight(size.x, size.y);
+    swordCollisionComp->SetMass(mass);
+    swordCollisionComp->SetCapsuleAxis(ShapeComponent::CapsuleAxis::z);
+    swordCollisionComp->SetLayer(CollisionLayer::PlayerWeapon);
+    swordCollisionComp->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
+    swordCollisionComp->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Trigger);
+    swordCollisionComp->SetResponseToLayer(CollisionLayer::WorldProps, CollisionComponent::CollisionResponse::Trigger);
+    swordCollisionComp->SetCollisionOffsetY(height * 0.5f);
+    swordCollisionComp->SetIsVisibleDebugBox(false);
+    swordCollisionComp->SetRelativeLocationDirect({ -0.f, -0.f, -0.8f });
+    swordCollisionComp->Initialize();
+    //swordCollisionComp->SetRelativeEulerRotationDirect({ 0.0f, 90.f, 0.0f });
+    //swordCollisionComp->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
+
 }
 
 

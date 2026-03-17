@@ -13,6 +13,8 @@ public:
 
     void ToggleCinematicCamera(const Scene* scene);
 
+    void ToggleMovieCamera(const Scene* scene);
+
     Camera* GetRenderCamera(const Scene* scene) const;
 
     void Clear()
@@ -22,19 +24,26 @@ public:
         useDebugCamera = false;
         cinematicCamera.reset();
         useCinematicCamera = false;
+        movieCamera.reset();
+        useMovieCamera = false;
     }
 
     bool IsUseDebug() const { return useDebugCamera; }
     bool IsUseCinematic() const { return useCinematicCamera; }
+    bool IsUseMovie() const { return useMovieCamera; }
 
     //void SetGameCamera(const std::weak_ptr<Camera>& camera) { gameCamera = camera; }
     void SetDebugCamera(const std::shared_ptr<Camera>& camera) { debugCamera = camera; }
 
     void SetCinematicCamera(const std::shared_ptr<Camera>& camera) { cinematicCamera = camera; }
+
+    void SetMovieCamera(const std::shared_ptr<Camera>& camera) { movieCamera = camera; }
 private:
     std::weak_ptr<Camera> debugCamera;
     std::weak_ptr<Camera> cinematicCamera;
+    std::weak_ptr<Camera> movieCamera;
 
     bool useDebugCamera = false;
     bool useCinematicCamera = false;
+    bool useMovieCamera = false;
 };

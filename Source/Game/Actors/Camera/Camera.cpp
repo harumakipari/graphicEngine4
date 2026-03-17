@@ -10,7 +10,6 @@ void Camera::Initialize(const Transform& transform)
     mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(35), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
 }
 
-
 void MainCamera::Update(float deltaTime)
 {
     // ƒvƒŒƒCƒ„[ˆÚ“®•ûŒü

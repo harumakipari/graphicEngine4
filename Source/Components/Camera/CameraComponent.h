@@ -718,4 +718,309 @@ private:
 };
 
 
+class MovieCameraComponent : public CameraComponent
+{
+public:
+    enum class EaseType
+    {
+        Linear,
+        EaseIn,
+        EaseOut,
+        EaseInOut
+    };
+
+    struct CameraKeyframe
+    {
+        std::string name;
+
+        DirectX::XMFLOAT3 position{};
+        DirectX::XMFLOAT4 rotation{};
+        float fov = DirectX::XMConvertToRadians(60.f);
+
+        float duration = 2.0f; // 次のキーまでの時間
+        EaseType ease = EaseType::EaseInOut;
+    };
+
+    float ApplyEase(float t, EaseType type)
+    {
+        switch (type)
+        {
+        case EaseType::Linear: return t;
+        case EaseType::EaseIn: return t * t;
+        case EaseType::EaseOut: return 1 - (1 - t) * (1 - t);
+        case EaseType::EaseInOut:
+            return t < 0.5f
+                ? 2 * t * t
+                : 1 - powf(-2 * t + 2, 2) / 2;
+        }
+        return t;
+    }
+
+    std::string EaseToString(EaseType e)
+    {
+        switch (e)
+        {
+        case EaseType::Linear: return "Linear";
+        case EaseType::EaseIn: return "EaseIn";
+        case EaseType::EaseOut: return "EaseOut";
+        case EaseType::EaseInOut: return "EaseInOut";
+        }
+        return "Linear";
+    }
+
+    EaseType StringToEase(const std::string& s)
+    {
+        if (s == "EaseIn") return EaseType::EaseIn;
+        if (s == "EaseOut") return EaseType::EaseOut;
+        if (s == "EaseInOut") return EaseType::EaseInOut;
+        return EaseType::Linear;
+    }
+
+    MovieCameraComponent(const std::string& name, const std::shared_ptr<Actor>& owner)
+        : CameraComponent(name, owner)
+    {
+    }
+
+    void Tick(float deltaTime) override
+    {
+        if (!useMovieCamera) return;
+        HandleKeyboardInput(deltaTime);
+        HandleMouseInput(deltaTime);
+
+        if (playing)
+            UpdatePath(deltaTime);
+    }
+
+    void SetIsUseMovie(const bool useMovie) { this->useMovieCamera = useMovie; }
+
+    void SaveToJson(const std::string& path);
+
+    void LoadFromJson(const std::string& path);
+
+    void DrawImGuiInspector()override
+    {
+#ifdef USE_IMGUI
+
+        SceneComponent::DrawImGuiInspector();
+
+        if (ImGui::Button("Add Key"))
+        {
+            CameraKeyframe k;
+            k.position = GetComponentLocation();
+            k.rotation = GetComponentRotation();
+            k.fov = fovY;
+            keys.push_back(k);
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("Play"))
+        {
+            Start();
+        }
+        if (ImGui::Button("Save JSON"))
+        {
+            SaveToJson("./Data/MovieCamera/MovieCamera.json");
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Load JSON"))
+        {
+            LoadFromJson("./Data/MovieCamera/MovieCamera.json");
+        }
+        for (int i = 0; i < keys.size(); i++)
+        {
+            ImGui::PushID(i);
+
+            auto& k = keys[i];
+            // 名前を編集できる
+            char nameBuf[64];
+            strncpy_s(nameBuf, k.name.c_str(), sizeof(nameBuf));
+            if (ImGui::InputText("Name", nameBuf, sizeof(nameBuf)))
+            {
+                k.name = nameBuf; // 入力変更を反映
+            }
+            ImGui::DragFloat("Duration", &k.duration, 0.1f, 0.1f, 10.0f);
+
+            const char* easeItems[] = { "Linear", "EaseIn", "EaseOut", "EaseInOut" };
+            int easeIndex = (int)k.ease;
+            if (ImGui::Combo("Ease", &easeIndex, easeItems, IM_ARRAYSIZE(easeItems)))
+            {
+                k.ease = static_cast<EaseType>(easeIndex);
+            }
+
+            if (ImGui::Button("Set From Current"))
+            {
+                k.position = GetComponentLocation();
+                k.rotation = GetComponentRotation();
+                k.fov = fovY;
+            }
+
+            ImGui::Separator();
+            ImGui::PopID();
+        }
+#endif
+    }
+private:
+    void HandleKeyboardInput(float deltaTime);
+    void HandleMouseInput(float deltaTime)
+    {
+#if 1
+        if (InputSystem::GetInputState("MouseRight"))
+        {
+            int dx, dy;
+            InputSystem::GetMouseDelta(dx, dy);
+
+            AddYaw(dx * rotateSpeed);
+            AddPitch(dy * rotateSpeed);
+
+            //yaw += dx * rotateSpeed;
+            //pitch += dy * rotateSpeed;
+
+            // 上下向きすぎ防止（重要）
+            pitch = std::clamp(pitch, -DirectX::XM_PIDIV2 + 0.01f, DirectX::XM_PIDIV2 - 0.01f);
+        }
+        using namespace DirectX;
+
+        // ワールドY軸Yaw
+        XMVECTOR qYaw = XMQuaternionRotationAxis(
+            XMVectorSet(0, 1, 0, 0),
+            yaw
+        );
+
+        // ローカルX軸Pitch
+        XMVECTOR qPitch = XMQuaternionRotationAxis(
+            XMVectorSet(1, 0, 0, 0),
+            pitch
+        );
+
+        // 合成順序：Yaw → Pitch
+        XMVECTOR q = XMQuaternionNormalize(
+            XMQuaternionMultiply(qPitch, qYaw)
+        );
+
+        XMFLOAT4 rot;
+        XMStoreFloat4(&rot, q);
+        GetOwner()->SetQuaternionRotation(rot);
+        return;
+#endif // 0
+
+
+        if (InputSystem::GetInputState("MouseRight"))
+        {
+            int dx, dy;
+            InputSystem::GetMouseDelta(dx, dy);
+
+
+            float yawDelta = dx * rotateSpeed;
+            float pitchDelta = dy * rotateSpeed;
+
+            using namespace DirectX;
+
+            //XMFLOAT4 rot = GetComponentRotation();
+            XMFLOAT4 rot = GetOwner()->GetQuaternionRotation();
+            XMVECTOR q = XMLoadFloat4(&rot);
+
+            XMVECTOR qYaw = XMQuaternionRotationAxis(
+                XMVectorSet(0, 1, 0, 0),
+                yawDelta
+            );
+
+            XMVECTOR right = XMVector3Rotate(
+                XMVectorSet(1, 0, 0, 0),
+                q
+            );
+
+            XMVECTOR qPitch = XMQuaternionRotationAxis(
+                right,
+                pitchDelta
+            );
+
+            q = XMQuaternionMultiply(q, qYaw);
+            q = XMQuaternionMultiply(q, qPitch);
+
+            q = XMQuaternionNormalize(q);
+
+            XMStoreFloat4(&rot, q);
+            GetOwner()->SetQuaternionRotation(rot);
+        }
+    }
+
+    std::vector<CameraKeyframe> keys;
+
+    int currentIndex = 0;
+    float time = 0.f;
+    bool playing = false;
+
+    // =========================
+    void Start()
+    {
+        if (keys.size() < 2) return;
+        currentIndex = 0;
+        time = 0.f;
+        playing = true;
+    }
+
+    // =========================
+    void UpdatePath(float dt)
+    {
+        if (currentIndex >= keys.size() - 1)
+        {
+            playing = false;
+            return;
+        }
+
+        auto& a = keys[currentIndex];
+        auto& b = keys[currentIndex + 1];
+
+        float duration = std::max<float>(a.duration, 0.01f);
+
+        time += dt;
+        float t = std::clamp(time / duration, 0.f, 1.f);
+        float eased = ApplyEase(t, a.ease);
+
+        // -------- Position --------
+        DirectX::XMFLOAT3 pos;
+        pos.x = a.position.x + (b.position.x - a.position.x) * eased;
+        pos.y = a.position.y + (b.position.y - a.position.y) * eased;
+        pos.z = a.position.z + (b.position.z - a.position.z) * eased;
+        GetOwner()->SetPosition(pos);
+
+        // -------- Rotation (安全版SLerp) --------
+        using namespace DirectX;
+
+        XMVECTOR q1 = XMLoadFloat4(&a.rotation);
+        XMVECTOR q2 = XMLoadFloat4(&b.rotation);
+
+        if (XMVector4Equal(q1, XMVectorZero())) q1 = XMQuaternionIdentity();
+        if (XMVector4Equal(q2, XMVectorZero())) q2 = XMQuaternionIdentity();
+
+        q1 = XMQuaternionNormalize(q1);
+        q2 = XMQuaternionNormalize(q2);
+
+        float dot = XMVectorGetX(XMVector4Dot(q1, q2));
+        if (dot < 0.f) q2 = XMVectorNegate(q2);
+
+        XMVECTOR q = XMQuaternionSlerp(q1, q2, eased);
+
+        XMFLOAT4 rot;
+        XMStoreFloat4(&rot, q);
+        GetOwner()->SetQuaternionRotation(rot);
+
+        // -------- FOV --------
+        fovY = a.fov + (b.fov - a.fov) * eased;
+
+        // -------- 次へ --------
+        if (t >= 1.f)
+        {
+            time = 0.f;
+            currentIndex++;
+        }
+    }
+
+    bool useMovieCamera = false;
+    float moveSpeed = 5.0f;
+    float rotateSpeed = 0.001f;
+};
+
 #endif //CAMERA_COMPONENT_H
