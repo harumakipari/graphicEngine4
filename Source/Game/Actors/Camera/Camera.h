@@ -26,9 +26,9 @@ public:
 
     virtual void Initialize(const Transform& transform)override;
 
+    CameraComponent* GetCameraComponent() const { return mainCameraComponent.get(); }
 
-
-    virtual ViewConstants GetViewConstants() const
+    ViewConstants GetViewConstants() const
     {
         return mainCameraComponent->GetViewConstants();
     }
@@ -48,34 +48,6 @@ public:
         mainCameraComponent = this->AddComponent<class DebugCameraComponent>("debugCamera");
     }
 
-    virtual ViewConstants GetViewConstants() const override
-    {
-        return mainCameraComponent->GetViewConstants();
-
-        //ViewConstants viewConstants;
-        //DirectX::XMFLOAT3 cameraPosition = GetPosition();
-        //viewConstants.cameraPosition = { cameraPosition.x,cameraPosition.y,cameraPosition.z,1.0f };
-        //viewConstants.view = debugCameraComponent->GetView();
-        //viewConstants.projection = debugCameraComponent->GetProjection();
-
-        //DirectX::XMMATRIX P = DirectX::XMLoadFloat4x4(&debugCameraComponent->GetProjection());
-        //DirectX::XMMATRIX V = DirectX::XMLoadFloat4x4(&debugCameraComponent->GetView());
-        //DirectX::XMStoreFloat4x4(&viewConstants.viewProjection, V * P);
-
-        //DirectX::XMStoreFloat4x4(&viewConstants.invProjection, DirectX::XMMatrixInverse(NULL, P));
-        //DirectX::XMStoreFloat4x4(&viewConstants.invViewProjection, DirectX::XMMatrixInverse(NULL, V * P));
-
-        //DirectX::XMStoreFloat4x4(&viewConstants.invView, DirectX::XMMatrixInverse(NULL, V));
-
-        //viewConstants.cameraClipDistance.x = debugCameraComponent->GetNearClipDistance();
-        //viewConstants.cameraClipDistance.y = debugCameraComponent->GetFarClipDistance();
-        //viewConstants.cameraClipDistance.z = debugCameraComponent->GetNearClipDistance() * debugCameraComponent->GetFarClipDistance();
-        //viewConstants.cameraClipDistance.w = debugCameraComponent->GetFarClipDistance() - debugCameraComponent->GetNearClipDistance();
-
-        //return viewConstants;
-    }
-private:
-    std::shared_ptr<DebugCameraComponent> debugCameraComponent;
 };
 
 class MainCamera :public Camera
@@ -104,16 +76,6 @@ public:
     {
         //mainCameraComponent->Shake(power, time);
     }
-    void AddYaw(float v)
-    {
-        mainCameraComponent->yaw += v;
-    }
-
-    void AddPitch(float v)
-    {
-        mainCameraComponent->pitch = std::clamp(mainCameraComponent->pitch + v, -1.5f, 1.5f);
-    }
-
     void DrawImGuiDetails()override
     {
 #ifdef USE_IMGUI
@@ -123,7 +85,7 @@ public:
 
     DirectX::XMFLOAT3 CameraForwardXZ() const
     {
-        float yaw = mainCameraComponent->yaw;
+        float yaw = mainCameraComponent->GetYaw();
 
         return {
             sinf(yaw),
@@ -134,7 +96,7 @@ public:
 
     DirectX::XMFLOAT3 CameraRightXZ() const
     {
-        float yaw = mainCameraComponent->yaw;
+        float yaw = mainCameraComponent->GetYaw();
 
         return {
             cosf(yaw),
@@ -144,9 +106,7 @@ public:
     }
 
 
-
 private:
-
     TPSCameraController tpsController;
 
     bool didShake = false;

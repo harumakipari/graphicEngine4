@@ -308,6 +308,8 @@ void TPSCameraComponent::AutoFollow(const DirectX::XMFLOAT3& moveDir, const Dire
 
 void DebugCameraComponent::HandleKeyboardInput(float deltaTime)
 {
+
+
     using namespace DirectX;
     XMFLOAT4 rotation = GetComponentRotation();
     XMVECTOR q = XMLoadFloat4(&rotation);
@@ -346,8 +348,8 @@ void DebugCameraComponent::HandleKeyboardInput(float deltaTime)
     DirectX::XMFLOAT3 positionLocal{};
     DirectX::XMStoreFloat3(&positionLocal, pos);
 
-    SetWorldLocationDirect(positionLocal);
+    //SetWorldLocationDirect(positionLocal);
 
-    //GetOwner()->SetPosition(positionLocal);
+    GetOwner()->SetPosition(positionLocal);
 
 }

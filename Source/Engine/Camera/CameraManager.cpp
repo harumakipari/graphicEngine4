@@ -29,7 +29,23 @@ void CameraManager::ToggleCamera(const Scene* scene)
             if (auto cam = scene->GetActiveCamera())
             {
                 dbg->SetPosition(cam->GetPosition());
-                //dbg->SetQuaternionRotation(cam->GetQuaternionRotation());
+                dbg->SetQuaternionRotation(cam->GetQuaternionRotation());
+                float fov = cam->GetCameraComponent()->GetFov();
+
+                if (auto dbgComp=dynamic_cast <DebugCameraComponent*>(dbg->GetCameraComponent()))
+                {
+                    dbgComp->SetIsUseDebug(useDebugCamera);
+                    dbgComp->SetFov(fov);
+
+                }
+                //dbg->SetQuaternionRotation({0.0f,0.0f,0.0f,1.0f});
+                //CameraState caneraState=
+                //{
+                //   cam->GetPosition(),
+                //    {0.0f,0.0f,0.0f},
+                //     DirectX::XMConvertToRadians(30.0f)
+                //};
+                //dbg->GetCameraComponent()->SetState(caneraState);
             }
         }
     }

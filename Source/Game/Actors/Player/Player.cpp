@@ -223,9 +223,6 @@ void Player::Update(float elapsedTime)
         // ƒJƒƒ‰Šî€‚ÌˆÚ“®•ûŒü
         moveDir.x = camForward.x * stickZ + camRight.x * stickX;
         moveDir.z = camForward.z * stickZ + camRight.z * stickX;
-
-        camera->AddYaw(intent.rightMove.x * elapsedTime * 3.0f);
-        camera->AddPitch(intent.rightMove.y * elapsedTime * 3.0f);
     }
 
 

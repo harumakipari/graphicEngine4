@@ -30,17 +30,17 @@ void MainCamera::Update(float deltaTime)
     XMFLOAT2 rightStick = InputSystem::GetRightStick();
 
     // ƒJƒƒ‰‰ñ“]
-    mainCameraComponent->yaw += rightStick.x * deltaTime * 2.0f;
-    mainCameraComponent->pitch += rightStick.y * deltaTime * 2.0f;
+    mainCameraComponent->AddYaw(rightStick.x * deltaTime * 2.0f);
+    mainCameraComponent->AddPitch( rightStick.y * deltaTime * 2.0f);
 
-    const float limit = DirectX::XMConvertToRadians(80.0f);
+    //const float limit = DirectX::XMConvertToRadians(80.0f);
 
-    mainCameraComponent->pitch =
-        std::clamp(
-            mainCameraComponent->pitch,
-            -limit,
-            limit
-        );
+    //mainCameraComponent->pitch =
+    //    std::clamp(
+    //        mainCameraComponent->pitch,
+    //        -limit,
+    //        limit
+    //    );
 
     // ControllerXV
     tpsController.Update(deltaTime);

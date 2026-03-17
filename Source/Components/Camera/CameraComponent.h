@@ -24,6 +24,15 @@
 class CameraComponent :public SceneComponent
 {
 public:
+    struct CameraBookmark
+    {
+        DirectX::XMFLOAT3 position;
+        DirectX::XMFLOAT4 rotation;
+    };
+
+    CameraBookmark bookmark;
+    bool hasBookmark = false;
+
     CameraComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :SceneComponent(name, owner) {}
 
     // パースペクティブ設定
@@ -35,27 +44,27 @@ public:
         this->farZ = farZ;
     }
 
+    void SaveBookmark()
+    {
+        bookmark.position = GetComponentLocation();
+        bookmark.rotation = GetComponentRotation();
+        hasBookmark = true;
+    }
+
+    void LoadBookmark()
+    {
+        if (!hasBookmark) return;
+
+        SetWorldLocationDirect(bookmark.position);
+        SetWorldRotationDirect(bookmark.rotation);
+    }
+
     const DirectX::XMFLOAT4X4& GetView();
 
     const DirectX::XMFLOAT4X4& GetProjection()
     {
         using namespace DirectX;
-        //XMStoreFloat4x4(&projection, XMMatrixOrthographicLH(15 * aspect, 15, nearZ, farZ));
         XMStoreFloat4x4(&projection, XMMatrixPerspectiveFovLH(fovY, aspect, nearZ, farZ));
-        return projection;
-    }
-
-    const DirectX::XMFLOAT4X4& GetOrthographicProjection()
-    {
-        using namespace DirectX;
-        XMStoreFloat4x4(&projection, XMMatrixOrthographicLH(15 * aspect, 15, nearZ, farZ));
-        return projection;
-    }
-
-    const DirectX::XMFLOAT4X4& GetProjectionWithOrthographic()
-    {
-        using namespace DirectX;
-        XMStoreFloat4x4(&projection, XMMatrixPerspectiveLH(15 * aspect, 15, nearZ, farZ));
         return projection;
     }
 
@@ -75,19 +84,68 @@ public:
         yaw = s.rotation.y;
         fovY = s.fov;
     }
+
     bool useLookTarget = false;
     DirectX::XMFLOAT3 lookTarget{};
 
     ViewConstants GetViewConstants();
-public:
-    float yaw = 0.0f;
-    float pitch = DirectX::XMConvertToRadians(-12.0f);
 
+    void UpdateRotationFromYawPitch()
+    {
+        using namespace DirectX;
+
+        XMVECTOR qYaw = XMQuaternionRotationAxis(
+            XMVectorSet(0, 1, 0, 0),
+            yaw);
+
+        XMVECTOR qPitch = XMQuaternionRotationAxis(
+            XMVectorSet(1, 0, 0, 0),
+            pitch);
+
+        XMVECTOR q = XMQuaternionNormalize(
+            XMQuaternionMultiply(qPitch, qYaw));
+
+        XMFLOAT4 rot;
+        XMStoreFloat4(&rot, q);
+
+        GetOwner()->SetQuaternionRotation(rot);
+    }
+
+    void AddYaw(float v)
+    {
+        yaw += v;
+        UpdateRotationFromYawPitch();
+    }
+
+    void AddPitch(float v)
+    {
+        pitch += v;
+
+        pitch = std::clamp(
+            pitch,
+            -DirectX::XM_PIDIV2 + 0.01f,
+            DirectX::XM_PIDIV2 - 0.01f);
+
+        UpdateRotationFromYawPitch();
+    }
+
+    float GetYaw() const { return yaw; }
+
+    float GetPitch() const { return pitch; }
+
+    float GetFov()const { return fovY; }
+
+    void SetFov(float fov)
+    {
+        SetPerspective(fovY, Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
+    }
 protected:
-    float fovY = DirectX::XMConvertToRadians(10.0f);
+    float fovY = DirectX::XMConvertToRadians(35.0f); 
     float aspect = 1280.f / 720.f;
     float nearZ = 0.1f;
     float farZ = 1000.f;
+    float yaw = 0.0f;
+    float pitch = DirectX::XMConvertToRadians(-12.0f);
 
     DirectX::XMFLOAT4X4 view{};
     DirectX::XMFLOAT4X4 projection{};
@@ -215,33 +273,29 @@ class DebugCameraComponent :public CameraComponent
 {
 public:
     DebugCameraComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :CameraComponent(name, owner) {}
-    
-
-    //const DirectX::XMFLOAT4X4& GetView() override
-    //{
-    //    using namespace DirectX;
-
-    //    XMFLOAT3 pos = GetComponentLocation();
-    //    XMFLOAT4 rot = GetComponentRotation();
-
-    //    XMMATRIX R = XMMatrixRotationQuaternion(XMLoadFloat4(&rot));
-    //    XMMATRIX T = XMMatrixTranslation(pos.x, pos.y, pos.z);
-
-    //    XMMATRIX viewMtx = XMMatrixInverse(nullptr, R * T);
-    //    XMStoreFloat4x4(&view, viewMtx);
-    //    return view;
-    //}
 
     void Tick(float deltaTime)override
     {
+        if (!useDebug) return;
         HandleKeyboardInput(deltaTime);
         HandleMouseInput(deltaTime);
+        if (InputSystem::GetInputState("F5",InputStateMask::Trigger))
+        {
+            SaveBookmark();
+        }
+
+        if (InputSystem::GetInputState("F6", InputStateMask::Trigger))
+        {
+            LoadBookmark();
+        }
     }
+
+    void SetIsUseDebug(const bool useDebug) { this->useDebug = useDebug; }
 
 
 private:
     float moveSpeed = 5.0f;
-    float rotateSpeed = 0.002f;
+    float rotateSpeed = 0.001f;
 
     void HandleKeyboardInput(float deltaTime);
     void HandleMouseInput(float deltaTime)
@@ -279,20 +333,19 @@ private:
 
         XMFLOAT4 rot;
         XMStoreFloat4(&rot, q);
-        SetWorldRotationDirect(rot);
-
+        GetOwner()->SetQuaternionRotation(rot);
         return;
 #endif // 0
 
 
         if (InputSystem::GetInputState("MouseRight"))
         {
-                int dx, dy;
-                InputSystem::GetMouseDelta(dx, dy);
+            int dx, dy;
+            InputSystem::GetMouseDelta(dx, dy);
 
 
             float yawDelta = dx * rotateSpeed;
-            float pitchDelta = dy * rotateSpeed;
+            float pitchDelta = dy * rotateSpeed ;
 
             using namespace DirectX;
 
@@ -332,20 +385,35 @@ private:
         SceneComponent::DrawImGuiInspector();
         if (ImGui::TreeNode((name_ + "  camera").c_str()))
         {
-            //ImGui::DragFloat3("Position", &positionLocal.x, 0.1f);
-            ImGui::DragFloat("fovY", &fovY, 0.1f);
+            ImGui::DragFloat("moveSpeed", &moveSpeed, 0.1f);
+            ImGui::DragFloat("rotateSpeed", &rotateSpeed, 0.1f);
+
+            // ===== yaw / pitch / fov を degree 表示 =====
+            float yawDeg = DirectX::XMConvertToDegrees(yaw);
+            float pitchDeg = DirectX::XMConvertToDegrees(pitch);
+            float fovDeg = DirectX::XMConvertToDegrees(fovY);
+            if (ImGui::DragFloat("FOV (deg)", &fovDeg, 0.5f, 10.0f, 120.0f))
+            {
+                fovY = DirectX::XMConvertToRadians(fovDeg);
+            }
+            if (ImGui::DragFloat("yaw (deg)", &yawDeg, 0.5f))
+            {
+                yaw = DirectX::XMConvertToRadians(yawDeg);
+            }
+            if (ImGui::DragFloat("pitch (deg)", &pitchDeg, 0.5f))
+            {
+                pitch = DirectX::XMConvertToRadians(pitchDeg);
+            }
             ImGui::SliderFloat("nearZ", &nearZ, 0.01f, 100.0f);
-            ImGui::DragFloat("farZ", &farZ, 0.1f);
-            //ImGui::SliderFloat("distance", &distance, 0.01f, 100.0f);
-            //ImGui::DragFloat("minDistance", &minDistance, 0.1f);
-            //ImGui::DragFloat("maxDistance", &maxDistance, 0.1f);
-            //ImGui::DragFloat("yaw", &yaw, 0.1f);
-            //ImGui::DragFloat("pitch", &pitch, 0.1f);
 
             ImGui::TreePop();
         }
 #endif
     }
+
+
+private:
+    bool useDebug = false;
 
 };
 

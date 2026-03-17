@@ -31,8 +31,8 @@ public:
 
         lastPos = targetPos;
 
-        float yaw = camera->yaw;
-        float pitch = camera->pitch;
+        float yaw = camera->GetYaw();
+        float pitch = camera->GetPitch();
 
         XMVECTOR forward =
             XMVectorSet(
