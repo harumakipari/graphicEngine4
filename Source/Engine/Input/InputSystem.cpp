@@ -183,6 +183,12 @@ void InputSystem::Initialize()
     inputKeys["Enter"].emplace_back(std::make_unique<Keyboard>(VK_RETURN));
     inputKeys["Shift"].emplace_back(std::make_unique<Keyboard>(VK_SHIFT));
 
+    inputKeys["Ctrl"].emplace_back(std::make_unique<Keyboard>(VK_CONTROL));
+
+    inputKeys["1"].emplace_back(std::make_unique<Keyboard>('1'));
+    inputKeys["2"].emplace_back(std::make_unique<Keyboard>('2'));
+
+
     inputKeys["Space"].emplace_back(std::make_unique<Keyboard>(VK_SPACE));
     inputKeys["Space"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_X));
 

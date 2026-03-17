@@ -3,6 +3,7 @@
 
 #include "Core/Actor.h"
 #include "Physics/CollisionFunction.h"
+#include <json.hpp>
 
 
 const DirectX::XMFLOAT4X4& CameraComponent::GetView()
@@ -60,7 +61,7 @@ const DirectX::XMFLOAT4X4& CameraComponent::GetView()
 }
 
 
-ViewConstants CameraComponent::GetViewConstants() 
+ViewConstants CameraComponent::GetViewConstants()
 {
     ViewConstants vc;
 
@@ -404,4 +405,68 @@ void CinematicCameraComponent::HandleKeyboardInput(float deltaTime)
 
     GetOwner()->SetPosition(positionLocal);
 
+}
+
+
+// 保存関数
+void CinematicCameraComponent::SaveBookmarksToFile()
+{
+    using json = nlohmann::json;
+    json j;
+
+    for (auto& b : bookmarks)
+    {
+        json item;
+
+        item["pos"] =
+        {
+            b.position.x,
+            b.position.y,
+            b.position.z
+        };
+
+        item["yaw"] = b.yaw;
+        item["pitch"] = b.pitch;
+        item["fov"] = b.fov;
+
+        j["bookmarks"].push_back(item);
+    }
+
+    std::ofstream file("./Data/CameraBookmarks/CinematicCamera.json");
+
+    file << j.dump(4); // インデント付き
+}
+
+// 読み込み関数
+void CinematicCameraComponent::LoadBookmarksFromFile()
+{
+    using json = nlohmann::json;
+
+    std::ifstream file("./Data/CameraBookmarks/CinematicCamera.json");
+
+    if (!file.is_open())
+        return;
+
+    json j;
+    file >> j;
+
+    bookmarks.clear();
+
+    if (!j.contains("bookmarks"))
+        return;
+
+    for (auto& item : j["bookmarks"])
+    {
+        CameraBookmark b{};
+
+        b.position.x = item["pos"][0];
+        b.position.y = item["pos"][1];
+        b.position.z = item["pos"][2];
+
+        b.yaw = item["yaw"];
+        b.pitch = item["pitch"];
+        b.fov = item["fov"];
+
+        bookmarks.push_back(b);
+    }
 }
