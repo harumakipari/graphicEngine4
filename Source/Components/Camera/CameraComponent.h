@@ -27,12 +27,12 @@ class CameraComponent :public SceneComponent
 public:
     struct CameraBookmark
     {
-        DirectX::XMFLOAT3 position;
-        DirectX::XMFLOAT4 rotation;
-
-        float yaw;
-        float pitch;
-        float fov;
+        std::string name = "Bookmark";
+        DirectX::XMFLOAT3 position{};
+        DirectX::XMFLOAT4 rotation{};
+        float yaw = 0;
+        float pitch = 0;
+        float fov = 0;
     };
 
     CameraBookmark bookmark;
@@ -583,6 +583,16 @@ private:
             {
                 ImGui::PushID(i);
 
+                // 名前を編集できる
+                char nameBuf[64];
+                strncpy_s(nameBuf, bookmarks[i].name.c_str(), sizeof(nameBuf));
+                if (ImGui::InputText("Name", nameBuf, sizeof(nameBuf)))
+                {
+                    bookmarks[i].name = nameBuf; // 入力変更を反映
+                    SaveBookmarksToFile();       // 編集したら即保存もOK
+                }
+
+                ImGui::SameLine();
                 if (ImGui::Button("Go"))
                 {
                     LoadBookmark(i);
@@ -595,9 +605,6 @@ private:
                     SaveBookmark(i);
                 }
 
-                ImGui::SameLine();
-
-                ImGui::Text("Bookmark %d", i);
 
                 ImGui::PopID();
             }
@@ -609,15 +616,17 @@ private:
 
     void SaveBookmark(int i)
     {
+        if (i >= MAX_BOOKMARKS)
+            return;
+
         if (bookmarks.size() < MAX_BOOKMARKS)
             bookmarks.resize(MAX_BOOKMARKS);
-        bookmarks[i] = {
-            GetComponentLocation(),
-             GetComponentRotation(),
-            yaw,
-            pitch,
-            fovY
-        };
+
+        bookmarks[i].position = GetComponentLocation();
+        bookmarks[i].rotation = GetComponentRotation();
+        bookmarks[i].yaw = yaw;
+        bookmarks[i].pitch = pitch;
+        bookmarks[i].fov = fovY;
 
         SaveBookmarksToFile();
     }

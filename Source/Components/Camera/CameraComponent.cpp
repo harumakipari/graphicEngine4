@@ -418,13 +418,9 @@ void CinematicCameraComponent::SaveBookmarksToFile()
     {
         json item;
 
-        item["pos"] =
-        {
-            b.position.x,
-            b.position.y,
-            b.position.z
-        };
+        item["name"] = b.name;
 
+        item["pos"] = { b.position.x, b.position.y, b.position.z };
         item["yaw"] = b.yaw;
         item["pitch"] = b.pitch;
         item["fov"] = b.fov;
@@ -433,7 +429,6 @@ void CinematicCameraComponent::SaveBookmarksToFile()
     }
 
     std::ofstream file("./Data/CameraBookmarks/CinematicCamera.json");
-
     file << j.dump(4); // インデント付き
 }
 
@@ -452,17 +447,15 @@ void CinematicCameraComponent::LoadBookmarksFromFile()
 
     bookmarks.clear();
 
-    if (!j.contains("bookmarks"))
-        return;
+    if (!j.contains("bookmarks")) return;
 
     for (auto& item : j["bookmarks"])
     {
         CameraBookmark b{};
-
+        b.name = item.value("name", "Bookmark");
         b.position.x = item["pos"][0];
         b.position.y = item["pos"][1];
         b.position.z = item["pos"][2];
-
         b.yaw = item["yaw"];
         b.pitch = item["pitch"];
         b.fov = item["fov"];
