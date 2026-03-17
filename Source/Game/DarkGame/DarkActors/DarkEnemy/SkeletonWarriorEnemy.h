@@ -1,4 +1,5 @@
 #pragma once
+#include "Components/Controller/ControllerComponent.h"
 #include "Core/Actor.h"
 #include "Game/Actors/Base/Character.h"
 
@@ -33,6 +34,7 @@ private:
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
     std::shared_ptr<SkeletalMeshComponent> sword;
     std::shared_ptr<SkeletalMeshComponent> shield;
+    std::shared_ptr<RotationComponent> rotationComponent;
     std::vector<DirectX::XMFLOAT3> waypoints;
     int currentWaypoint = 0;
 
