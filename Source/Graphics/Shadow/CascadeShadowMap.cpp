@@ -213,9 +213,9 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
 #else
 
         using namespace DirectX;
-        DirectX::XMVECTOR lightDir = DirectX::XMVector3Normalize(XMLoadFloat4(&lightDirection));
+        DirectX::XMVECTOR LightDir = DirectX::XMVector3Normalize(XMLoadFloat4(&lightDirection));
         DirectX::XMMATRIX V = XMMatrixLookAtLH(
-            XMVectorSet(center.x, center.y, center.z, 1.0f) - lightDir,
+            XMVectorSet(center.x, center.y, center.z, 1.0f) - LightDir,
             XMVectorSet(center.x, center.y, center.z, 1.0f),
             XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 

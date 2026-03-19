@@ -9,4 +9,7 @@ class SceneEditor
 public:
     static void Draw();
 
+private:
+    static void LoadPresetList();
+    static inline std::vector<std::string> presetFiles;
 };

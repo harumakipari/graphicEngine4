@@ -7,6 +7,14 @@
 
 void SceneEditor::Draw()
 {
+    static bool initialized = false;
+
+    if (!initialized)
+    {
+        LoadPresetList();
+        initialized = true;
+    }
+
     ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Always);
     ImGui::Begin("SceneTransition");
     ImGui::Text("Scenes");
@@ -28,18 +36,47 @@ void SceneEditor::Draw()
     auto* scene = Scene::GetCurrentScene();
     static SceneState savedState;
 
-    if (ImGui::Button("Save Scene"))
+    static char fileName[64] = "newPreset.json";
+
+    ImGui::InputText("FileName", fileName, sizeof(fileName));
+
+    if (ImGui::Button("Save Preset"))
     {
-        savedState.Capture(scene);
-        SaveSceneState("./Data/Saves/ScenePresets/scenePreset.json", savedState);
+        savedState.Capture(Scene::GetCurrentScene());
+        std::string path = "Data/Saves/ScenePresets/" + std::string(fileName);
+
+        // .json Ç™ïtÇ¢ÇƒÇ»Ç©Ç¡ÇΩÇÁí«â¡
+        if (path.find(".json") == std::string::npos)
+        {
+            path += ".json";
+        }
+
+        SaveSceneState(path, savedState);
+        LoadPresetList(); // çXêV
     }
 
-    if (ImGui::Button("Load Scene"))
+    for (auto& file : presetFiles)
     {
-        LoadSceneState("./Data/Saves/ScenePresets/scenePreset.json", savedState);
-        savedState.Apply(scene);
+        if (ImGui::Button(file.c_str()))
+        {
+            LoadSceneState("Data/Saves/ScenePresets/" + file, savedState);
+            savedState.Apply(Scene::GetCurrentScene());
+        }
     }
 
     ImGui::End();
 
+}
+
+void SceneEditor::LoadPresetList()
+{
+    presetFiles.clear();
+
+    for (const auto& entry : std::filesystem::directory_iterator("Data/Saves/ScenePresets"))
+    {
+        if (entry.path().extension() == ".json")
+        {
+            presetFiles.push_back(entry.path().filename().string());
+        }
+    }
 }
