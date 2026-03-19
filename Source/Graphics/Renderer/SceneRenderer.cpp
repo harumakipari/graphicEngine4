@@ -502,8 +502,13 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                     }
                     DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
 
-                    DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, DirectX::XMLoadFloat4x4(&node.globalTransform) * C * DirectX::XMLoadFloat4x4(&world));
-                    DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&world))));
+                    XMMATRIX W =
+                        XMLoadFloat4x4(&node.globalTransform) *
+                        C *
+                        XMLoadFloat4x4(&world);
+
+                    DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, W);
+                    DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, XMMatrixTranspose(XMMatrixInverse(nullptr, W)));
 
                     const InterleavedGltfModel::Material& material = model->materials.at(primitive.material);
                     // マテリアルの種類をシェーダーに伝える
@@ -680,8 +685,12 @@ void SceneRenderer::DrawWithStaticBatching(ID3D11DeviceContext* immediateContext
 
         DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
 
-        DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, C * DirectX::XMLoadFloat4x4(&world));
-        DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&world))));
+        XMMATRIX W =
+            C *
+            XMLoadFloat4x4(&world);
+
+        DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, W);
+        DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, XMMatrixTranspose(XMMatrixInverse(nullptr, W)));
 
         const InterleavedGltfModel::Material& material = model->materials.at(batchMesh.material);
 

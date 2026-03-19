@@ -28,12 +28,13 @@ void DarkStageGroundBrazierActor::SetModel(const std::shared_ptr<StageAsset>& st
     frameEffect->SetAddSettings(settings);
     frameEffect->Play();
 
+#if 0
     // 炎の後の煙エフェクト
     auto afterFireEffect = this->AddComponent<ParticleComponent>("AfterFireFrameEffect", parentName);
     afterFireEffect->Load("./Data/Effect/Files/DarkStageAfterFrameEffect.json");
     afterFireEffect->SetRelativeLocationDirect({ 0.0f,1.0f,0.0f });
     // ループ再生設定
-    float delay = 0.3f ; 
+    float delay = 0.3f;
     ParticleComponent::AddSettings settings0
     {
         .loop = true, // ループ再生
@@ -41,6 +42,8 @@ void DarkStageGroundBrazierActor::SetModel(const std::shared_ptr<StageAsset>& st
     };
     afterFireEffect->SetAddSettings(settings0);
     afterFireEffect->Play();
+
+#endif // 0
 
 
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());

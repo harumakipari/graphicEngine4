@@ -145,7 +145,7 @@ public:
         pitch = std::clamp(
             pitch,
             DirectX::XMConvertToRadians(-60.0f),
-            DirectX::XMConvertToRadians(80.0f)
+            DirectX::XMConvertToRadians(50.0f)
         );
 
         UpdateRotationFromYawPitch();

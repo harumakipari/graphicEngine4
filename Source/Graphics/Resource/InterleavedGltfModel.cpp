@@ -216,7 +216,15 @@ void InterleavedGltfModel::FetchNodes(const tinygltf::Model& gltfModel)
 
         }
     }
+
+    for (Node& node : nodes)
+    {
+        ConvertNodeAxisSystem(node);
+    }
+
+    // globalTransform生成（LHSで作られる）
     CumulateTransforms(nodes);
+
 
     // スポーン場所を取得する
     ExtractSpawnPoints();
@@ -402,7 +410,11 @@ void InterleavedGltfModel::CumulateTransforms(std::vector<Node>& nodes) const
             DirectX::XMMATRIX S = DirectX::XMMatrixScaling(node.scale.x, node.scale.y, node.scale.z);
             DirectX::XMMATRIX R = DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&node.rotation));
             DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(node.translation.x, node.translation.y, node.translation.z);
+
+
             DirectX::XMStoreFloat4x4(&node.globalTransform, S * R * T * P);
+
+
 
             for (int childIndex : node.children)
             {
@@ -716,6 +728,8 @@ void InterleavedGltfModel::FetchMeshes(ID3D11Device* device, const tinygltf::Mod
             primitive.vertexBufferView.sizeInBytes = static_cast<UINT>(primitive.cachedVertices.size() * sizeof(Mesh::Vertex));
 
         }
+
+        ConvertMeshAxisSystem(mesh);
     }
 
 
@@ -2455,6 +2469,8 @@ void InterleavedGltfModel::ExtractAnimations(const tinygltf::Model& transmission
         std::memcpy(skin.inverseBindMatrices.data(), transmission_model.buffers.at(transmission_buffer_view.buffer).data.data() + transmission_buffer_view.byteOffset + transmission_accessor.byteOffset, transmission_accessor.count * sizeof(DirectX::XMFLOAT4X4));
 
         skin.joints = transmission_skin.joints;
+
+        ConvertSkinAxisSystem(skin);
     }
 
     for (std::vector<tinygltf::Animation>::const_reference transmission_animation : transmission_model.animations)
@@ -2531,6 +2547,8 @@ void InterleavedGltfModel::ExtractAnimations(const tinygltf::Model& transmission
                 _ASSERT_EXPR(FALSE, L"");
             }
         }
+
+        ConvertAnimationAxisSystem(animation);
     }
 
     for (Animation& animation : animations)
@@ -2601,4 +2619,100 @@ void InterleavedGltfModel::ComputeAABBFromMesh(const InterleavedGltfModel::Node&
 
     DirectX::XMStoreFloat3(&outMin, minVec);
     DirectX::XMStoreFloat3(&outMax, maxVec);
+}
+
+
+// 座標系変換
+void InterleavedGltfModel::ConvertPositionAxisSystem(DirectX::XMFLOAT3& v)
+{
+    v.x = -v.x;
+}
+
+void InterleavedGltfModel::ConvertPositionAxisSystem(DirectX::XMFLOAT4& v)
+{
+    v.x = -v.x;
+}
+
+void InterleavedGltfModel::ConvertRotationAxisSystem(DirectX::XMFLOAT4& q)
+{
+    q.x = -q.x;
+    q.w = -q.w;
+}
+
+void InterleavedGltfModel::ConvertMatrixAxisSystem(DirectX::XMFLOAT4X4& m)
+{
+    m._12 = -m._12;
+    m._13 = -m._13;
+    m._21 = -m._21;
+    m._31 = -m._31;
+    m._41 = -m._41;
+}
+
+void InterleavedGltfModel::ConvertNodeAxisSystem(Node& node)
+{
+    ConvertPositionAxisSystem(node.translation);
+    ConvertRotationAxisSystem(node.rotation);
+}
+
+void InterleavedGltfModel::ConvertMeshAxisSystem(Mesh& mesh)
+{
+    for (Mesh::Primitive& primitive : mesh.primitives)
+    {
+        for (Mesh::Vertex& v : primitive.cachedVertices)
+        {
+            ConvertPositionAxisSystem(v.position);
+            ConvertPositionAxisSystem(v.normal);
+            ConvertPositionAxisSystem(v.tangent);
+        }
+
+#if 0
+        for (size_t i = 0; i < primitive.cachedIndices.size(); i += 3)
+        {
+            uint32_t* p = &primitive.cachedIndices.at(i);
+            uint32_t temp = p[1];
+            p[1] = p[2];
+            p[2] = temp;
+        }
+#else
+        uint32_t* indices = reinterpret_cast<uint32_t*>(primitive.cachedIndices.data());
+
+        size_t indexCount = primitive.cachedIndices.size() / 4;
+
+        for (size_t i = 0; i < indexCount; i += 3)
+        {
+            std::swap(indices[i + 1], indices[i + 2]);
+        }
+
+#endif // 0
+
+    }
+}
+
+void InterleavedGltfModel::ConvertSkinAxisSystem(Skin& skin)
+{
+    for (auto& m : skin.inverseBindMatrices)
+    {
+        ConvertMatrixAxisSystem(m);
+    }
+}
+
+void InterleavedGltfModel::ConvertAnimationAxisSystem(Animation& animation)
+{
+    // translation
+    for (auto& [key, vec] : animation.translations)
+    {
+        for (auto& v : vec)
+        {
+            ConvertPositionAxisSystem(v);
+        }
+    }
+
+    // rotation
+    for (auto& [key, vec] : animation.rotations)
+    {
+        for (auto& q : vec)
+        {
+            ConvertRotationAxisSystem(q);
+        }
+    }
 }

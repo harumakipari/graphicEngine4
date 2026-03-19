@@ -195,7 +195,7 @@ void Player::Initialize(const Transform& transform)
     swordCollisionComp->SetRelativeLocationDirect({ -0.f, -0.f, 0.8f });
     swordCollisionComp->Initialize();
     //swordCollisionComp->SetRelativeEulerRotationDirect({ 0.0f, 90.f, 0.0f });
-    //swordCollisionComp->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
+    //swordCollisionComp->SetRelativeScaleDirect({ -0.0f,0.0f,0.0f });
 
 }
 

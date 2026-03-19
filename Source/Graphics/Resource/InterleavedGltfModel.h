@@ -64,6 +64,7 @@ public:
 
     //モデル固有の座標系 //初期　LH_Y_UP
     CoordinateSystem modelCoordinateSystem = CoordinateSystem::RH_Y_UP;
+    //CoordinateSystem modelCoordinateSystem = CoordinateSystem::LH_Y_UP;
 
     InterleavedGltfModel() = default;
     InterleavedGltfModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData = false);
@@ -655,6 +656,16 @@ private:
     void FetchLightNodes(const tinygltf::Model& model);
     // スポーン情報を取得する
     void ExtractSpawnPoints();
+
+    // 座標系変換
+    static void ConvertPositionAxisSystem(DirectX::XMFLOAT3& v);
+    static void ConvertPositionAxisSystem(DirectX::XMFLOAT4& v);
+    static void ConvertRotationAxisSystem(DirectX::XMFLOAT4& q);
+    static void ConvertMatrixAxisSystem(DirectX::XMFLOAT4X4& m);
+    static void ConvertNodeAxisSystem(Node& node);
+    static void ConvertMeshAxisSystem(Mesh& mesh);
+    static void ConvertSkinAxisSystem(Skin& skin);
+    static void ConvertAnimationAxisSystem(Animation& animation);
 
 public:
     // CascadedShadowMaps
