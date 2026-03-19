@@ -47,6 +47,6 @@ private:
     Microsoft::WRL::ComPtr<ID3D11BlendState> blendState;
 
 
-    std::unique_ptr<ConstantBuffer<BloomConstants>> bloomConstant;
+    std::unique_ptr<ConstantBuffer<BloomConstantBuffer>> bloomConstant;
 };
 

@@ -107,39 +107,11 @@ protected:
         float gravity = -9.8f;
     };
 
-    struct ShaderConstants
-    {
-        float shadowColor = 0.75f;
-        float shadowDepthBias = -0.00207f;
-        float splitU = 0.0f;
-        float	hueShift = -0.028f;	// 色相調整 -1 から 1 （-1 は負方向の 180 度、0 は変更なし、1 は正方向の 180 度）
-
-        float	saturation = 0.02f;	// 彩度調整（-1は濃灰、0は変化なし、1は最大彩度）
-        float	brightness = 0.013f;	// 明度調整（-1 は完全な黒、0 は変化なし、1 は完全な白）
-        float	contrast = 0.145f;	// コントラスト調整（-1は完全な灰色、0は変化なし、1は最大コントラスト）
-        float focusDistance = 4.6f; // 焦点距離
-
-        float dofRange = 80.0f;  // 被写界深度範囲
-        float objectIblIntensity = 23.0f; // オブジェクトのIblIntensity (今は骸骨を明るくするために)
-        int renderStep = 0; // デバック表示用のレンダーステップ
-        int enableToneMapping = 1; // トーンマッピング有効化フラグ
-
-        int enableSsao = true;
-        int enableCascadedShadowMaps = true;
-        int enableSsr = true;
-        int enableFog = false;
-
-        int enableBloom = true;
-        int enableBlur = true;
-        int enableDof = false;
-        int colorizeCascadedLayer = false;
-    };
-
     //==============================
     // メンバー変数（描画関連）
     //==============================
     std::unique_ptr<ConstantBuffer<FrameConstants>>  sceneCBuffer;
-    std::unique_ptr<ConstantBuffer<ShaderConstants>> shaderCBuffer;
+    std::unique_ptr<ConstantBuffer<SceneShaderConstants>> shaderCBuffer;
     std::unique_ptr<FullScreenQuad> fullscreenQuad;
 
     std::unique_ptr<FrameBuffer> frameBuffer;
@@ -167,18 +139,8 @@ protected:
     DirectX::XMFLOAT4 lightColor{ 1.0f, 1.0f, 1.0f, 20.1f };
 
     bool useDeferredRendering = true;
-    bool enableSSAO = true;
-    bool enableCascadedShadowMaps = true;
-    bool enableSSR = true;
-    bool enableFog = true;
-    bool enableBloom = true;
-    bool enableBlur = true;
-    bool enableDof = false;
-    bool enableToneMapping = true;
-
     bool useDrawDebug = true;
 
-    float criticalDepthValue = 247.0f;
 
     SIZE framebufferDimensions = {};
 

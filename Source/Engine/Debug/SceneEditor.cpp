@@ -2,6 +2,7 @@
 #include "SceneEditor.h"
 #include <imgui.h>
 #include "Engine/Scene/Scene.h"
+#include "Engine/Scene/SceneState.h"
 
 void SceneEditor::Draw()
 {
@@ -17,5 +18,25 @@ void SceneEditor::Draw()
             Scene::_transition(sceneName, {});
         }
     }
+
     ImGui::End();
+
+    ImGui::Begin("Save Scene Preset");
+
+    // --- •Û‘¶Œn ---
+    auto* scene = Scene::GetCurrentScene();
+    static SceneState savedState;
+
+    if (ImGui::Button("Save Scene"))
+    {
+        savedState.Capture(scene);
+    }
+
+    if (ImGui::Button("Load Scene"))
+    {
+        savedState.Apply(scene);
+    }
+
+    ImGui::End();
+
 }

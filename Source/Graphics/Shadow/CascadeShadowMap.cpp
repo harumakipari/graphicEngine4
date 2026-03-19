@@ -7,6 +7,7 @@
 #include <algorithm>
 
 #include "imgui.h"
+#include "Engine/Scene/Scene.h"
 #include "Engine/Utility/Win32Utils.h"
 
 // ビュー行列 + プロジェクション行列からワールド空間でのフラスタム8頂点を取得する
@@ -151,6 +152,8 @@ CascadedShadowMaps::CascadedShadowMaps(ID3D11Device* device, UINT width, UINT he
 void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4& cameraView, const DirectX::XMFLOAT4X4& cameraProjection, const DirectX::XMFLOAT4& lightDirection,
     const float criticalDepthValue/* この値が 0 の場合、カメラの遠方パネル距離が使用される。*/, const UINT cbSlot)
 {
+    auto& shadow = Scene::GetCurrentScene()->GetSceneSettings().cascadedShadowMapConstants;
+
     // 現在のレンダー状態を保存
     immediateContext->RSGetViewports(&savedViewportCount, savedViewports);
     immediateContext->OMGetRenderTargets(1, savedRenderTargetView.ReleaseAndGetAddressOf(), savedDepthStencilView.ReleaseAndGetAddressOf());
@@ -169,7 +172,7 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
         float idc = cascadeIndex / static_cast<float>(cascadeCount);
         float logarithmicSplitScheme = zn * pow(zf / zn, idc);
         float uniformSplitScheme = zn + (zf - zn) * idc;
-        cascadedPlaneDistances.at(cascadeIndex) = logarithmicSplitScheme * splitSchemeWeight + uniformSplitScheme * (1 - splitSchemeWeight);
+        cascadedPlaneDistances.at(cascadeIndex) = logarithmicSplitScheme * shadow.splitSchemeWeight + uniformSplitScheme * (1 - shadow.splitSchemeWeight);
     }
     cascadedPlaneDistances.at(0) = zn;
     cascadedPlaneDistances.at(cascadeCount) = zf;
@@ -177,7 +180,7 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
     // 各カスケードのライト空間行列作成
     for (size_t cascadeIndex = 0; cascadeIndex < cascadeCount; ++cascadeIndex)
     {
-        float nearPlane = fitToCascade ? cascadedPlaneDistances.at(cascadeIndex) : zn;
+        float nearPlane = shadow.fitToCascade ? cascadedPlaneDistances.at(cascadeIndex) : zn;
         float farPlane = cascadedPlaneDistances.at(cascadeIndex + 1);
 
         // カスケード用射影行列再構築
@@ -273,22 +276,22 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
 #endif // 1
 #if 1
         // Z拡張（シャドウ欠け防止）
-        zDepthScale = std::max<float>(1.0f, zDepthScale);
+        shadow.zDepthScale = std::max<float>(1.0f, shadow.zDepthScale);
         if (minZ < 0)
         {
-            minZ *= zDepthScale;
+            minZ *= shadow.zDepthScale;
         }
         else
         {
-            minZ /= zDepthScale;
+            minZ /= shadow.zDepthScale;
         }
         if (maxZ < 0)
         {
-            maxZ /= zDepthScale;
+            maxZ /= shadow.zDepthScale;
         }
         else
         {
-            maxZ *= zDepthScale;
+            maxZ *= shadow.zDepthScale;
         }
 #endif
 

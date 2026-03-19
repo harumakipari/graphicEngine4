@@ -418,6 +418,7 @@
     <ClInclude Include="Source\Engine\Scene\SceneBase.h" />
     <ClInclude Include="Source\Engine\Scene\SceneRegistry.h" />
     <ClInclude Include="Source\Engine\Scene\SceneSetting.h" />
+    <ClInclude Include="Source\Engine\Scene\SceneState.h" />
     <ClInclude Include="Source\Engine\Serialization\DirectXSerializers.h" />
     <ClInclude Include="Source\Engine\Utility\JsonFileHandler.h" />
     <ClInclude Include="Source\Engine\Utility\JsonUtils.h" />

@@ -73,12 +73,6 @@ public:
     // カスケード数（変更不可）
     const UINT cascadeCount;
     // 分割方法の重み
-   // 1.0 に近いほど対数分割寄り
-    float splitSchemeWeight = 0.83f; 
-    // true: カスケード毎にnearを変える
-    bool fitToCascade = true;
-    // Z拡張倍率（シャドウ欠け防止）
-    float zDepthScale = 40.4f;
 
 private:
     // レンダー状態保存用

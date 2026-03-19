@@ -8,7 +8,7 @@ struct SceneLightConstants
     float iblIntensity = 2.4f;
     int directionalLightEnable = 1;// 平行光源の on / off
     int pointLightEnable = 1;
-    int pointLightCount = 0;
+    int pointLightCount = 40;
 
     DirectX::XMFLOAT3 rimColor = { 0.3f,0.5f,1.0f };
     float rimIntensity = 0.112f;
@@ -41,14 +41,24 @@ struct SceneShaderConstants
     int renderStep = 0; // デバック表示用のレンダーステップ
     int enableToneMapping = 1; // トーンマッピング有効化フラグ
 
-    int enableSsao = true;
-    int enableCascadedShadowMaps = true;
-    int enableSsr = true;
-    int enableFog = false;
+    int enableSsao = 1;
+    int enableCascadedShadowMaps = 1;
+    int enableSsr = 1;
+    int enableFog = 0;
 
-    int enableBloom = true;
-    int enableBlur = true;
-    int enableDof = false;
+    int enableBloom = 1;
+    int enableBlur = 1;
+    int enableDof = 0;
+    int colorizeCascadedLayer = 0;
+};
+
+
+struct CascadedShadowMapConstants
+{
+    float criticalDepthValue = 247.0f;
+    float splitSchemeWeight = 0.83f;// 1.0 に近いほど対数分割寄り
+    bool fitToCascade = true;// true: カスケード毎にnearを変える
+    float zDepthScale = 40.4f;// Z拡張倍率（シャドウ欠け防止）
 };
 
 struct FogConstants
@@ -84,7 +94,7 @@ struct SSAOConstantBuffer
     float power = 0.02f;
 };
 
-struct BloomConstants
+struct BloomConstantBuffer
 {
     float bloomExtractionThreshold = 5.0;
     float bloomIntensity = 0.335f;
@@ -95,8 +105,9 @@ class SceneSettings // 今の状態
 public:
     SceneLightConstants sceneLightConstants{};
     SceneShaderConstants sceneShaderConstants{};
+    CascadedShadowMapConstants cascadedShadowMapConstants{};
     FogConstants fogConstants{};
     SSRConstantBuffer ssrConstantBuffer{};
     SSAOConstantBuffer ssaoConstantBuffer{};
-    BloomConstants bloomConstantBuffer{};
+    BloomConstantBuffer bloomConstantBuffer{};
 };

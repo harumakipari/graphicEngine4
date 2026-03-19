@@ -157,35 +157,50 @@ void LightManager::Initialize(ID3D11Device* device)
     }
 }
 
+void LightManager::SetDirectionalLight(const DirectX::XMFLOAT4& dir, const DirectX::XMFLOAT4& color)
+{
+    auto& light = Scene::GetCurrentScene()->GetSceneSettings().sceneLightConstants;
+    light.lightDirection = dir;
+    light.lightColor = color;
+}
+
 void LightManager::Update(float deltaTime)
 {
-    SetDirectionalLight(constants.lightDirection, lightColor);
+    auto& light = Scene::GetCurrentScene()->GetSceneSettings().sceneLightConstants;
 
     renderPointLights.clear();
 
-    //// ① デバッグライト
-    //for (auto& l : debugPointLights)
-    //{
-    //    renderPointLights.push_back(l);
-    //    if (renderPointLights.size() >= 8) break;
-    //}
-
-    // ② Sceneライト
+    //Sceneライト
     for (auto& l : scenePointLights)
     {
         renderPointLights.push_back(l);
-        if (renderPointLights.size() >= pointLightCount) break;
+        if (renderPointLights.size() >= light.pointLightCount) break;
     }
 
-    constants.pointLightCount = static_cast<int>(renderPointLights.size());
-    constants.directionalLightEnable = directionalLightEnable;
-    constants.pointLightCount = pointLightCount;
-    constants.lightColor = lightColor;
-    constants.directionalLightEnable = static_cast<int>(directionalLightEnable);
-    constants.pointLightEnable = static_cast<int>(pointLightEnable);
+    constants.lightDirection = light.lightDirection;
+    constants.lightColor = light.lightColor;
+
+    constants.iblIntensity = light.iblIntensity;
+    constants.directionalLightEnable = static_cast<int>(light.directionalLightEnable);
+    constants.pointLightEnable = static_cast<int>(light.pointLightEnable);
+    constants.pointLightCount = light.pointLightCount;
+    
+    constants.rimColor = light.rimColor;
+    constants.rimIntensity = light.rimIntensity;
+
+    constants.rimPower = light.rimPower;
+    constants.kc = light.kc;
+    constants.kl = light.kl;
+    constants.kq = light.kq;
+
+    constants.diffuseIntensity = light.diffuseIntensity;
+    constants.specularIntensity = light.specularIntensity;
+    constants.pointLightDiffuseIntensity = light.pointLightDiffuseIntensity;
+    constants.pointLightSpecularIntensity = light.pointLightSpecularIntensity;
+
     // デフォルト初期化
 #if 1
-    for (int i = 0; i < pointLightCount; i++)
+    for (int i = 0; i < light. pointLightCount; i++)
     {
         constants.pointsLight[i] =
             (i < renderPointLights.size()) ? renderPointLights[i] : PointLight{};
@@ -195,7 +210,7 @@ void LightManager::Update(float deltaTime)
 #ifdef _DEBUG
     if (showLightRange)
     {
-        for (int i = 0; i < pointLightCount; i++)
+        for (int i = 0; i < light.pointLightCount; i++)
         {
             auto& light = constants.pointsLight[i];
 
@@ -225,6 +240,7 @@ void LightManager::Apply(ID3D11DeviceContext* immediateContext, int slot) const
 void LightManager::CollectPointLightsFromScene(const Scene& scene)
 {
     scenePointLights.clear();
+    auto& lightScene = Scene::GetCurrentScene()->GetSceneSettings().sceneLightConstants;
 
     for (auto& actor : scene.GetActorManager()->GetAllActors())
     {
@@ -233,9 +249,8 @@ void LightManager::CollectPointLightsFromScene(const Scene& scene)
         for (auto& light : components)
         {
             if (!light->IsUsePointLight()) continue;
-
             scenePointLights.push_back(light->ToRenderLight());
-            if (scenePointLights.size() >= pointLightCount)
+            if (scenePointLights.size() >= lightScene.pointLightCount)
             {
                 break;
             }
@@ -246,22 +261,22 @@ void LightManager::CollectPointLightsFromScene(const Scene& scene)
 void LightManager::DrawGui()
 {
 #ifdef USE_IMGUI
-    ImGui::Checkbox(U8("平行光源 有効"), &directionalLightEnable);
-    ImGui::DragFloat3(U8("ライト方向"), &constants.lightDirection.x, 0.0001f, -1.0f, 1.0f, "%.8f");
-    //ImGui::SliderFloat3(U8("ライト方向"), &constants.lightDirection.x, -1.0f, 1.0f);
-    ImGui::ColorEdit3(U8("ライト色"), &lightColor.x);
-    ImGui::ColorEdit3(U8("リムライト色"), &constants.rimColor.x);
-    ImGui::SliderFloat(U8("リム強度"), &constants.rimIntensity, 0.0f, 30.0f);
-    ImGui::SliderFloat(U8("リムパワー"), &constants.rimPower, 0.0f, 30.0f);
-    ImGui::SliderFloat(U8("距離減衰"), &constants.lightDirection.w, 0.0f, 1.0f);
-    ImGui::SliderFloat(U8("Diffuse 強度"), &constants.diffuseIntensity, 0.0f, 2.0f);
-    ImGui::SliderFloat(U8("Specular 強度"), &constants.specularIntensity, 0.0f, 2.0f);
-    ImGui::SliderFloat(U8("ポイントライト Diffuse 強度"), &constants.pointLightDiffuseIntensity, 0.0f, 2.0f);
-    ImGui::SliderFloat(U8("ポイントライト Specular 強度"), &constants.pointLightSpecularIntensity, 0.0f, 2.0f);
-    ImGui::SliderFloat(U8("IBL 強度"), &constants.iblIntensity, 0.0f, 20.0f);
-    ImGui::SliderFloat(U8("ライト強度"), &lightColor.w, 0.0f, 20.0f);
-    ImGui::Checkbox(U8("ポイントライト 有効"), &pointLightEnable);
-    ImGui::SliderInt(U8("ポイントライト数"), &pointLightCount, 0, PointLightMaxCount);
+    auto& light = Scene::GetCurrentScene()->GetSceneSettings().sceneLightConstants;
+    CheckboxInt(U8("平行光源 有効"), &light.directionalLightEnable);
+    ImGui::DragFloat3(U8("ライト方向"), &light.lightDirection.x, 0.0001f, -1.0f, 1.0f, "%.8f");
+    ImGui::ColorEdit3(U8("ライト色"), &light.lightColor.x);
+    ImGui::ColorEdit3(U8("リムライト色"), &light.rimColor.x);
+    ImGui::SliderFloat(U8("リム強度"), &light.rimIntensity, 0.0f, 30.0f);
+    ImGui::SliderFloat(U8("リムパワー"), &light.rimPower, 0.0f, 30.0f);
+    ImGui::SliderFloat(U8("距離減衰"), &light.lightDirection.w, 0.0f, 1.0f);
+    ImGui::SliderFloat(U8("Diffuse 強度"), &light.diffuseIntensity, 0.0f, 2.0f);
+    ImGui::SliderFloat(U8("Specular 強度"), &light.specularIntensity, 0.0f, 2.0f);
+    ImGui::SliderFloat(U8("ポイントライト Diffuse 強度"), &light.pointLightDiffuseIntensity, 0.0f, 2.0f);
+    ImGui::SliderFloat(U8("ポイントライト Specular 強度"), &light.pointLightSpecularIntensity, 0.0f, 2.0f);
+    ImGui::SliderFloat(U8("IBL 強度"), &light.iblIntensity, 0.0f, 20.0f);
+    ImGui::SliderFloat(U8("ライト強度"), &light.lightColor.w, 0.0f, 20.0f);
+    CheckboxInt(U8("ポイントライト 有効"), &light.pointLightEnable);
+    ImGui::SliderInt(U8("ポイントライト数"), &light.pointLightCount, 0, PointLightMaxCount);
 
     ImGui::Checkbox(U8("ライト範囲表示"), &showLightRange);
     static int currentPreset = 0; // 7
@@ -279,17 +294,17 @@ void LightManager::DrawGui()
         "600\0"
         "3250\0"))
     {
-        constants.kc = presets[currentPreset].kc;
-        constants.kl = presets[currentPreset].kl;
-        constants.kq = presets[currentPreset].kq;
+        light.kc = presets[currentPreset].kc;
+        light.kl = presets[currentPreset].kl;
+        light.kq = presets[currentPreset].kq;
     }
 
-    ImGui::SliderFloat("Kc", &constants.kc, 0.0f, 2.0f);
-    ImGui::SliderFloat("Kl", &constants.kl, 0.0f, 1.0f);
-    ImGui::SliderFloat("Kq", &constants.kq, 0.0f, 2.0f);
+    ImGui::SliderFloat("Kc", &light.kc, 0.0f, 2.0f);
+    ImGui::SliderFloat("Kl", &light.kl, 0.0f, 1.0f);
+    ImGui::SliderFloat("Kq", &light.kq, 0.0f, 2.0f);
 
-    if (debugPointLights.size() != static_cast<size_t>(pointLightCount))
-        debugPointLights.resize(pointLightCount); // 個数を合わせる
+    if (debugPointLights.size() != static_cast<size_t>(light.pointLightCount))
+        debugPointLights.resize(light.pointLightCount); // 個数を合わせる
 
     if (ImGui::TreeNode(U8("共有ライト")))
     {

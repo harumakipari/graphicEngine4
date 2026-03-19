@@ -16,7 +16,6 @@ struct SharedLightParam
 class LightManager
 {
     const static inline int PointLightMaxCount = 40;
-
 public:
     struct PointLight
     {
@@ -31,10 +30,10 @@ public:
         DirectX::XMFLOAT4 lightDirection = {};// w:attenuation Rate
         DirectX::XMFLOAT4 lightColor = {}; //w colorPower
 
-        float iblIntensity = 2.4f;
-        int directionalLightEnable = 1;// 平行光源の on / off
-        int pointLightEnable = 1;
-        int pointLightCount = 0;
+        float iblIntensity ;
+        int directionalLightEnable ;// 平行光源の on / off
+        int pointLightEnable ;
+        int pointLightCount ;
 
         DirectX::XMFLOAT3 rimColor = { 0.3f,0.5f,1.0f };
         float rimIntensity = 0.112f;
@@ -72,25 +71,13 @@ public:
 
     void CollectPointLightsFromScene(const Scene& scene);
 
-    void SetDirectionalLight(const DirectX::XMFLOAT4& dir, const DirectX::XMFLOAT4& color)
-    {
-        constants.lightDirection = dir;
-        lightColor = color;
-    }
+    void SetDirectionalLight(const DirectX::XMFLOAT4& dir, const DirectX::XMFLOAT4& color);
 
     void DrawGui();
 
     const DirectX::XMFLOAT4& GetLightDirection() const { return constants.lightDirection; }
 private:
-    //DirectX::XMFLOAT4 lightDirection{ -0.75f, -0.581f, -0.4f, 0.0f };
-    DirectX::XMFLOAT4 lightColor{ 1.0f,1.0f,1.0f,3.8f };
-    //float iblIntensity = 0.001f;  //Image Basesd Lightingの強度
-
-    bool directionalLightEnable = true; // 平行光源の on / off
-    bool pointLightEnable = true;
     bool showLightRange = true; // ポイントライトの範囲をデバッグ表示するか
-    int pointLightCount = 40;
-
     LightConstants constants = {};
     // GPUに送る最終のポイントライト情報
     std::vector<PointLight> renderPointLights;

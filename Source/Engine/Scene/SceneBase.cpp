@@ -26,7 +26,7 @@
 bool SceneBase::Initialize(ID3D11Device* device, const UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
     sceneCBuffer = std::make_unique<ConstantBuffer<FrameConstants>>(device);
-    shaderCBuffer = std::make_unique<ConstantBuffer<ShaderConstants>>(device);
+    shaderCBuffer = std::make_unique<ConstantBuffer<SceneShaderConstants>>(device);
     sceneCBuffer->data.elapsedTime = 0;//開始時に０にしておく
 
     // ライト
@@ -230,13 +230,32 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext, floa
     UINT num_viewports{ 1 };
     immediateContext->RSGetViewports(&num_viewports, &viewport);
 
-    shaderCBuffer->data.enableSsao = enableSSAO;
-    shaderCBuffer->data.enableBloom = enableBloom;
-    shaderCBuffer->data.enableDof = enableDof;
-    shaderCBuffer->data.enableFog = enableFog;
-    shaderCBuffer->data.enableCascadedShadowMaps = enableCascadedShadowMaps;
-    shaderCBuffer->data.enableSsr = enableSSR;
-    shaderCBuffer->data.enableBlur = enableBlur;
+    auto& shader = Scene::GetCurrentScene()->GetSceneSettings().sceneShaderConstants;
+
+    shaderCBuffer->data.shadowColor = shader.shadowColor;
+    shaderCBuffer->data.shadowDepthBias = shader.shadowDepthBias;
+    shaderCBuffer->data.splitU = shader.splitU;
+    shaderCBuffer->data.hueShift = shader.hueShift;
+
+    shaderCBuffer->data.saturation = shader.saturation;
+    shaderCBuffer->data.brightness = shader.brightness;
+    shaderCBuffer->data.contrast = shader.contrast;
+    shaderCBuffer->data.focusDistance = shader.focusDistance;
+
+    shaderCBuffer->data.dofRange = shader.dofRange;
+    shaderCBuffer->data.objectIblIntensity = shader.objectIblIntensity;
+    //shaderCBuffer->data.renderStep = shader.renderStep; // これはImGuiで
+    shaderCBuffer->data.enableToneMapping = shader.enableToneMapping;
+
+    shaderCBuffer->data.enableSsao = shader.enableSsao;
+    shaderCBuffer->data.enableCascadedShadowMaps = shader.enableCascadedShadowMaps;
+    shaderCBuffer->data.enableSsr = shader.enableSsr;
+    shaderCBuffer->data.enableFog = shader.enableFog;
+
+    shaderCBuffer->data.enableBloom = shader.enableBloom;
+    shaderCBuffer->data.enableBlur = shader.enableBlur;
+    shaderCBuffer->data.enableDof = shader.enableDof;
+    shaderCBuffer->data.colorizeCascadedLayer = shader.colorizeCascadedLayer;
 
     sceneCBuffer->Activate(immediateContext, 1);
     shaderCBuffer->Activate(immediateContext, 9);
@@ -360,7 +379,8 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     }
     // カスケードシャドウマップ生成
     cascadedShadowMaps->Clear(immediateContext);
-    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), criticalDepthValue, 3/*cbSlot*/);
+    auto& shadow = Scene::GetCurrentScene()->GetSceneSettings().cascadedShadowMapConstants;
+    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), shadow.criticalDepthValue, 3/*cbSlot*/);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
@@ -440,8 +460,10 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
 
     // 影を作る処理
 #if 1
+    auto& shadow = Scene::GetCurrentScene()->GetSceneSettings().cascadedShadowMapConstants;
+
     cascadedShadowMaps->Clear(immediateContext);
-    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), criticalDepthValue, 3/*cbSlot*/);
+    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), shadow.criticalDepthValue, 3/*cbSlot*/);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
@@ -539,7 +561,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
 
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Forward;
-     sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ここで警告出る
+    sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ここで警告出る
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
 
@@ -809,8 +831,6 @@ void SceneBase::DrawSceneSettingsTab()
         ImGui::Checkbox("useDeferredRendering", &useDeferredRendering);
         ImGui::Checkbox("useDrawDebug", &useDrawDebug);
         lightManager->DrawGui();
-
-
     }
 
 }
@@ -840,6 +860,9 @@ void SceneBase::DrawInspector()
 
 void SceneBase::DrawPostEffectTab()
 {
+    auto& shader = Scene::GetCurrentScene()->GetSceneSettings().sceneShaderConstants;
+    auto& cascadedShadow = Scene::GetCurrentScene()->GetSceneSettings().cascadedShadowMapConstants;
+
     const char* renderStepItems[] =
     {
         "DefaultScene",
@@ -851,29 +874,24 @@ void SceneBase::DrawPostEffectTab()
         "Final"
     };
     ImGui::Combo("Render Step", &shaderCBuffer->data.renderStep, renderStepItems, IM_ARRAYSIZE(renderStepItems));
-    //CheckboxInt("Enable SSAO", &shaderCBuffer->data.enableSsao);
-    //CheckboxInt("Enable SSR", &shaderCBuffer->data.enableSsr);
-    //CheckboxInt("Enable Bloom", &shaderCBuffer->data.enableBloom);
-    //CheckboxInt("Enable Blur", &shaderCBuffer->data.enableBlur);
-    //CheckboxInt("Enable Fog", &shaderCBuffer->data.enableFog);
-    ImGui::SliderFloat("objectIblIntensity", &shaderCBuffer->data.objectIblIntensity, 0.0f, +30.0f);
-    CheckboxInt("Enable ToneMapping", &shaderCBuffer->data.enableToneMapping);
-    ImGui::Checkbox("Enable SSAO", &enableSSAO);
-    ImGui::Checkbox("Enable SSR", &enableSSR);
-    ImGui::Checkbox("Enable Bloom", &enableBloom);
-    ImGui::Checkbox("Enable Blur", &enableBlur);
-    ImGui::Checkbox("Enable Dof", &enableDof);
-    ImGui::Checkbox("Enable Fog", &enableFog);
-    ImGui::Checkbox("Enable CSM", &enableCascadedShadowMaps);
-    ImGui::SliderFloat("split_u", &shaderCBuffer->data.splitU, 0.0f, +1.0f);
-    ImGui::SliderFloat(U8("色相調整"), &shaderCBuffer->data.hueShift, -1.0f, +1.0f);
-    ImGui::SliderFloat(U8("彩度調整"), &shaderCBuffer->data.saturation, -1.0f, +1.0f);
-    ImGui::SliderFloat(U8("明度調整"), &shaderCBuffer->data.brightness, -1.0f, +1.0f);
-    ImGui::SliderFloat(U8("コントラスト調整"), &shaderCBuffer->data.contrast, -1.0f, +1.0f);
-    ImGui::SliderFloat(U8("焦点距離"), &shaderCBuffer->data.focusDistance, 0.01f, 1000.0f);
-    ImGui::SliderFloat(U8("被写界深度範囲"), &shaderCBuffer->data.dofRange, 1.0f, 500.0f);
-    //ImGui::SliderFloat("focus_distance", &depth_of_field_constant.focus_distance, get_near_clip_distance(), get_far_clip_distance());
-    //ImGui::SliderFloat("dof_range", &depth_of_field_constant.dof_range, 1.0f, get_far_clip_distance() - get_near_clip_distance());
+
+
+    ImGui::SliderFloat("objectIblIntensity", &shader.objectIblIntensity, 0.0f, +30.0f);
+    CheckboxInt("Enable ToneMapping", &shader.enableToneMapping);
+    CheckboxInt("Enable SSAO", &shader.enableSsao);
+    CheckboxInt("Enable SSR", &shader.enableSsr);
+    CheckboxInt("Enable Bloom", &shader.enableBloom);
+    CheckboxInt("Enable Blur", &shader.enableBlur);
+    CheckboxInt("Enable Dof", &shader.enableDof);
+    CheckboxInt("Enable Fog", &shader.enableFog);
+    CheckboxInt("Enable CSM", &shader.enableCascadedShadowMaps);
+    ImGui::SliderFloat("split_u", &shader.splitU, 0.0f, +1.0f);
+    ImGui::SliderFloat(U8("色相調整"), &shader.hueShift, -1.0f, +1.0f);
+    ImGui::SliderFloat(U8("彩度調整"), &shader.saturation, -1.0f, +1.0f);
+    ImGui::SliderFloat(U8("明度調整"), &shader.brightness, -1.0f, +1.0f);
+    ImGui::SliderFloat(U8("コントラスト調整"), &shader.contrast, -1.0f, +1.0f);
+    ImGui::SliderFloat(U8("焦点距離"), &shader.focusDistance, 0.01f, 1000.0f);
+    ImGui::SliderFloat(U8("被写界深度範囲"), &shader.dofRange, 1.0f, 500.0f);
 
     sceneEffectManager->DrawGui();
     postEffectManager->DrawGui();
@@ -882,16 +900,16 @@ void SceneBase::DrawPostEffectTab()
     // -------------------------
     if (ImGui::CollapsingHeader(U8("Cascaded Shadow Maps")))
     {
-        ImGui::SliderFloat("Critical Depth", &criticalDepthValue, 0.0f, 1000.0f);
-        ImGui::SliderFloat("Split Scheme", &cascadedShadowMaps->splitSchemeWeight, 0.0f, 1.0f);
-        ImGui::SliderFloat("Z Mult", &cascadedShadowMaps->zDepthScale, 1.0f, 100.0f);
-        ImGui::Checkbox("Fit To Cascade", &cascadedShadowMaps->fitToCascade);
-        ImGui::SliderFloat("Shadow Color", &shaderCBuffer->data.shadowColor, 0.0f, 1.0f);
-        ImGui::DragFloat("Depth Bias", &shaderCBuffer->data.shadowDepthBias, 0.00001f, -0.01f, 0.01f, "%.8f");
-        bool colorize = shaderCBuffer->data.colorizeCascadedLayer != 0;
+        ImGui::SliderFloat("Critical Depth", &cascadedShadow.criticalDepthValue, 0.0f, 1000.0f);
+        ImGui::SliderFloat("Split Scheme", &cascadedShadow.splitSchemeWeight, 0.0f, 1.0f);
+        ImGui::SliderFloat("Z Mult", &cascadedShadow.zDepthScale, 1.0f, 100.0f);
+        ImGui::Checkbox("Fit To Cascade", &cascadedShadow.fitToCascade);
+        ImGui::SliderFloat("Shadow Color", &shader.shadowColor, 0.0f, 1.0f);
+        ImGui::DragFloat("Depth Bias", &shader.shadowDepthBias, 0.00001f, -0.01f, 0.01f, "%.8f");
+        bool colorize = shader.colorizeCascadedLayer != 0;
         if (ImGui::Checkbox("Colorize Layer", &colorize))
         {
-            shaderCBuffer->data.colorizeCascadedLayer = colorize ? 1 : 0;
+            shader.colorizeCascadedLayer = colorize ? 1 : 0;
         }
     }
 

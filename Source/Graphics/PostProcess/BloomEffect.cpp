@@ -69,7 +69,7 @@ void BloomEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t heig
     hr = device->CreateBlendState(&blendDesc, blendState.GetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    bloomConstant = std::make_unique<ConstantBuffer<BloomConstants>>(device);
+    bloomConstant = std::make_unique<ConstantBuffer<BloomConstantBuffer>>(device);
 
 }
 
