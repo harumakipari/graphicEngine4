@@ -796,6 +796,7 @@ public:
     void SaveToJson(const std::string& path);
 
     void LoadFromJson(const std::string& path);
+    void RefreshMovieFiles();
 
     void DrawImGuiInspector()override
     {
@@ -812,6 +813,14 @@ public:
             keys.push_back(k);
         }
 
+        char fileBuf[128];
+        strncpy_s(fileBuf, currentFile.c_str(), sizeof(fileBuf));
+
+        if (ImGui::InputText("File", fileBuf, sizeof(fileBuf)))
+        {
+            currentFile = fileBuf;
+        }
+
         ImGui::SameLine();
         if (ImGui::Button("Play"))
         {
@@ -819,15 +828,35 @@ public:
         }
         if (ImGui::Button("Save JSON"))
         {
-            SaveToJson("./Data/MovieCamera/MovieCamera.json");
+            SaveToJson(basePath + currentFile);
         }
-
-        ImGui::SameLine();
-
         if (ImGui::Button("Load JSON"))
         {
-            LoadFromJson("./Data/MovieCamera/MovieCamera.json");
+            LoadFromJson(basePath + currentFile);
         }
+
+        if (ImGui::Button("Refresh Files"))
+        {
+            RefreshMovieFiles();
+
+        }
+        ImGui::SameLine();
+
+        if (ImGui::Button("New"))
+        {
+            keys.clear();
+            currentFile = "new_movie.json";
+        }
+
+        for (auto& file : movieFiles)
+        {
+            if (ImGui::Selectable(file.c_str()))
+            {
+                currentFile = file;
+                LoadFromJson(basePath + file);
+            }
+        }
+
         for (int i = 0; i < keys.size(); i++)
         {
             ImGui::PushID(i);
@@ -861,6 +890,16 @@ public:
         }
 #endif
     }
+
+    // =========================
+    void Start()
+    {
+        if (keys.size() < 2) return;
+        currentIndex = 0;
+        time = 0.f;
+        playing = true;
+    }
+
 private:
     void HandleKeyboardInput(float deltaTime);
     void HandleMouseInput(float deltaTime)
@@ -952,14 +991,6 @@ private:
     float time = 0.f;
     bool playing = false;
 
-    // =========================
-    void Start()
-    {
-        if (keys.size() < 2) return;
-        currentIndex = 0;
-        time = 0.f;
-        playing = true;
-    }
 
     // =========================
     void UpdatePath(float dt)
@@ -1021,6 +1052,10 @@ private:
     bool useMovieCamera = false;
     float moveSpeed = 5.0f;
     float rotateSpeed = 0.001f;
+
+    std::string currentFile = "intro.json";
+    std::string basePath = "./Data/MovieCamera/";
+    std::vector<std::string> movieFiles;
 };
 
 #endif //CAMERA_COMPONENT_H

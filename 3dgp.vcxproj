@@ -395,6 +395,7 @@
     <ClInclude Include="Source\Engine\Camera\BookmarkCamera.h" />
     <ClInclude Include="Source\Engine\Camera\CameraConstants.h" />
     <ClInclude Include="Source\Engine\Camera\CameraManager.h" />
+    <ClInclude Include="Source\Engine\Camera\MovieManager.h" />
     <ClInclude Include="Source\Engine\Camera\TPSCameraController.h" />
     <ClInclude Include="Source\Engine\Debug\Assert.h" />
     <ClInclude Include="Source\Engine\Debug\DebugRender.h" />

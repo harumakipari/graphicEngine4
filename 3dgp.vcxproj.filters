@@ -864,6 +864,7 @@
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorEnemy.h" />
     <ClInclude Include="Source\Engine\Camera\BookmarkCamera.h" />
     <ClInclude Include="Source\Engine\Camera\TPSCameraController.h" />
+    <ClInclude Include="Source\Engine\Camera\MovieManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

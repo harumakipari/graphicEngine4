@@ -523,3 +523,15 @@ void MovieCameraComponent::LoadFromJson(const std::string& path)
     }
 }
 
+void MovieCameraComponent::RefreshMovieFiles()
+{
+    movieFiles.clear();
+
+    for (auto& entry : std::filesystem::directory_iterator(basePath))
+    {
+        if (entry.path().extension() == ".json")
+        {
+            movieFiles.push_back(entry.path().filename().string());
+        }
+    }
+}
