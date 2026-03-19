@@ -8,7 +8,6 @@
 // ‘¼ƒ‰ƒCƒuƒ‰ƒŠ
 #include <DirectXMath.h>
 
-#include "Engine/Camera/BookmarkCamera.h"
 
 #ifdef USE_IMGUI
 #define IMGUI_ENABLE_DOCKING
@@ -21,20 +20,11 @@
 #include "Core/Actor.h"
 #include "Engine/Camera/CameraConstants.h"
 #include "Engine/Input/InputSystem.h"
+#include "Engine/Scene/SceneSetting.h"
 
 class CameraComponent :public SceneComponent
 {
 public:
-    struct CameraBookmark
-    {
-        std::string name = "Bookmark";
-        DirectX::XMFLOAT3 position{ 0.0f,0.0f,0.0f };
-        DirectX::XMFLOAT4 rotation{ 0.0f,0.0f,0.0f,1.0f };
-        float yaw = 0;
-        float pitch = 0;
-        float fov = 0;
-    };
-
     CameraBookmark bookmark;
     bool hasBookmark = false;
 
@@ -81,22 +71,6 @@ public:
         return projection;
     }
 
-    CameraState GetState() const
-    {
-        CameraState s;
-        s.position = GetComponentLocation();
-        s.rotation = { pitch, yaw, 0 };
-        s.fov = fovY;
-        return s;
-    }
-
-    void SetState(const CameraState& s)
-    {
-        SetWorldLocationDirect(s.position);
-        pitch = s.rotation.x;
-        yaw = s.rotation.y;
-        fovY = s.fov;
-    }
 
     bool useLookTarget = false;
     DirectX::XMFLOAT3 lookTarget{};
@@ -167,6 +141,14 @@ public:
     void SetFov(const float fov)
     {
         SetPerspective(fov, Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
+    }
+    void SetYaw(const float yaw)
+    {
+        this->yaw = yaw;
+    }
+    void SetPitch(const float pitch)
+    {
+        this->pitch = pitch;
     }
 protected:
     float fovY = DirectX::XMConvertToRadians(35.0f);
@@ -457,6 +439,8 @@ public:
 
     void SetIsUseCinematic(const bool useCinematic) { this->useCinematic = useCinematic; }
 
+    std::vector<CameraBookmark> bookmarks;
+
 private:
     float moveSpeed = 5.0f;
     float rotateSpeed = 0.001f;
@@ -708,7 +692,6 @@ private:
         }
     }
 
-    std::vector<CameraBookmark> bookmarks;
     static const int MAX_BOOKMARKS = 10;
 
     bool playingPath = false;

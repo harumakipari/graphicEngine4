@@ -206,6 +206,9 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
 #endif
         ImGui::Text("ALT+ENTER to change window mode");
         ImGui::Text("F1 ImGui on/off");
+        ImGui::Text("F6 MovieCamera");
+        ImGui::Text("F7 CinemaCamera");
+        ImGui::Text("F8 DebugCamera");
 
         ImGui::End();
 #endif

@@ -1,6 +1,24 @@
 #pragma once
 #include "Scene.h"
 #include "SceneSetting.h"
+#include "Components/Camera/CameraComponent.h"
+#include "Game/Actors/Camera/Camera.h"
+
+struct ActorTransformState
+{
+    std::string name;
+    DirectX::XMFLOAT3 position;
+    DirectX::XMFLOAT4 rotation;
+};
+
+struct CameraState
+{
+    DirectX::XMFLOAT3 position{ 0.0f,0.0f,0.0f };
+    DirectX::XMFLOAT4 rotation{ 0.0f,0.0f,0.0f,1.0f };
+    float yaw = 0;
+    float pitch = 0;
+    float fov = 0;
+};
 
 struct SceneState
 {
@@ -13,6 +31,13 @@ struct SceneState
     BloomConstantBuffer bloom;
 
 
+    // カメラ情報
+    CameraState camera;
+    std::vector<CameraBookmark> cameraBookmarks;
+
+    // Actor情報（Playerとか）
+    std::vector<ActorTransformState> actorStates;
+
     void Capture(Scene* scene)
     {
         auto& s = scene->GetSceneSettings();
@@ -23,6 +48,34 @@ struct SceneState
         ssr = s.ssrConstantBuffer;
         ssao = s.ssaoConstantBuffer;
         bloom = s.bloomConstantBuffer;
+
+        // --- Player / Actor Transform ---
+        actorStates.clear();
+        for (auto& actor : scene->GetActorManager()->GetAllActors())
+        {
+            ActorTransformState ats;
+            ats.name = actor->GetName();
+            ats.position = actor->GetPosition();
+            ats.rotation = actor->GetQuaternionRotation();
+            actorStates.push_back(ats);
+        }
+
+        // --- Camera ---
+        if (auto cam = scene->GetCameraManager()->GetRenderCamera(scene))
+        {
+            if (auto cinemaComp = dynamic_cast<CinematicCameraComponent*>(cam->GetCameraComponent()))
+            {
+                camera.position = cinemaComp->GetOwner()->GetPosition();
+                camera.rotation = cinemaComp->GetOwner()->GetQuaternionRotation();
+                camera.yaw = cinemaComp->GetYaw();
+                camera.pitch = cinemaComp->GetPitch();
+
+                camera.fov = cinemaComp->GetFov();
+
+                // ブックマークも保存
+                cameraBookmarks = cinemaComp->bookmarks;
+            }
+        }
     }
 
     void Apply(Scene* scene)
@@ -44,5 +97,34 @@ struct SceneState
         s.ssrConstantBuffer = ssr;
         s.ssaoConstantBuffer = ssao;
         s.bloomConstantBuffer = bloom;
+
+        // --- Actor Transform ---
+        for (auto& ats : actorStates)
+        {
+            auto actor = scene->GetActorManager()->GetActorByName(ats.name);
+            if (actor)
+            {
+                actor->SetPosition(ats.position);
+                actor->SetQuaternionRotation(ats.rotation);
+            }
+        }
+
+        // --- Camera ---
+        if (auto cam = scene->GetCameraManager()->GetRenderCamera(scene))
+        {
+            if (auto cinemaComp = dynamic_cast<CinematicCameraComponent*>(cam->GetCameraComponent()))
+            {
+                cinemaComp->GetOwner()->SetPosition(camera.position);
+                cinemaComp->GetOwner()->SetQuaternionRotation(camera.rotation);
+                cinemaComp->SetFov(camera.fov);
+                // ブックマークも復元
+                cinemaComp->SetYaw(camera.yaw);
+                cinemaComp->SetPitch(camera.pitch);
+
+                cinemaComp->UpdateRotationFromYawPitch();
+                cinemaComp->bookmarks = cameraBookmarks;
+            }
+        }
     }
 };
+

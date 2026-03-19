@@ -273,6 +273,79 @@ inline void from_json(const json& j, BloomConstantBuffer& b)
 }
 
 
+// --- ActorTransformState ---
+inline void to_json(json& j, const ActorTransformState& a)
+{
+    j = {
+        {"name", a.name},
+        {"position", {a.position.x, a.position.y, a.position.z}},
+        {"rotation", {a.rotation.x, a.rotation.y, a.rotation.z, a.rotation.w}}
+    };
+}
+
+inline void from_json(const json& j, ActorTransformState& a)
+{
+    a.name = j.at("name").get<std::string>();
+    a.position.x = j.at("position")[0];
+    a.position.y = j.at("position")[1];
+    a.position.z = j.at("position")[2];
+    a.rotation.x = j.at("rotation")[0];
+    a.rotation.y = j.at("rotation")[1];
+    a.rotation.z = j.at("rotation")[2];
+    a.rotation.w = j.at("rotation")[3];
+}
+
+// --- CameraState ---
+inline void to_json(json& j, const CameraState& c)
+{
+    j = {
+        {"position", {c.position.x, c.position.y, c.position.z}},
+        {"rotation", {c.rotation.x, c.rotation.y, c.rotation.z, c.rotation.w}},
+        {"yaw", c.yaw},
+        {"pitch", c.pitch},
+        {"fov", c.fov},
+    };
+}
+
+inline void from_json(const json& j, CameraState& c)
+{
+    c.position.x = j.at("position")[0];
+    c.position.y = j.at("position")[1];
+    c.position.z = j.at("position")[2];
+    c.rotation.x = j.at("rotation")[0];
+    c.rotation.y = j.at("rotation")[1];
+    c.rotation.z = j.at("rotation")[2];
+    c.rotation.w = j.at("rotation")[3];
+    c.yaw = j.at("yaw");
+    c.pitch = j.at("pitch");
+    c.fov = j.at("fov");
+}
+
+inline void to_json(nlohmann::json& j, const CameraBookmark& b)
+{
+    j["name"] = b.name;
+    j["position"] = { b.position.x, b.position.y, b.position.z };
+    j["rotation"] = { b.rotation.x, b.rotation.y, b.rotation.z, b.rotation.w };
+    j["yaw"] = b.yaw;
+    j["pitch"] = b.pitch;
+    j["fov"] = b.fov;
+}
+
+inline void from_json(const nlohmann::json& j, CameraBookmark& b)
+{
+    b.name = j.value("name", "Bookmark");
+    b.position.x = j["position"][0];
+    b.position.y = j["position"][1];
+    b.position.z = j["position"][2];
+    b.rotation.x = j["rotation"][0];
+    b.rotation.y = j["rotation"][1];
+    b.rotation.z = j["rotation"][2];
+    b.rotation.w = j["rotation"][3];
+    b.yaw = j.value("yaw", 0.0f);
+    b.pitch = j.value("pitch", 0.0f);
+    b.fov = j.value("fov", 0.0f);
+}
+
 
 
 inline void to_json(json& j, const SceneState& s)
@@ -280,25 +353,43 @@ inline void to_json(json& j, const SceneState& s)
     j = {
         {"lightSaveData", s.lightSaveData},
         {"shader", s.shader},
-        {"cascadeShadow",s.cascadeShadow},
+        {"cascadeShadow", s.cascadeShadow},
         {"fog", s.fog},
         {"ssr", s.ssr},
         {"ssao", s.ssao},
-        {"bloom", s.bloom}
+        {"bloom", s.bloom},
+        {"camera", s.camera},
+        {"cameraBookmarks", s.cameraBookmarks},
+        {"actorStates", s.actorStates}
     };
 }
-
 inline void from_json(const json& j, SceneState& s)
 {
+#if 0
     j.at("lightSaveData").get_to(s.lightSaveData);
-    //j.at("light").get_to(s.lightSaveData.sceneConstants);
     j.at("shader").get_to(s.shader);
     j.at("cascadeShadow").get_to(s.cascadeShadow);
     j.at("fog").get_to(s.fog);
     j.at("ssr").get_to(s.ssr);
     j.at("ssao").get_to(s.ssao);
     j.at("bloom").get_to(s.bloom);
+
+#else
+    j.at("lightSaveData").get_to(s.lightSaveData);
+    j.at("shader").get_to(s.shader);
+    j.at("cascadeShadow").get_to(s.cascadeShadow);
+    j.at("fog").get_to(s.fog);
+    j.at("ssr").get_to(s.ssr);
+    j.at("ssao").get_to(s.ssao);
+    j.at("bloom").get_to(s.bloom);
+    j.at("camera").get_to(s.camera);
+    j.at("cameraBookmarks").get_to(s.cameraBookmarks);
+    j.at("actorStates").get_to(s.actorStates);
+#endif // 0
 }
+
+
+
 
 void SaveSceneState(const std::string& path, SceneState& state)
 {

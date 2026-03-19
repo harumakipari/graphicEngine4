@@ -124,3 +124,14 @@ public:
     SSAOConstantBuffer ssaoConstantBuffer{};
     BloomConstantBuffer bloomConstantBuffer{};
 };
+
+struct CameraBookmark
+{
+    std::string name = "Bookmark";
+    DirectX::XMFLOAT3 position{ 0.0f,0.0f,0.0f };
+    DirectX::XMFLOAT4 rotation{ 0.0f,0.0f,0.0f,1.0f };
+    float yaw = 0;
+    float pitch = 0;
+    float fov = 0;
+};
+
