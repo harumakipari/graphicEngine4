@@ -133,11 +133,28 @@ InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::stri
         if (mode == ModelTypes::ModelMode::StaticMesh || mode == ModelTypes::ModelMode::InstancedStaticMesh)
         {
             FetchAndBatchMeshes(device, *gltfModel);
+
+            //for (auto& mesh : batchMeshes)
+            //{
+            //    ConvertBatchMeshAxisSystem(mesh);
+            //}
         }
         else
         {
             FetchMeshes(device, *gltfModel);
+            for (auto& mesh : meshes)
+            {
+                ConvertMeshAxisSystem(mesh);
+            }
             ExtractAnimations(*gltfModel);
+            for (auto& skin : skins)
+            {
+                ConvertSkinAxisSystem(skin);
+            }
+            for (auto& anim : animations)
+            {
+                ConvertAnimationAxisSystem(anim);
+            }
             //FetchAnimations(*gltfModel, animations); // 一個目のモデルはアニメーションをそのまま追加
             //FetchAnimations(*gltfModel);
         }
@@ -219,7 +236,7 @@ void InterleavedGltfModel::FetchNodes(const tinygltf::Model& gltfModel)
 
     for (Node& node : nodes)
     {
-        ConvertNodeAxisSystem(node);
+        ConvertNodeAxisSystem(node,mode);
     }
 
     // globalTransform生成（LHSで作られる）
@@ -729,7 +746,6 @@ void InterleavedGltfModel::FetchMeshes(ID3D11Device* device, const tinygltf::Mod
 
         }
 
-        ConvertMeshAxisSystem(mesh);
     }
 
 
@@ -2470,7 +2486,7 @@ void InterleavedGltfModel::ExtractAnimations(const tinygltf::Model& transmission
 
         skin.joints = transmission_skin.joints;
 
-        ConvertSkinAxisSystem(skin);
+        //ConvertSkinAxisSystem(skin);
     }
 
     for (std::vector<tinygltf::Animation>::const_reference transmission_animation : transmission_model.animations)
@@ -2548,7 +2564,7 @@ void InterleavedGltfModel::ExtractAnimations(const tinygltf::Model& transmission
             }
         }
 
-        ConvertAnimationAxisSystem(animation);
+        //ConvertAnimationAxisSystem(animation);
     }
 
     for (Animation& animation : animations)
@@ -2627,11 +2643,12 @@ void InterleavedGltfModel::ConvertPositionAxisSystem(DirectX::XMFLOAT3& v)
 {
     v.x = -v.x;
 }
-
+// 座標系変換
 void InterleavedGltfModel::ConvertPositionAxisSystem(DirectX::XMFLOAT4& v)
 {
     v.x = -v.x;
 }
+
 
 void InterleavedGltfModel::ConvertRotationAxisSystem(DirectX::XMFLOAT4& q)
 {
@@ -2648,10 +2665,13 @@ void InterleavedGltfModel::ConvertMatrixAxisSystem(DirectX::XMFLOAT4X4& m)
     m._41 = -m._41;
 }
 
-void InterleavedGltfModel::ConvertNodeAxisSystem(Node& node)
+void InterleavedGltfModel::ConvertNodeAxisSystem(Node& node, ModelTypes::ModelMode mode_)
 {
-    ConvertPositionAxisSystem(node.translation);
-    ConvertRotationAxisSystem(node.rotation);
+    if (mode_ == ModelTypes::ModelMode::SkeletalMesh)
+    {
+        ConvertPositionAxisSystem(node.translation);
+        ConvertRotationAxisSystem(node.rotation);
+    }
 }
 
 void InterleavedGltfModel::ConvertMeshAxisSystem(Mesh& mesh)
@@ -2661,7 +2681,7 @@ void InterleavedGltfModel::ConvertMeshAxisSystem(Mesh& mesh)
         for (Mesh::Vertex& v : primitive.cachedVertices)
         {
             ConvertPositionAxisSystem(v.position);
-            ConvertPositionAxisSystem(v.normal);
+            //ConvertPositionAxisSystem(v.normal);
             ConvertPositionAxisSystem(v.tangent);
         }
 
@@ -2674,17 +2694,37 @@ void InterleavedGltfModel::ConvertMeshAxisSystem(Mesh& mesh)
             p[2] = temp;
         }
 #else
-        uint32_t* indices = reinterpret_cast<uint32_t*>(primitive.cachedIndices.data());
+        //uint32_t* indices = reinterpret_cast<uint32_t*>(primitive.cachedIndices.data());
 
-        size_t indexCount = primitive.cachedIndices.size() / 4;
+        //size_t indexCount = primitive.cachedIndices.size() / 4;
 
-        for (size_t i = 0; i < indexCount; i += 3)
-        {
-            std::swap(indices[i + 1], indices[i + 2]);
-        }
+        //for (size_t i = 0; i < indexCount; i += 3)
+        //{
+        //    std::swap(indices[i + 1], indices[i + 2]);
+        //}
 
 #endif // 0
 
+    }
+}
+
+void InterleavedGltfModel::ConvertBatchMeshAxisSystem(BatchMesh& mesh)
+{
+    for (BatchMesh::Vertex& v : mesh.cachedVertices)
+    {
+        ConvertPositionAxisSystem(v.position);
+        ConvertPositionAxisSystem(v.normal);
+        ConvertPositionAxisSystem(v.tangent);
+
+    }
+
+    uint32_t* indices = reinterpret_cast<uint32_t*>(mesh.cachedIndices.data());
+
+    size_t indexCount = mesh.cachedIndices.size() / 4;
+
+    for (size_t i = 0; i < indexCount; i += 3)
+    {
+        std::swap(indices[i + 1], indices[i + 2]);
     }
 }
 

@@ -30,7 +30,7 @@ void Player::Initialize(const Transform& transform)
         skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>(parentName);
         skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/animation.gltf");
         skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Player;   // オブジェクトの種類を Player に設定
-        //skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP; // 手にちゃんとつけるために
+        skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP; // 手にちゃんとつけるために
         // ＜ーでもこれつけるとポイントライトが、、、
 
         //skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle.gltf");
