@@ -1,0 +1,95 @@
+{
+    "bloom": {
+        "bloomExtractionThreshold": 5.0,
+        "bloomIntensity": 0.33500000834465027
+    },
+    "cascadeShadow": {
+        "criticalDepthValue": 247.0,
+        "fitToCascade": true,
+        "splitSchemeWeight": 0.8299999833106995,
+        "zDepthScale": 40.400001525878906
+    },
+    "fog": {
+        "enableDither": 1,
+        "fogColor": [
+            0.6299999952316284,
+            0.6299999952316284,
+            0.6800000071525574,
+            1.8609999418258667
+        ],
+        "fogCutoffDistance": 30.0,
+        "fogDensity": 0.44527700543403625,
+        "fogHeightFalloff": 0.027000000700354576,
+        "globalFogIntensity": 0.03400000184774399,
+        "groundLevel": 28.0,
+        "mieScatteringFactor": 0.550000011920929,
+        "noiseScale": 0.5,
+        "timeScale": 0.8999999761581421
+    },
+    "light": {
+        "diffuseIntensity": 1.2719999551773071,
+        "directionalLightEnable": 1,
+        "iblIntensity": 2.4000000953674316,
+        "kc": 1.0,
+        "kl": 0.699999988079071,
+        "kq": 1.7999999523162842,
+        "lightColor": [
+            1.0,
+            0.800000011920929,
+            1.0,
+            2.5999999046325684
+        ],
+        "lightDirection": [
+            -0.15000000596046448,
+            -0.4830000102519989,
+            0.7860000133514404,
+            0.8999999761581421
+        ],
+        "pointLightCount": 40,
+        "pointLightDiffuseIntensity": 0.8999999761581421,
+        "pointLightEnable": 1,
+        "pointLightSpecularIntensity": 0.15000000596046448,
+        "rimColor": [
+            0.30000001192092896,
+            0.5,
+            1.0
+        ],
+        "rimIntensity": 0.1120000034570694,
+        "rimPower": 3.0,
+        "specularIntensity": 0.3230000138282776
+    },
+    "shader": {
+        "brightness": 0.013000000268220901,
+        "colorizeCascadedLayer": 0,
+        "contrast": 0.14499999582767487,
+        "dofRange": 80.0,
+        "enableBloom": 1,
+        "enableBlur": 1,
+        "enableCascadedShadowMaps": 1,
+        "enableDof": 0,
+        "enableFog": 1,
+        "enableSsao": 1,
+        "enableSsr": 1,
+        "enableToneMapping": 1,
+        "focusDistance": 4.599999904632568,
+        "hueShift": -0.02800000086426735,
+        "objectIblIntensity": 23.0,
+        "renderStep": 0,
+        "saturation": 0.019999999552965164,
+        "shadowColor": 0.75,
+        "shadowDepthBias": -0.0020699999295175076,
+        "splitU": 0.0
+    },
+    "ssao": {
+        "bias": 0.15000000596046448,
+        "power": 0.019999999552965164,
+        "radius": 0.20000000298023224
+    },
+    "ssr": {
+        "maxDistance": 1.2999999523162842,
+        "reflectionIntensity": 0.800000011920929,
+        "resolution": 0.25,
+        "steps": 5,
+        "thickness": 0.3799999952316284
+    }
+}

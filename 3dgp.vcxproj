@@ -416,6 +416,7 @@
     <ClInclude Include="Source\Engine\Resources\ResourceManager.h" />
     <ClInclude Include="Source\Engine\Scene\Scene.h" />
     <ClInclude Include="Source\Engine\Scene\SceneBase.h" />
+    <ClInclude Include="Source\Engine\Scene\SceneJson.h" />
     <ClInclude Include="Source\Engine\Scene\SceneRegistry.h" />
     <ClInclude Include="Source\Engine\Scene\SceneSetting.h" />
     <ClInclude Include="Source\Engine\Scene\SceneState.h" />

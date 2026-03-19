@@ -2,6 +2,7 @@
 #include "SceneEditor.h"
 #include <imgui.h>
 #include "Engine/Scene/Scene.h"
+#include "Engine/Scene/SceneJson.h"
 #include "Engine/Scene/SceneState.h"
 
 void SceneEditor::Draw()
@@ -30,10 +31,12 @@ void SceneEditor::Draw()
     if (ImGui::Button("Save Scene"))
     {
         savedState.Capture(scene);
+        SaveSceneState("./Data/Saves/ScenePresets/scenePreset.json", savedState);
     }
 
     if (ImGui::Button("Load Scene"))
     {
+        LoadSceneState("./Data/Saves/ScenePresets/scenePreset.json", savedState);
         savedState.Apply(scene);
     }
 

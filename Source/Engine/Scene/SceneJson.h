@@ -1,0 +1,289 @@
+#pragma once
+
+#include <json.hpp>
+
+#include "SceneSetting.h"
+#include "SceneState.h"
+
+using json = nlohmann::json;
+
+namespace DirectX
+{
+    inline void to_json(nlohmann::json& j, const XMFLOAT4& v)
+    {
+        j = { v.x, v.y, v.z, v.w };
+    }
+
+    inline void from_json(const nlohmann::json& j, XMFLOAT4& v)
+    {
+        v = XMFLOAT4(j[0], j[1], j[2], j[3]);
+    }
+    inline void to_json(nlohmann::json& j, const XMFLOAT3& v)
+    {
+        j = { v.x, v.y, v.z };
+    }
+
+    inline void from_json(const nlohmann::json& j, XMFLOAT3& v)
+    {
+        v = XMFLOAT3(j[0], j[1], j[2]);
+    }
+}
+
+
+// SceneLightConstants
+inline void to_json(nlohmann::json& j, const SceneLightConstants& s)
+{
+    j = {
+        {"lightDirection", s.lightDirection},
+        {"lightColor", s.lightColor},
+
+        {"iblIntensity", s.iblIntensity},
+        {"directionalLightEnable", s.directionalLightEnable},
+        {"pointLightEnable", s.pointLightEnable},
+        {"pointLightCount", s.pointLightCount},
+
+        {"rimColor", s.rimColor},
+        {"rimIntensity", s.rimIntensity},
+
+        {"rimPower", s.rimPower},
+        {"kc", s.kc},
+        {"kl", s.kl},
+        {"kq", s.kq},
+
+        {"diffuseIntensity", s.diffuseIntensity},
+        {"specularIntensity", s.specularIntensity},
+        {"pointLightDiffuseIntensity", s.pointLightDiffuseIntensity},
+        {"pointLightSpecularIntensity", s.pointLightSpecularIntensity}
+    };
+}
+
+inline void from_json(const nlohmann::json& j, SceneLightConstants& s)
+{
+    j.at("lightDirection").get_to(s.lightDirection);
+    j.at("lightColor").get_to(s.lightColor);
+
+    j.at("iblIntensity").get_to(s.iblIntensity);
+    j.at("directionalLightEnable").get_to(s.directionalLightEnable);
+    j.at("pointLightEnable").get_to(s.pointLightEnable);
+    j.at("pointLightCount").get_to(s.pointLightCount);
+
+    j.at("rimColor").get_to(s.rimColor);
+    j.at("rimIntensity").get_to(s.rimIntensity);
+
+    j.at("rimPower").get_to(s.rimPower);
+    j.at("kc").get_to(s.kc);
+    j.at("kl").get_to(s.kl);
+    j.at("kq").get_to(s.kq);
+
+    j.at("diffuseIntensity").get_to(s.diffuseIntensity);
+    j.at("specularIntensity").get_to(s.specularIntensity);
+    j.at("pointLightDiffuseIntensity").get_to(s.pointLightDiffuseIntensity);
+    j.at("pointLightSpecularIntensity").get_to(s.pointLightSpecularIntensity);
+}
+
+inline void to_json(nlohmann::json& j, const SceneShaderConstants& s)
+{
+    j = {
+        {"shadowColor", s.shadowColor},
+        {"shadowDepthBias", s.shadowDepthBias},
+        {"splitU", s.splitU},
+        {"hueShift", s.hueShift},
+
+        {"saturation", s.saturation},
+        {"brightness", s.brightness},
+        {"contrast", s.contrast},
+        {"focusDistance", s.focusDistance},
+
+        {"dofRange", s.dofRange},
+        {"objectIblIntensity", s.objectIblIntensity},
+        {"renderStep", s.renderStep},
+        {"enableToneMapping", s.enableToneMapping},
+
+        {"enableSsao", s.enableSsao},
+        {"enableCascadedShadowMaps", s.enableCascadedShadowMaps},
+        {"enableSsr", s.enableSsr},
+        {"enableFog", s.enableFog},
+
+        {"enableBloom", s.enableBloom},
+        {"enableBlur", s.enableBlur},
+        {"enableDof", s.enableDof},
+        {"colorizeCascadedLayer", s.colorizeCascadedLayer}
+    };
+}
+
+// SceneShaderConstants
+inline void from_json(const nlohmann::json& j, SceneShaderConstants& s)
+{
+    j.at("shadowColor").get_to(s.shadowColor);
+    j.at("shadowDepthBias").get_to(s.shadowDepthBias);
+    j.at("splitU").get_to(s.splitU);
+    j.at("hueShift").get_to(s.hueShift);
+
+    j.at("saturation").get_to(s.saturation);
+    j.at("brightness").get_to(s.brightness);
+    j.at("contrast").get_to(s.contrast);
+    j.at("focusDistance").get_to(s.focusDistance);
+
+    j.at("dofRange").get_to(s.dofRange);
+    j.at("objectIblIntensity").get_to(s.objectIblIntensity);
+    j.at("renderStep").get_to(s.renderStep);
+    j.at("enableToneMapping").get_to(s.enableToneMapping);
+
+    j.at("enableSsao").get_to(s.enableSsao);
+    j.at("enableCascadedShadowMaps").get_to(s.enableCascadedShadowMaps);
+    j.at("enableSsr").get_to(s.enableSsr);
+    j.at("enableFog").get_to(s.enableFog);
+
+    j.at("enableBloom").get_to(s.enableBloom);
+    j.at("enableBlur").get_to(s.enableBlur);
+    j.at("enableDof").get_to(s.enableDof);
+    j.at("colorizeCascadedLayer").get_to(s.colorizeCascadedLayer);
+}
+
+// CascadeShadow
+inline void to_json(nlohmann::json& j, const CascadedShadowMapConstants& s)
+{
+    j = {
+        {"criticalDepthValue", s.criticalDepthValue},
+        {"splitSchemeWeight", s.splitSchemeWeight},
+        {"fitToCascade", s.fitToCascade},
+        {"zDepthScale", s.zDepthScale},
+    };
+}
+
+inline void from_json(const nlohmann::json& j, CascadedShadowMapConstants& s)
+{
+    j.at("criticalDepthValue").get_to(s.criticalDepthValue);
+    j.at("splitSchemeWeight").get_to(s.splitSchemeWeight);
+    j.at("fitToCascade").get_to(s.fitToCascade);
+    j.at("zDepthScale").get_to(s.zDepthScale);
+}
+
+// FOG
+inline void to_json(nlohmann::json& j, const FogConstants& s)
+{
+    j = {
+        {"fogColor", s.fogColor},
+        {"fogDensity", s.fogDensity},
+        {"fogHeightFalloff", s.fogHeightFalloff},
+        {"groundLevel", s.groundLevel},
+        {"fogCutoffDistance", s.fogCutoffDistance},
+        {"mieScatteringFactor", s.mieScatteringFactor},
+        {"timeScale", s.timeScale},
+        {"noiseScale", s.noiseScale},
+        {"enableDither", s.enableDither},
+        {"globalFogIntensity", s.globalFogIntensity},
+
+    };
+}
+
+inline void from_json(const nlohmann::json& j, FogConstants& s)
+{
+    j.at("fogColor").get_to(s.fogColor);
+    j.at("fogDensity").get_to(s.fogDensity);
+    j.at("fogHeightFalloff").get_to(s.fogHeightFalloff);
+    j.at("groundLevel").get_to(s.groundLevel);
+    j.at("fogCutoffDistance").get_to(s.fogCutoffDistance);
+    j.at("mieScatteringFactor").get_to(s.mieScatteringFactor);
+    j.at("timeScale").get_to(s.timeScale);
+    j.at("noiseScale").get_to(s.noiseScale);
+    j.at("enableDither").get_to(s.enableDither);
+    j.at("globalFogIntensity").get_to(s.globalFogIntensity);
+}
+
+// SSR
+inline void to_json(nlohmann::json& j, const SSRConstantBuffer& s)
+{
+    j = {
+        {"reflectionIntensity", s.reflectionIntensity},
+        {"maxDistance", s.maxDistance},
+        {"resolution", s.resolution},
+        {"steps", s.steps},
+        {"thickness", s.thickness},
+    };
+}
+
+inline void from_json(const nlohmann::json& j, SSRConstantBuffer& s)
+{
+    j.at("reflectionIntensity").get_to(s.reflectionIntensity);
+    j.at("maxDistance").get_to(s.maxDistance);
+    j.at("resolution").get_to(s.resolution);
+    j.at("steps").get_to(s.steps);
+    j.at("thickness").get_to(s.thickness);
+}
+
+// SSAO
+inline void to_json(nlohmann::json& j, const SSAOConstantBuffer& s)
+{
+    j = {
+        {"radius", s.radius},
+        {"bias", s.bias},
+        {"power", s.power}
+    };
+}
+
+inline void from_json(const nlohmann::json& j, SSAOConstantBuffer& s)
+{
+    j.at("radius").get_to(s.radius);
+    j.at("bias").get_to(s.bias);
+    j.at("power").get_to(s.power);
+}
+
+// Bloom
+inline void to_json(json& j, const BloomConstantBuffer& b)
+{
+    j = {
+        {"bloomExtractionThreshold", b.bloomExtractionThreshold},
+        {"bloomIntensity", b.bloomIntensity}
+    };
+}
+
+inline void from_json(const json& j, BloomConstantBuffer& b)
+{
+    j.at("bloomExtractionThreshold").get_to(b.bloomExtractionThreshold);
+    j.at("bloomIntensity").get_to(b.bloomIntensity);
+}
+
+
+
+
+inline void to_json(json& j, const SceneState& s)
+{
+    j = {
+        {"light", s.light},
+        {"shader", s.shader},
+        {"cascadeShadow",s.cascadeShadow},
+        {"fog", s.fog},
+        {"ssr", s.ssr},
+        {"ssao", s.ssao},
+        {"bloom", s.bloom}
+    };
+}
+
+inline void from_json(const json& j, SceneState& s)
+{
+    j.at("light").get_to(s.light);
+    j.at("shader").get_to(s.shader);
+    j.at("cascadeShadow").get_to(s.cascadeShadow);
+    j.at("fog").get_to(s.fog);
+    j.at("ssr").get_to(s.ssr);
+    j.at("ssao").get_to(s.ssao);
+    j.at("bloom").get_to(s.bloom);
+}
+
+void SaveSceneState(const std::string& path, SceneState& state)
+{
+    nlohmann::json j = state;
+
+    std::ofstream ofs(path);
+    ofs << j.dump(4); // © 4‚Í®Œ`
+}
+
+void LoadSceneState(const std::string& path, SceneState& state)
+{
+    std::ifstream ifs(path);
+    nlohmann::json j;
+    ifs >> j;
+
+    state = j.get<SceneState>();
+}

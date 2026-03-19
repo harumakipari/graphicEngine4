@@ -61,3 +61,4 @@ void to_json(json& j, const CoreColor& c)
 {
 	j = json::array({ c.r, c.g, c.b, c.a });
 }
+

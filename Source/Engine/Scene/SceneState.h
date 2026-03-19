@@ -6,10 +6,12 @@ struct SceneState
 {
     SceneLightConstants light;
     SceneShaderConstants shader;
+    CascadedShadowMapConstants cascadeShadow;
     FogConstants fog;
     SSRConstantBuffer ssr;
     SSAOConstantBuffer ssao;
     BloomConstantBuffer bloom;
+
 
     void Capture(Scene* scene)
     {

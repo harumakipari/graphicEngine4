@@ -2,8 +2,8 @@
 
 struct SceneLightConstants
 {
-    DirectX::XMFLOAT4 lightDirection = {};// w:attenuation Rate
-    DirectX::XMFLOAT4 lightColor = {}; //w colorPower
+    DirectX::XMFLOAT4 lightDirection = { 0.722f, -0.38f, -0.0211f, 0.9f };// w:attenuation Rate
+    DirectX::XMFLOAT4 lightColor = { 1.0f, 0.8f, 1.0f, 2.6f }; //w colorPower
 
     float iblIntensity = 2.4f;
     int directionalLightEnable = 1;// ïΩçsåıåπÇÃ on / off
@@ -44,7 +44,7 @@ struct SceneShaderConstants
     int enableSsao = 1;
     int enableCascadedShadowMaps = 1;
     int enableSsr = 1;
-    int enableFog = 0;
+    int enableFog = 1;
 
     int enableBloom = 1;
     int enableBlur = 1;

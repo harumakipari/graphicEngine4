@@ -6,7 +6,7 @@ class MovieManager
 public:
     void Play(const std::string& file)
     {
-        camera->LoadFromJson("./Data/MovieCamera/" + file);
+        camera->LoadFromJson("./Data/Saves/MovieCameras/" + file);
         camera->Start();
     }
 

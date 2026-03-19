@@ -373,7 +373,7 @@ void CinematicCameraComponent::SaveBookmarksToFile()
         j["bookmarks"].push_back(item);
     }
 
-    std::ofstream file("./Data/CameraBookmarks/CinematicCamera.json");
+    std::ofstream file("./Data/Saves/CameraBookmarks/CinematicCamera.json");
     file << j.dump(4); // インデント付き
 }
 
@@ -382,7 +382,7 @@ void CinematicCameraComponent::LoadBookmarksFromFile()
 {
     using json = nlohmann::json;
 
-    std::ifstream file("./Data/CameraBookmarks/CinematicCamera.json");
+    std::ifstream file("./Data/Saves/CameraBookmarks/CinematicCamera.json");
 
     if (!file.is_open())
         return;
