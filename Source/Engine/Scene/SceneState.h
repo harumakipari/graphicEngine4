@@ -4,7 +4,7 @@
 
 struct SceneState
 {
-    SceneLightConstants light;
+    SceneLightSaveData lightSaveData;
     SceneShaderConstants shader;
     CascadedShadowMapConstants cascadeShadow;
     FogConstants fog;
@@ -17,7 +17,7 @@ struct SceneState
     {
         auto& s = scene->GetSceneSettings();
 
-        light = s.sceneLightConstants;
+        lightSaveData = s.sceneLightSaveData;
         shader = s.sceneShaderConstants;
         fog = s.fogConstants;
         ssr = s.ssrConstantBuffer;
@@ -29,7 +29,16 @@ struct SceneState
     {
         auto& s = scene->GetSceneSettings();
 
-        s.sceneLightConstants = light;
+        // sceneConstants‚Í•’Ê‚Éã‘‚«
+        s.sceneLightSaveData.sceneConstants = lightSaveData.sceneConstants;
+
+        // sharedLights‚Í“Á•Êˆµ‚¢
+        if (!lightSaveData.sharedLights.empty())
+        {
+            s.sceneLightSaveData.sharedLights = lightSaveData.sharedLights;
+        }
+
+        s.sceneLightSaveData = lightSaveData;
         s.sceneShaderConstants = shader;
         s.fogConstants = fog;
         s.ssrConstantBuffer = ssr;

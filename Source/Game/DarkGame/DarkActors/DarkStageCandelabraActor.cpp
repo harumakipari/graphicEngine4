@@ -49,10 +49,7 @@ void DarkStageCandelabraActor::SetModel(const std::shared_ptr<StageAsset>& stage
         DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(light.worldPosition);
         pointLightComponent->SetRelativeLocationDirect(pos);
         // ライトの名前からライトマネージャーの共有ライトを取得して設定
-        if (auto shared = lightManager->FindSharedLight(light.name))
-        {
-            pointLightComponent->SetSharedParam(shared);
-        }
+        pointLightComponent->SetSharedLightName(light.name);
 
         //pointLightComponent->SetColor(light.color);
         //pointLightComponent->SetRange(light.range);

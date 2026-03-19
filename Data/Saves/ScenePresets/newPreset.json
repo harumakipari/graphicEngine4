@@ -59,7 +59,7 @@
             "rimPower": 3.0,
             "specularIntensity": 0.3230000138282776
         },
- "sharedLights": {
+        "sharedLights": {
             "BottomStandingBrazier": {
                 "color": [
                     0.9599999785423279,
@@ -134,8 +134,8 @@
             },
             "PlayerPointLight": {
                 "color": [
+                    0.5621209740638733,
                     0.9769999980926514,
-                    0.6880000233650208,
                     0.5,
                     20.0
                 ],

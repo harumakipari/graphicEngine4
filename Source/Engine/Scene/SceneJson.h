@@ -29,6 +29,20 @@ namespace DirectX
     }
 }
 
+// SharedLightParam
+inline void to_json(nlohmann::json& j, const SharedLightParam& s)
+{
+    j = {
+        {"color", s.color},
+        {"range", s.range}
+    };
+}
+
+inline void from_json(const nlohmann::json& j, SharedLightParam& s)
+{
+    j.at("color").get_to(s.color);
+    j.at("range").get_to(s.range);
+}
 
 // SceneLightConstants
 inline void to_json(nlohmann::json& j, const SceneLightConstants& s)
@@ -79,6 +93,20 @@ inline void from_json(const nlohmann::json& j, SceneLightConstants& s)
     j.at("specularIntensity").get_to(s.specularIntensity);
     j.at("pointLightDiffuseIntensity").get_to(s.pointLightDiffuseIntensity);
     j.at("pointLightSpecularIntensity").get_to(s.pointLightSpecularIntensity);
+}
+
+inline void to_json(nlohmann::json& j, const SceneLightSaveData& s)
+{
+    j = {
+        {"sceneConstants", s.sceneConstants},
+        {"sharedLights", s.sharedLights}
+    };
+}
+
+inline void from_json(const nlohmann::json& j, SceneLightSaveData& s)
+{
+    j.at("sceneConstants").get_to(s.sceneConstants);
+    j.at("sharedLights").get_to(s.sharedLights);
 }
 
 inline void to_json(nlohmann::json& j, const SceneShaderConstants& s)
@@ -250,7 +278,7 @@ inline void from_json(const json& j, BloomConstantBuffer& b)
 inline void to_json(json& j, const SceneState& s)
 {
     j = {
-        {"light", s.light},
+        {"lightSaveData", s.lightSaveData},
         {"shader", s.shader},
         {"cascadeShadow",s.cascadeShadow},
         {"fog", s.fog},
@@ -262,7 +290,8 @@ inline void to_json(json& j, const SceneState& s)
 
 inline void from_json(const json& j, SceneState& s)
 {
-    j.at("light").get_to(s.light);
+    j.at("lightSaveData").get_to(s.lightSaveData);
+    //j.at("light").get_to(s.lightSaveData.sceneConstants);
     j.at("shader").get_to(s.shader);
     j.at("cascadeShadow").get_to(s.cascadeShadow);
     j.at("fog").get_to(s.fog);

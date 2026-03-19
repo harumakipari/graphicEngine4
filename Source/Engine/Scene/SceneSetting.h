@@ -1,5 +1,12 @@
 #pragma once
 
+struct SharedLightParam
+{
+    DirectX::XMFLOAT4 color;
+    float range;
+};
+
+
 struct SceneLightConstants
 {
     DirectX::XMFLOAT4 lightDirection = { 0.722f, -0.38f, -0.0211f, 0.9f };// w:attenuation Rate
@@ -22,6 +29,12 @@ struct SceneLightConstants
     float specularIntensity = 0.323f;
     float pointLightDiffuseIntensity = 0.9f;
     float pointLightSpecularIntensity = 0.15f;
+};
+
+struct SceneLightSaveData
+{
+    SceneLightConstants sceneConstants;
+    std::unordered_map<std::string, SharedLightParam> sharedLights;
 };
 
 struct SceneShaderConstants
@@ -103,7 +116,7 @@ struct BloomConstantBuffer
 class SceneSettings // ç°ÇÃèÛë‘
 {
 public:
-    SceneLightConstants sceneLightConstants{};
+    SceneLightSaveData sceneLightSaveData{};
     SceneShaderConstants sceneShaderConstants{};
     CascadedShadowMapConstants cascadedShadowMapConstants{};
     FogConstants fogConstants{};

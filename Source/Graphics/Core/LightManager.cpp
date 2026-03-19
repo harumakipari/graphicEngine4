@@ -57,116 +57,125 @@ void LightManager::Initialize(ID3D11Device* device)
     lightCBuffer->data = constants;
     renderPointLights.clear();
     scenePointLights.clear();
-    sharedLights.clear();
+    auto& lightData = Scene::GetCurrentScene()->GetSceneSettings().sceneLightSaveData;
+    auto& sharedLights = lightData.sharedLights;
+
+
     // シャンデリアの共有ライト
     {
         sharedLights["MainChandelier"] =
-            std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.584078431f, 0.254152089f, 2.4f),
-            10.0f
-                });
+            SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.584078431f, 0.254152089f, 2.4f),
+        10.0f
+        };
 
         sharedLights["CandleChandelier"] =
-            std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.491020888f, 0.234550565f, 2.4f),
-            1.5f
-                });
+            SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.491020888f, 0.234550565f, 2.4f),
+        1.5f
+        };
     }
 
     // 燭台の共有ライト
     {
         sharedLights["TopCandelabra"] =
-            std::make_shared<SharedLightParam>(
-                SharedLightParam{
-            DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.309468925f, 3.5f),
-            3.5f
-                });
+            SharedLightParam{
+        DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.309468925f, 3.5f),
+        3.5f
+        };
 
         sharedLights["SideCandelabra"] =
-            std::make_shared<SharedLightParam>(
-                SharedLightParam{
-            DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.309468925f, 1.2f),
-            1.0f
-                });
+            SharedLightParam{
+        DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.309468925f, 1.2f),
+        1.0f
+        };
     }
 
     // 火鉢の共有ライト
     {
         sharedLights["BrazierCenterBig"] =
-            std::make_shared<SharedLightParam>(
-                SharedLightParam{
-            DirectX::XMFLOAT4(1.0f, 0.533276379f, 0.258182853f, 1.44f),
-            10.f
-                });
+            SharedLightParam{
+        DirectX::XMFLOAT4(1.0f, 0.533276379f, 0.258182853f, 1.44f),
+        10.f
+        };
 
         sharedLights["BrazierCenterSmall"] =
-            std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.533276379f, 0.258182853f, 1.6f),
-            8.0f
-                });
+            SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.533276379f, 0.258182853f, 1.6f),
+        8.0f
+        };
     }
 
     // 地面の火鉢の共有ライト
     {
         sharedLights["GroundBrazierLight"] =
-            std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.258182883f, 0.8f),
-            10.f
-                });
+            SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.577580452f, 0.258182883f, 0.8f),
+        10.f
+        };
     }
 
     // 溶けた蝋の共有ライト
     {
         sharedLights["MeltedWaxLight"] =
-            std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.630757093f, 0.219526187f, 1.28f),
-            7.5f
-                });
+            SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.630757093f, 0.219526187f, 1.28f),
+        7.5f
+        };
     }
 
     // スタンド式火鉢の共有ライト
     {
         sharedLights["BottomStandingBrazier"] =
-            std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(0.959999979f, 0.523895442f, 0.240151942f, 1.0f),
-            8.0f
-                });
+            SharedLightParam{ DirectX::XMFLOAT4(0.959999979f, 0.523895442f, 0.240151942f, 1.0f),
+        8.0f
+        };
         sharedLights["TopStandingBrazier"] =
-            std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.545724452f, 0.25015831f, 1.6f),
-            8.0f
-                });
+            SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.545724452f, 0.25015831f, 1.6f),
+        8.0f
+        };
     }
 
     // プレイヤーのポイントライト
     {
         sharedLights["PlayerPointLight"] =
-            std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(0.977f, 0.688f, 0.5f, 20.0f),
-            3.1f
-                });
+            SharedLightParam{ DirectX::XMFLOAT4(0.977f, 0.688f, 0.5f, 20.0f),
+        3.1f
+        };
     }
 
     // 敵のポイントライト
     {
         sharedLights["EnemyPointLight"] =
-            std::make_shared<SharedLightParam>(
-                SharedLightParam{ DirectX::XMFLOAT4(0.977f, 0.688f, 0.5f, 20.0f),
-            3.1f
-                });
+            SharedLightParam{ DirectX::XMFLOAT4(0.977f, 0.688f, 0.5f, 20.0f),
+        3.1f
+        };
     }
 }
 
+SharedLightParam LightManager::FindSharedLight(const std::string& name)
+{
+    auto& lightData = Scene::GetCurrentScene()->GetSceneSettings().sceneLightSaveData;
+    auto& sharedLights = lightData.sharedLights;
+
+    auto it = sharedLights.find(name);
+    if (it == sharedLights.end())
+    {
+        Logger::Error(U8("ライトがノードの名前と一致していません！"));
+        return {};
+    }
+
+    return it->second;
+}
+
+
 void LightManager::SetDirectionalLight(const DirectX::XMFLOAT4& dir, const DirectX::XMFLOAT4& color)
 {
-    auto& light = Scene::GetCurrentScene()->GetSceneSettings().sceneLightConstants;
+    auto& lightData = Scene::GetCurrentScene()->GetSceneSettings().sceneLightSaveData;
+    auto& light = lightData.sceneConstants;
     light.lightDirection = dir;
     light.lightColor = color;
 }
 
 void LightManager::Update(float deltaTime)
 {
-    auto& light = Scene::GetCurrentScene()->GetSceneSettings().sceneLightConstants;
+    auto& lightData = Scene::GetCurrentScene()->GetSceneSettings().sceneLightSaveData;
+    auto& light = lightData.sceneConstants;
 
     renderPointLights.clear();
 
@@ -184,7 +193,7 @@ void LightManager::Update(float deltaTime)
     constants.directionalLightEnable = static_cast<int>(light.directionalLightEnable);
     constants.pointLightEnable = static_cast<int>(light.pointLightEnable);
     constants.pointLightCount = light.pointLightCount;
-    
+
     constants.rimColor = light.rimColor;
     constants.rimIntensity = light.rimIntensity;
 
@@ -200,7 +209,7 @@ void LightManager::Update(float deltaTime)
 
     // デフォルト初期化
 #if 1
-    for (int i = 0; i < light. pointLightCount; i++)
+    for (int i = 0; i < light.pointLightCount; i++)
     {
         constants.pointsLight[i] =
             (i < renderPointLights.size()) ? renderPointLights[i] : PointLight{};
@@ -240,7 +249,8 @@ void LightManager::Apply(ID3D11DeviceContext* immediateContext, int slot) const
 void LightManager::CollectPointLightsFromScene(const Scene& scene)
 {
     scenePointLights.clear();
-    auto& lightScene = Scene::GetCurrentScene()->GetSceneSettings().sceneLightConstants;
+    auto& lightData = Scene::GetCurrentScene()->GetSceneSettings().sceneLightSaveData;
+    auto& lightScene = lightData.sceneConstants;
 
     for (auto& actor : scene.GetActorManager()->GetAllActors())
     {
@@ -261,7 +271,8 @@ void LightManager::CollectPointLightsFromScene(const Scene& scene)
 void LightManager::DrawGui()
 {
 #ifdef USE_IMGUI
-    auto& light = Scene::GetCurrentScene()->GetSceneSettings().sceneLightConstants;
+    auto& lightData = Scene::GetCurrentScene()->GetSceneSettings().sceneLightSaveData;
+    auto& light = lightData.sceneConstants;
     CheckboxInt(U8("平行光源 有効"), &light.directionalLightEnable);
     ImGui::DragFloat3(U8("ライト方向"), &light.lightDirection.x, 0.01f, -1.0f, 1.0f, "%.8f");
     ImGui::ColorEdit3(U8("ライト色"), &light.lightColor.x);
@@ -308,6 +319,8 @@ void LightManager::DrawGui()
 
     if (ImGui::TreeNode(U8("共有ライト")))
     {
+        auto& lightData = Scene::GetCurrentScene()->GetSceneSettings().sceneLightSaveData;
+        auto& sharedLights = lightData.sharedLights;
         for (auto& [name, light] : sharedLights)
         {
             const char* displayName = name.c_str();
@@ -317,9 +330,9 @@ void LightManager::DrawGui()
 
             if (ImGui::TreeNodeEx(displayName, ImGuiTreeNodeFlags_DefaultOpen))
             {
-                ImGui::ColorEdit3(U8("色"), &light->color.x);
-                ImGui::SliderFloat(U8("強度"), &light->color.w, 0.0f, 30.0f);
-                ImGui::SliderFloat(U8("範囲"), &light->range, 0.0f, 20.0f);
+                ImGui::ColorEdit3(U8("色"), &light.color.x);
+                ImGui::SliderFloat(U8("強度"), &light.color.w, 0.0f, 30.0f);
+                ImGui::SliderFloat(U8("範囲"), &light.range, 0.0f, 20.0f);
                 ImGui::TreePop();
             }
         }

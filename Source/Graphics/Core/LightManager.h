@@ -2,15 +2,11 @@
 #include <DirectXMath.h>
 #include <vector>
 #include <memory>
+
+#include "Engine/Scene/SceneSetting.h"
 #include "Graphics/Core/ConstantBuffer.h"
 
 class Scene;
-
-struct SharedLightParam
-{
-    DirectX::XMFLOAT4 color;
-    float range;
-};
 
 
 class LightManager
@@ -51,14 +47,7 @@ public:
         PointLight pointsLight[PointLightMaxCount];
     };
 
-    std::shared_ptr<SharedLightParam> FindSharedLight(const std::string& name)
-    {
-        auto it = sharedLights.find(name);
-        if (it == sharedLights.end())
-            return nullptr;
-
-        return it->second;
-    }
+    SharedLightParam FindSharedLight(const std::string& name);
 public:
     void Initialize(ID3D11Device* device);
     void Update(float deltaTime);
@@ -88,5 +77,4 @@ private:
 
     std::unique_ptr<ConstantBuffer<LightConstants>> lightCBuffer;
 
-    std::unordered_map<std::string, std::shared_ptr<SharedLightParam>> sharedLights;
 };

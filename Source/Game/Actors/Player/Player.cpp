@@ -146,10 +146,7 @@ void Player::Initialize(const Transform& transform)
     pointLightComponent->SetRelativeLocationDirect({ 0.0f, 1.5f, 1.0f });
     auto lightManager = scene->GetLightManager();
     // ライトの名前からライトマネージャーの共有ライトを取得して設定
-    if (auto shared = lightManager->FindSharedLight("PlayerPointLight"))
-    {
-        pointLightComponent->SetSharedParam(shared);
-    }
+    pointLightComponent->SetSharedLightName("PlayerPointLight");
 
     //AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
     //    {
@@ -181,7 +178,7 @@ void Player::Initialize(const Transform& transform)
 
     // 剣に当たり判定のコンポーネントを追加
     auto swordCollisionComp = AddComponent<CapsuleComponent>("SwordCollision", parentName);
-    DirectX::XMFLOAT3 size = {0.1f,1.2f,1.0f};
+    DirectX::XMFLOAT3 size = { 0.1f,1.2f,1.0f };
     swordCollisionComp->AttachToComponent(skeletalMeshComponent, 180); // "VB root_weapon"
     swordCollisionComp->SetRadiusAndHeight(size.x, size.y);
     swordCollisionComp->SetMass(mass);
