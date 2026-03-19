@@ -8,6 +8,7 @@
 #include<vector>
 
 
+#include "Engine/Scene/Scene.h"
 #include "Graphics/Core/Shader.h"
 #include "Engine/Utility/Win32Utils.h"
 
@@ -96,8 +97,9 @@ void BloomEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResou
     immediateContext->RSSetState(rasterizerState.Get());
     immediateContext->OMSetBlendState(blendState.Get(), nullptr, 0xFFFFFFFF);
 
-    bloomConstant->data.bloomExtractionThreshold = bloomExtractionThreshold;
-    bloomConstant->data.bloomIntensity = bloomIntensity;
+    auto& bloom = Scene::GetCurrentScene()->GetSceneSettings().bloomConstantBuffer;
+    bloomConstant->data.bloomExtractionThreshold = bloom.bloomExtractionThreshold;
+    bloomConstant->data.bloomIntensity = bloom.bloomIntensity;
     bloomConstant->Activate(immediateContext, 8);
 
     // Extracting bright color
@@ -181,7 +183,8 @@ void BloomEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResou
 void BloomEffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
-    ImGui::SliderFloat(U8("‹P‚«’Šo‚Ìè‡’l"), &bloomExtractionThreshold, 0.0f, 20.0f);
-    ImGui::SliderFloat(U8("‹P‚«‚Ì‹­“x"), &bloomIntensity, 0.0f, 5.0f);
+    auto& bloom = Scene::GetCurrentScene()->GetSceneSettings().bloomConstantBuffer;
+    ImGui::SliderFloat(U8("‹P‚«’Šo‚Ìè‡’l"), &bloom.bloomExtractionThreshold, 0.0f, 20.0f);
+    ImGui::SliderFloat(U8("‹P‚«‚Ì‹­“x"), &bloom.bloomIntensity, 0.0f, 5.0f);
 #endif
 }

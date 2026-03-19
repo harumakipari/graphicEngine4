@@ -3,20 +3,11 @@
 #include "FrameBuffer.h"
 #include "FullScreenQuad.h"
 #include "SceneEffectBase.h"
+#include "Engine/Scene/SceneSetting.h"
 #include "Graphics/Core/ConstantBuffer.h"
 
 class SSREffect :public SceneEffectBase
 {
-public:
-    struct SSRConstantBuffer
-    {
-        float reflectionIntensity = 0.3f;
-        float maxDistance = 1.0f;
-        float resolution = 0.3f;
-        int steps = 10;
-        float thickness = 0.5f;
-    };
-
 public:
     SSREffect() :SceneEffectBase("SSREffect") {}
 
@@ -43,9 +34,4 @@ private:
     Microsoft::WRL::ComPtr<ID3D11PixelShader> ssrPS;
     std::unique_ptr<ConstantBuffer<SSRConstantBuffer>> ssrCBuffer;
 
-    float reflectionIntensity = 0.8f;
-    float maxDistance = 1.3f;
-    float resolution = 0.25f;
-    int steps = 5;
-    float thickness = 0.38f;
 };

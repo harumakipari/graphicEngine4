@@ -5,27 +5,11 @@
 #include "FrameBuffer.h"
 #include "SceneEffectBase.h"
 #include "FullScreenQuad.h"
+#include "Engine/Scene/SceneSetting.h"
 #include "Graphics/Core/ConstantBuffer.h"
 
 class FogEffect :public SceneEffectBase
 {
-public:
-    struct FogConstants
-    {
-        float fogColor[4] = { 0.63f,0.63f, 0.68f, 0.6f }; // w: fog intensity
-
-        float fogDensity = 0.24f;
-        float fogHeightFalloff = 0.027f;
-        float groundLevel = 28.0f;
-        float fogCutoffDistance = 30.0f;
-
-        float mieScatteringFactor = 0.55f;
-        float timeScale = 0.9f;
-        float noiseScale = 0.5f;
-        int enableDither = 1;
-        
-        float globalFogIntensity = 0.034f;// 全体にフォグをどれくらいかけるか
-    };
 
 public:
     FogEffect() :SceneEffectBase("FogEffect") {}
@@ -34,7 +18,7 @@ public:
     // ポストエフェクト生成（リソース作成） 
     void Initialize(ID3D11Device* device, uint32_t width, uint32_t height) override;
 
-    void Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal,
+    void Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gBufferColor, ID3D11ShaderResourceView* gbufferNormal,
         ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* gBufferPbrValue, ID3D11ShaderResourceView* shadowMap) override;
 
     // 出力（次のエフェクトや最終合成に渡す用）
@@ -55,5 +39,4 @@ private:
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> noise2d;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> noise3d;
 
-    bool enableDither = true;
 };

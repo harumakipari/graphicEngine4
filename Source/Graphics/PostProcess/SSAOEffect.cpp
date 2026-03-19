@@ -5,6 +5,7 @@
 #include <random>
 
 #include "imgui.h"
+#include "Engine/Scene/Scene.h"
 #include "Engine/Utility/Win32Utils.h"
 #include "Graphics/Core/RenderState.h"
 #include "Graphics/Core/Shader.h"
@@ -33,7 +34,7 @@ void SSAOEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t heigh
         ssao_kernel_points_data.at(kernel_index) = kernel;
     }
     create_structured_buffer_shader_resource_view<DirectX::XMFLOAT3>(device, ssao_kernel_points_data, ssaoKernelPoints.ReleaseAndGetAddressOf());
-    // Create structured buffer for ssao noise
+    // SSAOノイズ用の構造化バッファを作成する
     std::vector<DirectX::XMFLOAT3> ssao_noise_data(16);
     for (DirectX::XMFLOAT3& noise : ssao_noise_data)
     {
@@ -44,16 +45,12 @@ void SSAOEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t heigh
 
 void SSAOEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal, ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* gBufferPbrValue, ID3D11ShaderResourceView* shadowMap)
 {
-#if 0
-    ssaoCBuffer->data.sigma = sigma;
-    ssaoCBuffer->data.power = power;
-    ssaoCBuffer->data.improvedNormalReconstructionFromDepth = improvedNormalReconstructionFromDepth;
-    ssaoCBuffer->data.bilateralBlur = bilateralBlur;
-#else
-    ssaoCBuffer->data.radius = radius;
-    ssaoCBuffer->data.power = power;
-    ssaoCBuffer->data.bias = bias;
-#endif // 0
+    auto& ssao = Scene::GetCurrentScene()->GetSceneSettings().ssaoConstantBuffer;
+
+    ssaoCBuffer->data.radius = ssao.radius;
+    ssaoCBuffer->data.power = ssao.power;
+    ssaoCBuffer->data.bias = ssao.bias;
+
     ssaoCBuffer->Activate(immediateContext, 5);
 
     ssaoBuffer->Clear(immediateContext, 1, 1, 1, 1);    // SSAOは(1.0f,1.0f,1.0f,1.0f)でクリア
@@ -90,10 +87,13 @@ void SSAOEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResour
 void SSAOEffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
+    auto& ssao = Scene::GetCurrentScene()->GetSceneSettings().ssaoConstantBuffer;
+
+
     ImGui::Checkbox("enable", &enabled);
-    ImGui::SliderFloat("radius", &radius, 0.0f, +1.0f);
-    ImGui::SliderFloat("bias", &bias, 0.0f, +1.0f);
-    ImGui::SliderFloat("power", &power, 0.0f, +1.0f);
+    ImGui::SliderFloat("radius", &ssao.radius, 0.0f, +1.0f);
+    ImGui::SliderFloat("bias", &ssao.bias, 0.0f, +1.0f);
+    ImGui::SliderFloat("power", &ssao.power, 0.0f, +1.0f);
 #endif
 }
 

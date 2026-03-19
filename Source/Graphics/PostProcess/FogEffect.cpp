@@ -4,6 +4,7 @@
 #include <DDSTextureLoader.h>
 
 #include "imgui.h"
+#include "Engine/Scene/Scene.h"
 #include "Graphics/Core/RenderState.h"
 #include "Graphics/Core/Shader.h"
 #include "Graphics/Resource/Texture.h"
@@ -36,9 +37,21 @@ void FogEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height
 #endif
 }
 
-void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal, ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* gBufferPbrValue, ID3D11ShaderResourceView* shadowMap)
+void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gBufferColor, ID3D11ShaderResourceView* gbufferNormal, ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* gBufferPbrValue, ID3D11ShaderResourceView* shadowMap)
 {
-    fogCBuffer->data.enableDither = enableDither;
+    auto& fog = Scene::GetCurrentScene()->GetSceneSettings().fogConstants;
+
+    fogCBuffer->data.enableDither = static_cast<int>(fog.enableDither);
+    fogCBuffer->data.fogDensity = fog.fogDensity;
+    fogCBuffer->data.globalFogIntensity = fog.globalFogIntensity;
+    fogCBuffer->data.fogColor = fog.fogColor;
+    fogCBuffer->data.fogCutoffDistance = fog.fogCutoffDistance;
+    fogCBuffer->data.fogHeightFalloff = fog.fogHeightFalloff;
+    fogCBuffer->data.groundLevel = fog.groundLevel;
+    fogCBuffer->data.mieScatteringFactor = fog.mieScatteringFactor;
+    fogCBuffer->data.noiseScale = fog.noiseScale;
+    fogCBuffer->data.timeScale = fog.timeScale;
+
     fogCBuffer->Activate(immediateContext, 8);
 
     fogBuffer->Clear(immediateContext, 0, 0, 0, 1);
@@ -68,17 +81,17 @@ void FogEffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
     ImGui::Checkbox("enable", &enabled);
-    ImGui::ColorEdit4("Fog Color", fogCBuffer->data.fogColor);
-    ImGui::SliderFloat("Intensity", &(fogCBuffer->data.fogColor[3]), 0.0f, 10.0f);
-    ImGui::SliderFloat("Density", &fogCBuffer->data.fogDensity, 0.0f, 10.0f, "%.6f");
-    ImGui::SliderFloat("Height Falloff", &fogCBuffer->data.fogHeightFalloff, 0.001f, 1.0f, "%.4f");
-    ImGui::SliderFloat("Cutoff Distance", &fogCBuffer->data.fogCutoffDistance, 0.0f, 1000.0f);
-    ImGui::SliderFloat("Ground Level", &fogCBuffer->data.groundLevel, -100.0f, 100.0f);
-    ImGui::SliderFloat("Mie Scattering", &fogCBuffer->data.mieScatteringFactor, 0.0f, 1.0f, "%.4f");
-    ImGui::SliderFloat("Time Scale", &fogCBuffer->data.timeScale, 0.0f, 1.0f, "%.4f");
-    ImGui::SliderFloat("Noise Scale", &fogCBuffer->data.noiseScale, 0.0f, 0.5f, "%.4f");
-    ImGui::DragFloat("globalFogIntensity", &fogCBuffer->data.globalFogIntensity, 0.001f, 0.0f, 0.5f, "%.4f");
-
-    ImGui::Checkbox("Enable Dither", &enableDither);
+    auto& fog = Scene::GetCurrentScene()->GetSceneSettings().fogConstants;
+    ImGui::ColorEdit4("Fog Color", &fog.fogColor.x);
+    ImGui::SliderFloat("Intensity", &fog.fogColor.w, 0.0f, 10.0f);
+    ImGui::SliderFloat("Density", &fog.fogDensity, 0.0f, 10.0f, "%.6f");
+    ImGui::SliderFloat("Height Falloff", &fog.fogHeightFalloff, 0.001f, 1.0f, "%.4f");
+    ImGui::SliderFloat("Cutoff Distance", &fog.fogCutoffDistance, 0.0f, 1000.0f);
+    ImGui::SliderFloat("Ground Level", &fog.groundLevel, -100.0f, 100.0f);
+    ImGui::SliderFloat("Mie Scattering", &fog.mieScatteringFactor, 0.0f, 1.0f, "%.4f");
+    ImGui::SliderFloat("Time Scale", &fog.timeScale, 0.0f, 1.0f, "%.4f");
+    ImGui::SliderFloat("Noise Scale", &fog.noiseScale, 0.0f, 0.5f, "%.4f");
+    ImGui::DragFloat("globalFogIntensity", &fog.globalFogIntensity, 0.001f, 0.0f, 0.5f, "%.4f");
+    CheckboxInt("Enable Dither", &fog.enableDither);
 #endif
 }

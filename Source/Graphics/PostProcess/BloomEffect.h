@@ -4,6 +4,7 @@
 
 #include "PostEffectBase.h"
 #include "FullScreenQuad.h"
+#include "Engine/Scene/SceneSetting.h"
 #include "Graphics/Core/ConstantBuffer.h"
 
 class BloomEffect :public PostEffectBase
@@ -27,11 +28,6 @@ public:
     // UI Т▓Ро (ImGui)
     void DrawDebugUI()override;
 
-private:
-    //float bloom_extraction_threshold = 0.85f;
-    //float bloom_intensity = 0.016f;
-    float bloomExtractionThreshold = 5.0;
-    float bloomIntensity = 0.335f;
 
 private:
     std::unique_ptr<FullScreenQuad> bitBlockTransfer;
@@ -50,12 +46,6 @@ private:
     Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState;
     Microsoft::WRL::ComPtr<ID3D11BlendState> blendState;
 
-    struct BloomConstants
-    {
-        float bloomExtractionThreshold;
-        float bloomIntensity;
-        float something[2];
-    };
 
     std::unique_ptr<ConstantBuffer<BloomConstants>> bloomConstant;
 };

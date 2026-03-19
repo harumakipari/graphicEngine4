@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "SkeletonWarriorEnemy.h"
 
+#include "Components/Render/PointLightComponent.h"
+#include "Engine/Scene/SceneBase.h"
+
 void SkeletonWarriorActor::Initialize(const Transform& transform)
 {
     std::string parentName = "SkeletonWarriorMeshComponent";
@@ -71,6 +74,19 @@ void SkeletonWarriorActor::Initialize(const Transform& transform)
 
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
+
+#if 0
+    auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
+    // ポイントライトコンポーネントを追加
+    auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", parentName);
+    pointLightComponent->SetRelativeLocationDirect({ 0.0f, 1.5f, 1.0f });
+    auto lightManager = scene->GetLightManager();
+    // ライトの名前からライトマネージャーの共有ライトを取得して設定
+    if (auto shared = lightManager->FindSharedLight("EnemyPointLight"))
+    {
+        pointLightComponent->SetSharedParam(shared);
+    }
+#endif // 0
 
 }
 

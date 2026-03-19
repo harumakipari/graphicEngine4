@@ -9,6 +9,7 @@
 
 #include <functional>
 
+#include "SceneSetting.h"
 #include "Graphics/Resource/Texture.h"
 
 
@@ -157,6 +158,8 @@ public:
         return _current_scene->OnSizeChanged(device, width, height);
     }
 
+    // 参照を返す
+    SceneSettings& GetSceneSettings()  { return settings; }
 private:
     // シーンの更新
     static bool _update(ID3D11DeviceContext* immediateContext, float deltaTime);
@@ -333,6 +336,7 @@ protected:
     std::unique_ptr<UIManager> uiManager;
     std::unique_ptr<CameraManager> cameraManager;
     std::weak_ptr<Camera> activeCamera;
+    SceneSettings settings; // 常に一つ
 };
 
 

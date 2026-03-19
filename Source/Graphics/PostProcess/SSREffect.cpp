@@ -2,6 +2,7 @@
 #include "SSREffect.h"
 
 #include "imgui.h"
+#include "Engine/Scene/Scene.h"
 #include "Engine/Utility/Win32Utils.h"
 #include "Graphics/Core/RenderState.h"
 #include "Graphics/Core/Shader.h"
@@ -19,11 +20,13 @@ void SSREffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height
 
 void SSREffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal, ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* gBufferPbrValue, ID3D11ShaderResourceView* shadowMap)
 {
-    ssrCBuffer->data.reflectionIntensity = reflectionIntensity;
-    ssrCBuffer->data.maxDistance = maxDistance;
-    ssrCBuffer->data.resolution = resolution;
-    ssrCBuffer->data.steps = steps;
-    ssrCBuffer->data.thickness = thickness;
+    auto& ssr = Scene::GetCurrentScene()->GetSceneSettings().ssrConstantBuffer;
+
+    ssrCBuffer->data.reflectionIntensity = ssr.reflectionIntensity;
+    ssrCBuffer->data.maxDistance = ssr.maxDistance;
+    ssrCBuffer->data.resolution = ssr.resolution;
+    ssrCBuffer->data.steps = ssr.steps;
+    ssrCBuffer->data.thickness = ssr.thickness;
     ssrCBuffer->Activate(immediateContext, 5);
 
     ssrBuffer->Clear(immediateContext, 0, 0, 0, 0);
@@ -47,11 +50,13 @@ void SSREffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourc
 void SSREffect::DrawDebugUI()
 {
 #ifdef USE_IMGUI
+    auto& ssr = Scene::GetCurrentScene()->GetSceneSettings().ssrConstantBuffer;
+
     ImGui::Checkbox("enable", &enabled);
-    ImGui::SliderFloat(U8("反射の強度"), &reflectionIntensity, 0.0f, 1.0f);
-    ImGui::SliderFloat(U8("最大反射距離"), &maxDistance, 0.0f, 30.0f);
-    ImGui::SliderFloat(U8("解像度・探索の粗さ"), &resolution, 0.0f, 1.0f);
-    ImGui::SliderInt(U8("ステップ数"), &steps, 0, 20);
-    ImGui::SliderFloat(U8("厚みの許容範囲"), &thickness, 0.0f, 1.0f);
+    ImGui::SliderFloat(U8("反射の強度"), &ssr.reflectionIntensity, 0.0f, 1.0f);
+    ImGui::SliderFloat(U8("最大反射距離"), &ssr.maxDistance, 0.0f, 30.0f);
+    ImGui::SliderFloat(U8("解像度・探索の粗さ"), &ssr.resolution, 0.0f, 1.0f);
+    ImGui::SliderInt(U8("ステップ数"), &ssr.steps, 0, 20);
+    ImGui::SliderFloat(U8("厚みの許容範囲"), &ssr.thickness, 0.0f, 1.0f);
 #endif
 }

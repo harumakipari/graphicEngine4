@@ -3,19 +3,11 @@
 #include "FrameBuffer.h"
 #include "FullScreenQuad.h"
 #include "SceneEffectBase.h"
+#include "Engine/Scene/SceneSetting.h"
 #include "Graphics/Core/ConstantBuffer.h"
 
 class SSAOEffect :public SceneEffectBase
 {
-public:
-    struct SSAOConstantBuffer
-    {
-        float radius = 1.0f;
-        float bias = 0.0f;
-        float power = 1.0f;
-        float pad;
-    };
-
 public:
     SSAOEffect() :SceneEffectBase("SSAOEffect") {}
 
@@ -44,8 +36,5 @@ private:
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> ssaoKernelPoints;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> ssaoNoise;
 
-    float radius = 0.2f;
-    float bias = 0.15f;
-    float power = 0.02f;
 
 };
