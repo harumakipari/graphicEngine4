@@ -9,10 +9,10 @@ struct SharedLightParam
 
 struct SceneLightConstants
 {
-    DirectX::XMFLOAT4 lightDirection = { 0.722f, -0.38f, -0.0211f, 0.9f };// w:attenuation Rate
-    DirectX::XMFLOAT4 lightColor = { 1.0f, 0.8f, 1.0f, 2.6f }; //w colorPower
+    DirectX::XMFLOAT4 lightDirection = { 0.722f, -0.38f, -0.0211f, 0.92f };// w:attenuation Rate
+    DirectX::XMFLOAT4 lightColor = { 1.0f, 0.8f, 1.0f, 2.3f }; //w colorPower
 
-    float iblIntensity = 2.4f;
+    float iblIntensity = 0.4f;
     int directionalLightEnable = 1;// 平行光源の on / off
     int pointLightEnable = 1;
     int pointLightCount = 40;
@@ -25,9 +25,9 @@ struct SceneLightConstants
     float kl = 0.7f;
     float kq = 1.8f;
 
-    float diffuseIntensity = 1.272f;
-    float specularIntensity = 0.323f;
-    float pointLightDiffuseIntensity = 0.9f;
+    float diffuseIntensity = 1.0f;
+    float specularIntensity = 0.3f;
+    float pointLightDiffuseIntensity = 0.78f;
     float pointLightSpecularIntensity = 0.15f;
 };
 
@@ -44,9 +44,9 @@ struct SceneShaderConstants
     float splitU = 0.0f;
     float	hueShift = -0.028f;	// 色相調整 -1 から 1 （-1 は負方向の 180 度、0 は変更なし、1 は正方向の 180 度）
 
-    float	saturation = 0.02f;	// 彩度調整（-1は濃灰、0は変化なし、1は最大彩度）
-    float	brightness = 0.013f;	// 明度調整（-1 は完全な黒、0 は変化なし、1 は完全な白）
-    float	contrast = 0.145f;	// コントラスト調整（-1は完全な灰色、0は変化なし、1は最大コントラスト）
+    float	saturation = 0.04f;	// 彩度調整（-1は濃灰、0は変化なし、1は最大彩度）
+    float	brightness = 0.018f;	// 明度調整（-1 は完全な黒、0 は変化なし、1 は完全な白）
+    float	contrast = 0.16f;	// コントラスト調整（-1は完全な灰色、0は変化なし、1は最大コントラスト）
     float focusDistance = 4.6f; // 焦点距離
 
     float dofRange = 80.0f;  // 被写界深度範囲

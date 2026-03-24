@@ -101,7 +101,6 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     pout.emissive = float4(emissiveFactor, 0); // wの値 : スカイマップ１それ以外０    2: emissiveFlagとして使用
 
 
-
     pout.material = float4(metallicFactor, roughnessFactor, occlusionFactor, materialType/*マテリアルタイプ*/);
     
     return pout;

@@ -61,6 +61,9 @@ void SceneEditor::Draw()
         {
             LoadSceneState("Data/Saves/ScenePresets/" + file, savedState);
             savedState.Apply(Scene::GetCurrentScene());
+
+            // ロードしたファイル名を fileName にコピーしておく
+            strncpy_s(fileName, file.c_str(), sizeof(fileName));
         }
     }
 

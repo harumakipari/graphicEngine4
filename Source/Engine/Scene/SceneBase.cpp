@@ -85,6 +85,7 @@ bool SceneBase::Initialize(ID3D11Device* device, const UINT64 width, UINT height
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     //カスケードシャドウマップ
+    //cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 1024, 1024, 4);
     cascadedShadowMaps = std::make_unique<decltype(cascadedShadowMaps)::element_type>(device, 512, 512, 4);
 
 
@@ -340,7 +341,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     if (useDrawDebug)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
-        Physics::Instance().Render(data.view, data.projection, { lightManager->GetLightDirection().x,lightManager->GetLightDirection().y,lightManager->GetLightDirection().z });
+        //Physics::Instance().Render(data.view, data.projection, { lightManager->GetLightDirection().x,lightManager->GetLightDirection().y,lightManager->GetLightDirection().z });
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
         DebugRender::WiredRender(immediateContext);
@@ -612,7 +613,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
-        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
@@ -885,7 +886,8 @@ void SceneBase::DrawPostEffectTab()
     CheckboxInt("Enable Dof", &shader.enableDof);
     CheckboxInt("Enable Fog", &shader.enableFog);
     CheckboxInt("Enable CSM", &shader.enableCascadedShadowMaps);
-    ImGui::SliderFloat("split_u", &shader.splitU, 0.0f, +1.0f);
+    //ImGui::SliderFloat("split_u", &shader.splitU, 0.0f, +1.0f);
+    ImGui::DragFloat("slopeBias", &shader.splitU, 0.00001f, -0.01f, 0.01f, "%.8f");
     ImGui::SliderFloat(U8("色相調整"), &shader.hueShift, -1.0f, +1.0f);
     ImGui::SliderFloat(U8("彩度調整"), &shader.saturation, -1.0f, +1.0f);
     ImGui::SliderFloat(U8("明度調整"), &shader.brightness, -1.0f, +1.0f);

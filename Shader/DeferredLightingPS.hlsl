@@ -44,7 +44,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     if (emissiveFlag == 2)
     {
         //return float4(emissive * rimPower, 1);// これsphereEmissiveに使用
-        return float4(emissive * 7.8, 1); // これsphereEmissiveに使用
+        return float4(emissive * 6.0, 1); // これsphereEmissiveに使用
     }
 
     const float3 f0 = lerp(0.04, baseColor.rgb, metallicFactor);

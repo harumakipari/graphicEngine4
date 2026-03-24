@@ -2,6 +2,7 @@
 #include "Constants.hlsli"
 #include "Sampler.hlsli"
 #include "FilterFunctions.hlsli"
+#include "Lights.hlsli"
 #include "ModelType.hlsli"
 
 Texture2D colorTexture : register(t0);
@@ -39,7 +40,7 @@ float4 CalculatedPositionNDC(VS_OUT pin)
     return positionNdc;
 }
 
-float3 ApplyShadow(inout float3 color, in float4 positionWorldSpace, in float depthViewSpace, in float2 shadowMapDimensions, in float3 randSeed)
+float3 ApplyShadow(inout float3 color, in float4 positionWorldSpace, in float depthViewSpace, in float2 shadowMapDimensions, in float3 randSeed, in float3 normal, in float3 lightDir)
 {
     float shadowFactor = 0.0;
 	
@@ -68,8 +69,16 @@ float3 ApplyShadow(inout float3 color, in float4 positionWorldSpace, in float de
     positionLightSpace.y = positionLightSpace.y * -0.5 + 0.5;
 
 #if 1
+    float NdotL = saturate(dot(normalize(normal), -normalize(lightDir)));
+    float slope = 1.0 - NdotL;
+
+// 調整パラメータ
+    float baseBias = shadowDepthBias; // 今までの値（例: 0.0005）
+    float slopeBias = splitU; // 新しく追加（例: 0.005）
+
+    float bias = baseBias + slope * slopeBias;
 	// 硬い影
-    shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - shadowDepthBias).x;
+    shadowFactor = cascadedShadowMaps.SampleCmpLevelZero(comparisionSamplerState, float3(positionLightSpace.xy, cascadeIndex), positionLightSpace.z - bias).x;
 #else
 	// ソフトシャドウ
     const float2 sampleScale = (0.5 * shadow_filter_radius) / shadowMapDimensions;
@@ -227,7 +236,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     if (enableCascadedShadowMaps)
     {
-        color.rgb = ApplyShadow(color.rgb, positionWorldSpace, (positionViewSpace.z), shadowMapDimensions, positionNdc.xyz);
+        color.rgb = ApplyShadow(color.rgb, positionWorldSpace, (positionViewSpace.z), shadowMapDimensions, positionNdc.xyz, sceneNormal, lightDirection.xyz);
     }
 
 
@@ -320,12 +329,12 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     float4 finalColor = color;
 
-    // 分割表示
-    if (pin.texcoord.x < splitU)
-    {
-        // 左側はポストなし
-        finalColor = sceneColor;
-    }
+    //// 分割表示
+    //if (pin.texcoord.x < splitU)
+    //{
+    //    // 左側はポストなし
+    //    finalColor = sceneColor;
+    //}
 
     if (enableToneMapping == 1)
     {
