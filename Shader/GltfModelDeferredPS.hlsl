@@ -1,6 +1,7 @@
 #include "GltfModel.hlsli"
 #include "Sampler.hlsli"
 #include "Common.hlsli"
+#include "ModelType.hlsli"
 
 
 #define BASE_COLOR_TEXTURE 0 
@@ -54,6 +55,14 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         //roughnessFactor = 1.0;
         roughnessFactor *= sampled.g;
         metallicFactor *= sampled.b;
+    }
+
+    if (objectType == OBJECT_DOOR)
+    {// ドアの時だけラフネスを上げて、メタリックを下げる
+        if (metallicFactor < 0.1) // 木
+        {
+            roughnessFactor = max(roughnessFactor, 0.6);
+        }
     }
     
     float occlusionFactor = 1.0;

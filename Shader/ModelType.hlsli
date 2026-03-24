@@ -8,4 +8,5 @@ static const int OBJECT_PLAYER = 1;
 static const int OBJECT_ENEMY = 2;
 static const int OBJECT_STAGE = 3;
 static const int OBJECT_NOT_SSR = 4;
+static const int OBJECT_DOOR = 5;
 

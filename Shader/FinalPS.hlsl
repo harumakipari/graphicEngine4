@@ -20,14 +20,6 @@ Texture2DArray cascadedShadowMaps : register(t10);
 Texture3D noise3D : register(t20); // ノイズテクスチャ
 
 
-//cbuffer SSAO_CONSTANTS_BUFFER : register(b5)
-//{
-//    float radius;
-//    float bias;
-//    float power;
-//    float pad;
-//}
-
 // texcoord -> ndc 空間に変換
 float4 CalculatedPositionNDC(VS_OUT pin)
 {
@@ -39,6 +31,93 @@ float4 CalculatedPositionNDC(VS_OUT pin)
     positionNdc.w = 1;
     return positionNdc;
 }
+
+
+float3 ApplyBokeh(Texture2D colorMap, float aspect, float depthNdc, float2 texcoord, float aperture, float focus, float maxBlur)
+{
+	//ボケ効果
+    //最大ボケ量：ボケの最大量。0から1までの範囲
+    //絞り：値が大きいほど被写界深度が浅くなる
+    //フォーカス：エフェクトの焦点位置を調整する
+    //アスペクト比：ボケ効果を調整する
+
+    const float2 aspect_correct = float2(1.0, aspect);
+
+    float diff = depthNdc - focus;
+
+// 前を強制強化
+    float frontStrength = 4.0;
+    float backStrength = 1.0;
+
+    if (diff < 0)
+        diff *= frontStrength;
+    else
+        diff *= backStrength;
+
+// ピント範囲
+    float focusRange = 0.01;
+    float factor = sign(diff) * max(0, abs(diff) - focusRange);
+
+// 画面中心からの距離で追加ボケ
+    float2 center = float2(0.5, 0.5);
+    float vignette = length(texcoord - center);
+    factor += vignette * 0.2;
+
+    //const float factor = depth_ndc - focus;
+    const float2 dofblur = clamp(factor * aperture, -maxBlur, maxBlur);
+    const float2 dofblur9 = dofblur * 0.9;
+    const float2 dofblur7 = dofblur * 0.7;
+    const float2 dofblur4 = dofblur * 0.4;
+
+    float4 color = 0;
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.0, 0.4) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.15, 0.37) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.29, 0.29) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.37, 0.15) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.40, 0.0) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.37, -0.15) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.29, -0.29) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.15, -0.37) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.0, -0.4) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.15, 0.37) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.29, 0.29) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.37, 0.15) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.4, 0.0) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.37, -0.15) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.29, -0.29) * aspect_correct) * dofblur);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.15, -0.37) * aspect_correct) * dofblur);
+                              
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.15, 0.37) * aspect_correct) * dofblur9);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.37, 0.15) * aspect_correct) * dofblur9);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.37, -0.15) * aspect_correct) * dofblur9);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.15, -0.37) * aspect_correct) * dofblur9);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.15, 0.37) * aspect_correct) * dofblur9);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.37, 0.15) * aspect_correct) * dofblur9);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.37, -0.15) * aspect_correct) * dofblur9);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.15, -0.37) * aspect_correct) * dofblur9);
+                              
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.29, 0.29) * aspect_correct) * dofblur7);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.40, 0.0) * aspect_correct) * dofblur7);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.29, -0.29) * aspect_correct) * dofblur7);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.0, -0.4) * aspect_correct) * dofblur7);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.29, 0.29) * aspect_correct) * dofblur7);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.4, 0.0) * aspect_correct) * dofblur7);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.29, -0.29) * aspect_correct) * dofblur7);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.0, 0.4) * aspect_correct) * dofblur7);
+
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.29, 0.29) * aspect_correct) * dofblur4);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.4, 0.0) * aspect_correct) * dofblur4);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.29, -0.29) * aspect_correct) * dofblur4);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.0, -0.4) * aspect_correct) * dofblur4);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.29, 0.29) * aspect_correct) * dofblur4);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.4, 0.0) * aspect_correct) * dofblur4);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(-0.29, -0.29) * aspect_correct) * dofblur4);
+    color += colorMap.Sample(samplerStates[LINEAR_BORDER_BLACK], texcoord + (float2(0.0, 0.4) * aspect_correct) * dofblur4);
+
+    return color.rgb / 41.0;
+}
+
 
 float3 ApplyShadow(inout float3 color, in float4 positionWorldSpace, in float depthViewSpace, in float2 shadowMapDimensions, in float3 randSeed, in float3 normal, in float3 lightDir)
 {
@@ -234,6 +313,15 @@ float4 main(VS_OUT pin) : SV_TARGET
     float4 positionWorldSpace = mul(positionNdc, inverseViewProjection);
     positionWorldSpace /= positionWorldSpace.w;
 
+    const float aspect = (float) height / width;
+    if (enableDof)
+    {
+        float bokehAperture = 0.05f;
+        color.rgb = ApplyBokeh(colorTexture, aspect, depthNdc, pin.texcoord, bokehAperture, focusDistance, 0.5);
+    }
+
+
+
     if (enableCascadedShadowMaps)
     {
         color.rgb = ApplyShadow(color.rgb, positionWorldSpace, (positionViewSpace.z), shadowMapDimensions, positionNdc.xyz, sceneNormal, lightDirection.xyz);
@@ -308,23 +396,23 @@ float4 main(VS_OUT pin) : SV_TARGET
         }
     }
 
-    // DOFの処理
-    if (enableDof)
-    {
-        // 深度からview space Z
-        float viewSpaceZ = positionViewSpace.z;
+    //// DOFの処理
+    //if (enableDof)
+    //{
+    //    // 深度からview space Z
+    //    float viewSpaceZ = positionViewSpace.z;
 
-        // ブレンド係数
-        float alpha = abs(viewSpaceZ - focusDistance) / dofRange;
-        alpha = saturate(alpha);
+    //    // ブレンド係数
+    //    float alpha = abs(viewSpaceZ - focusDistance) / dofRange;
+    //    alpha = saturate(alpha);
 
-        // 色取得
-        float3 originColor = color.rgb;
-        float3 bokehColor = bokehTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).rgb;
+    //    // 色取得
+    //    float3 originColor = color.rgb;
+    //    float3 bokehColor = bokehTexture.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord).rgb;
 
-        // DOF合成
-        color.rgb = lerp(originColor, bokehColor, alpha);
-    }
+    //    // DOF合成
+    //    color.rgb = lerp(originColor, bokehColor, alpha);
+    //}
 
 
     float4 finalColor = color;

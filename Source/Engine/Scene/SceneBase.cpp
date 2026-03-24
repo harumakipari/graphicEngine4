@@ -892,7 +892,7 @@ void SceneBase::DrawPostEffectTab()
     ImGui::SliderFloat(U8("彩度調整"), &shader.saturation, -1.0f, +1.0f);
     ImGui::SliderFloat(U8("明度調整"), &shader.brightness, -1.0f, +1.0f);
     ImGui::SliderFloat(U8("コントラスト調整"), &shader.contrast, -1.0f, +1.0f);
-    ImGui::SliderFloat(U8("焦点距離"), &shader.focusDistance, 0.01f, 1000.0f);
+    ImGui::DragFloat(U8("焦点距離"), &shader.focusDistance, 0.001f, 1000.0f);
     ImGui::SliderFloat(U8("被写界深度範囲"), &shader.dofRange, 1.0f, 500.0f);
 
     sceneEffectManager->DrawGui();

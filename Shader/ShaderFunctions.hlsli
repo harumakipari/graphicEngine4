@@ -9,6 +9,7 @@
 float3 CalcRimLight(float3 N, float3 V, float3 color, float power)
 {
     float rim = 1.0 - saturate(dot(N, V));
+    rim = smoothstep(0.0, 1.0, rim);
     rim = pow(rim, power);
     return rim * color;
 }

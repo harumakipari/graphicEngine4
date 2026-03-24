@@ -25,4 +25,5 @@ enum class ObjectType :int
     Enemy,
     Stage,
     NotSSR, // SSRとかをつけたくないステージのオブジェクト
+    Door, // メタリックを下げて、ラフネスを上げるため
 };

@@ -16,31 +16,50 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
 
     emissive *= 0.8 + 0.4 * n;
 
-// --- コア表現（改良版） ---
+// --- コア ---
     float2 uv = pin.texcoord;
-
-    // 中心化
     float2 centered = uv - 0.5;
-    // 縦に伸ばす
+
     centered.y *= 1.5;
-    //  歪み
+
+// 歪み
     float distort =
     sin(pin.wPosition.y * 10 + elapsedTime * 3) * 0.05;
+
     centered.x += distort;
-    // 距離
+
     float dist = length(centered);
-    //  なめらかコア
+
+// コア
     float core = smoothstep(0.6, 0.0, dist);
-    //  下だけ強く
+
+// 下強く
     float vertical = 1.0 - uv.y;
     core *= vertical;
-    //  中心強調
+
+// 強調
     core = pow(core, 1.5);
-    // 色
+
+// --- 色レイヤー ---
     float3 coreColor = float3(1.0, 1.0, 1.0);
-    // 合成
+    float3 yellow = float3(1.0, 0.8, 0.2);
+    float3 orange = float3(1.0, 0.3, 0.0);
+
+// 中心（白）
     emissive = lerp(emissive, coreColor * emissionPower, core * 0.8);
-#endif 
+
+// 中間（黄色）
+    float mid = saturate(core * 2.0);
+    emissive = lerp(emissive, yellow * emissionPower, mid * 0.3);
+
+// 外側（オレンジ）
+    float outer = 1.0 - core;
+    emissive = lerp(emissive, orange * emissionPower, outer * 0.5);
+
+// 外側暗く
+    emissive *= lerp(0.4, 1.0, core);
+
+    #endif 
     // 元々wは１だったがスカイマップなどの時に使用するため、２は点光源であることを示すフラグ
     pout.emissive = float4(emissive, 2);
     pout.material = float4(0.0, 0.0, 0.0, 0.0);

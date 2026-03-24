@@ -168,6 +168,11 @@ float4 main(VS_OUT pin) : SV_TARGET
         iblDiffuse = IblRadianceLambertian(N, V, roughnessFactor, cDiff, f0) * objectIblIntensity;
         iblSpecular = IblRadianceGgx(N, V, roughnessFactor, f0) * objectIblIntensity;
     }
+
+    if (objectType == OBJECT_DOOR)
+    {
+        iblSpecular *= 0.3;
+    }
 #endif
 
     float3 totalDiffuse = diffuse + (pointDiffuse * pointLightDiffuseIntensity) + iblDiffuse;
@@ -178,9 +183,12 @@ float4 main(VS_OUT pin) : SV_TARGET
     totalSpecular = totalSpecular * occlusionFactor * specularIntensity;
 
 #if 1
-    float3 rim = CalcRimLight(N, V, rimColor.rgb, 3.0) * rimIntensity;
-    if (baseColor.a < 1.0)
-        rim = 0;
+    float3 rim = 0;
+
+    if (objectType == OBJECT_PLAYER)
+    {
+        //rim = CalcRimLight(N, V, rimColor, rimPower);
+    }
 #endif
     float3 ambient = baseColor.rgb * 0.05;
 
