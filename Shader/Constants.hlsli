@@ -14,28 +14,38 @@ cbuffer SHADER_CONSTANT_BUFFER : register(b9)
 {
     float shadowColor;
     float shadowDepthBias;
+    float slopeBias;
     float splitU;
-    float hueShift; // 色相調整
 
+    float hueShift; // 色相調整
     float saturation; // 彩度調整
     float brightness; // 明度調整
     float contrast; // コントラスト調整
-    float focusDistance; // 焦点距離
 
-    float dofRange ; // 被写界深度範囲
+    float focusDistance; // 焦点距離
+    float dofNearRange;
+    float dofRange; // 被写界深度範囲
+    float dofBlurStrength;
+
     float objectIblIntensity; //オブジェクトごとのiblIntensity
     int renderStep;
     int enableToneMapping;
+    int enableSSAO;
 
-    bool enableSSAO;
-    bool enableCascadedShadowMaps;
-    bool enableSSR;
-    bool enableFog;
+    int enableCascadedShadowMaps;
+    int enableSSR;
+    int enableFog;
+    int enableBloom;
+    
+    int enableBlur;
+    int enableDof;
+    int colorizeCascadedLayer = false;
+    float value0 = 0.0f;
 
-    bool enableBloom;
-    bool enableBlur;
-    bool enableDof;
-    bool colorizeCascadedLayer = false;
+    float pad0 = 0.0f;
+    float pad1 = 0.0f;
+    float pad2 = 0.0f;
+    float pad3 = 0.0f;
 
 }
 cbuffer CSM_CONSTANTS : register(b3)

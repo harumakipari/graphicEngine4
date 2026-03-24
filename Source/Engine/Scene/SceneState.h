@@ -48,6 +48,7 @@ struct SceneState
         ssr = s.ssrConstantBuffer;
         ssao = s.ssaoConstantBuffer;
         bloom = s.bloomConstantBuffer;
+        cascadeShadow = s.cascadedShadowMapConstants;
 
         // --- Player / Actor Transform ---
         actorStates.clear();
@@ -97,6 +98,7 @@ struct SceneState
         s.ssrConstantBuffer = ssr;
         s.ssaoConstantBuffer = ssao;
         s.bloomConstantBuffer = bloom;
+        s.cascadedShadowMapConstants = cascadeShadow;
 
         // --- Actor Transform ---
         for (auto& ats : actorStates)

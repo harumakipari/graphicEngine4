@@ -41,28 +41,39 @@ struct SceneShaderConstants
 {
     float shadowColor = 0.75f;
     float shadowDepthBias = -0.00207f;
+    float slopeBias = 0.005f;
     float splitU = 0.0f;
-    float	hueShift = -0.028f;	// 色相調整 -1 から 1 （-1 は負方向の 180 度、0 は変更なし、1 は正方向の 180 度）
 
+    float	hueShift = -0.028f;	// 色相調整 -1 から 1 （-1 は負方向の 180 度、0 は変更なし、1 は正方向の 180 度）
     float	saturation = 0.04f;	// 彩度調整（-1は濃灰、0は変化なし、1は最大彩度）
     float	brightness = 0.018f;	// 明度調整（-1 は完全な黒、0 は変化なし、1 は完全な白）
     float	contrast = 0.16f;	// コントラスト調整（-1は完全な灰色、0は変化なし、1は最大コントラスト）
-    float focusDistance = 4.6f; // 焦点距離
 
+    float focusDistance = 4.6f; // 焦点距離
+    float dofNearRange = 0.0f;
     float dofRange = 80.0f;  // 被写界深度範囲
+    float dofBlurStrength = 1.0f;
+
     float objectIblIntensity = 23.0f; // オブジェクトのIblIntensity (今は骸骨を明るくするために)
     int renderStep = 0; // デバック表示用のレンダーステップ
     int enableToneMapping = 1; // トーンマッピング有効化フラグ
-
     int enableSsao = 1;
+
     int enableCascadedShadowMaps = 1;
     int enableSsr = 1;
     int enableFog = 1;
-
     int enableBloom = 1;
+
     int enableBlur = 1;
     int enableDof = 0;
     int colorizeCascadedLayer = 0;
+    float value0 = 0.0f;
+
+    float pad0 = 0.0f;
+    float pad1 = 0.0f;
+    float pad2 = 0.0f;
+    float pad3 = 0.0f;
+
 };
 
 

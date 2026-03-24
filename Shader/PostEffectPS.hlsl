@@ -67,8 +67,7 @@ float3 ApplyShadow(inout float3 color, in float4 positionWorldSpace, in float de
     float slope = 1.0 - NdotL;
 
 // 調整パラメータ
-    float baseBias = shadowDepthBias; // 今までの値（例: 0.0005）
-    float slopeBias = splitU; // 新しく追加（例: 0.005）
+    float baseBias = shadowDepthBias;
 
     float bias = baseBias + slope * slopeBias;
 	// 硬い影

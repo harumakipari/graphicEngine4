@@ -331,7 +331,7 @@ void LightManager::DrawGui()
             if (ImGui::TreeNodeEx(displayName, ImGuiTreeNodeFlags_DefaultOpen))
             {
                 ImGui::ColorEdit3(U8("êF"), &light.color.x);
-                ImGui::SliderFloat(U8("ã≠ìx"), &light.color.w, 0.0f, 30.0f);
+                ImGui::SliderFloat(U8("ã≠ìx"), &light.color.w, 0.0f, 50.0f);
                 ImGui::SliderFloat(U8("îÕàÕ"), &light.range, 0.0f, 20.0f);
                 ImGui::TreePop();
             }

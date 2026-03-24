@@ -247,28 +247,38 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext, floa
 
     shaderCBuffer->data.shadowColor = shader.shadowColor;
     shaderCBuffer->data.shadowDepthBias = shader.shadowDepthBias;
+    shaderCBuffer->data.slopeBias = shader.slopeBias;
     shaderCBuffer->data.splitU = shader.splitU;
-    shaderCBuffer->data.hueShift = shader.hueShift;
 
+    shaderCBuffer->data.hueShift = shader.hueShift;
     shaderCBuffer->data.saturation = shader.saturation;
     shaderCBuffer->data.brightness = shader.brightness;
     shaderCBuffer->data.contrast = shader.contrast;
-    shaderCBuffer->data.focusDistance = shader.focusDistance;
 
+    shaderCBuffer->data.focusDistance = shader.focusDistance;
+    shaderCBuffer->data.dofNearRange = shader.dofNearRange;
     shaderCBuffer->data.dofRange = shader.dofRange;
+    shaderCBuffer->data.dofBlurStrength = shader.dofBlurStrength;
+
     shaderCBuffer->data.objectIblIntensity = shader.objectIblIntensity;
     //shaderCBuffer->data.renderStep = shader.renderStep; // ‚±‚ê‚ÍImGui‚Å
     shaderCBuffer->data.enableToneMapping = shader.enableToneMapping;
-
     shaderCBuffer->data.enableSsao = shader.enableSsao;
+
     shaderCBuffer->data.enableCascadedShadowMaps = shader.enableCascadedShadowMaps;
     shaderCBuffer->data.enableSsr = shader.enableSsr;
     shaderCBuffer->data.enableFog = shader.enableFog;
-
     shaderCBuffer->data.enableBloom = shader.enableBloom;
+
     shaderCBuffer->data.enableBlur = shader.enableBlur;
     shaderCBuffer->data.enableDof = shader.enableDof;
     shaderCBuffer->data.colorizeCascadedLayer = shader.colorizeCascadedLayer;
+    shaderCBuffer->data.value0 = shader.value0;
+
+    shaderCBuffer->data.pad0 = shader.pad0;
+    shaderCBuffer->data.pad1 = shader.pad1;
+    shaderCBuffer->data.pad2 = shader.pad2;
+    shaderCBuffer->data.pad3 = shader.pad3;
 
     sceneCBuffer->Activate(immediateContext, 1);
     shaderCBuffer->Activate(immediateContext, 9);
@@ -915,8 +925,8 @@ void SceneBase::DrawPostEffectTab()
     CheckboxInt("Enable Dof", &shader.enableDof);
     CheckboxInt("Enable Fog", &shader.enableFog);
     CheckboxInt("Enable CSM", &shader.enableCascadedShadowMaps);
-    //ImGui::SliderFloat("split_u", &shader.splitU, 0.0f, +1.0f);
-    ImGui::DragFloat("slopeBias", &shader.splitU, 0.00001f, -0.01f, 0.01f, "%.8f");
+    ImGui::SliderFloat("split_u", &shader.splitU, 0.0f, +1.0f);
+    ImGui::DragFloat("slopeBias", &shader.slopeBias, 0.00001f, -0.01f, 0.01f, "%.8f");
     ImGui::SliderFloat(U8("F‘Š’²®"), &shader.hueShift, -1.0f, +1.0f);
     ImGui::SliderFloat(U8("Ê“x’²®"), &shader.saturation, -1.0f, +1.0f);
     ImGui::SliderFloat(U8("–¾“x’²®"), &shader.brightness, -1.0f, +1.0f);

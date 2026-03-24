@@ -114,58 +114,116 @@ inline void to_json(nlohmann::json& j, const SceneShaderConstants& s)
     j = {
         {"shadowColor", s.shadowColor},
         {"shadowDepthBias", s.shadowDepthBias},
+        {"slopeBias", s.slopeBias},
         {"splitU", s.splitU},
-        {"hueShift", s.hueShift},
 
+        {"hueShift", s.hueShift},
         {"saturation", s.saturation},
         {"brightness", s.brightness},
         {"contrast", s.contrast},
-        {"focusDistance", s.focusDistance},
 
+        {"focusDistance", s.focusDistance},
+        {"dofNearRange", s.dofNearRange},
         {"dofRange", s.dofRange},
+        {"dofBlurStrength", s.dofBlurStrength},
+
         {"objectIblIntensity", s.objectIblIntensity},
         {"renderStep", s.renderStep},
         {"enableToneMapping", s.enableToneMapping},
-
         {"enableSsao", s.enableSsao},
+
         {"enableCascadedShadowMaps", s.enableCascadedShadowMaps},
         {"enableSsr", s.enableSsr},
         {"enableFog", s.enableFog},
-
         {"enableBloom", s.enableBloom},
+
         {"enableBlur", s.enableBlur},
         {"enableDof", s.enableDof},
-        {"colorizeCascadedLayer", s.colorizeCascadedLayer}
+        {"colorizeCascadedLayer", s.colorizeCascadedLayer},
+        {"value0", s.value0},
+
+        {"pad0", s.pad0},
+        {"pad1", s.pad1},
+        {"pad2", s.pad2},
+        {"pad3", s.pad3},
     };
 }
 
 // SceneShaderConstants
 inline void from_json(const nlohmann::json& j, SceneShaderConstants& s)
 {
+#if 1
+    if (j.contains("shadowColor")) j.at("shadowColor").get_to(s.shadowColor);
+    if (j.contains("shadowDepthBias")) j.at("shadowDepthBias").get_to(s.shadowDepthBias);
+    if (j.contains("slopeBias")) j.at("slopeBias").get_to(s.slopeBias);
+    if (j.contains("splitU")) j.at("splitU").get_to(s.splitU);
+
+    if (j.contains("hueShift")) j.at("hueShift").get_to(s.hueShift);
+    if (j.contains("saturation")) j.at("saturation").get_to(s.saturation);
+    if (j.contains("brightness")) j.at("brightness").get_to(s.brightness);
+    if (j.contains("contrast")) j.at("contrast").get_to(s.contrast);
+
+    if (j.contains("focusDistance")) j.at("focusDistance").get_to(s.focusDistance);
+    if (j.contains("dofNearRange")) j.at("dofNearRange").get_to(s.dofNearRange);
+    if (j.contains("dofRange")) j.at("dofRange").get_to(s.dofRange);
+    if (j.contains("dofBlurStrength")) j.at("dofBlurStrength").get_to(s.dofBlurStrength);
+
+    if (j.contains("objectIblIntensity")) j.at("objectIblIntensity").get_to(s.objectIblIntensity);
+    if (j.contains("renderStep")) j.at("renderStep").get_to(s.renderStep);
+    if (j.contains("enableToneMapping")) j.at("enableToneMapping").get_to(s.enableToneMapping);
+    if (j.contains("enableSsao")) j.at("enableSsao").get_to(s.enableSsao);
+
+    if (j.contains("enableCascadedShadowMaps")) j.at("enableCascadedShadowMaps").get_to(s.enableCascadedShadowMaps);
+    if (j.contains("enableSsr")) j.at("enableSsr").get_to(s.enableSsr);
+    if (j.contains("enableFog")) j.at("enableFog").get_to(s.enableFog);
+    if (j.contains("enableBloom")) j.at("enableBloom").get_to(s.enableBloom);
+
+    if (j.contains("enableBlur")) j.at("enableBlur").get_to(s.enableBlur);
+    if (j.contains("enableDof")) j.at("enableDof").get_to(s.enableDof);
+    if (j.contains("colorizeCascadedLayer")) j.at("colorizeCascadedLayer").get_to(s.colorizeCascadedLayer);
+    if (j.contains("value0")) j.at("value0").get_to(s.value0);
+
+    if (j.contains("pad0")) j.at("pad0").get_to(s.pad0);
+    if (j.contains("pad1")) j.at("pad1").get_to(s.pad1);
+    if (j.contains("pad2")) j.at("pad2").get_to(s.pad2);
+    if (j.contains("pad3")) j.at("pad3").get_to(s.pad3);
+#else
     j.at("shadowColor").get_to(s.shadowColor);
     j.at("shadowDepthBias").get_to(s.shadowDepthBias);
+    j.at("slopeBias").get_to(s.slopeBias);
     j.at("splitU").get_to(s.splitU);
-    j.at("hueShift").get_to(s.hueShift);
 
+    j.at("hueShift").get_to(s.hueShift);
     j.at("saturation").get_to(s.saturation);
     j.at("brightness").get_to(s.brightness);
     j.at("contrast").get_to(s.contrast);
-    j.at("focusDistance").get_to(s.focusDistance);
 
+    j.at("focusDistance").get_to(s.focusDistance);
+    j.at("dofNearRange").get_to(s.dofNearRange);
     j.at("dofRange").get_to(s.dofRange);
+    j.at("dofBlurStrength").get_to(s.dofBlurStrength);
+
     j.at("objectIblIntensity").get_to(s.objectIblIntensity);
     j.at("renderStep").get_to(s.renderStep);
     j.at("enableToneMapping").get_to(s.enableToneMapping);
-
     j.at("enableSsao").get_to(s.enableSsao);
+
     j.at("enableCascadedShadowMaps").get_to(s.enableCascadedShadowMaps);
     j.at("enableSsr").get_to(s.enableSsr);
     j.at("enableFog").get_to(s.enableFog);
-
     j.at("enableBloom").get_to(s.enableBloom);
+
     j.at("enableBlur").get_to(s.enableBlur);
     j.at("enableDof").get_to(s.enableDof);
     j.at("colorizeCascadedLayer").get_to(s.colorizeCascadedLayer);
+    j.at("value0").get_to(s.value0);
+
+    j.at("pad0").get_to(s.pad0);
+    j.at("pad1").get_to(s.pad1);
+    j.at("pad2").get_to(s.pad2);
+    j.at("pad3").get_to(s.pad3);
+#endif // 0
+
 }
 
 // CascadeShadow
