@@ -101,15 +101,15 @@
         {
             "name": "enemy",
             "position": [
-                -27.975765228271484,
+                -27.902507781982422,
                 0.0,
-                4.56576681137085
+                -0.1329275369644165
             ],
             "rotation": [
-                1.1920908349338788e-07,
-                0.0017997821560129523,
-                2.1455073828668958e-10,
-                -0.9999983310699463
+                8.107363114184807e-10,
+                0.9999768733978271,
+                1.1920652553953914e-07,
+                -0.006800949573516846
             ]
         },
         {
@@ -714,7 +714,7 @@
         "brightness": 0.013000000268220901,
         "colorizeCascadedLayer": 0,
         "contrast": 0.14499999582767487,
-        "dofRange": 80.0,
+        "dofRange": 0.5,
         "enableBloom": 1,
         "enableBlur": 1,
         "enableCascadedShadowMaps": 1,
@@ -723,7 +723,7 @@
         "enableSsao": 1,
         "enableSsr": 1,
         "enableToneMapping": 1,
-        "focusDistance": 0.9509999752044678,
+        "focusDistance": 1.3140000104904175,
         "hueShift": -0.02800000086426735,
         "objectIblIntensity": 23.0,
         "renderStep": 0,

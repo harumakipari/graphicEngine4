@@ -534,9 +534,6 @@
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorEnemy.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Camera\BookmarkCamera.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -862,9 +859,11 @@
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageAsset.h" />
     <ClInclude Include="Source\Engine\Debug\DebugRender.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorEnemy.h" />
-    <ClInclude Include="Source\Engine\Camera\BookmarkCamera.h" />
     <ClInclude Include="Source\Engine\Camera\TPSCameraController.h" />
     <ClInclude Include="Source\Engine\Camera\MovieManager.h" />
+    <ClInclude Include="Source\Engine\Scene\SceneJson.h" />
+    <ClInclude Include="Source\Engine\Scene\SceneSetting.h" />
+    <ClInclude Include="Source\Engine\Scene\SceneState.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -1077,7 +1076,7 @@
     <FxCompile Include="Shader\GltfMorphModelPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\FinalPS.hlsl">
+    <FxCompile Include="Shader\PostEffectPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\PointLightModelPS.hlsl">
@@ -1093,6 +1092,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\DeferredLightingDefaultPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FinalPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

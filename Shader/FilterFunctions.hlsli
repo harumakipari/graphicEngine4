@@ -140,3 +140,12 @@ float3 HueSaturation(float3 fragmentColor, float hue, float saturation)
     }
     return fragmentColor;
 }
+
+// トーンマップ
+float3 JodieReinhardToneMap(float3 c)
+{
+    float l = dot(c, float3(0.2126, 0.7152, 0.0722));
+    float3 tc = c / (c + 1.0);
+
+    return lerp(c / (l + 1.0), tc, tc);
+}

@@ -7,7 +7,6 @@
 
 #include<vector>
 
-
 #include "Engine/Scene/Scene.h"
 #include "Graphics/Core/Shader.h"
 #include "Engine/Utility/Win32Utils.h"
@@ -73,7 +72,8 @@ void BloomEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t heig
 
 }
 
-void BloomEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* inputSrv)
+void BloomEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gBufferColor, ID3D11ShaderResourceView* gBufferNormal,
+    ID3D11ShaderResourceView* gBufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* gBufferPbrValue, ID3D11ShaderResourceView* shadowMap)
 {
     // Store current states
     ID3D11ShaderResourceView* nullShaderResourceView{};
@@ -105,7 +105,7 @@ void BloomEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResou
     // Extracting bright color
     glowExtraction->Clear(immediateContext, 0, 0, 0, 1);
     glowExtraction->Activate(immediateContext);
-    bitBlockTransfer->Blit(immediateContext, &inputSrv, 0, 1, glowExtractionPs.Get());
+    bitBlockTransfer->Blit(immediateContext, &gBufferColor, 0, 1, glowExtractionPs.Get());
     glowExtraction->Deactivate(immediateContext);
     immediateContext->PSSetShaderResources(0, 1, &nullShaderResourceView);
 

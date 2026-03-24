@@ -41,10 +41,10 @@ bool SceneBase::Initialize(ID3D11Device* device, const UINT64 width, UINT height
     {
         //if (!postEffectManager.get())
         {
-            Logger::Log(U8("ポストエフェクトを作成しました！"));
-            postEffectManager = std::make_unique<PostEffectManager>();
-            postEffectManager->AddEffect(std::make_unique<BloomEffect>());
-            postEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
+            //Logger::Log(U8("ポストエフェクトを作成しました！"));
+            //postEffectManager = std::make_unique<PostEffectManager>();
+            //postEffectManager->AddEffect(std::make_unique<BloomEffect>());
+            //postEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
         }
     }
 
@@ -54,13 +54,17 @@ bool SceneBase::Initialize(ID3D11Device* device, const UINT64 width, UINT height
         {
             Logger::Log(U8("シーンエフェクトを作成しました！"));
             sceneEffectManager = std::make_unique<SceneEffectManager>();
-            sceneEffectManager->AddEffect(std::make_unique<FogEffect>());
+            sceneEffectManager->AddEffect(std::make_unique<BloomEffect>());
             sceneEffectManager->AddEffect(std::make_unique<SSAOEffect>());
             sceneEffectManager->AddEffect(std::make_unique<SSREffect>());
+            sceneEffectManager->AddEffect(std::make_unique<FogEffect>());
             sceneEffectManager->AddEffect(std::make_unique<DepthOfFieldEffect>());
             sceneEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
         }
     }
+
+    depthOfFieldEffect = std::make_unique<DepthOfFieldEffect>();
+    depthOfFieldEffect->Initialize(device, static_cast<uint32_t>(width), height);
 
 #endif // 0
 
@@ -74,11 +78,15 @@ bool SceneBase::Initialize(ID3D11Device* device, const UINT64 width, UINT height
     multipleRenderTargets = std::make_unique<decltype(multipleRenderTargets)::element_type>(device, static_cast<uint32_t>(width), height, 3);
 
     frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
+    finalBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
     //imGuiGizmoBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
 
     // GBUFFER
     gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
     hr = CreatePsFromCSO(device, "./Shader/DeferredLightingPS.cso", deferredPs.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+    hr = CreatePsFromCSO(device, "./Shader/PostEffectPS.cso", postEffectPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     hr = CreatePsFromCSO(device, "./Shader/FinalPS.cso", finalPs.ReleaseAndGetAddressOf());
@@ -181,10 +189,10 @@ bool SceneBase::OnSizeChanged(ID3D11Device* device, const UINT64 width, UINT hei
 
     //if (!postEffectManager.get())
     {
-        Logger::Log(U8("ポストエフェクトを作成しました！"));
-        postEffectManager = std::make_unique<PostEffectManager>();
-        postEffectManager->AddEffect(std::make_unique<BloomEffect>());
-        postEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
+        //Logger::Log(U8("ポストエフェクトを作成しました！"));
+        //postEffectManager = std::make_unique<PostEffectManager>();
+        //postEffectManager->AddEffect(std::make_unique<BloomEffect>());
+        //postEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
     }
 
     // シーンエフェクト
@@ -197,11 +205,15 @@ bool SceneBase::OnSizeChanged(ID3D11Device* device, const UINT64 width, UINT hei
             sceneEffectManager->AddEffect(std::make_unique<SSAOEffect>());
             sceneEffectManager->AddEffect(std::make_unique<SSREffect>());
             sceneEffectManager->AddEffect(std::make_unique<DepthOfFieldEffect>());
+            sceneEffectManager->AddEffect(std::make_unique<BloomEffect>());
             sceneEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
         }
     }
+    depthOfFieldEffect = std::make_unique<DepthOfFieldEffect>();
+    depthOfFieldEffect->Initialize(device, static_cast<uint32_t>(width), height);
 
     frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
+    finalBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
 
     return true;
 }
@@ -397,7 +409,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
 
         sceneEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::COLOR)], multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::NORMAL)],
             multipleRenderTargets->depthStencilShaderResourceView, multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::POSITION)], nullptr/*ディファードの時に使用するmaterial の値*/, cascadedShadowMaps->depthMap().Get());
-        postEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
+        //postEffectManager->ApplyAll(immediateContext, multipleRenderTargets->renderTargetShaderResourceViews[0]);
 
 
         ID3D11ShaderResourceView* shader_resource_views[]
@@ -406,13 +418,13 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
             multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::POSITION)],
             multipleRenderTargets->renderTargetShaderResourceViews[static_cast<int>(M_SRV_SLOT::NORMAL)],
             multipleRenderTargets->depthStencilShaderResourceView,
-            postEffectManager->GetOutput("BloomEffect"),
+            sceneEffectManager->GetOutput("BloomEffect"),
             sceneEffectManager->GetOutput("FogEffect"),
             sceneEffectManager->GetOutput("SSAOEffect"),
             sceneEffectManager->GetOutput("SSREffect"),
             cascadedShadowMaps->depthMap().Get(),
         };
-        fullscreenQuad->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());
+        fullscreenQuad->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), postEffectPs.Get());
     }
 }
 
@@ -529,12 +541,15 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     //}
 
 #if 1
-    postEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get());
+    //postEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get());
     sceneEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get(), gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
         gBufferRenderTarget->depthStencilShaderResourceView, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)], gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::PBR_VALUE)], cascadedShadowMaps->depthMap().Get());
     //sceneEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get(), gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
     //    gBufferRenderTarget->depthStencilShaderResourceView, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)], cascaded_shadow_map->depth_map().Get());
-#endif
+
+    ID3D11ShaderResourceView* nullSRVs[16] = {};
+    immediateContext->PSSetShaderResources(0, 16, nullSRVs);
+    #endif
 
     // フォーワードの透明描画
     //multipleRenderTargets->Activate(immediateContext, gBufferRenderTarget->depthStencilView);
@@ -628,6 +643,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
 
 
 
+    finalBuffer->Clear(immediateContext);
+    finalBuffer->Activate(immediateContext);
 
     // FINAL_PASS
     {
@@ -640,11 +657,11 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
 
         ID3D11ShaderResourceView* shader_resource_views[]
         {
-             frameBuffer->shaderResourceViews[0].Get(),//colorMap   こっちライティング済み
+              frameBuffer->shaderResourceViews[0].Get(),//colorMap   こっちライティング済み
               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],   // positionMap
               gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],   // normalMap
               gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
-              postEffectManager->GetOutput("BloomEffect"),
+              sceneEffectManager->GetOutput("BloomEffect"),
               sceneEffectManager->GetOutput("FogEffect"),
               sceneEffectManager->GetOutput("SSAOEffect"),
               sceneEffectManager->GetOutput("SSREffect"),
@@ -656,9 +673,21 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
         //immediateContext->PSSetShaderResources(8, 1, cascadedShadowMaps->depthMap().GetAddressOf());
 
         // メインフレームバッファとブルームエフェクトを組み合わせて描画
-        fullscreenQuad->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());
+        fullscreenQuad->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), postEffectPs.Get());
 
     }
+    finalBuffer->Deactivate(immediateContext);
+
+    depthOfFieldEffect->Apply(immediateContext, finalBuffer->shaderResourceViews[0].Get(), gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
+        gBufferRenderTarget->depthStencilShaderResourceView, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)], gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::PBR_VALUE)], cascadedShadowMaps->depthMap().Get());
+
+    ID3D11ShaderResourceView* shader_resource_views[]
+    {
+        finalBuffer->shaderResourceViews[0].Get(),//colorMap   こっちポストエフェクト済み
+        depthOfFieldEffect->GetOutputSRV(),
+        gBufferRenderTarget->depthStencilShaderResourceView,      //depthMap
+    };
+    fullscreenQuad->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), finalPs.Get());
 }
 
 void SceneBase::Draw(ID3D11DeviceContext* immediateContext)
@@ -896,7 +925,7 @@ void SceneBase::DrawPostEffectTab()
     ImGui::SliderFloat(U8("被写界深度範囲"), &shader.dofRange, 1.0f, 500.0f);
 
     sceneEffectManager->DrawGui();
-    postEffectManager->DrawGui();
+    //postEffectManager->DrawGui();
     // -------------------------
     // CSM (シャドウ関連)
     // -------------------------

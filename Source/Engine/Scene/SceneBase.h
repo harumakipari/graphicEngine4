@@ -18,6 +18,7 @@
 #include <memory>
 #include <unordered_map>
 
+#include "Graphics/PostProcess/DepthOfFieldEffect.h"
 #include "Graphics/Shadow/ShadowMap.h"
 #include "UI/UIManager.h"
 
@@ -115,6 +116,7 @@ protected:
     std::unique_ptr<FullScreenQuad> fullscreenQuad;
 
     std::unique_ptr<FrameBuffer> frameBuffer;
+    std::unique_ptr<FrameBuffer> finalBuffer;
     std::unique_ptr<FrameBuffer> imGuiGizmoBuffer;
 
     std::unique_ptr<CascadedShadowMaps> cascadedShadowMaps;
@@ -123,10 +125,13 @@ protected:
     std::unique_ptr<GBuffer> gBufferRenderTarget;
     std::unique_ptr<SkyMap> skyMap;
     std::unique_ptr<LightManager> lightManager;
-    std::unique_ptr<PostEffectManager> postEffectManager;
+    //std::unique_ptr<PostEffectManager> postEffectManager;
     std::unique_ptr<SceneEffectManager> sceneEffectManager;
     std::unique_ptr<SceneRenderer> sceneRenderer_;
 
+    std::unique_ptr<DepthOfFieldEffect> depthOfFieldEffect;
+
+    Microsoft::WRL::ComPtr<ID3D11PixelShader> postEffectPs;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> finalPs;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> deferredPs;
 

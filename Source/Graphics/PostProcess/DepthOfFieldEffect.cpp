@@ -12,8 +12,8 @@
 void DepthOfFieldEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height)
 {
     fullScreenQuad = std::make_unique<FullScreenQuad>(device);
-    depthOfFieldBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false);
-    finalBokehBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false);
+    depthOfFieldBuffer = std::make_unique<FrameBuffer>(device, width / 4, height / 4, false);
+    finalBokehBuffer = std::make_unique<FrameBuffer>(device, width / 4, height / 4, false);
 
     for (size_t downsampled_index = 0; downsampled_index < downsampledCount; ++downsampled_index)
     {
@@ -24,13 +24,9 @@ void DepthOfFieldEffect::Initialize(ID3D11Device* device, uint32_t width, uint32
     HRESULT hr = CreatePsFromCSO(device, "./Shader/DepthOfFieldPS.cso", bokehPS.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    hr = CreatePsFromCSO(device, "./Shader/GaussianBlurDownSamplingPS.cso", gaussianBlurDownsamplingPs.ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     hr = CreatePsFromCSO(device, "./Shader/GaussianBlurHorizontalPS.cso", gaussianBlurHorizontalPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     hr = CreatePsFromCSO(device, "./Shader/GaussianBlurVerticalPS.cso", gaussianBlurVerticalPs.ReleaseAndGetAddressOf());
-    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-    hr = CreatePsFromCSO(device, "./Shader/GaussianBlurUpsamplingPS.cso", gaussianBlurUpsamplingPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     D3D11_RASTERIZER_DESC rasterizerDesc{};

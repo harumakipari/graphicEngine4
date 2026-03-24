@@ -15,20 +15,28 @@ public:
         }
     }
 
-    void ApplyAll(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* gbufferColor, ID3D11ShaderResourceView* gbufferNormal,
+    void ApplyAll(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourceView* sceneColor, ID3D11ShaderResourceView* gbufferNormal,
         ID3D11ShaderResourceView* gbufferDepth, ID3D11ShaderResourceView* gBufferPosition, ID3D11ShaderResourceView* gBufferPbrValue, ID3D11ShaderResourceView* shadowMap)
     {
-        for (auto& effect : effects | std::views::values)
+        ID3D11ShaderResourceView* current = sceneColor;
+
+        for (auto* effect : executionOrder)
         {
-            if (effect->IsEnabled())
-                effect->Apply(immediateContext, gbufferColor, gbufferNormal, gbufferDepth, gBufferPosition, gBufferPbrValue,shadowMap);
+            if (!effect->IsEnabled())
+                continue;
+            effect->Apply(immediateContext, current, gbufferNormal, gbufferDepth, gBufferPosition, gBufferPbrValue, shadowMap);
+
         }
+
+        //lastOutput = current;
     }
 
     void AddEffect(std::unique_ptr<SceneEffectBase> effect)
     {
         const std::string name = effect->GetName();
-        effects[name] = std::move(effect);
+
+        executionOrder.push_back(effect.get()); // é¿çsèáÇ…í«â¡
+        effects[name] = std::move(effect);      // èäóLå†ÇÕmap
     }
 
     ID3D11ShaderResourceView* GetOutput(const std::string& name) const
@@ -56,6 +64,7 @@ public:
 #endif
     }
 private:
+    std::vector<SceneEffectBase*> executionOrder;
     std::unordered_map<std::string, std::unique_ptr<SceneEffectBase>> effects;
     ID3D11ShaderResourceView* lastOutput = nullptr;
 

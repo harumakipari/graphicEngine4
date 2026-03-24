@@ -7,7 +7,6 @@
 
 class DepthOfFieldEffect :public SceneEffectBase
 {
-public:
 
 public:
     DepthOfFieldEffect() :SceneEffectBase("DepthOfFieldEffect") {}
@@ -40,8 +39,6 @@ private:
     Microsoft::WRL::ComPtr<ID3D11BlendState> blendState;
 
     Microsoft::WRL::ComPtr<ID3D11PixelShader> bokehPS; // 被写界深度のエフェクトをかけるピクセルシェーダー
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> gaussianBlurDownsamplingPs;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> gaussianBlurHorizontalPs;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> gaussianBlurVerticalPs;
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> gaussianBlurUpsamplingPs;
 };
