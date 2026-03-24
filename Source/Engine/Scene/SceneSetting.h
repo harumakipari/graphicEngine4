@@ -69,9 +69,7 @@ struct SceneShaderConstants
     int colorizeCascadedLayer = 0;
     float value0 = 0.0f;
 
-    float pad0 = 0.0f;
-    float pad1 = 0.0f;
-    float pad2 = 0.0f;
+    DirectX::XMFLOAT3 colorMapRGB = { 1.0f,1.0f,1.0f };
     float pad3 = 0.0f;
 
 };

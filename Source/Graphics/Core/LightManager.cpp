@@ -45,7 +45,8 @@ std::unordered_map<std::string, const char*> lightDisplayNames =
     {"BottomStandingBrazier", U8("スタンド火鉢 下")},
     {"TopStandingBrazier", U8("スタンド火鉢 上")},
     {"PlayerPointLight", U8("プレイヤーライト")},
-    {"EnemyPointLight", U8("敵のライト")}
+    {"EnemyPointLight", U8("敵のライト")},
+    {"FireBowl", U8("お椀の火")}
 };
 
 void LightManager::Initialize(ID3D11Device* device)
@@ -144,6 +145,14 @@ void LightManager::Initialize(ID3D11Device* device)
         sharedLights["EnemyPointLight"] =
             SharedLightParam{ DirectX::XMFLOAT4(0.977f, 0.688f, 0.5f, 20.0f),
         3.1f
+        };
+    }
+
+    // お椀の火のポイントライト
+    {
+        sharedLights["FireBowl"] =
+            SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.752942204f, 0.527115107f, 10.0f),
+        10.0f
         };
     }
 }

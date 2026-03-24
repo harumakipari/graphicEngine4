@@ -54,8 +54,8 @@ bool _NullLoadImageData(tinygltf::Image*, const int, std::string*, std::string*,
 InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData) : filename(filename), mode(mode), isSaveVerticesData(isSaveVerticesData)
 {
     std::filesystem::path cerealFilename(filename);
-#if 1
     cerealFilename.replace_extension(mode == ModelTypes::ModelMode::StaticMesh || mode == ModelTypes::ModelMode::InstancedStaticMesh ? "batchCereal" : "cereal");
+#if 1
     if (std::filesystem::exists(cerealFilename.c_str()))
     {
         std::ifstream ifs(cerealFilename.c_str(), std::ios::binary);

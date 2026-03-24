@@ -199,6 +199,17 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
                 auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageChandelierActor>("chandelier", chandelierTr);
 
             }
+        //    else if (point.name.rfind("Spawn_FireBowl", 0) == 0)
+        //    {
+        //        DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+        //        Transform candelabraTr{
+        //pos,
+        //point.worldRotation,
+        //point.worldScale
+        //        };
+
+        //        auto candelabra = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageFireBowlActor>("fireBowl", candelabraTr);
+        //    }
             else if (point.name.rfind("Spawn_Candelabra", 0) == 0)
             {// 名前が "Spawn_Candelabra" で始まる場合、燭台を配置
                 DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);

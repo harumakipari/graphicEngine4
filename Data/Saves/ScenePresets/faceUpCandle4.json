@@ -101,15 +101,15 @@
         {
             "name": "enemy",
             "position": [
-                -43.23282241821289,
+                -42.038246154785156,
                 0.0,
                 11.299993515014648
             ],
             "rotation": [
-                1.2644092350910796e-07,
-                0.7071046233177185,
-                1.2644015612295334e-07,
-                -0.7071089744567871
+                1.2644055402688537e-07,
+                0.7071066498756409,
+                1.2644051139432122e-07,
+                -0.70710688829422
             ]
         },
         {
@@ -677,7 +677,7 @@
                     0.9769999980926514,
                     0.6880000233650208,
                     0.5,
-                    0.0
+                    4.046000003814697
                 ],
                 "range": 3.0999999046325684
             },
@@ -714,7 +714,9 @@
         "brightness": 0.017999999225139618,
         "colorizeCascadedLayer": 0,
         "contrast": 0.1599999964237213,
-        "dofRange": 24.413000106811523,
+        "dofBlurStrength": 1.0,
+        "dofNearRange": 0.0,
+        "dofRange": 1.0,
         "enableBloom": 1,
         "enableBlur": 1,
         "enableCascadedShadowMaps": 1,
@@ -723,14 +725,20 @@
         "enableSsao": 1,
         "enableSsr": 1,
         "enableToneMapping": 1,
-        "focusDistance": 0.8989999890327454,
+        "focusDistance": 0.5690000057220459,
         "hueShift": -0.02800000086426735,
         "objectIblIntensity": 23.0,
+        "pad0": 0.0,
+        "pad1": 0.0,
+        "pad2": 0.0,
+        "pad3": 0.0,
         "renderStep": 0,
         "saturation": 0.03999999910593033,
         "shadowColor": 0.75,
         "shadowDepthBias": -0.0020699999295175076,
-        "splitU": 0.0
+        "slopeBias": 0.004999999888241291,
+        "splitU": 0.0,
+        "value0": 0.0
     },
     "ssao": {
         "bias": 0.15000000596046448,

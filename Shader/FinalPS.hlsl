@@ -55,12 +55,12 @@ float4 main(VS_OUT pin) : SV_TARGET
     }
     float4 finalColor = color;
 
-    //// 分割表示
-    //if (pin.texcoord.x < splitU)
-    //{
-    //    // 左側はポストなし
-    //    finalColor = sceneColor;
-    //}
+    // 分割表示
+    if (pin.texcoord.x < splitU)
+    {
+        // 左側はポストなし
+        finalColor = sceneColor;
+    }
 
     if (enableToneMapping == 1)
     {
@@ -70,6 +70,10 @@ float4 main(VS_OUT pin) : SV_TARGET
 	    // 色相、彩度、明度、コントラストを調整する。
         finalColor.rgb = HueSaturation(finalColor.rgb, hueShift, saturation);
         finalColor.rgb = BrightnessContrast(finalColor.rgb, brightness, contrast);
+
+        // 色の調整をする
+        finalColor.rgb = RGBColorMap(finalColor.rgb, colorMapRGB);
+
     }
 
     return finalColor;

@@ -42,9 +42,7 @@ cbuffer SHADER_CONSTANT_BUFFER : register(b9)
     int colorizeCascadedLayer = false;
     float value0 = 0.0f;
 
-    float pad0 = 0.0f;
-    float pad1 = 0.0f;
-    float pad2 = 0.0f;
+    float3 colorMapRGB;
     float pad3 = 0.0f;
 
 }

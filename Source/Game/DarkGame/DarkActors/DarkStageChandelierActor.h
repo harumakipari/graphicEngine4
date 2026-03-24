@@ -17,3 +17,28 @@ private:
     float swingSpeed = 1.5f;     // 揺れる速さ
     float swingAngle = 10.0f;    // 最大角度（度）
 };
+
+
+class DarkStageFireBowlActor:public Actor
+{
+public:
+    DarkStageFireBowlActor(const std::string& actorName) :Actor(actorName) {}
+    virtual ~DarkStageFireBowlActor() = default;
+    void Initialize(const Transform& transform)override;
+private:
+    // モデル
+    std::shared_ptr<SkeletalMeshComponent> meshComponent;
+};
+
+
+// 絵画
+class DarkStagePaintingActor :public Actor
+{
+public:
+    DarkStagePaintingActor(const std::string& actorName) :Actor(actorName) {}
+    virtual ~DarkStagePaintingActor() = default;
+    void Initialize(const Transform& transform)override;
+private:
+    // モデル
+    std::shared_ptr<SkeletalMeshComponent> meshComponent;
+};

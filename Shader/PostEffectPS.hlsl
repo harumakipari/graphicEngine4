@@ -298,7 +298,17 @@ float4 main(VS_OUT pin) : SV_TARGET
         }
     }
 
-    return color;
+    float4 finalColor = color;
+
+
+    // 分割表示
+    if (pin.texcoord.x < splitU)
+    {
+        // 左側はポストなし
+        finalColor = sceneColor;
+    }
+
+    return finalColor;
     //// DOFの処理
     //if (enableDof)
     //{
@@ -318,7 +328,6 @@ float4 main(VS_OUT pin) : SV_TARGET
     //}
 
 
-    float4 finalColor = color;
 
     //// 分割表示
     //if (pin.texcoord.x < splitU)

@@ -149,3 +149,27 @@ float3 JodieReinhardToneMap(float3 c)
 
     return lerp(c / (l + 1.0), tc, tc);
 }
+
+
+// 定数バッファ側で渡す予定の補正値
+// rgb.x -> 赤の強調カーブ
+// rgb.y -> 緑の強調カーブ
+// rgb.z -> 青の強調カーブ
+float3 RGBColorMap(float3 sceneColor, float3 rgb)
+{
+    float3 result = sceneColor;
+
+    // 赤
+    result.r = pow(result.r, rgb.x); // rgb.x < 1 で赤を強調、>1 で弱め
+    result.r = saturate(result.r * (1.0 + (1.0 - rgb.x))); // rgb.xに応じて掛け算で増幅/減衰
+
+    // 緑
+    result.g = pow(result.g, rgb.y); // rgb.y < 1 で緑を強調、>1で弱め
+    result.g = saturate(result.g * (1.0 + (1.0 - rgb.y)));
+
+    // 青
+    result.b = pow(result.b, rgb.z); // rgb.z < 1 で青を強調、>1で弱め
+    result.b = saturate(result.b * (1.0 + (1.0 - rgb.z)));
+
+    return result;
+}

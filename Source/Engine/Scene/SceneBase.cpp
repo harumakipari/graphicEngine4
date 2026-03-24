@@ -275,9 +275,7 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext, floa
     shaderCBuffer->data.colorizeCascadedLayer = shader.colorizeCascadedLayer;
     shaderCBuffer->data.value0 = shader.value0;
 
-    shaderCBuffer->data.pad0 = shader.pad0;
-    shaderCBuffer->data.pad1 = shader.pad1;
-    shaderCBuffer->data.pad2 = shader.pad2;
+    shaderCBuffer->data.colorMapRGB = shader.colorMapRGB;
     shaderCBuffer->data.pad3 = shader.pad3;
 
     sceneCBuffer->Activate(immediateContext, 1);
@@ -559,7 +557,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
 
     ID3D11ShaderResourceView* nullSRVs[16] = {};
     immediateContext->PSSetShaderResources(0, 16, nullSRVs);
-    #endif
+#endif
 
     // フォーワードの透明描画
     //multipleRenderTargets->Activate(immediateContext, gBufferRenderTarget->depthStencilView);
@@ -931,6 +929,9 @@ void SceneBase::DrawPostEffectTab()
     ImGui::SliderFloat(U8("彩度調整"), &shader.saturation, -1.0f, +1.0f);
     ImGui::SliderFloat(U8("明度調整"), &shader.brightness, -1.0f, +1.0f);
     ImGui::SliderFloat(U8("コントラスト調整"), &shader.contrast, -1.0f, +1.0f);
+    ImGui::SliderFloat(U8("赤強調"), &shader.colorMapRGB.x, 0.5f, 1.5f);
+    ImGui::SliderFloat(U8("緑強調"), &shader.colorMapRGB.y, 0.5f, 1.5f);
+    ImGui::SliderFloat(U8("青強調"), &shader.colorMapRGB.z, 0.5f, 1.5f);
     ImGui::DragFloat(U8("焦点距離"), &shader.focusDistance, 0.001f, 1000.0f);
     ImGui::SliderFloat(U8("被写界深度範囲"), &shader.dofRange, 1.0f, 500.0f);
 

@@ -142,9 +142,7 @@ inline void to_json(nlohmann::json& j, const SceneShaderConstants& s)
         {"colorizeCascadedLayer", s.colorizeCascadedLayer},
         {"value0", s.value0},
 
-        {"pad0", s.pad0},
-        {"pad1", s.pad1},
-        {"pad2", s.pad2},
+        {"colorMapRGB", s.colorMapRGB},
         {"pad3", s.pad3},
     };
 }
@@ -183,9 +181,7 @@ inline void from_json(const nlohmann::json& j, SceneShaderConstants& s)
     if (j.contains("colorizeCascadedLayer")) j.at("colorizeCascadedLayer").get_to(s.colorizeCascadedLayer);
     if (j.contains("value0")) j.at("value0").get_to(s.value0);
 
-    if (j.contains("pad0")) j.at("pad0").get_to(s.pad0);
-    if (j.contains("pad1")) j.at("pad1").get_to(s.pad1);
-    if (j.contains("pad2")) j.at("pad2").get_to(s.pad2);
+    if (j.contains("colorMapRGB")) j.at("colorMapRGB").get_to(s.colorMapRGB);
     if (j.contains("pad3")) j.at("pad3").get_to(s.pad3);
 #else
     j.at("shadowColor").get_to(s.shadowColor);
