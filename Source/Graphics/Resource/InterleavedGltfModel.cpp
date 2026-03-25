@@ -2442,6 +2442,18 @@ DirectX::XMFLOAT4X4 InterleavedGltfModel::GetJointLocalMatrix(
     return identity;
 }
 
+int InterleavedGltfModel::FindNodeIndexByName(const std::string& name) const
+{
+    for (size_t i = 0; i < nodes.size(); ++i)
+    {
+        if (nodes[i].name == name)
+        {
+            return static_cast<int>(i);
+        }
+    }
+    return -1;
+}
+
 // アニメーションを追加する関数
 void InterleavedGltfModel::AddAnimations(const std::vector<std::string>& filenames)
 {

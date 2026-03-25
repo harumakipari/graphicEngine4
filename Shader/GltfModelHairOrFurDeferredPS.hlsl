@@ -88,7 +88,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         normalFactor = normalize(normalFactor * float3(m.normalTexture.scale, m.normalTexture.scale, 1.0));
         if (materialType == MATERIAL_HAIR)
         {
-            N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
+            //N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
         }
     }
 

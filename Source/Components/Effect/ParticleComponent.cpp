@@ -24,48 +24,9 @@ void ParticleComponent::Play()
         // ゲームオブジェクトの位置と回転を取得
         //XMFLOAT3 position = owner_.lock()->GetPosition();
         //XMFLOAT3 rotation = owner_.lock()->GetEulerRotation();
-
+        UpdateComponentToWorld(); // これ入れないと最初に呼ばれる時に位置がずれる
         XMFLOAT3 position = GetComponentLocation();
         XMFLOAT3 rotation = GetComponentEulerRotation();
-
-        // 線上にエフェクトを再生する場合
-        if (settings.lineData.useLine)
-        {
-#if 0
-            // 線上に分割してエフェクトを再生
-            for (int i = 0; i <= settings.lineData.segments.size(); ++i)
-            {
-                LineData::Segment& segment = settings.lineData.segments[i % settings.lineData.segments.size()];
-
-                XMFLOAT3 startPos = segment.start ? segment.start->GetTranslation() : XMFLOAT3();
-                XMFLOAT3 endPos = segment.end ? segment.end->GetTranslation() : XMFLOAT3();
-                int segmentCount = segment.segmentCount > 0 ? segment.segmentCount : 1;
-
-                if (segment.start && segment.end)
-                {
-                    XMFLOAT4 startRotation = segment.start->GetRotation();
-                    XMFLOAT4 endRotation = segment.end->GetRotation();
-                    // 始点から終点へ向く回転を設定
-                    DirectX::XMStoreFloat3(&rotation, MathHelper::QuaternionLookAt(XMLoadFloat4(&startRotation), XMLoadFloat4(&endRotation)));
-                }
-
-                for (int j = 0; j < segmentCount; ++j)
-                {
-                    float t = static_cast<float>(j) / static_cast<float>(segmentCount);
-                    XMFLOAT3 pos{};
-                    pos.x = startPos.x + (endPos.x - startPos.x) * t;
-                    pos.y = startPos.y + (endPos.y - startPos.y) * t;
-                    pos.z = startPos.z + (endPos.z - startPos.z) * t;
-                    EffectManager::Play(effectHandle, pos, rotation);
-                }
-            }
-#endif // 0
-        }
-        else
-        {
-            // 通常の位置でエフェクト再生
-            EffectManager::Play(effectHandle, position, rotation);
-        }
         elapsedTimeSincePlay = 0.0f;
         duration = CalculateDuration();
         emitTimer = 0.0f;
@@ -81,7 +42,7 @@ void ParticleComponent::Play()
 // エフェクトをアタッチ先に再生
 void ParticleComponent::PlayAttached()
 {
-     if (effectHandle == -1) return;
+    if (effectHandle == -1) return;
 
     EffectManager::PlayAttached(effectHandle, shared_from_this());
     isPlaying = true;
@@ -173,6 +134,8 @@ void ParticleComponent::DrawImGuiInspector()
 {
 #ifdef USE_IMGUI
     ImGui::PushID(this);
+    SceneComponent::DrawImGuiInspector();
+
 
     if (ImGui::Button("Load Effect"))
     {

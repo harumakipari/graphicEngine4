@@ -43,19 +43,19 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     loadStageAssetsThread = std::thread([&]()
         {
             PROFILE_SCOPE("Load StageAssetModel");
-            stageCandelabraAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/Candelabra/Candelabra.gltf", ModelTypes::ModelMode::StaticMesh);
+            stageCandelabraAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/Candelabra/Candelabra.gltf", ModelTypes::ModelMode::StaticMesh,false,true);
             stageCandelabraAsset->spawnPoints = stageCandelabraAsset->model->spawnPoints;
 
-            stageBrazierAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/Brazier/Brazier.gltf", ModelTypes::ModelMode::StaticMesh);
+            stageBrazierAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/Brazier/Brazier.gltf", ModelTypes::ModelMode::StaticMesh,false, true);
             stageBrazierAsset->spawnPoints = stageBrazierAsset->model->spawnPoints;
 
-            stageGroundBrazierAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/GroundBrazier/groundBrazier.gltf", ModelTypes::ModelMode::StaticMesh);
+            stageGroundBrazierAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/GroundBrazier/groundBrazier.gltf", ModelTypes::ModelMode::StaticMesh, false, true);
             stageGroundBrazierAsset->spawnPoints = stageGroundBrazierAsset->model->spawnPoints;
 
-            stageMeltedWaxAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/MeltedWax/MeltedWax.gltf", ModelTypes::ModelMode::StaticMesh);
+            stageMeltedWaxAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/MeltedWax/MeltedWax.gltf", ModelTypes::ModelMode::StaticMesh, false, true);
             stageMeltedWaxAsset->spawnPoints = stageMeltedWaxAsset->model->spawnPoints;
 
-            stageStandingBrazierAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/StandingBrazier/StandingBrazier.gltf", ModelTypes::ModelMode::StaticMesh);
+            stageStandingBrazierAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStageAssets/StandingBrazier/StandingBrazier.gltf", ModelTypes::ModelMode::StaticMesh, false, true);
             stageStandingBrazierAsset->spawnPoints = stageStandingBrazierAsset->model->spawnPoints;
         });
 

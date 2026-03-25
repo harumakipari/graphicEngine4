@@ -5,27 +5,21 @@
 #include "Components/Render/PointLightComponent.h"
 #include "Engine/Scene/SceneBase.h"
 
-void DarkStageGroundBrazierActor::SetModel(const std::shared_ptr<StageAsset>& stageAsset)
+void DarkStageGroundBrazierActor::Initialize(const Transform& transform)
 {
     std::string parentName = "candelabraMesh";
 
     // 火鉢のモデルを追加
     brazierMeshComponent = this->AddComponent<SkeletalMeshComponent>(parentName);
-    brazierMeshComponent->SetModel("./Data/Models/DarkStageAssets/GroundBrazier/groundBrazier.gltf");
+    brazierMeshComponent->SetModel("./Data/Models/DarkStageAssets/GroundBrazier/groundBrazier.gltf", false, true);
     brazierMeshComponent->SetIsCastShadow(false);    // 影を落とさないようにする
+
 
     // 炎のエフェクト
     auto frameEffect = this->AddComponent<ParticleComponent>("FireFrameEffect", parentName);
     frameEffect->Load("./Data/Effect/Files/DarkStageFrameEffect.json");
-    frameEffect->SetRelativeLocationDirect({ 0.0f,1.0f,0.0f });
-    // ループ再生設定
-    //float delay = 0.1f * i; // 0.2秒ずつ遅らせる
-    ParticleComponent::AddSettings settings
-    {
-        .loop = true, // ループ再生
-        //.startDelay = delay, // 再生開始遅延時間
-    };
-    frameEffect->SetAddSettings(settings);
+    int socketNode = brazierMeshComponent->model->FindNodeIndexByName("P_Fire");
+    frameEffect->AttachToComponent(brazierMeshComponent, socketNode); // "P_Fire"
     frameEffect->Play();
 
 #if 0
@@ -84,5 +78,11 @@ void DarkStageGroundBrazierActor::SetModel(const std::shared_ptr<StageAsset>& st
 
 
     }
+}
+
+
+void DarkStageGroundBrazierActor::SetModel(const std::shared_ptr<StageAsset>& stageAsset)
+{
+
 
 }
