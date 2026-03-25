@@ -1383,6 +1383,19 @@ void InterleavedGltfModel::CreateAndUploadResources(ID3D11Device* device)
             {
                 if (primitive.indexBufferView.sizeInBytes > 0)
                 {
+                    // R8_UINT ÇÃèÍçáÇÕ 16bit Ç…ïœä∑
+                    if (primitive.indexBufferView.format == DXGI_FORMAT_R8_UINT)
+                    {
+                        std::vector<uint16_t> indices16(primitive.cachedIndices.size());
+                        const BYTE* src = primitive.cachedIndices.data();
+                        for (size_t i = 0; i < primitive.cachedIndices.size(); ++i)
+                            indices16[i] = static_cast<uint16_t>(src[i]);
+                        primitive.cachedIndices.resize(sizeof(uint16_t) * indices16.size());
+                        memcpy(primitive.cachedIndices.data(), indices16.data(), primitive.cachedIndices.size());
+                        primitive.indexBufferView.format = DXGI_FORMAT_R16_UINT;
+                    }
+
+
                     primitive.indexBufferView.buffer = static_cast<int>(buffers.size());
                     bufferDesc.ByteWidth = primitive.indexBufferView.sizeInBytes;
                     bufferDesc.Usage = D3D11_USAGE_DEFAULT;

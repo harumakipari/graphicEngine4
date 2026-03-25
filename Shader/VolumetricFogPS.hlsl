@@ -131,7 +131,7 @@ float main(VS_OUT pin) : SV_TARGET
     // 深度を取得
     float depth = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
     // テクスチャ座標 -> world 空間
-#if 0// こっちdepthTextureから復元する方法の方だと空にも霧がかかる。positionMapから復元する方法だと空には霧がかからない。
+#if 1// こっちdepthTextureから復元する方法の方だと空にも霧がかかる。positionMapから復元する方法だと空には霧がかからない。
     float4 position = mul(float4(pin.texcoord.x * 2.0 - 1.0, -pin.texcoord.y * 2.0 + 1.0, depth, 1.0), inverseViewProjection);
     position = position / position.w; // world 空間
 #else

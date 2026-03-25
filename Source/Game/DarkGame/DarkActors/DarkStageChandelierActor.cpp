@@ -125,7 +125,66 @@ void DarkStageFireBowlActor::Initialize(const Transform& transform)
         // 炎のエフェクト
         auto frameEffect = this->AddComponent<ParticleComponent>("FireFrameEffect", parentName);
         frameEffect->Load("./Data/Effect/Files/DarkStageFrameEffect.json");
-        frameEffect->SetRelativeLocationDirect({ 0.0f,3.0f,0.0f });
+        frameEffect->SetRelativeLocationDirect({ 0.0f,1.5f,0.0f });
+        // ループ再生設定
+        //float delay = 0.1f * i; // 0.2秒ずつ遅らせる
+        ParticleComponent::AddSettings settings
+        {
+            .loop = true, // ループ再生
+            //.startDelay = delay, // 再生開始遅延時間
+        };
+        frameEffect->SetAddSettings(settings);
+        frameEffect->Play();
+
+    }
+
+}
+
+void DarkStageTorchSconceActor::Initialize(const Transform& transform)
+{
+    std::string parentName = "TorchSconce";
+
+    // モデルを追加
+    meshComponent = this->AddComponent<SkeletalMeshComponent>(parentName);
+    meshComponent->SetModel("./Data/Models/DarkStageAssets/TorchSconce/TorchSconce.gltf");
+    meshComponent->SetIsCastShadow(false);    // 影を落とさないようにする
+
+    auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
+
+    auto lightManager = scene->GetLightManager();
+
+    auto lightsData = meshComponent->model->GetPointLights();
+    // ポイントライトコンポーネントを追加
+    for (int i = 0; i < static_cast<int>(lightsData.size()); ++i)
+    {
+        const auto& light = lightsData[i];
+
+#if 1
+        std::string compName = "pointLightComponent_" + std::to_string(i);
+        auto pointLightComponent =
+            this->AddComponent<PointLightComponent>(compName, parentName);
+
+        // ライトの名前からライトマネージャーの共有ライトを取得して設定
+        pointLightComponent->SetSharedLightName(light.name);
+        DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(light.worldPosition);
+        pointLightComponent->SetRelativeLocationDirect(pos);
+#else
+        DirectX::XMFLOAT3 pos = convertRHtoLh(light.worldPosition);
+
+        Transform pointLightTr{
+            pos,
+            light.worldRotation,
+            light.worldScale
+        };
+        auto pointLightActor = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStagePointLightActor>("pointLight", pointLightTr);
+        pointLightActor->SetPointLightData(pos, light.color, light.intensity, light.range);
+#endif // 0
+
+
+        // 炎のエフェクト
+        auto frameEffect = this->AddComponent<ParticleComponent>("FireFrameEffect", parentName);
+        frameEffect->Load("./Data/Effect/Files/DarkStageFrameEffect.json");
+        frameEffect->SetRelativeLocationDirect(pos);
         // ループ再生設定
         //float delay = 0.1f * i; // 0.2秒ずつ遅らせる
         ParticleComponent::AddSettings settings

@@ -30,6 +30,17 @@ private:
     std::shared_ptr<SkeletalMeshComponent> meshComponent;
 };
 
+class DarkStageTorchSconceActor:public Actor
+{
+public:
+    DarkStageTorchSconceActor(const std::string& actorName) :Actor(actorName) {}
+    virtual ~DarkStageTorchSconceActor() = default;
+    void Initialize(const Transform& transform)override;
+private:
+    // ƒ‚ƒfƒ‹
+    std::shared_ptr<SkeletalMeshComponent> meshComponent;
+};
+
 
 // ŠG‰æ
 class DarkStagePaintingActor :public Actor
