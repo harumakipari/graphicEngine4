@@ -81,6 +81,7 @@ void DarkStageChandelierActor::Update(float deltaTime)
 }
 
 
+
 void DarkStageFireBowlActor::Initialize(const Transform& transform)
 {
     std::string parentName = "fireBowlMesh";
@@ -181,21 +182,22 @@ void DarkStageTorchSconceActor::Initialize(const Transform& transform)
 #endif // 0
 
 
-        // 炎のエフェクト
-        auto frameEffect = this->AddComponent<ParticleComponent>("FireFrameEffect", parentName);
-        frameEffect->Load("./Data/Effect/Files/DarkStageFrameEffect.json");
-        frameEffect->SetRelativeLocationDirect(pos);
-        // ループ再生設定
-        //float delay = 0.1f * i; // 0.2秒ずつ遅らせる
-        ParticleComponent::AddSettings settings
-        {
-            .loop = true, // ループ再生
-            //.startDelay = delay, // 再生開始遅延時間
-        };
-        frameEffect->SetAddSettings(settings);
-        frameEffect->Play();
 
     }
+    // 炎のエフェクト
+    auto frameEffect = this->AddComponent<ParticleComponent>("FireFrameEffect", parentName);
+    frameEffect->Load("./Data/Effect/Files/DarkStageFrameEffect.json");
+    int socketNode = meshComponent->model->FindNodeIndexByName("TorchLight2");
+    frameEffect->AttachToComponent(meshComponent, socketNode); // "TorchLight2"
+    frameEffect->SetRelativeLocationDirect({ 0.25f,0.0f,0.0f });
+    frameEffect->Play();
+
+    // 煙のエフェクト
+    auto smokeEffect = this->AddComponent<ParticleComponent>("SmokeEffect", parentName);
+    smokeEffect->Load("./Data/Effect/Files/DarkStageAfterFrameEffect.json");
+    smokeEffect->AttachToComponent(meshComponent, socketNode); // "TorchLight2"
+    smokeEffect->SetRelativeLocationDirect({ 0.25f,0.0f,0.0f });
+    smokeEffect->Play();
 
 }
 

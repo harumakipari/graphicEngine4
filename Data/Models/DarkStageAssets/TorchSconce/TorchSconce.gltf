@@ -265,7 +265,7 @@
 			"children": [ 2 ]
 		},
 		{
-			"name": "TorchLight2",
+			"name": "TorchSconce",
 			"rotation": [ -0, -0.707106829, 0, 0.707106769 ],
 			"extensions":
 			{
@@ -326,7 +326,7 @@
 		{
 			"lights": [
 				{
-					"name": "TorchLight2",
+					"name": "TorchSconce",
 					"type": "point",
 					"color": [ 1, 0.644479692, 0.291770637 ],
 					"intensity": 3,

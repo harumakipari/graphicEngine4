@@ -18,7 +18,6 @@ private:
     float swingAngle = 10.0f;    // 最大角度（度）
 };
 
-
 class DarkStageFireBowlActor:public Actor
 {
 public:

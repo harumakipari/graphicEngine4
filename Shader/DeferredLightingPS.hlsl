@@ -208,13 +208,16 @@ float4 main(VS_OUT pin) : SV_TARGET
 //        return float4(hairLighting, 1);
     }
 
-
 #if 1
     float3 rim = 0;
 
     if (objectType == OBJECT_PLAYER || objectType == OBJECT_ENEMY)
     {
         rim = CalcRimLight(N, V, rimColor, rimPower) * rimIntensity;
+        if (materialType == MATERIAL_HAIR)
+        {
+            rim = 0;
+        }
     }
 #endif
     float3 ambient = baseColor.rgb * 0.05;

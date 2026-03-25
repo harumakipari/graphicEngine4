@@ -534,6 +534,9 @@
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorEnemy.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Scenes\GameScene.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -864,6 +867,7 @@
     <ClInclude Include="Source\Engine\Scene\SceneJson.h" />
     <ClInclude Include="Source\Engine\Scene\SceneSetting.h" />
     <ClInclude Include="Source\Engine\Scene\SceneState.h" />
+    <ClInclude Include="Source\Game\Scenes\GameScene.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

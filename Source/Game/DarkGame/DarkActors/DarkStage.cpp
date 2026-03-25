@@ -166,29 +166,27 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
 
         for (auto point : stageAsset->spawnPoints)
         {
-            //if (point.name == "Spawn_Particle_Steam")
-            //{
-            //    for (int i = 0; i < 3; i++)
-            //    {
-            //        // 湯気のエフェクト
-            //        auto steamComponent = this->AddComponent<ParticleComponent>("steamComponent", parentName);
-            //        steamComponent->Load("./Data/Effect/Files/Pot_SteamEffect.json");
-            //        DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
-            //        steamComponent->SetRelativeLocationDirect(pos);
-            //        // ループ再生設定
-            //        float delay = 0.1f * i; // 0.2秒ずつ遅らせる
-            //        ParticleComponent::AddSettings settings
-            //        {
-            //            .loop = true, // ループ再生
-            //            .startDelay = delay, // 再生開始遅延時間
-            //        };
-            //        steamComponent->SetAddSettings(settings);
-            //        steamComponent->Play();
+            if (point.name == "Spawn_Particle_Steam")
+            {
+                // 湯気のエフェクト
+                auto steamComponent = this->AddComponent<ParticleComponent>("steamComponent", parentName);
+                steamComponent->Load("./Data/Effect/Files/Pot_SteamEffect.json");
+                DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+                steamComponent->SetRelativeLocationDirect(pos);
+                steamComponent->Play();
 
-            //    }
-            //}
-            //else
-            if (point.name.rfind("Spawn_Chandelier", 0) == 0)
+            }
+            else if (point.name.rfind("Spawn_FireEffect", 0) == 0)
+            {
+                // 炎のエフェクト
+                auto frameEffect = this->AddComponent<ParticleComponent>("FireFrameEffect", parentName);
+                frameEffect->Load("./Data/Effect/Files/DarkStageFrameEffect.json");
+                DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+                pos.y = 2.8f;
+                frameEffect->SetRelativeLocationDirect(pos);
+                frameEffect->Play();
+            }
+            else if (point.name.rfind("Spawn_Chandelier", 0) == 0)
             {// 名前が "Spawn_Chandelier" で始まる場合、シャンデリアを配置
                 DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 
@@ -200,17 +198,17 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
                 auto chandelier = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageChandelierActor>("chandelier", chandelierTr);
 
             }
-        //    else if (point.name.rfind("Spawn_FireBowl", 0) == 0)
-        //    {
-        //        DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
-        //        Transform candelabraTr{
-        //pos,
-        //point.worldRotation,
-        //point.worldScale
-        //        };
+            else if (point.name.rfind("Spawn_TorchSconce", 0) == 0)
+            {
+                DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+                Transform candelabraTr{
+            pos,
+                    {0.0f,180.0f,0.0f},
+                    point.worldScale
+                };
 
-        //        auto candelabra = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageFireBowlActor>("fireBowl", candelabraTr);
-        //    }
+                auto candelabra = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageTorchSconceActor>("TorchSconce", candelabraTr);
+            }
             else if (point.name.rfind("Spawn_Candelabra", 0) == 0)
             {// 名前が "Spawn_Candelabra" で始まる場合、燭台を配置
                 DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
