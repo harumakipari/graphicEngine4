@@ -166,28 +166,29 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
 
         for (auto point : stageAsset->spawnPoints)
         {
-            if (point.name == "Spawn_Particle_Steam")
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    // 湯気のエフェクト
-                    auto steamComponent = this->AddComponent<ParticleComponent>("steamComponent", parentName);
-                    steamComponent->Load("./Data/Effect/Files/Pot_SteamEffect.json");
-                    DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
-                    steamComponent->SetRelativeLocationDirect(pos);
-                    // ループ再生設定
-                    float delay = 0.1f * i; // 0.2秒ずつ遅らせる
-                    ParticleComponent::AddSettings settings
-                    {
-                        .loop = true, // ループ再生
-                        .startDelay = delay, // 再生開始遅延時間
-                    };
-                    steamComponent->SetAddSettings(settings);
-                    steamComponent->Play();
+            //if (point.name == "Spawn_Particle_Steam")
+            //{
+            //    for (int i = 0; i < 3; i++)
+            //    {
+            //        // 湯気のエフェクト
+            //        auto steamComponent = this->AddComponent<ParticleComponent>("steamComponent", parentName);
+            //        steamComponent->Load("./Data/Effect/Files/Pot_SteamEffect.json");
+            //        DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+            //        steamComponent->SetRelativeLocationDirect(pos);
+            //        // ループ再生設定
+            //        float delay = 0.1f * i; // 0.2秒ずつ遅らせる
+            //        ParticleComponent::AddSettings settings
+            //        {
+            //            .loop = true, // ループ再生
+            //            .startDelay = delay, // 再生開始遅延時間
+            //        };
+            //        steamComponent->SetAddSettings(settings);
+            //        steamComponent->Play();
 
-                }
-            }
-            else if (point.name.rfind("Spawn_Chandelier", 0) == 0)
+            //    }
+            //}
+            //else
+            if (point.name.rfind("Spawn_Chandelier", 0) == 0)
             {// 名前が "Spawn_Chandelier" で始まる場合、シャンデリアを配置
                 DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
 

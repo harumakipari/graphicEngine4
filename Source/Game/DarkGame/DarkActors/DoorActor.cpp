@@ -12,9 +12,9 @@ void DoorLargeActor::Initialize(const Transform& transform)
     rightDoorMesh = AddComponent<SkeletalMeshComponent>("RightDoor", "RightHinge");
 
     // ドアのメッシュコンポーネントを追加
-    leftDoorMesh->SetModel("./Data/Models/DarkStageAssets/Door_Large/SM_Door_Large_01.gltf");
-    leftDoorMesh->plusAlphaCBuffer->data.objectType = ObjectType::Door;   // オブジェクトの種類を Door に設定
-    rightDoorMesh->SetModel("./Data/Models/DarkStageAssets/Door_Large/SM_Door_Large_01.gltf");
+    leftDoorMesh->SetModel("./Data/Models/DarkStageAssets/Door_Large/SM_Door_Large_01.gltf", false, true);
+    //leftDoorMesh->plusAlphaCBuffer->data.objectType = ObjectType::Door;   // オブジェクトの種類を Door に設定
+    rightDoorMesh->SetModel("./Data/Models/DarkStageAssets/Door_Large/SM_Door_Large_01.gltf", false, true);
     //rightDoorMesh->plusAlphaCBuffer->data.objectType = ObjectType::Door;   // オブジェクトの種類を Door に設定
 
     // ドアのサイズを取得

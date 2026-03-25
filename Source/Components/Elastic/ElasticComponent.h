@@ -22,15 +22,15 @@ public:
 
     ~ElasticMeshComponent() override = default;
 
-    void SetModel(const std::string& filename, bool isSaveVerticesData = false) override
+    void SetModel(const std::string& filename, bool isSaveVerticesData = false, bool convertToLHS = false) override
     {
         ID3D11Device* device = Graphics::GetDevice();
-        model = std::make_shared<InterleavedGltfModel>(device, filename, ModelTypes::ModelMode::SkeletalMesh, isSaveVerticesData);
+        model = AssetManager::Get().LoadModel(device, filename, ModelTypes::ModelMode::SkeletalMesh, false, convertToLHS);
         modelNodes = model->GetNodes();
         int a = 0;
     }
 
-    
+
     void Initialize() override;
 
     void Tick(float deltaTime)override;

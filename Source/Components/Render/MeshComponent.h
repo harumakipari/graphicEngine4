@@ -57,14 +57,14 @@ public:
     {
     }
 
-    
+
     DirectX::XMFLOAT3 GetModelSize() const
     {
         AABB aabb = model->GetAABB();
         return{ aabb.max.x - aabb.min.x,aabb.max.y - aabb.min.y,aabb.max.z - aabb.min.z };
     }
 
-    virtual void SetModel(const std::string& fileName, bool isSaveVerticesData = false) = 0;
+    virtual void SetModel(const std::string& fileName, bool isSaveVerticesData = false, bool convertToLHS = false) = 0;
 
     virtual void RenderOpaque(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const = 0;
     virtual void RenderMask(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT4X4 world) const = 0;
@@ -181,11 +181,11 @@ public:
     {
     }
 
-    void SetModel(const std::string& filename, bool isSaveVerticesData = false)override
+    void SetModel(const std::string& filename, bool isSaveVerticesData = false, bool convertToLHS = false)override
     {
         ID3D11Device* device = Graphics::GetDevice();
         //model = std::make_shared<InterleavedGltfModel>(device, filename, ModelTypes::ModelMode::SkeletalMesh, isSaveVerticesData);
-        model = AssetManager::Get().LoadModel(device, filename, ModelTypes::ModelMode::SkeletalMesh, isSaveVerticesData);
+        model = AssetManager::Get().LoadModel(device, filename, ModelTypes::ModelMode::SkeletalMesh, isSaveVerticesData, convertToLHS);
         modelNodes = model->GetNodes();
     }
 
@@ -254,7 +254,7 @@ class MorphMeshComponent :public MeshComponent
 public:
     MorphMeshComponent(const std::string& name, const std::shared_ptr<Actor>& owner) :MeshComponent(name, owner) {}
 
-    void SetModel(const std::string& filename, bool isSaveVerticesData = false)override
+    void SetModel(const std::string& filename, bool isSaveVerticesData = false, bool convertToLHS = false)override
     {
         ID3D11Device* device = Graphics::GetDevice();
         model = std::make_shared<MorphModel>(device, filename, ModelTypes::ModelMode::SkeletalMesh, isSaveVerticesData);
@@ -336,10 +336,10 @@ public:
     }
 
 
-    void SetModel(const std::string& filename, bool isSaveVerticesData = false)override
+    void SetModel(const std::string& filename, bool isSaveVerticesData = false, bool convertToLHS = false)override
     {
         ID3D11Device* device = Graphics::GetDevice();
-        model = AssetManager::Get().LoadModel(device, filename, ModelTypes::ModelMode::StaticMesh, isSaveVerticesData);
+        model = AssetManager::Get().LoadModel(device, filename, ModelTypes::ModelMode::StaticMesh, isSaveVerticesData, convertToLHS);
         modelNodes = model->GetNodes();
     }
 

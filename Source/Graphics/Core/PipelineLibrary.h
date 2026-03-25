@@ -350,7 +350,7 @@ public:
 
         // deferred キャラクターの髪の毛とかファー 用
         {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelHairOrFarDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelHairOrFurDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
             //desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
             AddPipeLineState("characterFurAndHairSkeletalMesh", desc);

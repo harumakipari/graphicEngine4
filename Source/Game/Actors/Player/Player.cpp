@@ -28,10 +28,8 @@ void Player::Initialize(const Transform& transform)
         PROFILE_SCOPE("Create PlayerModel");
 
         skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>(parentName);
-        skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/animation.gltf");
+        skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/animation.gltf", false, true);
         skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Player;   // オブジェクトの種類を Player に設定
-        skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP; // 手にちゃんとつけるために
-        // ＜ーでもこれつけるとポイントライトが、、、
 
         //skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle.gltf");
 #if 1
@@ -44,7 +42,7 @@ void Player::Initialize(const Transform& transform)
             }
             else if (material.name == "M_Aurora_Fur_FrozenHearth")
             {// 髪の毛だったら
-                //material.overridePipelineName = "characterFurAndHairSkeletalMesh";
+                material.overridePipelineName = "characterFurAndHairSkeletalMesh";
                 material.materialType = MaterialType::Fur;
             }
         }
@@ -171,9 +169,6 @@ void Player::Initialize(const Transform& transform)
 
         // 回転用コンポーネントを追加
         rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
-
-        particleComponent = AddComponent<ParticleComponent>("particleComponent", parentName);
-        particleComponent->Load("./Data/Effect/Files/heartTestEffect.json");
     }
 
     // 剣に当たり判定のコンポーネントを追加

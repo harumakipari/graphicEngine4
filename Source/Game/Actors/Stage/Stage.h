@@ -18,12 +18,7 @@ public:
     {
         std::shared_ptr<StaticMeshComponent> staticMeshComponent = this->AddComponent<class StaticMeshComponent>("staticMeshComponent");
         staticMeshComponent->SetModel("./Data/Models/Stage/ExampleStage.gltf", true);
-        //staticMeshComponent->SetModel("./Data/Models/Stage/stage.gltf", true);
-        //staticMeshComponent->model->isModelInMeters = false;
-        staticMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::RH_Y_UP;
         SetEulerRotation(DirectX::XMFLOAT3(0.0f, 180.0f, 0.0f));
-        //std::shared_ptr<SkeletalMeshComponent> staticMeshComponent = this->NewComponent<class SkeletalMeshComponent>("staticMeshComponent");
-        //staticMeshComponent->SetModel("./Assets/Models/Stage/ExampleStage.gltf", true);
         staticMeshComponent->SetRelativeScaleDirect(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
         staticMeshComponent->SetRelativeLocationDirect(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
         // 当たり判定のコンポーネントを追加

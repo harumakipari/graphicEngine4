@@ -51,10 +51,15 @@ bool _NullLoadImageData(tinygltf::Image*, const int, std::string*, std::string*,
 {
     return true;
 }
-InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData) : filename(filename), mode(mode), isSaveVerticesData(isSaveVerticesData)
+InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData, bool convertToLHS) : filename(filename), mode(mode), isSaveVerticesData(isSaveVerticesData)
 {
     std::filesystem::path cerealFilename(filename);
     cerealFilename.replace_extension(mode == ModelTypes::ModelMode::StaticMesh || mode == ModelTypes::ModelMode::InstancedStaticMesh ? "batchCereal" : "cereal");
+
+    if (convertToLHS)
+    {
+        modelCoordinateSystem = CoordinateSystem::LH_Y_UP;
+    }
 #if 1
     if (std::filesystem::exists(cerealFilename.c_str()))
     {
@@ -142,18 +147,26 @@ InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::stri
         else
         {
             FetchMeshes(device, *gltfModel);
-            for (auto& mesh : meshes)
+            if (convertToLHS)
             {
-                ConvertMeshAxisSystem(mesh);
+                for (auto& mesh : meshes)
+                {
+                    ConvertMeshAxisSystem(mesh);
+                }
+                modelCoordinateSystem = CoordinateSystem::LH_Y_UP;
             }
             ExtractAnimations(*gltfModel);
-            for (auto& skin : skins)
+            if (convertToLHS)
             {
-                ConvertSkinAxisSystem(skin);
-            }
-            for (auto& anim : animations)
-            {
-                ConvertAnimationAxisSystem(anim);
+                for (auto& skin : skins)
+                {
+                    ConvertSkinAxisSystem(skin);
+
+                }
+                for (auto& anim : animations)
+                {
+                    ConvertAnimationAxisSystem(anim);
+                }
             }
             //FetchAnimations(*gltfModel, animations); // 一個目のモデルはアニメーションをそのまま追加
             //FetchAnimations(*gltfModel);
@@ -236,7 +249,7 @@ void InterleavedGltfModel::FetchNodes(const tinygltf::Model& gltfModel)
 
     for (Node& node : nodes)
     {
-        ConvertNodeAxisSystem(node,mode);
+        ConvertNodeAxisSystem(node, mode);
     }
 
     // globalTransform生成（LHSで作られる）
@@ -2694,7 +2707,7 @@ void InterleavedGltfModel::ConvertMeshAxisSystem(Mesh& mesh)
         for (Mesh::Vertex& v : primitive.cachedVertices)
         {
             ConvertPositionAxisSystem(v.position);
-            //ConvertPositionAxisSystem(v.normal);
+            ConvertPositionAxisSystem(v.normal);
             ConvertPositionAxisSystem(v.tangent);
         }
 

@@ -109,6 +109,7 @@ public:
 	//描画
 	static void Render(ID3D11DeviceContext* immediateContext);
 
+	
 	//エディタGUI描画
 	//static void DrawGUI();
 
@@ -123,6 +124,8 @@ private:
 	// 形状エミッタ設定適用
 	static void ApplyShapeEmitterSettings(const EmitterShapeData& settings, CoreComputeParticleSystem::EmitParticleData& emitData, int index, int emitCount);
 
+	//
+	static void EmitParticle(EffectHandle handle, const XMFLOAT3& pos, const XMFLOAT3& rot);
 
 	// ランダム値取得
 	static float Random(float min, float max);
@@ -171,9 +174,11 @@ public:
 		Range<int> emitCount{ 10,10 };			// エミット数
 		Range<float> initialDelay{ 0,0 };		// 初期遅延時間
 		Range<float> emitInterval{ 0,0 };		// エミット間隔
-		Vector3 positionOffset;					// 生成位置
+		float emitRate = 10.0f; // per second// 1秒あたり何個出すか
+		float emitterLifeTime = 0.5f; //エミッタの寿命（蛇口の寿命）
+		bool loop{ false };						// ループフラグ (今は未使用)
+	    Vector3 positionOffset;					// 生成位置
 		Range<Vector3> rotationEuler;					// 回転
-		//bool loop{ false };						// ループフラグ (今は未使用)
 	};
 	// 形状エミッタ設定構造体
 	struct EmitterShapeData
@@ -190,7 +195,7 @@ public:
 	{
 		Range<Vector3> velocity;					// 初速
 		Range<Vector3> acceleration;				// 加速度
-		Range<float> lifeTime{ 1.0f, 1.0f };		// 生存時間
+		Range<float> lifeTime{ 1.0f, 1.0f };		// particleの 生存時間 
 		bool useGravity{ false };					// 重力使用フラグ
 	};
 	// ビジュアル設定構造体
@@ -225,10 +230,27 @@ public:
 		EffectHandle handle = -1; // エフェクトハンドル
 		std::string filePath; // エフェクトデータファイルパス
 	};
+
+	struct ActiveEmitter
+	{
+		EffectHandle handle;
+		const ParticleEmitterData* data;
+
+		float emitAccumulator = 0.0f;
+
+		float lifeTime = 1.0f;   
+		float elapsed = 0.0f;    
+		bool loop = true;        
+
+		XMFLOAT3 position;
+		XMFLOAT3 rotation;
+	};
+
 	static inline std::vector<EffectData> effectData; // エフェクトデータリスト
 
 	static inline std::vector<EffectAttachInfo> attachedEffects; // エフェクトデータリスト
 
+	static inline std::vector<ActiveEmitter> activeEmitters;
 private:
 	friend class EffectEditor;
 	//エディタが開いているか

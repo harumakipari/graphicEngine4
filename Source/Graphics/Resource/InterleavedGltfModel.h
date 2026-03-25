@@ -62,12 +62,9 @@ public:
     //モデルがメートル単位か cm単位の時はfalseにする
     bool isModelInMeters = true;
 
-    //モデル固有の座標系 //初期　LH_Y_UP
-    CoordinateSystem modelCoordinateSystem = CoordinateSystem::RH_Y_UP;
-    //CoordinateSystem modelCoordinateSystem = CoordinateSystem::LH_Y_UP;
 
     InterleavedGltfModel() = default;
-    InterleavedGltfModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData = false);
+    InterleavedGltfModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData = false, bool convertToLHS = false);
     virtual ~InterleavedGltfModel() = default;
 
     // Instance で使用する
@@ -212,9 +209,14 @@ public:
     };
     std::vector<SpawnPoint> spawnPoints;
 
+
+    CoordinateSystem GetCoordinateSystem()const { return modelCoordinateSystem; }
 private:
     std::vector<GltfPointLightData> pointLights;
     std::vector<Node> nodes;
+protected:
+    //モデル固有の座標系 //初期　LH_Y_UP
+    CoordinateSystem modelCoordinateSystem = CoordinateSystem::RH_Y_UP;
 public:
 
     struct IndexBufferView

@@ -50,6 +50,8 @@ float4 main(VS_OUT pin) : SV_TARGET
     const float3 f0 = lerp(0.04, baseColor.rgb, metallicFactor);
     const float3 f90 = 1.0;
     roughnessFactor = max(roughnessFactor, 0.3); // 最低値を作ることで、極端に鋭いスペキュラーを防止する
+
+
     const float alphaRoughness = roughnessFactor * roughnessFactor;
     const float3 cDiff = lerp(baseColor.rgb, 0.0, metallicFactor);
 
@@ -182,12 +184,37 @@ float4 main(VS_OUT pin) : SV_TARGET
     totalDiffuse = totalDiffuse * occlusionFactor * diffuseIntensity;
     totalSpecular = totalSpecular * occlusionFactor * specularIntensity;
 
+
+    if (objectType == OBJECT_PLAYER && materialType == MATERIAL_HAIR)
+    {
+//        float3 T = N; // 髪の流れ方向
+//        float3 B = cross(N, T);
+//        float3 H = normalize(L + V);
+
+//// タンジェント方向に依存
+//        float ToH = dot(T, H);
+//        float anisotropic = pow(1.0 - abs(ToH), 16.0);
+
+//// リムっぽくする
+//        float fresnel = pow(1.0 - saturate(dot(V, H)), 5.0);
+
+//// 強めに出す
+//        float3 hairSpec = anisotropic * fresnel * float3(1.0, 0.9, 0.7) * 5.0;
+//        float3 hairLighting =
+//    totalDiffuse * 0.5 + // 髪は拡散弱め
+//    hairSpec +
+//    emissive;
+
+//        return float4(hairLighting, 1);
+    }
+
+
 #if 1
     float3 rim = 0;
 
-    if (objectType == OBJECT_PLAYER)
+    if (objectType == OBJECT_PLAYER || objectType == OBJECT_ENEMY)
     {
-        //rim = CalcRimLight(N, V, rimColor, rimPower);
+        rim = CalcRimLight(N, V, rimColor, rimPower) * rimIntensity;
     }
 #endif
     float3 ambient = baseColor.rgb * 0.05;

@@ -15,9 +15,9 @@ class AssetManager
 public:
     static AssetManager& Get();
 
-    std::shared_ptr<InterleavedGltfModel> LoadModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData = false);
+    std::shared_ptr<InterleavedGltfModel> LoadModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData = false, bool convertToLHS = false);
 
 private:
     // モデルのキャッシュ。キーはファイルパス
-    std::unordered_map<std::string,std::weak_ptr<InterleavedGltfModel>> modelCache;
+    std::unordered_map<std::string, std::weak_ptr<InterleavedGltfModel>> modelCache;
 };

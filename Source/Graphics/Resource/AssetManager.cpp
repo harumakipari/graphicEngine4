@@ -9,7 +9,7 @@ AssetManager& AssetManager::Get()
 }
 
 std::shared_ptr<InterleavedGltfModel>
-AssetManager::LoadModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData )
+AssetManager::LoadModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData,bool convertToLHS )
 {
     auto it = modelCache.find(filename);
 
@@ -24,7 +24,7 @@ AssetManager::LoadModel(ID3D11Device* device, const std::string& filename, Model
     }
 
     // êVãKÉçÅ[Éh
-    auto model = std::make_shared<InterleavedGltfModel>(device, filename,mode, isSaveVerticesData);
+    auto model = std::make_shared<InterleavedGltfModel>(device, filename,mode, isSaveVerticesData, convertToLHS);
 
     modelCache[filename] = model;
 

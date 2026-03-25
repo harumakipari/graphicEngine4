@@ -238,10 +238,12 @@ void EffectEditor::DrawGUI()
 					{
 						DrawRangeInt("Emit Count", emitterData.emitData.emitCount, 1, 1, emitterData.emitData.maxParticles);
 						DrawRangeFloat("Initial Delay", emitterData.emitData.initialDelay, 0.1f, 0.0f, 100.0f);
-						DrawRangeFloat("Emit Interval", emitterData.emitData.emitInterval, 0.1f, 0.0f, 100.0f);
+					    DrawRangeFloat("Emit Interval", emitterData.emitData.emitInterval, 0.1f, 0.0f, 100.0f);
+						DrawFloat("Emit Rate", emitterData.emitData.emitRate, 0.1f, 0.0f, 1000.0f);
+						DrawFloat("Emit LifeTime", emitterData.emitData.emitterLifeTime, 0.1f, 0.0f, 1000.0f);
+						ImGui::Checkbox("Loop", &emitterData.emitData.loop);
 						DrawVector3("Position", emitterData.emitData.positionOffset, 0.1f);
 						DrawRangeVector3("Rotation", emitterData.emitData.rotationEuler, 1.0f);
-						//ImGui::Checkbox("Loop", &emitterData.emitData.loop);
 						ImGui::TreePop();
 					}
 					// 形状エミッタ設定

@@ -68,9 +68,12 @@ void ParticleComponent::Play()
         }
         elapsedTimeSincePlay = 0.0f;
         duration = CalculateDuration();
+        emitTimer = 0.0f;
         isPlaying = true;
         // 再生開始遅延経過時間リセット
         elapsedDelayTime = 0.0f;
+        // ★最初の1発
+        EffectManager::Play(effectHandle, position, rotation);
 
     }
 }
@@ -126,12 +129,25 @@ void ParticleComponent::Tick(float deltaTime)
         isPlaying = false;
     }
 
-    while (settings.loop && elapsedTimeSincePlay >= duration)
-    {
-        elapsedTimeSincePlay -= duration;
-        EffectManager::Play(effectHandle, position, rotation);
-    }
+    emitTimer += deltaTime;
 
+    if (settings.loop)
+    {
+        float safeInterval = std::max<float>(emitInterval, 0.001f);
+
+        while (emitTimer >= safeInterval)
+        {
+            emitTimer -= safeInterval;
+            EffectManager::Play(effectHandle, position, rotation);
+        }
+    }
+    else
+    {
+        if (elapsedTimeSincePlay >= duration)
+        {
+            isPlaying = false;
+        }
+    }
 }
 
 float ParticleComponent::CalculateDuration() const

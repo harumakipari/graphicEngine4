@@ -10,9 +10,8 @@ void SkeletonWarriorActor::Initialize(const Transform& transform)
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     //skeletalMeshComponent->SetModel("./Data/Models/Characters/Skeleton/Skeleton.gltf");
-    skeletalMeshComponent->SetModel("./Data/Models/Characters/Skeleton/SK_Skeleton_01.gltf");
+    skeletalMeshComponent->SetModel("./Data/Models/Characters/Skeleton/SK_Skeleton_01.gltf",false,true);
     skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Enemy;   // オブジェクトの種類を Enemy に設定
-    skeletalMeshComponent->model->modelCoordinateSystem = InterleavedGltfModel::CoordinateSystem::LH_Y_UP; // 手にちゃんとつけるために
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());

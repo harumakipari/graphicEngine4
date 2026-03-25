@@ -500,7 +500,7 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                     {
                         scaleFactor = 0.01f;//‡p’PˆÊ‚ÌŽž
                     }
-                    DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
+                    DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->GetCoordinateSystem())]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
 
                     XMMATRIX W =
                         XMLoadFloat4x4(&node.globalTransform) *
@@ -683,7 +683,7 @@ void SceneRenderer::DrawWithStaticBatching(ID3D11DeviceContext* immediateContext
             scaleFactor = 0.01f;//‡p’PˆÊ‚ÌŽž
         }
 
-        DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
+        DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->GetCoordinateSystem())]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
 
         XMMATRIX W =
             C *
@@ -887,7 +887,7 @@ void SceneRenderer::CastShadow(ID3D11DeviceContext* immediateContext, const Mesh
                 {
                     scaleFactor = 0.01f;//‡p’PˆÊ‚ÌŽž
                 }
-                DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
+                DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->GetCoordinateSystem())]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
                 DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, DirectX::XMLoadFloat4x4(&node.globalTransform) * C * DirectX::XMLoadFloat4x4(&world));
                 DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&node.globalTransform) * DirectX::XMLoadFloat4x4(&world))));
 
@@ -1026,7 +1026,7 @@ void SceneRenderer::CastShadowWithStaticBatching(ID3D11DeviceContext* immediateC
             scaleFactor = 0.01f;//‡p’PˆÊ‚ÌŽž
         }
 
-        DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->modelCoordinateSystem)]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
+        DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinateSystemTransforms[static_cast<int>(model->GetCoordinateSystem())]) * DirectX::XMMatrixScaling(scaleFactor,scaleFactor,scaleFactor) };
 
         DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.world, C * DirectX::XMLoadFloat4x4(&world));
         DirectX::XMStoreFloat4x4(&primitiveCBuffer->data.inverseTransposeWorld, DirectX::XMMatrixTranspose(DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&world))));

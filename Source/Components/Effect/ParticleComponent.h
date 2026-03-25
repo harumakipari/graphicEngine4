@@ -71,4 +71,6 @@ private:
     float elapsedTimeSincePlay = 0.0f;   // 再生開始からの経過時間
     float duration = 0.0f; // エフェクト全体の寿命時間
 
+    float emitInterval = 0.8f;
+    float emitTimer = 0.0f;
 };
