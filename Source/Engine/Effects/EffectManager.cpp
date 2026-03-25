@@ -83,6 +83,10 @@ EffectHandle EffectManager::LoadEffectData(const std::string& filePath)
                         emitterData.emitData.loop = emitterJson.value("loop", false);
                     if (emitterJson.contains("emitterLifeTime"))
                         emitterData.emitData.emitterLifeTime = emitterJson.value("emitterLifeTime", 0.5f);
+                    if (emitterJson.contains("isBurst"))
+                        emitterData.emitData.isBurst = emitterJson.value("isBurst", false);
+                    if (emitterJson.contains("burstCount"))
+                        emitterData.emitData.burstCount = emitterJson.value("burstCount", 10);
                     //emitterData.emitData.loop = emitterJson.value("loop", false);
                 }
                 // 形状設定
@@ -185,7 +189,8 @@ void EffectManager::SaveEffectData(EffectHandle handle, const std::string& fileP
             emitterJson["emitRate"] = emitterData.emitData.emitRate;
             emitterJson["emitterLifeTime"] = emitterData.emitData.emitterLifeTime;
             emitterJson["loop"] = emitterData.emitData.loop;
-            //emitterJson["loop"] = emitterData.emitData.loop;
+            emitterJson["isBurst"] = emitterData.emitData.isBurst;
+            emitterJson["burstCount"] = emitterData.emitData.burstCount;
         }
         // 形状設定
         {
@@ -253,7 +258,7 @@ void EffectManager::Play(EffectHandle handle, const DirectX::XMFLOAT3& pos, cons
         emitter.position = pos;
         emitter.rotation = rot;
         emitter.emitAccumulator = 0.0f;
-
+        emitter.hasBurst = false; // 一回だけBurstするために
         activeEmitters.push_back(emitter); // エミッタを起動
     }
 
@@ -456,26 +461,39 @@ void EffectManager::Update(float deltaTime)
 
         emitter.elapsed += deltaTime;
 
-        // ループしない & 寿命超えたら削除
+        // Burst処理（最初の1回だけ）
+        if (data.emitData.isBurst && !emitter.hasBurst)
+        {
+            for (int i = 0; i < data.emitData.burstCount; ++i)
+            {
+                EmitParticle(emitter.handle, emitter.position, emitter.rotation);
+            }
+            emitter.hasBurst = true;
+        }
+
+        // Rate処理
+        if (data.emitData.emitRate > 0.0f)
+        {
+            emitter.emitAccumulator += deltaTime * data.emitData.emitRate;
+
+            int emitCount = static_cast<int>(emitter.emitAccumulator);
+
+            if (emitCount > 0)
+            {
+                emitter.emitAccumulator -= emitCount;
+
+                for (int i = 0; i < emitCount; ++i)
+                {
+                    EmitParticle(emitter.handle, emitter.position, emitter.rotation);
+                }
+            }
+        }
+
+        // 寿命管理
         if (!emitter.loop && emitter.elapsed >= emitter.lifeTime)
         {
             it = activeEmitters.erase(it);
             continue;
-        }
-
-        // emitRate方式
-        emitter.emitAccumulator += deltaTime * data.emitData.emitRate;
-
-        int emitCount = static_cast<int>(emitter.emitAccumulator);
-
-        if (emitCount > 0)
-        {
-            emitter.emitAccumulator -= emitCount;
-
-            for (int i = 0; i < emitCount; ++i)
-            {
-                EmitParticle(emitter.handle, emitter.position, emitter.rotation);
-            }
         }
 
         ++it;

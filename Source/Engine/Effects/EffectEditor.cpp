@@ -241,6 +241,8 @@ void EffectEditor::DrawGUI()
 					    DrawRangeFloat("Emit Interval", emitterData.emitData.emitInterval, 0.1f, 0.0f, 100.0f);
 						DrawFloat("Emit Rate", emitterData.emitData.emitRate, 0.1f, 0.0f, 1000.0f);
 						DrawFloat("Emit LifeTime", emitterData.emitData.emitterLifeTime, 0.1f, 0.0f, 1000.0f);
+						ImGui::SliderInt ("Emit burstCount",&emitterData.emitData.burstCount, 0, 50);
+						ImGui::Checkbox("Burst", &emitterData.emitData.isBurst);
 						ImGui::Checkbox("Loop", &emitterData.emitData.loop);
 						DrawVector3("Position", emitterData.emitData.positionOffset, 0.1f);
 						DrawRangeVector3("Rotation", emitterData.emitData.rotationEuler, 1.0f);
