@@ -9,6 +9,7 @@ struct ActorTransformState
     std::string name;
     DirectX::XMFLOAT3 position;
     DirectX::XMFLOAT4 rotation;
+    DirectX::XMFLOAT3 scale;
 };
 
 struct CameraState

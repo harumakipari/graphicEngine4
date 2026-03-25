@@ -333,7 +333,8 @@ inline void to_json(json& j, const ActorTransformState& a)
     j = {
         {"name", a.name},
         {"position", {a.position.x, a.position.y, a.position.z}},
-        {"rotation", {a.rotation.x, a.rotation.y, a.rotation.z, a.rotation.w}}
+        {"rotation", {a.rotation.x, a.rotation.y, a.rotation.z, a.rotation.w}},
+        {"scale", {a.scale.x, a.scale.y, a.scale.z}}
     };
 }
 
@@ -347,6 +348,12 @@ inline void from_json(const json& j, ActorTransformState& a)
     a.rotation.y = j.at("rotation")[1];
     a.rotation.z = j.at("rotation")[2];
     a.rotation.w = j.at("rotation")[3];
+    if (j.contains("scale"))
+    {
+        a.scale.x = j.at("scale")[0];
+        a.scale.y = j.at("scale")[1];
+        a.scale.z = j.at("scale")[2];
+    }
 }
 
 // --- CameraState ---
