@@ -138,12 +138,19 @@ void Player::Initialize(const Transform& transform)
     }
 
 #if 1
-    auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
     // ポイントライトコンポーネントを追加
     auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", parentName);
     pointLightComponent->SetRelativeLocationDirect({ 0.0f, 1.5f, 1.0f });
     // ライトの名前からライトマネージャーの共有ライトを取得して設定
     pointLightComponent->SetSharedLightName("PlayerPointLight");
+
+    // ポイントライトコンポーネントを追加
+    auto backPointLightComponent = this->AddComponent<PointLightComponent>("PlayerBackPointLight", parentName);
+    backPointLightComponent->SetRelativeLocationDirect({ 0.0f, 1.5f,-1.0f });
+    // ライトの名前からライトマネージャーの共有ライトを取得して設定
+    backPointLightComponent->SetSharedLightName("PlayerBackPointLight");
+
+
 
     //AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
     //    {

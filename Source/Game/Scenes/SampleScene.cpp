@@ -213,8 +213,8 @@ void SampleScene::SetUpActors()
     auto movieCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MovieCamera>("movieCam", movieCameraTr);
     cameraManager->SetMovieCamera(movieCameraActor);
 
-    Transform paintingTr(DirectX::XMFLOAT3{ -29.9f,2.8f,2.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 0.38f,0.38f,0.38f });
-    auto paintingActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStagePaintingActor>("painting", paintingTr);
+    //Transform paintingTr(DirectX::XMFLOAT3{ -29.9f,2.8f,2.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 0.38f,0.38f,0.38f });
+    //auto paintingActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStagePaintingActor>("painting", paintingTr);
 
 #if 0
     Transform torchSconceTr(DirectX::XMFLOAT3{ -5.75f,1.9f,13.2f }, DirectX::XMFLOAT3{ 0.0f,-180.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
