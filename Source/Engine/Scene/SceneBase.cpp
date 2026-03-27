@@ -31,9 +31,11 @@ bool SceneBase::Initialize(ID3D11Device* device, const UINT64 width, UINT height
 
     // ライト
     {
-        lightManager = std::make_unique<LightManager>();
-        lightManager->Initialize(device);
-        lightManager->SetDirectionalLight(lightDirection, lightColor);
+        //lightManager = std::make_unique<LightManager>();
+        //lightManager->Initialize(device);
+        //lightManager->SetDirectionalLight(lightDirection, lightColor);
+        LightManager::Instance().Initialize(device);
+        LightManager::Instance().SetDirectionalLight(lightDirection, lightColor);
     }
 
 #if 1
@@ -149,7 +151,7 @@ bool SceneBase::Initialize(ID3D11Device* device, const UINT64 width, UINT height
 
 void SceneBase::Update(float deltaTime)
 {
-    lightManager->Update(deltaTime);
+    LightManager::Instance().Update(deltaTime);
 
     sceneCBuffer->data.elapsedTime += deltaTime;
     sceneCBuffer->data.deltaTime = deltaTime;
@@ -282,8 +284,8 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext, floa
     shaderCBuffer->Activate(immediateContext, 9);
 
     // シーンからポイントライト集める
-    lightManager->CollectPointLightsFromScene(*this);
-    lightManager->Apply(immediateContext, 11);
+    LightManager::Instance().CollectPointLightsFromScene(*this);
+    LightManager::Instance().Apply(immediateContext, 11);
 }
 
 
@@ -401,7 +403,7 @@ void SceneBase::ForwardRender(ID3D11DeviceContext* immediateContext)
     // カスケードシャドウマップ生成
     cascadedShadowMaps->Clear(immediateContext);
     auto& shadow = Scene::GetCurrentScene()->GetSceneSettings().cascadedShadowMapConstants;
-    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), shadow.criticalDepthValue, 3/*cbSlot*/);
+    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, LightManager::Instance().GetLightDirection(), shadow.criticalDepthValue, 3/*cbSlot*/);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
@@ -484,7 +486,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     auto& shadow = Scene::GetCurrentScene()->GetSceneSettings().cascadedShadowMapConstants;
 
     cascadedShadowMaps->Clear(immediateContext);
-    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), shadow.criticalDepthValue, 3/*cbSlot*/);
+    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, LightManager::Instance().GetLightDirection(), shadow.criticalDepthValue, 3/*cbSlot*/);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
@@ -636,7 +638,7 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
-        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
@@ -868,7 +870,7 @@ void SceneBase::DrawSceneSettingsTab()
     {
         ImGui::Checkbox("useDeferredRendering", &useDeferredRendering);
         ImGui::Checkbox("useDrawDebug", &useDrawDebug);
-        lightManager->DrawGui();
+        LightManager::Instance().DrawGui();
     }
 
 }

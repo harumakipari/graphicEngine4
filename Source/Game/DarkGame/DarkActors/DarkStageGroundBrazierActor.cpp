@@ -41,7 +41,6 @@ void DarkStageGroundBrazierActor::Initialize(const Transform& transform)
 
 
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
-    auto lightManager = scene->GetLightManager();
 
 
     auto lightsData = brazierMeshComponent->model->GetPointLights();

@@ -22,7 +22,6 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
 {
     SceneBase::Initialize(device, width, height, props);
 
-
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<LoadingCamera>("mainLoadingCameraActor");
     auto mainCameraComponent = mainCameraActor->GetComponent<CameraComponent>();
     mainCameraActor->SetPosition({ -4.1f,1.9f,-4.3f });
@@ -102,9 +101,6 @@ void LoadingScene::Start()
 
 void LoadingScene::SetUpActors()
 {
-    //Transform enemyTr(DirectX::XMFLOAT3{ 5.0f,-6.0f,16.5f }, DirectX::XMFLOAT3{ 0.0f,35.0f,0.0f }, DirectX::XMFLOAT3{ 2.0f,2.0f,2.0f });
-    //enemy = GetActorManager()->CreateAndRegisterActorWithTransform<EmptyEnemy>("LoadingEnemy", enemyTr);
-    //enemy->PlayAnimation("Idle", false);
 }
 
 void LoadingScene::Update(float deltaTime)

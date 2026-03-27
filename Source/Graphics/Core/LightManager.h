@@ -13,6 +13,12 @@ class LightManager
 {
     const static inline int PointLightMaxCount = 40;
 public:
+    static LightManager& Instance()
+    {
+        static LightManager instance;
+        return instance;
+    }
+
     struct PointLight
     {
         DirectX::XMFLOAT4 position{ 0.0f,0.0f,0.0f,0.0f };
@@ -61,6 +67,7 @@ public:
     void CollectPointLightsFromScene(const Scene& scene);
 
     void SetDirectionalLight(const DirectX::XMFLOAT4& dir, const DirectX::XMFLOAT4& color);
+    void InitializeDefaultLights(std::unordered_map<std::string, SharedLightParam>& sharedLights);
 
     void DrawGui();
 

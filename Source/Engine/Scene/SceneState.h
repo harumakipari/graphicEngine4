@@ -87,13 +87,15 @@ struct SceneState
         // sceneConstants‚Í•’Ê‚Éã‘‚«
         s.sceneLightSaveData.sceneConstants = lightSaveData.sceneConstants;
 
-        // sharedLights‚Í“Á•Êˆµ‚¢
-        if (!lightSaveData.sharedLights.empty())
-        {
-            s.sceneLightSaveData.sharedLights = lightSaveData.sharedLights;
-        }
+        auto backupShared = s.sceneLightSaveData.sharedLights;
 
         s.sceneLightSaveData = lightSaveData;
+
+        // ‹ó‚È‚çŒ³‚ğˆÛ
+        if (lightSaveData.sharedLights.empty())
+        {
+            s.sceneLightSaveData.sharedLights = backupShared;
+        }
         s.sceneShaderConstants = shader;
         s.fogConstants = fog;
         s.ssrConstantBuffer = ssr;

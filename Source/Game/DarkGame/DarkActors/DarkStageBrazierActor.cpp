@@ -15,7 +15,6 @@ void DarkStageBrazierActor::SetModel(const std::shared_ptr<StageAsset>& stageAss
     brazierMeshComponent->SetIsCastShadow(false);    // 影を落とさないようにする
 
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
-    auto lightManager = scene->GetLightManager();
 
 
     auto lightsData = brazierMeshComponent->model->GetPointLights();
@@ -64,8 +63,6 @@ void DarkStageMeltedWaxActor::SetModel(const std::shared_ptr<StageAsset>& stageA
     metedWaxMeshComponent->SetIsCastShadow(false);    // 影を落とさないようにする
 
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
-    auto lightManager = scene->GetLightManager();
-
 
     auto lightsData = metedWaxMeshComponent->model->GetPointLights();
     // ポイントライトコンポーネントを追加
@@ -114,7 +111,6 @@ void DarkStageStandingBrazierActor::SetModel(const std::shared_ptr<StageAsset>& 
     standingBrazierMeshComponent->SetIsCastShadow(false);    // 影を落とさないようにする
 
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
-    auto lightManager = scene->GetLightManager();
 
 
     auto lightsData = standingBrazierMeshComponent->model->GetPointLights();

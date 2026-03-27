@@ -67,7 +67,7 @@ public:
     }
 
     // ライトマネージャーへのアクセス関数
-    LightManager* GetLightManager() const { return lightManager.get(); }
+    //LightManager* GetLightManager() const { return lightManager.get(); }
 
 private:
     void UpdateConstantBuffer(ID3D11DeviceContext* immediateContext, float deltaTime);
@@ -124,7 +124,7 @@ protected:
     std::unique_ptr<MultipleRenderTargets> multipleRenderTargets;
     std::unique_ptr<GBuffer> gBufferRenderTarget;
     std::unique_ptr<SkyMap> skyMap;
-    std::unique_ptr<LightManager> lightManager;
+    //std::unique_ptr<LightManager> lightManager;
     //std::unique_ptr<PostEffectManager> postEffectManager;
     std::unique_ptr<SceneEffectManager> sceneEffectManager;
     std::unique_ptr<SceneRenderer> sceneRenderer_;

@@ -15,7 +15,6 @@ void DarkStageChandelierActor::Initialize(const Transform& transform)
 
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
 
-    auto lightManager = scene->GetLightManager();
 
 
 
@@ -93,7 +92,6 @@ void DarkStageFireBowlActor::Initialize(const Transform& transform)
 
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
 
-    auto lightManager = scene->GetLightManager();
 
     auto lightsData = meshComponent->model->GetPointLights();
     // ポイントライトコンポーネントを追加
@@ -152,7 +150,6 @@ void DarkStageTorchSconceActor::Initialize(const Transform& transform)
 
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
 
-    auto lightManager = scene->GetLightManager();
 
     auto lightsData = meshComponent->model->GetPointLights();
     // ポイントライトコンポーネントを追加

@@ -20,7 +20,7 @@ public:
 
     void Initialize(const Transform& transform)override
     {
-        mainCameraComponent = this->AddComponent<TPSCameraComponent>("mainCamera");
+        mainCameraComponent = this->AddComponent<CameraComponent>("mainCamera");
         mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(35), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 0.1f, 1000.0f);
     };
 

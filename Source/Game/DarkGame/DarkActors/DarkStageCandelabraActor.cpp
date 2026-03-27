@@ -33,9 +33,6 @@ void DarkStageCandelabraActor::SetModel(const std::shared_ptr<StageAsset>& stage
 
 
     auto scene = dynamic_cast<SceneBase*>(Scene::GetCurrentScene());
-    auto lightManager = scene->GetLightManager();
-
-
 
     auto lightsData = candelabraMeshComponent->model->GetPointLights();
     // ポイントライトコンポーネントを追加

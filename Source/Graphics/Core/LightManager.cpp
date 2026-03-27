@@ -164,6 +164,8 @@ void LightManager::Initialize(ID3D11Device* device)
         20.0f
         };
     }
+    lightData.sharedLights = sharedLights;
+
 }
 
 SharedLightParam LightManager::FindSharedLight(const std::string& name)
@@ -190,10 +192,36 @@ void LightManager::SetDirectionalLight(const DirectX::XMFLOAT4& dir, const Direc
     light.lightColor = color;
 }
 
+void LightManager::InitializeDefaultLights(std::unordered_map<std::string, SharedLightParam>& sharedLights)
+{
+    sharedLights["MainChandelier"] = { {1.0f, 0.58f, 0.25f, 2.4f}, 10.0f };
+    sharedLights["CandleChandelier"] = { {1.0f, 0.49f, 0.23f, 2.4f}, 1.5f };
+    sharedLights["TopCandelabra"] = { {1.0f, 0.57f, 0.30f, 3.5f}, 3.5f };
+    sharedLights["SideCandelabra"] = { {1.0f, 0.57f, 0.30f, 1.2f}, 1.0f };
+    sharedLights["BrazierCenterBig"] = { {1.0f, 0.53f, 0.25f, 1.44f}, 10.0f };
+    sharedLights["BrazierCenterSmall"] = { {1.0f, 0.53f, 0.25f, 1.6f}, 8.0f };
+    sharedLights["GroundBrazierLight"] = { {1.0f, 0.57f, 0.25f, 0.8f}, 10.0f };
+    sharedLights["MeltedWaxLight"] = { {1.0f, 0.63f, 0.21f, 1.28f}, 7.5f };
+    sharedLights["BottomStandingBrazier"] = { {0.96f, 0.52f, 0.24f, 1.0f}, 8.0f };
+    sharedLights["TopStandingBrazier"] = { {1.0f, 0.54f, 0.25f, 1.6f}, 8.0f };
+    sharedLights["PlayerPointLight"] = { {0.97f, 0.68f, 0.5f, 20.0f}, 3.1f };
+    sharedLights["EnemyPointLight"] = { {0.97f, 0.68f, 0.5f, 20.0f}, 3.1f };
+    sharedLights["FireBowl"] = { {1.0f, 0.75f, 0.52f, 10.0f}, 10.0f };
+    sharedLights["TorchSconce"] = { {1.0f, 0.64f, 0.29f, 19.0f}, 20.0f };
+}
+
 void LightManager::Update(float deltaTime)
 {
     auto& lightData = Scene::GetCurrentScene()->GetSceneSettings().sceneLightSaveData;
     auto& light = lightData.sceneConstants;
+
+    auto& sharedLights = lightData.sharedLights;
+
+    // âûã}èàíu
+    if (sharedLights.empty())
+    {
+        InitializeDefaultLights(sharedLights);
+    }
 
     renderPointLights.clear();
 

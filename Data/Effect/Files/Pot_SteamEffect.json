@@ -14,6 +14,7 @@
                 ]
             ],
             "blendState": 2,
+            "burstCount": 0,
             "directionAxis": [
                 0.0,
                 1.0,
@@ -21,13 +22,15 @@
             ],
             "directionMode": 1,
             "emitCount": [
-                4,
+                2,
                 4
             ],
             "emitInterval": [
-                0.30000001192092896,
-                0.8999999761581421
+                0.10000000149011612,
+                0.20000000298023224
             ],
+            "emitRate": 0.6000000238418579,
+            "emitterLifeTime": 0.0,
             "endColor": [
                 [
                     1.0,
@@ -55,20 +58,22 @@
             "height": 1.0,
             "initialDelay": [
                 0.10000000149011612,
-                0.5
+                0.10000000149011612
             ],
+            "isBurst": false,
             "lifeTime": [
                 5.099999904632568,
                 5.099999904632568
             ],
+            "loop": true,
             "maxParticles": 1000,
             "name": "Emitter0",
             "positionOffset": [
                 0.0,
-                0.20000000298023224,
+                0.10000000149011612,
                 0.0
             ],
-            "radius": 0.20000000298023224,
+            "radius": 0.10000000149011612,
             "renderingMode": 0,
             "rotationEuler": [
                 [
@@ -82,10 +87,10 @@
                     0.0
                 ]
             ],
-            "shapeType": 2,
+            "shapeType": 0,
             "speed": [
-                0.4000000059604645,
-                0.5
+                0.20000000298023224,
+                0.30000001192092896
             ],
             "startColor": [
                 [
