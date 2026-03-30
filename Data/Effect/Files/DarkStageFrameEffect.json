@@ -21,6 +21,7 @@
                 0.0
             ],
             "directionMode": 0,
+            "emissivePower": 2.5,
             "emitCount": [
                 1,
                 2

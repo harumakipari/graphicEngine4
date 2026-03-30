@@ -543,13 +543,8 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
         //multipleRenderTargets->Deactivate(immediateContext);
     }
 
-    //// ¡‰ñ‚ÌƒQ[ƒ€‚Å’Ç‰Á
-    //{
-    //    immediateContext->CopyResource(sceneColorStencilBuffer.Get(), sceneColorBuffer.Get());
-    //    immediateContext->PSSetShaderResources(25, 1, sceneColorSRV.GetAddressOf());
-    //}
 
-#if 1
+#if 0
     //postEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get());
     sceneEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get(), gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
         gBufferRenderTarget->depthStencilShaderResourceView, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)], gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::PBR_VALUE)], cascadedShadowMaps->depthMap().Get());
@@ -605,10 +600,6 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
 #endif // 0
 
 #endif // 0
-    {
-        //ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
-        //immediateContext->PSSetShaderResources(25, 1, nullSRV);
-    }
 
 #if 1
     // PARTICLES
@@ -651,6 +642,16 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     //multipleRenderTargets->Deactivate(immediateContext);
 
 
+#if 1
+//postEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get());
+    sceneEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get(), gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
+        gBufferRenderTarget->depthStencilShaderResourceView, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)], gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::PBR_VALUE)], cascadedShadowMaps->depthMap().Get());
+    //sceneEffectManager->ApplyAll(immediateContext, frameBuffer->shaderResourceViews[0].Get(), gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
+    //    gBufferRenderTarget->depthStencilShaderResourceView, gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)], cascaded_shadow_map->depth_map().Get());
+
+    ID3D11ShaderResourceView* nullSRVs[16] = {};
+    immediateContext->PSSetShaderResources(0, 16, nullSRVs);
+#endif
 
     finalBuffer->Clear(immediateContext);
     finalBuffer->Activate(immediateContext);

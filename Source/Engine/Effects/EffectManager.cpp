@@ -87,6 +87,8 @@ EffectHandle EffectManager::LoadEffectData(const std::string& filePath)
                         emitterData.emitData.isBurst = emitterJson.value("isBurst", false);
                     if (emitterJson.contains("burstCount"))
                         emitterData.emitData.burstCount = emitterJson.value("burstCount", 10);
+                    if (emitterJson.contains("emissivePower"))
+                        emitterData.emitData.emissivePower = emitterJson.value("emissivePower", 1.0f);
                     //emitterData.emitData.loop = emitterJson.value("loop", false);
                 }
                 // 形状設定
@@ -189,6 +191,7 @@ void EffectManager::SaveEffectData(EffectHandle handle, const std::string& fileP
             emitterJson["emitRate"] = emitterData.emitData.emitRate;
             emitterJson["emitterLifeTime"] = emitterData.emitData.emitterLifeTime;
             emitterJson["loop"] = emitterData.emitData.loop;
+            emitterJson["emissivePower"] = emitterData.emitData.emissivePower;
             emitterJson["isBurst"] = emitterData.emitData.isBurst;
             emitterJson["burstCount"] = emitterData.emitData.burstCount;
         }
@@ -375,6 +378,7 @@ void EffectManager::EmitParticle(EffectHandle handle, const XMFLOAT3& pos, const
                 CoreColor endColor = emitterData.visualData.endColor.GetRandom();
                 emitData.startColor = startColor;
                 emitData.endColor = endColor;
+                emitData.customData.x = emitterData.emitData.emissivePower;
             }
 
             // エミット

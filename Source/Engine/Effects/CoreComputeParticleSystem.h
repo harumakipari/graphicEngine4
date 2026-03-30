@@ -34,7 +34,7 @@ public:
 		DirectX::XMFLOAT4 startColor{ 1,1,1,1 };	// 開始色
 		DirectX::XMFLOAT4 endColor{ 1,1,1,1 };		// 終了色
 
-		DirectX::XMFLOAT4 customData;				//カスタムデータ
+		DirectX::XMFLOAT4 customData;				//カスタムデータ(x:emissivePower
 	};
 
 	//パーティクル構造体

@@ -153,7 +153,9 @@ void main(point GS_IN gin[1], inout TriangleStream<PS_IN> output)
     //äeéÌèÓïÒéÊìæ
     float4 texcoord = particleDataBuffer[particleIndex].texcoord;
     float4 color = particleDataBuffer[particleIndex].color;
-    
+
+    float emissive = particleDataBuffer[particleIndex].customData.x;
+
     //í∏ì_ê∂ê¨
     static const float4 vertexPositions[4] =
     {
@@ -175,6 +177,7 @@ void main(point GS_IN gin[1], inout TriangleStream<PS_IN> output)
         element.position = mul(vertexPositions[i], worldViewProjectionMatrix);
         element.texcoord = texcoord.xy + texcoord.zw * vertexTexcoords[i];
         element.color = color;
+        element.emissive = emissive;
         output.Append(element);
     }
     output.RestartStrip();

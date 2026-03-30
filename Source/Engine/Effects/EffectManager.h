@@ -179,6 +179,7 @@ public:
         bool loop = false;// エミッタのループフラグ
         bool isBurst = false;// バースト
         int burstCount = 0;
+        float emissivePower = 1.0f; // 発光強度
         Vector3 positionOffset;					// 生成位置
         Range<Vector3> rotationEuler;					// 回転
     };

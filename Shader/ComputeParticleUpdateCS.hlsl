@@ -39,53 +39,8 @@ void main( uint3 dispatchThreadId : SV_DispatchThreadID )
     }
     
     
-    //TODO:あとで任意の処理に変える
-    //if (data.parameter.x == 0)
     switch ((int) (data.parameter.x + 0.5f))
     {
-#if 0
-        case 1://ターゲット位置に集まるエフェクト
-        {
-            //速度更新
-            data.velocity.xyz += data.acceleration.xyz * deltaTime;
-            
-            //ターゲット位置に向くベクトルを計算
-            float3 vec = normalize(data.customData.xyz - data.position.xyz);
-            
-            //位置更新
-            data.position.xyz += vec * data.velocity.xyz * deltaTime;
-        
-            //切り取り座標を算出
-            //uint type = (uint) (data.parameter.x + 0.5f);
-            uint type = (uint) (data.parameter.z - data.parameter.y + 0.5f);
-            float w = 1.0 / textureSplitCount.x;
-            float h = 1.0 / textureSplitCount.y;
-            float2 uv = float2((type % textureSplitCount.x) * w, (type / textureSplitCount.x) * h);
-            data.texcoord.xy = uv;
-            data.texcoord.zw = float2(w, h);        
-            break;
-        }
-        case 12:
-        {
-            //速度更新
-            data.velocity.xyz += data.acceleration.xyz * deltaTime;
-        
-            //位置更新
-            data.position.xyz += data.velocity.xyz * deltaTime * 5;
-        
-            //切り取り座標を算出
-            uint type = (uint) (data.parameter.z - data.parameter.y + 0.5f);
-            float w = 1.0 / textureSplitCount.x;
-            float h = 1.0 / textureSplitCount.y;
-            float2 uv = float2((type % textureSplitCount.x) * w, (type / textureSplitCount.x) * h);
-            data.texcoord.xy = uv;
-            data.texcoord.zw = float2(w, h);
-        
-            //徐々に透明にしていく
-            data.color.a = saturate(data.parameter.y);
-            break;
-        }
-#endif
         default:
         {
             //速度更新
