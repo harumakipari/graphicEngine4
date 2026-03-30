@@ -127,7 +127,7 @@ void AnimationController::DrawImGui()
     ImGui::Checkbox("Loop", &isAnimationLoop);
     ImGui::Checkbox("Blend", &isBlendingAnimation);
     ImGui::SliderFloat("Blend Time", &transitionTime, 0.0f, 1.0f);
-    ImGui::SliderFloat("Rate", &animationRate, 0.1f, 3.0f);
+    ImGui::SliderFloat("Rate", &animationRate, 0.0f, 3.0f);
 
     ImGui::Checkbox("enableRootMotion", &enableRootMotion);
 
