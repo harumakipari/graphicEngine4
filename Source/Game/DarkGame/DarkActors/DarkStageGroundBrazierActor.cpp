@@ -75,7 +75,6 @@ void DarkStageGroundBrazierActor::Initialize(const Transform& transform)
         sphereMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,0.2f,0,1 };
         sphereMeshComponent->plusAlphaCBuffer->data.emissionPower = 6.0f;
 
-
     }
 }
 

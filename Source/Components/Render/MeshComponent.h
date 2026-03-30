@@ -100,7 +100,7 @@ public:
             ImGui::SliderFloat("brightness", &brightness, 0.1f, +2.0f);
             ImGui::SliderFloat("dissolve", &dissolve, 0.0f, 1.0f);
             ImGui::ColorEdit4("cpuColor", &plusAlphaCBuffer->data.cpuColor.x);
-            ImGui::SliderFloat("emissionPower", &plusAlphaCBuffer->data.emissionPower, 0.0f, 20.0f);
+            ImGui::SliderFloat("emissionPower", &plusAlphaCBuffer->data.emissionPower, 0.0f, 50.0f);
             ImGui::SliderFloat4("morphWeight", &plusAlphaCBuffer->data.morphWeights.x, 0.0f, 1.0f);
             const char* objectTypes[] =
             {

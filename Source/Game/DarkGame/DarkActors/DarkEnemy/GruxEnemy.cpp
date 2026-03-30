@@ -10,7 +10,7 @@ void GruxEnemy::Initialize(const Transform& transform)
     std::string parentName = "SkeletonWarriorMeshComponent";
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    skeletalMeshComponent->SetModel("./Data/Models/Characters/Grux/PrimaryAttack_RA.gltf", false, true);
+    skeletalMeshComponent->SetModel("./Data/Models/Characters/Grux/animations.gltf", false, true);
     //skeletalMeshComponent->SetModel("./Data/Models/Characters/StoneGolem/StoneGolem.gltf", false, true);
     skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Enemy;   // オブジェクトの種類を Enemy に設定
     skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 6.6f;   // 目玉の自己発光の強さを設定
@@ -26,19 +26,19 @@ void GruxEnemy::Initialize(const Transform& transform)
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
-    controller->AddAnimation("Walk", 0);
-    //controller->AddAnimation("Attack", 1);
-    //controller->AddAnimation("Idle", 2);
-    //controller->AddAnimation("Block", 2);
-    //controller->AddAnimation("Death", 3);
-    //controller->AddAnimation("BlockIdle", 4);
-    //controller->AddAnimation("Run", 5);
-    //controller->AddAnimation("Walk", 6);
+    controller->AddAnimation("Idle", 0);
+    controller->AddAnimation("PrimaryAttack_RA", 1);
+    controller->AddAnimation("PrimaryAttack_LA", 2);
+    controller->AddAnimation("PrimaryAttack_LB", 3);
+    controller->AddAnimation("PrimaryAttack_RB", 4);
+    controller->AddAnimation("Respawn", 5);
+    controller->AddAnimation("LaunchPad", 6);
+    controller->AddAnimation("LevelStart", 7);
+    controller->AddAnimation("Death", 8);
+
     // アニメーションコントローラーを character に追加
     this->SetAnimationController(controller);
-
-    PlayAnimation("Walk");
-
+    PlayAnimation("Idle");
 
     // 当たり判定
     {
