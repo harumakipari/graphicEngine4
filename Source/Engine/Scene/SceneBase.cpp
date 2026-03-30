@@ -493,7 +493,6 @@ void SceneBase::DeferredRender(ID3D11DeviceContext* immediateContext, const View
     sceneRender.currentRenderPath = RenderPath::Shadow;
     sceneRender.CastShadowRender(immediateContext, queues.shadowCasters);
     cascadedShadowMaps->Deactivate(immediateContext);
-
 #else
     cascaded_shadow_map->clear(immediateContext);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);

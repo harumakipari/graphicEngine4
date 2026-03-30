@@ -25,32 +25,12 @@
 #include "Graphics/Core/Shader.h"
 #include "Texture.h"
 #include "Graphics/Core/RenderState.h"
+#include "Graphics/Core/GltfDxgiHelper.h"
 #include "Graphics/Core/PipelineState.h"
 
 #include "Components/Render/MeshComponent.h"
 
-UINT _SizeofComponent(DXGI_FORMAT format)
-{
-    switch (format)
-    {
-    case DXGI_FORMAT_R8_UINT: return 1;
-    case DXGI_FORMAT_R16_UINT: return 2;
-    case DXGI_FORMAT_R32_UINT: return 4;
-    case DXGI_FORMAT_R32G32_FLOAT: return 8;
-    case DXGI_FORMAT_R32G32B32_FLOAT: return 12;
-    case DXGI_FORMAT_R8G8B8A8_UINT: return 3;
-    case DXGI_FORMAT_R16G16B16A16_UINT: return 8;
-    case DXGI_FORMAT_R32G32B32A32_UINT: return 16;
-    case DXGI_FORMAT_R32G32B32A32_FLOAT: return 16;
-    }
-    _ASSERT_EXPR(FALSE, L"Not supported");
-    return 0;
-}
 
-bool _NullLoadImageData(tinygltf::Image*, const int, std::string*, std::string*, int, int, const unsigned char*, int, void*)
-{
-    return true;
-}
 InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::string& filename, ModelTypes::ModelMode mode, bool isSaveVerticesData, bool convertToLHS) : filename(filename), mode(mode), isSaveVerticesData(isSaveVerticesData)
 {
     std::filesystem::path cerealFilename(filename);
@@ -83,7 +63,7 @@ InterleavedGltfModel::InterleavedGltfModel(ID3D11Device* device, const std::stri
 #endif
     {
         tinygltf::TinyGLTF tinyGltf;
-        tinyGltf.SetImageLoader(_NullLoadImageData, nullptr);
+        tinyGltf.SetImageLoader(NullLoadImage, nullptr);
 
         //gltfModel = std::make_shared<tinygltf::Model>();
         //tinygltf::Model gltfModel;
@@ -541,7 +521,7 @@ void InterleavedGltfModel::FetchMeshes(ID3D11Device* device, const tinygltf::Mod
                 const tinygltf::BufferView& gltfBufferView = gltfModel.bufferViews.at(gltfAccessor.bufferView);
 
                 primitive.indexBufferView.format = _DxgiFormat(gltfAccessor);
-                primitive.indexBufferView.sizeInBytes = static_cast<UINT>(gltfAccessor.count) * _SizeofComponent(primitive.indexBufferView.format);
+                primitive.indexBufferView.sizeInBytes = static_cast<UINT>(gltfAccessor.count) * GetFormatByteSize(primitive.indexBufferView.format);
                 primitive.cachedIndices.resize(primitive.indexBufferView.sizeInBytes);
                 const unsigned char* data = gltfModel.buffers.at(gltfBufferView.buffer).data.data() + gltfBufferView.byteOffset + gltfAccessor.byteOffset;
 
@@ -1776,7 +1756,7 @@ void InterleavedGltfModel::Render(ID3D11DeviceContext* immediateContext, const D
                 {
                     // INTERLEAVED_GLTF_MODEL
                     immediateContext->IASetIndexBuffer(buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
-                    immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / _SizeofComponent(primitive.indexBufferView.format), 0, 0);
+                    immediateContext->DrawIndexed(primitive.indexBufferView.sizeInBytes / GetFormatByteSize(primitive.indexBufferView.format), 0, 0);
                 }
                 else
                 {
@@ -1917,7 +1897,7 @@ void InterleavedGltfModel::BatchRender(ID3D11DeviceContext* immediateContext, co
         if (batchMesh.indexBufferView.buffer > -1)
         {
             immediateContext->IASetIndexBuffer(buffers.at(batchMesh.indexBufferView.buffer).Get(), batchMesh.indexBufferView.format, 0);
-            immediateContext->DrawIndexed(batchMesh.indexBufferView.sizeInBytes / _SizeofComponent(batchMesh.indexBufferView.format), 0, 0);
+            immediateContext->DrawIndexed(batchMesh.indexBufferView.sizeInBytes / GetFormatByteSize(batchMesh.indexBufferView.format), 0, 0);
         }
         else
         {
@@ -2021,7 +2001,7 @@ void InterleavedGltfModel::InstancedStaticBatchRender(ID3D11DeviceContext* immed
         //if (batchMesh.indexBufferView.buffer > -1)
         {
             immediateContext->IASetIndexBuffer(buffers.at(batchMesh.indexBufferView.buffer).Get(), batchMesh.indexBufferView.format, 0);
-            immediateContext->DrawIndexedInstanced(batchMesh.indexBufferView.sizeInBytes / _SizeofComponent(batchMesh.indexBufferView.format), instanceCount, 0, 0, 0);
+            immediateContext->DrawIndexedInstanced(batchMesh.indexBufferView.sizeInBytes / GetFormatByteSize(batchMesh.indexBufferView.format), instanceCount, 0, 0, 0);
         }
         //else
         {
@@ -2082,7 +2062,7 @@ void InterleavedGltfModel::CastShadowBatch(ID3D11DeviceContext* immediateContext
         if (batchMesh.indexBufferView.buffer > -1)
         {
             immediateContext->IASetIndexBuffer(buffers.at(batchMesh.indexBufferView.buffer).Get(), batchMesh.indexBufferView.format, 0);
-            immediateContext->DrawIndexedInstanced(batchMesh.indexBufferView.sizeInBytes / _SizeofComponent(batchMesh.indexBufferView.format), 4, 0, 0, 0);
+            immediateContext->DrawIndexedInstanced(batchMesh.indexBufferView.sizeInBytes / GetFormatByteSize(batchMesh.indexBufferView.format), 4, 0, 0, 0);
         }
         else
         {
@@ -2228,7 +2208,7 @@ void InterleavedGltfModel::CastShadow(ID3D11DeviceContext* immediateContext, con
                 {
                     // INTERLEAVED_GLTF_MODEL
                     immediateContext->IASetIndexBuffer(buffers.at(primitive.indexBufferView.buffer).Get(), primitive.indexBufferView.format, 0);
-                    immediateContext->DrawIndexedInstanced(primitive.indexBufferView.sizeInBytes / _SizeofComponent(primitive.indexBufferView.format), 4, 0, 0, 0);
+                    immediateContext->DrawIndexedInstanced(primitive.indexBufferView.sizeInBytes / GetFormatByteSize(primitive.indexBufferView.format), 4, 0, 0, 0);
                 }
                 else
                 {
@@ -2481,7 +2461,7 @@ void InterleavedGltfModel::AddAnimation(const std::string& filename)
     //else
     {
         tinygltf::TinyGLTF tinyGltf;
-        tinyGltf.SetImageLoader(_NullLoadImageData, nullptr);
+        tinyGltf.SetImageLoader(NullLoadImage, nullptr);
 
         tinygltf::Model gltfModel;
         std::string error, warning;
@@ -2622,7 +2602,7 @@ void InterleavedGltfModel::AppendAnimations(const std::vector<std::string>& file
     {
         tinygltf::TinyGLTF tiny_gltf;
 #if 1
-        tiny_gltf.SetImageLoader(_NullLoadImageData, nullptr);
+        tiny_gltf.SetImageLoader(NullLoadImage, nullptr);
 #endif
 
         tinygltf::Model transmission_model;

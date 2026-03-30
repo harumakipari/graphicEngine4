@@ -211,7 +211,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 #if 1
     float3 rim = 0;
 
-    if (objectType == OBJECT_PLAYER || objectType == OBJECT_ENEMY)
+    if (/*objectType == OBJECT_PLAYER || */objectType == OBJECT_ENEMY)
     {
         rim = CalcRimLight(N, V, rimColor, rimPower) * rimIntensity;
         if (materialType == MATERIAL_HAIR)

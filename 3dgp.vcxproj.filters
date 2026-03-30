@@ -537,6 +537,9 @@
     <ClCompile Include="Source\Game\Scenes\GameScene.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkEnemy\GruxEnemy.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -868,6 +871,7 @@
     <ClInclude Include="Source\Engine\Scene\SceneSetting.h" />
     <ClInclude Include="Source\Engine\Scene\SceneState.h" />
     <ClInclude Include="Source\Game\Scenes\GameScene.h" />
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkEnemy\GruxEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

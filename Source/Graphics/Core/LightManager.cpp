@@ -157,7 +157,7 @@ void LightManager::Initialize(ID3D11Device* device)
     // お椀の火のポイントライト
     {
         sharedLights["FireBowl"] =
-            SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.752942204f, 0.527115107f, 10.0f),
+            SharedLightParam{ DirectX::XMFLOAT4(1.0f, 0.752942204f, 0.527115107f, 3.0f),
         10.0f
         };
     }

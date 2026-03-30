@@ -107,6 +107,28 @@ void DoorLargeActor::Interact()
     }
 }
 
+void DoorLargeActor::DrawImGuiDetails()
+{
+#ifdef USE_IMGUI
+    if (ImGui::Button(U8("ドア空ける")))
+    {
+        if (doorState == DoorState::Closed || doorState == DoorState::Closing)
+        {
+            doorState = DoorState::Opening;
+        }
+    }
+    if (ImGui::Button(U8("ドア閉める")))
+    {
+        if (doorState == DoorState::Open || doorState == DoorState::Opening)
+        {
+            doorState = DoorState::Closing;
+        }
+    }
+
+#endif
+}
+
+
 void DoorSmallActor::Initialize(const Transform& transform)
 {
     root = AddComponent<SceneComponent>("DoorRoot");
@@ -129,6 +151,7 @@ void DoorSmallActor::Initialize(const Transform& transform)
     boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
     boxComponent->Initialize();
 }
+
 
 void DoorSmallActor::Update(float deltaTime)
 {

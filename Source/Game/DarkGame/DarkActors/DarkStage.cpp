@@ -185,6 +185,13 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
                 pos.y = 2.8f;
                 frameEffect->SetRelativeLocationDirect(pos);
                 frameEffect->Play();
+
+                // ポイントライトも一緒に配置する
+                auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", parentName);
+                pointLightComponent->SetRelativeLocationDirect(pos);
+                // ライトの名前からライトマネージャーの共有ライトを取得して設定
+                pointLightComponent->SetSharedLightName("FireBowl");
+
             }
             else if (point.name.rfind("Spawn_Chandelier", 0) == 0)
             {// 名前が "Spawn_Chandelier" で始まる場合、シャンデリアを配置
@@ -209,6 +216,17 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
 
                 auto candelabra = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageTorchSconceActor>("TorchSconce", candelabraTr);
             }
+            //else if (point.name.rfind("Spawn_FireBowl", 0) == 0)
+            //{
+            //    DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);
+            //    Transform candelabraTr{
+            //pos,
+            //        point.worldRotation,
+            //        {1.0f,1.0f,1.0f}
+            //    };
+
+            //    auto candelabra = scene->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStageFireBowlActor>("FireBowl", candelabraTr);
+            //}
             else if (point.name.rfind("Spawn_Candelabra", 0) == 0)
             {// 名前が "Spawn_Candelabra" で始まる場合、燭台を配置
                 DirectX::XMFLOAT3 pos = MathHelper::ConvertRHtoLh(point.worldPosition);

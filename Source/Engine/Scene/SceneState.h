@@ -59,6 +59,7 @@ struct SceneState
             ats.name = actor->GetName();
             ats.position = actor->GetPosition();
             ats.rotation = actor->GetQuaternionRotation();
+            ats.scale = actor->GetScale();
             actorStates.push_back(ats);
         }
 
@@ -111,6 +112,7 @@ struct SceneState
             {
                 actor->SetPosition(ats.position);
                 actor->SetQuaternionRotation(ats.rotation);
+                actor->SetScale(ats.scale);
             }
         }
 

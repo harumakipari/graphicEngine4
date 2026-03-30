@@ -255,7 +255,7 @@ inline void to_json(nlohmann::json& j, const FogConstants& s)
         {"noiseScale", s.noiseScale},
         {"enableDither", s.enableDither},
         {"globalFogIntensity", s.globalFogIntensity},
-
+        {"isWindowFog", s.isWindowFog},
     };
 }
 
@@ -271,6 +271,8 @@ inline void from_json(const nlohmann::json& j, FogConstants& s)
     j.at("noiseScale").get_to(s.noiseScale);
     j.at("enableDither").get_to(s.enableDither);
     j.at("globalFogIntensity").get_to(s.globalFogIntensity);
+    if (j.contains("isWindowFog")) j.at("isWindowFog").get_to(s.isWindowFog);
+
 }
 
 // SSR

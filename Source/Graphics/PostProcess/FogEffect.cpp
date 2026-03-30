@@ -51,6 +51,7 @@ void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourc
     fogCBuffer->data.mieScatteringFactor = fog.mieScatteringFactor;
     fogCBuffer->data.noiseScale = fog.noiseScale;
     fogCBuffer->data.timeScale = fog.timeScale;
+    fogCBuffer->data.isWindowFog = fog.isWindowFog;
 
     fogCBuffer->Activate(immediateContext, 8);
 
@@ -93,5 +94,6 @@ void FogEffect::DrawDebugUI()
     ImGui::SliderFloat("Noise Scale", &fog.noiseScale, 0.0f, 0.5f, "%.4f");
     ImGui::DragFloat("globalFogIntensity", &fog.globalFogIntensity, 0.001f, 0.0f, 0.5f, "%.4f");
     CheckboxInt("Enable Dither", &fog.enableDither);
+    CheckboxInt("window fog", &fog.isWindowFog);
 #endif
 }

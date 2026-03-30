@@ -156,6 +156,7 @@ protected:
     float nearZ = 0.1f;
     float farZ = 1000.f;
     float yaw = 0.0f;
+    float roll = 0.0f;
     float pitch = DirectX::XMConvertToRadians(-12.0f);
 
     DirectX::XMFLOAT4X4 view{};

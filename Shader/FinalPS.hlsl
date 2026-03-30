@@ -74,6 +74,8 @@ float4 main(VS_OUT pin) : SV_TARGET
         // êFÇÃí≤êÆÇÇ∑ÇÈ
         finalColor.rgb = RGBColorMap(finalColor.rgb, colorMapRGB);
 
+        //finalColor.rgb = ToneCurve(finalColor.rgb);
+
     }
 
     return finalColor;

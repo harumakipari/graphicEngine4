@@ -16,7 +16,7 @@ inline UINT GetFormatByteSize(DXGI_FORMAT format)
     case DXGI_FORMAT_R32_UINT: return 4;
     case DXGI_FORMAT_R32G32_FLOAT: return 8;
     case DXGI_FORMAT_R32G32B32_FLOAT: return 12;
-    case DXGI_FORMAT_R8G8B8A8_UINT: return 3; 
+    case DXGI_FORMAT_R8G8B8A8_UINT: return 4; 
     case DXGI_FORMAT_R16G16B16A16_UINT: return 8;
     case DXGI_FORMAT_R32G32B32A32_UINT: return 16;
     case DXGI_FORMAT_R32G32B32A32_FLOAT: return 16;

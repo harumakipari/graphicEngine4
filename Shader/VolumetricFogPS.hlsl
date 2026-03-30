@@ -131,12 +131,16 @@ float main(VS_OUT pin) : SV_TARGET
     // 深度を取得
     float depth = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
     // テクスチャ座標 -> world 空間
-#if 1// こっちdepthTextureから復元する方法の方だと空にも霧がかかる。positionMapから復元する方法だと空には霧がかからない。
-    float4 position = mul(float4(pin.texcoord.x * 2.0 - 1.0, -pin.texcoord.y * 2.0 + 1.0, depth, 1.0), inverseViewProjection);
-    position = position / position.w; // world 空間
-#else
-    float4 position = positionMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord); // world 空間
-#endif 
+    float4 position = { 0, 0, 0, 0 };
+    if (isWindowFog)
+    { // こっちdepthTextureから復元する方法の方だと空にも霧がかかる。positionMapから復元する方法だと空には霧がかからない。
+        position = mul(float4(pin.texcoord.x * 2.0 - 1.0, -pin.texcoord.y * 2.0 + 1.0, depth, 1.0), inverseViewProjection);
+        position = position / position.w; // world 空間
+    }
+    else
+    {
+        position = positionMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord); // world 空間
+    }
     // レイを生成
     float3 rayStart = cameraPositon.xyz;
     float3 rayDir = position.xyz - rayStart;

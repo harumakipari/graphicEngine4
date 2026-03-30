@@ -20,6 +20,7 @@
 #include "Game/DarkGame/DarkActors/DarkStage.h"
 #include "Game/DarkGame/DarkActors/DarkStageChandelierActor.h"
 #include "Game/DarkGame/DarkActors/DoorActor.h"
+#include "Game/DarkGame/DarkActors/DarkEnemy/GruxEnemy.h"
 #include "Game/DarkGame/DarkActors/DarkEnemy/SkeletonWarriorEnemy.h"
 
 
@@ -35,7 +36,8 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     loadStageThread = std::thread([&]()
         {
             PROFILE_SCOPE("Load StageModel");
-            stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage0325_picture/DarkStage.gltf",
+            stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage_0327_1/DarkStage.gltf",
+            //stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage0327/DarkStage.gltf",
             //stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage0325/DarkStage.gltf",
                 ModelTypes::ModelMode::StaticMesh);
             stageAsset->spawnPoints = stageAsset->model->spawnPoints;
@@ -237,6 +239,9 @@ void SampleScene::SetUpActors()
 #endif // 0
     Transform enemyTr(DirectX::XMFLOAT3{ -15.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<SkeletonWarriorActor>("enemy", enemyTr);
+
+    Transform gruxEnemyTr(DirectX::XMFLOAT3{ -10.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto gruxEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<GruxEnemy>("GruxEnemy", gruxEnemyTr);
 
 #if 0
     Transform dustParticleTr(DirectX::XMFLOAT3{ -27.0f,0.0f,11.0f }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });

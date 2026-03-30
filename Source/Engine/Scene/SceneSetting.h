@@ -98,6 +98,7 @@ struct FogConstants
     int enableDither = 1;
 
     float globalFogIntensity = 0.034f;// 全体にフォグをどれくらいかけるか
+    int isWindowFog = 1;
 };
 
 struct SSRConstantBuffer

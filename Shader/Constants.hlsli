@@ -66,6 +66,7 @@ cbuffer FOG_CONSTANTS_BUFFER : register(b8)
     bool enableDither;
 
     float globalFogIntensity;
+    bool isWindowFog;
 }
 cbuffer VOLUMETRIC_CLOUDSCAPES_CONSTANT_BUFFER : register(b5)
 {
