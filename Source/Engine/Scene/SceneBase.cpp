@@ -275,7 +275,7 @@ void SceneBase::UpdateConstantBuffer(ID3D11DeviceContext* immediateContext, floa
     shaderCBuffer->data.enableBlur = shader.enableBlur;
     shaderCBuffer->data.enableDof = shader.enableDof;
     shaderCBuffer->data.colorizeCascadedLayer = shader.colorizeCascadedLayer;
-    shaderCBuffer->data.value0 = shader.value0;
+    shaderCBuffer->data.toneMappingValue = shader.toneMappingValue;
 
     shaderCBuffer->data.colorMapRGB = shader.colorMapRGB;
     shaderCBuffer->data.pad3 = shader.pad3;
@@ -926,6 +926,7 @@ void SceneBase::DrawPostEffectTab()
     CheckboxInt("Enable CSM", &shader.enableCascadedShadowMaps);
     ImGui::SliderFloat("split_u", &shader.splitU, 0.0f, +1.0f);
     ImGui::DragFloat("slopeBias", &shader.slopeBias, 0.00001f, -0.01f, 0.01f, "%.8f");
+    ImGui::DragFloat(U8("トーン調整"), &shader.toneMappingValue, 0.05f, 0.0f, +1.0f);
     ImGui::SliderFloat(U8("色相調整"), &shader.hueShift, -1.0f, +1.0f);
     ImGui::SliderFloat(U8("彩度調整"), &shader.saturation, -1.0f, +1.0f);
     ImGui::SliderFloat(U8("明度調整"), &shader.brightness, -1.0f, +1.0f);

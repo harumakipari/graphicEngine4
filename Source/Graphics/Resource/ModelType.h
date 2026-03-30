@@ -16,6 +16,7 @@ enum class MaterialType :int
     Hair,
     Fur,
     Skin,
+    Eye,
 };
 
 enum class ObjectType :int

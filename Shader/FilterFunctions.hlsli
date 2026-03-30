@@ -175,13 +175,14 @@ float3 RGBColorMap(float3 sceneColor, float3 rgb)
 }
 
 
-float3 ToneCurve(float3 color)
+float3 ToneCurve(float3 color, float value)
 {
-    color = saturate(color);
+    if (value <= 0.0)
+        return color;
 
-    // ŠÈˆÕSƒJ[ƒu
+    color = saturate(color);
     color = smoothstep(0.0, 1.0, color);
-    color = lerp(color, color * color, 0.3); // ˆÃ•”’÷‚ß
+    color = lerp(color, color * color, value);
 
     return color;
 }

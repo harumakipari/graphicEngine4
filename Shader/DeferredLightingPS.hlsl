@@ -47,9 +47,18 @@ float4 main(VS_OUT pin) : SV_TARGET
         return float4(emissive * 6.0, 1); // これsphereEmissiveに使用
     }
 
+
+    // 目だけ追加
+    if (materialType == MATERIAL_EYE)
+    {
+        float mask = step(0.8, baseColor.r);
+        emissive += mask * float3(10, 0, 0);
+    }
+
+
     const float3 f0 = lerp(0.04, baseColor.rgb, metallicFactor);
     const float3 f90 = 1.0;
-    roughnessFactor = max(roughnessFactor, 0.3); // 最低値を作ることで、極端に鋭いスペキュラーを防止する
+    roughnessFactor = max(roughnessFactor, 0.05); // 最低値を作ることで、極端に鋭いスペキュラーを防止する
 
 
     const float alphaRoughness = roughnessFactor * roughnessFactor;
@@ -211,12 +220,16 @@ float4 main(VS_OUT pin) : SV_TARGET
 #if 1
     float3 rim = 0;
 
-    if (/*objectType == OBJECT_PLAYER || */objectType == OBJECT_ENEMY)
+    if (objectType == OBJECT_ENEMY)
     {
         rim = CalcRimLight(N, V, rimColor, rimPower) * rimIntensity;
+    }
+    if (objectType == OBJECT_PLAYER)
+    {
+        rim = CalcRimLight(N, V, playerRimColor, rimPower) * playerRimIntensity;
         if (materialType == MATERIAL_HAIR)
         {
-            rim = 0;
+            rim = CalcRimLight(N, V, playerHairRimColor, rimPower) * playerHairRimIntensity;
         }
     }
 #endif

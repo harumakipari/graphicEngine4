@@ -29,6 +29,12 @@ cbuffer LIGHT_CONSTANT_BUFFER : register(b11)
     float specularIntensity;
     float pointLightDiffuseIntensity;
     float pointLightSpecularIntensity;
+    
+    float3 playerRimColor;
+    float playerRimIntensity;
+
+    float3 playerHairRimColor;
+    float playerHairRimIntensity;
 
     PointLights pointLights[40];
 };

@@ -64,8 +64,8 @@ void DarkStageChandelierActor::Initialize(const Transform& transform)
         pos.y = -1.5f; // ‚ë‚¤‚»‚­‚ÌˆÊ’u‚É‡‚í‚¹‚Ä”÷’²®
         sphereMeshComponent->SetRelativeLocationDirect(pos);
         sphereMeshComponent->SetRelativeRotationDirect(point.worldRotation);
-        sphereMeshComponent->cpuColor = { 1,0.2f,0,1 };
-        sphereMeshComponent->emissionPower = 6.0f;
+        sphereMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,0.2f,0,1 };
+        sphereMeshComponent->plusAlphaCBuffer->data.emissionPower = 6.0f;
     }
 
 }

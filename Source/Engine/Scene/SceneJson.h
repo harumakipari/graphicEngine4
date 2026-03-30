@@ -59,6 +59,12 @@ inline void to_json(nlohmann::json& j, const SceneLightConstants& s)
         {"rimColor", s.rimColor},
         {"rimIntensity", s.rimIntensity},
 
+        {"playerRimColor", s.playerRimColor},
+        {"playerRimIntensity", s.playerRimIntensity},
+
+        {"playerHairRimColor", s.playerHairRimColor},
+        {"playerHairRimIntensity", s.playerHairRimIntensity},
+
         {"rimPower", s.rimPower},
         {"kc", s.kc},
         {"kl", s.kl},
@@ -83,6 +89,12 @@ inline void from_json(const nlohmann::json& j, SceneLightConstants& s)
 
     j.at("rimColor").get_to(s.rimColor);
     j.at("rimIntensity").get_to(s.rimIntensity);
+
+    if (j.contains("playerRimColor")) j.at("playerRimColor").get_to(s.playerRimColor);
+    if (j.contains("playerRimIntensity")) j.at("playerRimIntensity").get_to(s.playerRimIntensity);
+
+    if (j.contains("playerHairRimColor")) j.at("playerHairRimColor").get_to(s.playerHairRimColor);
+    if (j.contains("playerHairRimIntensity")) j.at("playerHairRimIntensity").get_to(s.playerHairRimIntensity);
 
     j.at("rimPower").get_to(s.rimPower);
     j.at("kc").get_to(s.kc);
@@ -140,7 +152,7 @@ inline void to_json(nlohmann::json& j, const SceneShaderConstants& s)
         {"enableBlur", s.enableBlur},
         {"enableDof", s.enableDof},
         {"colorizeCascadedLayer", s.colorizeCascadedLayer},
-        {"value0", s.value0},
+        {"toneMappingValue", s.toneMappingValue},
 
         {"colorMapRGB", s.colorMapRGB},
         {"pad3", s.pad3},
@@ -179,7 +191,7 @@ inline void from_json(const nlohmann::json& j, SceneShaderConstants& s)
     if (j.contains("enableBlur")) j.at("enableBlur").get_to(s.enableBlur);
     if (j.contains("enableDof")) j.at("enableDof").get_to(s.enableDof);
     if (j.contains("colorizeCascadedLayer")) j.at("colorizeCascadedLayer").get_to(s.colorizeCascadedLayer);
-    if (j.contains("value0")) j.at("value0").get_to(s.value0);
+    if (j.contains("toneMappingValue")) j.at("toneMappingValue").get_to(s.toneMappingValue);
 
     if (j.contains("colorMapRGB")) j.at("colorMapRGB").get_to(s.colorMapRGB);
     if (j.contains("pad3")) j.at("pad3").get_to(s.pad3);

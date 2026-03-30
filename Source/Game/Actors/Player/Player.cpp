@@ -30,7 +30,7 @@ void Player::Initialize(const Transform& transform)
         skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>(parentName);
         skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/animation.gltf", false, true);
         skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Player;   // オブジェクトの種類を Player に設定
-
+        skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 8.9f;   // 自己発光の強さを設定
         //skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle.gltf");
 #if 1
         for (auto& material : skeletalMeshComponent->model->materials)

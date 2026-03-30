@@ -20,6 +20,12 @@ struct SceneLightConstants
     DirectX::XMFLOAT3 rimColor = { 1.0f,1.0f,1.0f };
     float rimIntensity = 1.466f;
 
+    DirectX::XMFLOAT3 playerRimColor = { 0.977f,0.71f,0.168f };
+    float playerRimIntensity = 0.818f;
+
+    DirectX::XMFLOAT3 playerHairRimColor = { 0.422f,0.333f,0.0f };
+    float playerHairRimIntensity = 0.648f;
+
     float rimPower = 3.0f;
     float kc = 1.0f;
     float kl = 0.7f;
@@ -67,7 +73,7 @@ struct SceneShaderConstants
     int enableBlur = 1;
     int enableDof = 0;
     int colorizeCascadedLayer = 0;
-    float value0 = 0.0f;
+    float toneMappingValue = 0.0f;
 
     DirectX::XMFLOAT3 colorMapRGB = { 1.0f,1.0f,1.0f };
     float pad3 = 0.0f;

@@ -39,8 +39,8 @@ cbuffer SHADER_CONSTANT_BUFFER : register(b9)
     
     int enableBlur;
     int enableDof;
-    int colorizeCascadedLayer = false;
-    float value0 = 0.0f;
+    int colorizeCascadedLayer;
+    float toneMappingValue ;
 
     float3 colorMapRGB;
     float pad3 = 0.0f;

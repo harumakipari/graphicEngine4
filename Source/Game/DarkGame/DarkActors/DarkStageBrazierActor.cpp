@@ -46,8 +46,8 @@ void DarkStageBrazierActor::SetModel(const std::shared_ptr<StageAsset>& stageAss
         pos.y += 0.1f;
         sphereMeshComponent->SetRelativeLocationDirect(pos);
         sphereMeshComponent->SetRelativeRotationDirect(point.worldRotation);
-        sphereMeshComponent->cpuColor = { 1,0.2f,0,1 };
-        sphereMeshComponent->emissionPower = 6.0f;
+        sphereMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,0.2f,0,1 };
+        sphereMeshComponent->plusAlphaCBuffer->data.emissionPower = 6.0f;
     }
 
 }
@@ -94,8 +94,8 @@ void DarkStageMeltedWaxActor::SetModel(const std::shared_ptr<StageAsset>& stageA
         pos.y += 0.1f;
         sphereMeshComponent->SetRelativeLocationDirect(pos);
         sphereMeshComponent->SetRelativeRotationDirect(point.worldRotation);
-        sphereMeshComponent->cpuColor = { 1,0.2f,0,1 };
-        sphereMeshComponent->emissionPower = 6.0f;
+        sphereMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,0.2f,0,1 };
+        sphereMeshComponent->plusAlphaCBuffer->data.emissionPower = 6.0f;
     }
 
 }
@@ -142,8 +142,8 @@ void DarkStageStandingBrazierActor::SetModel(const std::shared_ptr<StageAsset>& 
         pos.y += 0.1f;
         sphereMeshComponent->SetRelativeLocationDirect(pos);
         sphereMeshComponent->SetRelativeRotationDirect(point.worldRotation);
-        sphereMeshComponent->cpuColor = { 1,0.2f,0,1 };
-        sphereMeshComponent->emissionPower = 6.0f;
+        sphereMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,0.2f,0,1 };
+        sphereMeshComponent->plusAlphaCBuffer->data.emissionPower = 6.0f;
     }
 
 }

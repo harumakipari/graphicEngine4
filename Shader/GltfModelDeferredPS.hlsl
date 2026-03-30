@@ -44,6 +44,11 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         float4 sampled = materialTextures[EMISSIVE_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(sampled.rgb, GAMMA);
         emissiveFactor *= sampled.rgb;
+
+        if (objectType == OBJECT_PLAYER)
+        { // playerの時はエミッシブを強めに出す
+            emissiveFactor *= emissionPower;
+        }
     }
     
     float roughnessFactor = m.pbrMetallicRoughness.roughnessFactor;
@@ -58,7 +63,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     }
 
     if (objectType == OBJECT_DOOR)
-    {// ドアの時だけラフネスを上げて、メタリックを下げる
+    { // ドアの時だけラフネスを上げて、メタリックを下げる
         if (metallicFactor < 0.1) // 木
         {
             roughnessFactor = max(roughnessFactor, 0.6);
@@ -98,7 +103,7 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
     }
 
-    pout.gBuffer3Normal = float4(N.xyz, objectType);  // world space
+    pout.gBuffer3Normal = float4(N.xyz, objectType); // world space
 
     //pout.gbuffer1.xy = EncodeOctahedralNormal(N);
 
@@ -109,8 +114,22 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
 
     pout.emissive = float4(emissiveFactor, 0); // wの値 : スカイマップ１それ以外０    2: emissiveFlagとして使用
 
+    if (materialType == MATERIAL_EYE)
+    {
+        float luminance = dot(baseColorFactor.rgb, float3(0.3, 0.59, 0.11));
 
-    pout.material = float4(metallicFactor, roughnessFactor, occlusionFactor, materialType/*マテリアルタイプ*/);
+        float2 uv = pin.texcoord;
+        float dist = distance(uv, float2(0.5, 0.5));
+
+        float maskColor = 1.0 - step(0.1, luminance);
+        float maskCenter = 1.0 - smoothstep(0.1, 0.2, dist);
+
+        float mask = maskColor * maskCenter;
+        emissiveFactor = mask * float3(cpuColor.rgb) * emissionPower; 
+        pout.emissive = float4(emissiveFactor, 0); // wの値 : スカイマップ１それ以外０    2: emissiveFlagとして使用
+    }
+
+    pout.material = float4(metallicFactor, roughnessFactor, occlusionFactor, materialType /*マテリアルタイプ*/);
     
     return pout;
 }

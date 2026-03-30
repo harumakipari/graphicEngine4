@@ -13,8 +13,8 @@ void DarkStagePointLightActor::Initialize(const Transform& transform)
     sphereMeshComponent->overrideDeferredPipelineName = "pointLightSkeletalMesh";
     sphereMeshComponent->SetIsCastShadow(false);    // ‰e‚ð—Ž‚Æ‚³‚È‚¢‚æ‚¤‚É‚·‚é
     sphereMeshComponent->SetRelativeScaleDirect({ 0.01f,0.01f,0.01f });
-    sphereMeshComponent->cpuColor = { 1,0.2f,0,1 };
-    sphereMeshComponent->emissionPower = 10.0f;
+    sphereMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,0.2f,0,1 };
+    sphereMeshComponent->plusAlphaCBuffer->data.emissionPower = 10.0f;
 
 }
 

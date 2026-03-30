@@ -13,6 +13,16 @@ void GruxEnemy::Initialize(const Transform& transform)
     skeletalMeshComponent->SetModel("./Data/Models/Characters/Grux/PrimaryAttack_RA.gltf", false, true);
     //skeletalMeshComponent->SetModel("./Data/Models/Characters/StoneGolem/StoneGolem.gltf", false, true);
     skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Enemy;   // オブジェクトの種類を Enemy に設定
+    skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 6.6f;   // 目玉の自己発光の強さを設定
+    skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 0.9f,0.08f,0.08f,1.0f };   // 目玉の色を赤にしてみる
+    for (auto& material : skeletalMeshComponent->model->materials)
+    {
+        if (material.name == "MI_Grux_Eye")
+        {// 目だったら、
+            material.materialType = MaterialType::Eye;
+        }
+    }
+
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());

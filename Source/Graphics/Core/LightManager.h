@@ -50,6 +50,12 @@ public:
         float pointLightDiffuseIntensity = 0.9f;
         float pointLightSpecularIntensity = 0.15f;
 
+        DirectX::XMFLOAT3 playerRimColor = { 0.3f,0.5f,1.0f };
+        float playerRimIntensity = 0.112f;
+
+        DirectX::XMFLOAT3 playerHairRimColor = { 0.3f,0.5f,1.0f };
+        float playerHairRimIntensity = 0.112f;
+
         PointLight pointsLight[PointLightMaxCount];
     };
 

@@ -78,8 +78,8 @@ void DarkStageCandelabraActor::SetModel(const std::shared_ptr<StageAsset>& stage
         pos.y += 0.1f;
         sphereMeshComponent->SetRelativeLocationDirect(pos);
         sphereMeshComponent->SetRelativeRotationDirect(point.worldRotation);
-        sphereMeshComponent->cpuColor = { 1,0.2f,0,1 };
-        sphereMeshComponent->emissionPower = 6.0f;
+        sphereMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,0.2f,0,1 };
+        sphereMeshComponent->plusAlphaCBuffer->data.emissionPower = 6.0f;
 
         flameComponents.push_back(sphereMeshComponent.get());
         flameBasePositions.push_back(pos);
@@ -120,7 +120,7 @@ void DarkStageCandelabraActor::Update(float deltaTime)
             flameSettings.flickerAmp1 * sin(time * flameSettings.flickerSpeed1 + id) +
             flameSettings.flickerAmp2 * sin(time * flameSettings.flickerSpeed2 + id * 2.1f);
         // 明るさ
-        flame->emissionPower = 6.0f * flicker;
+        flame->plusAlphaCBuffer->data.emissionPower = 6.0f * flicker;
 
         //  サイズ（縦に伸ばす）
         float scale = flameSettings.baseScale + flameSettings.scaleAmp * flicker;
@@ -138,7 +138,7 @@ void DarkStageCandelabraActor::Update(float deltaTime)
 
         float g = flameSettings.colorBaseG + flameSettings.colorAmpG * f;
 
-        flame->cpuColor = {
+        flame->plusAlphaCBuffer->data.cpuColor = {
             1.0f,
             g,
             0.0f,

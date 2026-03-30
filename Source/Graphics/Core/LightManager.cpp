@@ -248,6 +248,12 @@ void LightManager::Update(float deltaTime)
     constants.rimColor = light.rimColor;
     constants.rimIntensity = light.rimIntensity;
 
+    constants.playerHairRimColor = light.playerHairRimColor;
+    constants.playerHairRimIntensity = light.playerHairRimIntensity;
+
+    constants.playerRimColor = light.playerRimColor;
+    constants.playerRimIntensity = light.playerRimIntensity;
+
     constants.rimPower = light.rimPower;
     constants.kc = light.kc;
     constants.kl = light.kl;
@@ -329,6 +335,10 @@ void LightManager::DrawGui()
     ImGui::ColorEdit3(U8("ライト色"), &light.lightColor.x);
     ImGui::ColorEdit3(U8("リムライト色"), &light.rimColor.x);
     ImGui::SliderFloat(U8("リム強度"), &light.rimIntensity, 0.0f, 30.0f);
+    ImGui::ColorEdit3(U8("プレイヤーのリムライト色"), &light.playerRimColor.x);
+    ImGui::SliderFloat(U8("プレイヤーのリム強度"), &light.playerRimIntensity, 0.0f, 30.0f);
+    ImGui::ColorEdit3(U8("プレイヤーの髪のリムライト色"), &light.playerHairRimColor.x);
+    ImGui::SliderFloat(U8("プレイヤーの髪のリム強度"), &light.playerHairRimIntensity, 0.0f, 30.0f);
     ImGui::SliderFloat(U8("リムパワー"), &light.rimPower, 0.0f, 30.0f);
     ImGui::SliderFloat(U8("距離減衰"), &light.lightDirection.w, 0.0f, 1.0f);
     ImGui::SliderFloat(U8("Diffuse 強度"), &light.diffuseIntensity, 0.0f, 2.0f);
