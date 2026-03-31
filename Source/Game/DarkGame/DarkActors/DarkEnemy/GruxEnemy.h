@@ -35,6 +35,22 @@ private:
 
 };
 
+class GracialEnemy :public Character
+{
+public:
+    explicit GracialEnemy(const std::string& actorName) :Character(actorName) {}
+
+    void Initialize(const Transform& transform)override;
+
+    void Update(float elapsedTime)override;
+
+private:
+    // 描画用コンポーネントを追加
+    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
+    std::shared_ptr<RotationComponent> rotationComponent;
+
+};
+
 
 
 

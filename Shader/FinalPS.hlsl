@@ -77,5 +77,6 @@ float4 main(VS_OUT pin) : SV_TARGET
         finalColor.rgb = ToneCurve(finalColor.rgb, toneMappingValue);
     }
 
+
     return finalColor;
 }

@@ -1,8 +1,10 @@
-#include "Constants.hlsli"
 #include "GltfModel.hlsli"
+#include "Sampler.hlsli"
 #include "FilterFunctions.hlsli"
+#include "ModelType.hlsli"
 
-#define BASECOLOR_TEXTURE 0 
+
+#define BASE_COLOR_TEXTURE 0 
 #define METALLIC_ROUGHNESS_TEXTURE 1 
 #define NORMAL_TEXTURE 2 
 #define EMISSIVE_TEXTURE 3
@@ -10,54 +12,45 @@
 Texture2D<float4> materialTextures[5] : register(t1);
 
 
-#define POINT 0
-#define LINEAR 1
-#define ANISOTROPIC 2
-SamplerState samplerStates[5] : register(s0);
-
 GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
 {
     GBUFFER_PS_OUT pout;
+
     const float GAMMA = 2.2;
+
     const MaterialConstants m = materials[material];
 
     float4 baseColorFactor = m.pbrMetallicRoughness.baseColorFactor;
     const int baseColorTexture = m.pbrMetallicRoughness.basecolorTexture.index;
-
-    //float4 baseColor = baseColorFactor;
-
     if (baseColorTexture > -1)
     {
-        float4 sampled = materialTextures[BASECOLOR_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
+        float4 sampled = materialTextures[BASE_COLOR_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(sampled.rgb, GAMMA);
         baseColorFactor *= sampled;
-
     }
-    
     if (m.alphaMode == 0 /*OPAQUE*/)
     {
         baseColorFactor.a = 1.0;
     }
-    //if (m.alphaMode == 1 && baseColorFactor.a < 1.0)
-    //{
-    //    pout.gbuffer3Color = float4(1, 0, 0, 1);
-    //    return pout;
-    //    discard;
-    //}
-    if (baseColorFactor.a < m.alphaCutoff)
+    else if (m.alphaMode == 1 /*MASK*/ || m.alphaMode == 2 /*BLEND*/)
     {
-        //pout.gbuffer3Color = float4(1, 0, 0, 1);
-        discard;
+        clip(baseColorFactor.a - m.alphaCutoff);
     }
     
     float3 emissiveFactor = m.emissiveFactor;
-    
     const int emissiveTexture = m.emissiveTexture.index;
     if (emissiveTexture > -1)
     {
-        float4 sampled = materialTextures[EMISSIVE_TEXTURE].Sample(samplerStates[2], pin.texcoord);
+        float4 sampled = materialTextures[EMISSIVE_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord);
         sampled.rgb = pow(sampled.rgb, GAMMA);
         emissiveFactor *= sampled.rgb;
+
+        if (objectType == OBJECT_PLAYER || objectType == OBJECT_ENEMY)
+        { // playerの時はエミッシブを強めに出す
+            emissiveFactor *= emissionPower;
+        }
+
+
     }
     
     float roughnessFactor = m.pbrMetallicRoughness.roughnessFactor;
@@ -66,8 +59,17 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     if (metallicRoughnessTexture > -1)
     {
         float4 sampled = materialTextures[METALLIC_ROUGHNESS_TEXTURE].Sample(samplerStates[LINEAR], pin.texcoord);
+        //roughnessFactor = 1.0;
         roughnessFactor *= sampled.g;
         metallicFactor *= sampled.b;
+    }
+
+    if (objectType == OBJECT_DOOR)
+    { // ドアの時だけラフネスを上げて、メタリックを下げる
+        if (metallicFactor < 0.1) // 木
+        {
+            roughnessFactor = max(roughnessFactor, 0.6);
+        }
     }
     
     float occlusionFactor = 1.0;
@@ -79,21 +81,13 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     }
     const float occlusionStrength = m.occlusionTexture.strength;
 
-    const float3 f0 = lerp(0.04, baseColorFactor.rgb, metallicFactor);
-    const float3 f90 = 1.0;
-    const float alphaRoughness = roughnessFactor * roughnessFactor;
-    const float3 cDiff = lerp(baseColorFactor.rgb, 0.0, metallicFactor);
-    
-    const float3 P = pin.wPosition.xyz;
-    const float3 V = normalize(cameraPositon.xyz - pin.wPosition.xyz);
-    
     float3 N = normalize(pin.wNormal.xyz);
-    float3 T = hasTangent ? normalize(pin.wTangent.xyz) : float3(1, 0, 0);
+    float3 T = hasTangent ? normalize(pin.wTangent.xyz) : float3(1, 0, 0.0001);
     float sigma = hasTangent ? pin.wTangent.w : 1.0;
     T = normalize(T - N * dot(N, T));
     float3 B = normalize(cross(N, T) * sigma);
     
-    //For a back-facing surface, the tangential basis vectors are negated.
+    //背面については、接線方向の基底ベクトルは符号が反転する。
     if (isFrontFace == false)
     {
         T = -T;
@@ -111,30 +105,47 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
     }
 
-    float4 color = baseColorFactor;
+    pout.gBuffer3Normal = float4(N.xyz, objectType); // world space
+
     {// カラー調整
-      // RGB > HSV に変換
-        color.rgb = RGB2HSV(color.rgb);
+    // RGB > HSV に変換
+        baseColorFactor.rgb = RGB2HSV(baseColorFactor.rgb);
 
     // 色相調整
-        color.r += modelHueShift;
+        baseColorFactor.r += modelHueShift;
 
     // 彩度調整
-        color.g *= modelSaturation;
+        baseColorFactor.g *= modelSaturation;
 
     // 明度調整
-        color.b *= modelBrightness;
+        baseColorFactor.b *= modelBrightness;
 
     // HSV > RGB に変換
-        color.rgb = HSV2RGB(color.rgb);
+        baseColorFactor.rgb = HSV2RGB(baseColorFactor.rgb);
     }
-    pout.albedo = color;
-    //pout.position = mul(pin.wPosition, view); // to viewSpace
-    //pout.gbuffer1Normal = mul(float4(N.xyz, 0), view); //to viewSpace;
-    pout.position = pin.wPosition; // to viewSpace
-    pout.gBuffer3Normal = float4(N.xyz, 0); //to viewSpace;
-    pout.emissive = float4(emissiveFactor, 0); // 元々wは１だったがスカイマップなどの時に使用するため０に変更
-    pout.material = float4(metallicFactor, roughnessFactor, occlusionFactor, materialType);
+
+    pout.albedo = baseColorFactor;
+
+    pout.position = pin.wPosition; // world space 
+
+    pout.emissive = float4(emissiveFactor, 0); // wの値 : スカイマップ１それ以外０    2: emissiveFlagとして使用
+
+    if (materialType == MATERIAL_EYE)
+    {
+        float luminance = dot(baseColorFactor.rgb, float3(0.3, 0.59, 0.11));
+
+        float2 uv = pin.texcoord;
+        float dist = distance(uv, float2(0.5, 0.5));
+
+        float maskColor = 1.0 - step(0.1, luminance);
+        float maskCenter = 1.0 - smoothstep(0.1, 0.2, dist);
+
+        float mask = maskColor * maskCenter;
+        emissiveFactor = mask * float3(cpuColor.rgb) * emissionPower;
+        pout.emissive = float4(emissiveFactor, 0); // wの値 : スカイマップ１それ以外０    2: emissiveFlagとして使用
+    }
+
+    pout.material = float4(metallicFactor, roughnessFactor, occlusionFactor, materialType /*マテリアルタイプ*/);
     
     return pout;
 }

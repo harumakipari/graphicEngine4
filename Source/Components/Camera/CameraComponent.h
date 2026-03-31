@@ -443,7 +443,7 @@ public:
     std::vector<CameraBookmark> bookmarks;
 
 private:
-    float moveSpeed = 0.1f;
+    float moveSpeed = 2.0f;
     float rotateSpeed = 0.001f;
     bool useCinematic = false;
 

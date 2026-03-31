@@ -45,10 +45,12 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
         sampled.rgb = pow(sampled.rgb, GAMMA);
         emissiveFactor *= sampled.rgb;
 
-        if (objectType == OBJECT_PLAYER)
+        if (objectType == OBJECT_PLAYER || objectType == OBJECT_ENEMY)
         { // playerの時はエミッシブを強めに出す
             emissiveFactor *= emissionPower;
         }
+
+
     }
     
     float roughnessFactor = m.pbrMetallicRoughness.roughnessFactor;

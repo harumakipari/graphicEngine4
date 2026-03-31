@@ -215,6 +215,7 @@ void InputSystem::Initialize()
     inputKeys["E"].emplace_back(std::make_unique<Keyboard>('E'));
     inputKeys["Q"].emplace_back(std::make_unique<Keyboard>('Q'));
     inputKeys["Z"].emplace_back(std::make_unique<Keyboard>('Z'));
+    inputKeys["K"].emplace_back(std::make_unique<Keyboard>('K'));
     inputKeys["R"].emplace_back(std::make_unique<Keyboard>('R'));
     inputKeys["X"].emplace_back(std::make_unique<Keyboard>('X'));
     inputKeys["T"].emplace_back(std::make_unique<Keyboard>('T'));

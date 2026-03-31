@@ -21,10 +21,10 @@ struct SceneLightConstants
     float rimIntensity = 1.466f;
 
     DirectX::XMFLOAT3 playerRimColor = { 0.977f,0.71f,0.168f };
-    float playerRimIntensity = 0.818f;
+    float playerRimIntensity = 0.0f;
 
     DirectX::XMFLOAT3 playerHairRimColor = { 0.422f,0.333f,0.0f };
-    float playerHairRimIntensity = 0.648f;
+    float playerHairRimIntensity = 0.0f;
 
     float rimPower = 3.0f;
     float kc = 1.0f;
@@ -105,6 +105,10 @@ struct FogConstants
 
     float globalFogIntensity = 0.034f;// 全体にフォグをどれくらいかけるか
     int isWindowFog = 1;
+    float fogNear = 0.0f;
+    float fogFar = 400.0f;
+
+    float distanceFogHeightFalloff = 0.0f; // 距離フォグの高さ減衰。0で減衰なし。値が大きいほど距離フォグの影響が高い位置が低くなる。
 };
 
 struct SSRConstantBuffer
@@ -125,8 +129,8 @@ struct SSAOConstantBuffer
 
 struct BloomConstantBuffer
 {
-    float bloomExtractionThreshold = 5.0;
-    float bloomIntensity = 0.335f;
+    float bloomExtractionThreshold = 9.0f;
+    float bloomIntensity = 0.415f;
 };
 
 class SceneSettings // 今の状態

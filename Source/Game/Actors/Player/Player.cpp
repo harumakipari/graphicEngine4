@@ -27,10 +27,11 @@ void Player::Initialize(const Transform& transform)
     {
         PROFILE_SCOPE("Create PlayerModel");
 
-        skeletalMeshComponent = this->AddComponent<class SkeletalMeshComponent>(parentName);
+        skeletalMeshComponent = this->AddComponent<SkeletalMeshComponent>(parentName);
         skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/animation.gltf", false, true);
         skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Player;   // オブジェクトの種類を Player に設定
         skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 20.9f;   // 自己発光の強さを設定
+        skeletalMeshComponent->InitializeCloth();
         //skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 8.9f;   // 自己発光の強さを設定
         //skeletalMeshComponent->SetModel("./Data/Models/Characters/Aurora_FrozenHealth/Idle.gltf");
 #if 1
@@ -184,6 +185,9 @@ void Player::Update(float elapsedTime)
     // これは絶対入れる　アニメーションの更新をしているから
     Character::Update(elapsedTime);
 
+    skeletalMeshComponent->UpdateCloth(elapsedTime);
+
+    skeletalMeshComponent->UpdateGlobalTransforms();
 
     if (InputSystem::GetInputState("RB", InputStateMask::Trigger))
     {

@@ -242,14 +242,13 @@ public:
             AddPipeLineState("deferredBlendStaticMesh", desc);
         }
 
-        // StaticMesh deferred stage 用
-        {
-            hr = CreatePsFromCSO(device, "./Shader/GltfModelFightStagePS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+        //// StaticMesh deferred stage 用
+        //{
+        //    hr = CreatePsFromCSO(device, "./Shader/GltfModelFightStagePS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+        //    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-            //desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
-            AddPipeLineState("deferredFightStage", desc);
-        }
+        //    AddPipeLineState("deferredFightStage", desc);
+        //}
 
         // StaticMesh Cascade ShadowMap 用
         {
@@ -301,6 +300,14 @@ public:
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
             AddPipeLineState("deferredOpaqueSkeletalMesh", desc);
+        }
+
+        // StaticMesh deferred stage 用
+        {
+            hr = CreatePsFromCSO(device, "./Shader/GltfModelFightStagePS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+            AddPipeLineState("deferredFightStage", desc);
         }
 
         // SkeletalMesh forward Mask 用

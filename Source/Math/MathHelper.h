@@ -337,6 +337,25 @@ namespace MathHelper
         return { a.x + b.x, a.y + b.y, a.z + b.z };
     }
 
+
+    inline DirectX::XMVECTOR Load(const DirectX::XMFLOAT3& v)
+    {
+        return DirectX::XMLoadFloat3(&v);
+    }
+
+    inline DirectX::XMFLOAT3 StoreFloat3(DirectX::XMVECTOR v)
+    {
+        DirectX::XMFLOAT3 out;
+        DirectX::XMStoreFloat3(&out, v);
+        return out;
+    }
+
+    inline DirectX::XMFLOAT4 StoreFloat4(DirectX::XMVECTOR v)
+    {
+        DirectX::XMFLOAT4 out;
+        DirectX::XMStoreFloat4(&out, v);
+        return out;
+    }
 }
 
 #endif //MATH_HELPER_H

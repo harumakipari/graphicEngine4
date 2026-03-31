@@ -4,6 +4,7 @@
 #include "FilterFunctions.hlsli"
 #include "Lights.hlsli"
 #include "ModelType.hlsli"
+#include "ShaderFunctions.hlsli"
 
 Texture2D colorTexture : register(t0);
 Texture2D positionTexture : register(t1);
@@ -218,11 +219,6 @@ float4 main(VS_OUT pin) : SV_TARGET
     positionWorldSpace /= positionWorldSpace.w;
 
     const float aspect = (float) height / width;
-    if (enableDof)
-    {
-    }
-
-
 
     if (enableCascadedShadowMaps)
     {
@@ -234,11 +230,26 @@ float4 main(VS_OUT pin) : SV_TARGET
     {
         float linearDepth = positionViewSpace.z;
 
-        float3 fogColor = CalculatedFogColor(pin.texcoord, depthNdc, color.rgb);
-        color.rgb = fogColor;
+        // Volumetric Fog
+        color.rgb = CalculatedFogColor(pin.texcoord, depthNdc, color.rgb);
+        // 距離fog
+        color = CalcFog(color, fogColor, float2(fogNear, fogFar), length(positionWorldSpace.xyz - cameraPositon.xyz));
 
-        //float3 fogColor = CalculatedFogColor(pin.texcoord, depthNdc);
-        //color.rgb += fogColor;
+
+        float dist = length(positionWorldSpace.xyz - cameraPositon.xyz);
+        // 距離
+        float distFog = saturate((dist - fogNear) / (fogFar - fogNear));
+        // 高さ
+        float height = positionWorldSpace.y;
+        float heightFog = exp(-height * distanceFogHeightFalloff);
+        // ノイズ
+        const float3 noiseVelocity = normalize(float3(1, 0, 0));
+        float3 noiseSamplePosition = frac(positionWorldSpace * noiseScale + noiseVelocity * elapsedTime * timeScale);
+        float noise = 0.5 * noise3D.Sample(samplerStates[LINEAR], noiseSamplePosition) + 0.5;
+        heightFog *= lerp(0.8, 1.2, noise);
+
+        float fogFactor = 1 - exp(-distFog * heightFog);
+        color.rgb = lerp(color.rgb, fogColor.rgb, fogFactor);
     }
 
     // ブルーム処理

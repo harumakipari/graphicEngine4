@@ -14,9 +14,7 @@ void FogEffect::Initialize(ID3D11Device* device, uint32_t width, uint32_t height
     fogCBuffer = std::make_unique<ConstantBuffer<FogConstants>>(device);
     fullScreenQuad = std::make_unique<FullScreenQuad>(device);
     fogBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false, DXGI_FORMAT_R16_FLOAT);
-    //fogBuffer = std::make_unique<FrameBuffer>(device, width / 2, height / 2, false);
     HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricFogPS.cso", fogPS.ReleaseAndGetAddressOf());
-    //HRESULT hr = CreatePsFromCSO(device, "./Shader/VolumetricLightPS.cso", fogPS.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     D3D11_TEXTURE2D_DESC texture2dDesc;
@@ -52,6 +50,9 @@ void FogEffect::Apply(ID3D11DeviceContext* immediateContext, ID3D11ShaderResourc
     fogCBuffer->data.noiseScale = fog.noiseScale;
     fogCBuffer->data.timeScale = fog.timeScale;
     fogCBuffer->data.isWindowFog = fog.isWindowFog;
+    fogCBuffer->data.fogNear = fog.fogNear;
+    fogCBuffer->data.fogFar = fog.fogFar;
+    fogCBuffer->data.distanceFogHeightFalloff = fog.distanceFogHeightFalloff;
 
     fogCBuffer->Activate(immediateContext, 8);
 
@@ -93,6 +94,9 @@ void FogEffect::DrawDebugUI()
     ImGui::SliderFloat("Time Scale", &fog.timeScale, 0.0f, 1.0f, "%.4f");
     ImGui::SliderFloat("Noise Scale", &fog.noiseScale, 0.0f, 0.5f, "%.4f");
     ImGui::DragFloat("globalFogIntensity", &fog.globalFogIntensity, 0.001f, 0.0f, 0.5f, "%.4f");
+    ImGui::SliderFloat("fogNear", &fog.fogNear, 0.1f, +100.0f);
+    ImGui::SliderFloat("fogFar", &fog.fogFar, 0.1f, +500.0f);
+    ImGui::SliderFloat("distanceFogHeightFalloff", &fog.distanceFogHeightFalloff, 0.1f, +50.0f);
     CheckboxInt("Enable Dither", &fog.enableDither);
     CheckboxInt("window fog", &fog.isWindowFog);
 #endif

@@ -14,7 +14,20 @@ float3 CalcRimLight(float3 N, float3 V, float3 color, float power)
     //float rim = dot(N, V);
     //rim = smoothstep(1.0, 0.0, rim);
 
-
     rim = pow(rim, power);
     return rim * color;
+}
+
+
+//--------------------------------------------
+//	フォグ
+//--------------------------------------------
+//color:現在のピクセル色
+//fog_color:フォグの色
+//fog_range:フォグの範囲情報
+//eye_length:視点からの距離
+float4 CalcFog(in float4 color, float4 fogColor, float2 fogRange, float eyeLength)
+{
+    float fogAlpha = saturate((eyeLength - fogRange.x) / (fogRange.y - fogRange.x));
+    return lerp(color, fogColor, fogAlpha);
 }

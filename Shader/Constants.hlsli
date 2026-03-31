@@ -63,10 +63,14 @@ cbuffer FOG_CONSTANTS_BUFFER : register(b8)
     float mieScatteringCoef;
     float timeScale;
     float noiseScale;
-    bool enableDither;
+    int enableDither;
 
     float globalFogIntensity;
-    bool isWindowFog;
+    int isWindowFog;
+    float fogNear; // 距離fogの開始位置
+    float fogFar; // 距離fogの終了位置
+
+    float distanceFogHeightFalloff; // 距離フォグの高さ減衰。0で減衰なし。値が大きいほど距離フォグの影響が高い位置が低くなる。
 }
 cbuffer VOLUMETRIC_CLOUDSCAPES_CONSTANT_BUFFER : register(b5)
 {
