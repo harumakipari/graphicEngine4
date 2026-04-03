@@ -34,6 +34,35 @@ struct Range
     }
 };
 
+struct CurvePoint
+{
+    float time;   // 0.0～1.0
+    float value;
+};
+
+struct FloatCurve
+{
+    std::vector<CurvePoint> points;
+
+    float Evaluate(float t) const
+    {
+        if (points.empty()) return 1.0f;
+
+        for (size_t i = 0; i < points.size() - 1; ++i)
+        {
+            const auto& p0 = points[i];
+            const auto& p1 = points[i + 1];
+
+            if (t >= p0.time && t <= p1.time)
+            {
+                float lerpT = (t - p0.time) / (p1.time - p0.time);
+                return p0.value + (p1.value - p0.value) * lerpT;
+            }
+        }
+
+        return points.back().value;
+    }
+};
 
 
 // エフェクトハンドル
@@ -114,6 +143,7 @@ public:
     //static void DrawGUI();
 
 private:
+    static int RegisterCurve(const FloatCurve& curve); // カーブ → 1Dテクスチャ化関数
 
     static void ClearEffectData(); // エフェクトデータクリア
 
@@ -141,6 +171,9 @@ private:
 
     // 指定角度内のランダム方向ベクトル取得
     static Vector3 RandomConeDirection(const Vector3& dir, float coneAngle);
+
+    static void UpdateCurveTexture();
+
 public:
     // 描画モード
     enum class RenderingMode : uint8_t
@@ -212,6 +245,10 @@ public:
         Range<Vector2> endSize{ { 1,1 }, { 1,1 } };				// 終了サイズ
         Range<CoreColor> startColor;								// 開始色
         Range<CoreColor> endColor;									// 終了色
+
+        FloatCurve sizeCurve;
+        bool dirty = true; // GUIで編集されたかどうか（テクスチャ再生成フラグ）
+        int curveIndex = 1; // カーブテクスチャ内のインデックス
     };
     // エミッタデータ構造体
     struct ParticleEmitterData
@@ -265,4 +302,7 @@ private:
 
     //パーティクルシステムリスト
     static inline std::unordered_map<std::string/*effectFilePath*/, ParticleSystems> particleSystems;
+
+    static inline std::vector<std::vector<float>> curveData; // 各カーブのサンプル
+    static inline Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> curveArraySRV;
 };

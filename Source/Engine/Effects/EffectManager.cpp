@@ -128,6 +128,7 @@ EffectHandle EffectManager::LoadEffectData(const std::string& filePath)
                         emitterData.visualData.startColor = emitterJson["startColor"].get<Range<CoreColor>>();
                     if (emitterJson.contains("endColor"))
                         emitterData.visualData.endColor = emitterJson["endColor"].get<Range<CoreColor>>();
+
                 }
 
                 // エミッタデータリストに追加
@@ -279,7 +280,7 @@ void EffectManager::EmitParticle(EffectHandle handle, const XMFLOAT3& pos, const
     }
 
     // 各エミッターデータを処理
-    for (const auto& emitterData : effectData[handle].emitters)
+    for (/*const*/ auto& emitterData : effectData[handle].emitters)
     {
         const std::string& effectFilePath = effectData[handle].filePath;
         // テクスチャパスと最大パーティクル数取得
@@ -320,7 +321,6 @@ void EffectManager::EmitParticle(EffectHandle handle, const XMFLOAT3& pos, const
 
             emitData.parameter.z = delayTime; // 遅延時間設定
             //emitData.parameter.w = 0.0f; // テクスチャインデックスは未使用
-
             // 位置設定
             {
                 emitData.position.x = pos.x;
@@ -373,12 +373,25 @@ void EffectManager::EmitParticle(EffectHandle handle, const XMFLOAT3& pos, const
             {
                 Vector2 startSize = emitterData.visualData.startSize.GetRandom();
                 Vector2 endSize = emitterData.visualData.endSize.GetRandom();
+                //emitData.scale = DirectX::XMFLOAT4(startSize.x, startSize.y, endSize.x, endSize.y);
                 emitData.scale = DirectX::XMFLOAT4(startSize.x, startSize.y, endSize.x, endSize.y);
                 CoreColor startColor = emitterData.visualData.startColor.GetRandom();
                 CoreColor endColor = emitterData.visualData.endColor.GetRandom();
                 emitData.startColor = startColor;
                 emitData.endColor = endColor;
                 emitData.customData.x = emitterData.emitData.emissivePower;
+#if 1
+                int curveIndex = (float)emitterData.visualData.curveIndex;
+                if (emitterData.visualData.dirty)
+                {
+                    int curveIndex = RegisterCurve(emitterData.visualData.sizeCurve);
+                    emitterData.visualData.dirty = false;   // このためにconst取っている
+                    emitData.customData.y = (float)curveIndex;
+                }
+                emitData.customData.y = curveIndex;
+#else
+                emitData.customData.y = (float)emitterData.visualData.curveIndex;
+#endif // 0
             }
 
             // エミット
@@ -458,6 +471,28 @@ void EffectManager::Initialize()
 
 void EffectManager::Update(float deltaTime)
 {
+    bool curveDirty = false;
+
+    for (auto& effect : effectData)
+    {
+        for (auto& emitter : effect.emitters)
+        {
+            if (emitter.visualData.dirty)
+            {
+                int index = RegisterCurve(emitter.visualData.sizeCurve);
+                emitter.visualData.curveIndex = index; // ←追加！
+                emitter.visualData.dirty = false;
+
+                curveDirty = true;
+            }
+        }
+    }
+
+    if (curveDirty)
+    {
+        UpdateCurveTexture(); // GPU転送
+    }
+
     for (auto it = activeEmitters.begin(); it != activeEmitters.end(); )
     {
         auto& emitter = *it;
@@ -558,6 +593,11 @@ void EffectManager::Update(float deltaTime)
 
 void EffectManager::Render(ID3D11DeviceContext* immediateContext)
 {
+    if (curveArraySRV)
+    {
+        immediateContext->GSSetShaderResources(10, 1, curveArraySRV.GetAddressOf());
+    }
+
     //パーティクルシステム描画
     for (auto& [effectFilePath, particleSystemList] : particleSystems)
     {
@@ -844,4 +884,50 @@ Vector3 EffectManager::RandomConeDirection(const Vector3& dir, float coneAngle)
         axis.Cross(localDir) * sinA +
         axis * (axis.Dot(localDir)) * (1 - cosA);
     return rotatedDir.Normalize();
+}
+
+void EffectManager::UpdateCurveTexture()
+{
+    if (curveData.empty()) return;
+
+    int resolution = (int)curveData[0].size();
+    int arraySize = (int)curveData.size();
+
+    D3D11_TEXTURE1D_DESC desc{};
+    desc.Width = resolution;
+    desc.MipLevels = 1;
+    desc.ArraySize = arraySize;
+    desc.Format = DXGI_FORMAT_R32_FLOAT;
+    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+    std::vector<D3D11_SUBRESOURCE_DATA> initData(arraySize);
+
+    for (int i = 0; i < arraySize; ++i)
+    {
+        initData[i].pSysMem = curveData[i].data();
+    }
+
+    Microsoft::WRL::ComPtr<ID3D11Texture1D> texture;
+    Graphics::GetDevice()->CreateTexture1D(&desc, initData.data(), &texture);
+    Graphics::GetDevice()->CreateShaderResourceView(texture.Get(), nullptr, &curveArraySRV);
+}
+
+// カーブ → 1Dテクスチャ化関数
+int EffectManager::RegisterCurve(const FloatCurve& curve)
+{
+    const int resolution = 256;
+
+    std::vector<float> samples(resolution);
+
+    for (int i = 0; i < resolution; ++i)
+    {
+        float t = (float)i / (resolution - 1);
+        samples[i] = curve.Evaluate(t);
+    }
+
+    int index = (int)curveData.size();
+    curveData.push_back(samples);
+
+    return index;
 }

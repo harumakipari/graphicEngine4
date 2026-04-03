@@ -1,5 +1,6 @@
 #include "ComputeParticle.hlsli"
 #include "Constants.hlsli"
+#include "Sampler.hlsli"
 
 //拡大行列生成
 float4x4 MatrixScaling(float3 scale)
@@ -90,6 +91,9 @@ float4x4 MatrixTranslation(float3 translation)
 StructuredBuffer<ParticleData> particleDataBuffer : register(t0);
 StructuredBuffer<ParticleHeader> particleHeaderBuffer : register(t1);
 
+// カーブテクスチャ
+Texture1DArray curveTextures : register(t10);
+
 [maxvertexcount(4)]
 void main(point GS_IN gin[1], inout TriangleStream<PS_IN> output)
 {
@@ -102,9 +106,23 @@ void main(point GS_IN gin[1], inout TriangleStream<PS_IN> output)
     //残り生存時間と誕生時の生存時間から割合を計算する。
     float lifeTimeRate = !isAlive ? 0 : particleDataBuffer[particleIndex].parameter.y / particleDataBuffer[particleIndex].parameter.z;
     
+    int curveIndex = (int) particleDataBuffer[particleIndex].customData.y;
+    float t = lifeTimeRate;
+    // カーブサンプリング
+    float curveValue = curveTextures.SampleLevel(samplerStates[LINEAR_CLAMP], float2(t, curveIndex), 0);
+
     //生存していない場合はスケールを０にしておく
+#if 0
     float2 size = !isAlive ? float2(0, 0) : lerp(particleDataBuffer[particleIndex].scale.zw, particleDataBuffer[particleIndex].scale.xy, lifeTimeRate);
-    
+#else
+
+    float2 baseSize = particleDataBuffer[particleIndex].scale.xy;
+
+    // カーブで倍率
+    float2 size = baseSize * curveValue;
+
+#endif
+
     //ビルボード行列生成（ビュー行列の逆行列でいい。ただし移動値はいらない）
     //TODO: InverseView行列を定数バッファに設定する。
     float4x4 billbordMatrix = invView;

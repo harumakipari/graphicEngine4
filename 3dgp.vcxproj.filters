@@ -534,6 +534,12 @@
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkEnemy\GruxEnemy.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="External\imgui\ImCurveEdit.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\ImSequencer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -860,6 +866,8 @@
     <ClInclude Include="Source\Engine\Scene\SceneState.h" />
     <ClInclude Include="Source\Game\Scenes\GameScene.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkEnemy\GruxEnemy.h" />
+    <ClInclude Include="External\imgui\ImCurveEdit.h" />
+    <ClInclude Include="External\imgui\ImSequencer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
