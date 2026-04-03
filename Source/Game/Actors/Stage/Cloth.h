@@ -11,7 +11,6 @@
 
 #include "Engine/Utility/Win32Utils.h"
 #include "Engine/Input/InputSystem.h"
-#include "Graphics/Effect/Particles.h"
 
 struct ClothVertex
 {

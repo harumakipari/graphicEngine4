@@ -234,9 +234,6 @@
     <ClCompile Include="Source\Graphics\Environment\SkyMap.cpp">
       <Filter>Sources\Graphics\Environment</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\Effect\Particles.cpp">
-      <Filter>Sources\Graphics\Effect</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Graphics\PostProcess\FrameBuffer.cpp">
       <Filter>Sources\Graphics\PostProcess</Filter>
     </ClCompile>
@@ -308,9 +305,6 @@
     </ClCompile>
     <ClCompile Include="Source\Components\Game\LifeTimeComponent.cpp">
       <Filter>Sources\Components\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\Effect\HuskParticle.cpp">
-      <Filter>Sources\Graphics\Effect</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\Resource\ShaderToy.cpp">
       <Filter>Sources</Filter>
@@ -623,9 +617,6 @@
     <ClInclude Include="Source\Graphics\Environment\SkyMap.h">
       <Filter>Sources\Graphics\Environment</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Effect\Particles.h">
-      <Filter>Sources\Graphics\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Graphics\PostProcess\FrameBuffer.h">
       <Filter>Sources\Graphics\PostProcess</Filter>
     </ClInclude>
@@ -739,9 +730,6 @@
     </ClInclude>
     <ClInclude Include="Source\Graphics\Core\PipelineState.h">
       <Filter>Sources\Graphics\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\Effect\HuskParticle.h">
-      <Filter>Sources\Graphics\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Source\Components\Game\TimerActionComponent.h">
       <Filter>Sources\Components\Game</Filter>

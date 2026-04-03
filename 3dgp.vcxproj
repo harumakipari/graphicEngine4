@@ -316,8 +316,6 @@
     <ClCompile Include="Source\Graphics\Core\LightManager.cpp" />
     <ClCompile Include="Source\Graphics\Core\RenderState.cpp" />
     <ClCompile Include="Source\Graphics\Core\Shader.cpp" />
-    <ClCompile Include="Source\Graphics\Effect\HuskParticle.cpp" />
-    <ClCompile Include="Source\Graphics\Effect\Particles.cpp" />
     <ClCompile Include="Source\Graphics\Environment\SkyMap.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\DepthOfFieldEffect.cpp" />
     <ClCompile Include="Source\Graphics\PostProcess\FogEffect.cpp" />
@@ -476,8 +474,6 @@
     <ClInclude Include="Source\Graphics\Core\RenderState.h" />
     <ClInclude Include="Source\Graphics\Core\SceneRenderContext.h" />
     <ClInclude Include="Source\Graphics\Core\Shader.h" />
-    <ClInclude Include="Source\Graphics\Effect\HuskParticle.h" />
-    <ClInclude Include="Source\Graphics\Effect\Particles.h" />
     <ClInclude Include="Source\Graphics\Environment\SkyMap.h" />
     <ClInclude Include="Source\Graphics\PostProcess\BloomEffect.h" />
     <ClInclude Include="Source\Graphics\PostProcess\DepthOfFieldEffect.h" />
