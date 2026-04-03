@@ -185,9 +185,9 @@ void Player::Update(float elapsedTime)
     // これは絶対入れる　アニメーションの更新をしているから
     Character::Update(elapsedTime);
 
-    skeletalMeshComponent->UpdateCloth(elapsedTime);
+    //skeletalMeshComponent->UpdateCloth(elapsedTime);
 
-    skeletalMeshComponent->UpdateGlobalTransforms();
+    //skeletalMeshComponent->UpdateGlobalTransforms();
 
     if (InputSystem::GetInputState("RB", InputStateMask::Trigger))
     {

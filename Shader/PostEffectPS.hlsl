@@ -232,6 +232,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
         // Volumetric Fog
         color.rgb = CalculatedFogColor(pin.texcoord, depthNdc, color.rgb);
+#if 0
         // ãóó£fog
         color = CalcFog(color, fogColor, float2(fogNear, fogFar), length(positionWorldSpace.xyz - cameraPositon.xyz));
 
@@ -250,6 +251,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
         float fogFactor = 1 - exp(-distFog * heightFog);
         color.rgb = lerp(color.rgb, fogColor.rgb, fogFactor);
+#endif
     }
 
     // ÉuÉãÅ[ÉÄèàóù

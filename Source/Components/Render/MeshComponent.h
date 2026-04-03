@@ -21,6 +21,7 @@
 #include "Graphics/Core/PipelineState.h"
 #include "Components/Base/SceneComponent.h"
 #include "Core/Vector.h"
+#include "Engine/Debug/DebugRender.h"
 #include "Graphics/Resource/InterleavedGltfModel.h"
 #include "Engine/Utility/Win32Utils.h"
 #include "Game/Actors/WaterSphere/MorphModel.h"
@@ -178,8 +179,14 @@ public:
         float lengthToParent;
         DirectX::XMFLOAT3 restDir;
     };
-    std::vector<ClothBone> clothBones;
     std::vector<std::vector<ClothBone>> clothChains;
+
+    struct CapsuleCollider
+    {
+        DirectX::XMFLOAT3 p0;
+        DirectX::XMFLOAT3 p1;
+        float radius;
+    };
 
     struct ClothConstraint
     {
@@ -262,7 +269,58 @@ public:
             XMStoreFloat3(&child.restDir, dir);
         }
 #endif // 0
-        BuildHorizontalConstraints();
+        horizontalConstraints.clear();
+        // 前
+        //ConnectChains("loincloth_01", "hip_cloth_root_l");
+        //ConnectChains("loincloth_01", "hip_cloth_root_r");
+
+        //// 後ろ
+        //ConnectChains("loincloth_back_01", "hip_cloth_root_l");
+        //ConnectChains("loincloth_back_01", "hip_cloth_root_r");
+
+        //// 後ろ下
+        //ConnectChains("loincloth_back_bottom_05", "loincloth_back_01");
+    }
+
+    void ConnectChains(const std::string& nameA, const std::string& nameB)
+    {
+        int idxA = FindChainIndex(nameA);
+        int idxB = FindChainIndex(nameB);
+
+        if (idxA < 0 || idxB < 0) return;
+
+        auto& chainA = clothChains[idxA];
+        auto& chainB = clothChains[idxB];
+
+        int minSize = std::min<int>(chainA.size(), chainB.size());
+
+        for (int k = 1; k < minSize; ++k)
+        {
+            using namespace DirectX;
+
+            XMVECTOR a = MathHelper::Load(chainA[k].position);
+            XMVECTOR b = MathHelper::Load(chainB[k].position);
+
+            ClothConstraint c;
+            c.chainA = idxA;
+            c.indexA = k;
+            c.chainB = idxB;
+            c.indexB = k;
+            c.restLength = XMVectorGetX(XMVector3Length(a - b));
+
+            horizontalConstraints.push_back(c);
+        }
+    }
+
+    int FindChainIndex(const std::string& rootName)
+    {
+        for (int i = 0; i < clothChains.size(); ++i)
+        {
+            int nodeIndex = clothChains[i][0].nodeIndex;
+            if (modelNodes[nodeIndex].name == rootName)
+                return i;
+        }
+        return -1;
     }
 
     void BuildHorizontalConstraints()
@@ -333,11 +391,25 @@ public:
             XMVECTOR c = XMLoadFloat3(&child.position);
 
             XMVECTOR dir = XMVectorSubtract(c, p);
-
-            child.lengthToParent = XMVectorGetX(XMVector3Length(dir));
-
             dir = XMVector3Normalize(dir);
-            XMStoreFloat3(&child.restDir, dir);
+
+            // ★ ここに入れる
+            if (XMVectorGetY(dir) > 0.0f)
+            {
+                dir = -dir;
+            }
+
+            // 親の回転取得
+            const auto& parentNode = modelNodes[parent.nodeIndex];
+            XMMATRIX parentGlobal = XMLoadFloat4x4(&parentNode.globalTransform);
+
+            XMVECTOR parentRot = XMQuaternionRotationMatrix(parentGlobal);
+            XMVECTOR parentRotInv = XMQuaternionInverse(parentRot);
+
+            // world → local
+            XMVECTOR localDir = XMVector3Rotate(dir, parentRotInv);
+
+            XMStoreFloat3(&child.restDir, localDir);
         }
         Logger::Log("CHAIN: " + rootName + " size = " + std::to_string(chain.size()));
 
@@ -384,26 +456,32 @@ public:
         }
     }
 
+    void DrawCapsule(const CapsuleCollider& cap);
 
     void UpdateCloth(float dt)
     {
         using namespace DirectX;
 
-        XMVECTOR gravity = XMVectorSet(0, -9.8f, 0, 0);
+        XMVECTOR gravity = XMVectorSet(0, -20.8f, 0, 0);
 
         for (auto& chain : clothChains)
         {
             // --- root固定 ---
-            {
-                auto& root = chain[0];
-                auto& node = modelNodes[root.nodeIndex];
+            auto& root = chain[0];
+            auto& node = modelNodes[root.nodeIndex];
 
-                XMMATRIX M = XMLoadFloat4x4(&node.globalTransform);
-                XMVECTOR pos = XMVector3TransformCoord(XMVectorZero(), M);
+            XMMATRIX M = XMLoadFloat4x4(&node.globalTransform);
+            XMVECTOR posRoot = XMVector3TransformCoord(XMVectorZero(), M);
 
-                root.position = MathHelper::StoreFloat3(pos);
-                root.prevPosition = root.position;
-            }
+            // ★ ここで前フレームとの差分を取る（先に！）
+            XMVECTOR prevRoot = MathHelper::Load(root.prevPosition);
+            XMVECTOR currentRoot = posRoot;
+            XMVECTOR rootMove = currentRoot - prevRoot;
+
+            // 更新
+            root.position = MathHelper::StoreFloat3(posRoot);
+            root.prevPosition = root.position;
+
 
             // --- Verlet ---
             for (int i = 1; i < chain.size(); ++i)
@@ -413,13 +491,17 @@ public:
                 XMVECTOR pos = MathHelper::Load(bone.position);
                 XMVECTOR prev = MathHelper::Load(bone.prevPosition);
 
-                XMVECTOR velocity = XMVectorSubtract(pos, prev);
-                velocity = XMVectorScale(velocity, 0.98f);
+                XMVECTOR velocity = pos - prev;
 
+                // ★ 全ボーンに適用
+                velocity -= rootMove;
+
+                velocity -= rootMove * 0.5f; // ←弱める
+                velocity *= 0.9f;           // ←減衰弱く
                 bone.prevPosition = bone.position;
 
-                pos = XMVectorAdd(pos, velocity);
-                pos = XMVectorAdd(pos, XMVectorScale(gravity, dt * dt));
+                pos += velocity;
+                pos += gravity * dt * dt;
 
                 bone.position = MathHelper::StoreFloat3(pos);
             }
@@ -444,7 +526,7 @@ public:
             }
 
             // --- 横制約 ---
-            for (int iter = 0; iter < 4; ++iter)
+            for (int iter = 0; iter < 2; ++iter)
             {
                 for (auto& c : horizontalConstraints)
                 {
@@ -463,8 +545,9 @@ public:
 
                     float diff = (len - c.restLength) / len;
 
-                    XMVECTOR offset = XMVectorScale(delta, 0.5f * diff);
+                    float stiffness = 0.3f; // ←追加
 
+                    XMVECTOR offset = XMVectorScale(delta, 0.5f * diff * stiffness);
                     // rootは動かさない
                     if (c.indexA != 0)
                         boneA.position = MathHelper::StoreFloat3(a + offset);
@@ -474,7 +557,62 @@ public:
                 }
             }
 
+            auto thighL = GetThighCapsule("thigh_l", "calf_l");
+            auto thighR = GetThighCapsule("thigh_r", "calf_r");
+
+            // 衝突
+            for (int i = 1; i < chain.size(); ++i)
+            {
+                //SolveCapsuleCollision(chain[i], thighL);
+                //SolveCapsuleCollision(chain[i], thighR);
+            }
+
             ApplyClothToBones(chain);
+        }
+    }
+
+    // 太ももからカプセル生成
+    CapsuleCollider GetThighCapsule(const std::string& upperName, const std::string& lowerName);
+
+
+    DirectX::XMVECTOR ClosestPointOnSegment(DirectX::XMVECTOR p, DirectX::XMVECTOR a, DirectX::XMVECTOR b)
+    {
+        using namespace DirectX;
+
+        XMVECTOR ab = b - a;
+        float t = XMVectorGetX(XMVector3Dot(p - a, ab)) / XMVectorGetX(XMVector3Dot(ab, ab));
+
+        t = std::clamp(t, 0.0f, 1.0f);
+
+        return a + t * ab;
+    }
+
+    void SolveCapsuleCollision(ClothBone& bone, const CapsuleCollider& cap)
+    {
+        using namespace DirectX;
+
+        XMVECTOR p = MathHelper::Load(bone.position);
+        XMVECTOR a = XMLoadFloat3(&cap.p0);
+        XMVECTOR b = XMLoadFloat3(&cap.p1);
+
+        XMVECTOR closest = ClosestPointOnSegment(p, a, b);
+
+        XMVECTOR dir = p - closest;
+        float dist = XMVectorGetX(XMVector3Length(dir));
+
+        if (dist < cap.radius)
+        {
+            if (dist < 0.0001f)
+            {
+                dir = XMVectorSet(0, 1, 0, 0); // fallback
+            }
+            else
+            {
+                dir = XMVector3Normalize(dir);
+            }
+
+            XMVECTOR newPos = closest + dir * cap.radius;
+            bone.position = MathHelper::StoreFloat3(newPos);
         }
     }
 
@@ -489,30 +627,44 @@ public:
 
         // 同じ方向
         if (dot > 0.9999f)
-        {
             return XMQuaternionIdentity();
-        }
 
-        // 逆方向（危険ゾーン）
+        // 逆方向（超重要）
         if (dot < -0.9999f)
         {
             XMVECTOR axis = XMVector3Cross(from, XMVectorSet(1, 0, 0, 0));
 
+            // もしダメなら別軸
             if (XMVectorGetX(XMVector3LengthSq(axis)) < 0.0001f)
             {
                 axis = XMVector3Cross(from, XMVectorSet(0, 1, 0, 0));
+            }
+
+            // まだダメなら最終fallback
+            if (XMVectorGetX(XMVector3LengthSq(axis)) < 0.0001f)
+            {
+                axis = XMVectorSet(0, 0, 1, 0);
             }
 
             axis = XMVector3Normalize(axis);
             return XMQuaternionRotationAxis(axis, XM_PI);
         }
 
+        // 通常ケース
         XMVECTOR axis = XMVector3Cross(from, to);
-        float angle = acosf(dot);
 
-        return XMQuaternionRotationAxis(XMVector3Normalize(axis), angle);
+        // ★ ここが超重要（今回のクラッシュ対策）
+        if (XMVectorGetX(XMVector3LengthSq(axis)) < 0.0001f)
+        {
+            return XMQuaternionIdentity();
+        }
+
+        axis = XMVector3Normalize(axis);
+
+        float angle = acosf(std::clamp(dot, -1.0f, 1.0f));
+
+        return XMQuaternionRotationAxis(axis, angle);
     }
-
     void ApplyClothToBones(std::vector<ClothBone>& chain)
     {
         using namespace DirectX;
@@ -568,6 +720,10 @@ public:
 
     void Tick(float deltaTime)override
     {
+#ifdef _DEBUG
+        DrawCapsule(GetThighCapsule("thigh_l", "calf_l"));
+        DrawCapsule(GetThighCapsule("thigh_r", "calf_r"));
+#endif
 
     }
 

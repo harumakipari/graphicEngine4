@@ -68,6 +68,15 @@ void GruxEnemy::Initialize(const Transform& transform)
 void GruxEnemy::Update(float elapsedTime)
 {
     Character::Update(elapsedTime);
+    if (InputSystem::GetInputState("K", InputStateMask::Trigger))
+    {
+        PlayAnimation("PrimaryAttack_RA", false, true, 0.1f);
+    }
+    if (!GetAnimationController()->IsPlayAnimation())
+    {
+        PlayAnimation("Idle");
+    }
+
 
 }
 
@@ -256,5 +265,15 @@ void GracialEnemy::Initialize(const Transform& transform)
 void GracialEnemy::Update(float elapsedTime)
 {
     Character::Update(elapsedTime);
+
+    if (InputSystem::GetInputState("K", InputStateMask::Trigger))
+    {
+        PlayAnimation("Primary_Attack_Fast_D", false, true, 0.1f);
+    }
+    if (!GetAnimationController()->IsPlayAnimation())
+    {
+        PlayAnimation("Idle");
+    }
+
 
 }

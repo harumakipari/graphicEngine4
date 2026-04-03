@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "MeshComponent.h"
+#include "Core/Actor.h"
 
 Transform SkeletalMeshComponent::GetSocketTransform(int socketNode) const
 {
@@ -67,4 +68,43 @@ Transform SkeletalMeshComponent::GetSocketTransform(int socketNode) const
     boneWorld = offset * boneWorld;
     Transform t(boneWorld);
     return t;
+}
+
+void SkeletalMeshComponent::DrawCapsule(const CapsuleCollider& cap)
+{
+    DebugRender::DrawCapsule(cap.p0, cap.p1, cap.radius, { 1,0,0,1 }, 0.0f, true);
+}
+
+// 太ももからカプセル生成
+SkeletalMeshComponent::CapsuleCollider SkeletalMeshComponent::GetThighCapsule(const std::string& upperName, const std::string& lowerName)
+{
+    using namespace DirectX;
+
+    int upper = model->FindNodeIndexByName(upperName);
+    int lower = model->FindNodeIndexByName(lowerName);
+
+    if (upper < 0 || lower < 0)
+    {
+        CapsuleCollider c{};
+        return c;
+    }
+
+    XMMATRIX m0 = XMLoadFloat4x4(&modelNodes[upper].globalTransform);
+    XMMATRIX m1 = XMLoadFloat4x4(&modelNodes[lower].globalTransform);
+
+    XMFLOAT4X4 world = owner_.lock()->GetWorldTransform();
+    XMMATRIX worldM = XMLoadFloat4x4(&world);
+
+    XMVECTOR p0 = XMVector3TransformCoord(XMVectorZero(), m0);
+    XMVECTOR p1 = XMVector3TransformCoord(XMVectorZero(), m1);
+
+    p0 = XMVector3TransformCoord(p0, worldM);
+    p1 = XMVector3TransformCoord(p1, worldM);
+
+    CapsuleCollider c;
+    XMStoreFloat3(&c.p0, p0);
+    XMStoreFloat3(&c.p1, p1);
+    c.radius = 0.08f; // ← 調整ポイント
+
+    return c;
 }
