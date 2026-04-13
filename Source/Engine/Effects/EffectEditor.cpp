@@ -24,53 +24,6 @@ void EffectEditor::Initialize()
     // 初期化処理が必要ならここに追加
 }
 
-void EffectEditor::DrawCurve(const char* label, FloatCurve& curve, bool& dirty)
-{
-    if (ImGui::TreeNode(label))
-    {
-        for (int i = 0; i < curve.points.size(); ++i)
-        {
-            ImGui::PushID(i);
-
-            ImGui::DragFloat("Time", &curve.points[i].time, 0.01f, 0.0f, 1.0f);
-            ImGui::DragFloat("Value", &curve.points[i].value, 0.01f, 0.0f, 5.0f);
-
-            if (ImGui::Button("Delete"))
-            {
-                curve.points.erase(curve.points.begin() + i);
-                ImGui::PopID();
-                break;
-            }
-
-            ImGui::Separator();
-            ImGui::PopID();
-        }
-
-        if (ImGui::Button("Add Point"))
-        {
-            curve.points.push_back({ 0.5f, 1.0f });
-        }
-
-        if (ImGui::Button("Apply"))
-        {
-            dirty = true; // ←ここで初めて反映
-        }
-
-        // カーブのプレビュー表示
-        const int resolution = 64;
-        static float values[resolution];
-
-        for (int i = 0; i < resolution; ++i)
-        {
-            float t = (float)i / (resolution - 1);
-            values[i] = curve.Evaluate(t);
-        }
-
-        ImGui::PlotLines("##CurvePreview", values, resolution, 0, nullptr, 0.0f, 2.0f, ImVec2(200, 80));
-
-        ImGui::TreePop();
-    }
-}
 
 void EffectEditor::DrawGUI()
 {
@@ -680,5 +633,54 @@ bool EffectEditor::DrawVector3(const char* label, Vector3& value, float speed, f
     ImGui::PopID();
     return changed;
 }
+
+void EffectEditor::DrawCurve(const char* label, FloatCurve& curve, bool& dirty)
+{
+    if (ImGui::TreeNode(label))
+    {
+        for (int i = 0; i < curve.points.size(); ++i)
+        {
+            ImGui::PushID(i);
+
+            ImGui::DragFloat("Time", &curve.points[i].time, 0.01f, 0.0f, 1.0f);
+            ImGui::DragFloat("Value", &curve.points[i].value, 0.01f, 0.0f, 5.0f);
+
+            if (ImGui::Button("Delete"))
+            {
+                curve.points.erase(curve.points.begin() + i);
+                ImGui::PopID();
+                break;
+            }
+
+            ImGui::Separator();
+            ImGui::PopID();
+        }
+
+        if (ImGui::Button("Add Point"))
+        {
+            curve.points.push_back({ 0.5f, 1.0f });
+        }
+
+        if (ImGui::Button("Apply"))
+        {
+            dirty = true; // ←ここで初めて反映
+        }
+
+        // カーブのプレビュー表示
+        const int resolution = 64;
+        static float values[resolution];
+
+        for (int i = 0; i < resolution; ++i)
+        {
+            float t = (float)i / (resolution - 1);
+            values[i] = curve.Evaluate(t);
+        }
+
+        ImGui::PlotLines("##CurvePreview", values, resolution, 0, nullptr, 0.0f, 2.0f, ImVec2(200, 80));
+
+        ImGui::TreePop();
+    }
+}
+
 
 #endif // USE_IMGUI

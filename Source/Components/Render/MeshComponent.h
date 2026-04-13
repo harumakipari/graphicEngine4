@@ -4,7 +4,6 @@
 #include <memory>
 #include <string>
 
-
 // ‘¼ƒ‰ƒCƒuƒ‰ƒŠ
 #include <DirectXMath.h>
 #include <d3d11.h>

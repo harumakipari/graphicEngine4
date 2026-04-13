@@ -175,7 +175,6 @@ void Player::Initialize(const Transform& transform)
     //swordCollisionComp->SetRelativeEulerRotationDirect({ 0.0f, 90.f, 0.0f });
     //swordCollisionComp->SetRelativeScaleDirect({ -0.0f,0.0f,0.0f });
 
-
     swordPointComp = AddComponent<CapsuleComponent>("SwordPointComponent","SwordCollision");
     swordPointComp->SetRelativeLocationDirect({ 0.0f,0.0f,0.6f });
 }

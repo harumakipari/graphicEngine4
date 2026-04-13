@@ -381,14 +381,14 @@ void EffectManager::EmitParticle(EffectHandle handle, const XMFLOAT3& pos, const
                 emitData.endColor = endColor;
                 emitData.customData.x = emitterData.emitData.emissivePower;
 #if 1
-                int curveIndex = (float)emitterData.visualData.curveIndex;
+                int curveIndex = emitterData.visualData.curveIndex;
                 if (emitterData.visualData.dirty)
                 {
                     int curveIndex = RegisterCurve(emitterData.visualData.sizeCurve);
                     emitterData.visualData.dirty = false;   // ‚±‚Ì‚½‚ß‚ÉconstŽæ‚Á‚Ä‚¢‚é
                     emitData.customData.y = (float)curveIndex;
                 }
-                emitData.customData.y = curveIndex;
+                emitData.customData.y = static_cast<float>(curveIndex);
 #else
                 emitData.customData.y = (float)emitterData.visualData.curveIndex;
 #endif // 0

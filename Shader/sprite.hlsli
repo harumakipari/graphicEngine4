@@ -5,8 +5,3 @@ struct VS_OUT
     float2 texCoord : TEXCOORD;
 };
 
-cbuffer SPRITE_CONSTANTS : register(b10)
-{
-    float elapsedTime;
-    uint enableGlitch;
-};

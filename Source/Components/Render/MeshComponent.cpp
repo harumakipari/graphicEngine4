@@ -72,7 +72,7 @@ Transform SkeletalMeshComponent::GetSocketTransform(int socketNode) const
 
 void SkeletalMeshComponent::DrawCapsule(const CapsuleCollider& cap)
 {
-    DebugRender::DrawCapsule(cap.p0, cap.p1, cap.radius, { 1,0,0,1 }, 0.0f, true);
+    //DebugRender::DrawCapsule(cap.p0, cap.p1, cap.radius, { 1,0,0,1 }, 0.0f, true);
 }
 
 // ‘¾‚à‚à‚©‚çƒJƒvƒZƒ‹¶¬
