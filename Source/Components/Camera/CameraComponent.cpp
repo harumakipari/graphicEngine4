@@ -233,13 +233,15 @@ DirectX::XMVECTOR TPSCameraComponent::ResolveCameraCollision(
     XMStoreFloat3(&e, idealEye);
 
     HitResultWithActor hit;
-
+    uint32_t mask =
+        CollisionHelper::ToBit(CollisionLayer::WorldStatic) |
+        CollisionHelper::ToBit(CollisionLayer::Floor);
     if (CollisionFunction::SphereRayCast(
         f,
         e,
         hit,
         0.35f, //
-        CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
+        mask))
     {
         XMVECTOR h = XMLoadFloat3(&hit.hitPoint);
         XMVECTOR n = XMLoadFloat3(&hit.normal);
