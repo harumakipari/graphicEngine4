@@ -93,9 +93,10 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
 {
     //デバイスコンテクストを取得
     ID3D11DeviceContext* immediateContext = Graphics::GetDeviceContext();
-
     //オーディオ更新
     CoreAudio::Update(deltaTime);
+
+    Sleep(16);
 
     // デバックコマンド更新
     DebugRender::Tick(deltaTime);

@@ -158,7 +158,7 @@ void Player::Initialize(const Transform& transform)
     }
 
     // 剣に当たり判定のコンポーネントを追加
-    auto swordCollisionComp = AddComponent<CapsuleComponent>("SwordCollision", parentName);
+    swordCollisionComp = AddComponent<CapsuleComponent>("SwordCollision", parentName);
     DirectX::XMFLOAT3 size = { 0.1f,1.2f,1.0f };
     swordCollisionComp->AttachToComponent(skeletalMeshComponent, 180); // "VB root_weapon"
     swordCollisionComp->SetRadiusAndHeight(size.x, size.y);
@@ -175,6 +175,9 @@ void Player::Initialize(const Transform& transform)
     //swordCollisionComp->SetRelativeEulerRotationDirect({ 0.0f, 90.f, 0.0f });
     //swordCollisionComp->SetRelativeScaleDirect({ -0.0f,0.0f,0.0f });
 
+
+    swordPointComp = AddComponent<CapsuleComponent>("SwordPointComponent","SwordCollision");
+    swordPointComp->SetRelativeLocationDirect({ 0.0f,0.0f,0.6f });
 }
 
 
@@ -209,6 +212,8 @@ void Player::Update(float elapsedTime)
         }
     }
 
+    DebugRender::DrawSphere(swordPointComp->GetComponentLocation(), 0.1f, { 1,1,0,1 },0.0f,true);
+
 #if 1
     auto intent = inputComponent->GetIntent();
     //characterMovementComponent->SetMoveDirection({ 1,0,0 });
@@ -231,6 +236,24 @@ void Player::Update(float elapsedTime)
 
     characterMovementComponent->SetMoveDirection(moveDir);
     rotationComponent->SetDirection(moveDir);
+
+    // 剣先取得
+    XMFLOAT3 tip = swordPointComp->GetComponentLocation();
+
+    // トレイル追加（毎フレーム）
+    trailPoints.push_back({ tip, 0.3f }); // ←長さ調整
+
+    // 更新
+    for (auto& p : trailPoints)
+    {
+        p.life -= elapsedTime;
+    }
+
+    // 削除
+    trailPoints.erase(
+        std::remove_if(trailPoints.begin(), trailPoints.end(),
+            [](const TrailPoint& p) { return p.life <= 0; }),
+        trailPoints.end());
 
 #endif // 0
 

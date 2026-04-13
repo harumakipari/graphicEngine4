@@ -292,7 +292,7 @@ public:
         auto& chainA = clothChains[idxA];
         auto& chainB = clothChains[idxB];
 
-        int minSize = std::min<int>(chainA.size(), chainB.size());
+        int minSize = std::min<int>(static_cast<int>(chainA.size()), static_cast<int>(chainB.size()));
 
         for (int k = 1; k < minSize; ++k)
         {
@@ -335,7 +335,7 @@ public:
                 auto& chainA = clothChains[i];
                 auto& chainB = clothChains[j];
 
-                int minSize = std::min<int>(chainA.size(), chainB.size());
+                int minSize = std::min<int>(static_cast<int>(chainA.size()), static_cast<int>(chainB.size()));
 
                 for (int k = 1; k < minSize; ++k) // root‚Íœ‚­
                 {

@@ -154,10 +154,18 @@ public:
     std::shared_ptr<InputComponent> inputComponent;
     std::shared_ptr<RotationComponent> rotationComponent;
     std::shared_ptr<CharacterMovementComponent> characterMovementComponent;
-
+    std::shared_ptr<CapsuleComponent> swordCollisionComp;
+    std::shared_ptr<SceneComponent> swordPointComp;
 
     float elapsedTime_ = 0.0f;
 
     bool isGrounded_ = false;
+
+    struct TrailPoint
+    {
+        XMFLOAT3 position;
+        float life;
+    };
+    std::vector<TrailPoint> trailPoints;
 
 };
