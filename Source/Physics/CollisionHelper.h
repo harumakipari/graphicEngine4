@@ -15,6 +15,7 @@ enum class CollisionLayer :uint32_t
     Camera ,   // カメラ
     Interactable,  // プレイヤーが近づいてインタラクトできるもの
     PlayerWeapon,// プレイヤーの武器
+    Floor,
     Max,
 };
 constexpr uint32_t COLLISION_EVERYTHING = 0xFFFFFFFF;

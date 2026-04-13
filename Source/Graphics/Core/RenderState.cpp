@@ -170,6 +170,25 @@ void RenderState::Initialize()
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
 
+    //	モーションブラー用サンプラーを設定
+    {
+        D3D11_SAMPLER_DESC sampler_desc{};
+        sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.MipLODBias = 0;
+        sampler_desc.MaxAnisotropy = 16;
+        sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+        sampler_desc.BorderColor[0] = FLT_MAX;
+        sampler_desc.BorderColor[1] = FLT_MAX;
+        sampler_desc.BorderColor[2] = FLT_MAX;
+        sampler_desc.BorderColor[3] = FLT_MAX;
+        sampler_desc.MinLOD = 0;
+        sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
+        hr = device->CreateSamplerState(&sampler_desc, samplerStates[static_cast<size_t>(SAMPLER_STATE::MOTION_BLUR)].GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
 
     // 深度テストやステンシルバッファの設定を行う（画面の奥行きを扱う）
     // 深度テストON、深度書き込みON ZT_ON_ZW_ON
@@ -421,7 +440,8 @@ void RenderState::SetSamplerState(ID3D11DeviceContext* immediateContext)
     immediateContext->PSSetSamplers(4, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_WHITE)].GetAddressOf());
     immediateContext->PSSetSamplers(5, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_CLAMP)].GetAddressOf());
     immediateContext->PSSetSamplers(6, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_MIRROR)].GetAddressOf());
-    immediateContext->PSSetSamplers(7, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::COMPARISON_LINEAR_BORDER_WHITE)].GetAddressOf());
+    immediateContext->PSSetSamplers(7, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::MOTION_BLUR)].GetAddressOf());
+    immediateContext->PSSetSamplers(8, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::COMPARISON_LINEAR_BORDER_WHITE)].GetAddressOf());
 
     // コンピュートシェーダー
     immediateContext->CSSetSamplers(0, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::POINT)].GetAddressOf());
@@ -431,7 +451,8 @@ void RenderState::SetSamplerState(ID3D11DeviceContext* immediateContext)
     immediateContext->CSSetSamplers(4, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_WHITE)].GetAddressOf());
     immediateContext->CSSetSamplers(5, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_CLAMP)].GetAddressOf());
     immediateContext->CSSetSamplers(6, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_MIRROR)].GetAddressOf());
-    immediateContext->CSSetSamplers(7, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::COMPARISON_LINEAR_BORDER_WHITE)].GetAddressOf());
+    immediateContext->CSSetSamplers(7, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::MOTION_BLUR)].GetAddressOf());
+    immediateContext->CSSetSamplers(8, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::COMPARISON_LINEAR_BORDER_WHITE)].GetAddressOf());
 
     // ジオメトリックシェーダー
     immediateContext->GSSetSamplers(0, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::POINT)].GetAddressOf());
@@ -441,6 +462,7 @@ void RenderState::SetSamplerState(ID3D11DeviceContext* immediateContext)
     immediateContext->GSSetSamplers(4, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_WHITE)].GetAddressOf());
     immediateContext->GSSetSamplers(5, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_CLAMP)].GetAddressOf());
     immediateContext->GSSetSamplers(6, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::LINEAR_MIRROR)].GetAddressOf());
-    immediateContext->GSSetSamplers(7, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::COMPARISON_LINEAR_BORDER_WHITE)].GetAddressOf());
+    immediateContext->GSSetSamplers(7, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::MOTION_BLUR)].GetAddressOf());
+    immediateContext->GSSetSamplers(8, 1, samplerStates[static_cast<size_t>(SAMPLER_STATE::COMPARISON_LINEAR_BORDER_WHITE)].GetAddressOf());
 
 }

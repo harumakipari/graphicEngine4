@@ -31,6 +31,12 @@ public:
 
     void Finalize()override {}
 private:
+    // 火花エフェクトの生成
+    void SpawnSpark(DirectX::XMFLOAT3 hitPosition);
+
+    // 剣の攻撃判定
+    void CheckSwordLineHit(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end);
+
     void Move(float elapsedTime)override;
 
     void Turn(float elapsedTime);
@@ -50,6 +56,11 @@ public:
 
 
 public:
+    //当たった相手を記録するためのセット
+    std::unordered_set<Actor*> hitTargets;
+    bool hasPrevSwordTip = false; // 前フレームの剣先の位置が有効かどうか
+    bool hasSpawnedThisAttack = false; // 今攻撃でエフェクトを生成したかどうか
+
     //上方向への力
     float jumpPower = 5.0f;
 
@@ -150,7 +161,7 @@ private:
 public:
     // 描画用コンポーネントを追加
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
-    std::shared_ptr<ParticleComponent> particleComponent;
+    std::shared_ptr<ParticleComponent> sparkComponent; // 火花エフェクト用コンポーネント
     std::shared_ptr<InputComponent> inputComponent;
     std::shared_ptr<RotationComponent> rotationComponent;
     std::shared_ptr<CharacterMovementComponent> characterMovementComponent;
@@ -168,4 +179,7 @@ public:
     };
     std::vector<TrailPoint> trailPoints;
 
+private:
+    DirectX::XMFLOAT3 prevSwordTip; // 前フレームの剣先の位置
+    bool isAttackActive = false;
 };

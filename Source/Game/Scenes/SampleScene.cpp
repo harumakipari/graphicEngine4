@@ -243,8 +243,8 @@ void SampleScene::SetUpActors()
     //Transform gruxEnemyTr(DirectX::XMFLOAT3{ -10.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     //auto gruxEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<GruxEnemy>("GruxEnemy", gruxEnemyTr);
 
-    Transform savarogEnemyTr(DirectX::XMFLOAT3{ -10.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto savarogEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<SavarogEnemy>("SavarogEnemy", savarogEnemyTr);
+    //Transform savarogEnemyTr(DirectX::XMFLOAT3{ -10.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    //auto savarogEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<SavarogEnemy>("SavarogEnemy", savarogEnemyTr);
 
     //Transform gracialEnemyTr(DirectX::XMFLOAT3{ -10.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     //auto gracialEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<GracialEnemy>("gracialEnemy", gracialEnemyTr);

@@ -79,7 +79,7 @@ public:
 
     const DirectX::XMFLOAT4& GetLightDirection() const { return constants.lightDirection; }
 private:
-    bool showLightRange = true; // ポイントライトの範囲をデバッグ表示するか
+    bool showLightRange = false; // ポイントライトの範囲をデバッグ表示するか
     LightConstants constants = {};
     // GPUに送る最終のポイントライト情報
     std::vector<PointLight> renderPointLights;

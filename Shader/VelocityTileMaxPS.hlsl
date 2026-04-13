@@ -1,16 +1,7 @@
 #include "MotionBlur.hlsli"
 
 
-Texture2D colorTexture : register(t0);
-Texture2D normalTexture : register(t2);
-Texture2D depthTexture : register(t3);
-Texture2D sceneColorTexture : register(t9);
-
-Texture2D<float4> gbufferEmissive_color : register(t1);
-Texture2D<float4> gbuffer_normal : register(t2);
-Texture2D<float4> gbuffer_parameter : register(t3);
-Texture2D<float> gbuffer_depth : register(t4);
-Texture2D<float4> gbuffer_velocity : register(t5);
+Texture2D<float4> gbuffer_velocity : register(t0);
 
 float4 main(VS_OUT pin) : SV_TARGET
 {

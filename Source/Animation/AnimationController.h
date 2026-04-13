@@ -76,6 +76,17 @@ public:
         requestStopLoop = true;
     }
 
+    float GetCurrentTimeNormalized() const
+    {
+        float duration = target_->model->animations[animationClip].duration;
+        return animationTime / duration;
+    }
+
+    float GetCurrentAnimationTime() const
+    {
+        return animationTime;
+    }
+
     void ResetRootMotion(int newClipIndex);
 
     void DrawImGui();

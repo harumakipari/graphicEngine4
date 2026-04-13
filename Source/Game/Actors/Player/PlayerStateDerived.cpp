@@ -67,8 +67,12 @@ void PlayerRunningState::Exit()
 
 void PlayerAttackingState::Enter()
 {
+    player->hitTargets.clear();
+    player->hasSpawnedThisAttack = false;
     player->characterMovementComponent->SetSpeed(0.0f); // UŒ‚’†‚ÍˆÚ“®‘¬“x‚ð0‚É‚·‚é
-    player->PlayAnimation("Ability_E", false, true, 0.1f);
+    //player->PlayAnimation("Ability_E", false, true, 0.1f);
+    player->hasPrevSwordTip = false;
+    player->PlayAnimation("Primary_Attack_Fast_D", false, true, 0.1f);
 }
 
 void PlayerAttackingState::Execute(float deltaTime)

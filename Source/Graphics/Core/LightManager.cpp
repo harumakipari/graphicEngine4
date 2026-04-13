@@ -274,6 +274,7 @@ void LightManager::Update(float deltaTime)
 #endif // 1
 
 #ifdef _DEBUG
+#if 1
     if (showLightRange)
     {
         for (int i = 0; i < light.pointLightCount; i++)
@@ -294,6 +295,7 @@ void LightManager::Update(float deltaTime)
             );
         }
     }
+#endif
 #endif // _DEBUG
 }
 

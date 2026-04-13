@@ -19,6 +19,7 @@
 #include "Game/Actors/Camera/Camera.h"
 #include "Game/Actors/Stage/Stage.h"
 #include "Game/DarkGame/Interactable.h"
+#include "Physics/CollisionFunction.h"
 
 void Player::Initialize(const Transform& transform)
 {
@@ -109,6 +110,7 @@ void Player::Initialize(const Transform& transform)
         capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
         capsuleComponent->SetLayer(CollisionLayer::Player);
         capsuleComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
+        capsuleComponent->SetResponseToLayer(CollisionLayer::Floor, CollisionComponent::CollisionResponse::Block);
         capsuleComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
         capsuleComponent->SetResponseToLayer(CollisionLayer::WorldProps, CollisionComponent::CollisionResponse::Block);
         capsuleComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::Block);
@@ -132,15 +134,38 @@ void Player::Initialize(const Transform& transform)
 
 
 
-    //AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
-    //    {
-    //        if (auto item = std::dynamic_pointer_cast<Stage>(hitPair.second->GetActor()))
-    //        {
-    //            return;
-    //        }
-    //        //std::string a = hitPair.second->GetActor()->GetName() + "is hit player";
-    //        //OutputDebugStringA(a.c_str());
-    //    });
+    AddHitCallback([&](std::pair<CollisionComponent*, CollisionComponent*> hitPair)
+        {
+#if 0
+            CollisionComponent* own = hitPair.first;
+            CollisionComponent* other = hitPair.second;
+
+            // 自分が武器じゃなければ無視
+            if (!(own->GetCollisionLayer() & CollisionHelper::ToBit(CollisionLayer::PlayerWeapon)))
+                return;
+
+            // 攻撃中じゃなければ無視
+            if (stateMachine_->GetStateName() != "Attack")
+                return;
+
+            // すでに当たってたら無視
+            if (hitTargets.contains(other))
+                return;
+
+            hitTargets.insert(other);
+
+            uint32_t layer = other->GetCollisionLayer();
+
+            if (layer & CollisionHelper::ToBit(CollisionLayer::WorldStatic) ||
+                layer & CollisionHelper::ToBit(CollisionLayer::WorldProps))
+            {
+                auto hitPos = swordPointComp->GetComponentLocation();
+                SpawnSpark(hitPos);
+            }
+#endif // 0
+
+        }
+    );
 #endif // 0
 
     {
@@ -172,11 +197,14 @@ void Player::Initialize(const Transform& transform)
     swordCollisionComp->SetIsVisibleDebugBox(false);
     swordCollisionComp->SetRelativeLocationDirect({ -0.f, -0.f, 0.8f });
     swordCollisionComp->Initialize();
-    //swordCollisionComp->SetRelativeEulerRotationDirect({ 0.0f, 90.f, 0.0f });
-    //swordCollisionComp->SetRelativeScaleDirect({ -0.0f,0.0f,0.0f });
 
-    swordPointComp = AddComponent<CapsuleComponent>("SwordPointComponent","SwordCollision");
+    swordPointComp = AddComponent<CapsuleComponent>("SwordPointComponent", "SwordCollision");
     swordPointComp->SetRelativeLocationDirect({ 0.0f,0.0f,0.6f });
+
+    // 火花エフェクト用のコンポーネントを追加
+    sparkComponent = this->AddComponent<class ParticleComponent>("particleComponent", parentName);
+    sparkComponent->Load("./Data/Effect/Files/DarkStageSparkEffect.json");
+
 }
 
 
@@ -186,6 +214,19 @@ void Player::Update(float elapsedTime)
 
     // これは絶対入れる　アニメーションの更新をしているから
     Character::Update(elapsedTime);
+
+    // アニメーション時間から攻撃有効フラグ更新
+    auto anim = GetAnimationController();
+    float time = anim->GetCurrentAnimationTime(); // ← 秒
+    if (stateMachine_->GetStateName() == "Attack" && time >= 0.1f && time <= 0.4f)
+    {
+        isAttackActive = true;
+    }
+    else
+    {
+        isAttackActive = false;
+    }
+
 
     //skeletalMeshComponent->UpdateCloth(elapsedTime);
 
@@ -211,7 +252,17 @@ void Player::Update(float elapsedTime)
         }
     }
 
-    DebugRender::DrawSphere(swordPointComp->GetComponentLocation(), 0.1f, { 1,1,0,1 },0.0f,true);
+    auto currentTip = swordPointComp->GetComponentLocation();
+
+    if (hasPrevSwordTip)
+    {
+        CheckSwordLineHit(prevSwordTip, currentTip);
+    }
+
+    prevSwordTip = currentTip;
+    hasPrevSwordTip = true;
+
+    DebugRender::DrawSphere(swordPointComp->GetComponentLocation(), 0.1f, { 1,1,0,1 }, 0.0f, true);
 
 #if 1
     auto intent = inputComponent->GetIntent();
@@ -231,7 +282,6 @@ void Player::Update(float elapsedTime)
         moveDir.x = camForward.x * stickZ + camRight.x * stickX;
         moveDir.z = camForward.z * stickZ + camRight.z * stickX;
     }
-
 
     characterMovementComponent->SetMoveDirection(moveDir);
     rotationComponent->SetDirection(moveDir);
@@ -256,86 +306,6 @@ void Player::Update(float elapsedTime)
 
 #endif // 0
 
-    //characterMovementComponent->SetMoveDirection(moveDir);
-    //rotationComponent->SetDirection(moveDir);
-
-    //particleComponent->Play();
-    return;
-
-    //if (GameManager::GetGameTimerStart() && !onceFrag)
-    //{// ゲームが開始されたら
-    //    state = State::Idle;
-    //    onceFrag = true;
-    //}
-
-
-    // ステージ境界
-    //DirectX::XMFLOAT3 pos = GetPosition();
-    //pos.x = std::clamp(pos.x, -21.0f, 21.0f);
-    //pos.z = std::clamp(pos.z, -16.0f, 16.0f);
-    //pos.y = 0.8f;
-    //SetPosition(pos);
-
-    //DirectX::XMFLOAT3 leftPos = boxLeftHitComponent->GetRelativeLocation();
-    //leftPos.y = leftFirstPos.y;
-    //boxLeftHitComponent->SetRelativeLocationDirect(leftPos);
-
-    //DirectX::XMFLOAT3 rightPos = boxRightHitComponent->GetRelativeLocation();
-    //rightPos.y = rightFirstPos.y;
-    //boxRightHitComponent->SetRelativeLocationDirect(rightPos);
-
-
-
-    {// 無敵時間の更新
-        if (invisibleTime > 0.0f)
-        {
-            invisibleTime -= elapsedTime;
-        }
-        if (bossInvisibleTime > 0.0f)
-        {
-            bossInvisibleTime -= elapsedTime;
-        }
-    }
-
-
-
-
-
-    // プレイヤーの被弾時に色を変える処理
-    if (isHitBlinking)
-    {
-        hitBlinkElapsed += elapsedTime;
-        isRed = true;
-        constexpr float blinkInterval = 0.1f; // 点滅間隔（秒）
-        int blinkCount = static_cast<int>(hitBlinkElapsed / blinkInterval);
-        isRed = (blinkCount % 2 == 0);
-
-        //// 終了
-        if (hitBlinkElapsed >= hitBlinkTotalTime)
-        {
-            isHitBlinking = false;
-            isRed = false;
-        }
-    }
-    if (isRed)
-    {
-        color.x = 3.0f;
-        color.y = 0.0f;
-        color.z = 0.0f;
-    }
-    else
-    {
-        color.x = 1.0f;
-        color.y = 1.0f;
-        color.z = 1.0f;
-    }
-
-#if USE_IMGUI
-    ImGui::Begin("Player");
-    ImGui::ColorEdit3("playerDamage", &color.x);
-    ImGui::DragFloat3("playerDamageColor", &color.x);
-    ImGui::End();
-#endif
 }
 
 void Player::DrawImGuiDetails()
@@ -345,6 +315,85 @@ void Player::DrawImGuiDetails()
 #endif
 
 }
+
+// 火花エフェクトの生成
+void Player::SpawnSpark(DirectX::XMFLOAT3 pos)
+{
+    DebugRender::DrawSphere(pos, 0.2f, { 1, 0.5f, 0, 1 }, 0.3f, true);
+    if (sparkComponent)
+    {
+        sparkComponent->SetWorldLocationDirect(pos);
+        sparkComponent->Play();
+    }
+}
+
+// 剣の攻撃判定
+void Player::CheckSwordLineHit(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end)
+{
+    if (stateMachine_->GetStateName() != "Attack")
+        return;
+
+    // 1フレーム1回制御
+    if (hasSpawnedThisAttack)
+        return;
+
+    if (!isAttackActive)
+        return;
+
+    XMVECTOR s = XMLoadFloat3(&start);
+    XMVECTOR e = XMLoadFloat3(&end);
+
+    XMVECTOR diff = e - s;
+    float length = XMVectorGetX(XMVector3Length(diff));
+
+    int steps = std::max<int>(1, (int)(length / 0.05f));
+
+    for (int i = 0; i < steps; i++)
+    {
+        float t0 = (float)i / steps;
+        float t1 = (float)(i + 1) / steps;
+
+        XMVECTOR p0 = XMVectorLerp(s, e, t0);
+        XMVECTOR p1 = XMVectorLerp(s, e, t1);
+
+        XMFLOAT3 segStart, segEnd;
+        XMStoreFloat3(&segStart, p0);
+        XMStoreFloat3(&segEnd, p1);
+
+        HitResultWithActor hit;
+
+        if (CollisionFunction::SphereRayCast(
+            segStart,
+            segEnd,
+            hit,
+            0.1f,
+            CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
+        {
+            // 床無視
+            if (hit.normal.y > 0.7f)
+                continue;
+
+            // 押し出し
+            XMVECTOR pos = XMLoadFloat3(&hit.hitPoint);
+            XMVECTOR normal = XMVector3Normalize(XMLoadFloat3(&hit.normal));
+            pos += normal * 0.03f;
+
+            XMFLOAT3 finalPos;
+            XMStoreFloat3(&finalPos, pos);
+
+            SpawnSpark(finalPos);
+
+            hasSpawnedThisAttack = true; // ←これが本質
+
+            return;
+        }
+    }
+
+    DebugRender::DrawLine(start, end, { 1,0,0,1 });
+}
+
+
+
 
 // 遅延更新処理
 void Player::LateUpdate(float elapsedTime)
