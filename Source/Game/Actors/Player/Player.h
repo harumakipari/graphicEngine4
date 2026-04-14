@@ -166,4 +166,5 @@ public:
 private:
     DirectX::XMFLOAT3 prevSwordTip; // 前フレームの剣先の位置
     bool isAttackActive = false;
+    float hitStopTimer = 0.0f;// ヒットストップのタイマー
 };

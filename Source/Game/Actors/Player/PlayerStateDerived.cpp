@@ -126,8 +126,6 @@ void PlayerAttackingState::Exit()
     player->characterMovementComponent->ResetSpeed(); // 攻撃が終わったら移動速度をリセットする
 }
 
-
-
 void PlayerDodgeState::Enter()
 {
     owner->PlayAnimation("HitReact_Front");

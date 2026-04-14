@@ -16,6 +16,7 @@
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Scene/SceneBase.h"
+#include "Engine/Utility/Time.h"
 #include "Game/Actors/Camera/Camera.h"
 #include "Game/Actors/Enemy/Enemy.h"
 #include "Game/Actors/Stage/Stage.h"
@@ -212,6 +213,17 @@ void Player::Initialize(const Transform& transform)
 void Player::Update(float elapsedTime)
 {
     using namespace DirectX;
+
+    // ヒットストップ処理
+    if (hitStopTimer > 0.0f)
+    {
+        hitStopTimer -= Time::UnscaledDeltaTime();
+
+        if (hitStopTimer <= 0.0f)
+        {
+            Time::timeScale = 1.0f; // 元に戻す
+        }
+    }
 
     // これは絶対入れる　アニメーションの更新をしているから
     Character::Update(elapsedTime);
@@ -694,6 +706,9 @@ void Player::DoAttackHit()
         if (dot > angleCos)
         {
             enemy->TakeDamage(10);
+            //　ヒットストップ発動
+            Time::timeScale = 0.1f;
+            hitStopTimer = 0.35f;
         }
     }
 }
