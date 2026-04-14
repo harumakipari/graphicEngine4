@@ -8,6 +8,9 @@
 
 void GruxEnemy::Initialize(const Transform& transform)
 {
+    int maxHp = 100;
+    hp = maxHp;
+
     std::string parentName = "SkeletonWarriorMeshComponent";
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
@@ -124,6 +127,14 @@ void GruxEnemy::Update(float deltaTime)
     }
 }
 
+//当たった時の処理
+void GruxEnemy::TakeDamage(int damage)
+{
+    hp -= damage;
+    Logger::Log(U8("エネミーにダメージ！ HP:") + std::to_string(hp));
+}
+
+// 攻撃が当たるタイミングで呼ばれる関数
 void GruxEnemy::DoAttackHit()
 {
     auto playerActor = GetOwnerScene()->GetActorManager()->GetActorByName("player");
@@ -135,15 +146,29 @@ void GruxEnemy::DoAttackHit()
     DirectX::XMFLOAT3 bossPos = GetPosition();
     DirectX::XMFLOAT3 playerPos = player->GetPosition();
 
+    // ▼プレイヤーへの方向ベクトル
     float dx = playerPos.x - bossPos.x;
     float dz = playerPos.z - bossPos.z;
+
     float distSq = dx * dx + dz * dz;
+    float attackRange = 3.0f;
 
-    float attackRange = 3.0f; // 適当でOK
+    if (distSq > attackRange * attackRange) return;
 
-    if (distSq < attackRange * attackRange)
+    // 正規化
+    float len = sqrtf(dx * dx + dz * dz);
+    dx /= len;
+    dz /= len;
+
+    // ボスの前方向（Z+方向）
+    DirectX::XMFLOAT3 forward = GetForward();
+
+    float dot = dx * forward.x + dz * forward.z;
+
+    float angleCos = cosf(DirectX::XMConvertToRadians(60.0f)); // 60度
+
+    if (dot > angleCos)
     {
-        // ダメージ処理
         player->TakeDamage(10);
     }
 }

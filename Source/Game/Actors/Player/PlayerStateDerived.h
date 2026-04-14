@@ -75,4 +75,8 @@ public:
      void Exit() override;
      // ステート名を取得
      const char* GetName() const override { return "Attack"; }
+
+ private:
+     float attackTimer = 0.0f;
+     bool hitDone = false;
  };

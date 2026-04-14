@@ -47,6 +47,9 @@ public:
     //当たった時の処理
     void TakeDamage(int damage);
 
+    // 攻撃ヒット時の処理
+    void DoAttackHit();
+
 public:
     //当たった相手を記録するためのセット
     std::unordered_set<Actor*> hitTargets;

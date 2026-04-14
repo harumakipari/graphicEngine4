@@ -17,8 +17,10 @@
 #include "Engine/Scene/Scene.h"
 #include "Engine/Scene/SceneBase.h"
 #include "Game/Actors/Camera/Camera.h"
+#include "Game/Actors/Enemy/Enemy.h"
 #include "Game/Actors/Stage/Stage.h"
 #include "Game/DarkGame/Interactable.h"
+#include "Game/DarkGame/DarkActors/DarkEnemy/GruxEnemy.h"
 #include "Physics/CollisionFunction.h"
 
 void Player::Initialize(const Transform& transform)
@@ -77,7 +79,6 @@ void Player::Initialize(const Transform& transform)
         controller->AddAnimation("Idle_Noise_B", 17);
         controller->AddAnimation("Recall", 18);
         //controller->AddAnimation("Death", 17);
-
         // アニメーションコントローラーを character に追加
         this->SetAnimationController(controller);
     }
@@ -95,7 +96,6 @@ void Player::Initialize(const Transform& transform)
         // 初期ステートを設定
         stateMachine_->ChangeState("Idle");
     }
-
 
     {
         PROFILE_SCOPE("Create PlayerCollision");
@@ -647,6 +647,48 @@ void Player::TakeDamage(int damage)
     if (sparkComponent)
     {
         sparkComponent->Play();
+    }
+}
+
+// 攻撃ヒット時の処理
+void Player::DoAttackHit()
+{
+    auto enemies = GetOwnerScene()->GetActorManager()->GetActorsOfType<Character>();
+
+    for (auto& actor : enemies)
+    {
+        auto enemy = std::dynamic_pointer_cast<GruxEnemy>(actor);
+        if (!enemy) continue;
+
+        auto p = GetPosition();
+        auto e = enemy->GetPosition();
+
+        // 敵へのベクトル
+        float dx = e.x - p.x;
+        float dz = e.z - p.z;
+
+        float distSq = dx * dx + dz * dz;
+        float attackRange = 2.5f;
+
+        if (distSq > attackRange * attackRange) 
+            return;
+
+        // 正規化
+        float len = sqrtf(dx * dx + dz * dz);
+        dx /= len;
+        dz /= len;
+
+        // プレイヤーの前方向（Z+方向）
+        DirectX::XMFLOAT3 forward = GetForward();
+
+        float dot = dx * forward.x + dz * forward.z;
+
+        float angleCos = cosf(DirectX::XMConvertToRadians(60.0f)); // 60度
+
+        if (dot > angleCos)
+        {
+            enemy->TakeDamage(10);
+        }
     }
 }
 

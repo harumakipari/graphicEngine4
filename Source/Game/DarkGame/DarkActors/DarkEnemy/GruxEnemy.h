@@ -20,8 +20,10 @@ public:
 
     void Update(float deltaTime)override;
 
+    //当たった時の処理
+    void TakeDamage(int damage);
 private:
-    // 攻撃処理
+    // 攻撃が当たるタイミングで呼ばれる関数
     void DoAttackHit();
 
     // プレイヤーとの距離を取得する関数

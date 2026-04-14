@@ -67,16 +67,33 @@ void PlayerRunningState::Exit()
 
 void PlayerAttackingState::Enter()
 {
+    // 火花エフェクトの生成フラグと当たった相手のセットをリセット
     player->hitTargets.clear();
     player->hasSpawnedThisAttack = false;
-    player->characterMovementComponent->SetSpeed(0.0f); // 攻撃中は移動速度を0にする
-    //player->PlayAnimation("Ability_E", false, true, 0.1f);
     player->hasPrevSwordTip = false;
+
+    // 攻撃中は移動速度を0にする
+    player->characterMovementComponent->SetSpeed(0.0f); 
+
+    // 攻撃アニメーションを再生
     player->PlayAnimation("Primary_Attack_Fast_D", false, true, 0.1f);
+
+    // 攻撃タイマーをリセット
+    attackTimer = 0.0f;
+    hitDone = false;
 }
 
 void PlayerAttackingState::Execute(float deltaTime)
 {
+    attackTimer += deltaTime;
+
+    // 0.3秒後に当たる
+    if (!hitDone && attackTimer > 0.3f)
+    {
+        player->DoAttackHit();
+        hitDone = true;
+    }
+
     if (!owner->GetAnimationController()->IsPlayAnimation())
     {
         auto dir = player->inputComponent->GetMoveInput();

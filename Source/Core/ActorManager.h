@@ -146,6 +146,56 @@ public:
         return nullptr;
     }
 
+    // 型からアクターを取得（最初に見つかったものを返す）
+    template<class T>
+    std::shared_ptr<T> GetActorOfType()
+    {
+        for (auto& actor : allActors_)
+        {
+            if (auto casted = std::dynamic_pointer_cast<T>(actor))
+            {
+                return casted;
+            }
+        }
+        return nullptr;
+    }
+
+    // 型からアクターをすべて取得
+    template<class T>
+    std::vector<std::shared_ptr<T>> GetActorsOfType()
+    {
+        std::vector<std::shared_ptr<T>> result;
+
+        for (auto& actor : allActors_)
+        {
+            if (auto casted = std::dynamic_pointer_cast<T>(actor))
+            {
+                result.push_back(casted);
+            }
+        }
+
+        return result;
+    }
+
+    template<class T>
+    std::vector<std::shared_ptr<T>> GetActorsByTag(const std::string& tag)
+    {
+        std::vector<std::shared_ptr<T>> result;
+
+        for (auto& actor : allActors_)
+        {
+            if (actor->HasTag(tag))
+            {
+                if (auto casted = std::dynamic_pointer_cast<T>(actor))
+                {
+                    result.push_back(casted);
+                }
+            }
+        }
+
+        return result;
+    }
+
     // 登録済みアクターとキャッシュをすべてクリアする
     void ClearAll()
     {

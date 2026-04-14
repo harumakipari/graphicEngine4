@@ -442,6 +442,17 @@ public:
         }
     }
 
+    // タグを追加する
+    void AddTag(const std::string& tag)
+    {
+        tags_.push_back(tag);
+    }
+    // タグを持っているか
+    bool HasTag(const std::string& tag) const
+    {
+        return std::find(tags_.begin(), tags_.end(), tag) != tags_.end();
+    }
+
 protected:
     Scene* ownerScene_ = nullptr;   // 自分が属しているScene
 
@@ -474,7 +485,7 @@ private:
     std::vector<std::string> pendingDestroyComponentNames_;
 
 protected:
-    // オイラー角を使うかどうか
+    std::vector<std::string> tags_;
 };
 
 static inline bool operator==(const std::shared_ptr<Actor>& actor, const std::string& name)
