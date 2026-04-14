@@ -45,15 +45,7 @@ public:
     DirectX::XMFLOAT3 GetMoveVec();
 
     //当たった時の処理
-    void Hit();
-
-
-    // プレイヤーの本体に直接ダメージ処理
-    void ApplyDirectHpDamage(int damage)
-    {
-        this->hp -= damage;
-    }
-
+    void TakeDamage(int damage);
 
 public:
     //当たった相手を記録するためのセット
@@ -94,7 +86,8 @@ private:
     // プレイヤーの Min 回転スピード
     float minTurnSpeed = 90.0f;
     // プレイヤーのマックスHP
-    int maxHp = 20;
+    int maxHp = 100;
+
     bool isIdleEnd = false;
 public:
     // 無敵時間中かどうか

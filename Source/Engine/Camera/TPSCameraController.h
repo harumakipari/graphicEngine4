@@ -22,13 +22,6 @@ public:
 
         static DirectX::XMFLOAT3 lastPos{};
 
-        if (lastPos.x != targetPos.x ||
-            lastPos.y != targetPos.y ||
-            lastPos.z != targetPos.z)
-        {
-            Logger::Log("target moved");
-        }
-
         lastPos = targetPos;
 
         float yaw = camera->GetYaw();

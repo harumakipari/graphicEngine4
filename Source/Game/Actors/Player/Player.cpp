@@ -640,9 +640,14 @@ void Player::Move(float elapsedTime)
 }
 
 //当たった時の処理
-void Player::Hit()
+void Player::TakeDamage(int damage)
 {
-    hp -= 1;
+    hp -= damage;
+    Logger::Log(U8("プレイヤーにダメージ！ HP:") + std::to_string(hp));
+    if (sparkComponent)
+    {
+        sparkComponent->Play();
+    }
 }
 
 

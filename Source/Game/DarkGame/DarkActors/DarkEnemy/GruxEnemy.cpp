@@ -4,6 +4,7 @@
 
 #include "Components/Render/PointLightComponent.h"
 #include "Engine/Scene/SceneBase.h"
+#include "Game/Actors/Player/Player.h"
 
 void GruxEnemy::Initialize(const Transform& transform)
 {
@@ -65,19 +66,101 @@ void GruxEnemy::Initialize(const Transform& transform)
 
 }
 
-void GruxEnemy::Update(float elapsedTime)
+void GruxEnemy::Update(float deltaTime)
 {
-    Character::Update(elapsedTime);
-    if (InputSystem::GetInputState("K", InputStateMask::Trigger))
+    Character::Update(deltaTime);
+    stateTimer += deltaTime;
+
+    auto player = GetOwnerScene()->GetActorManager()->GetActorByName("player");
+    DirectX::XMFLOAT3 playerPos = player->GetPosition();
+    switch (state)
     {
-        PlayAnimation("PrimaryAttack_RA", false, true, 0.1f);
-    }
-    if (!GetAnimationController()->IsPlayAnimation())
+    case BossState::Idle:
     {
-        PlayAnimation("Idle");
+        // プレイヤーとの距離を見る
+        if (GetDistanceToPlayer() < 5.0f)
+        {
+            state = BossState::Attack;
+            stateTimer = 0.0f;
+            attackPlayed = false;
+        }
+        break;
     }
 
+    case BossState::Attack:
+    {
+        if (!attackPlayed)
+        {
+            PlayAnimation("PrimaryAttack_RA", false, true, 0.1f);
+            attackPlayed = true;
+            damageDone = false;
+            stateTimer = 0.0f;
+        }
 
+        // ここで遅れて当たる
+        if (!damageDone && stateTimer > attackHitTime)
+        {
+            DoAttackHit(); // ←さっきの距離判定関数
+            damageDone = true;
+        }
+
+        if (stateTimer > 1.2f)
+        {
+            state = BossState::Cooldown;
+            stateTimer = 0.0f;
+        }
+        break;
+    }
+
+    case BossState::Cooldown:
+    {
+        if (stateTimer > 1.5f)
+        {
+            state = BossState::Idle;
+            stateTimer = 0.0f;
+        }
+        break;
+    }
+    }
+}
+
+void GruxEnemy::DoAttackHit()
+{
+    auto playerActor = GetOwnerScene()->GetActorManager()->GetActorByName("player");
+    auto player = std::dynamic_pointer_cast<Player>(playerActor);
+    if (!player)
+    {// プレイヤーがいない場合は攻撃しない
+        return;
+    }
+    DirectX::XMFLOAT3 bossPos = GetPosition();
+    DirectX::XMFLOAT3 playerPos = player->GetPosition();
+
+    float dx = playerPos.x - bossPos.x;
+    float dz = playerPos.z - bossPos.z;
+    float distSq = dx * dx + dz * dz;
+
+    float attackRange = 3.0f; // 適当でOK
+
+    if (distSq < attackRange * attackRange)
+    {
+        // ダメージ処理
+        player->TakeDamage(10);
+    }
+}
+
+// プレイヤーとの距離を取得する関数
+float GruxEnemy::GetDistanceToPlayer()
+{
+    auto player = GetOwnerScene()->GetActorManager()->GetActorByName("player");
+    if (!player) return 9999.0f;
+
+    auto p = player->GetPosition();
+    auto b = GetPosition();
+
+    float dx = p.x - b.x;
+    float dz = p.z - b.z;
+
+    return sqrtf(dx * dx + dz * dz);
 }
 
 void SavarogEnemy::Initialize(const Transform& transform)
