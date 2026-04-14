@@ -20,6 +20,7 @@
 #include "Game/DarkGame/DarkActors/DarkStageChandelierActor.h"
 #include "Game/DarkGame/DarkActors/DoorActor.h"
 #include "Game/DarkGame/DarkActors/DarkEnemy/SkeletonWarriorEnemy.h"
+#include "Game/ScissorsGame/ScissorsPlayer.h"
 
 
 #include "Physics/CollisionSystem.h"
@@ -91,12 +92,12 @@ void GameScene::SetUpActors()
     mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     {
         PROFILE_SCOPE("Create Player");
-        Transform playerTr(DirectX::XMFLOAT3{ 40.0f,0.0f,-24.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.07f,1.07f,1.07f });
-        auto player = this->GetActorManager()->CreateAndRegisterActorWithTransform<Player>("player", playerTr);
+        Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.07f,1.07f,1.07f });
+        auto player = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsPlayer>("player", playerTr);
         mainCameraActor->SetTarget(player->GetRootComponent());
     }
     SetActiveCamera(mainCameraActor);
-    Logger::Log(U8("sampleシーンのカメラ設定される。"));
+    Logger::Log(U8("gameシーンのカメラ設定される。"));
 
     Transform debugCameraTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam", debugCameraTr);
@@ -112,7 +113,7 @@ void GameScene::SetUpActors()
 
     auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("stage", movieCameraTr);
     auto staticMeshCom = stage->AddComponent<StaticMeshComponent>("stage");
-    staticMeshCom->SetModel("./Data/Models/SoulStage0325/DarkSoulStage.gltf");
+    staticMeshCom->SetModel("./Data/TeamModels/Stage/Stage.gltf");
 
 }
 

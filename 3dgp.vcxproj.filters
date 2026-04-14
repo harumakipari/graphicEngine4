@@ -540,6 +540,12 @@
     <ClCompile Include="External\imgui\ImSequencer.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\PostProcess\MotionBlurEffect.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\ScissorsPlayer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -868,6 +874,8 @@
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkEnemy\GruxEnemy.h" />
     <ClInclude Include="External\imgui\ImCurveEdit.h" />
     <ClInclude Include="External\imgui\ImSequencer.h" />
+    <ClInclude Include="Source\Graphics\PostProcess\MotionBlurEffect.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -1107,6 +1115,15 @@
     <FxCompile Include="Shader\GaussianDofBlurHorizontalPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\MotionBlurPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\VelocityNeighborMaxPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\VelocityTileMaxPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ComputeParticle.hlsli">
@@ -1182,6 +1199,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\ModelType.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\GBuffer.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\MotionBlur.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
