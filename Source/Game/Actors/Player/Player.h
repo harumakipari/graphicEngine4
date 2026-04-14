@@ -51,10 +51,12 @@ public:
     void DoAttackHit();
 
 public:
-    //当たった相手を記録するためのセット
+    //当たった相手を記録するためのセット 火花エフェクトの生成やダメージの適用を一度だけ行うために使用
     std::unordered_set<Actor*> hitTargets;
     bool hasPrevSwordTip = false; // 前フレームの剣先の位置が有効かどうか
     bool hasSpawnedThisAttack = false; // 今攻撃でエフェクトを生成したかどうか
+
+    bool invincible = false; // 無敵状態かどうか
 
     //上方向への力
     float jumpPower = 5.0f;
@@ -70,10 +72,6 @@ private:
     //頭の下のノード番号
     size_t nodeBottomIndex = 146;    //"ik_foot_root"
 
-    // プレイヤーの eraseInArea 無敵時間
-    float invisibleTime = 0.0f;
-    // プレイヤーの boss 無敵時間
-    float bossInvisibleTime = 0.0f;
     // プレイヤーの現在のスピード
     float currentSpeed = 5.0f;
     // プレイヤーはアイテムを持っていないときのスピード
@@ -93,16 +91,6 @@ private:
 
     bool isIdleEnd = false;
 public:
-    // 無敵時間中かどうか
-    bool IsInvincible() const { return invisibleTime > 0.0f; }
-    // 無敵時間間隔設定
-    void SetInvincible(float maxInvincibleTime = 3.0f) { invisibleTime = maxInvincibleTime; }
-
-    // 無敵時間中かどうか
-    bool IsBossInvincible() const { return bossInvisibleTime > 0.0f; }
-    // 無敵時間間隔設定
-    void SetBossInvincible(float maxInvincibleTime = 3.0f) { bossInvisibleTime = maxInvincibleTime; }
-
     // EraseInArea で使用
     // 次のフレームで適応する無敵時間のフラグを立てる
     bool applyInvincibilityNextFrame = false;

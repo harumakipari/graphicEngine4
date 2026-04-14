@@ -80,3 +80,26 @@ public:
      float attackTimer = 0.0f;
      bool hitDone = false;
  };
+
+ // 回避ステートオブジェクト
+ class PlayerDodgeState : public PlayerStateBase
+ {
+ public:
+     // コンストラクタ
+     PlayerDodgeState(Player* player) :PlayerStateBase(player) {}
+     // デストラクタ
+     ~PlayerDodgeState() = default;
+     // ステートに入った時のメソッド
+     void Enter() override;
+     // ステートで実行するメソッド
+     void Execute(float deltaTime) override;
+     // ステートから出ていくときのメソッド
+     void Exit() override;
+     // ステート名を取得
+     const char* GetName() const override { return "Dodge"; }
+
+ private:
+     float dodgeTimer = 0.0f;
+     
+ };
+

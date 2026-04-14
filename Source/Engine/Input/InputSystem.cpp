@@ -235,6 +235,9 @@ void InputSystem::Initialize()
     inputKeys["Attack"].emplace_back(std::make_unique<Keyboard>('Z'));
     inputKeys["Attack"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_RIGHT_SHOULDER));     // 右
 
+    inputKeys["Dodge"].emplace_back(std::make_unique<Keyboard>(VK_RETURN)); // Enterキー
+    inputKeys["Dodge"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_B));     // Bボタン
+
     //inputKeys["Z"].emplace_back(std::make_unique<Keyboard>('Z'));
     //inputKeys["RB"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_RIGHT_SHOULDER));     // 右
 

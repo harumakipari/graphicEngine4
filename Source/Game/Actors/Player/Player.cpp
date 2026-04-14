@@ -90,6 +90,7 @@ void Player::Initialize(const Transform& transform)
         stateMachine_->RegisterState(std::make_unique<PlayerIdleState>(this));
         stateMachine_->RegisterState(std::make_unique<PlayerRunningState>(this));
         stateMachine_->RegisterState(std::make_unique<PlayerAttackingState>(this));
+        stateMachine_->RegisterState(std::make_unique<PlayerDodgeState>(this));
 
         // ステートマシンを character に追加
         //this->SetStateMachine(stateMachine);
@@ -642,6 +643,11 @@ void Player::Move(float elapsedTime)
 //当たった時の処理
 void Player::TakeDamage(int damage)
 {
+    if (invincible)
+    {// 無敵状態ならダメージを受けない
+        Logger::Log(U8("攻撃を回避した"));
+        return;
+    }
     hp -= damage;
     Logger::Log(U8("プレイヤーにダメージ！ HP:") + std::to_string(hp));
     if (sparkComponent)

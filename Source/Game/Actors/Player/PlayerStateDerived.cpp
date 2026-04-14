@@ -21,6 +21,12 @@ void PlayerIdleState::Execute(float deltaTime)
         return;
     }
 
+    if (InputSystem::GetInputState("Dodge", InputStateMask::Trigger))
+    {
+        player->GetStateMachine()->ChangeState("Dodge");
+        return;
+    }
+
     // 入力があれば走るステートに変更
     auto inputComp = player->inputComponent;
     DirectX::XMFLOAT3 dir = inputComp->GetMoveInput();
@@ -73,7 +79,7 @@ void PlayerAttackingState::Enter()
     player->hasPrevSwordTip = false;
 
     // 攻撃中は移動速度を0にする
-    player->characterMovementComponent->SetSpeed(0.0f); 
+    player->characterMovementComponent->SetSpeed(0.0f);
 
     // 攻撃アニメーションを再生
     player->PlayAnimation("Primary_Attack_Fast_D", false, true, 0.1f);
@@ -106,9 +112,56 @@ void PlayerAttackingState::Execute(float deltaTime)
             player->GetStateMachine()->ChangeState("Idle");
         }
     }
+
+    if (InputSystem::GetInputState("Dodge", InputStateMask::Trigger))
+    {
+        player->GetStateMachine()->ChangeState("Dodge");
+        return;
+    }
+
 }
 
 void PlayerAttackingState::Exit()
 {
     player->characterMovementComponent->ResetSpeed(); // 攻撃が終わったら移動速度をリセットする
+}
+
+
+
+void PlayerDodgeState::Enter()
+{
+    owner->PlayAnimation("HitReact_Front");
+    dodgeTimer = 0.0f;
+    player->invincible = true; // ←無敵ON
+    
+}
+
+void PlayerDodgeState::Execute(float deltaTime)
+{
+    dodgeTimer += deltaTime;
+
+    // 無敵時間（ここがキモ）
+    if (dodgeTimer > 0.3f)
+    {
+        player->invincible = false;
+    }
+
+    // 終了
+    if (dodgeTimer > 0.6f)
+    {
+        auto dir = player->inputComponent->GetMoveInput();
+        if (MathHelper::Length(dir) > 0.01f)
+        {
+            player->GetStateMachine()->ChangeState("Running");
+        }
+        else
+        {
+            player->GetStateMachine()->ChangeState("Idle");
+        }
+    }
+}
+
+void PlayerDodgeState::Exit()
+{
+
 }
