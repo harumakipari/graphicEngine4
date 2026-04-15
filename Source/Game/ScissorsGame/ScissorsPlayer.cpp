@@ -55,6 +55,7 @@ void ScissorsPlayer::Initialize(const Transform& transform)
 
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
+    rotationComponent->SetRotateTime(0.1f); // 回転を速くする
 
     // 
     for (int i = 0; i < 2; i++)
@@ -91,12 +92,12 @@ void ScissorsPlayer::Update(float deltaTime)
 
 #endif // 0
 
-    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
+    if (InputSystem::GetInputState("ScissorsAction", InputStateMask::Trigger))
     {
         if (scissorsCount == 2)
         {
             // 1本置く
-            Logger::Log("ハサミを置く");
+            Logger::Log(U8("ハサミを置く"));
             DropOne();
         }
         else // scissorsCount == 1
@@ -104,21 +105,27 @@ void ScissorsPlayer::Update(float deltaTime)
             if (auto scissors = FindNearestDroppedScissors())
             {// 近くに落ちているハサミがあるなら
                 // 拾って2本になる
-                Logger::Log("ハサミを拾う");
+                Logger::Log(U8("ハサミを拾う"));
                 PickUpNearest();
             }
             else
             {
                 //  引き寄せ
-                Logger::Log("ハサミを引き寄せる");
+                Logger::Log(U8("ハサミを引き寄せる"));
                 PullNearest();
             }
         }
     }
-    if (InputSystem::GetInputState("MouseRight", InputStateMask::Trigger))
+    if (InputSystem::GetInputState("ScissorsAttack", InputStateMask::Trigger))
     {
+        for (auto& w : equippedScissors)
+        {
+            auto s = w.lock();
+            if (!s) continue;
 
-        Logger::Log("攻撃をする");
+            s->StartAttack();
+            Logger::Log(U8("攻撃をする"));
+        }
     }
 
 }

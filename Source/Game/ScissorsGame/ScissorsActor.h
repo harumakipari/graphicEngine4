@@ -2,6 +2,7 @@
 #include "Components/Controller/ControllerComponent.h"
 #include "Core/Actor.h"
 
+class YarnEnemyActor;
 class ScissorsPlayer;
 
 // ハサミのアクター
@@ -12,7 +13,8 @@ public:
     {
         Equipped,   // 手に持ってる
         Dropped,    // 地面にある
-        Pulling     // 引き寄せ中
+        Pulling,    // 引き寄せ中
+        Attacking   // 攻撃中
     };
 
 public:
@@ -28,6 +30,8 @@ public:
         owner = player;
     }
 
+    void OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair) override;
+
     // ハサミを地面に落とす
     void Drop(const DirectX::XMFLOAT3& pos);
 
@@ -36,6 +40,9 @@ public:
 
     // ハサミを拾う
     void PickUp();
+
+    // ハサミを攻撃に使う
+    void StartAttack();
 
     // 現在の状態を取得
     State GetState() const { return state; }
@@ -46,4 +53,9 @@ private:
     ScissorsPlayer* owner;
     std::shared_ptr<SkeletalMeshComponent> meshComponent;
     std::shared_ptr<SphereComponent> sphereComponent; // 当たり判定用
+    std::unordered_set<YarnEnemyActor*> hitEnemies; // すでに当たった敵
+
+
+    float attackTimer = 0.0f;
+    float attackDuration = 0.2f; // 攻撃有効時間
 };

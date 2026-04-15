@@ -4,6 +4,7 @@
 #include "Engine/Scene/SceneBase.h"
 
 #include "ScissorsPlayer.h"
+#include "YarnEnemyActor.h"
 
 void ScissorsActor::Initialize(const Transform& transform)
 {
@@ -15,7 +16,6 @@ void ScissorsActor::Initialize(const Transform& transform)
     meshComponent->SetIsVisible(false); // 最初は見えない（プレイヤーの手に持ってる想定）
 
     sphereComponent = AddComponent<SphereComponent>("sphere", parentName);
-
     sphereComponent->SetRadius(0.5f);
     sphereComponent->SetLayer(CollisionLayer::Player); 
     sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
@@ -63,11 +63,62 @@ void ScissorsActor::Update(float deltaTime)
 
         break;
     }
+    case State::Attacking:
+    {
+        attackTimer += deltaTime;
+
+        auto playerPos = owner->GetPosition();
+        DirectX::XMFLOAT3 forward = owner->GetForward();
+
+        SetPosition({
+            playerPos.x + forward.x * 1.0f,
+            playerPos.y,
+            playerPos.z + forward.z * 1.0f
+            });
+
+        // 一定時間攻撃判定を維持
+        if (attackTimer >= attackDuration)
+        {
+            PickUp();
+        }
+
+        break;
+    }
+
 
     case State::Dropped:
         // 何もしない（地面に置いてるだけ）
         break;
     }
+}
+
+void ScissorsActor::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair)
+{
+    auto otherCollision = hitPair.second;
+    auto other = otherCollision->GetOwner();
+
+    auto enemy = dynamic_cast<YarnEnemyActor*>(other);
+    if (!enemy) return;
+
+    if (hitEnemies.contains(enemy)) return;
+
+    int damage = 0;
+
+    if (state == State::Pulling)
+    {
+        damage = 2;
+    }
+    else if (state == State::Attacking)
+    {
+        damage = (owner->GetScissorsCount() == 2) ? 2 : 1;
+    }
+    else
+    {
+        return;
+    }
+
+    hitEnemies.insert(enemy);
+    enemy->TakeDamage(damage);
 }
 
 void ScissorsActor::Drop(const DirectX::XMFLOAT3& pos)
@@ -85,7 +136,17 @@ void ScissorsActor::PickUp()
     meshComponent->SetIsVisible(false);
 }
 
+// ハサミを攻撃に使う
+void ScissorsActor::StartAttack()
+{
+    state = State::Attacking;
+    hitEnemies.clear();
+
+    attackTimer = 0.0f;
+}
+
 void ScissorsActor::StartPull(const DirectX::XMFLOAT3& target)
 {
     state = State::Pulling;
+    hitEnemies.clear();
 }

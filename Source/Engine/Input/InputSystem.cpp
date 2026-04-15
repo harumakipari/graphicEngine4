@@ -190,7 +190,7 @@ void InputSystem::Initialize()
 
 
     inputKeys["Space"].emplace_back(std::make_unique<Keyboard>(VK_SPACE));
-    inputKeys["Space"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_X));
+    //inputKeys["Space"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_X));
 
     inputKeys["Up"].emplace_back(std::make_unique<Keyboard>(VK_UP));
     inputKeys["W"].emplace_back(std::make_unique<Keyboard>('W'));
@@ -242,6 +242,21 @@ void InputSystem::Initialize()
     //inputKeys["RB"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_RIGHT_SHOULDER));     // 右
 
     inputKeys["RT"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::RightTrigger));
+
+
+
+    // 今回のゲームで使用する入力キーをここでまとめて登録しておく
+    inputKeys["ScissorsAttack"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::RightTrigger));
+    inputKeys["ScissorsAttack"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_RIGHT_SHOULDER));     // 右
+    inputKeys["ScissorsAttack"].emplace_back(std::make_unique<Mouse>(VK_RBUTTON)); // マウス右ボタン
+
+    inputKeys["ScissorsAction"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_A));
+    inputKeys["ScissorsAction"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_B));
+    inputKeys["ScissorsAction"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_X));
+    inputKeys["ScissorsAction"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_Y));
+    inputKeys["ScissorsAction"].emplace_back(std::make_unique<Mouse>(VK_LBUTTON)); // マウス左ボタン
+
+
 }
 
 

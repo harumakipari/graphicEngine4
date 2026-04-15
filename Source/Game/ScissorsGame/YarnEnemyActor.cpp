@@ -53,7 +53,7 @@ void YarnEnemyActor::Update(float elapsedTime)
 void YarnEnemyActor::TakeDamage(int damage)
 {
     hp -= damage;
-
+    Logger::Log(U8("敵にダメージ：" )+ std::to_string(damage));
     if (hp <= 0)
     {
         MarkPendingKill();

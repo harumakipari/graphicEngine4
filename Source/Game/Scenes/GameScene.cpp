@@ -421,6 +421,10 @@ void GameScene::SetUpActors()
     // ‰¼‚Ì“G‚ð¶¬
     Transform enemyTr(DirectX::XMFLOAT3{ 5.0f,0.0f,5.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
     auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnEnemyActor>("enemy", enemyTr);
+
+    // ‰¼‚Ì“G‚ð¶¬
+    Transform enemyTr1(DirectX::XMFLOAT3{ 10.0f,0.0f,5.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
+    auto enemy1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnEnemyActor>("enemy", enemyTr1);
 }
 
 

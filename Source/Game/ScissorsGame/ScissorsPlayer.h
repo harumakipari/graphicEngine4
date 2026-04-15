@@ -15,6 +15,8 @@ public:
 
     void Update(float deltaTime)override;
 
+    // ハサミの所持数を取得
+    int GetScissorsCount() const { return scissorsCount; }
 private:
     // ハサミを落とす
     void DropOne();
