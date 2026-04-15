@@ -47,18 +47,24 @@ void ScissorsActor::Update(float deltaTime)
         auto playerPos = owner->GetPosition();
         auto pos = GetPosition();
 
-        // 補間で近づける
-        pos.x += (playerPos.x - pos.x) * 1.0f * deltaTime;
-        pos.y += (playerPos.y - pos.y) * 1.0f * deltaTime;
-        pos.z += (playerPos.z - pos.z) * 1.0f * deltaTime;
+        float pullSpeed = 5.0f; // ←調整ポイント
+
+        float dist = MathHelper::Distance(pos, playerPos);
+
+        // 近づくほど速く
+        pullSpeed = std::max<float>(5.0f, dist * 5.0f);
+
+        pos.x += (playerPos.x - pos.x) * pullSpeed * deltaTime;
+        pos.y += (playerPos.y - pos.y) * pullSpeed * deltaTime;
+        pos.z += (playerPos.z - pos.z) * pullSpeed * deltaTime;
+
 
         SetPosition(pos);
 
         // 近づいたら回収
-        float dist = MathHelper::Distance(pos, playerPos);
         if (dist < 1.0f)
         {
-            PickUp();
+            owner->OnScissorsReturned(this);
         }
 
         break;
@@ -85,7 +91,28 @@ void ScissorsActor::Update(float deltaTime)
         break;
     }
 
+    case State::Thrown:
+    {
+        auto pos = GetPosition();
 
+        pos.x += velocity.x * deltaTime;
+        pos.y += velocity.y * deltaTime;
+        pos.z += velocity.z * deltaTime;
+
+        SetPosition(pos);
+
+        float dist = MathHelper::Distance(pos, targetPos);
+
+        if (dist < 0.2f) // ちょい余裕持たせる
+        {
+            SetPosition(targetPos); // ピタッと合わせる
+            velocity = { 0,0,0 };
+
+            state = State::Dropped; // 地面に落ちた扱い
+        }
+
+        break;
+    }
     case State::Dropped:
         // 何もしない（地面に置いてるだけ）
         break;
@@ -139,7 +166,6 @@ void ScissorsActor::Drop(const DirectX::XMFLOAT3& pos)
 void ScissorsActor::PickUp()
 {
     state = State::Equipped;
-
     meshComponent->SetIsVisible(false);
 }
 
@@ -157,7 +183,32 @@ void ScissorsActor::Throw(DirectX::XMFLOAT3 dir, float power)
 {
     state = State::Thrown;
 
-    //velocity = dir * power * throwSpeed;
+    float maxThrowDistance = 10.0f;
+    float distance = power * maxThrowDistance;
+
+    auto start = GetPosition();
+
+    targetPos =
+    {
+        start.x + dir.x * distance,
+        start.y + dir.y * distance,
+        start.z + dir.z * distance
+    };
+
+    float stageMinX = 0.0f;
+    float stageMaxX = 20.0f;
+    float stageMinZ = 0.0f;
+    float stageMaxZ = 20.0f;
+
+    targetPos.x = std::clamp(targetPos.x, stageMinX, stageMaxX);
+    targetPos.z = std::clamp(targetPos.z, stageMinZ, stageMaxZ);
+
+
+    velocity.x = dir.x * throwSpeed;
+    velocity.y = dir.y * throwSpeed;
+    velocity.z = dir.z * throwSpeed;
+
+    meshComponent->SetIsVisible(true);
 }
 
 // ハサミを引き寄せる

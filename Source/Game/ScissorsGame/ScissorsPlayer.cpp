@@ -76,7 +76,7 @@ void ScissorsPlayer::Update(float deltaTime)
 {
     Character::Update(deltaTime);
 
-#if 1 // 入力に基づいて移動と回転を更新
+    // 入力に基づいて移動と回転を更新
     auto intent = inputComponent->GetIntent();
     DirectX::XMFLOAT3 moveDir = { 0,0,0 };
 
@@ -90,32 +90,117 @@ void ScissorsPlayer::Update(float deltaTime)
     characterMovementComponent->SetMoveDirection(moveDir);
     rotationComponent->SetDirection(moveDir);
 
-#endif // 0
 
-    if (InputSystem::GetInputState("ScissorsAction", InputStateMask::Trigger))
+    // ゲームパッドが接続されているか
+    bool isGamepad = InputSystem::IsGamepadConnected();
+
+
+    // 右スティックの強さ
+    float stickPower = sqrt(
+        intent.rightMove.x * intent.rightMove.x +
+        intent.rightMove.y * intent.rightMove.y
+    );
+    // 0～1にクランプ
+    stickPower = std::clamp(stickPower, 0.0f, 1.0f);
+    // スティック使ってるか判定
+    bool usingStick = (stickPower > 0.2f);
+
+    // スティックRelease検出
+    static float prevStickPower = 0.0f;
+    bool stickReleased = (prevStickPower > 0.2f && stickPower <= 0.2f);
+    prevStickPower = stickPower;
+
+
+    bool showPreview = false;
+    float previewPower = 0.0f;
+
+
+    if (usingStick)
+    {// スティックの最大入力値を更新
+        lastStickPower = stickPower;
+        showPreview = true;
+        previewPower = stickPower;
+    }
+
+    Logger::Log("Stick Power: " + std::to_string(stickPower) + (usingStick ? " (Using Stick)" : " (Not Using Stick)"));
+
+    // ボタンRelease
+    bool buttonReleased = InputSystem::GetInputState("ScissorsAction", InputStateMask::Release);
+
+    // ハサミ処理
+    if (scissorsCount == 2)
     {
-        if (scissorsCount == 2)
+        // ゲームパッド
+        if (isGamepad)
         {
-            // 1本置く
-            Logger::Log(U8("ハサミを置く"));
-            DropOne();
-        }
-        else // scissorsCount == 1
-        {
-            if (auto scissors = FindNearestDroppedScissors())
-            {// 近くに落ちているハサミがあるなら
-                // 拾って2本になる
-                Logger::Log(U8("ハサミを拾う"));
-                PickUpNearest();
-            }
-            else
+            // スティック操作
             {
-                //  引き寄せ
-                Logger::Log(U8("ハサミを引き寄せる"));
-                PullNearest();
+                if (stickReleased)
+                {
+                    float power = lastStickPower;
+
+                    if (power < 0.2f)
+                        power = 0.5f;
+                    ThrowScissors(power);
+                    // 投げた後、最大入力値をリセット
+                    lastStickPower = 0.0f;
+                    Logger::Log(U8("スティックで投げる"));
+                }
+            }
+            // ボタンのみ
+            //if (!usingStick)
+            {
+                if (buttonReleased)
+                {
+                    float power = 0.6f; // 固定距離（調整してOK）
+
+                    ThrowScissors(power);
+                    Logger::Log(U8("ボタンで投げる（固定距離）"));
+                }
+            }
+        }
+        // マウス（チャージ）
+        else
+        {
+            if (InputSystem::GetInputState("ScissorsAction", InputStateMask::Press))
+            {
+                isCharging = true;
+                chargeTime += deltaTime;
+
+                if (chargeTime > maxChargeTime)
+                    chargeTime = maxChargeTime;
+                showPreview = true;
+                previewPower = chargeTime / maxChargeTime;
+            }
+
+            if (buttonReleased)
+            {
+                if (isCharging)
+                {
+                    float power = chargeTime / maxChargeTime;
+
+                    ThrowScissors(power);
+                    Logger::Log(U8("チャージ投げ"));
+
+                    isCharging = false;
+                    chargeTime = 0.0f;
+
+                    showPreview = false;
+
+                }
             }
         }
     }
+    else if (scissorsCount == 1)
+    {
+        if (InputSystem::GetInputState("ScissorsAction", InputStateMask::Trigger))
+        {
+            PullNearest();
+            Logger::Log(U8("ハサミを引き寄せる"));
+        }
+    }
+
+
     if (InputSystem::GetInputState("ScissorsAttack", InputStateMask::Trigger))
     {
         for (auto& w : equippedScissors)
@@ -128,6 +213,25 @@ void ScissorsPlayer::Update(float deltaTime)
         }
     }
 
+    // デバッグ用：溜めてる間、投げる位置の予測を描画
+    if (showPreview)
+    {
+        float dist = previewPower * maxThrowDistance;
+
+        auto pos = GetPosition();
+        auto forward = GetForward();
+
+        DirectX::XMFLOAT3 target =
+        {
+            pos.x + forward.x * dist,
+            pos.y,
+            pos.z + forward.z * dist
+        };
+
+        DebugRender::DrawSphere(target, 0.3f, { 1,1,0,1 });
+    }
+
+    // デバッグ用：ハサミを拾える範囲を描画
     DebugRender::DrawCylinder(
         GetPosition(),
         pickupRange,
@@ -193,6 +297,49 @@ void ScissorsPlayer::PullNearest()
     }
 
     scissorsPtr->StartPull(GetPosition());
+}
+
+// ハサミを投げる
+void ScissorsPlayer::ThrowScissors(float power)
+{
+    if (equippedScissors.size() <= 1) return;
+
+    auto scissors = equippedScissors.back();
+    auto s = scissors.lock();
+    if (!s) return;
+
+    equippedScissors.pop_back();
+    droppedScissors.push_back(scissors);
+    scissorsCount--;
+
+    // 方向
+    auto dir = GetForward();
+
+    s->Throw(dir, power);
+}
+
+void ScissorsPlayer::OnScissorsReturned(ScissorsActor* scissors)
+{
+    // droppedから探す
+    auto it = std::find_if(droppedScissors.begin(), droppedScissors.end(),
+        [scissors](const std::weak_ptr<ScissorsActor>& w)
+        {
+            return w.lock().get() == scissors;
+        });
+
+    if (it == droppedScissors.end()) return;
+
+    auto s = it->lock();
+    if (!s) return;
+
+    // equippedに戻す
+    equippedScissors.push_back(*it);
+    droppedScissors.erase(it);
+
+    scissorsCount++;
+
+    // 状態変更
+    s->PickUp();
 }
 
 ScissorsActor* ScissorsPlayer::FindNearestDroppedScissors()

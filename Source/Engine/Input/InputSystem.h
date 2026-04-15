@@ -100,7 +100,7 @@ public:
 
 enum class DeadZoneMode { IndependentAxes, Circular, None };
 enum class DeviceFlags { All, KeyboardOnly, MouseOnly, GamePadOnly, KeyboardAndMouse, KeyboardAndGamePad, MouseAndGamePad };
-enum class InputStateMask { None, Trigger, Release };
+enum class InputStateMask { Press, Trigger, Release };
 enum class Direction { Up, Left, Down, Right, None };
 
 
@@ -124,7 +124,7 @@ public:
     static void Update(float deltaTime);
 
     // 入力状態の取得
-    static bool GetInputState(const std::string& action, InputStateMask state = InputStateMask::None, DeviceFlags flag = DeviceFlags::All);
+    static bool GetInputState(const std::string& action, InputStateMask state = InputStateMask::Press, DeviceFlags flag = DeviceFlags::All);
 
     // 方向スティック状態の取得
     static float GetAxis(Side side, Axis axis) { return mAxis[static_cast<size_t>(side)][static_cast<size_t>(axis)]; }

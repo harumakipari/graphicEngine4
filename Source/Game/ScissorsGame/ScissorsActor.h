@@ -63,4 +63,8 @@ private:
     float attackTimer = 0.0f;
     float attackDuration = 0.2f; // 攻撃有効時間
     float attackRadius = 1.5f;
+
+    DirectX::XMFLOAT3 velocity = {};// 投げたときの速度
+    DirectX::XMFLOAT3 targetPos = {}; // 投げるときの目標位置
+    float throwSpeed = 10.0f;
 };
