@@ -16,7 +16,7 @@ void ScissorsActor::Initialize(const Transform& transform)
     meshComponent->SetIsVisible(false); // 最初は見えない（プレイヤーの手に持ってる想定）
 
     sphereComponent = AddComponent<SphereComponent>("sphere", parentName);
-    sphereComponent->SetRadius(0.5f);
+    sphereComponent->SetRadius(attackRadius);
     sphereComponent->SetLayer(CollisionLayer::Player); 
     sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
     sphereComponent->Initialize();
@@ -90,6 +90,13 @@ void ScissorsActor::Update(float deltaTime)
         // 何もしない（地面に置いてるだけ）
         break;
     }
+
+
+    DebugRender::DrawSphere(
+        GetPosition(),
+        attackRadius,
+        {1.0f, 0.0f, 0.0f, 1.0f}
+    );
 }
 
 void ScissorsActor::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitPair)
@@ -145,6 +152,15 @@ void ScissorsActor::StartAttack()
     attackTimer = 0.0f;
 }
 
+// ハサミを投げる
+void ScissorsActor::Throw(DirectX::XMFLOAT3 dir, float power)
+{
+    state = State::Thrown;
+
+    //velocity = dir * power * throwSpeed;
+}
+
+// ハサミを引き寄せる
 void ScissorsActor::StartPull(const DirectX::XMFLOAT3& target)
 {
     state = State::Pulling;

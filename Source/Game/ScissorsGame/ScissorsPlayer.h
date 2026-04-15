@@ -39,4 +39,6 @@ private:
     int scissorsCount = 2; // ハサミの所持数
     std::vector<std::weak_ptr<ScissorsActor>> equippedScissors; // 手に持ってる
     std::vector<std::weak_ptr<ScissorsActor>> droppedScissors;  // 落ちてる
+
+    float pickupRange = 1.0f; // ハサミを拾う範囲
 };

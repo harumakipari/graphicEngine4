@@ -6,7 +6,7 @@ class TPSCameraController
 public:
     TPSCameraComponent* camera = nullptr;
     std::weak_ptr<SceneComponent> target;
-
+    bool useRaycast = true; // 障害物の回避にレイキャストを使うかどうか
     void Update(float dt)
     {
         auto t = target.lock();
@@ -36,18 +36,21 @@ public:
 
 
         XMVECTOR idealEye = pivot - forward * camera->distance;
-
-        XMVECTOR resolvedEye =
-            camera->ResolveCameraCollision(pivot, idealEye);
+        XMVECTOR resolvedEye = idealEye;
+        if (useRaycast)
+        {
+            resolvedEye =
+                camera->ResolveCameraCollision(pivot, idealEye);
+        }
 
 
         XMVECTOR currentEye = resolvedEye;
         //XMVECTOR currentEye = idealEye;
 
         XMFLOAT3 pos;
-        XMStoreFloat3(&pos, currentEye); 
+        XMStoreFloat3(&pos, currentEye);
 
-        
+
         camera->GetOwner()->SetPosition(pos);
         XMFLOAT3 pivot3;
         XMStoreFloat3(&pivot3, pivot);
@@ -56,3 +59,4 @@ public:
         camera->useLookTarget = true;
     }
 };
+

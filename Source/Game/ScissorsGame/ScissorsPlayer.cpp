@@ -128,6 +128,12 @@ void ScissorsPlayer::Update(float deltaTime)
         }
     }
 
+    DebugRender::DrawCylinder(
+        GetPosition(),
+        pickupRange,
+        0.1f,
+        XMFLOAT4{ 0.0f,1.0f,0.0f,0.5f }
+    );
 }
 
 // ƒnƒTƒ~‚ğ—‚Æ‚·
@@ -212,7 +218,7 @@ ScissorsActor* ScissorsPlayer::FindNearestDroppedScissors()
     }
 
     // ‹——£§ŒÀ‚Â‚¯‚é‚Æ—Ç‚¢
-    if (minDist < 3.0f)
+    if (minDist < pickupRange)
         return nearest;
 
     return nullptr;

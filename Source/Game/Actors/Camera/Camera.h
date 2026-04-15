@@ -141,3 +141,68 @@ private:
 };
 
 
+class FixedCamera :public Camera
+{
+public:
+    //引数付きコンストラクタ
+    explicit FixedCamera(const std::string& actorName) :Camera(actorName) {}
+    virtual ~FixedCamera() = default;
+
+    void Initialize(const Transform& transform)override
+    {
+        Camera::Initialize(transform);
+        tpsController.camera =
+            static_cast<TPSCameraComponent*>(mainCameraComponent.get());
+        // FixedCamera ではレイキャストを使わない
+        tpsController.useRaycast = false;
+    };
+
+    void SetTarget(const std::shared_ptr<SceneComponent>& target)
+    {
+        tpsController.target = target;
+    }
+
+    //更新処理
+    void Update(float deltaTime)override;
+
+    void Shake(float power = 0.02f, float time = 0.2f)
+    {
+        //mainCameraComponent->Shake(power, time);
+    }
+    void DrawImGuiDetails()override
+    {
+#ifdef USE_IMGUI
+
+#endif
+    }
+
+    DirectX::XMFLOAT3 CameraForwardXZ() const
+    {
+        float yaw = mainCameraComponent->GetYaw();
+
+        return {
+            sinf(yaw),
+            0.0f,
+            cosf(yaw)
+        };
+    }
+
+    DirectX::XMFLOAT3 CameraRightXZ() const
+    {
+        float yaw = mainCameraComponent->GetYaw();
+
+        return {
+            cosf(yaw),
+            0.0f,
+            -sinf(yaw)
+        };
+    }
+
+
+private:
+    TPSCameraController tpsController;
+
+    bool didShake = false;
+};
+
+

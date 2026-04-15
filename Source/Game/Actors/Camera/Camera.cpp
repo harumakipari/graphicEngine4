@@ -46,3 +46,23 @@ void MainCamera::Update(float deltaTime)
 
 }
 
+
+void FixedCamera::Update(float deltaTime)
+{
+    // プレイヤー移動方向
+    XMFLOAT3 moveDir = {};
+
+    if (auto target = tpsController.target.lock())
+    {
+        auto actor = target->GetOwner();
+
+        if (auto movement = actor->GetComponent<CharacterMovementComponent>())
+        {
+            moveDir = movement->GetVelocity();
+        }
+    }
+
+    // Controller更新
+    tpsController.Update(deltaTime);
+}
+
