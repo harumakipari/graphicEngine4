@@ -317,6 +317,7 @@
     <ClCompile Include="Source\Game\Scenes\MorphScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\PuddingGameScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\SampleScene.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\ScissorsActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsPlayer.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsStage.cpp" />
     <ClCompile Include="Source\Game\SofyBody\SoftBody.cpp" />
@@ -473,6 +474,7 @@
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />
     <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />
     <ClInclude Include="Source\Game\Scenes\SampleScene.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScissorsActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayer.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsStage.h" />
     <ClInclude Include="Source\Game\SofyBody\SoftBody.h" />

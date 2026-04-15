@@ -1,10 +1,8 @@
 #include "pch.h"
 
 #include "ScissorsPlayer.h"
-
-#include "Components/Render/PointLightComponent.h"
 #include "Engine/Scene/SceneBase.h"
-#include "Game/Actors/Player/Player.h"
+#include "ScissorsActor.h"
 
 void ScissorsPlayer::Initialize(const Transform& transform)
 {
@@ -57,13 +55,27 @@ void ScissorsPlayer::Initialize(const Transform& transform)
 
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
+
+    // 
+    for (int i = 0; i < 2; i++)
+    {
+        Transform scissorsTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
+        auto scissors = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsActor>("scissors", scissorsTr);
+        scissors->SetOwnerPlayer(this);
+        scissors->PickUp(); // 最初は持ってる状態
+
+        equippedScissors.push_back(scissors);
+    }
+
+    scissorsCount = 2;
+
 }
 
 void ScissorsPlayer::Update(float deltaTime)
 {
     Character::Update(deltaTime);
 
-#if 1
+#if 1 // 入力に基づいて移動と回転を更新
     auto intent = inputComponent->GetIntent();
     DirectX::XMFLOAT3 moveDir = { 0,0,0 };
 
@@ -78,4 +90,123 @@ void ScissorsPlayer::Update(float deltaTime)
     rotationComponent->SetDirection(moveDir);
 
 #endif // 0
+
+    if (InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
+    {
+        if (scissorsCount == 2)
+        {
+            // 1本置く
+            Logger::Log("ハサミを置く");
+            DropOne();
+        }
+        else // scissorsCount == 1
+        {
+            if (auto scissors = FindNearestDroppedScissors())
+            {// 近くに落ちているハサミがあるなら
+                // 拾って2本になる
+                Logger::Log("ハサミを拾う");
+                PickUpNearest();
+            }
+            else
+            {
+                //  引き寄せ
+                Logger::Log("ハサミを引き寄せる");
+                PullNearest();
+            }
+        }
+    }
+    if (InputSystem::GetInputState("MouseRight", InputStateMask::Trigger))
+    {
+
+        Logger::Log("攻撃をする");
+    }
+
+}
+
+// ハサミを落とす
+void ScissorsPlayer::DropOne()
+{
+    if (equippedScissors.size() <= 1) return;
+
+    auto scissors = equippedScissors.back();
+    auto scissorsPtr = scissors.lock();
+
+    if (!scissorsPtr)
+    {
+        Logger::Warning(U8("落とすハサミがnullptrです"));
+    }
+
+    equippedScissors.pop_back();
+
+    scissorsPtr->Drop(GetPosition());
+
+    droppedScissors.push_back(scissors);
+
+    scissorsCount--;
+}
+
+// ハサミを拾う
+void ScissorsPlayer::PickUpNearest()
+{
+    if (droppedScissors.empty()) return;
+
+    auto scissors = droppedScissors.back(); // とりあえず一番近い扱い
+    auto scissorsPtr = scissors.lock();
+
+    if (!scissorsPtr)
+    {
+        Logger::Warning(U8("拾うハサミがnullptrです"));
+    }
+
+    scissorsPtr->PickUp();
+
+    equippedScissors.push_back(scissors);
+    droppedScissors.pop_back();
+
+    scissorsCount++;
+}
+
+// ハサミを引き寄せる
+void ScissorsPlayer::PullNearest()
+{
+    if (droppedScissors.empty()) return;
+
+    auto scissors = droppedScissors.back();
+    auto scissorsPtr = scissors.lock();
+
+    if (!scissorsPtr)
+    {
+        Logger::Warning(U8("引き寄せるハサミがnullptrです"));
+    }
+
+    scissorsPtr->StartPull(GetPosition());
+}
+
+ScissorsActor* ScissorsPlayer::FindNearestDroppedScissors()
+{
+    float minDist = FLT_MAX;
+    ScissorsActor* nearest = nullptr;
+
+    auto playerPos = GetPosition();
+
+    for (auto& w : droppedScissors)
+    {
+        auto s = w.lock();
+        if (!s) continue;
+
+        auto pos = s->GetPosition();
+        float dist = MathHelper::Distance(playerPos, pos);
+
+        if (dist < minDist)
+        {
+            minDist = dist;
+            nearest = s.get();
+        }
+    }
+
+    // 距離制限つけると良い
+    if (minDist < 3.0f)
+        return nearest;
+
+    return nullptr;
 }
