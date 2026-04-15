@@ -297,8 +297,8 @@ void DarkStage::SetModel(std::shared_ptr<StageAsset> stageAsset, std::shared_ptr
 #if 1
                 Transform candelabraTr{
     pos,
-    //{0,0,0,1},
-                    point.worldRotation,
+    {0,0,0,1},
+              /*      point.worldRotation,*/
     point.worldScale
                 };
 

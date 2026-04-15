@@ -546,6 +546,9 @@
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsPlayer.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\ScissorsStage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -876,6 +879,7 @@
     <ClInclude Include="External\imgui\ImSequencer.h" />
     <ClInclude Include="Source\Graphics\PostProcess\MotionBlurEffect.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayer.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScissorsStage.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -1122,6 +1126,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\VelocityTileMaxPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FinalPassPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

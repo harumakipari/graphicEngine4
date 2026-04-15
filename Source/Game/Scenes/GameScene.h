@@ -34,6 +34,8 @@ public:
     // 定数バッファの更新処理をシーンごとにカスタマイズできるようにするための仮想関数
     void UpdateConstants(ID3D11DeviceContext* immediateContext, float deltaTime)override;
 
+    void Render(ID3D11DeviceContext* immediateContext, float deltaTime) override;
+
     bool Uninitialize(ID3D11Device* device) override;
 
     void DrawGui() override;

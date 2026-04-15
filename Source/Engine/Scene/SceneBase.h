@@ -69,14 +69,15 @@ public:
     // ライトマネージャーへのアクセス関数
     //LightManager* GetLightManager() const { return lightManager.get(); }
 
+protected:
+    // UI描画
+    void Draw(ID3D11DeviceContext* immediateContext);
 private:
     void UpdateConstantBuffer(ID3D11DeviceContext* immediateContext, float deltaTime);
 
     void ForwardRender(ID3D11DeviceContext* immediateContext);
 
     void DeferredRender(ID3D11DeviceContext* immediateContext, const ViewConstants& viewConstants);
-
-    void Draw(ID3D11DeviceContext* immediateContext);
 
     void DrawOutliner();
 

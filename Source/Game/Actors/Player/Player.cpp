@@ -52,7 +52,6 @@ void Player::Initialize(const Transform& transform)
                 material.materialType = MaterialType::Fur;
             }
         }
-
 #endif // 0
     }
     {

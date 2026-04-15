@@ -36,9 +36,8 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     loadStageThread = std::thread([&]()
         {
             PROFILE_SCOPE("Load StageModel");
-            stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage_0327_1/DarkStage.gltf",
-            //stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage0327/DarkStage.gltf",
-            //stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage0325/DarkStage.gltf",
+            //stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage_0327_1/DarkStage.gltf",
+            stageAsset->model = std::make_shared<InterleavedGltfModel>(device, "./Data/Models/DarkStage0414/DarkStage.gltf",
                 ModelTypes::ModelMode::StaticMesh);
             stageAsset->spawnPoints = stageAsset->model->spawnPoints;
         });

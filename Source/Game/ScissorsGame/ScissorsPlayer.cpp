@@ -57,10 +57,25 @@ void ScissorsPlayer::Initialize(const Transform& transform)
 
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
-
 }
 
 void ScissorsPlayer::Update(float deltaTime)
 {
     Character::Update(deltaTime);
+
+#if 1
+    auto intent = inputComponent->GetIntent();
+    DirectX::XMFLOAT3 moveDir = { 0,0,0 };
+
+    // 左スティック入力
+    float stickX = intent.leftMove.x;
+    float stickZ = intent.leftMove.z;
+
+    moveDir.x = stickX;
+    moveDir.z = stickZ;
+
+    characterMovementComponent->SetMoveDirection(moveDir);
+    rotationComponent->SetDirection(moveDir);
+
+#endif // 0
 }

@@ -39,17 +39,6 @@ bool SceneBase::Initialize(ID3D11Device* device, const UINT64 width, UINT height
     }
 
 #if 1
-    // ポストエフェクト
-    {
-        //if (!postEffectManager.get())
-        {
-            //Logger::Log(U8("ポストエフェクトを作成しました！"));
-            //postEffectManager = std::make_unique<PostEffectManager>();
-            //postEffectManager->AddEffect(std::make_unique<BloomEffect>());
-            //postEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
-        }
-    }
-
     // シーンエフェクト
     {
         //if (!sceneEffectManager.get())
