@@ -13,6 +13,13 @@ void ScissorsActor::Initialize(const Transform& transform)
     meshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     meshComponent->SetModel("./Data/TeamModels/Scissors/scissors.glb", false, false);
     meshComponent->SetIsVisible(false); // 最初は見えない（プレイヤーの手に持ってる想定）
+
+    sphereComponent = AddComponent<SphereComponent>("sphere", parentName);
+
+    sphereComponent->SetRadius(0.5f);
+    sphereComponent->SetLayer(CollisionLayer::Player); 
+    sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
+    sphereComponent->Initialize();
 }
 
 void ScissorsActor::Update(float deltaTime)

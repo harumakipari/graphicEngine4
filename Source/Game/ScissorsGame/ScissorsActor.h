@@ -40,8 +40,10 @@ public:
     // Œ»İ‚Ìó‘Ô‚ğæ“¾
     State GetState() const { return state; }
 
+    
 private:
     State state = State::Equipped;
     ScissorsPlayer* owner;
     std::shared_ptr<SkeletalMeshComponent> meshComponent;
+    std::shared_ptr<SphereComponent> sphereComponent; // “–‚½‚è”»’è—p
 };

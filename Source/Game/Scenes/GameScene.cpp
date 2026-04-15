@@ -23,6 +23,7 @@
 #include "Game/DarkGame/DarkActors/DarkEnemy/SkeletonWarriorEnemy.h"
 #include "Game/ScissorsGame/ScissorsPlayer.h"
 #include "Game/ScissorsGame/ScissorsStage.h"
+#include "Game/ScissorsGame/YarnEnemyActor.h"
 #include "Graphics/PostProcess/BloomEffect.h"
 
 
@@ -335,7 +336,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
-        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
@@ -417,6 +418,9 @@ void GameScene::SetUpActors()
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-90.0f,0.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
     auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsStage>("stage", stageTr);
 
+    // ‰¼‚Ì“G‚ð¶¬
+    Transform enemyTr(DirectX::XMFLOAT3{ 5.0f,0.0f,5.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
+    auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnEnemyActor>("enemy", enemyTr);
 }
 
 

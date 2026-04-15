@@ -253,8 +253,8 @@ public:
 protected:
     bool isStatic_ = false;
 
-    bool isVisibleDebugBox_ = true;
-    bool isVisibleDebugShape_ = true;
+    bool isVisibleDebugBox_ = false;
+    bool isVisibleDebugShape_ = false;
 
     bool isCollisionEnabled_ = true;
 

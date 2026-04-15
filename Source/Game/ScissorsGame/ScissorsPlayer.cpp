@@ -59,7 +59,7 @@ void ScissorsPlayer::Initialize(const Transform& transform)
     // 
     for (int i = 0; i < 2; i++)
     {
-        Transform scissorsTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
+        Transform scissorsTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
         auto scissors = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsActor>("scissors", scissorsTr);
         scissors->SetOwnerPlayer(this);
         scissors->PickUp(); // Å‰‚Í‚Á‚Ä‚éó‘Ô
