@@ -24,27 +24,57 @@ void ScissorsPlayer::Initialize(const Transform& transform)
     this->SetAnimationController(controller);
     PlayAnimation("Walk");
 
-#if 0
     // 当たり判定
     {
-        std::shared_ptr<CapsuleComponent> capsuleComponent = this->AddComponent<class CapsuleComponent>("capsuleComponent", parentName);
-        DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
+        std::shared_ptr<SphereComponent> sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
+        DirectX::XMFLOAT3 size = { 0.5f,0.5f,0.5f };
+        radius = size.x;
         height = size.y;
-        radius = size.x * 0.5f;
         mass = 60.0f;
-        capsuleComponent->SetRadiusAndHeight(radius, height);
-        capsuleComponent->SetMass(mass);
-        capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
-        capsuleComponent->SetLayer(CollisionLayer::Enemy);
-        capsuleComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-        capsuleComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-        capsuleComponent->SetResponseToLayer(CollisionLayer::WorldProps, CollisionComponent::CollisionResponse::Block);
-        capsuleComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::Block);
-        capsuleComponent->SetCollisionOffsetY(height * 0.5f);
-        capsuleComponent->SetIsVisibleDebugBox(false);
-        capsuleComponent->Initialize();
+        sphereComponent->SetRadius(radius);
+        sphereComponent->SetMass(mass);
+        sphereComponent->SetLayer(CollisionLayer::Player);
+        sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
+        sphereComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+        sphereComponent->SetCollisionOffsetY(height * 0.5f);
+        sphereComponent->Initialize();
+        sphereComponent->SetOnHitCallback(
+            [this](CollisionComponent* self, CollisionComponent* other)
+            {
+                if (damageCooldown > 0.0f) return;
+
+                if (other->GetCollisionLayer() == CollisionHelper::ToBit(CollisionLayer::Enemy))
+                {
+                    TakeDamage(1);
+                    damageCooldown = 0.5f; // 0.5秒無敵
+
+                    // ノックバック
+                    DirectX::XMFLOAT3 dir =
+                    {
+                        self->GetOwner()->GetPosition().x - other->GetOwner()->GetPosition().x,
+                        0,
+                        self->GetOwner()->GetPosition().z - other->GetOwner()->GetPosition().z
+                    };
+
+                    float len = sqrt(dir.x * dir.x + dir.z * dir.z);
+                    if (len > 0.0001f)
+                    {
+                        dir.x /= len;
+                        dir.z /= len;
+                    }
+                    XMFLOAT3 impulse = { dir.x * 10.0f, 0.0f, dir.z * 10.0f }; // ノックバックの強さ
+                    if (characterMovementComponent)
+                    {
+                        characterMovementComponent->AddImpulse(impulse);
+                    }
+
+                    // ダメージを受けたときのエフェクトや音をここで再生する
+
+                }
+            }
+        );
     }
-#endif // 0
+
 
     // 入力用のコンポーネントを追加
     inputComponent = this->AddComponent<class InputComponent>("inputComponent", parentName);
@@ -75,6 +105,11 @@ void ScissorsPlayer::Initialize(const Transform& transform)
 void ScissorsPlayer::Update(float deltaTime)
 {
     Character::Update(deltaTime);
+
+    if (damageCooldown > 0.0f)
+    {// ダメージクールダウン中は無敵
+        damageCooldown -= deltaTime;
+    }
 
     // 入力に基づいて移動と回転を更新
     auto intent = inputComponent->GetIntent();
@@ -344,8 +379,8 @@ void ScissorsPlayer::Attack()
         auto s = w.lock();
         if (!s) continue;
 
-        s->StartAttack();
         Logger::Log(U8("攻撃をする"));
+        s->StartAttack();
     }
 
 }

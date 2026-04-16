@@ -89,6 +89,14 @@ public:
 
     // 速さをリセットする
     void ResetSpeed() { this->speed_ = 5.0f; }
+
+    // ジャンプや吹き飛ばしなどで外部から速度を加算するための関数
+    void AddImpulse(const DirectX::XMFLOAT3& impulse)
+    {
+        externalVelocity_.x += impulse.x;
+        externalVelocity_.y += impulse.y;
+        externalVelocity_.z += impulse.z;
+    }
 private:
     // 状態
     DirectX::XMFLOAT3 velocity_{ 0,0,0 };
@@ -103,6 +111,8 @@ private:
 
 
     DirectX::XMFLOAT3 inputDir_{ 0,0,0 };
+    DirectX::XMFLOAT3 externalVelocity_ = { 0.0f,0.0f,0.0f }; // 外部から加算される速度（ジャンプや吹き飛ばしなど）
+    float damping_ = 3.5f; // 外部速度の減衰率（1秒あたりどれだけ外部速度が減るか）
 };
 
 

@@ -26,7 +26,7 @@ void YarnEnemyActor::Initialize(const Transform& transform)
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
         radius = size.x * 0.5f;
         height = size.y;
-        mass = 60.0f;
+        mass = 180.0f;
         sphereComponent->SetRadius(radius);
         sphereComponent->SetMass(mass);
         sphereComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);

@@ -130,8 +130,8 @@ public:
                 std::pair<CollisionComponent*, CollisionComponent*> hitPairB = { bComponent, aComponent };
 
                 // 衝突通知 (Trigger or Block ) どっちにも
-                aComponent->OnHit(hitPairA);
-                bComponent->OnHit(hitPairB);
+                aComponent->OnHit(aComponent, bComponent);
+                bComponent->OnHit(bComponent, aComponent);
 
 
                 // 衝突イベント(Actor 通知)

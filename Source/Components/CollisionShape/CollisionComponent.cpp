@@ -14,11 +14,10 @@ void CollisionComponent::OnRegister()
 
 
 // Õ“ËƒCƒxƒ“ƒg
-void CollisionComponent::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitShapes)
+void CollisionComponent::OnHit(CollisionComponent* self, CollisionComponent* other)
 {
-    //CollisionComponent* self = hitShapes.first;
-    //if (self && self->GetOwner())
-    //{
-    //    self->GetOwner()->BroadcastHit(hitShapes);
-    //}
+    if (onHitCallback_)
+    {
+        onHitCallback_(self, other);
+    }
 }

@@ -92,4 +92,7 @@ private:
     float lastStickPower = 0.0f;// スティックの最終的な力　溜めの強さや投げるときの力に使用する
 
     State state = State::Walking;
+
+    float damageCooldown = 0.0f; // ダメージを受けた後の無敵時間のクールダウン
+
 };

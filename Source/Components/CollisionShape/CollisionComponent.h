@@ -83,13 +83,19 @@ public:
     }
 
     // 衝突イベント
-    virtual void OnHit(std::pair<CollisionComponent*, CollisionComponent*> hitShapes);
+    virtual void OnHit(CollisionComponent* self, CollisionComponent* other);
 
     // 他のCollisionComponentとの衝突通知
     virtual void OnCollisionEnter(CollisionComponent* other, const DirectX::XMFLOAT3& hitPos, const DirectX::XMFLOAT3& normal, const DirectX::XMFLOAT3& impulse) {}
 
     // 当たった時に衝撃を与える
     virtual void AddImpulse(const DirectX::XMFLOAT3& impulse) {}
+
+    // コールバック関数を設定するための関数
+    void SetOnHitCallback(std::function<void(CollisionComponent*, CollisionComponent*)> callback)
+    {
+        onHitCallback_ = callback;
+    }
 
     //------- physics で遅延処理するための仮想関数-------//
     // シーンに物理処理を追加する
@@ -110,6 +116,8 @@ protected:
     std::unordered_map<uint32_t, CollisionResponse> responseTable_;// 相手、反応
 
     bool isCollide_ = true;
+
+    std::function<void(CollisionComponent*, CollisionComponent*)> onHitCallback_;
 };
 
 

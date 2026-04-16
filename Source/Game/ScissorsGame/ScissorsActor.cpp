@@ -144,7 +144,8 @@ void ScissorsActor::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hi
     }
     else if (state == State::Attacking)
     {
-        damage = (owner->GetScissorsCount() == 2) ? 2 : 1;
+        //damage = (owner->GetScissorsCount() == 2) ? 2 : 1;
+        damage = 1;
     }
     else
     {

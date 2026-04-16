@@ -35,6 +35,16 @@ void CharacterMovementComponent::Tick(float dt)
     velocity_.x = wishDir.x * speed_;
     velocity_.z = wishDir.z * speed_;
 
+    // 外力を加算
+    velocity_.x += externalVelocity_.x;
+    velocity_.y += externalVelocity_.y;
+    velocity_.z += externalVelocity_.z;
+
+    // 減衰
+    externalVelocity_.x -= externalVelocity_.x * damping_ * dt;
+    externalVelocity_.y -= externalVelocity_.y * damping_ * dt;
+    externalVelocity_.z -= externalVelocity_.z * damping_ * dt;
+
     // 重力加速度を適用
     if (!isGrounded_)
     {
