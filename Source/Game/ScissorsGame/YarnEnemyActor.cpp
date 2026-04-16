@@ -91,7 +91,9 @@ void YarnEnemyActor::SetType(YarnEnemyType type)
     case YarnEnemyType::MoveVertical:
         moveDirection = { 0,0,1 };
         break;
-
+    default:
+        SetupDirectionFromSpawn();
+        break;
     }
 }
 
@@ -171,26 +173,82 @@ void YarnEnemyActor::MoveToCenter(float deltaTime)
 // 横に波打ちながら移動する処理
 void YarnEnemyActor::MoveWaveHorizontal(float deltaTime)
 {
+    float stageMinX = -0.5f;
+    float stageMaxX = 12.5f;
+    float stageMinZ = -0.5f;
+    float stageMaxZ = 12.5f;
+
+
     XMFLOAT3 pos = GetPosition();
     float baseZ = startPosition.z;
     // 波（Z方向）
     pos.z = baseZ + sin(waveTime * waveFrequency) * waveAmplitude;
     waveTime += deltaTime;
     // 前進
-    pos.x += speed * deltaTime;
+    pos.x += moveDirection.x * speed * deltaTime;
     SetPosition(pos);
+
+    if (pos.x < stageMinX || pos.x > stageMaxX ||
+        pos.z < stageMinZ || pos.z > stageMaxZ)
+    {
+        MarkPendingKill();
+        return;
+    }
 }
 
 // 縦に波打ちながら移動する処理
 void YarnEnemyActor::MoveWaveVertical(float deltaTime)
 {
+    float stageMinX = -0.5f;
+    float stageMaxX = 12.5f;
+    float stageMinZ = -0.5f;
+    float stageMaxZ = 12.5f;
+
+
     XMFLOAT3 pos = GetPosition();
     float baseX = startPosition.x;
     // 波（X方向）
     pos.x = baseX + sin(waveTime * waveFrequency) * waveAmplitude;
     waveTime += deltaTime;
     // 前進
-    pos.z += speed * deltaTime;
+    pos.z += moveDirection.z * speed * deltaTime;
     SetPosition(pos);
 
+    if (pos.x < stageMinX || pos.x > stageMaxX ||
+        pos.z < stageMinZ || pos.z > stageMaxZ)
+    {
+        MarkPendingKill();
+        return;
+    }
+
+}
+
+
+// 敵の出現位置によって方向を決定するためのヘルパー関数
+void YarnEnemyActor::SetupDirectionFromSpawn()
+{
+    auto pos = GetPosition();
+
+    float stageMinX = -0.5f;
+    float stageMaxX = 12.5f;
+    float stageMinZ = -0.5f;
+    float stageMaxZ = 12.5f;
+
+    const float eps = 0.5f;
+
+    // 左端 → 右へ
+    if (fabs(pos.x - stageMinX) < eps)
+        moveDirection = { 1,0,0 };
+
+    // 右端 → 左へ
+    else if (fabs(pos.x - stageMaxX) < eps)
+        moveDirection = { -1,0,0 };
+
+    // 下端 → 上へ
+    else if (fabs(pos.z - stageMinZ) < eps)
+        moveDirection = { 0,0,1 };
+
+    // 上端 → 下へ
+    else if (fabs(pos.z - stageMaxZ) < eps)
+        moveDirection = { 0,0,-1 };
 }

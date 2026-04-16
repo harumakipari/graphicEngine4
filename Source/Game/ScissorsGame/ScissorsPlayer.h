@@ -21,6 +21,12 @@ class ScissorsPlayer :public Character
         bool isValid;
         ScissorsIntent intent = ScissorsIntent::None;
     };
+    enum class State :uint8_t
+    {
+        Walking,
+        Attacking,
+        Dead
+    };
 public:
     explicit ScissorsPlayer(const std::string& actorName) :Character(actorName) {}
 
@@ -62,6 +68,9 @@ private:
     // 引き寄せ終わったかどうか
     bool IsPullFinished();
 
+    // プレイヤーの攻撃処理
+    void Attack();
+
 private:
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
     std::shared_ptr<RotationComponent> rotationComponent;
@@ -81,4 +90,6 @@ private:
     float maxThrowDistance = 10.0f; // 最大距離
 
     float lastStickPower = 0.0f;// スティックの最終的な力　溜めの強さや投げるときの力に使用する
+
+    State state = State::Walking;
 };

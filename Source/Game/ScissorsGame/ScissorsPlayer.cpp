@@ -87,6 +87,29 @@ void ScissorsPlayer::Update(float deltaTime)
     moveDir.x = stickX;
     moveDir.z = stickZ;
 
+    switch (state)
+    {
+    case State::Walking:
+        // 移動と回転は通常通り
+
+        // 攻撃入力を検出
+        if (InputSystem::GetInputState("ScissorsAttack", InputStateMask::Trigger))
+        {// 攻撃
+            Attack();
+            state = State::Attacking;
+        }
+        break;
+    case State::Attacking:
+        // 攻撃中は移動と回転を止める
+        moveDir = { 0,0,0 };
+        if (!animationController_->IsPlayAnimation())
+        {
+            state = State::Walking; // アニメーションが終わったら歩行状態に戻す
+            PlayAnimation("Walk");
+        }
+        break;
+    }
+
     characterMovementComponent->SetMoveDirection(moveDir);
     rotationComponent->SetDirection(moveDir);
 
@@ -288,18 +311,6 @@ void ScissorsPlayer::Update(float deltaTime)
         DebugRender::DrawSphere(targetPos, 0.3f, { 1,1,0,1 });
     }
 #endif // 0
-    if (InputSystem::GetInputState("ScissorsAttack", InputStateMask::Trigger))
-    {
-        for (auto& w : equippedScissors)
-        {
-            auto s = w.lock();
-            if (!s) continue;
-
-            s->StartAttack();
-            Logger::Log(U8("攻撃をする"));
-        }
-    }
-
 
     // デバッグ用：ハサミを拾える範囲を描画
     DebugRender::DrawCylinder(
@@ -322,6 +333,21 @@ void ScissorsPlayer::TakeDamage(int damage)
         Logger::Log("Player died.");
         // ここでゲームオーバー処理などを呼び出す
     }
+}
+
+// プレイヤーの攻撃処理
+void ScissorsPlayer::Attack()
+{
+    PlayAnimation("Attack", false, true);
+    for (auto& w : equippedScissors)
+    {
+        auto s = w.lock();
+        if (!s) continue;
+
+        s->StartAttack();
+        Logger::Log(U8("攻撃をする"));
+    }
+
 }
 
 // 入力から狙いの情報を取得する
@@ -414,7 +440,7 @@ void ScissorsPlayer::TryAction(const AimData& aim, bool stickReleased, bool butt
     }
     else if (aim.intent == ScissorsIntent::Pull)
     {
-        if (buttonReleased) 
+        if (buttonReleased)
         {
             PullNearest();
         }

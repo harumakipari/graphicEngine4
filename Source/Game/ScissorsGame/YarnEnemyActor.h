@@ -37,6 +37,9 @@ private:
 
     // 縦に波打ちながら移動する処理
     void MoveWaveVertical(float deltaTime);
+
+    // 敵の出現位置によって方向を決定するためのヘルパー関数
+    void SetupDirectionFromSpawn();
 private:
     // 描画用コンポーネントを追加
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
