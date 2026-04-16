@@ -25,6 +25,16 @@ public:
     void TakeDamage(int damage);
 
     void SetType(YarnEnemyType type);
+    // 移動の方向を設定する関数
+    void SetMoveDirection(const DirectX::XMFLOAT3& dir)
+    {
+        moveDirection = dir;
+    }
+    // 速度を設定する関数
+    void SetSpeed(float speed)
+    {
+        this->speed = speed;
+    }
 private:
     // 線形移動の処理
     void MoveLinear(float deltaTime);
@@ -38,8 +48,6 @@ private:
     // 縦に波打ちながら移動する処理
     void MoveWaveVertical(float deltaTime);
 
-    // 敵の出現位置によって方向を決定するためのヘルパー関数
-    void SetupDirectionFromSpawn();
 private:
     // 描画用コンポーネントを追加
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
@@ -47,14 +55,13 @@ private:
 
     YarnEnemyType enemyType = YarnEnemyType::Static;
 
-    // 線形移動のパラメータ
+    // 移動のパラメータ
     DirectX::XMFLOAT3 moveDirection = { 1.0f, 0.0f, 0.0f }; // 線形移動の方向
     float speed = 2.0f; // 線形移動の速度
 
     // 中心に向かって移動するパラメータ
     DirectX::XMFLOAT3 centerPosition = { 6.0f, 0.0f, 6.0f }; // 中心の位置
     DirectX::XMFLOAT3 startPosition = { 0.0f,0.0f,0.0f };   // 中心に向かって移動する前の開始位置
-    float moveToCenterSpeed = 1.5f; // 中心に向かって移動する速度
     bool goingToCenter = true; // 中心に向かって移動する途中かどうか
     float reachThreshold = 0.5f; // 中心に到達したとみなす距離の閾値
 

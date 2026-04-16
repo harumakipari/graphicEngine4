@@ -418,16 +418,29 @@ void GameScene::SetUpActors()
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-90.0f,0.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
     auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsStage>("stage", stageTr);
 
-    SpawnEnemy({ 5,0,5 }, YarnEnemyType::Static);
-    SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveHorizontal);
-    SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveVertical);
+    //SpawnEnemy({ 5,0,5 }, YarnEnemyType::Static);
+    //SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveHorizontal);
+    //SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveVertical);
     //SpawnEnemy({ 0,0,0 }, YarnEnemyType::MoveToCenter);
     //SpawnEnemy({ 0,0,12}, YarnEnemyType::MoveToCenter);
     //SpawnEnemy({ 12,0,0 }, YarnEnemyType::MoveToCenter);
     //SpawnEnemy({ 12,0,12 }, YarnEnemyType::MoveToCenter);
-    SpawnEnemy({ 0,0,0 }, YarnEnemyType::WaveHorizontal);
-    SpawnEnemy({ 0,0,12}, YarnEnemyType::WaveVertical);
+    //SpawnEnemy({ 0,0,0 }, YarnEnemyType::WaveHorizontal, { 1,0,0 }, 3.0f);
+    //SpawnEnemy({ 12,0,0 }, YarnEnemyType::WaveHorizontal, { -1,0,0 }, 3.0f);
+    //SpawnEnemy({ 0,0,12 }, YarnEnemyType::WaveVertical,{ 0,0,-1 }, 3.0f);
+    //SpawnEnemy({ 12,0,0 }, YarnEnemyType::WaveVertical, { 0,0,1 }, 3.0f);
+
+    SpawnEnemy({ 6,0,8 }, YarnEnemyType::Static);
+    SpawnEnemy({ 2,0,3 }, YarnEnemyType::MoveHorizontal);
+    SpawnEnemy({ 10,0,3 }, YarnEnemyType::MoveHorizontal);
+    SpawnEnemy({ 3,0,6 }, YarnEnemyType::Static);
+    SpawnEnemy({ 9,0,6 }, YarnEnemyType::Static);
+    SpawnEnemy({ 0,0,8 }, YarnEnemyType::MoveVertical);
+    SpawnEnemy({ 12,0,11 }, YarnEnemyType::MoveVertical);
+    SpawnEnemy({ 4,0,11 }, YarnEnemyType::MoveHorizontal);
+    SpawnEnemy({ 8,0,11 }, YarnEnemyType::MoveHorizontal);
 }
+
 
 
 
@@ -448,9 +461,14 @@ void GameScene::DrawGui()
 
 
 // ‰¼‚Ì“G‚ð¶¬‚·‚éŠÖ”
-void GameScene::SpawnEnemy(const DirectX::XMFLOAT3& pos, YarnEnemyType type)
+void GameScene::SpawnEnemy(
+    const XMFLOAT3& pos,
+    YarnEnemyType type,
+    float speed, const XMFLOAT3& dir)
 {
     Transform tr(pos, { 0,0,0 }, { 0.5f,0.5f,0.5f });
     auto enemy = GetActorManager()->CreateAndRegisterActorWithTransform<YarnEnemyActor>("enemy", tr);
+    enemy->SetMoveDirection(dir);
     enemy->SetType(type);
+    enemy->SetSpeed(speed);
 }

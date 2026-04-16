@@ -47,7 +47,10 @@ public:
     static inline Scene::Autoenrollment<GameScene> _autoenrollment;
 
 private:
-    void SpawnEnemy(const DirectX::XMFLOAT3& pos, YarnEnemyType type);
+    void SpawnEnemy(
+        const XMFLOAT3& pos,
+        YarnEnemyType type,
+        float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 } );
 
 private:
     TPSCameraComponent* mainCameraComponent = nullptr;
