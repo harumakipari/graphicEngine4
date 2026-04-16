@@ -62,7 +62,7 @@ void ScissorsActor::Update(float deltaTime)
         SetPosition(pos);
 
         // 近づいたら回収
-        if (dist < 1.0f)
+        if (dist < 0.3f)
         {
             owner->OnScissorsReturned(this);
         }
@@ -187,26 +187,44 @@ void ScissorsActor::Throw(DirectX::XMFLOAT3 dir, float power)
     float distance = power * maxThrowDistance;
 
     auto start = GetPosition();
-
-    targetPos =
+    // まず理想位置
+    DirectX::XMFLOAT3 desired =
     {
         start.x + dir.x * distance,
         start.y + dir.y * distance,
         start.z + dir.z * distance
     };
 
-    float stageMinX = 0.0f;
-    float stageMaxX = 20.0f;
-    float stageMinZ = 0.0f;
-    float stageMaxZ = 20.0f;
+    // clamp
+    float stageMinX = -0.5f;
+    float stageMaxX = 12.5f;
+    float stageMinZ = -0.5f;
+    float stageMaxZ = 12.5f;
 
-    targetPos.x = std::clamp(targetPos.x, stageMinX, stageMaxX);
-    targetPos.z = std::clamp(targetPos.z, stageMinZ, stageMaxZ);
+    desired.x = std::clamp(desired.x, stageMinX, stageMaxX);
+    desired.z = std::clamp(desired.z, stageMinZ, stageMaxZ);
 
+    targetPos = desired;
 
-    velocity.x = dir.x * throwSpeed;
-    velocity.y = dir.y * throwSpeed;
-    velocity.z = dir.z * throwSpeed;
+    // ここが重要：velocityをtarget基準で作る
+    DirectX::XMFLOAT3 dirToTarget =
+    {
+        targetPos.x - start.x,
+        targetPos.y - start.y,
+        targetPos.z - start.z
+    };
+
+    float len = sqrt(dirToTarget.x * dirToTarget.x + dirToTarget.z * dirToTarget.z);
+
+    if (len > 0.001f)
+    {
+        dirToTarget.x /= len;
+        dirToTarget.z /= len;
+    }
+
+    velocity.x = dirToTarget.x * throwSpeed;
+    velocity.y = dirToTarget.y * throwSpeed;
+    velocity.z = dirToTarget.z * throwSpeed;
 
     meshComponent->SetIsVisible(true);
 }

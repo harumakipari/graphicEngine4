@@ -14,13 +14,14 @@
 
 #include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Player/Player.h"
-#include "Game/Actors/Stage/ClothSimulate.h"
-#include "Game/Actors/Stage/Stage.h"
-#include "Game/DarkGame/DarkActors/DarkStageAsset.h"
+#include "Game/ScissorsGame/YarnEnemyActor.h"
 
-#include "UI/Widgets/Widget.h"
 
-#include "PBD/PBDSystem.h"
+
+
+
+
+
 
 class GameScene : public SceneBase
 {
@@ -44,6 +45,9 @@ public:
 
     //ÉVÅ[ÉìÇÃé©ìÆìoò^
     static inline Scene::Autoenrollment<GameScene> _autoenrollment;
+
+private:
+    void SpawnEnemy(const DirectX::XMFLOAT3& pos, YarnEnemyType type);
 
 private:
     TPSCameraComponent* mainCameraComponent = nullptr;

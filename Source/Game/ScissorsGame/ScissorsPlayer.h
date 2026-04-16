@@ -8,6 +8,19 @@ class ScissorsActor;
 
 class ScissorsPlayer :public Character
 {
+    enum class ScissorsIntent :uint8_t
+    {
+        None,
+        Throw,
+        Pull
+    };
+    struct AimData
+    {
+        DirectX::XMFLOAT3 dir;
+        float power;
+        bool isValid;
+        ScissorsIntent intent = ScissorsIntent::None;
+    };
 public:
     explicit ScissorsPlayer(const std::string& actorName) :Character(actorName) {}
 
@@ -21,9 +34,18 @@ public:
     // ハサミが返ってきたときの処理
     void OnScissorsReturned(ScissorsActor* scissors);
 
+    // ダメージを受ける処理
+    void TakeDamage(int damage);
+
 private:
-    // ハサミを落とす
-    void DropOne();
+    // 入力から狙いの情報を取得する
+    AimData GetAimData(const MoveIntent& intent, float deltaTime);
+
+    // 狙いの情報から、ハサミを投げる距離や方向を決定して、投げる処理を試みる
+    void TryAction(const AimData& aim, bool stickReleased, bool buttonReleased);
+
+    // 狙いの情報をもとに、投げる前のプレビューを描画する
+    void DrawPreview(const AimData& aim);
 
     // ハサミを拾う
     void PickUpNearest();
@@ -32,10 +54,13 @@ private:
     void PullNearest();
 
     // ハサミを投げる
-    void ThrowScissors(float power);
+    void ThrowScissors(float power, DirectX::XMFLOAT3 dir);
 
     // 近くに落ちているハサミがあるか
     ScissorsActor* FindNearestDroppedScissors();
+
+    // 引き寄せ終わったかどうか
+    bool IsPullFinished();
 
 private:
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;

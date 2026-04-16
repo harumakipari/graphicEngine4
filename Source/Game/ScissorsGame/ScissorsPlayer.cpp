@@ -6,7 +6,7 @@
 
 void ScissorsPlayer::Initialize(const Transform& transform)
 {
-    int maxHp = 100;
+    int maxHp = 10;
     hp = maxHp;
 
     std::string parentName = "SkeletonWarriorMeshComponent";
@@ -90,10 +90,19 @@ void ScissorsPlayer::Update(float deltaTime)
     characterMovementComponent->SetMoveDirection(moveDir);
     rotationComponent->SetDirection(moveDir);
 
+    {// ステージ外に出ないようにクランプ
+        float stageMinX = -0.5f;
+        float stageMaxX = 12.5f;
+        float stageMinZ = -0.5f;
+        float stageMaxZ = 12.5f;
 
+        XMFLOAT3 pos = GetPosition();
+        pos.x = std::clamp(pos.x, stageMinX, stageMaxX);
+        pos.z = std::clamp(pos.z, stageMinZ, stageMaxZ);
+        SetPosition(pos);
+    }
     // ゲームパッドが接続されているか
     bool isGamepad = InputSystem::IsGamepadConnected();
-
 
     // 右スティックの強さ
     float stickPower = sqrt(
@@ -110,22 +119,70 @@ void ScissorsPlayer::Update(float deltaTime)
     bool stickReleased = (prevStickPower > 0.2f && stickPower <= 0.2f);
     prevStickPower = stickPower;
 
-
     bool showPreview = false;
     float previewPower = 0.0f;
 
+    // ボタンRelease
+    bool buttonReleased = InputSystem::GetInputState("ScissorsAction", InputStateMask::Release);
 
+#if 1
+    // Aim作る
+    AimData aim = GetAimData(intent, deltaTime);
+
+    // 投げ
+    TryAction(aim, stickReleased, buttonReleased);
+
+    // 描画
+    DrawPreview(aim);
+#else
     if (usingStick)
     {// スティックの最大入力値を更新
-        lastStickPower = stickPower;
+        lastStickPower = std::max<float>(stickPower, lastStickPower);
+        //lastStickPower = stickPower;
         showPreview = true;
-        previewPower = stickPower;
+        previewPower = lastStickPower;
+
+#if 0 // 不自然なので一旦無で
+        // スティックの方向で回転
+        rotationComponent->SetDirection({
+        intent.rightMove.x,
+        0.0f,
+        intent.rightMove.y
+            });
+
+#endif // 0 // 不自然なので一旦無で
     }
+
+    // スティック方向 → 3D
+    DirectX::XMFLOAT3 throwDir = {
+        intent.rightMove.x,
+        0.0f,
+        intent.rightMove.y
+    };
+    if (isGamepad)
+    {
+
+        // 正規化
+        float len = sqrt(throwDir.x * throwDir.x + throwDir.z * throwDir.z);
+
+        static XMFLOAT3 lastThrowDir = { 0,0,1 };
+
+        if (len > 0.001f)
+        {
+            throwDir.x /= len;
+            throwDir.z /= len;
+
+            lastThrowDir = throwDir; // 更新
+        }
+        else
+        {
+            throwDir = lastThrowDir; // ← ここ変更
+        }
+    }
+
 
     Logger::Log("Stick Power: " + std::to_string(stickPower) + (usingStick ? " (Using Stick)" : " (Not Using Stick)"));
 
-    // ボタンRelease
-    bool buttonReleased = InputSystem::GetInputState("ScissorsAction", InputStateMask::Release);
 
     // ハサミ処理
     if (scissorsCount == 2)
@@ -141,23 +198,23 @@ void ScissorsPlayer::Update(float deltaTime)
 
                     if (power < 0.2f)
                         power = 0.5f;
-                    ThrowScissors(power);
+                    ThrowScissors(power, throwDir);
                     // 投げた後、最大入力値をリセット
                     lastStickPower = 0.0f;
                     Logger::Log(U8("スティックで投げる"));
                 }
             }
-            // ボタンのみ
-            //if (!usingStick)
-            {
-                if (buttonReleased)
-                {
-                    float power = 0.6f; // 固定距離（調整してOK）
+            //// ボタンのみ
+            ////if (!usingStick)
+            //{
+            //    if (buttonReleased)
+            //    {
+            //        float power = 0.6f; // 固定距離（調整してOK）
 
-                    ThrowScissors(power);
-                    Logger::Log(U8("ボタンで投げる（固定距離）"));
-                }
-            }
+            //        ThrowScissors(power);
+            //        Logger::Log(U8("ボタンで投げる（固定距離）"));
+            //    }
+            //}
         }
         // マウス（チャージ）
         else
@@ -178,8 +235,8 @@ void ScissorsPlayer::Update(float deltaTime)
                 if (isCharging)
                 {
                     float power = chargeTime / maxChargeTime;
-
-                    ThrowScissors(power);
+                    XMFLOAT3 dir = GetForward(); // プレイヤーの向きに投げる
+                    ThrowScissors(power, dir);
                     Logger::Log(U8("チャージ投げ"));
 
                     isCharging = false;
@@ -201,6 +258,36 @@ void ScissorsPlayer::Update(float deltaTime)
     }
 
 
+
+    // デバッグ用：溜めてる間、投げる位置の予測を描画
+    if (showPreview)
+    {
+        float dist = previewPower * maxThrowDistance;
+
+        auto pos = GetPosition();
+
+
+        auto forward = GetForward();
+
+        DirectX::XMFLOAT3 targetPos =
+        {
+            pos.x + forward.x * dist,
+            pos.y,
+            pos.z + forward.z * dist
+        };
+#if 1
+        float stageMinX = -0.5f;
+        float stageMaxX = 12.5f;
+        float stageMinZ = -0.5f;
+        float stageMaxZ = 12.5f;
+
+        targetPos.x = std::clamp(targetPos.x, stageMinX, stageMaxX);
+        targetPos.z = std::clamp(targetPos.z, stageMinZ, stageMaxZ);
+
+#endif // 0
+        DebugRender::DrawSphere(targetPos, 0.3f, { 1,1,0,1 });
+    }
+#endif // 0
     if (InputSystem::GetInputState("ScissorsAttack", InputStateMask::Trigger))
     {
         for (auto& w : equippedScissors)
@@ -213,23 +300,6 @@ void ScissorsPlayer::Update(float deltaTime)
         }
     }
 
-    // デバッグ用：溜めてる間、投げる位置の予測を描画
-    if (showPreview)
-    {
-        float dist = previewPower * maxThrowDistance;
-
-        auto pos = GetPosition();
-        auto forward = GetForward();
-
-        DirectX::XMFLOAT3 target =
-        {
-            pos.x + forward.x * dist,
-            pos.y,
-            pos.z + forward.z * dist
-        };
-
-        DebugRender::DrawSphere(target, 0.3f, { 1,1,0,1 });
-    }
 
     // デバッグ用：ハサミを拾える範囲を描画
     DebugRender::DrawCylinder(
@@ -238,29 +308,146 @@ void ScissorsPlayer::Update(float deltaTime)
         0.1f,
         XMFLOAT4{ 0.0f,1.0f,0.0f,0.5f }
     );
+
 }
 
-// ハサミを落とす
-void ScissorsPlayer::DropOne()
+void ScissorsPlayer::TakeDamage(int damage)
 {
-    if (equippedScissors.size() <= 1) return;
-
-    auto scissors = equippedScissors.back();
-    auto scissorsPtr = scissors.lock();
-
-    if (!scissorsPtr)
+    hp -= damage;
+    Logger::Log("Player took " + std::to_string(damage) + " damage. HP: " + std::to_string(hp));
+    if (hp <= 0)
     {
-        Logger::Warning(U8("落とすハサミがnullptrです"));
+        hp = 0;
+        //PlayAnimation("Death", false);
+        Logger::Log("Player died.");
+        // ここでゲームオーバー処理などを呼び出す
+    }
+}
+
+// 入力から狙いの情報を取得する
+ScissorsPlayer::AimData ScissorsPlayer::GetAimData(const MoveIntent& intent, float deltaTime)
+{
+    AimData aim{};
+    aim.isValid = false;
+
+    bool isGamepad = InputSystem::IsGamepadConnected();
+
+    // ゲームパッド
+    if (isGamepad)
+    {
+        float x = intent.rightMove.x;
+        float z = intent.rightMove.y;
+
+        float len = sqrt(x * x + z * z);
+
+        static XMFLOAT3 lastDir = { 0,0,1 };
+
+        if (len > 0.2f)
+        {
+            aim.dir = { x / len, 0.0f, z / len };
+            lastDir = aim.dir;
+
+            lastStickPower = std::max<float>(lastStickPower, len);
+        }
+        else
+        {
+            aim.dir = lastDir;
+        }
+
+        aim.power = lastStickPower;
+        aim.isValid = true;
+    }
+    // マウス
+    else
+    {
+        if (InputSystem::GetInputState("ScissorsAction", InputStateMask::Press))
+        {
+            isCharging = true;
+            chargeTime += deltaTime;
+            chargeTime = std::min<float>(chargeTime, maxChargeTime);
+        }
+
+        if (isCharging)
+        {
+            aim.dir = GetForward();
+            aim.power = chargeTime / maxChargeTime;
+            aim.isValid = true;
+        }
     }
 
-    equippedScissors.pop_back();
+    if (scissorsCount == 2)
+        aim.intent = ScissorsIntent::Throw;
+    else if (scissorsCount == 1)
+    {
+        aim.intent = ScissorsIntent::Pull;
+        aim.isValid = false; // 引き寄せは方向やパワー関係ないので無効に
+    }
 
-    scissorsPtr->Drop(GetPosition());
-
-    droppedScissors.push_back(scissors);
-
-    scissorsCount--;
+    return aim;
 }
+// 狙いの情報から、ハサミを投げる距離や方向を決定して、投げる処理を試みる
+void ScissorsPlayer::TryAction(const AimData& aim, bool stickReleased, bool buttonReleased)
+{
+    bool isGamepad = InputSystem::IsGamepadConnected();
+    if (aim.intent == ScissorsIntent::Throw)
+    {
+        if (isGamepad)
+        {
+            if (stickReleased)
+            {
+                float power = std::max<float>(aim.power, 0.5f);
+                ThrowScissors(power, aim.dir);
+
+                lastStickPower = 0.0f;
+            }
+        }
+        else
+        {
+            if (buttonReleased && isCharging)
+            {
+                ThrowScissors(aim.power, aim.dir);
+
+                isCharging = false;
+                chargeTime = 0.0f;
+            }
+        }
+    }
+    else if (aim.intent == ScissorsIntent::Pull)
+    {
+        if (buttonReleased) 
+        {
+            PullNearest();
+        }
+    }
+}
+// 狙いの情報をもとに、投げる前のプレビューを描画する
+void ScissorsPlayer::DrawPreview(const AimData& aim)
+{
+    if (!aim.isValid) return;
+
+    float dist = aim.power * maxThrowDistance;
+
+    auto pos = GetPosition();
+
+    DirectX::XMFLOAT3 target =
+    {
+        pos.x + aim.dir.x * dist,
+        pos.y,
+        pos.z + aim.dir.z * dist
+    };
+
+    // clamp
+    float stageMinX = -0.5f;
+    float stageMaxX = 12.5f;
+    float stageMinZ = -0.5f;
+    float stageMaxZ = 12.5f;
+
+    target.x = std::clamp(target.x, stageMinX, stageMaxX);
+    target.z = std::clamp(target.z, stageMinZ, stageMaxZ);
+
+    DebugRender::DrawSphere(target, 0.3f, { 1,1,0,1 });
+}
+
 
 // ハサミを拾う
 void ScissorsPlayer::PickUpNearest()
@@ -300,7 +487,7 @@ void ScissorsPlayer::PullNearest()
 }
 
 // ハサミを投げる
-void ScissorsPlayer::ThrowScissors(float power)
+void ScissorsPlayer::ThrowScissors(float power, XMFLOAT3 dir)
 {
     if (equippedScissors.size() <= 1) return;
 
@@ -311,9 +498,6 @@ void ScissorsPlayer::ThrowScissors(float power)
     equippedScissors.pop_back();
     droppedScissors.push_back(scissors);
     scissorsCount--;
-
-    // 方向
-    auto dir = GetForward();
 
     s->Throw(dir, power);
 }
@@ -369,4 +553,10 @@ ScissorsActor* ScissorsPlayer::FindNearestDroppedScissors()
         return nearest;
 
     return nullptr;
+}
+
+bool ScissorsPlayer::IsPullFinished()
+{
+    // 例：ハサミが手元に戻ったら
+    return scissorsCount == 2;
 }

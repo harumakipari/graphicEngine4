@@ -555,6 +555,9 @@
     <ClCompile Include="Source\Game\ScissorsGame\YarnEnemyActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\ButtonBombActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -888,6 +891,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsStage.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\YarnEnemyActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ButtonBombActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

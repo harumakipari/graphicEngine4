@@ -336,7 +336,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
-        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
@@ -386,13 +386,13 @@ void GameScene::SetUpActors()
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<FixedCamera>("fixedCameraActor", mainCameraTr);
     mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
 
-    Transform cameraTargetTr(DirectX::XMFLOAT3{ 10.4f,9.6f,-5.9f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("cameraTargetActor", cameraTargetTr);
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ 5.5f,8.5f,-10.4f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
     mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
 
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
-    mainCameraComponent->SetPitch(-44.5f);
-    mainCameraComponent->SetFov(DirectX::XMConvertToDegrees(35.0f));
+    mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-31.5f));
+    mainCameraComponent->SetFov(DirectX::XMConvertToRadians(28.0f));
     mainCameraComponent->distance = 4.5f;
 
     {
@@ -418,13 +418,15 @@ void GameScene::SetUpActors()
     Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-90.0f,0.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
     auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsStage>("stage", stageTr);
 
-    // ‰¼‚Ì“G‚ð¶¬
-    Transform enemyTr(DirectX::XMFLOAT3{ 5.0f,0.0f,5.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
-    auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnEnemyActor>("enemy", enemyTr);
-
-    // ‰¼‚Ì“G‚ð¶¬
-    Transform enemyTr1(DirectX::XMFLOAT3{ 10.0f,0.0f,5.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
-    auto enemy1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnEnemyActor>("enemy", enemyTr1);
+    SpawnEnemy({ 5,0,5 }, YarnEnemyType::Static);
+    SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveHorizontal);
+    SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveVertical);
+    //SpawnEnemy({ 0,0,0 }, YarnEnemyType::MoveToCenter);
+    //SpawnEnemy({ 0,0,12}, YarnEnemyType::MoveToCenter);
+    //SpawnEnemy({ 12,0,0 }, YarnEnemyType::MoveToCenter);
+    //SpawnEnemy({ 12,0,12 }, YarnEnemyType::MoveToCenter);
+    SpawnEnemy({ 0,0,0 }, YarnEnemyType::WaveHorizontal);
+    SpawnEnemy({ 0,0,12}, YarnEnemyType::WaveVertical);
 }
 
 
@@ -442,4 +444,13 @@ void GameScene::DrawGui()
     SceneBase::DrawGui();
 #endif
 
+}
+
+
+// ‰¼‚Ì“G‚ð¶¬‚·‚éŠÖ”
+void GameScene::SpawnEnemy(const DirectX::XMFLOAT3& pos, YarnEnemyType type)
+{
+    Transform tr(pos, { 0,0,0 }, { 0.5f,0.5f,0.5f });
+    auto enemy = GetActorManager()->CreateAndRegisterActorWithTransform<YarnEnemyActor>("enemy", tr);
+    enemy->SetType(type);
 }
