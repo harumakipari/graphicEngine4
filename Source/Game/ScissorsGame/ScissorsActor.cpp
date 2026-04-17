@@ -118,7 +118,6 @@ void ScissorsActor::Update(float deltaTime)
         break;
     }
 
-
     DebugRender::DrawSphere(
         GetPosition(),
         attackRadius,
@@ -197,10 +196,10 @@ void ScissorsActor::Throw(DirectX::XMFLOAT3 dir, float power)
     };
 
     // clamp
-    float stageMinX = -0.5f;
-    float stageMaxX = 12.5f;
-    float stageMinZ = -0.5f;
-    float stageMaxZ = 12.5f;
+    float stageMinX = 1.0f;
+    float stageMaxX = 19.5f;
+    float stageMinZ = 1.0f;
+    float stageMaxZ = 19.5f;
 
     desired.x = std::clamp(desired.x, stageMinX, stageMaxX);
     desired.z = std::clamp(desired.z, stageMinZ, stageMaxZ);

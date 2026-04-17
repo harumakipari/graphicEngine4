@@ -22,6 +22,7 @@
 #include "Game/DarkGame/DarkActors/DoorActor.h"
 #include "Game/DarkGame/DarkActors/DarkEnemy/SkeletonWarriorEnemy.h"
 #include "Game/ScissorsGame/ScissorsPlayer.h"
+#include "Game/ScissorsGame/ScissorsPlayer1.h"
 #include "Game/ScissorsGame/ScissorsStage.h"
 #include "Game/ScissorsGame/YarnEnemyActor.h"
 #include "Graphics/PostProcess/BloomEffect.h"
@@ -356,7 +357,6 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     immediateContext->PSSetShaderResources(0, 16, nullSRVs);
 #endif
 
-
     // FINAL_PASS
     {
         RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
@@ -386,19 +386,19 @@ void GameScene::SetUpActors()
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<FixedCamera>("fixedCameraActor", mainCameraTr);
     mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
 
-    Transform cameraTargetTr(DirectX::XMFLOAT3{ 5.5f,8.5f,-10.4f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ 9.7f,10.5f,-9.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
     mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
 
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
-    mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-31.5f));
-    mainCameraComponent->SetFov(DirectX::XMConvertToRadians(28.0f));
-    mainCameraComponent->distance = 4.5f;
+    mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-34.5f));
+    mainCameraComponent->SetFov(DirectX::XMConvertToRadians(30.0f));
+    mainCameraComponent->distance = 10.9f;
 
     {
         PROFILE_SCOPE("Create Player");
         Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.07f,1.07f,1.07f });
-        auto player = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsPlayer>("player", playerTr);
+        auto player = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsPlayer1>("player", playerTr);
     }
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("gameシーンのカメラ設定される。"));
@@ -415,7 +415,7 @@ void GameScene::SetUpActors()
     auto movieCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MovieCamera>("movieCam", movieCameraTr);
     cameraManager->SetMovieCamera(movieCameraActor);
 
-    Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,-90.0f,0.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
+    Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,180.0f,0.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
     auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsStage>("stage", stageTr);
 
     //SpawnEnemy({ 5,0,5 }, YarnEnemyType::Static);

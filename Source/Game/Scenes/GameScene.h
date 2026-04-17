@@ -17,12 +17,6 @@
 #include "Game/ScissorsGame/YarnEnemyActor.h"
 
 
-
-
-
-
-
-
 class GameScene : public SceneBase
 {
 public:

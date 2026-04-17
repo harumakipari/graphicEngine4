@@ -6,8 +6,6 @@
 #include "Engine/Scene/SceneBase.h"
 #include "Game/Actors/Player/Player.h"
 
-
-
 void YarnEnemyActor::Initialize(const Transform& transform)
 {
     std::string parentName = "SkeletonWarriorMeshComponent";
@@ -32,6 +30,7 @@ void YarnEnemyActor::Initialize(const Transform& transform)
         sphereComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
         sphereComponent->SetLayer(CollisionLayer::Enemy);
         sphereComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        sphereComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
         sphereComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
         sphereComponent->SetCollisionOffsetY(height * 0.5f);
         sphereComponent->Initialize();
@@ -116,10 +115,10 @@ void YarnEnemyActor::MoveLinear(float deltaTime)
     pos.z += moveDirection.z * speed * deltaTime;
 
     // ƒXƒe[ƒW’[‚Å”½“]
-    float stageMinX = -0.5f;
-    float stageMaxX = 12.5f;
-    float stageMinZ = -0.5f;
-    float stageMaxZ = 12.5f;
+    float stageMinX = 1.0f;
+    float stageMaxX = 19.5f;
+    float stageMinZ = 1.0f;
+    float stageMaxZ = 19.5f;
 
     if (pos.x < stageMinX || pos.x > stageMaxX)
     {
@@ -174,10 +173,10 @@ void YarnEnemyActor::MoveToCenter(float deltaTime)
 // ‰¡‚É”g‘Å‚¿‚È‚ª‚çˆÚ“®‚·‚éˆ—
 void YarnEnemyActor::MoveWaveHorizontal(float deltaTime)
 {
-    float stageMinX = -0.5f;
-    float stageMaxX = 12.5f;
-    float stageMinZ = -0.5f;
-    float stageMaxZ = 12.5f;
+    float stageMinX = 1.0f;
+    float stageMaxX = 19.5f;
+    float stageMinZ = 1.0f;
+    float stageMaxZ = 19.5f;
 
 
     waveTime += deltaTime;
@@ -203,10 +202,10 @@ void YarnEnemyActor::MoveWaveHorizontal(float deltaTime)
 // c‚É”g‘Å‚¿‚È‚ª‚çˆÚ“®‚·‚éˆ—
 void YarnEnemyActor::MoveWaveVertical(float deltaTime)
 {
-    float stageMinX = -0.5f;
-    float stageMaxX = 12.5f;
-    float stageMinZ = -0.5f;
-    float stageMaxZ = 12.5f;
+    float stageMinX = 1.0f;
+    float stageMaxX = 19.5f;
+    float stageMinZ = 1.0f;
+    float stageMaxZ = 19.5f;
     waveTime += deltaTime;
 
     auto pos = GetPosition();

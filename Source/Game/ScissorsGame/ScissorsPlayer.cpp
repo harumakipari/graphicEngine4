@@ -99,7 +99,6 @@ void ScissorsPlayer::Initialize(const Transform& transform)
     }
 
     scissorsCount = 2;
-
 }
 
 void ScissorsPlayer::Update(float deltaTime)
@@ -126,7 +125,6 @@ void ScissorsPlayer::Update(float deltaTime)
     {
     case State::Walking:
         // 移動と回転は通常通り
-
         // 攻撃入力を検出
         if (InputSystem::GetInputState("ScissorsAttack", InputStateMask::Trigger))
         {// 攻撃
@@ -149,10 +147,10 @@ void ScissorsPlayer::Update(float deltaTime)
     rotationComponent->SetDirection(moveDir);
 
     {// ステージ外に出ないようにクランプ
-        float stageMinX = -0.5f;
-        float stageMaxX = 12.5f;
-        float stageMinZ = -0.5f;
-        float stageMaxZ = 12.5f;
+        float stageMinX = 1.0f;
+        float stageMaxX = 19.5f;
+        float stageMinZ = 1.0f;
+        float stageMaxZ = 19.5f;
 
         XMFLOAT3 pos = GetPosition();
         pos.x = std::clamp(pos.x, stageMinX, stageMaxX);
@@ -334,10 +332,10 @@ void ScissorsPlayer::Update(float deltaTime)
             pos.z + forward.z * dist
         };
 #if 1
-        float stageMinX = -0.5f;
-        float stageMaxX = 12.5f;
-        float stageMinZ = -0.5f;
-        float stageMaxZ = 12.5f;
+        float stageMinX = 1.0f;
+        float stageMaxX = 19.5f;
+        float stageMinZ = 1.0f;
+        float stageMaxZ = 19.5f;
 
         targetPos.x = std::clamp(targetPos.x, stageMinX, stageMaxX);
         targetPos.z = std::clamp(targetPos.z, stageMinZ, stageMaxZ);
@@ -498,10 +496,10 @@ void ScissorsPlayer::DrawPreview(const AimData& aim)
     };
 
     // clamp
-    float stageMinX = -0.5f;
-    float stageMaxX = 12.5f;
-    float stageMinZ = -0.5f;
-    float stageMaxZ = 12.5f;
+    float stageMinX = 1.0f;
+    float stageMaxX = 19.5f;
+    float stageMinZ = 1.0f;
+    float stageMaxZ = 19.5f;
 
     target.x = std::clamp(target.x, stageMinX, stageMaxX);
     target.z = std::clamp(target.z, stageMinZ, stageMaxZ);
