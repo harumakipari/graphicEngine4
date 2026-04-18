@@ -2,6 +2,7 @@
 
 #include "ScissorsPlayer1.h"
 
+#include "ScissorsPlayerStateDerived.h"
 #include "YarnEnemyActor.h"
 #include "Engine/Scene/SceneBase.h"
 
@@ -17,13 +18,31 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
-    controller->AddAnimation("Attack", 0);
-    controller->AddAnimation("Walk", 1);
-    controller->AddAnimation("Death", 2);
+    controller->AddAnimation("Idle", 0);
+    controller->AddAnimation("Death", 1);
+    controller->AddAnimation("ChargeDash", 2);
+    controller->AddAnimation("Dash", 3);
+    controller->AddAnimation("Run", 4);
+    controller->AddAnimation("Attack", 5);
 
     // アニメーションコントローラーを character に追加
     this->SetAnimationController(controller);
-    PlayAnimation("Walk");
+    PlayAnimation("Idle");
+
+    // ステートマシンを作成
+    stateMachine_ = std::make_shared<StateMachine>();
+    stateMachine_->RegisterState(std::make_unique<ScissorsPlayerIdleState>(this));
+    stateMachine_->RegisterState(std::make_unique<ScissorsPlayerRunningState>(this));
+    stateMachine_->RegisterState(std::make_unique<ScissorsPlayerAttackingState>(this));
+    stateMachine_->RegisterState(std::make_unique<ScissorsPlayerDashState>(this));
+    stateMachine_->RegisterState(std::make_unique<ScissorsPlayerChargeDashState>(this));
+
+    // ステートマシンを character に追加
+    this->SetStateMachine(stateMachine_);
+    // 初期ステートを設定
+    stateMachine_->ChangeState("Idle");
+
+
 
     // 当たり判定
     {
@@ -49,6 +68,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     TakeDamage(1);
                     damageCooldown = 0.5f; // 0.5秒無敵
 
+#if 0
                     // ノックバック
                     DirectX::XMFLOAT3 dir =
                     {
@@ -68,6 +88,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     {
                         characterMovementComponent->AddImpulse(impulse);
                     }
+#endif // 0
 
                     // ダメージを受けたときのエフェクトや音をここで再生する
                 }
@@ -92,7 +113,9 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         attackSphere->SetOnHitCallback(
             [this](CollisionComponent* self, CollisionComponent* other)
             {
-                if (state != State::Dashing) return;
+                if (stateMachine_->GetStateName() != "Dash")
+                    return;
+                //if (state != State::Dashing) return;
 
                 auto enemy = dynamic_cast<YarnEnemyActor*>(other->GetOwner());
                 if (!enemy) return;
@@ -141,7 +164,6 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
 void ScissorsPlayer1::Update(float deltaTime)
 {
-
     Character::Update(deltaTime);
 
     if (damageCooldown > 0.0f)
@@ -151,7 +173,6 @@ void ScissorsPlayer1::Update(float deltaTime)
 
     // 入力に基づいて移動と回転を更新
     auto intent = inputComponent->GetIntent();
-    DirectX::XMFLOAT3 moveDir = { 0,0,0 };
 
     // 左スティック入力
     float stickX = intent.leftMove.x;
@@ -160,8 +181,8 @@ void ScissorsPlayer1::Update(float deltaTime)
     moveDir.x = stickX;
     moveDir.z = stickZ;
 
-    //characterMovementComponent->SetMoveDirection(moveDir);
-    //rotationComponent->SetDirection(moveDir);
+    rotationComponent->SetDirection(GetLookDirection());
+
 
     {// ステージ外に出ないようにクランプ
         float stageMinX = 1.0f;
@@ -174,45 +195,55 @@ void ScissorsPlayer1::Update(float deltaTime)
         pos.z = std::clamp(pos.z, stageMinZ, stageMaxZ);
         SetPosition(pos);
     }
-    // ゲームパッドが接続されているか
-    bool isGamepad = InputSystem::IsGamepadConnected();
 
-    // 右スティックの強さ
-    float stickPower = sqrt(
-        intent.rightMove.x * intent.rightMove.x +
-        intent.rightMove.y * intent.rightMove.y
-    );
-    // 0～1にクランプ
-    stickPower = std::clamp(stickPower, 0.0f, 1.0f);
-    // スティック使ってるか判定
-    bool usingStick = (stickPower > 0.2f);
+    {// 入力を検知するための処理
 
-    // スティックRelease検出
-    static float prevStickPower = 0.0f;
-    bool stickReleased = (prevStickPower > 0.2f && stickPower <= 0.2f);
-    prevStickPower = stickPower;
+        // ゲームパッドが接続されているか
+        useGamePad = InputSystem::IsGamepadConnected();
 
-    bool showPreview = false;
-    float previewPower = 0.0f;
+        // 右スティックの強さ
+        float stickPower = sqrt(
+            intent.rightMove.x * intent.rightMove.x +
+            intent.rightMove.y * intent.rightMove.y
+        );
+        // 0～1にクランプ
+        stickPower = std::clamp(stickPower, 0.0f, 1.0f);
+        // スティック使ってるか判定
+        usingStick = (stickPower > 0.2f);
 
-    // ボタンRelease
-    bool buttonReleased = InputSystem::GetInputState("ScissorsAction", InputStateMask::Release);
+        // スティックRelease検出
+        static float prevStickPower = 0.0f;
+        stickReleased = (prevStickPower > 0.2f && stickPower <= 0.2f);
+        prevStickPower = stickPower;
 
-    //  ここを修正
-    auto aim = GetAimData(intent, deltaTime);
+        // ボタンRelease
+        bool buttonReleased = InputSystem::GetInputState("ScissorsAction", InputStateMask::Release);
 
-    bool triggerDash = false;
-    if (isGamepad)
-    {
-        triggerDash = stickReleased;
+        //  これでダッシュの方向や溜めの強さを決める
+        aimData = GetAimData(intent, deltaTime);
+
+        if (useGamePad)
+        {// ゲームパッド使用
+            // スティック離したとき
+            triggerDash = stickReleased;
+            // ダッシュ溜めトリガー
+            triggerChargeDash = usingStick;
+        }
+        else
+        {//　ゲームパッド使用してない
+            // ボタン離したとき（左マウス)
+            triggerDash = buttonReleased;
+            // ダッシュ溜めトリガー
+            // ここTriggerにしようかな
+            triggerChargeDash = InputSystem::GetInputState("ScissorsAction", InputStateMask::Press);
+        }
+
+        attackTrigger = InputSystem::GetInputState("ScissorsAttack", InputStateMask::Trigger);
+
     }
-    else
-    {
-        triggerDash = buttonReleased;
-    }
 
-    bool hasMoveInput = (fabs(moveDir.x) > 0.1f || fabs(moveDir.z) > 0.1f);
-    bool attackTrigger = InputSystem::GetInputState("ScissorsAttack", InputStateMask::Trigger);
+
+#if 0
     switch (state)
     {
     case State::Idle:
@@ -350,6 +381,8 @@ void ScissorsPlayer1::Update(float deltaTime)
     }
     break;
     }
+#endif // 0
+
 
     // デバッグ用：ハサミを拾える範囲を描画
     DebugRender::DrawCylinder(
@@ -419,6 +452,7 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
 
         if (isCharging)
         {
+            //aim.dir = moveDir; //　マウスでは移動方向にダッシュする
             aim.dir = GetForward();
             aim.power = chargeTime / maxChargeTime;
             aim.power = 1.0f;
@@ -428,6 +462,19 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
     }
 
     return aim;
+}
+
+// どの方向を向くか
+DirectX::XMFLOAT3 ScissorsPlayer1::GetLookDirection() const
+{
+    if (useGamePad && stateMachine_->GetStateName() == "ChargeDash")
+    {
+        return aimData.dir;
+    }
+    else
+    {
+        return moveDir;
+    }
 }
 
 void ScissorsPlayer1::TakeDamage(int damage)
@@ -444,62 +491,47 @@ void ScissorsPlayer1::TakeDamage(int damage)
 }
 
 // プレイヤーの攻撃処理
-void ScissorsPlayer1::Attack()
+void ScissorsPlayer1::DoAttackHit()
 {
-    PlayAnimation("Attack", false, true);
-    state = State::Attacking;
-
+    auto enemies = GetOwnerScene()->GetActorManager()->GetActorsOfType<YarnEnemyActor>();
     Logger::Log(U8("攻撃をする"));
 
-    // プレイヤーの前方向
-    XMFLOAT3 forward = GetForward();
-
-    // 攻撃中心位置（前に1m）
-    XMFLOAT3 center =
+    for (auto& enemy : enemies)
     {
-        GetPosition().x + forward.x * 1.0f,
-        GetPosition().y,
-        GetPosition().z + forward.z * 1.0f
-    };
+        if (!enemy) continue;
 
-    float attackRadius = 3.0f;
+        auto p = GetPosition();
+        auto e = enemy->GetPosition();
 
-    for (auto& actor : GetOwnerScene()->GetActorManager()->GetActorsOfType<YarnEnemyActor>())
-    {
-        XMFLOAT3 enemyPos = actor->GetPosition();
+        // 敵へのベクトル
+        float dx = e.x - p.x;
+        float dz = e.z - p.z;
 
-        // 距離チェック
-        float dx = enemyPos.x - center.x;
-        float dz = enemyPos.z - center.z;
         float distSq = dx * dx + dz * dz;
+        float attackRange = 2.5f;
 
-        if (distSq > attackRadius * attackRadius)
+        DebugRender::DrawSphere(p, attackRange, { 1,1,1,1 });
+
+        if (distSq > attackRange * attackRange)
             continue;
 
-        // 前方向チェック（任意だけど精度UP）
-        XMFLOAT3 toEnemy =
-        {
-            enemyPos.x - GetPosition().x,
-            0.0f,
-            enemyPos.z - GetPosition().z
-        };
+        // 正規化
+        float len = sqrtf(dx * dx + dz * dz);
+        dx /= len;
+        dz /= len;
 
-        float len = sqrt(toEnemy.x * toEnemy.x + toEnemy.z * toEnemy.z);
-        if (len > 0.001f)
+        // プレイヤーの前方向（Z+方向）
+        DirectX::XMFLOAT3 forward = GetForward();
+
+        float dot = dx * forward.x + dz * forward.z;
+
+        float angleCos = cosf(DirectX::XMConvertToRadians(60.0f));
+
+        if (dot > angleCos)
         {
-            toEnemy.x /= len;
-            toEnemy.z /= len;
+            enemy->TakeDamage(2);
+            Logger::Log(U8("敵にヒット！"));
         }
-
-        // ドット積（前にいるか）
-        float dot = forward.x * toEnemy.x + forward.z * toEnemy.z;
-
-        if (dot < 0.3f) // ←角度制限（調整ポイント）
-            continue;
-
-        // ヒット！
-        actor->TakeDamage(2);
-        Logger::Log(U8("敵にヒット！"));
     }
 }
 

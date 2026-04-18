@@ -7,15 +7,6 @@ class YarnEnemyActor;
 
 class ScissorsPlayer1 :public Character
 {
-    enum class State :uint8_t
-    {
-        Idle,
-        Walking,
-        ChargingDash,
-        Dashing,
-        Attacking
-    };
-
     struct AimData
     {
         DirectX::XMFLOAT3 dir;
@@ -33,26 +24,54 @@ public:
     // ダメージを受ける処理
     void TakeDamage(int damage);
 
-    void Attack();
+    // 攻撃処理
+    void DoAttackHit();
 
+    // 移動方向を取得する関数
+    DirectX::XMFLOAT3 GetMoveDirection() const { return moveDir; }
+
+    // ダッシュ溜めトリガーが離されたかどうかを取得する関数　これがtrueのときにダッシュを開始する 
+    bool IsDashTriggered() const { return triggerDash; }
+
+    // ダッシュ溜めトリガーが引かれたかどうかを取得する関数
+    bool IsChargeDashTriggered() const { return triggerChargeDash; }
+
+    // 攻撃トリガーが引かれたかどうかを取得する関数
+    bool IsAttackTriggered() const { return attackTrigger; }
+
+    // 狙いの情報を取得する関数　これでダッシュの方向や溜めの強さを決める
+    AimData GetAimData() const { return aimData; }
 private:
     // 入力から狙いの情報を取得する
     AimData GetAimData(const MoveIntent& intent, float deltaTime);
 
-    // ダッシュを開始する処理
-    void StartDush(const MoveIntent& intent);
-
-
-private:
-    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
-    std::shared_ptr<RotationComponent> rotationComponent;
+    // どの方向を向くか
+    DirectX::XMFLOAT3 GetLookDirection() const;
+public:
     std::shared_ptr<InputComponent> inputComponent;
     std::shared_ptr<CharacterMovementComponent> characterMovementComponent;
+    DirectX::XMFLOAT3 targetPos = { 0.0f,0.0f,0.0f }; // ダッシュの移動先
+
+private:
+    std::shared_ptr<RotationComponent> rotationComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
+    DirectX::XMFLOAT3 moveDir = { 0,0,0 }; // 移動方向
+    bool triggerDash = false; // ダッシュトリガー
+    bool triggerChargeDash = false; // ダッシュ溜めを検知するトリガー
+    bool attackTrigger = false; // 攻撃トリガー
+    AimData aimData; // 狙いの情報
+
+    bool usingStick = false; // スティックを使用しているかどうか
+    bool stickReleased = false; // スティックが離されたかどうか
+    bool useGamePad = false; // ゲームパッドを使用しているかどうか
+
+
+
+
 
     float damageCooldown = 0.0f; // ダメージを受けた後の無敵時間のクールダウン
     float pickupRange = 1.0f; // ハサミを拾う範囲
 
-    State state = State::Walking; // プレイヤーの状態
 
     float dashChargeTime = 0.0f;
     float maxDashChargeTime = 1.0f;
