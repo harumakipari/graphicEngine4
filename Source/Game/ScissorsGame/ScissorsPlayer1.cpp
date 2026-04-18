@@ -117,7 +117,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 if (!enemy) return;
 
                 hitStopTimer = 0.1f;
-                CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav");
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav",1.0f);
 
                 // ヒット処理
                 enemy->OnHitByDash(this);
@@ -159,7 +159,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
     // チャージ音のオーディオコンポーネント
     chargeAudioComponent = AddComponent<CoreAudioSourceComponent>("chargeAudioComponent", parentName);
-    chargeAudioComponent->SetSource(L"./Data/Sound/SE1/charge.wav");
+    chargeAudioComponent->SetSource(L"./Data/Sound/SE1/charge2.wav");
     chargeAudioComponent->SetVolume(0.5f);
     chargeAudioComponent->SetLoop(true);
 
