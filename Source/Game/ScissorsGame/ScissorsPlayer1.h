@@ -2,6 +2,7 @@
 #include "Components/Controller/ControllerComponent.h"
 #include "Core/Actor.h"
 #include "Game/Actors/Base/Character.h"
+#include "UI/Widgets/Widget.h"
 
 class YarnEnemyActor;
 
@@ -21,7 +22,7 @@ public:
 
     void Update(float deltaTime)override;
 
-    void DrawImGuiDetails() override;
+    void DrawImGuiDetails() override {}
 
     // ダメージを受ける処理
     void TakeDamage(int damage);
@@ -70,6 +71,8 @@ public:
     std::shared_ptr<CharacterMovementComponent> characterMovementComponent;
     DirectX::XMFLOAT3 targetPos = { 0.0f,0.0f,0.0f }; // ダッシュの移動先
     float hitStopTimer = 0.0f; // ヒットストップのタイマー　攻撃が当たったときに一定時間動きを止めるために使用する
+    // ダッシュの狙いを表示する矢印のUIコンポーネント
+    std::shared_ptr<UIImageComponent> dashAimArrowComponent;
 
 private:
     std::shared_ptr<RotationComponent> rotationComponent;
@@ -86,16 +89,15 @@ private:
     bool preUsingStick = false; // 前フレームでスティックを使用していたかどうか
 
     int dashCount = 3; // ダッシュの残り回数
-    int maxDashCount = 3; // ダッシュの最大回数
-
-
+    int maxDashCount = 50; // ダッシュの最大回数
 
     float dashRecoverTimer = 0.0f;
     float dashRecoverInterval = 10.0f; // ダッシュ回復のインターバル
 
 
+
     float damageCooldown = 0.0f; // ダメージを受けた後の無敵時間のクールダウン
-    float pickupRange = 1.0f; // ハサミを拾う範囲
+    
 
 
     float dashTime = 0.3f;

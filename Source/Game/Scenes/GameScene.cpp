@@ -377,7 +377,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     }
 
     // UI‚Ì•`‰æ
-    //Draw(immediateContext);
+    Draw(immediateContext);
 }
 
 void GameScene::SetUpActors()

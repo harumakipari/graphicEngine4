@@ -291,6 +291,14 @@ public:
         return true;
     }
 
+    // コントローラー振動を開始する
+    static void SetVibration(float power, float duration)
+    {
+        vibrationPower = std::clamp(power, 0.0f, 1.0f);
+        vibrationDuration = duration;
+        vibrationTimer = duration;
+    }
+
 private:
 
     // カーソルの表示非表示を変更
@@ -335,6 +343,10 @@ private:
     static inline float viewportY = 0;
     static inline float viewportW = 0;
     static inline float viewportH = 0;
+
+    static inline float vibrationTimer = 0.0f; // 振動の残り時間
+    static inline float vibrationDuration = 0.0f; // 振動の総時間
+    static inline float vibrationPower = 0.0f; // 振動の強さ（0.0f～1.0f）
 };
 
 #endif // INPUT_SYSTEM_H

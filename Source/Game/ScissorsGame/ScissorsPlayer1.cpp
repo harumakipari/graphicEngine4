@@ -5,6 +5,7 @@
 #include "ScissorsPlayerStateDerived.h"
 #include "YarnEnemyActor.h"
 #include "Engine/Scene/SceneBase.h"
+#include "Physics/CollisionFunction.h"
 
 void ScissorsPlayer1::Initialize(const Transform& transform)
 {
@@ -119,9 +120,11 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 auto enemy = dynamic_cast<YarnEnemyActor*>(other->GetOwner());
                 if (!enemy) return;
 
-                hitStopTimer = 0.05f;
-                // ★ヒット処理
+                hitStopTimer = 0.1f;
+                // ヒット処理
                 enemy->OnHitByDash(this);
+                // コントローラーを振動させる
+                InputSystem::SetVibration(0.6f, 0.08f);
             }
         );
     }
@@ -136,6 +139,20 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
     rotationComponent->SetRotateTime(0.1f); // 回転を速くする
+
+    // ダッシュの狙いを表示する矢印のUIコンポーネントを追加
+    dashAimArrowComponent = std::make_unique<UIImageComponent>("./Data/Textures/ScissorsUI/Arrow.png", "dashAimArrow");
+    auto uiManager = GetOwnerScene()->GetUIManager();
+    dashAimArrowComponent->SetWorldPosition({ 0.0f, 0.0f });
+    dashAimArrowComponent->SetVisible(true);
+    dashAimArrowComponent->SetSize({ 50.0f, 300.0f });
+    dashAimArrowComponent->SetPivot({ 0.5f, 1.0f }); // 矢印の根元をプレイヤーの位置に合わせる
+    dashAimArrowComponent->SetVisible(false);
+    uiManager->Add(dashAimArrowComponent);
+
+    // ダッシュ回数を初期化
+    dashCount = maxDashCount;
+
 }
 
 void ScissorsPlayer1::Update(float deltaTime)
@@ -146,7 +163,6 @@ void ScissorsPlayer1::Update(float deltaTime)
     {// ダメージクールダウン中は無敵
         damageCooldown -= deltaTime;
     }
-
 
     // 入力に基づいて移動と回転を更新
     auto intent = inputComponent->GetIntent();
@@ -160,6 +176,7 @@ void ScissorsPlayer1::Update(float deltaTime)
 
     rotationComponent->SetDirection(GetLookDirection());
 
+    XMFLOAT3 pos = GetPosition();
 
     {// ステージ外に出ないようにクランプ
         float stageMinX = 1.0f;
@@ -167,7 +184,6 @@ void ScissorsPlayer1::Update(float deltaTime)
         float stageMinZ = 1.0f;
         float stageMaxZ = 19.5f;
 
-        XMFLOAT3 pos = GetPosition();
         pos.x = std::clamp(pos.x, stageMinX, stageMaxX);
         pos.z = std::clamp(pos.z, stageMinZ, stageMaxZ);
         SetPosition(pos);
@@ -231,6 +247,17 @@ void ScissorsPlayer1::Update(float deltaTime)
 
     // ダッシュ回復
     RecoverDash(deltaTime);
+
+
+    // ダッシュの狙いを表示する矢印のUIを更新
+    XMFLOAT2 uiPos = WorldToUI(pos);
+    if (dashAimArrowComponent)
+    {
+        dashAimArrowComponent->SetWorldPosition({ uiPos.x, uiPos.y });
+        float angle = DirectX::XMConvertToDegrees(atan2f(aimData.dir.x, aimData.dir.z));
+        dashAimArrowComponent->SetWorldAngleDegree(angle);
+    }
+
 
 }
 

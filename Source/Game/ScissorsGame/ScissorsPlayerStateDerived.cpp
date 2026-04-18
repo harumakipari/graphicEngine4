@@ -147,7 +147,8 @@ void ScissorsPlayerChargeDashState::Enter()
 {
     // ダッシュアニメーションを再生
     player->PlayAnimation("ChargeDash", false, true, 0.1f);
-
+    // ダッシュの狙いを表示する矢印のUIコンポーネントを表示する
+    player->dashAimArrowComponent->SetVisible(true);
 }
 
 void ScissorsPlayerChargeDashState::Execute(float deltaTime)
@@ -186,6 +187,8 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
 
 void ScissorsPlayerChargeDashState::Exit()
 {
+    // ダッシュの狙いを表示する矢印のUIコンポーネントを非表示にする
+    player->dashAimArrowComponent->SetVisible(false);
 
 
 

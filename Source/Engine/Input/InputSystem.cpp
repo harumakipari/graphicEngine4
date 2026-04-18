@@ -278,6 +278,29 @@ void InputSystem::Update(float deltaTime)
             ApplyStickDeadzone(static_cast<float>(state.Gamepad.sThumbRX), static_cast<float>(state.Gamepad.sThumbRY),
                 deadZoneMode, 32767.f, static_cast<float>(XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE),
                 mAxis[static_cast<size_t>(Side::Right)][static_cast<size_t>(Axis::X)], mAxis[static_cast<size_t>(Side::Right)][static_cast<size_t>(Axis::Y)]);
+
+            // êUìÆÇÃçXêV
+            if (vibrationTimer > 0.0f)
+            {
+                vibrationTimer -= deltaTime;
+
+                WORD motor = static_cast<WORD>(vibrationPower * 65535.0f);
+
+                XINPUT_VIBRATION vibration = {};
+                vibration.wLeftMotorSpeed = motor;   // í·é¸îgÅièdÇ¢Åj
+                vibration.wRightMotorSpeed = motor;  // çÇé¸îgÅiåyÇ¢Åj
+
+                XInputSetState(slot, &vibration);
+            }
+            else
+            {
+                // í‚é~
+                XINPUT_VIBRATION vibration = {};
+                vibration.wLeftMotorSpeed = 0;
+                vibration.wRightMotorSpeed = 0;
+
+                XInputSetState(slot, &vibration);
+            }
         }
         else
         {
