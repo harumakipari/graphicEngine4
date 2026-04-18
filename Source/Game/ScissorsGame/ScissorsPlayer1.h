@@ -50,6 +50,9 @@ public:
 
     // ダッシュが失敗した時に呼ぶ関数　これを呼ぶとダッシュの残り回数が減らない
     void FailDash();
+
+    // ダッシュを止める処理　これを呼ぶとダッシュが止まる
+    void StopDash();
 private:
     // 入力から狙いの情報を取得する
     AimData GetAimData(const MoveIntent& intent, float deltaTime);

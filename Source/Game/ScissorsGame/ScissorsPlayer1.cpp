@@ -115,37 +115,12 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
             {
                 if (stateMachine_->GetStateName() != "Dash")
                     return;
-                //if (state != State::Dashing) return;
 
                 auto enemy = dynamic_cast<YarnEnemyActor*>(other->GetOwner());
                 if (!enemy) return;
 
                 // ★ヒット処理
-                enemy->TakeDamage(2);
-
-                //// ★ノックバック
-                //XMFLOAT3 dir =
-                //{
-                //    other->GetOwner()->GetPosition().x - GetPosition().x,
-                //    0,
-                //    other->GetOwner()->GetPosition().z - GetPosition().z
-                //};
-
-                //float len = sqrt(dir.x * dir.x + dir.z * dir.z);
-                //if (len > 0.001f)
-                //{
-                //    dir.x /= len;
-                //    dir.z /= len;
-                //}
-
-                //// 敵側に吹っ飛ばし（敵にMovementあれば）
-                //if (auto movement = other->GetOwner()->GetComponent<CharacterMovementComponent>())
-                //{
-                //    movement->AddImpulse({ dir.x * 8.0f, 0, dir.z * 8.0f });
-                //}
-
-                // ★ヒットしたら止める（好み）
-                //state = State::Walking;
+                enemy->OnHitByDash(this);
             }
         );
     }
@@ -532,7 +507,7 @@ void ScissorsPlayer1::DoAttackHit()
 
         if (dot > angleCos)
         {
-            enemy->TakeDamage(2);
+            enemy->TakeDamage(1);
             Logger::Log(U8("敵にヒット！"));
         }
     }
@@ -572,4 +547,12 @@ void ScissorsPlayer1::FailDash()
 {
     // ダッシュ失敗の処理
     Logger::Log("Dash failed. Remaining dash count: " + std::to_string(dashCount));
+}
+
+// ダッシュを止める処理　これを呼ぶとダッシュが止まる
+void ScissorsPlayer1::StopDash()
+{
+    // ダッシュ停止の処理
+    stateMachine_->ChangeState("Idle");
+    Logger::Log("Dash stopped.");
 }

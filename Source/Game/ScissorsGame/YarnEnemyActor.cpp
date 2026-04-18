@@ -4,7 +4,7 @@
 
 #include "Components/Render/PointLightComponent.h"
 #include "Engine/Scene/SceneBase.h"
-#include "Game/Actors/Player/Player.h"
+#include "ScissorsPlayer1.h"
 
 void YarnEnemyActor::Initialize(const Transform& transform)
 {
@@ -40,7 +40,6 @@ void YarnEnemyActor::Initialize(const Transform& transform)
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
 
     // Hpの初期化
-    int maxHp = 2;
     hp = maxHp;
 
     // 最初の位置を保存
@@ -105,6 +104,12 @@ void YarnEnemyActor::TakeDamage(int damage)
     {
         MarkPendingKill();
     }
+}
+
+void YarnEnemyActor::OnHitByDash(ScissorsPlayer1* player)
+{
+    // ダッシュで当たったときの処理
+    TakeDamage(2);
 }
 
 // 線形移動の処理
@@ -223,4 +228,20 @@ void YarnEnemyActor::MoveWaveVertical(float deltaTime)
 
 }
 
+
+
+// 大きい敵
+void BigYarnEnemyActor::Initialize(const Transform& transform)
+{
+    maxHp = 2;
+    YarnEnemyActor::Initialize(transform);
+}
+
+void BigYarnEnemyActor::OnHitByDash(ScissorsPlayer1* player)
+{
+    TakeDamage(1);
+    // playerのダッシュを止める処理を追加
+    if (hp >= maxHp - 1)
+        player->StopDash();
+}
 

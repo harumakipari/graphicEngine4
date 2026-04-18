@@ -437,8 +437,8 @@ void GameScene::SetUpActors()
     SpawnEnemy({ 9,0,6 }, YarnEnemyType::Static);
     SpawnEnemy({ 0,0,8 }, YarnEnemyType::MoveVertical);
     SpawnEnemy({ 12,0,11 }, YarnEnemyType::MoveVertical);
-    SpawnEnemy({ 4,0,11 }, YarnEnemyType::MoveHorizontal);
-    SpawnEnemy({ 8,0,11 }, YarnEnemyType::MoveHorizontal);
+    SpawnBigEnemy({ 4,0,11 }, YarnEnemyType::MoveHorizontal);
+    SpawnBigEnemy({ 8,0,11 }, YarnEnemyType::MoveHorizontal);
 }
 
 
@@ -468,6 +468,19 @@ void GameScene::SpawnEnemy(
 {
     Transform tr(pos, { 0,0,0 }, { 0.5f,0.5f,0.5f });
     auto enemy = GetActorManager()->CreateAndRegisterActorWithTransform<YarnEnemyActor>("enemy", tr);
+    enemy->SetMoveDirection(dir);
+    enemy->SetType(type);
+    enemy->SetSpeed(speed);
+}
+
+// ‰¼‚Ì“G‚ð¶¬‚·‚éŠÖ”
+void GameScene::SpawnBigEnemy(
+    const XMFLOAT3& pos,
+    YarnEnemyType type,
+    float speed, const XMFLOAT3& dir)
+{
+    Transform tr(pos, { 0,0,0 }, { 1.0f,1.0f,1.0f });
+    auto enemy = GetActorManager()->CreateAndRegisterActorWithTransform<BigYarnEnemyActor>("enemy", tr);
     enemy->SetMoveDirection(dir);
     enemy->SetType(type);
     enemy->SetSpeed(speed);

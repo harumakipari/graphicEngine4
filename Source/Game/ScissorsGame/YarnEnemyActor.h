@@ -3,6 +3,8 @@
 #include "Core/Actor.h"
 #include "Game/Actors/Base/Character.h"
 
+class ScissorsPlayer1;
+
 enum class YarnEnemyType :uint8_t
 {
     Static,   // その場でじっとしている
@@ -35,6 +37,9 @@ public:
     {
         this->speed = speed;
     }
+
+    // プレイヤーのダッシュに当たったときの処理
+    virtual void OnHitByDash(ScissorsPlayer1* player);
 private:
     // 線形移動の処理
     void MoveLinear(float deltaTime);
@@ -69,4 +74,19 @@ private:
     float waveTime = 0.0f;
     float waveAmplitude = 1.0f; // 振れ幅
     float waveFrequency = 3.0f; // 速さ
+
+protected:
+    int maxHp = 1;
+};
+
+class BigYarnEnemyActor :public YarnEnemyActor
+{
+public:
+    explicit BigYarnEnemyActor(const std::string& actorName) :YarnEnemyActor(actorName) {}
+    void Initialize(const Transform& transform)override;
+    // プレイヤーのダッシュに当たったときの処理
+    void OnHitByDash(ScissorsPlayer1* player)override;
+
+private:
+    
 };
