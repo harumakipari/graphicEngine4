@@ -206,6 +206,13 @@ void ScissorsPlayerDashState::Enter()
 
 void ScissorsPlayerDashState::Execute(float deltaTime)
 {
+    // ヒットストップ中は何もしない
+    if (player->hitStopTimer > 0.0f)
+    {
+        player->hitStopTimer -= deltaTime;
+        return;
+    }
+
     elapsedTime += deltaTime;
 
     // 時間固定ダッシュ 何秒でtargetPosに着くか

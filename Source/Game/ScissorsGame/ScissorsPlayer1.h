@@ -21,6 +21,8 @@ public:
 
     void Update(float deltaTime)override;
 
+    void DrawImGuiDetails() override;
+
     // ダメージを受ける処理
     void TakeDamage(int damage);
 
@@ -62,12 +64,12 @@ private:
 
     // ダッシュの回数を回復する関数　
     void RecoverDash(float deltaTime);
-
     
 public:
     std::shared_ptr<InputComponent> inputComponent;
     std::shared_ptr<CharacterMovementComponent> characterMovementComponent;
     DirectX::XMFLOAT3 targetPos = { 0.0f,0.0f,0.0f }; // ダッシュの移動先
+    float hitStopTimer = 0.0f; // ヒットストップのタイマー　攻撃が当たったときに一定時間動きを止めるために使用する
 
 private:
     std::shared_ptr<RotationComponent> rotationComponent;
@@ -114,7 +116,6 @@ private:
     float maxThrowDistance = 10.0f; // 最大距離
 
     float lastStickPower = 0.0f;// スティックの最終的な力　溜めの強さや投げるときの力に使用する
-    float hitStopTimer = 0.0f;
     float dashDistance;
     DirectX::XMFLOAT3 dashStartPos;
     std::unordered_set<YarnEnemyActor*> hitEnemies; // すでに当たった敵
