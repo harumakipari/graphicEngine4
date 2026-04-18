@@ -152,7 +152,7 @@ void ScissorsPlayerChargeDashState::Enter()
     // ダッシュの狙いを表示する矢印のUIコンポーネントを表示する
     player->dashAimArrowComponent->SetVisible(true);
     // チャージ音を再生する
-    player->chargeAudioComponent->Play();
+    //player->chargeAudioComponent->Play();
 }
 
 void ScissorsPlayerChargeDashState::Execute(float deltaTime)

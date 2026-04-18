@@ -9,6 +9,12 @@
 
 bool Scene::_update(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
+    if (_current_scene->uiManager)
+    {
+        _current_scene->uiManager->Update(deltaTime);
+    }
+
+
     // Œ»Ý‚ÌActorManager‚ÌXVˆ—
     if (_current_scene->actorManager_)
     {

@@ -139,6 +139,9 @@ void GameScene::Start()
 void GameScene::Update(float deltaTime)
 {
     using namespace DirectX;
+
+
+
     SceneBase::Update(deltaTime);
 
     Physics::Instance().Update(Time::UnscaledDeltaTime());

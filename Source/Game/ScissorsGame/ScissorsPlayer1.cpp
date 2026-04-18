@@ -117,12 +117,11 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 if (!enemy) return;
 
                 hitStopTimer = 0.1f;
-                CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav",1.0f);
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
+                //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav",1.0f);
 
                 // ヒット処理
                 enemy->OnHitByDash(this);
-                // コントローラーを振動させる
-                InputSystem::SetVibration(0.8f, 0.15f);
             }
         );
     }
@@ -186,6 +185,13 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
 void ScissorsPlayer1::Update(float deltaTime)
 {
+    auto scene = GetOwnerScene();
+    if (scene->IsPaused())
+    {// ポーズ中は入力を受け付けない 歩行音も止める
+        return;
+    }
+
+
     Character::Update(deltaTime);
 
     if (damageCooldown > 0.0f)
@@ -244,33 +250,45 @@ void ScissorsPlayer1::Update(float deltaTime)
         //  これでダッシュの方向や溜めの強さを決める
         aimData = GetAimData(intent, deltaTime);
 
-        if (useGamePad)
-        {// ゲームパッド使用
-            // スティック離したとき
-            triggerDash = stickReleased;
-            // ダッシュ溜めトリガー
-            if (usingStick && !preUsingStick)
-            {
-                triggerChargeDash = true;
+
+        if (!InputSystem::isUIUsingMouse)
+        {
+            if (useGamePad)
+            {// ゲームパッド使用
+                // スティック離したとき
+                triggerDash = stickReleased;
+                // ダッシュ溜めトリガー
+                if (usingStick && !preUsingStick)
+                {
+                    triggerChargeDash = true;
+                }
+                else
+                {
+                    triggerChargeDash = false;
+                }
+                //triggerChargeDash = usingStick;
+
+                preUsingStick = usingStick;
+
             }
             else
-            {
-                triggerChargeDash = false;
+            {//　ゲームパッド使用してない
+                // ボタン離したとき（左マウス)
+                triggerDash = buttonReleased;
+                // ダッシュ溜めトリガー
+                triggerChargeDash = InputSystem::GetInputState("ScissorsAction", InputStateMask::Trigger);
             }
-            //triggerChargeDash = usingStick;
 
-            preUsingStick = usingStick;
+            attackTrigger = InputSystem::GetInputState("ScissorsAttack", InputStateMask::Trigger);
 
         }
         else
-        {//　ゲームパッド使用してない
-            // ボタン離したとき（左マウス)
-            triggerDash = buttonReleased;
-            // ダッシュ溜めトリガー
-            triggerChargeDash = InputSystem::GetInputState("ScissorsAction", InputStateMask::Trigger);
+        {
+            // UI操作中は入力無効
+            triggerDash = false;
+            triggerChargeDash = false;
+            attackTrigger = false;
         }
-
-        attackTrigger = InputSystem::GetInputState("ScissorsAttack", InputStateMask::Trigger);
 
     }
 
@@ -487,4 +505,21 @@ void ScissorsPlayer1::StopDash()
     // ダッシュ停止の処理
     stateMachine_->ChangeState("Idle");
     Logger::Log("Dash stopped.");
+}
+
+// ポーズの時に呼ぶ関数　これを呼ぶと歩きのSEが止まる
+void ScissorsPlayer1::OnPause()
+{
+    if (auto state = GetStateMachine()->GetCurrentState())
+    {
+        // 歩行のSEを止める
+        if (footstepAudioComponent)
+        {
+            footstepAudioComponent->Stop();
+        }
+        
+        state->Exit(); // 現在のステートから抜ける
+        stateMachine_->ChangeState("Idle"); // ポーズ中はIdleステートにする チャージダッシュ時もこれで止める
+        
+    }
 }

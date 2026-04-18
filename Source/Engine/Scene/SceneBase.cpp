@@ -148,7 +148,7 @@ void SceneBase::Update(float deltaTime)
     Graphics::GetScreenSize(width, height);
     sceneCBuffer->data.iResolution = { width,height };
 
-    uiManager->Update(deltaTime);
+    //uiManager->Update(deltaTime);
 
 #ifdef _DEBUG
     if (InputSystem::GetInputState("F8", InputStateMask::Trigger))

@@ -263,6 +263,10 @@ void InputSystem::Initialize()
 // 更新処理
 void InputSystem::Update(float deltaTime)
 {
+    // UIがマウスを使用しているかどうかのフラグをリセット
+    InputSystem::isUIUsingMouse = false;
+
+
     DWORD xinputResult = XInputGetState(static_cast<DWORD>(slot), &state);
     isGamePadConnected = (xinputResult == ERROR_SUCCESS);
 

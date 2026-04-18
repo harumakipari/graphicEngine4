@@ -5,6 +5,7 @@
 #include "Engine/Audio/CoreAudio.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Utility/Time.h"
+#include "Game/ScissorsGame/ScissorsPlayer1.h"
 
 void Pause::Initialize(const Transform& transform)
 {
@@ -47,6 +48,12 @@ void Pause::Initialize(const Transform& transform)
 
 
             Time::timeScale = 0.0f;
+
+            // player ‚Ì•às‰¹‚Ì‚½‚ß‚ÉŒÄ‚ÔŠÖ”  (T_T)
+            if (auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>())
+            {
+                player->OnPause();
+            }
 
             GetOwnerScene()->SetPaused(true);
         };

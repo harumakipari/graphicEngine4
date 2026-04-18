@@ -57,10 +57,10 @@ bool Framework::Initialize()
 
     // SCENE_TRANSITION
    //Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-    Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    //Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
    // Scene::_boot(device, "ResultScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
      //Scene::_boot(device, "MorphScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-    //Scene::_boot(device, "GameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    Scene::_boot(device, "GameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "SampleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "PuddingGameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
 
@@ -97,6 +97,15 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
     //オーディオ更新
     CoreAudio::Update(deltaTime);
 
+    {
+        ProfileScopedSection_2(0, "InputUpdate", ImGuiControl::Profiler::Green);
+        //入力システム更新
+        if (GetForegroundWindow() == Graphics::GetHwnd())
+        {
+            InputSystem::Update(Time::UnscaledDeltaTime());
+        }
+    }
+
 
     // デバックコマンド更新
     DebugRender::Tick(deltaTime);
@@ -130,15 +139,6 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
         enableImGui = !enableImGui;
     }
 #endif
-    {
-        ProfileScopedSection_2(0, "InputUpdate", ImGuiControl::Profiler::Green);
-        //入力システム更新
-        if (GetForegroundWindow() == Graphics::GetHwnd())
-        {
-            InputSystem::Update(Time::UnscaledDeltaTime());
-        }
-    }
-
     //パーティクルシステム更新
     {
         ProfileScopedSection_2(0, "ComputeParticleSystem::Update", ImGuiControl::Profiler::Blue);

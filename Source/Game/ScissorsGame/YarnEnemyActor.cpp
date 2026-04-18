@@ -114,6 +114,9 @@ void YarnEnemyActor::OnHitByDash(ScissorsPlayer1* player)
 {
     // ダッシュで当たったときの処理
     TakeDamage(2);
+    // コントローラーを振動させる
+    InputSystem::SetVibration(0.8f, 0.15f);
+
 }
 
 // 線形移動の処理
@@ -280,5 +283,9 @@ void BigYarnEnemyActor::OnHitByDash(ScissorsPlayer1* player)
     // playerのダッシュを止める処理を追加
     if (hp >= maxHp - 1)
         player->StopDash();
+
+    // コントローラーを振動させる
+    InputSystem::SetVibration(1.0f, 0.15f);
+
 }
 

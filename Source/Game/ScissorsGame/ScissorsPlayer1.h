@@ -58,6 +58,9 @@ public:
     // ダッシュを止める処理　これを呼ぶとダッシュが止まる
     void StopDash();
 
+    // ポーズの時に呼ぶ関数　これを呼ぶと歩きのSEが止まる
+    void OnPause();
+
 private:
     // 入力から狙いの情報を取得する
     AimData GetAimData(const MoveIntent& intent, float deltaTime);

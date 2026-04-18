@@ -109,6 +109,7 @@ class InputSystem
 private:
     static inline std::unordered_map<std::string, std::vector<std::unique_ptr<InputKey>>> inputKeys;
     static inline std::unique_ptr<InputKey> directionKeys[2][4];
+
 private:
     InputSystem() = default;
     virtual ~InputSystem() = default;
@@ -320,6 +321,8 @@ public:
     // アクティブなデバイスを取得
     static InputDeviceType GetActiveDevice() { return activeDevice; }
 
+    static inline bool isUIUsingMouse = false; // UIがマウスを使用しているかどうか
+
 private:
     static inline InputDeviceType activeDevice = InputDeviceType::Keyboard;
 
@@ -347,6 +350,7 @@ private:
     static inline float vibrationTimer = 0.0f; // 振動の残り時間
     static inline float vibrationDuration = 0.0f; // 振動の総時間
     static inline float vibrationPower = 0.0f; // 振動の強さ（0.0f～1.0f）
+
 };
 
 #endif // INPUT_SYSTEM_H
