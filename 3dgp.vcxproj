@@ -323,6 +323,7 @@
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsPlayer1.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsPlayerStateDerived.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsStage.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\TitleScene.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\YarnEnemyActor.cpp" />
     <ClCompile Include="Source\Game\SofyBody\SoftBody.cpp" />
     <ClCompile Include="Source\Game\State\StateMachine.cpp" />
@@ -484,6 +485,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayer1.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayerStateDerived.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsStage.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\TitleScene.h" />
     <ClInclude Include="Source\Game\ScissorsGame\YarnEnemyActor.h" />
     <ClInclude Include="Source\Game\SofyBody\SoftBody.h" />
     <ClInclude Include="Source\Game\State\StateMachine.h" />

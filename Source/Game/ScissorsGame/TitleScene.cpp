@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "GameScene.h"
+#include "TitleScene.h"
 #include <profiler.h>
 
 #ifdef USE_IMGUI
@@ -11,29 +11,18 @@
 #include "Core/ActorManager.h"
 #include "Engine/Utility/Time.h"
 
-#include "Game/Actors/Dessert/Pudding.h"
-#include "Game/Actors/Player/Player.h"
-#include "Game/Actors/Stage/Cloth.h"
-
-
 #include "Physics/Physics.h"
-#include "Game/DarkGame/DarkActors/DarkStage.h"
-#include "Game/DarkGame/DarkActors/DarkStageChandelierActor.h"
-#include "Game/DarkGame/DarkActors/DoorActor.h"
-#include "Game/DarkGame/DarkActors/DarkEnemy/SkeletonWarriorEnemy.h"
-#include "Game/ScissorsGame/ScissorsPlayer.h"
 #include "Game/ScissorsGame/ScissorsPlayer1.h"
 #include "Game/ScissorsGame/ScissorsStage.h"
 #include "Game/ScissorsGame/YarnEnemyActor.h"
 #include "Graphics/PostProcess/BloomEffect.h"
-
 
 #include "Physics/CollisionSystem.h"
 #include "UI/UIManager.h"
 #include "UI/Game/Pause.h"
 
 
-bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
+bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
     lightDirection = { 0.722f, -0.38f, -0.0211f, 0.9f };   // 上の窓からの光
     lightColor = { 1.0f, 0.8f, 1.0f, 2.6f };
@@ -123,7 +112,7 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     return true;
 }
 
-void GameScene::Start()
+void TitleScene::Start()
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
@@ -136,7 +125,7 @@ void GameScene::Start()
 
 }
 
-void GameScene::Update(float deltaTime)
+void TitleScene::Update(float deltaTime)
 {
     using namespace DirectX;
     SceneBase::Update(deltaTime);
@@ -149,17 +138,18 @@ void GameScene::Update(float deltaTime)
     if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
     {
         const char* types[] = { "0", "1" };
-        SceneTransitionManager::Instance().RequestTransition("SampleScene");
+
+        SceneTransitionManager::Instance().RequestTransition("GameScene");
     }
 }
 
 // 定数バッファの更新処理をシーンごとにカスタマイズできるようにするための仮想関数
-void GameScene::UpdateConstants(ID3D11DeviceContext* immediateContext, float deltaTime)
+void TitleScene::UpdateConstants(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
 
 }
 
-void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
+void TitleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
     RenderState::BindSamplerStates(immediateContext);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
@@ -380,7 +370,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     Draw(immediateContext);
 }
 
-void GameScene::SetUpActors()
+void TitleScene::SetUpActors()
 {
     Transform mainCameraTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<FixedCamera>("fixedCameraActor", mainCameraTr);
@@ -394,14 +384,8 @@ void GameScene::SetUpActors()
     mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-34.5f));
     mainCameraComponent->SetFov(DirectX::XMConvertToRadians(30.0f));
     mainCameraComponent->distance = 10.9f;
-
-    {
-        PROFILE_SCOPE("Create Player");
-        Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 0.01f,0.01f,0.01f });
-        auto player = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsPlayer1>("player", playerTr);
-    }
     SetActiveCamera(mainCameraActor);
-    Logger::Log(U8("gameシーンのカメラ設定される。"));
+    Logger::Log(U8("タイトルシーンのカメラ設定される。"));
 
     Transform debugCameraTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto debugCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DebugCamera>("debugCam", debugCameraTr);
@@ -415,49 +399,22 @@ void GameScene::SetUpActors()
     auto movieCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MovieCamera>("movieCam", movieCameraTr);
     cameraManager->SetMovieCamera(movieCameraActor);
 
-    // ステージを生成
-    Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,180.0f,0.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
-    auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsStage>("stage", stageTr);
-
-    // ポーズアクターを生成
-    auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
-    pauseActor->SetRetrySceneName("GameScene");
 
 
-    //SpawnEnemy({ 5,0,5 }, YarnEnemyType::Static);
-    //SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveHorizontal);
-    //SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveVertical);
-    //SpawnEnemy({ 0,0,0 }, YarnEnemyType::MoveToCenter);
-    //SpawnEnemy({ 0,0,12}, YarnEnemyType::MoveToCenter);
-    //SpawnEnemy({ 12,0,0 }, YarnEnemyType::MoveToCenter);
-    //SpawnEnemy({ 12,0,12 }, YarnEnemyType::MoveToCenter);
-    //SpawnEnemy({ 0,0,0 }, YarnEnemyType::WaveHorizontal, { 1,0,0 }, 3.0f);
-    //SpawnEnemy({ 12,0,0 }, YarnEnemyType::WaveHorizontal, { -1,0,0 }, 3.0f);
-    //SpawnEnemy({ 0,0,12 }, YarnEnemyType::WaveVertical,{ 0,0,-1 }, 3.0f);
-    //SpawnEnemy({ 12,0,0 }, YarnEnemyType::WaveVertical, { 0,0,1 }, 3.0f);
 
-    SpawnEnemy({ 6,0,8 }, YarnEnemyType::Static);
-    SpawnEnemy({ 12,0,3 }, YarnEnemyType::ChasePlayer);
-    SpawnEnemy({ 10,0,3 }, YarnEnemyType::ChasePlayer);
-    SpawnEnemy({ 3,0,6 }, YarnEnemyType::Static);
-    SpawnEnemy({ 9,0,6 }, YarnEnemyType::Static);
-    SpawnEnemy({ 0,0,8 }, YarnEnemyType::MoveVertical);
-    SpawnEnemy({ 12,0,11 }, YarnEnemyType::MoveVertical);
-    SpawnBigEnemy({ 4,0,11 }, YarnEnemyType::MoveHorizontal);
-    SpawnBigEnemy({ 8,0,11 }, YarnEnemyType::MoveHorizontal);
 }
 
 
 
 
-bool GameScene::Uninitialize(ID3D11Device* device)
+bool TitleScene::Uninitialize(ID3D11Device* device)
 {
     SceneBase::Uninitialize(device);
     Physics::Instance().Finalize();
     return true;
 }
 
-void GameScene::DrawGui()
+void TitleScene::DrawGui()
 {
 #ifdef USE_IMGUI
     SceneBase::DrawGui();
@@ -465,29 +422,3 @@ void GameScene::DrawGui()
 
 }
 
-
-// 仮の敵を生成する関数
-void GameScene::SpawnEnemy(
-    const XMFLOAT3& pos,
-    YarnEnemyType type,
-    float speed, const XMFLOAT3& dir)
-{
-    Transform tr(pos, { 0,0,0 }, { 0.5f,0.5f,0.5f });
-    auto enemy = GetActorManager()->CreateAndRegisterActorWithTransform<YarnEnemyActor>("enemy", tr);
-    enemy->SetMoveDirection(dir);
-    enemy->SetType(type);
-    enemy->SetSpeed(speed);
-}
-
-// 仮の敵を生成する関数
-void GameScene::SpawnBigEnemy(
-    const XMFLOAT3& pos,
-    YarnEnemyType type,
-    float speed, const XMFLOAT3& dir)
-{
-    Transform tr(pos, { 0,0,0 }, { 1.0f,1.0f,1.0f });
-    auto enemy = GetActorManager()->CreateAndRegisterActorWithTransform<BigYarnEnemyActor>("enemy", tr);
-    enemy->SetMoveDirection(dir);
-    enemy->SetType(type);
-    enemy->SetSpeed(speed);
-}

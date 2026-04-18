@@ -57,10 +57,10 @@ bool Framework::Initialize()
 
     // SCENE_TRANSITION
    //Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-    //Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
    // Scene::_boot(device, "ResultScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
      //Scene::_boot(device, "MorphScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-    Scene::_boot(device, "GameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    //Scene::_boot(device, "GameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "SampleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "PuddingGameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
 
@@ -184,9 +184,9 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
         }
         //gameManager->GenerateOutputAll();
     }
-    //else
+    else
     {
-        // back->Render(immediateContext, 0, 0, 1920, 1080);
+         back->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     }
 
 
