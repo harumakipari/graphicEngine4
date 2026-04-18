@@ -171,6 +171,7 @@ void ScissorsPlayer1::Update(float deltaTime)
         damageCooldown -= deltaTime;
     }
 
+
     // 入力に基づいて移動と回転を更新
     auto intent = inputComponent->GetIntent();
 
@@ -227,20 +228,33 @@ void ScissorsPlayer1::Update(float deltaTime)
             // スティック離したとき
             triggerDash = stickReleased;
             // ダッシュ溜めトリガー
-            triggerChargeDash = usingStick;
+            if (usingStick && !preUsingStick)
+            {
+                triggerChargeDash = true;
+            }
+            else
+            {
+                triggerChargeDash = false;
+            }
+            //triggerChargeDash = usingStick;
+
+            preUsingStick = usingStick;
+
         }
         else
         {//　ゲームパッド使用してない
             // ボタン離したとき（左マウス)
             triggerDash = buttonReleased;
             // ダッシュ溜めトリガー
-            // ここTriggerにしようかな
-            triggerChargeDash = InputSystem::GetInputState("ScissorsAction", InputStateMask::Press);
+            triggerChargeDash = InputSystem::GetInputState("ScissorsAction", InputStateMask::Trigger);
         }
 
         attackTrigger = InputSystem::GetInputState("ScissorsAttack", InputStateMask::Trigger);
 
     }
+
+    // ダッシュ回復
+    RecoverDash(deltaTime);
 
 
 #if 0
@@ -392,18 +406,7 @@ void ScissorsPlayer1::Update(float deltaTime)
         XMFLOAT4{ 0.0f,1.0f,0.0f,0.5f }
     );
 
-    // ダッシュ回復
-    dashRecoverTimer += deltaTime;
 
-    if (dashRecoverTimer >= dashRecoverInterval)
-    {
-        dashRecoverTimer = 0.0f;
-
-        if (dashCount < maxDashCount)
-        {
-            dashCount++;
-        }
-    }
 
 }
 
@@ -536,3 +539,37 @@ void ScissorsPlayer1::DoAttackHit()
 }
 
 
+// ダッシュの回数を回復する関数　
+void ScissorsPlayer1::RecoverDash(float deltaTime)
+{
+    // ダッシュ回復
+    dashRecoverTimer += deltaTime;
+
+    if (dashRecoverTimer >= dashRecoverInterval)
+    {
+        dashRecoverTimer = 0.0f;
+
+        if (dashCount < maxDashCount)
+        {
+            dashCount++;
+            Logger::Log("Dash recovered. Current dash count: " + std::to_string(dashCount));
+        }
+    }
+}
+
+//　ダッシュを使用する関数　これを呼ぶとダッシュの残り回数が減る
+void ScissorsPlayer1::UseDash()
+{
+    if (dashCount > 0)
+    {
+        dashCount--;
+    }
+    Logger::Log("Dash used. Remaining dash count: " + std::to_string(dashCount));
+}
+
+// ダッシュが失敗した時に呼ぶ関数　これを呼ぶとダッシュの残り回数が減らない
+void ScissorsPlayer1::FailDash()
+{
+    // ダッシュ失敗の処理
+    Logger::Log("Dash failed. Remaining dash count: " + std::to_string(dashCount));
+}

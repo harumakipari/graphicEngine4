@@ -41,12 +41,26 @@ public:
 
     // 狙いの情報を取得する関数　これでダッシュの方向や溜めの強さを決める
     AimData GetAimData() const { return aimData; }
+
+    // ダッシュ可能かどうかを取得する関数
+    bool CanDash() const { return dashCount > 0; }
+
+    //　ダッシュを使用する関数　これを呼ぶとダッシュの残り回数が減る
+    void UseDash();
+
+    // ダッシュが失敗した時に呼ぶ関数　これを呼ぶとダッシュの残り回数が減らない
+    void FailDash();
 private:
     // 入力から狙いの情報を取得する
     AimData GetAimData(const MoveIntent& intent, float deltaTime);
 
     // どの方向を向くか
     DirectX::XMFLOAT3 GetLookDirection() const;
+
+    // ダッシュの回数を回復する関数　
+    void RecoverDash(float deltaTime);
+
+    
 public:
     std::shared_ptr<InputComponent> inputComponent;
     std::shared_ptr<CharacterMovementComponent> characterMovementComponent;
@@ -64,17 +78,20 @@ private:
     bool usingStick = false; // スティックを使用しているかどうか
     bool stickReleased = false; // スティックが離されたかどうか
     bool useGamePad = false; // ゲームパッドを使用しているかどうか
+    bool preUsingStick = false; // 前フレームでスティックを使用していたかどうか
+
+    int dashCount = 3; // ダッシュの残り回数
+    int maxDashCount = 3; // ダッシュの最大回数
 
 
 
+    float dashRecoverTimer = 0.0f;
+    float dashRecoverInterval = 10.0f; // ダッシュ回復のインターバル
 
 
     float damageCooldown = 0.0f; // ダメージを受けた後の無敵時間のクールダウン
     float pickupRange = 1.0f; // ハサミを拾う範囲
 
-
-    float dashChargeTime = 0.0f;
-    float maxDashChargeTime = 1.0f;
 
     float dashTime = 0.3f;
     float dashTimer = 0.0f;
@@ -85,10 +102,6 @@ private:
 
     DirectX::XMFLOAT3 dashDir = { 0,0,1 };
 
-    int dashCount = 3;
-    int maxDashCount = 3;
-    float dashRecoverTimer = 0.0f;
-    float dashRecoverInterval = 1.0f;
 
 
     bool isCharging = false;

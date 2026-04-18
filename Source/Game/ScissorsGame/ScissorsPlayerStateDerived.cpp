@@ -23,7 +23,14 @@ void ScissorsPlayerIdleState::Execute(float deltaTime)
     // ダッシュ入力チェック
     if (player->IsChargeDashTriggered())
     {
-        player->GetStateMachine()->ChangeState("ChargeDash");
+        if (player->CanDash())
+        {
+            player->GetStateMachine()->ChangeState("ChargeDash");
+        }
+        else
+        {
+            player->FailDash();
+        }
     }
 
     // 入力があれば走るステートに変更
@@ -62,9 +69,14 @@ void ScissorsPlayerRunningState::Execute(float deltaTime)
     // ダッシュ入力チェック
     if (player->IsChargeDashTriggered())
     {
-
-
-        player->GetStateMachine()->ChangeState("ChargeDash");
+        if (player->CanDash())
+        {
+            player->GetStateMachine()->ChangeState("ChargeDash");
+        }
+        else
+        {
+            player->FailDash();
+        }
     }
 
     // 入力がなければ待機ステートに変更
@@ -165,7 +177,9 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     DebugRender::DrawSphere(player->targetPos, 0.3f, { 1,0,0,1 });
 
     if (player->IsDashTriggered())
-    {// ダッシュトリガーが離されたらダッシュステートに移行する
+    {
+        player->UseDash();
+        // ダッシュトリガーが離されたらダッシュステートに移行する
         player->GetStateMachine()->ChangeState("Dash");
     }
 }
@@ -186,6 +200,8 @@ void ScissorsPlayerDashState::Enter()
 
     startPos = player->GetPosition();
     elapsedTime = 0.0f;
+
+
 }
 
 void ScissorsPlayerDashState::Execute(float deltaTime)
