@@ -256,6 +256,13 @@ void YarnEnemyActor::ChasePlayer(float deltaTime)
         pos.x += dir.x * speed * deltaTime;
         pos.z += dir.z * speed * deltaTime;
 
+        float stageMinX = 1.0f;
+        float stageMaxX = 19.5f;
+        float stageMinZ = 1.0f;
+        float stageMaxZ = 19.5f;
+        pos.x = std::clamp(pos.x, stageMinX, stageMaxX);
+        pos.z = std::clamp(pos.z, stageMinZ, stageMaxZ);
+
         SetPosition(pos);
     }
 }

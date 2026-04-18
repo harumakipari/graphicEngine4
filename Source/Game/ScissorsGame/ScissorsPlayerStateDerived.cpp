@@ -52,6 +52,7 @@ void ScissorsPlayerIdleState::Exit()
 void ScissorsPlayerRunningState::Enter()
 {
     owner->PlayAnimation("Run", true, true, 0.2f);
+    player->footstepAudioComponent->Play();
 }
 
 void ScissorsPlayerRunningState::Execute(float deltaTime)
@@ -91,6 +92,7 @@ void ScissorsPlayerRunningState::Execute(float deltaTime)
 void ScissorsPlayerRunningState::Exit()
 {
     player->characterMovementComponent->SetMoveDirection({ 0,0,0 }); // 待機状態に入ったら移動方向を0にする
+    player->footstepAudioComponent->Stop();
 }
 
 void ScissorsPlayerAttackingState::Enter()
@@ -149,6 +151,8 @@ void ScissorsPlayerChargeDashState::Enter()
     player->PlayAnimation("ChargeDash", false, true, 0.1f);
     // ダッシュの狙いを表示する矢印のUIコンポーネントを表示する
     player->dashAimArrowComponent->SetVisible(true);
+    // チャージ音を再生する
+    player->chargeAudioComponent->Play();
 }
 
 void ScissorsPlayerChargeDashState::Execute(float deltaTime)
@@ -195,7 +199,8 @@ void ScissorsPlayerChargeDashState::Exit()
     // ダッシュの狙いを表示する矢印のUIコンポーネントを非表示にする
     player->dashAimArrowComponent->SetVisible(false);
 
-
+    // チャージ音を止める
+    player->chargeAudioComponent->Stop();
 
     // この次は絶対にダッシュステートに行くので、ここでは何もしない
 
@@ -209,7 +214,8 @@ void ScissorsPlayerDashState::Enter()
     startPos = player->GetPosition();
     elapsedTime = 0.0f;
 
-
+    // ダッシュ音を再生する
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/dash.wav", 0.5f);
 }
 
 void ScissorsPlayerDashState::Execute(float deltaTime)

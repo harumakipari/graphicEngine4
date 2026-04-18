@@ -431,7 +431,7 @@ void GameScene::SetUpActors()
     //SpawnEnemy({ 12,0,0 }, YarnEnemyType::WaveVertical, { 0,0,1 }, 3.0f);
 
     SpawnEnemy({ 6,0,8 }, YarnEnemyType::Static);
-    SpawnEnemy({ 2,0,3 }, YarnEnemyType::ChasePlayer);
+    SpawnEnemy({ 12,0,3 }, YarnEnemyType::ChasePlayer);
     SpawnEnemy({ 10,0,3 }, YarnEnemyType::ChasePlayer);
     SpawnEnemy({ 3,0,6 }, YarnEnemyType::Static);
     SpawnEnemy({ 9,0,6 }, YarnEnemyType::Static);

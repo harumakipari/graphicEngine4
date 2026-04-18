@@ -1,4 +1,5 @@
 #pragma once
+#include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Components/Controller/ControllerComponent.h"
 #include "Core/Actor.h"
 #include "Game/Actors/Base/Character.h"
@@ -66,7 +67,10 @@ private:
 
     // ダッシュの回数を回復する関数　
     void RecoverDash(float deltaTime);
-    
+
+    // HPを表示するUIを更新する関数　
+    void UpdateHpUI();
+
 public:
     std::shared_ptr<InputComponent> inputComponent;
     std::shared_ptr<CharacterMovementComponent> characterMovementComponent;
@@ -74,6 +78,12 @@ public:
     float hitStopTimer = 0.0f; // ヒットストップのタイマー　攻撃が当たったときに一定時間動きを止めるために使用する
     // ダッシュの狙いを表示する矢印のUIコンポーネント
     std::shared_ptr<UIImageComponent> dashAimArrowComponent;
+
+
+    std::shared_ptr<CoreAudioSourceComponent> footstepAudioComponent;   // 歩行音のオーディオコンポーネント
+    std::shared_ptr<CoreAudioSourceComponent> dashAudioComponent;   // ダッシュ音のオーディオコンポーネント
+    std::shared_ptr<CoreAudioSourceComponent> chargeAudioComponent; // チャージ音のオーディオコンポーネント
+
 
 private:
     std::shared_ptr<RotationComponent> rotationComponent;
@@ -99,11 +109,14 @@ private:
     float chargeTime = 0.0f; // ダッシュの溜め時間
     float maxChargeTime = 1.0f;   // ダッシュの最大溜め時間　この時間以上溜めてもさらに強くならない
 
+    // プレイヤーのHPを表示するUI　
+    std::vector<std::shared_ptr<UIImageComponent>> hpUiComponents;
+
 
 
 
     float damageCooldown = 0.0f; // ダメージを受けた後の無敵時間のクールダウン
-    
+
 
 
     float dashTime = 0.3f;

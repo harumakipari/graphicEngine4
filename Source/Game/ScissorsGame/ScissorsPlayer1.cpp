@@ -9,8 +9,6 @@
 
 void ScissorsPlayer1::Initialize(const Transform& transform)
 {
-    int maxHp = 10;
-    hp = maxHp;
 
     std::string parentName = "SkeletonWarriorMeshComponent";
     Character::Initialize(transform);
@@ -42,8 +40,6 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     this->SetStateMachine(stateMachine_);
     // 初期ステートを設定
     stateMachine_->ChangeState("Idle");
-
-
 
     // 当たり判定
     {
@@ -155,6 +151,37 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     // ダッシュ回数を初期化
     dashCount = maxDashCount;
 
+    // 歩行音のオーディオコンポーネント
+    footstepAudioComponent = AddComponent<CoreAudioSourceComponent>("footstepAudioComponent", parentName);
+    footstepAudioComponent->SetSource(L"./Data/Sound/SE1/playerRun.wav");
+    footstepAudioComponent->SetVolume(0.2f);
+    footstepAudioComponent->SetLoop(true);
+
+    // チャージ音のオーディオコンポーネント
+    chargeAudioComponent = AddComponent<CoreAudioSourceComponent>("chargeAudioComponent", parentName);
+    chargeAudioComponent->SetSource(L"./Data/Sound/SE1/charge.wav");
+    chargeAudioComponent->SetVolume(0.5f);
+    chargeAudioComponent->SetLoop(true);
+
+    // プレイヤーのHPを表示するUIを作成
+    {
+        int maxHp = 5;
+        hp = maxHp;
+        for (int i = 0; i < maxHp; i++)
+        {
+            auto hpUI = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/heart.png", "hpUI");
+
+            // 横に並べる
+            hpUI->SetWorldPosition({ 100.0f + i * 160.0f, 100.0f });
+
+            hpUI->SetSize({ 150.0f, 150.0f });
+            hpUI->SetVisible(true);
+
+            uiManager->Add(hpUI);
+            hpUiComponents.push_back(hpUI);
+        }
+    }
+
 }
 
 void ScissorsPlayer1::Update(float deltaTime)
@@ -249,7 +276,6 @@ void ScissorsPlayer1::Update(float deltaTime)
 
     // ダッシュ回復
     RecoverDash(deltaTime);
-
 
     // ダッシュの狙いを表示する矢印のUIを更新
     XMFLOAT2 uiPos = WorldToUI(pos);
@@ -350,6 +376,8 @@ void ScissorsPlayer1::TakeDamage(int damage)
         Logger::Log("Player died.");
         // ここでゲームオーバー処理などを呼び出す
     }
+    // HPを表示するUIを更新
+    UpdateHpUI();
 }
 
 // プレイヤーの攻撃処理
@@ -414,6 +442,22 @@ void ScissorsPlayer1::RecoverDash(float deltaTime)
         {
             dashCount++;
             Logger::Log("Dash recovered. Current dash count: " + std::to_string(dashCount));
+        }
+    }
+}
+
+// HPを表示するUIを更新する関数　
+void ScissorsPlayer1::UpdateHpUI()
+{
+    for (int i = 0; i < hpUiComponents.size(); i++)
+    {
+        if (i < hp)
+        {
+            hpUiComponents[i]->SetVisible(true);
+        }
+        else
+        {
+            hpUiComponents[i]->SetVisible(false);
         }
     }
 }
