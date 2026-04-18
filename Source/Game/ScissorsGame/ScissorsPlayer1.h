@@ -48,7 +48,7 @@ public:
     // ダッシュ可能かどうかを取得する関数
     bool CanDash() const { return dashCount > 0; }
 
-    //　ダッシュを使用する関数　これを呼ぶとダッシュの残り回数が減る
+    //　ダッシュを使用時に呼ぶ関数　これを呼ぶとダッシュの残り回数が減る
     void UseDash();
 
     // ダッシュが失敗した時に呼ぶ関数　これを呼ぶとダッシュの残り回数が減らない
@@ -56,6 +56,7 @@ public:
 
     // ダッシュを止める処理　これを呼ぶとダッシュが止まる
     void StopDash();
+
 private:
     // 入力から狙いの情報を取得する
     AimData GetAimData(const MoveIntent& intent, float deltaTime);
@@ -94,6 +95,11 @@ private:
     float dashRecoverTimer = 0.0f;
     float dashRecoverInterval = 10.0f; // ダッシュ回復のインターバル
 
+    bool isCharging = false; // ダッシュを溜めているかどうか
+    float chargeTime = 0.0f; // ダッシュの溜め時間
+    float maxChargeTime = 1.0f;   // ダッシュの最大溜め時間　この時間以上溜めてもさらに強くならない
+
+
 
 
     float damageCooldown = 0.0f; // ダメージを受けた後の無敵時間のクールダウン
@@ -110,11 +116,6 @@ private:
     DirectX::XMFLOAT3 dashDir = { 0,0,1 };
 
 
-
-    bool isCharging = false;
-    float chargeTime = 0.0f;
-
-    float maxChargeTime = 1.0f;     // 最大溜め
     float maxThrowDistance = 10.0f; // 最大距離
 
     float lastStickPower = 0.0f;// スティックの最終的な力　溜めの強さや投げるときの力に使用する

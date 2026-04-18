@@ -100,6 +100,9 @@ public:
     const char* GetName() const override { return "ChargeDash"; }
 
 private:
+    float minDistance = 4.0f; // ダッシュの最小距離　
+    float maxDistance = 15.0f; // ダッシュの最大距離 
+
 };
 
 // 突進ステートオブジェクト

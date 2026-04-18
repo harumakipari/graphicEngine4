@@ -159,7 +159,8 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     DirectX::XMFLOAT3 dashDir = aimData.dir;
 
     float aimDashPower = aimData.power;
-    float dashDistance = 10.0f;
+    float dashDistance = minDistance + aimData.power * (maxDistance - minDistance);;
+    //float dashDistance = 10.0f;
 
     // ダッシュの移動先を計算する　
     DirectX::XMFLOAT3 pos = player->GetPosition();
@@ -173,6 +174,10 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     player->targetPos.x = std::clamp(player->targetPos.x, stageMinX, stageMaxX);
     player->targetPos.z = std::clamp(player->targetPos.z, stageMinZ, stageMaxZ);
 
+    float distance = sqrt(player->targetPos.x * player->targetPos.x + player->targetPos.z * player->targetPos.z);
+    float uiScale = 0.1f; // ←ここ調整ポイント
+    float uiLength = std::abs(distance * uiScale);
+    player->dashAimArrowComponent->SetScale({ 1.0f, uiLength });
 
     // ダッシュの方向にUIを出す
     DebugRender::DrawSphere(player->targetPos, 0.3f, { 1,0,0,1 });

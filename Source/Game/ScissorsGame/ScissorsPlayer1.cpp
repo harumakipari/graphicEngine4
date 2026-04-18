@@ -121,10 +121,12 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 if (!enemy) return;
 
                 hitStopTimer = 0.1f;
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav");
+
                 // ヒット処理
                 enemy->OnHitByDash(this);
                 // コントローラーを振動させる
-                InputSystem::SetVibration(0.6f, 0.08f);
+                InputSystem::SetVibration(0.8f, 0.15f);
             }
         );
     }
@@ -284,6 +286,11 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
             aim.dir = { x / len, 0.0f, z / len };
             lastDir = aim.dir;
 
+            // チャージ開始と継続
+            isCharging = true;
+            chargeTime += deltaTime;
+            chargeTime = std::min<float>(chargeTime, maxChargeTime);
+
             lastStickPower = std::max<float>(lastStickPower, len);
         }
         else
@@ -291,7 +298,8 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
             aim.dir = lastDir;
         }
 
-        aim.power = lastStickPower;
+        aim.power = chargeTime / maxChargeTime;
+        //aim.power = lastStickPower;
         aim.isValid = true;
     }
     // マウス
@@ -309,8 +317,7 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
             //aim.dir = moveDir; //　マウスでは移動方向にダッシュする
             aim.dir = GetForward();
             aim.power = chargeTime / maxChargeTime;
-            aim.power = 1.0f;
-
+            //aim.power = 1.0f;
             aim.isValid = true;
         }
     }
@@ -335,6 +342,7 @@ void ScissorsPlayer1::TakeDamage(int damage)
 {
     hp -= damage;
     Logger::Log("Player took " + std::to_string(damage) + " damage. HP: " + std::to_string(hp));
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/playerDamage.wav");
     if (hp <= 0)
     {
         hp = 0;
@@ -347,6 +355,8 @@ void ScissorsPlayer1::TakeDamage(int damage)
 // プレイヤーの攻撃処理
 void ScissorsPlayer1::DoAttackHit()
 {
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav", 2.0f);
+
     auto enemies = GetOwnerScene()->GetActorManager()->GetActorsOfType<YarnEnemyActor>();
     Logger::Log(U8("攻撃をする"));
 
@@ -415,6 +425,8 @@ void ScissorsPlayer1::UseDash()
     {
         dashCount--;
     }
+    chargeTime = 0.0f;
+
     Logger::Log("Dash used. Remaining dash count: " + std::to_string(dashCount));
 }
 

@@ -127,10 +127,10 @@ void GameScene::Start()
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
-    audioComp->SetSource(L"./Data/Sound/BGM/game.wav");
+    audioComp->SetSource(L"./Data/Sound/BGM/ScissorsGameBgm.wav");
     audioComp->SetLoop(true);
     audioComp->Play();
-    //audioComp->SetVolume(0.2f);
+    audioComp->SetVolume(0.2f);
     // ÉVÅ[ÉìÇ™êÿÇËë÷ÇÌÇ¡ÇΩéûÇ…
     SceneTransitionManager::Instance().NotifySceneChanged();
 
@@ -431,8 +431,8 @@ void GameScene::SetUpActors()
     //SpawnEnemy({ 12,0,0 }, YarnEnemyType::WaveVertical, { 0,0,1 }, 3.0f);
 
     SpawnEnemy({ 6,0,8 }, YarnEnemyType::Static);
-    SpawnEnemy({ 2,0,3 }, YarnEnemyType::MoveHorizontal);
-    SpawnEnemy({ 10,0,3 }, YarnEnemyType::MoveHorizontal);
+    SpawnEnemy({ 2,0,3 }, YarnEnemyType::ChasePlayer);
+    SpawnEnemy({ 10,0,3 }, YarnEnemyType::ChasePlayer);
     SpawnEnemy({ 3,0,6 }, YarnEnemyType::Static);
     SpawnEnemy({ 9,0,6 }, YarnEnemyType::Static);
     SpawnEnemy({ 0,0,8 }, YarnEnemyType::MoveVertical);

@@ -13,6 +13,7 @@ enum class YarnEnemyType :uint8_t
     MoveToCenter,   // 中心に向かって移動する
     WaveHorizontal, // 横に波打ちながら移動する
     WaveVertical,  // 縦に波打ちながら移動する
+ChasePlayer,          // プレイヤーを追いかける
 };
 
 class YarnEnemyActor :public Character
@@ -53,6 +54,8 @@ private:
     // 縦に波打ちながら移動する処理
     void MoveWaveVertical(float deltaTime);
 
+    // プレイヤーを追いかける処理
+    void ChasePlayer(float deltaTime);
 private:
     // 描画用コンポーネントを追加
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;

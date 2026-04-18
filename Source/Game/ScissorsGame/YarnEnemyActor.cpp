@@ -70,6 +70,8 @@ void YarnEnemyActor::Update(float deltaTime)
         break;
     case YarnEnemyType::WaveVertical:
         MoveWaveVertical(deltaTime);
+    case YarnEnemyType::ChasePlayer:
+        ChasePlayer(deltaTime);
         break;
     }
 }
@@ -92,6 +94,8 @@ void YarnEnemyActor::SetType(YarnEnemyType type)
     case YarnEnemyType::WaveHorizontal:
         break;
     case YarnEnemyType::WaveVertical:
+        break;
+    case YarnEnemyType::ChasePlayer:
         break;
     }
 }
@@ -228,7 +232,33 @@ void YarnEnemyActor::MoveWaveVertical(float deltaTime)
 
 }
 
+void YarnEnemyActor::ChasePlayer(float deltaTime)
+{
+    if (auto player=GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>())
+    {
+        auto targetPos=player->GetPosition();
+        auto pos = GetPosition();
 
+        XMFLOAT3 dir =
+        {
+            targetPos.x - pos.x,
+            0,
+            targetPos.z - pos.z
+        };
+
+        float length = sqrt(dir.x * dir.x + dir.z * dir.z);
+
+        if (length < 0.01f) return;
+
+        dir.x /= length;
+        dir.z /= length;
+
+        pos.x += dir.x * speed * deltaTime;
+        pos.z += dir.z * speed * deltaTime;
+
+        SetPosition(pos);
+    }
+}
 
 // ‘å‚«‚¢“G
 void BigYarnEnemyActor::Initialize(const Transform& transform)
