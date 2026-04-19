@@ -82,6 +82,7 @@ public:
     float hitStopTimer = 0.0f; // ヒットストップのタイマー　攻撃が当たったときに一定時間動きを止めるために使用する
     // ダッシュの狙いを表示する矢印のUIコンポーネント
     std::shared_ptr<UIImageComponent> dashAimArrowComponent;
+    std::shared_ptr<RotationComponent> rotationComponent;
 
 
     std::shared_ptr<CoreAudioSourceComponent> footstepAudioComponent;   // 歩行音のオーディオコンポーネント
@@ -95,7 +96,6 @@ private:
     std::shared_ptr<SphereComponent> dashAttackSphere; // ダッシュ攻撃の当たり判定用のSphereComponent
     std::shared_ptr<SphereComponent> scissorsAttackSphere; // ハサミ攻撃の当たり判定用のSphereComponent
     std::shared_ptr<SphereComponent> sphereComponent; // プレイヤーの当たり判定用のSphereComponent
-    std::shared_ptr<RotationComponent> rotationComponent;
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
     DirectX::XMFLOAT3 moveDir = { 0,0,0 }; // 移動方向
     bool triggerDash = false; // ダッシュトリガー

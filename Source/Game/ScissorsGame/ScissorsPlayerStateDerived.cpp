@@ -169,6 +169,12 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     // ƒ_ƒbƒVƒ…‚Ì•ûŒü
     DirectX::XMFLOAT3 dashDir = aimData.dir;
 
+    //if (!InputSystem::IsGamepadConnected())
+    //{
+    //    player->rotationComponent->SetDirection(dashDir);
+    //}
+
+
     float aimDashPower = aimData.power;
     float dashDistance = minDistance + aimData.power * (maxDistance - minDistance);;
     //float dashDistance = 10.0f;

@@ -19,6 +19,7 @@
 #include "Physics/Physics.h"
 #include "Game/ScissorsGame/ScissorsPlayer1.h"
 #include "Game/ScissorsGame/ScissorsStage.h"
+#include "Game/ScissorsGame/WaveManagaer.h"
 #include "Game/ScissorsGame/YarnEnemyActor.h"
 #include "Graphics/PostProcess/BloomEffect.h"
 
@@ -126,6 +127,9 @@ void GameScene::Start()
     audioComp->SetLoop(true);
     audioComp->Play();
     audioComp->SetVolume(0.2f);
+
+    auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
+
     // ÉVÅ[ÉìÇ™êÿÇËë÷ÇÌÇ¡ÇΩéûÇ…
     SceneTransitionManager::Instance().NotifySceneChanged();
 
@@ -434,15 +438,15 @@ void GameScene::SetUpActors()
     //SpawnEnemy({ 0,0,12 }, YarnEnemyType::WaveVertical,{ 0,0,-1 }, 3.0f);
     //SpawnEnemy({ 12,0,0 }, YarnEnemyType::WaveVertical, { 0,0,1 }, 3.0f);
 
-    SpawnEnemy({ 6,0,8 }, YarnEnemyType::Static);
+    //SpawnEnemy({ 6,0,8 }, YarnEnemyType::Static);
     //SpawnEnemy({ 12,0,3 }, YarnEnemyType::ChasePlayer);
     //SpawnEnemy({ 10,0,3 }, YarnEnemyType::ChasePlayer);
-    SpawnEnemy({ 3,0,6 }, YarnEnemyType::Static);
-    SpawnEnemy({ 9,0,6 }, YarnEnemyType::Static);
-    SpawnEnemy({ 0,0,8 }, YarnEnemyType::MoveVertical);
-    SpawnEnemy({ 12,0,11 }, YarnEnemyType::MoveVertical);
-    SpawnBigEnemy({ 4,0,11 }, YarnEnemyType::MoveHorizontal);
-    SpawnBigEnemy({ 8,0,11 }, YarnEnemyType::MoveHorizontal);
+    //SpawnEnemy({ 3,0,6 }, YarnEnemyType::Static);
+    //SpawnEnemy({ 9,0,6 }, YarnEnemyType::Static);
+    //SpawnEnemy({ 0,0,8 }, YarnEnemyType::MoveVertical);
+    //SpawnEnemy({ 12,0,11 }, YarnEnemyType::MoveVertical);
+    //SpawnBigEnemy({ 4,0,11 }, YarnEnemyType::MoveHorizontal);
+    //SpawnBigEnemy({ 8,0,11 }, YarnEnemyType::MoveHorizontal);
 }
 
 

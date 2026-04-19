@@ -62,6 +62,11 @@ private:
 
     // プレイヤーを追いかける処理
     void ChasePlayer(float deltaTime);
+
+public:
+    // 死亡通知
+    std::function<void()> onDeath;
+
 private:
     // 描画用コンポーネントを追加
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;

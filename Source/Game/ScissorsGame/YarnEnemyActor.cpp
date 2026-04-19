@@ -73,6 +73,7 @@ void YarnEnemyActor::Update(float deltaTime)
         break;
     case YarnEnemyType::WaveVertical:
         MoveWaveVertical(deltaTime);
+        break;
     case YarnEnemyType::ChasePlayer:
         ChasePlayer(deltaTime);
         break;
@@ -111,6 +112,10 @@ bool  YarnEnemyActor::TakeDamage(int damage)
     Logger::Log(U8("敵にダメージ：") + std::to_string(damage));
     if (hp <= 0)
     {
+        if (onDeath)
+        {// WaveManagerにenemyCountを減らすように通知する
+            onDeath();
+        }
         MarkPendingKill();
         return true;
     }
