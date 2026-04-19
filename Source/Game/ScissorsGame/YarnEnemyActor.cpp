@@ -45,6 +45,9 @@ void YarnEnemyActor::Initialize(const Transform& transform)
     // 最初の位置を保存
     startPosition = transform.GetLocation();
 
+    // 倒したときのスコア
+    scoreData = { 100,0 };
+
 }
 
 void YarnEnemyActor::Update(float deltaTime)
@@ -100,23 +103,30 @@ void YarnEnemyActor::SetType(YarnEnemyType type)
     }
 }
 
-void YarnEnemyActor::TakeDamage(int damage)
+bool  YarnEnemyActor::TakeDamage(int damage)
 {
+    if (hp <= 0) return true; // すでに倒れている場合は無視
+
     hp -= damage;
     Logger::Log(U8("敵にダメージ：") + std::to_string(damage));
     if (hp <= 0)
     {
         MarkPendingKill();
+        return true;
     }
+    return false;
 }
 
-void YarnEnemyActor::OnHitByDash(ScissorsPlayer1* player,int dashDamage)
+bool YarnEnemyActor::OnHitByDash(ScissorsPlayer1* player, int dashDamage)
 {
+    int prevHp = hp;
     // ダッシュで当たったときの処理
     TakeDamage(dashDamage);
     // コントローラーを振動させる
     InputSystem::SetVibration(0.8f, 0.15f);
 
+    // 倒したかどうかを返す
+    return (hp <= 0 && prevHp > 0);
 }
 
 // 線形移動の処理
@@ -237,9 +247,9 @@ void YarnEnemyActor::MoveWaveVertical(float deltaTime)
 
 void YarnEnemyActor::ChasePlayer(float deltaTime)
 {
-    if (auto player=GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>())
+    if (auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>())
     {
-        auto targetPos=player->GetPosition();
+        auto targetPos = player->GetPosition();
         auto pos = GetPosition();
 
         XMFLOAT3 dir =
@@ -275,10 +285,16 @@ void BigYarnEnemyActor::Initialize(const Transform& transform)
 {
     maxHp = 2;
     YarnEnemyActor::Initialize(transform);
+
+    // 倒したときのスコア
+    scoreData = { 200,0 };
+
 }
 
-void BigYarnEnemyActor::OnHitByDash(ScissorsPlayer1* player, int dashDamage)
+bool BigYarnEnemyActor::OnHitByDash(ScissorsPlayer1* player, int dashDamage)
 {
+    int prevHp = hp;
+
     TakeDamage(dashDamage);
     // playerのダッシュを止める処理を追加
     if (hp >= maxHp - 1)
@@ -286,6 +302,9 @@ void BigYarnEnemyActor::OnHitByDash(ScissorsPlayer1* player, int dashDamage)
 
     // コントローラーを振動させる
     InputSystem::SetVibration(1.0f, 0.15f);
+
+    // 倒したかどうかを返す
+    return (hp <= 0 && prevHp > 0);
 
 }
 

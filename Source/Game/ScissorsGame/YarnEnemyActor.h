@@ -1,4 +1,5 @@
 #pragma once
+#include "EnemyScoreData.h"
 #include "Components/Controller/ControllerComponent.h"
 #include "Core/Actor.h"
 #include "Game/Actors/Base/Character.h"
@@ -13,7 +14,7 @@ enum class YarnEnemyType :uint8_t
     MoveToCenter,   // 中心に向かって移動する
     WaveHorizontal, // 横に波打ちながら移動する
     WaveVertical,  // 縦に波打ちながら移動する
-ChasePlayer,          // プレイヤーを追いかける
+    ChasePlayer,          // プレイヤーを追いかける
 };
 
 class YarnEnemyActor :public Character
@@ -25,7 +26,8 @@ public:
 
     void Update(float elapsedTime)override;
 
-    void TakeDamage(int damage);
+    // ダメージを与える　死亡したかどうかを取得する関数
+    bool TakeDamage(int damage);
 
     void SetType(YarnEnemyType type);
     // 移動の方向を設定する関数
@@ -40,7 +42,11 @@ public:
     }
 
     // プレイヤーのダッシュに当たったときの処理
-    virtual void OnHitByDash(ScissorsPlayer1* player, int dashDamage);
+    virtual bool OnHitByDash(ScissorsPlayer1* player, int dashDamage);
+
+    // 敵のスコアを取得する関数
+    EnemyScoreData GetScoreData() const { return scoreData; }
+
 private:
     // 線形移動の処理
     void MoveLinear(float deltaTime);
@@ -80,6 +86,7 @@ private:
 
 protected:
     int maxHp = 1;
+    EnemyScoreData scoreData{ 100,0 }; // 倒したときのスコア
 };
 
 class BigYarnEnemyActor :public YarnEnemyActor
@@ -88,7 +95,7 @@ public:
     explicit BigYarnEnemyActor(const std::string& actorName) :YarnEnemyActor(actorName) {}
     void Initialize(const Transform& transform)override;
     // プレイヤーのダッシュに当たったときの処理
-    void OnHitByDash(ScissorsPlayer1* player, int dashDamage)override;
+    bool OnHitByDash(ScissorsPlayer1* player, int dashDamage)override;
 
 private:
     

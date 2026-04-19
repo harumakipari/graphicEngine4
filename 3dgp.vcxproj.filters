@@ -564,6 +564,9 @@
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsPlayerStateDerived.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\TitleScene.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -900,6 +903,10 @@
     <ClInclude Include="Source\Game\ScissorsGame\ButtonBombActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayer1.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayerStateDerived.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\TitleScene.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\EnemyScoreData.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ComboSystem.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScoreCalculator.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

@@ -57,13 +57,18 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         sphereComponent->SetOnHitCallback(
             [this](CollisionComponent* self, CollisionComponent* other)
             {
-                if (damageCooldown > 0.0f) return;
+                if (stateMachine_->GetStateName() != "Attack") // 攻撃中の時はダメージを受けない
+                    return;
+
+                if (damageCooldownTimer > 0.0f) return;
+
 
                 if (other->GetCollisionLayer() == CollisionHelper::ToBit(CollisionLayer::Enemy))
                 {
+
                     debugPlayerCollisionColor = { 1.0f,0.0f,0.0f,1.0f };
                     TakeDamage(1);
-                    damageCooldown = 0.5f; // 0.5秒無敵
+                    damageCooldownTimer = damageCooldownInterval; // 無敵時間を設定
 
 #if 0
                     // ノックバック
@@ -100,7 +105,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         dashAttackSphere->SetRadius(dashAttackRange);
         dashAttackSphere->SetLayer(CollisionLayer::PlayerWeapon);
         dashAttackSphere->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
-        dashAttackSphere->SetCollisionOffsetY(height );
+        dashAttackSphere->SetCollisionOffsetY(height);
         dashAttackSphere->Initialize();
         dashAttackSphere->SetActive(false); // ←通常はOFF
         dashAttackSphere->SetOnHitCallback(
@@ -112,12 +117,20 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 auto enemy = dynamic_cast<YarnEnemyActor*>(other->GetOwner());
                 if (!enemy) return;
 
-                hitStopTimer = 0.1f;
+                hitStopTimer = hitStopDuration;
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
                 //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav",1.0f);
 
-                // ヒット処理
-                enemy->OnHitByDash(this, dashDamage);
+                // ヒット処理と倒したかどうかを取得する
+                bool isKilled = enemy->OnHitByDash(this, dashDamage);
+
+                // スコアデータを取得する
+                auto data = enemy->GetScoreData();
+
+                // スコア処理　足されたスコアを取得する
+                int addScore = scoreSystem.ProcessHit(data, isKilled);
+
+
             }
         );
     }
@@ -143,8 +156,17 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 if (hitEnemies.contains(enemy)) return;
 
                 hitEnemies.insert(enemy);
-                enemy->TakeDamage(scissorsDamage);
+
+                // ヒット処理と倒したかどうかを取得する
+                bool isKilled= enemy->TakeDamage(scissorsDamage);
                 Logger::Log(U8("敵にヒット！"));
+
+                // スコアデータを取得する
+                auto data = enemy->GetScoreData();
+
+                // スコア処理　足されたスコアを取得する
+                int addScore = scoreSystem.ProcessHit(data, isKilled);
+
             }
         );
     }
@@ -217,9 +239,9 @@ void ScissorsPlayer1::Update(float deltaTime)
 
     Character::Update(deltaTime);
 
-    if (damageCooldown > 0.0f)
+    if (damageCooldownTimer > 0.0f)
     {// ダメージクールダウン中は無敵
-        damageCooldown -= deltaTime;
+        damageCooldownTimer -= deltaTime;
     }
 
     // 入力に基づいて移動と回転を更新
@@ -318,6 +340,9 @@ void ScissorsPlayer1::Update(float deltaTime)
     // ダッシュ回復
     RecoverDash(deltaTime);
 
+    // スコアシステムの更新
+    scoreSystem.Update(deltaTime);
+
     // ダッシュの狙いを表示する矢印のUIを更新
     XMFLOAT2 uiPos = WorldToUI(pos);
     if (dashAimArrowComponent)
@@ -328,7 +353,7 @@ void ScissorsPlayer1::Update(float deltaTime)
     }
 
     // playerの当たり判定をデバッグ表示
-    DebugRender::DrawSphere(sphereComponent->GetComponentLocation(), playerRadius, debugPlayerCollisionColor,0,true);
+    DebugRender::DrawSphere(sphereComponent->GetComponentLocation(), playerRadius, debugPlayerCollisionColor, 0, true);
     // ダッシュ攻撃の当たり判定をデバッグ表示
     DebugRender::DrawSphere(dashAttackSphere->GetComponentLocation(), dashAttackRange, debugDashCollisionColor, 0, true);
     // ハサミ攻撃の当たり判定をデバッグ表示
@@ -445,6 +470,9 @@ void ScissorsPlayer1::TakeDamage(int damage)
     }
     // HPを表示するUIを更新
     UpdateHpUI();
+
+    // ダメージを受けたらコンボをリセットする
+    scoreSystem.ResetCombo();
 }
 
 // プレイヤーの攻撃処理

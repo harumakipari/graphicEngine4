@@ -480,11 +480,14 @@
     <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />
     <ClInclude Include="Source\Game\Scenes\SampleScene.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ButtonBombActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ComboSystem.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\EnemyScoreData.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayer.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayer1.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayerStateDerived.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsStage.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScoreCalculator.h" />
     <ClInclude Include="Source\Game\ScissorsGame\TitleScene.h" />
     <ClInclude Include="Source\Game\ScissorsGame\YarnEnemyActor.h" />
     <ClInclude Include="Source\Game\SofyBody\SoftBody.h" />

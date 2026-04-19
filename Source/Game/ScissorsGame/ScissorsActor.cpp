@@ -17,7 +17,7 @@ void ScissorsActor::Initialize(const Transform& transform)
 
     sphereComponent = AddComponent<SphereComponent>("sphere", parentName);
     sphereComponent->SetRadius(attackRadius);
-    sphereComponent->SetLayer(CollisionLayer::Player); 
+    sphereComponent->SetLayer(CollisionLayer::Player);
     sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
     sphereComponent->Initialize();
 }
@@ -121,7 +121,7 @@ void ScissorsActor::Update(float deltaTime)
     DebugRender::DrawSphere(
         GetPosition(),
         attackRadius,
-        {1.0f, 0.0f, 0.0f, 1.0f}
+        { 1.0f, 0.0f, 0.0f, 1.0f }
     );
 }
 
@@ -152,7 +152,7 @@ void ScissorsActor::OnHit(std::pair<CollisionComponent*, CollisionComponent*> hi
     }
 
     hitEnemies.insert(enemy);
-    enemy->TakeDamage(damage);
+    bool isKilled = enemy->TakeDamage(damage);
 }
 
 void ScissorsActor::Drop(const DirectX::XMFLOAT3& pos)

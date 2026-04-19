@@ -1,4 +1,5 @@
 #pragma once
+#include "ScoreCalculator.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Components/Controller/ControllerComponent.h"
 #include "Core/Actor.h"
@@ -127,15 +128,18 @@ private:
 
     // 調整用のパラメータ　これらを調整してゲームバランスを取る
     float dashAttackRange = 0.8f; // ダッシュ攻撃の範囲　dashAttackSphereの半径と同じにする
-    float scissorsAttackRange = 1.0f; // ハサミ攻撃の範囲　scissorsAttackSphereの半径と同じにする
+    float scissorsAttackRange = 1.5f; // ハサミ攻撃の範囲　scissorsAttackSphereの半径と同じにする
     float playerRadius = 0.5f; // プレイヤーの当たり判定の半径　sphereComponentの半径と同じにする
 
     int scissorsDamage = 1;// ハサミ攻撃時に与えるダメージ
     int dashDamage = 1;// ダッシュ攻撃時に与えるダメージ
+    float hitStopDuration = 0.2f; // ヒットストップの時間　攻撃が当たったときに動きを止める時間
+    float damageCooldownInterval = 0.8f; // 無敵時間
 
+    float damageCooldownTimer = 0.0f; // ダメージを受けた後の無敵時間のクールダウン
+    
 
-    float damageCooldown = 0.0f; // ダメージを受けた後の無敵時間のクールダウン
-
+    ScoreSystem scoreSystem; // スコア計算用のクラス
 
 
     float dashTime = 0.3f;
