@@ -10,5 +10,6 @@ SamplerState samplerStates[3] : register(s0);
 float4 main(PS_IN pin) : SV_TARGET
 {
     float4 col = colorMap.Sample(samplerStates[ANISOTROPIC], pin.texcoord) * pin.color;
-    return col * pin.emissive;
+    return col; // チーム制作用　(T_T)
+    return float4(col.rgb * pin.emissive, 1); // 自作エンジンではこっちを使う
 }

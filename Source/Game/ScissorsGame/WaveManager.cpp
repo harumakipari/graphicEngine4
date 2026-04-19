@@ -4,6 +4,17 @@
 
 void WaveManager::Initialize(const Transform& transform)
 {
+    std::string parentName = "waveManager";
+
+    // 初期化
+    currentWave = 0;
+    timer = 0;
+    spawnIndex = 0;
+    enemyCount = 0;
+    spawnStates.clear();
+    waveState = WaveState::Ready;
+    startTimer = 0.0f;
+
     waves =
     {
        {
@@ -36,16 +47,38 @@ void WaveManager::Initialize(const Transform& transform)
             true
         }
     };
+
+    spawnStates.resize(waves[currentWave].spawns.size());
+
+
+    // 登場エフェクト用のコンポーネントを追加
+    spawnEffectComponent = this->AddComponent<class ParticleComponent>( parentName);
+    spawnEffectComponent->Load("./Data/Effect/Files/DarkStageSparkEffect.json");
+
 }
 
 
 void WaveManager::Update(float deltaTime)
 {
+    if (waveState == WaveState::Ready)
+    {
+        startTimer += deltaTime;
+
+        if (startTimer < 3.0f)
+        {
+            return;
+        }
+
+        waveState = WaveState::Spawning;
+        timer = 0.0f;
+    }
+
     if (currentWave >= waves.size()) return;
 
     auto& wave = waves[currentWave];
     timer += deltaTime;
 
+#if 0
     // スポーン処理
     while (spawnIndex < wave.spawns.size() &&
         timer >= wave.spawns[spawnIndex].delay)
@@ -59,24 +92,72 @@ void WaveManager::Update(float deltaTime)
 
         spawnIndex++;
     }
+#else
+    for (int i = 0; i < wave.spawns.size(); i++)
+    {
+        auto& s = wave.spawns[i];
+        auto& state = spawnStates[i];
+
+        // ① 予告（ピカピカ＋煙）
+        if (!state.previewed && timer >= s.delay)
+        {
+            SpawnPreviewEffect(s.position);
+            state.previewed = true;
+        }
+
+        // ② 実際のスポーン（遅らせる！）
+        if (!state.spawned && timer >= s.delay + s.spawnDelay)
+        {
+            if (s.isBig)
+                SpawnBigEnemy(s.position, s.type, s.speed, s.dir);
+            else
+                SpawnEnemy(s.position, s.type, s.speed, s.dir);
+
+            state.spawned = true;
+        }
+    }
+#endif // 0
+
+    bool allSpawned = true;
+
+    for (auto& s : spawnStates)
+    {
+        if (!s.spawned)
+        {
+            allSpawned = false;
+            break;
+        }
+    }
 
     // 次のWaveへ
     if (wave.waitForClear)
     {
-        if (AllEnemiesDead())
+        if (allSpawned && AllEnemiesDead())
         {
             currentWave++;
             timer = 0;
-            spawnIndex = 0;
+            hasSpawnedAnyEnemy = false;
+
+            if (currentWave < waves.size())
+            {
+                spawnStates.clear();
+                spawnStates.resize(waves[currentWave].spawns.size());
+            }
         }
     }
     else
     {
-        if (spawnIndex >= wave.spawns.size())
+
+        if (allSpawned)
         {
             currentWave++;
             timer = 0;
-            spawnIndex = 0;
+
+            if (currentWave < waves.size())
+            {
+                spawnStates.clear();
+                spawnStates.resize(waves[currentWave].spawns.size());
+            }
         }
     }
 }
@@ -96,7 +177,7 @@ void WaveManager::SpawnEnemy(
         {
             enemyCount--;
         };
-
+    hasSpawnedAnyEnemy = true;
 
     enemyCount++;
 }
@@ -116,7 +197,16 @@ void WaveManager::SpawnBigEnemy(
         {
             enemyCount--;
         };
-
+    hasSpawnedAnyEnemy = true;
     enemyCount++;
 }
 
+void WaveManager::SpawnPreviewEffect(DirectX::XMFLOAT3 pos)
+{
+    DebugRender::DrawSphere(pos, 0.2f, { 1, 0.5f, 0, 1 }, 0.3f, true);
+    if (spawnEffectComponent)
+    {
+        spawnEffectComponent->SetWorldLocationDirect(pos);
+        spawnEffectComponent->Play();
+    }
+}
