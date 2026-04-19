@@ -1,6 +1,7 @@
 #pragma once
 #include "EnemyScoreData.h"
 #include "Components/Controller/ControllerComponent.h"
+#include "Components/Effect/ParticleComponent.h"
 #include "Core/Actor.h"
 #include "Game/Actors/Base/Character.h"
 
@@ -47,6 +48,7 @@ public:
     // 敵のスコアを取得する関数
     EnemyScoreData GetScoreData() const { return scoreData; }
 
+
 private:
     // 線形移動の処理
     void MoveLinear(float deltaTime);
@@ -71,6 +73,7 @@ private:
     // 描画用コンポーネントを追加
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
     std::shared_ptr<RotationComponent> rotationComponent;
+    std::shared_ptr<ParticleComponent> starEffectComponent;
 
     YarnEnemyType enemyType = YarnEnemyType::Static;
 

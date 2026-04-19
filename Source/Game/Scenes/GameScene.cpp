@@ -426,10 +426,11 @@ void GameScene::SetUpActors()
     pauseActor->SetRetrySceneName("GameScene");
 
 
+#if 1
     SpawnEnemy({ 5,0,5 }, YarnEnemyType::Static);
     SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveHorizontal);
     SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveVertical);
-    SpawnEnemy({ 0,0,0 }, YarnEnemyType::MoveToCenter);
+    //SpawnEnemy({ 0,0,0 }, YarnEnemyType::MoveToCenter);
     SpawnEnemy({ 0,0,12}, YarnEnemyType::MoveToCenter);
     SpawnEnemy({ 12,0,0 }, YarnEnemyType::MoveToCenter);
     SpawnEnemy({ 12,0,12 }, YarnEnemyType::MoveToCenter);
@@ -439,14 +440,18 @@ void GameScene::SetUpActors()
     //SpawnEnemy({ 12,0,0 }, YarnEnemyType::WaveVertical);
 
     SpawnEnemy({ 6,0,8 }, YarnEnemyType::Static);
-    //SpawnEnemy({ 12,0,3 }, YarnEnemyType::ChasePlayer);
-    //SpawnEnemy({ 10,0,3 }, YarnEnemyType::ChasePlayer);
+    //SpawnEnemy({ 12,0,12 }, YarnEnemyType::ChasePlayer);
+    //SpawnEnemy({ 12,0,11 }, YarnEnemyType::ChasePlayer);
+    //SpawnEnemy({ 12,0,10 }, YarnEnemyType::ChasePlayer);
+    //SpawnBigEnemy({ 12,0,5 }, YarnEnemyType::ChasePlayer);
     SpawnEnemy({ 3,0,6 }, YarnEnemyType::Static);
     SpawnEnemy({ 9,0,6 }, YarnEnemyType::Static);
     SpawnEnemy({ 0,0,8 }, YarnEnemyType::MoveVertical);
     SpawnEnemy({ 12,0,11 }, YarnEnemyType::MoveVertical);
     SpawnBigEnemy({ 4,0,11 }, YarnEnemyType::MoveHorizontal);
     SpawnBigEnemy({ 8,0,11 }, YarnEnemyType::MoveHorizontal);
+#endif // 1
+
 }
 
 

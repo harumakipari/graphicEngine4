@@ -58,6 +58,23 @@ private:
         YarnEnemyType type,
         float speed = 2.0f, const DirectX::XMFLOAT3& dir = { 1,0,0 });
 
+    // 出現位置の補正
+    DirectX::XMFLOAT3 CalcAlignedSpawnPos(
+        DirectX::XMFLOAT3 targetPos,
+        DirectX::XMFLOAT3 dir,
+        float speed,
+        float spawnTime,
+        float alignTime)
+    {
+        float moveTime = alignTime - spawnTime;
+
+        return {
+            targetPos.x - dir.x * speed * moveTime,
+            targetPos.y,
+            targetPos.z - dir.z * speed * moveTime
+        };
+    }
+
     bool AllEnemiesDead() const
     {
         return enemyCount == 0;
@@ -65,6 +82,27 @@ private:
 
     // 出現エフェクトを生成
     void SpawnPreviewEffect(DirectX::XMFLOAT3 pos);
+
+    // ラインを作る関数
+    std::vector<DirectX::XMFLOAT3> MakeDiagonalLine(
+        DirectX::XMFLOAT3 start,
+        DirectX::XMFLOAT3 dir,
+        int count,
+        float spacing)
+    {
+        std::vector<DirectX::XMFLOAT3> result;
+
+        for (int i = 0; i < count; i++)
+        {
+            result.push_back({
+                start.x + dir.x * spacing * i,
+                start.y,
+                start.z + dir.z * spacing * i
+                });
+        }
+
+        return result;
+    }
 private:
     int currentWave = 0;  // 今のウェーブ
     float timer = 0.0f;

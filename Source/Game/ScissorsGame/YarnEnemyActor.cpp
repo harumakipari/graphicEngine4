@@ -48,11 +48,39 @@ void YarnEnemyActor::Initialize(const Transform& transform)
     // 倒したときのスコア
     scoreData = { 100,0 };
 
+    // 星のエフェクトを追加
+    starEffectComponent = this->AddComponent<ParticleComponent>("starEffect",parentName);
+    starEffectComponent->Load("./Data/Effect/Files/ScissorsGameStarEffect.json");
+
+
+    auto uiManager = GetOwnerScene()->GetUIManager();
+    auto ring = std::make_shared<UIRingEffect>("./Data/Textures/ScissorsUI/ring.png");
+    ring->SetWorldPosition({ 500, 300 });
+    ring->SetSize({ 100,100 });
+    uiManager->Add(ring);
+    for (int i = 0; i < 8; i++)
+    {
+        auto star = std::make_shared<UILineEffect>("./Data/Textures/ScissorsUI/star.png", DirectX::XMFLOAT2{ 500, 300 });
+        //star->SetWorldPosition({ 500, 300 });
+        star->SetSize({ 100,100 });
+        uiManager->Add(star);
+    }
+    //auto flash = std::make_shared<UICoreFlashEffect>("./Data/Textures/ScissorsUI/particle.png");
+    //flash->SetWorldPosition({ 500, 300 });
+    //flash->SetSize({ 100,100 });
+    //uiManager->Add(flash);
+
+    //auto gizagiza = std::make_shared<UISpikeEffect>("./Data/Textures/ScissorsUI/gizagiza.png");
+    //gizagiza->SetWorldPosition({ 500, 300 });
+    //gizagiza->SetSize({ 100,100 });
+    //uiManager->Add(gizagiza);
+
 }
 
 void YarnEnemyActor::Update(float deltaTime)
 {
     Character::Update(deltaTime);
+
 
     switch (enemyType)
     {
@@ -78,6 +106,9 @@ void YarnEnemyActor::Update(float deltaTime)
         ChasePlayer(deltaTime);
         break;
     }
+
+
+
 }
 
 // 敵の種類を設定する関数
@@ -117,6 +148,10 @@ bool  YarnEnemyActor::TakeDamage(int damage)
             onDeath();
         }
         MarkPendingKill();
+        if (starEffectComponent)
+        {
+            starEffectComponent->Play();
+        }
         return true;
     }
     return false;

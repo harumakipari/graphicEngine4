@@ -166,6 +166,232 @@ protected:
 };
 
 
+class UIRingEffect : public UIImageComponent
+{
+public:
+    UIRingEffect(const std::string& texPath)
+        : UIImageComponent(texPath, "RingEffect")
+    {
+        lifeTime = 0.5f;
+        elapsed = 0.0f;
+
+        startSize = { 20.0f, 20.0f };
+        endSize = { 300.0f, 300.0f };
+
+        SetSize(startSize);
+        SetPivot({ 0.5f, 0.5f }); // 中心基準
+    }
+
+    void Update(float dt) override
+    {
+        elapsed += dt;
+
+        float t = elapsed / lifeTime;
+        if (t > 1.0f)
+        {
+            MarkPendingKill();
+            return;
+        }
+
+        // サイズ補間
+        XMFLOAT2 newSize;
+        newSize.x = startSize.x + (endSize.x - startSize.x) * t;
+        newSize.y = startSize.y + (endSize.y - startSize.y) * t;
+        SetSize(newSize);
+
+        // 透明度
+         // 色補間（白 → 黄色）
+        XMFLOAT4 startColor = { 1,1,1,1 };
+        XMFLOAT4 endColor = { 1,1,0.3f,0 };
+
+        XMFLOAT4 color;
+        color.x = startColor.x + (endColor.x - startColor.x) * t;
+        color.y = startColor.y + (endColor.y - startColor.y) * t;
+        color.z = startColor.z + (endColor.z - startColor.z) * t;
+        color.w = startColor.w + (endColor.w - startColor.w) * t;
+
+        SetColor(color);
+    }
+
+private:
+    float lifeTime;
+    float elapsed;
+
+    XMFLOAT2 startSize;
+    XMFLOAT2 endSize;
+};
+
+class UICoreFlashEffect : public UIImageComponent
+{
+public:
+    UICoreFlashEffect(const std::string& texPath)
+        : UIImageComponent(texPath, "CoreFlash")
+    {
+        lifeTime = 0.25f;
+        elapsed = 0.0f;
+
+        startSize = { 30.0f, 30.0f };
+        endSize = { 200.0f, 200.0f };
+
+        SetSize(startSize);
+        SetPivot({ 0.5f, 0.5f });
+    }
+
+    void Update(float dt) override
+    {
+        elapsed += dt;
+
+        float t = elapsed / lifeTime;
+        if (t > 1.0f)
+        {
+            MarkPendingKill();
+            return;
+        }
+
+        // サイズ拡大
+        XMFLOAT2 size;
+        size.x = startSize.x + (endSize.x - startSize.x) * t;
+        size.y = startSize.y + (endSize.y - startSize.y) * t;
+        SetSize(size);
+
+        // 明るさ → 消える
+        float alpha = 1.0f - t;
+        SetColor(DirectX::XMFLOAT4{ 1.0f, 0.8f, 0.2f, alpha });
+    }
+
+private:
+    float lifeTime;
+    float elapsed;
+
+    XMFLOAT2 startSize;
+    XMFLOAT2 endSize;
+};
+class UILineEffect : public UIImageComponent
+{
+public:
+    UILineEffect(const std::string& texPath, XMFLOAT2 center)
+        : UIImageComponent(texPath, "LineEffect")
+    {
+        lifeTime = 1.0f;
+        elapsed = 0.0f;
+
+        pos = center;
+
+        // ランダム方向
+        float angle = MathHelper::RandomRange(0.0f, 360.0f);
+        angle = DirectX::XMConvertToRadians(angle);
+
+        float speed = MathHelper::RandomRange(200.0f, 500.0f);
+        velocity = { cosf(angle) * speed, sinf(angle) * speed };
+
+        // 初期サイズランダム
+        float s = MathHelper::RandomRange(30.0f, 80.0f);
+        startSize = { s, s };
+        endSize = { s * 0.2f, s * 0.2f }; // 小さくなる
+
+        SetSize(startSize);
+        SetPivot({ 0.5f, 0.5f });
+
+        // 色ランダム
+        baseColor = RandomStarColor();
+        SetColor(baseColor);
+    }
+
+    void Update(float dt) override
+    {
+        elapsed += dt;
+
+        float t = elapsed / lifeTime;
+        if (t > 1.0f)
+        {
+            MarkPendingKill();
+            return;
+        }
+
+        
+        SetWorldAngleDegree(this->worldAngle + dt * 180.0f);
+        // 移動
+        pos.x += velocity.x * dt;
+        pos.y += velocity.y * dt;
+        SetWorldPosition(pos);
+
+        //  サイズ縮小
+        XMFLOAT2 size;
+        size.x = startSize.x + (endSize.x - startSize.x) * t;
+        size.y = startSize.y + (endSize.y - startSize.y) * t;
+        SetSize(size);
+
+        //  フェード
+        float alpha = 1.0f - t;
+        SetColor(DirectX::XMFLOAT4{ baseColor.x, baseColor.y, baseColor.z, alpha });
+    }
+
+
+    DirectX::XMFLOAT4 RandomStarColor()
+    {
+        int r = MathHelper::RandomRange(0, 3);
+
+        switch (r)
+        {
+        case 0: return { 1.0f, 0.6f, 0.8f, 1.0f }; // ピンク
+        case 1: return { 1.0f, 1.0f, 0.3f, 1.0f }; // 黄色
+        case 2: return { 0.7f, 0.5f, 1.0f, 1.0f }; // 紫
+        default:return { 0.5f, 1.0f, 1.0f, 1.0f }; // 水色
+        }
+    }
+private:
+    float lifeTime;
+    float elapsed;
+
+    XMFLOAT2 pos;
+    XMFLOAT2 velocity;
+
+    XMFLOAT2 startSize;
+    XMFLOAT2 endSize;
+
+    XMFLOAT4 baseColor;
+};
+class UISpikeEffect : public UIImageComponent
+{
+public:
+    UISpikeEffect(const std::string& texPath)
+        : UIImageComponent(texPath, "SpikeEffect")
+    {
+        lifeTime = 0.12f;
+        elapsed = 0.0f;
+
+        SetSize({ 250.0f, 250.0f });
+        SetPivot({ 0.5f, 0.5f });
+
+        // ランダム回転
+        float angle = MathHelper::RandomRange(0.0f, 360.0f);
+        SetWorldAngleDegree(angle);
+    }
+
+    void Update(float dt) override
+    {
+        elapsed += dt;
+
+        float t = elapsed / lifeTime;
+        if (t > 1.0f)
+        {
+            MarkPendingKill();
+            return;
+        }
+
+        // 少しだけ拡大
+        float scale = 1.0f + t * 0.5f;
+        SetScale({ scale, scale });
+
+        // すぐ消える
+        float alpha = 1.0f - t;
+        SetColor(DirectX::XMFLOAT4{ 1.0f, 0.3f, 0.1f, alpha });
+    }
+
+private:
+    float lifeTime;
+    float elapsed;
+};
 enum class UIButtonState :uint8_t
 {
     Normal,

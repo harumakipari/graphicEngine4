@@ -15,6 +15,7 @@ void WaveManager::Initialize(const Transform& transform)
     waveState = WaveState::Ready;
     startTimer = 0.0f;
 
+#if 1
     waves =
     {
        {
@@ -65,13 +66,42 @@ void WaveManager::Initialize(const Transform& transform)
             false
         }
     };
-
     spawnStates.resize(waves[currentWave].spawns.size());
 
+#endif // 0
+
+#if 0
+    float alignTime = 5.0f;
+
+    auto line = MakeDiagonalLine({ 3,0,3 }, { 0,0,1 }, 5, 2.0f);
+
+    for (int i = 0; i < line.size(); i++)
+    {
+        float randomSpeed = MathHelper::RandomRange(1.0f, 5.0f);
+        float spawnTime = i * 0.5f; // ← バラして出す
+
+        auto spawnPos = CalcAlignedSpawnPos(
+            line[i],        // 最終的に揃う位置
+            { 1,0,0 },        // 移動方向
+            randomSpeed,           // speed
+            spawnTime,
+            alignTime
+        );
+
+
+        // delay = spawnTime にする
+        SpawnEnemy(
+            spawnPos,
+            YarnEnemyType::MoveHorizontal,
+            randomSpeed,
+            { 1,0,0 }
+        );
+    }
+#endif // 0
 
     // 登場エフェクト用のコンポーネントを追加
     spawnEffectComponent = this->AddComponent<class ParticleComponent>(parentName);
-    spawnEffectComponent->Load("./Data/Effect/Files/DarkStageSparkEffect.json");
+    spawnEffectComponent->Load("./Data/Effect/Files/ScissorsGameCloudEffect.json");
 
 }
 
@@ -218,6 +248,9 @@ void WaveManager::SpawnBigEnemy(
     hasSpawnedAnyEnemy = true;
     enemyCount++;
 }
+
+
+
 
 void WaveManager::SpawnPreviewEffect(DirectX::XMFLOAT3 pos)
 {
