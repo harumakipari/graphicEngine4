@@ -155,6 +155,13 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 if (stateMachine_->GetStateName() != "Attack")
                     return;
 
+#if 0
+                if (hasDamageEnemy) // 既にダメージが入っていたら無視
+                    return;
+
+#endif // 0
+
+
                 auto enemy = dynamic_cast<YarnEnemyActor*>(other->GetOwner());
                 if (!enemy) return;
 
@@ -165,6 +172,8 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 // ヒット処理と倒したかどうかを取得する
                 bool isKilled = enemy->TakeDamage(scissorsDamage);
                 Logger::Log(U8("敵にヒット！"));
+
+                hasDamageEnemy = true;
 
                 // スコアデータを取得する
                 auto data = enemy->GetScoreData();

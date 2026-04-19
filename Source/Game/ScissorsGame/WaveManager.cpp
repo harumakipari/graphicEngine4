@@ -18,21 +18,18 @@ void WaveManager::Initialize(const Transform& transform)
     waves =
     {
        {
-            // Wave 1（慣らし）
+            // Wave 1
             {
-                { {6,0,8}, YarnEnemyType::Static, 0.0f },
-                { {4,0,8}, YarnEnemyType::Static, 0.5f },
-                { {8,0,8}, YarnEnemyType::Static, 1.0f },
+                { {3,0,19}, YarnEnemyType::Static, 0.0f },
             },
-            true
+            false
         },
 
         {
             // Wave 2（ちょい圧）
             {
-                { {0,0,8}, YarnEnemyType::MoveHorizontal, 0.0f },
-                { {12,0,8}, YarnEnemyType::MoveHorizontal, 0.5f },
-                { {6,0,0}, YarnEnemyType::MoveVertical, 1.0f },
+                { {21,0,15}, YarnEnemyType::MoveHorizontal, 3.0f },
+                { {0,0,6}, YarnEnemyType::MoveHorizontal, 6.0f },
             },
             false
         },
@@ -40,11 +37,32 @@ void WaveManager::Initialize(const Transform& transform)
         {
             // Wave 3（追い込み）
             {
-                { {6,0,10}, YarnEnemyType::ChasePlayer, 0.0f },
-                { {5,0,9}, YarnEnemyType::ChasePlayer, 0.3f },
-                { {7,0,9}, YarnEnemyType::ChasePlayer, 0.3f },
+                { {21,0,11}, YarnEnemyType::MoveHorizontal, 4.0f },
+                { {19,0,12}, YarnEnemyType::MoveHorizontal, 3.5f ,true},
+                { {21,0,13}, YarnEnemyType::MoveHorizontal, 4.0f },
             },
-            true
+            false
+        },
+
+        {
+            // Wave 3（追い込み）
+            {
+                { {0,0,4}, YarnEnemyType::MoveHorizontal, 4.0f },
+                { {1,0,5}, YarnEnemyType::MoveHorizontal, 3.5f ,true},
+                { {0,0,6}, YarnEnemyType::MoveHorizontal, 4.0f },
+            },
+            false
+        },
+
+        {
+            // Wave 3（追い込み）
+            {
+                { {14,0,21}, YarnEnemyType::MoveVertical, 4.0f },
+                { {16,0,21}, YarnEnemyType::MoveVertical, 4.0f },
+                { {4,0,0}, YarnEnemyType::MoveVertical, 4.5f },
+                { {6,0,0}, YarnEnemyType::MoveVertical, 4.5f },
+            },
+            false
         }
     };
 
@@ -52,7 +70,7 @@ void WaveManager::Initialize(const Transform& transform)
 
 
     // 登場エフェクト用のコンポーネントを追加
-    spawnEffectComponent = this->AddComponent<class ParticleComponent>( parentName);
+    spawnEffectComponent = this->AddComponent<class ParticleComponent>(parentName);
     spawnEffectComponent->Load("./Data/Effect/Files/DarkStageSparkEffect.json");
 
 }

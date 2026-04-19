@@ -111,6 +111,8 @@ void ScissorsPlayerAttackingState::Enter()
     attackTimer = 0.0f;
     hitDone = false;
 
+    // ハサミ攻撃を一体の敵のみに当てるため。
+    player->hasDamageEnemy = false; 
     player->debugScissorsCollisionColor = { 1,0,0,1.0f }; // デバッグ用にハサミ攻撃の当たり判定の色を変える　通常は白色で、ダメージを受けたときに赤くするなどして使用する
 }
 
@@ -192,15 +194,15 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     float stageMaxX = 19.5f;
     float stageMinZ = 1.0f;
     float stageMaxZ = 19.5f;
-   clampedTarget.x = std::clamp(clampedTarget.x, stageMinX, stageMaxX);
-   clampedTarget.z = std::clamp(clampedTarget.z, stageMinZ, stageMaxZ);
+    clampedTarget.x = std::clamp(clampedTarget.x, stageMinX, stageMaxX);
+    clampedTarget.z = std::clamp(clampedTarget.z, stageMinZ, stageMaxZ);
 
-   // 差があるかチェック
-  player->isStun =
-       (unclampedTarget.x != clampedTarget.x) ||
-       (unclampedTarget.z != clampedTarget.z);
+    // 差があるかチェック
+    player->isStun =
+        (unclampedTarget.x != clampedTarget.x) ||
+        (unclampedTarget.z != clampedTarget.z);
 
-   player->targetPos = clampedTarget;
+    player->targetPos = clampedTarget;
 
     // 目的地のスクリーン座標
     XMFLOAT2 uiTargetPos = WorldToUI(player->targetPos);

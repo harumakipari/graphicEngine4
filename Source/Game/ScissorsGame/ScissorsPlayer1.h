@@ -92,7 +92,8 @@ public:
     DirectX::XMFLOAT4 debugDashCollisionColor = { 1,1,1,0 }; // ダッシュ攻撃の当たり判定の色　通常は透明で、攻撃中は赤くするなどして使用する
     DirectX::XMFLOAT4 debugScissorsCollisionColor = { 1,1,1,0.5f }; // プレイヤーのハサミ攻撃当たり判定の色　通常は白色で、ダメージを受けたときに赤くするなどして使用する
 
-    bool isStun = false;// スタンするかどうか 
+    bool isStun = false;// スタンするかどうか  あんまり使っていない
+    bool hasDamageEnemy = false; // ハサミ攻撃を一体の敵のみに当てるため。
 
 
 private:

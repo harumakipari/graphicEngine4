@@ -10,8 +10,8 @@ struct SpawnData
     YarnEnemyType type;
     float delay; // ‚±‚Ì“G‚ªo‚é‚Ü‚Å‚ÌŠÔ
 
-    float spawnDelay = 1.0f; // © —\‚©‚ço‚é‚Ü‚Å
     bool isBig = false;
+    float spawnDelay = 1.0f; // © —\‚©‚ço‚é‚Ü‚Å
 
     float speed = 2.0f;
     DirectX::XMFLOAT3 dir = { 1,0,0 };
