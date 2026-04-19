@@ -17,11 +17,6 @@
 
 
 #include "Physics/Physics.h"
-#include "Game/DarkGame/DarkActors/DarkStage.h"
-#include "Game/DarkGame/DarkActors/DarkStageChandelierActor.h"
-#include "Game/DarkGame/DarkActors/DoorActor.h"
-#include "Game/DarkGame/DarkActors/DarkEnemy/SkeletonWarriorEnemy.h"
-#include "Game/ScissorsGame/ScissorsPlayer.h"
 #include "Game/ScissorsGame/ScissorsPlayer1.h"
 #include "Game/ScissorsGame/ScissorsStage.h"
 #include "Game/ScissorsGame/YarnEnemyActor.h"

@@ -287,6 +287,17 @@ namespace MathHelper
         return std::sqrt(dx * dx + dy * dy + dz * dz);
     }
 
+    // ãóó£åvéZÅiVector2Åj a - b
+    inline float DistanceFloat2(
+        const DirectX::XMFLOAT2& a,
+        const DirectX::XMFLOAT2& b
+    )
+    {
+        DirectX::XMVECTOR vecA = DirectX::XMLoadFloat2(&a);
+        DirectX::XMVECTOR vecB = DirectX::XMLoadFloat2(&b);
+        return DirectX::XMVectorGetX(DirectX::XMVector2Length(DirectX::XMVectorSubtract(vecA, vecB)));
+    }
+
     // í∑Ç≥åvéZÅiVector3Åj
     inline float Length(
         const DirectX::XMFLOAT3& a)
@@ -327,6 +338,20 @@ namespace MathHelper
         const DirectX::XMFLOAT3& b)
     {
         return { a.x - b.x, a.y - b.y, a.z - b.z };
+    }
+
+    // à¯Ç´éZ a-b
+    inline DirectX::XMFLOAT2 SubtractFloat2(
+        const DirectX::XMFLOAT2& a,
+        const DirectX::XMFLOAT2& b)
+    {
+        DirectX::XMVECTOR va = XMLoadFloat2(&a);
+        DirectX::XMVECTOR vb = XMLoadFloat2(&b);
+
+        DirectX::XMVECTOR vec = DirectX::XMVectorSubtract(va, vb);
+        DirectX::XMFLOAT2 ans;
+        DirectX::XMStoreFloat2(&ans, vec);
+        return ans;
     }
 
     // â¡éZ a+b

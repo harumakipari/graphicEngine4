@@ -57,7 +57,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         sphereComponent->SetOnHitCallback(
             [this](CollisionComponent* self, CollisionComponent* other)
             {
-                if (stateMachine_->GetStateName() != "Attack") // 攻撃中の時はダメージを受けない
+                if (stateMachine_->GetStateName() == "Attack") // 攻撃中の時はダメージを受けない
                     return;
 
                 if (damageCooldownTimer > 0.0f) return;
@@ -158,7 +158,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 hitEnemies.insert(enemy);
 
                 // ヒット処理と倒したかどうかを取得する
-                bool isKilled= enemy->TakeDamage(scissorsDamage);
+                bool isKilled = enemy->TakeDamage(scissorsDamage);
                 Logger::Log(U8("敵にヒット！"));
 
                 // スコアデータを取得する
@@ -188,8 +188,8 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     auto uiManager = GetOwnerScene()->GetUIManager();
     dashAimArrowComponent->SetWorldPosition({ 0.0f, 0.0f });
     dashAimArrowComponent->SetVisible(true);
-    dashAimArrowComponent->SetSize({ 50.0f, 300.0f });
-    dashAimArrowComponent->SetPivot({ 0.5f, 1.0f }); // 矢印の根元をプレイヤーの位置に合わせる
+    dashAimArrowComponent->SetSize({ 300.0f, 50.0f });
+    dashAimArrowComponent->SetPivot({ 0.0f, 0.5f }); // 矢印の根元をプレイヤーの位置に合わせる
     dashAimArrowComponent->SetVisible(false);
     uiManager->Add(dashAimArrowComponent);
 
@@ -217,7 +217,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
             auto hpUI = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/heart.png", "hpUI");
 
             // 横に並べる
-            hpUI->SetWorldPosition({ 100.0f + i * 160.0f, 100.0f });
+            hpUI->SetWorldPosition({ 100.0f + i * 160.0f, 50.0f });
 
             hpUI->SetSize({ 150.0f, 150.0f });
             hpUI->SetVisible(true);
@@ -348,8 +348,6 @@ void ScissorsPlayer1::Update(float deltaTime)
     if (dashAimArrowComponent)
     {
         dashAimArrowComponent->SetWorldPosition({ uiPos.x, uiPos.y });
-        float angle = DirectX::XMConvertToDegrees(atan2f(aimData.dir.x, aimData.dir.z));
-        dashAimArrowComponent->SetWorldAngleDegree(angle);
     }
 
     // playerの当たり判定をデバッグ表示

@@ -2,6 +2,7 @@
 #include "ScissorsPlayerStateDerived.h"
 #include "Game/Actors/Base/Character.h"
 #include "ScissorsPlayer1.h"
+#include "Physics/CollisionFunction.h"
 
 ScissorsPlayerStateBase::ScissorsPlayerStateBase(ScissorsPlayer1* actor) :State(actor), player(actor)
 {
@@ -184,10 +185,25 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     player->targetPos.x = std::clamp(player->targetPos.x, stageMinX, stageMaxX);
     player->targetPos.z = std::clamp(player->targetPos.z, stageMinZ, stageMaxZ);
 
-    float distance = sqrt(player->targetPos.x * player->targetPos.x + player->targetPos.z * player->targetPos.z);
-    float uiScale = 0.1f; // ←ここ調整ポイント
-    float uiLength = std::abs(distance * uiScale);
-    player->dashAimArrowComponent->SetScale({ 1.0f, uiLength });
+    // 目的地のスクリーン座標
+    XMFLOAT2 uiTargetPos = WorldToUI(player->targetPos);
+    // プレイヤーの位置のスクリーン座標
+    XMFLOAT2 uiPlayerPos = WorldToUI(pos);
+
+    float distance = MathHelper::DistanceFloat2(uiTargetPos, uiPlayerPos);
+
+    float arrowSizeX = player->dashAimArrowComponent->GetSize().x;
+    float uiScale = abs(distance) / arrowSizeX;
+    player->dashAimArrowComponent->SetScale({ uiScale,1.0f });
+
+    //　方向ベクトル
+    DirectX::XMFLOAT2 dir = MathHelper::SubtractFloat2(uiTargetPos, uiPlayerPos);
+    float angle = atan2f(dir.y, dir.x);
+    player->dashAimArrowComponent->SetWorldAngleDegree(DirectX::XMConvertToDegrees(angle));
+
+
+    //float angle = DirectX::XMConvertToDegrees(atan2f(aimData.dir.x, aimData.dir.z));
+
 
     // ダッシュの方向にUIを出す
     DebugRender::DrawSphere(player->targetPos, 0.3f, { 1,0,0,1 });

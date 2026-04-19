@@ -63,7 +63,9 @@ public:
 
     bool IsPendingKill() const { return isPendingKill; }
 
-    XMFLOAT2 GetWorldPosition() { return this->worldPosition; }
+    XMFLOAT2 GetWorldPosition() const { return this->worldPosition; }
+
+    XMFLOAT2 GetSize() const { return this->size; }
 
     // テキスト描画コンポーネントに使用している　テキストが更新された時に呼ばれる
     bool IsDirty() const { return dirty; }
@@ -169,7 +171,7 @@ enum class UIButtonState :uint8_t
     Normal,
     Hovered,
     Pressed,
-    Selected, 
+    Selected,
 };
 
 class UIButtonComponent : public UIImageComponent

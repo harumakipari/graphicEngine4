@@ -2,7 +2,7 @@
 
 #include "ButtonBombActor.h"
 
-#include "ScissorsPlayer.h"
+#include "ScissorsPlayer1.h"
 #include "YarnEnemyActor.h"
 #include "Engine/Scene/SceneBase.h"
 
@@ -54,7 +54,7 @@ void ButtonBombActor::Explode()
     }
 
     // プレイヤーにもダメージ
-    auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer>();
+    auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>();
         if (player)
         {
             float dist = MathHelper::Distance(player->GetPosition(), GetPosition());
