@@ -51,7 +51,7 @@ void Time::Stop()
 	}
 }
 
-void Time::Tick() // Call every frame.
+void Time::Tick() // 毎フレーム呼び出す。
 {
 	if (stopped)
 	{
@@ -60,19 +60,37 @@ void Time::Tick() // Call every frame.
 	}
 
 	QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&thisTime));
-	// Time difference between this frame and the previous.
+	// 現在のフレームと前のフレームとの時間差。
 	deltaTime = (thisTime - lastTime) * secondsPerCount * static_cast<double>(timeScale);
 	unscaledDeltaTime = (thisTime - lastTime) * secondsPerCount;
 
-	// Prepare for next frame.
+	// 次のフレームの準備をする。
 	lastTime = thisTime;
 
-	// Force nonnegative.  The DXSDK's CDXUTTimer mentions that if the 
-	// processor goes into a power save mode or we get shuffled to another
-	// processor, then mDeltaTime can be negative.
+	// 負の値を強制的に排除する。
+	// DXSDKのCDXUTTimerの説明によると、プロセッサが省電力モードに移行した場合や、別のプロセッサに割り当て直された場合、
+	// mDeltaTimeが負の値になる可能性がある。
 	if (deltaTime < 0.0f)
 	{
 		deltaTime = 0.0f;
+	}
+
+	// スロー処理
+	if (slowTimer > 0.0f)
+	{
+		slowTimer -= static_cast<float>(unscaledDeltaTime);
+
+		if (slowTimer <= 0.0f)
+		{
+			//timeScale = 1.0f;
+
+			timeScale = std::lerp(timeScale, 1.0f, 0.2f);
+
+			if (fabs(timeScale - 1.0f) < 0.01f)
+			{
+				timeScale = 1.0f;
+			}
+		}
 	}
 }
 

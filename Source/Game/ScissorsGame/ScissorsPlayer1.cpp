@@ -5,6 +5,7 @@
 #include "ScissorsPlayerStateDerived.h"
 #include "YarnEnemyActor.h"
 #include "Engine/Scene/SceneBase.h"
+#include "Engine/Utility/Time.h"
 #include "Physics/CollisionFunction.h"
 
 void ScissorsPlayer1::Initialize(const Transform& transform)
@@ -117,7 +118,6 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 auto enemy = dynamic_cast<YarnEnemyActor*>(other->GetOwner());
                 if (!enemy) return;
 
-                hitStopTimer = hitStopDuration;
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
                 //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav",1.0f);
 
@@ -130,7 +130,11 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 // スコア処理　足されたスコアを取得する
                 int addScore = scoreSystem.ProcessHit(data, isKilled);
 
+                // スロー再生
+                //Time::SetSlow(0.5f, 0.3f);
 
+                // ヒットストップ
+                hitStopTimer = hitStopDuration;
             }
         );
     }

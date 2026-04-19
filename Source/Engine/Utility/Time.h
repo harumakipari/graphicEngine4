@@ -37,13 +37,21 @@ public:
         return static_cast<float>(unscaledDeltaTime);
     }
 
+    // スロー再生　scale倍にスローにしてduration後に戻る
+    static void SetSlow(float scale, float duration)
+    {
+        timeScale = scale;
+        slowTimer = duration;
+    }
+
     static inline float timeScale{ 1.0f };
 
 private:
 
     static inline double deltaTime{ 0.0f };
-
     static inline double unscaledDeltaTime{ 0.0f };
+
+    static inline float slowTimer = 0.0f;
 
 private:
     double secondsPerCount{ 0.0 };
