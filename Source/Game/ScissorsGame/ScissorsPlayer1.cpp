@@ -43,17 +43,16 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
     // 当たり判定
     {
-        std::shared_ptr<SphereComponent> sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
-        DirectX::XMFLOAT3 size = { 0.5f,0.5f,0.5f };
-        radius = size.x;
-        height = size.y;
+        sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
+        radius = playerRadius;
+        height = 1.5f;
         mass = 60.0f;
         sphereComponent->SetRadius(radius);
+        sphereComponent->SetRelativeLocationDirect({ 0.0f,height,0.0f });
         sphereComponent->SetMass(mass);
         sphereComponent->SetLayer(CollisionLayer::Player);
         sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
         sphereComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-        sphereComponent->SetCollisionOffsetY(height * 0.5f);
         sphereComponent->Initialize();
         sphereComponent->SetOnHitCallback(
             [this](CollisionComponent* self, CollisionComponent* other)
@@ -62,6 +61,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
                 if (other->GetCollisionLayer() == CollisionHelper::ToBit(CollisionLayer::Enemy))
                 {
+                    debugPlayerCollisionColor = { 1.0f,0.0f,0.0f,1.0f };
                     TakeDamage(1);
                     damageCooldown = 0.5f; // 0.5秒無敵
 
@@ -93,21 +93,17 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         );
     }
 
+    // ダッシュ攻撃用の当たり判定
     {
-        auto attackSphere = this->AddComponent<SphereComponent>("attackSphere", parentName);
-
-        attackSphere->SetRadius(0.8f);
-        attackSphere->SetLayer(CollisionLayer::PlayerWeapon);
-
-        attackSphere->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
-
-        attackSphere->SetCollisionOffsetY(height * 0.5f);
-
-        attackSphere->Initialize();
-
-        attackSphere->SetActive(false); // ←通常はOFF
-
-        attackSphere->SetOnHitCallback(
+        dashAttackSphere = this->AddComponent<SphereComponent>("attackSphere", parentName);
+        dashAttackSphere->SetRelativeLocationDirect({ 0.0f,height,80.0f });
+        dashAttackSphere->SetRadius(dashAttackRange);
+        dashAttackSphere->SetLayer(CollisionLayer::PlayerWeapon);
+        dashAttackSphere->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
+        dashAttackSphere->SetCollisionOffsetY(height );
+        dashAttackSphere->Initialize();
+        dashAttackSphere->SetActive(false); // ←通常はOFF
+        dashAttackSphere->SetOnHitCallback(
             [this](CollisionComponent* self, CollisionComponent* other)
             {
                 if (stateMachine_->GetStateName() != "Dash")
@@ -121,10 +117,38 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav",1.0f);
 
                 // ヒット処理
-                enemy->OnHitByDash(this);
+                enemy->OnHitByDash(this, dashDamage);
             }
         );
     }
+
+    // ハサミ攻撃用の当たり判定
+    {
+        scissorsAttackSphere = this->AddComponent<SphereComponent>("scissorsAttackSphere", parentName);
+        scissorsAttackSphere->SetRelativeLocationDirect({ 0.0f,height,80.0f });
+        scissorsAttackSphere->SetRadius(scissorsAttackRange);
+        scissorsAttackSphere->SetLayer(CollisionLayer::PlayerWeapon);
+        scissorsAttackSphere->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
+        scissorsAttackSphere->Initialize();
+        scissorsAttackSphere->SetActive(false); // ←通常はOFF
+        scissorsAttackSphere->SetOnHitCallback(
+            [this](CollisionComponent* self, CollisionComponent* other)
+            {
+                if (stateMachine_->GetStateName() != "Attack")
+                    return;
+
+                auto enemy = dynamic_cast<YarnEnemyActor*>(other->GetOwner());
+                if (!enemy) return;
+
+                if (hitEnemies.contains(enemy)) return;
+
+                hitEnemies.insert(enemy);
+                enemy->TakeDamage(scissorsDamage);
+                Logger::Log(U8("敵にヒット！"));
+            }
+        );
+    }
+
 
     // 入力用のコンポーネントを追加
     inputComponent = this->AddComponent<class InputComponent>("inputComponent", parentName);
@@ -190,7 +214,6 @@ void ScissorsPlayer1::Update(float deltaTime)
     {// ポーズ中は入力を受け付けない 歩行音も止める
         return;
     }
-
 
     Character::Update(deltaTime);
 
@@ -304,7 +327,29 @@ void ScissorsPlayer1::Update(float deltaTime)
         dashAimArrowComponent->SetWorldAngleDegree(angle);
     }
 
+    // playerの当たり判定をデバッグ表示
+    DebugRender::DrawSphere(sphereComponent->GetComponentLocation(), playerRadius, debugPlayerCollisionColor,0,true);
+    // ダッシュ攻撃の当たり判定をデバッグ表示
+    DebugRender::DrawSphere(dashAttackSphere->GetComponentLocation(), dashAttackRange, debugDashCollisionColor, 0, true);
+    // ハサミ攻撃の当たり判定をデバッグ表示
+    DebugRender::DrawSphere(scissorsAttackSphere->GetComponentLocation(), scissorsAttackRange, debugScissorsCollisionColor, 0, true);
 
+    debugPlayerCollisionColor = { 1,1,1,1 };
+
+}
+
+void ScissorsPlayer1::DrawImGuiDetails()
+{
+#ifdef USE_IMGUI
+    Character::DrawImGuiDetails();
+    ImGui::DragFloat(U8("プレイヤーの当たり判定"), &playerRadius);
+    ImGui::DragFloat(U8("ダッシュの当たり判定"), &dashAttackRange);
+    ImGui::SliderInt(U8("ハサミ攻撃時のダメージ量"), &scissorsDamage, 1, 10);
+    ImGui::SliderInt(U8("ダッシュ攻撃時のダメージ量"), &dashDamage, 1, 10);
+    ImGui::Text("HP: %d", hp);
+    ImGui::Text("Dash Count: %d", dashCount);
+    ImGui::Text("Current State: %s", stateMachine_->GetStateName());
+#endif
 }
 
 // 入力から狙いの情報を取得する
@@ -382,8 +427,12 @@ DirectX::XMFLOAT3 ScissorsPlayer1::GetLookDirection() const
     }
 }
 
+// ダメージを受けたときの処理
 void ScissorsPlayer1::TakeDamage(int damage)
 {
+    // デバック用に当たり判定を赤くする
+    debugPlayerCollisionColor = { 1,0,0,1 };
+
     hp -= damage;
     Logger::Log("Player took " + std::to_string(damage) + " damage. HP: " + std::to_string(hp));
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/playerDamage.wav");
@@ -401,11 +450,15 @@ void ScissorsPlayer1::TakeDamage(int damage)
 // プレイヤーの攻撃処理
 void ScissorsPlayer1::DoAttackHit()
 {
+    // 攻撃が当たった敵を記録するためのセットをクリア
+    hitEnemies.clear();
+
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav", 2.0f);
 
     auto enemies = GetOwnerScene()->GetActorManager()->GetActorsOfType<YarnEnemyActor>();
     Logger::Log(U8("攻撃をする"));
 
+#if 0
     for (auto& enemy : enemies)
     {
         if (!enemy) continue;
@@ -443,6 +496,8 @@ void ScissorsPlayer1::DoAttackHit()
             Logger::Log(U8("敵にヒット！"));
         }
     }
+#endif // 0
+
 }
 
 
@@ -517,9 +572,9 @@ void ScissorsPlayer1::OnPause()
         {
             footstepAudioComponent->Stop();
         }
-        
+
         state->Exit(); // 現在のステートから抜ける
         stateMachine_->ChangeState("Idle"); // ポーズ中はIdleステートにする チャージダッシュ時もこれで止める
-        
+
     }
 }

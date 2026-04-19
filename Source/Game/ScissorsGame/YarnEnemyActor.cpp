@@ -110,10 +110,10 @@ void YarnEnemyActor::TakeDamage(int damage)
     }
 }
 
-void YarnEnemyActor::OnHitByDash(ScissorsPlayer1* player)
+void YarnEnemyActor::OnHitByDash(ScissorsPlayer1* player,int dashDamage)
 {
     // ダッシュで当たったときの処理
-    TakeDamage(2);
+    TakeDamage(dashDamage);
     // コントローラーを振動させる
     InputSystem::SetVibration(0.8f, 0.15f);
 
@@ -277,9 +277,9 @@ void BigYarnEnemyActor::Initialize(const Transform& transform)
     YarnEnemyActor::Initialize(transform);
 }
 
-void BigYarnEnemyActor::OnHitByDash(ScissorsPlayer1* player)
+void BigYarnEnemyActor::OnHitByDash(ScissorsPlayer1* player, int dashDamage)
 {
-    TakeDamage(1);
+    TakeDamage(dashDamage);
     // playerのダッシュを止める処理を追加
     if (hp >= maxHp - 1)
         player->StopDash();

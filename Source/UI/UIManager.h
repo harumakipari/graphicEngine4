@@ -46,9 +46,14 @@ public:
     bool IsMouseCaptured() const { return mouseCaptured; }
     void SetMouseCaptured(const bool v) { mouseCaptured = v; }
 
+    void SetSelected(UIButtonComponent* button);
+
 private:
     std::vector<std::shared_ptr<UICoreComponent>> rootComponents;
     std::vector<std::shared_ptr<UICoreComponent>> pendingAdd; // ★追加待ち
+
+    UIButtonComponent* selectedButton = nullptr; // 現在選択されているボタン（コントローラー、キーボード操作用）
+    std::vector<UIButtonComponent*> buttons;
 
     bool visible = true;
     bool enabled = true;

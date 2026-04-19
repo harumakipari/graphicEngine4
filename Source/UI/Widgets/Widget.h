@@ -168,7 +168,8 @@ enum class UIButtonState :uint8_t
 {
     Normal,
     Hovered,
-    Pressed
+    Pressed,
+    Selected, 
 };
 
 class UIButtonComponent : public UIImageComponent
@@ -210,8 +211,12 @@ private:
         case UIButtonState::Normal:  color = CoreColor::White; break;
         case UIButtonState::Hovered: color = CoreColor(0.8f, 0.8f, 0.8f, 1); break;
         case UIButtonState::Pressed: color = CoreColor(0.8f, 0.8f, 0.8f, 1); break;
+        case UIButtonState::Selected: color = CoreColor(1.0f, 1.0f, 0.5f, 1); break;
         }
     }
+
+private:
+    bool isSelected = false;
 };
 
 

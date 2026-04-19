@@ -23,12 +23,12 @@ public:
 
     void Update(float deltaTime)override;
 
-    void DrawImGuiDetails() override {}
+    void DrawImGuiDetails() override;
 
     // ダメージを受ける処理
     void TakeDamage(int damage);
 
-    // 攻撃処理
+    // 攻撃時に呼ぶ処理
     void DoAttackHit();
 
     // 移動方向を取得する関数
@@ -87,8 +87,13 @@ public:
     std::shared_ptr<CoreAudioSourceComponent> dashAudioComponent;   // ダッシュ音のオーディオコンポーネント
     std::shared_ptr<CoreAudioSourceComponent> chargeAudioComponent; // チャージ音のオーディオコンポーネント
 
+    DirectX::XMFLOAT4 debugDashCollisionColor = { 1,1,1,0 }; // ダッシュ攻撃の当たり判定の色　通常は透明で、攻撃中は赤くするなどして使用する
+    DirectX::XMFLOAT4 debugScissorsCollisionColor = { 1,1,1,0.5f }; // プレイヤーのハサミ攻撃当たり判定の色　通常は白色で、ダメージを受けたときに赤くするなどして使用する
 
 private:
+    std::shared_ptr<SphereComponent> dashAttackSphere; // ダッシュ攻撃の当たり判定用のSphereComponent
+    std::shared_ptr<SphereComponent> scissorsAttackSphere; // ハサミ攻撃の当たり判定用のSphereComponent
+    std::shared_ptr<SphereComponent> sphereComponent; // プレイヤーの当たり判定用のSphereComponent
     std::shared_ptr<RotationComponent> rotationComponent;
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
     DirectX::XMFLOAT3 moveDir = { 0,0,0 }; // 移動方向
@@ -115,7 +120,18 @@ private:
     // プレイヤーのHPを表示するUI　
     std::vector<std::shared_ptr<UIImageComponent>> hpUiComponents;
 
+    //　デバック用
+    DirectX::XMFLOAT4 debugPlayerCollisionColor = { 1,1,1,1 }; // プレイヤーの当たり判定の色　通常は白色で、ダメージを受けたときに赤くするなどして使用する
 
+    std::unordered_set<YarnEnemyActor*> hitEnemies; // ハサミ攻撃で当たった敵を記録するためのセット　これに入っている敵にはハサミ攻撃のダメージを与えないようにする
+
+    // 調整用のパラメータ　これらを調整してゲームバランスを取る
+    float dashAttackRange = 0.8f; // ダッシュ攻撃の範囲　dashAttackSphereの半径と同じにする
+    float scissorsAttackRange = 1.0f; // ハサミ攻撃の範囲　scissorsAttackSphereの半径と同じにする
+    float playerRadius = 0.5f; // プレイヤーの当たり判定の半径　sphereComponentの半径と同じにする
+
+    int scissorsDamage = 1;// ハサミ攻撃時に与えるダメージ
+    int dashDamage = 1;// ダッシュ攻撃時に与えるダメージ
 
 
     float damageCooldown = 0.0f; // ダメージを受けた後の無敵時間のクールダウン
@@ -137,6 +153,5 @@ private:
     float lastStickPower = 0.0f;// スティックの最終的な力　溜めの強さや投げるときの力に使用する
     float dashDistance;
     DirectX::XMFLOAT3 dashStartPos;
-    std::unordered_set<YarnEnemyActor*> hitEnemies; // すでに当たった敵
 
 };

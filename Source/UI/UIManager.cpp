@@ -162,3 +162,14 @@ void UIManager::SetAllUIActive(bool visible, bool enabled)
         ui->SetEnable(enabled);
     }
 }
+
+void UIManager::SetSelected(UIButtonComponent* btn)
+{
+    if (selectedButton)
+        selectedButton->state = UIButtonState::Normal;
+
+    selectedButton = btn;
+
+    if (selectedButton)
+        selectedButton->state = UIButtonState::Selected;
+}

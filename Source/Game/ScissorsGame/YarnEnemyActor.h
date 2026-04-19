@@ -40,7 +40,7 @@ public:
     }
 
     // プレイヤーのダッシュに当たったときの処理
-    virtual void OnHitByDash(ScissorsPlayer1* player);
+    virtual void OnHitByDash(ScissorsPlayer1* player, int dashDamage);
 private:
     // 線形移動の処理
     void MoveLinear(float deltaTime);
@@ -88,7 +88,7 @@ public:
     explicit BigYarnEnemyActor(const std::string& actorName) :YarnEnemyActor(actorName) {}
     void Initialize(const Transform& transform)override;
     // プレイヤーのダッシュに当たったときの処理
-    void OnHitByDash(ScissorsPlayer1* player)override;
+    void OnHitByDash(ScissorsPlayer1* player, int dashDamage)override;
 
 private:
     

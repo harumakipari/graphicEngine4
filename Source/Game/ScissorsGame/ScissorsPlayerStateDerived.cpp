@@ -109,6 +109,8 @@ void ScissorsPlayerAttackingState::Enter()
     // 攻撃タイマーをリセット
     attackTimer = 0.0f;
     hitDone = false;
+
+    player->debugScissorsCollisionColor = { 1,0,0,1.0f }; // デバッグ用にハサミ攻撃の当たり判定の色を変える　通常は白色で、ダメージを受けたときに赤くするなどして使用する
 }
 
 void ScissorsPlayerAttackingState::Execute(float deltaTime)
@@ -143,6 +145,8 @@ void ScissorsPlayerAttackingState::Execute(float deltaTime)
 void ScissorsPlayerAttackingState::Exit()
 {
     player->characterMovementComponent->ResetSpeed(); // 攻撃が終わったら移動速度をリセットする
+
+    player->debugScissorsCollisionColor = { 1,1,1,0.0f }; // デバッグ用にハサミ攻撃の当たり判定の色を変える　通常は白色で、ダメージを受けたときに赤くするなどして使用する
 }
 
 void ScissorsPlayerChargeDashState::Enter()
@@ -153,6 +157,8 @@ void ScissorsPlayerChargeDashState::Enter()
     player->dashAimArrowComponent->SetVisible(true);
     // チャージ音を再生する
     //player->chargeAudioComponent->Play();
+
+    player->debugDashCollisionColor = { 1,0,0,1 }; // デバッグ用にダッシュの当たり判定の色を変える　通常は透明で、攻撃中は赤くするなどして使用する
 }
 
 void ScissorsPlayerChargeDashState::Execute(float deltaTime)
@@ -248,5 +254,8 @@ void ScissorsPlayerDashState::Exit()
 {
     player->PlayAnimation("Idle", true, true, 0.1f);
     player->characterMovementComponent->ResetSpeed(); // ダッシュが終わったら移動速度をリセットする
+
+    player->debugDashCollisionColor = { 1,1,1,0 }; // デバッグ用にダッシュの当たり判定の色を変える　通常は透明で、攻撃中は赤くするなどして使用する
+
 }
 
