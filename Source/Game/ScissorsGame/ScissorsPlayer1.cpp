@@ -36,6 +36,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     stateMachine_->RegisterState(std::make_unique<ScissorsPlayerAttackingState>(this));
     stateMachine_->RegisterState(std::make_unique<ScissorsPlayerDashState>(this));
     stateMachine_->RegisterState(std::make_unique<ScissorsPlayerChargeDashState>(this));
+    stateMachine_->RegisterState(std::make_unique<ScissorsPlayerStunState>(this));
 
     // ステートマシンを character に追加
     this->SetStateMachine(stateMachine_);

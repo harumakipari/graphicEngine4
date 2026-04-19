@@ -123,10 +123,10 @@ void GameScene::Start()
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
-    audioComp->SetSource(L"./Data/Sound/BGM/ScissorsGameBgm.wav");
+    audioComp->SetSource(L"./Data/Sound/BGM1/game_bgm.wav");
     audioComp->SetLoop(true);
     audioComp->Play();
-    audioComp->SetVolume(0.2f);
+    audioComp->SetVolume(0.5f);
 
     auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
 

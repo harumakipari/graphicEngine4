@@ -57,10 +57,10 @@ bool Framework::Initialize()
 
     // SCENE_TRANSITION
    //Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-    //Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
    // Scene::_boot(device, "ResultScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
      //Scene::_boot(device, "MorphScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-    Scene::_boot(device, "GameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    //Scene::_boot(device, "GameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "SampleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "PuddingGameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
 

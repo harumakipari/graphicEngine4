@@ -159,6 +159,9 @@ void ScissorsPlayerChargeDashState::Enter()
     // チャージ音を再生する
     //player->chargeAudioComponent->Play();
 
+    // スタンするかどうかフラグをリセットする
+    player->isStun = false;
+
     player->debugDashCollisionColor = { 1,0,0,1 }; // デバッグ用にダッシュの当たり判定の色を変える　通常は透明で、攻撃中は赤くするなどして使用する
 }
 
@@ -181,15 +184,23 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
 
     // ダッシュの移動先を計算する　
     DirectX::XMFLOAT3 pos = player->GetPosition();
-    player->targetPos = { pos.x + dashDir.x * dashDistance,pos.y + dashDir.y * dashDistance,pos.z + dashDir.z * dashDistance };
+    DirectX::XMFLOAT3 unclampedTarget = { pos.x + dashDir.x * dashDistance,pos.y + dashDir.y * dashDistance,pos.z + dashDir.z * dashDistance };
 
+    DirectX::XMFLOAT3 clampedTarget = unclampedTarget;
     // ステージ外に出ないようにクランプ
     float stageMinX = 1.0f;
     float stageMaxX = 19.5f;
     float stageMinZ = 1.0f;
     float stageMaxZ = 19.5f;
-    player->targetPos.x = std::clamp(player->targetPos.x, stageMinX, stageMaxX);
-    player->targetPos.z = std::clamp(player->targetPos.z, stageMinZ, stageMaxZ);
+   clampedTarget.x = std::clamp(clampedTarget.x, stageMinX, stageMaxX);
+   clampedTarget.z = std::clamp(clampedTarget.z, stageMinZ, stageMaxZ);
+
+   // 差があるかチェック
+  player->isStun =
+       (unclampedTarget.x != clampedTarget.x) ||
+       (unclampedTarget.z != clampedTarget.z);
+
+   player->targetPos = clampedTarget;
 
     // 目的地のスクリーン座標
     XMFLOAT2 uiTargetPos = WorldToUI(player->targetPos);
@@ -261,9 +272,22 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     float t = elapsedTime / dashDuration;
     t = std::clamp(t, 0.0f, 1.0f);
 
+    float stageMinX = 1.0f;
+    float stageMaxX = 19.5f;
+    float stageMinZ = 1.0f;
+    float stageMaxZ = 19.5f;
+
     // 補間
-    DirectX::XMFLOAT3 pos = MathHelper::Lerp(startPos, player->targetPos, t);
-    player->SetPosition(pos);
+    DirectX::XMFLOAT3 nextPos = MathHelper::Lerp(startPos, player->targetPos, t);
+    // 壁チェック（簡易版）
+    if (nextPos.x <= stageMinX || nextPos.x >= stageMaxX ||
+        nextPos.z <= stageMinZ || nextPos.z >= stageMaxZ)
+    {
+        player->GetStateMachine()->ChangeState("Stun");
+        return;
+    }
+
+    player->SetPosition(nextPos);
 
     if (t >= 1.0f)
     {
@@ -281,3 +305,30 @@ void ScissorsPlayerDashState::Exit()
 
 }
 
+
+void ScissorsPlayerStunState::Enter()
+{
+    stunTimer = 0.0f;
+
+    player->PlayAnimation("Idle", true, true);
+    player->characterMovementComponent->SetSpeed(0.0f);
+
+    // ここでカメラシェイクやSEなどを入れる
+
+}
+
+void ScissorsPlayerStunState::Execute(float deltaTime)
+{
+    stunTimer += deltaTime;
+
+    if (stunTimer > stunDuration)
+    {
+        player->GetStateMachine()->ChangeState("Idle");
+    }
+}
+
+void ScissorsPlayerStunState::Exit()
+{
+    player->characterMovementComponent->ResetSpeed();
+    player->isStun = false;
+}

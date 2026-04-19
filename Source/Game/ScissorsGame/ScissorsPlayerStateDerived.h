@@ -128,3 +128,25 @@ private:
     DirectX::XMFLOAT3 startPos;  // 開始位置
 };
 
+// スタンステートオブジェクト
+class ScissorsPlayerStunState : public ScissorsPlayerStateBase
+{
+public:
+    // コンストラクタ
+    ScissorsPlayerStunState(ScissorsPlayer1* player) :ScissorsPlayerStateBase(player) {}
+    // デストラクタ
+    ~ScissorsPlayerStunState() = default;
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステートから出ていくときのメソッド
+    void Exit() override;
+    // ステート名を取得
+    const char* GetName() const override { return "Stun"; }
+
+private:
+    float stunTimer = 0.0f; // スタンタイマー
+    float stunDuration = 1.5f; // スタンしている秒数
+};
+

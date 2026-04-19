@@ -116,7 +116,7 @@ void TitleScene::Start()
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
-    audioComp->SetSource(L"./Data/Sound/BGM/ScissorsGameBgm.wav");
+    audioComp->SetSource(L"./Data/Sound/BGM1/title_bgm.wav");
     audioComp->SetLoop(true);
     audioComp->Play();
     audioComp->SetVolume(0.2f);
