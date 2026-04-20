@@ -75,5 +75,4 @@ private:
     bool enabled = true;
     bool mouseCaptured = false;
 
-    float delay = 0.0f;
 };

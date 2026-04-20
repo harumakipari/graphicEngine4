@@ -3,14 +3,15 @@
 #include <imgui.h>
 
 #include "FontManager.h"
+#include "Engine/Utility/Time.h"
 
 
 void UIManager::Update(float deltaTime)
 {
     if (!enabled) return;
 
-    // ボーズ中だけコントローラー用のUIを操作
-    HandleGamepadUI(deltaTime);
+    // コントローラー用のUIを操作  
+    HandleGamepadUI(Time::UnscaledDeltaTime());
 
     if (!pendingAdd.empty())
     {
@@ -168,8 +169,6 @@ void UIManager::SetAllUIActive(bool visible, bool enabled)
 
 void UIManager::SetSelected(UIButtonComponent* btn)
 {
-    delay = 0.0f;
-
     if (selectedButton)
         selectedButton->state = UIButtonState::Normal;
 
@@ -181,17 +180,49 @@ void UIManager::SetSelected(UIButtonComponent* btn)
 
 void UIManager::HandleGamepadUI(float deltaTime)
 {
+    static float stickDelay = 0.0f;
+    stickDelay -= deltaTime;
+
+    bool moved = false;
+
+    // =========================
+    // D-Pad入力（優先・1回だけ）
+    // =========================
+    if (InputSystem::GetInputState("UIUp", InputStateMask::Trigger))
     {
-        if (InputSystem::GetInputState("UIUp", InputStateMask::Trigger))
+        MoveSelection(-1);
+        stickDelay = 0.2f;
+        moved = true;
+    }
+    else if (InputSystem::GetInputState("UIDown", InputStateMask::Trigger))
+    {
+        MoveSelection(1);
+        stickDelay = 0.2f;
+        moved = true;
+    }
+
+    // =========================
+    // スティック入力（D-Pad優先）
+    // =========================
+    if (!moved && stickDelay <= 0.0f)
+    {
+        auto stick = InputSystem::GetLeftStick();
+
+        if (stick.y > 0.6f)
         {
             MoveSelection(-1);
+            stickDelay = 0.2f;
         }
-        else if (InputSystem::GetInputState("UIDown", InputStateMask::Trigger))
+        else if (stick.y < -0.6f)
         {
             MoveSelection(1);
+            stickDelay = 0.2f;
         }
     }
 
+    // =========================
+    // 決定ボタン
+    // =========================
     if (InputSystem::GetInputState("UISubmit", InputStateMask::Trigger))
     {
         if (selectedButton)

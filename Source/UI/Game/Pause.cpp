@@ -60,6 +60,12 @@ void Pause::Initialize(const Transform& transform)
     returnTitleButton->zOrder = 105; // 手前に描画する
     returnTitleButton->onClick = [&]()
         {
+            if (state != PauseState::Paused)
+            {// カウントダウンが何回も起こるのを防ぐため
+                return;
+            }
+
+
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
             Time::timeScale = 1.0f;
 
@@ -80,6 +86,11 @@ void Pause::Initialize(const Transform& transform)
     retryButton->zOrder = 105; // 手前に描画する
     retryButton->onClick = [&]()
         {
+            if (state != PauseState::Paused)
+            {// カウントダウンが何回も起こるのを防ぐため
+                return;
+            }
+
             CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
             Time::timeScale = 1.0f;
 
@@ -210,6 +221,7 @@ void Pause::OpenPause()
     menuButton->SetEnable(false);
     menuButton->SetVisible(false);
 
+    state = PauseState::Paused;
 
     Time::timeScale = 0.0f;
 
@@ -228,6 +240,11 @@ void Pause::OpenPause()
 // ポーズ画面を閉じる時の処理
 void Pause::ClosePause()
 {
+    if (state != PauseState::Paused)
+    {// カウントダウンが何回も起こるのを防ぐため
+        return;
+    }
+
     //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
     pausePanel->SetVisible(false);
     pausePanel->SetEnable(false);
