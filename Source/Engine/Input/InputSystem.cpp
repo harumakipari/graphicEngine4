@@ -257,8 +257,8 @@ void InputSystem::Initialize()
     inputKeys["ScissorsAction"].emplace_back(std::make_unique<Mouse>(VK_LBUTTON)); // マウス左ボタン
 
     // コントローラーとキーボード対応させる
-    inputKeys["UIUp"].emplace_back(std::make_unique<Gamepad>(GAMEPAD_L_UP));
-    inputKeys["UIDown"].emplace_back(std::make_unique<Gamepad>(GAMEPAD_L_DOWN));
+    inputKeys["UIUp"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_DPAD_UP));
+    inputKeys["UIDown"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_DPAD_DOWN));
 
     inputKeys["UIUp"].emplace_back(std::make_unique<Keyboard>(VK_UP));
     inputKeys["UIDown"].emplace_back(std::make_unique<Keyboard>(VK_DOWN));
@@ -267,7 +267,7 @@ void InputSystem::Initialize()
     inputKeys["UISubmit"].emplace_back(std::make_unique<Keyboard>(VK_RETURN));
 
     // ポーズ画面
-    inputKeys["Pause"].emplace_back(std::make_unique<Keyboard>(VK_ESCAPE));
+    inputKeys["Pause"].emplace_back(std::make_unique<Keyboard>(VK_TAB));
     inputKeys["Pause"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_START));
 }
 

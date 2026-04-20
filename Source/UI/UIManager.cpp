@@ -10,6 +10,7 @@ void UIManager::Update(float deltaTime)
     if (!enabled) return;
 
     // ボーズ中だけコントローラー用のUIを操作
+    HandleGamepadUI(deltaTime);
 
     if (!pendingAdd.empty())
     {
@@ -167,6 +168,8 @@ void UIManager::SetAllUIActive(bool visible, bool enabled)
 
 void UIManager::SetSelected(UIButtonComponent* btn)
 {
+    delay = 0.0f;
+
     if (selectedButton)
         selectedButton->state = UIButtonState::Normal;
 
@@ -178,20 +181,14 @@ void UIManager::SetSelected(UIButtonComponent* btn)
 
 void UIManager::HandleGamepadUI(float deltaTime)
 {
-    static float delay = 0.0f;
-    delay -= deltaTime;
-
-    if (delay <= 0.0f)
     {
         if (InputSystem::GetInputState("UIUp", InputStateMask::Trigger))
         {
             MoveSelection(-1);
-            delay = 0.2f;
         }
         else if (InputSystem::GetInputState("UIDown", InputStateMask::Trigger))
         {
             MoveSelection(1);
-            delay = 0.2f;
         }
     }
 
@@ -214,7 +211,7 @@ void UIManager::MoveSelection(int dir)
     // 現在選択中探す
     for (int i = 0; i < buttons.size(); i++)
     {
-        if (buttons[i] == selectedButton)
+        if (buttons[i].get() == selectedButton)
         {
             index = i;
             break;
@@ -223,8 +220,11 @@ void UIManager::MoveSelection(int dir)
 
     index += dir;
 
-    if (index < 0) index = buttons.size() - 1;
-    if (index >= buttons.size()) index = 0;
+    if (index < 0) // ループを禁止する
+        index = 0;
 
-    SetSelected(buttons[index]);
+    if (index >= buttons.size())
+        index = buttons.size() - 1;
+
+    SetSelected(buttons[index].get());
 }

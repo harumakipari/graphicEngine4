@@ -15,8 +15,8 @@ void UICoreComponent::DrawImGui()
     ImGui::DragFloat2("localPosition", &localPosition.x, 1.0f);
     ImGui::DragFloat2("Size", &size.x, 1.0f);
     ImGui::DragFloat2("Scale", &scale.x, 0.2f);
-    ImGui::SliderFloat("worldAngle", &worldAngle,0.0f,360.0f);
-    ImGui::SliderFloat2("pivot", &pivot.x, 0.0f,1.0f);
+    ImGui::SliderFloat("worldAngle", &worldAngle, 0.0f, 360.0f);
+    ImGui::SliderFloat2("pivot", &pivot.x, 0.0f, 1.0f);
 
 #endif
 }
@@ -83,8 +83,16 @@ void UICoreComponent::UpdateTransform()
     }
 }
 
-void UIButtonComponent::Update(float dt) 
+void UIButtonComponent::Update(float dt)
 {
+    if (InputSystem::IsGamepadConnected())
+    {// ゲームパッドをつないでいたら
+        // マウス処理しない（重要）
+        UpdateVisual();
+        return;
+    }
+
+
     DirectX::XMFLOAT2 cursor = InputSystem::GetMousePositionScreen();
     if (!InputSystem::GetMousePositionUI(cursor))
     {

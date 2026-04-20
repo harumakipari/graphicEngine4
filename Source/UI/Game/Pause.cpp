@@ -11,6 +11,8 @@ void Pause::Initialize(const Transform& transform)
 {
     const auto scene = GetOwnerScene();
 
+    auto uiManager = scene->GetUIManager();
+
     pausePanel = std::make_shared<UIImageComponent>("./Data/Textures/UI/pause_panel.png", "pause_panel");
     pausePanel->SetWorldPosition({ 967, 490 });
     pausePanel->SetPivot({ 0.5f,0.5f });
@@ -18,7 +20,7 @@ void Pause::Initialize(const Transform& transform)
     pausePanel->SetSize({ 741, 483 });
     pausePanel->SetVisible(false);
     pausePanel->zOrder = 100; // 手前に描画する
-    scene->GetUIManager()->Add(pausePanel);
+    uiManager->Add(pausePanel);
 
     // メニューボタン
     {
@@ -27,7 +29,7 @@ void Pause::Initialize(const Transform& transform)
         menuButton->SetPivot({ 0.5f,0.5f });
         menuButton->SetSize({ 140, 140 });
         menuButton->zOrder = 100; // 手前に描画する
-        scene->GetUIManager()->Add(menuButton);
+        uiManager->Add(menuButton);
         menuButton->onClick = [&]()
             {
                 OpenPause();
@@ -47,7 +49,7 @@ void Pause::Initialize(const Transform& transform)
         {
             ClosePause();
         };
-    GetOwnerScene()->GetUIManager()->Add(closeButton);
+    uiManager->Add(closeButton);
 
     returnTitleButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/back_to_title.png", "back_to_title");
     returnTitleButton->SetWorldPosition({ 977, 638 });
@@ -107,6 +109,12 @@ void Pause::Initialize(const Transform& transform)
 
         scene->GetUIManager()->Add(countDownImages[i]);
     }
+
+    uiManager->AddButton(closeButton);
+    uiManager->AddButton(returnTitleButton);
+    uiManager->AddButton(retryButton);
+
+
     //pausePanel = std::make_shared<UIImageComponent>("./Data/Textures/UI/CountDown_1.png", "pause_panel");
     //pausePanel->SetVisible(false);
     //scene->GetUIManager()->Add(pausePanel);
@@ -115,6 +123,20 @@ void Pause::Initialize(const Transform& transform)
 
 void Pause::Update(float deltaTime)
 {
+    // ポーズ切り替え
+    if (InputSystem::GetInputState("Pause", InputStateMask::Trigger))
+    {
+        if (state == PauseState::Playing)
+        {
+            OpenPause();
+        }
+        else if (state == PauseState::Paused)
+        {
+            ClosePause();
+        }
+    }
+
+    // カウントダウン処理（既存）
     if (state != PauseState::ResumeCountdown)
         return;
 

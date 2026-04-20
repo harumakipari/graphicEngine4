@@ -9,7 +9,7 @@ public:
 
     void Draw(ID3D11DeviceContext* immediateContext) const;
 
-    void DrawFont(ID3D11DeviceContext* immediateContext) const;
+    void DrawFont(ID3D11DeviceContext* immedaiateContext) const;
 
     void DrawSceneChangeSprite(ID3D11DeviceContext* immediateContext) const;
 
@@ -18,6 +18,15 @@ public:
         if (!ui) return;
         pendingAdd.push_back(ui);
     }
+
+    // コントローラー対応するボタンを追加
+    void AddButton(const std::shared_ptr<UIButtonComponent>& ui)
+    {
+        if (!ui) return;
+        buttons.push_back(ui);
+    }
+
+
 
     void Cleanup()
     {
@@ -57,10 +66,10 @@ private:
 
 private:
     std::vector<std::shared_ptr<UICoreComponent>> rootComponents;
-    std::vector<std::shared_ptr<UICoreComponent>> pendingAdd; // ★追加待ち
+    std::vector<std::shared_ptr<UICoreComponent>> pendingAdd; // 追加待ち
 
     UIButtonComponent* selectedButton = nullptr; // 現在選択されているボタン（コントローラー、キーボード操作用）
-    std::vector<UIButtonComponent*> buttons;
+    std::vector<std::shared_ptr<UIButtonComponent>> buttons;
 
     bool visible = true;
     bool enabled = true;
