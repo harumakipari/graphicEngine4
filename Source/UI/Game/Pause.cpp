@@ -29,58 +29,23 @@ void Pause::Initialize(const Transform& transform)
         menuButton->zOrder = 100; // 手前に描画する
         scene->GetUIManager()->Add(menuButton);
         menuButton->onClick = [&]()
-        {
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/escape_se.wav");
-            pausePanel->SetVisible(true);
-            pausePanel->SetEnable(true);
-
-            closeButton->SetVisible(true);
-            closeButton->SetEnable(true);
-
-            returnTitleButton->SetVisible(true);
-            returnTitleButton->SetEnable(true);
-
-            retryButton->SetVisible(true);
-            retryButton->SetEnable(true);
-
-            menuButton->SetEnable(false);
-            menuButton->SetVisible(false);
-
-
-            Time::timeScale = 0.0f;
-
-            // player の歩行音のために呼ぶ関数  (T_T)
-            if (auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>())
             {
-                player->OnPause();
-            }
-
-            GetOwnerScene()->SetPaused(true);
-        };
+                OpenPause();
+            };
     }
 
-
-    closeButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/close.png", "close");
+    // ゲームへ戻る
+    closeButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/back_to_game.png", "back_to_game");
     closeButton->SetWorldPosition({ 1281, 492 });
     closeButton->SetPivot({ 0.5f,0.5f });
-    closeButton->SetSize({ 140, 140 });
+    closeButton->SetSize({ 472, 183 });
     closeButton->SetVisible(false);
     closeButton->SetEnable(false);
     closeButton->zOrder = 105; // 手前に描画する
 
     closeButton->onClick = [&]()
         {
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
-            pausePanel->SetVisible(false);
-            pausePanel->SetEnable(false);
-            closeButton->SetEnable(false);
-            closeButton->SetVisible(false);
-            returnTitleButton->SetEnable(false);
-            returnTitleButton->SetVisible(false);
-            retryButton->SetEnable(false);
-            retryButton->SetVisible(false);
-            state = PauseState::ResumeCountdown;
-            countdownTime = 3.0f;
+            ClosePause();
         };
     GetOwnerScene()->GetUIManager()->Add(closeButton);
 
@@ -103,7 +68,6 @@ void Pause::Initialize(const Transform& transform)
         };
 
     GetOwnerScene()->GetUIManager()->Add(returnTitleButton);
-
 
     retryButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/retry.png", "retry");
     retryButton->SetWorldPosition({ 977, 838 });
@@ -180,7 +144,7 @@ void Pause::Update(float deltaTime)
 
         if (current != lastCountdownNumber)
         {
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/pause_countDown_se.wav",3.0f);
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE/pause_countDown_se.wav", 3.0f);
             lastCountdownNumber = current;
         }
     }
@@ -205,4 +169,52 @@ void Pause::Update(float deltaTime)
     }
 }
 
+// ポーズ画面を開くときの処理
+void Pause::OpenPause()
+{
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE/escape_se.wav");
+    pausePanel->SetVisible(true);
+    pausePanel->SetEnable(true);
 
+    closeButton->SetVisible(true);
+    closeButton->SetEnable(true);
+
+    returnTitleButton->SetVisible(true);
+    returnTitleButton->SetEnable(true);
+
+    retryButton->SetVisible(true);
+    retryButton->SetEnable(true);
+
+    menuButton->SetEnable(false);
+    menuButton->SetVisible(false);
+
+
+    Time::timeScale = 0.0f;
+
+    // player の歩行音のために呼ぶ関数  (T_T)
+    if (auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>())
+    {
+        player->OnPause();
+    }
+
+    GetOwnerScene()->SetPaused(true);
+
+    // 初期選択　UI　ゲームパッドの時の最初に選択するUI
+    GetOwnerScene()->GetUIManager()->SetSelected(closeButton.get());
+}
+
+// ポーズ画面を閉じる時の処理
+void Pause::ClosePause()
+{
+    //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+    pausePanel->SetVisible(false);
+    pausePanel->SetEnable(false);
+    closeButton->SetEnable(false);
+    closeButton->SetVisible(false);
+    returnTitleButton->SetEnable(false);
+    returnTitleButton->SetVisible(false);
+    retryButton->SetEnable(false);
+    retryButton->SetVisible(false);
+    state = PauseState::ResumeCountdown;
+    countdownTime = 3.0f;
+}

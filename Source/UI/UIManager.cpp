@@ -9,6 +9,8 @@ void UIManager::Update(float deltaTime)
 {
     if (!enabled) return;
 
+    // ボーズ中だけコントローラー用のUIを操作
+
     if (!pendingAdd.empty())
     {
         for (auto& ui : pendingAdd)
@@ -172,4 +174,57 @@ void UIManager::SetSelected(UIButtonComponent* btn)
 
     if (selectedButton)
         selectedButton->state = UIButtonState::Selected;
+}
+
+void UIManager::HandleGamepadUI(float deltaTime)
+{
+    static float delay = 0.0f;
+    delay -= deltaTime;
+
+    if (delay <= 0.0f)
+    {
+        if (InputSystem::GetInputState("UIUp", InputStateMask::Trigger))
+        {
+            MoveSelection(-1);
+            delay = 0.2f;
+        }
+        else if (InputSystem::GetInputState("UIDown", InputStateMask::Trigger))
+        {
+            MoveSelection(1);
+            delay = 0.2f;
+        }
+    }
+
+    if (InputSystem::GetInputState("UISubmit", InputStateMask::Trigger))
+    {
+        if (selectedButton)
+        {
+            selectedButton->OnClick();
+        }
+    }
+}
+
+// 選択切り替え処理
+void UIManager::MoveSelection(int dir)
+{
+    if (buttons.empty()) return;
+
+    int index = 0;
+
+    // 現在選択中探す
+    for (int i = 0; i < buttons.size(); i++)
+    {
+        if (buttons[i] == selectedButton)
+        {
+            index = i;
+            break;
+        }
+    }
+
+    index += dir;
+
+    if (index < 0) index = buttons.size() - 1;
+    if (index >= buttons.size()) index = 0;
+
+    SetSelected(buttons[index]);
 }

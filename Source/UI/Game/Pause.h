@@ -21,6 +21,15 @@ public:
 
     // リトライするシーンの名前を設定する
     void SetRetrySceneName(const std::string& sceneName) { retrySceneName = sceneName; }
+
+private:
+    // ポーズ画面を開くときの処理
+    void OpenPause();
+
+    // ポーズ画面を閉じる時の処理
+    void ClosePause();
+
+
 private:
     std::shared_ptr<UIImageComponent> pausePanel;
     std::shared_ptr<UIButtonComponent> menuButton;

@@ -49,6 +49,13 @@ public:
     void SetSelected(UIButtonComponent* button);
 
 private:
+    // ゲームパッドでUIを操作
+    void HandleGamepadUI(float deltaTime);
+
+    // 選択切り替え処理
+    void MoveSelection(int dir);
+
+private:
     std::vector<std::shared_ptr<UICoreComponent>> rootComponents;
     std::vector<std::shared_ptr<UICoreComponent>> pendingAdd; // ★追加待ち
 
@@ -58,4 +65,6 @@ private:
     bool visible = true;
     bool enabled = true;
     bool mouseCaptured = false;
+
+    float delay = 0.0f;
 };
