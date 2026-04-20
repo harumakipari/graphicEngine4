@@ -71,7 +71,13 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
                 if (other->GetCollisionLayer() == CollisionHelper::ToBit(CollisionLayer::Enemy))
                 {
-
+                    if (auto enemy=dynamic_cast <ScissorsGameEnemyBase*>(other->GetOwner()))
+                    {
+                        if (enemy->IsDead())
+                        {// “G‚ª€‚ñ‚Å‚¢‚½‚ç
+                            return;
+                        }
+                    }
                     debugPlayerCollisionColor = { 1.0f,0.0f,0.0f,1.0f };
                     TakeDamage(1);
                     damageCooldownTimer = damageCooldownInterval; // –³“GŠÔ‚ğİ’è
@@ -122,6 +128,11 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
                 auto enemy = dynamic_cast<YarnEnemyActor*>(other->GetOwner());
                 if (!enemy) return;
+
+                if (enemy->IsDead())
+                {// “G‚ª€–S‚µ‚Äê‡
+                    return;
+                }
 
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
                 //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav",1.0f);

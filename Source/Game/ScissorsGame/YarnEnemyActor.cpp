@@ -53,6 +53,7 @@ void YarnEnemyActor::Initialize(const Transform& transform)
     starEffectComponent->Load("./Data/Effect/Files/ScissorsGameStarEffect.json");
 
 
+#if 0
     auto uiManager = GetOwnerScene()->GetUIManager();
     auto ring = std::make_shared<UIRingEffect>("./Data/Textures/ScissorsUI/ring.png");
     ring->SetWorldPosition({ 500, 300 });
@@ -61,7 +62,6 @@ void YarnEnemyActor::Initialize(const Transform& transform)
     for (int i = 0; i < 8; i++)
     {
         auto star = std::make_shared<UILineEffect>("./Data/Textures/ScissorsUI/star.png", DirectX::XMFLOAT2{ 500, 300 });
-        //star->SetWorldPosition({ 500, 300 });
         star->SetSize({ 100,100 });
         uiManager->Add(star);
     }
@@ -74,6 +74,8 @@ void YarnEnemyActor::Initialize(const Transform& transform)
     //gizagiza->SetWorldPosition({ 500, 300 });
     //gizagiza->SetSize({ 100,100 });
     //uiManager->Add(gizagiza);
+
+#endif // 0
 
 }
 
@@ -109,6 +111,8 @@ void YarnEnemyActor::Update(float deltaTime)
 
     XMFLOAT3 pos = GetPosition();
     DebugRender::DrawSphere(pos, enemyRadius, { 0,1,1,1 }, 0, true);
+
+    ScissorsGameEnemyBase::Update(deltaTime);
 
 }
 

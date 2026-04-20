@@ -15,8 +15,6 @@ public:
     // 壁を全て壊す
     void BreakAllWalls();
 
-    // ダメージを与える　死亡したかどうかを取得する関数
-    bool TakeDamage(int damage)override;
 
 private:
     // 壁を生成

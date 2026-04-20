@@ -138,7 +138,7 @@ private:
 
     int scissorsDamage = 1;// ハサミ攻撃時に与えるダメージ
     int dashDamage = 1;// ダッシュ攻撃時に与えるダメージ
-    float hitStopDuration = 0.2f; // ヒットストップの時間　攻撃が当たったときに動きを止める時間
+    float hitStopDuration = 0.05f; // ヒットストップの時間　攻撃が当たったときに動きを止める時間
     float damageCooldownInterval = 0.8f; // 無敵時間
 
     float damageCooldownTimer = 0.0f; // ダメージを受けた後の無敵時間のクールダウン

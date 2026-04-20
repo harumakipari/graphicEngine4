@@ -340,7 +340,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
-        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
@@ -426,15 +426,28 @@ void GameScene::SetUpActors()
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
     pauseActor->SetRetrySceneName("GameScene");
 
+#if 0
     // ‰¼‚Ì‘Ò‚¿j“G
-    Transform tr({ 5,0,5 }, DirectX::XMFLOAT3{ 0.0f,180.0f,0.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
+    Transform tr({ 5,0,5 }, DirectX::XMFLOAT3{ 0.0f,180.0f,0.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
     auto needleEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<NeedleEnemyActor>("needleEnemy", tr);
 
+#endif // 0
 
-
-
-#if 0
     SpawnEnemy({ 5,0,5 }, YarnEnemyType::Static);
+    SpawnEnemy({ 8,0,5 }, YarnEnemyType::Static);
+    SpawnEnemy({ 10,0,5 }, YarnEnemyType::Static);
+    SpawnEnemy({ 12,0,5 }, YarnEnemyType::Static);
+    SpawnEnemy({ 15,0,5 }, YarnEnemyType::Static);
+    SpawnEnemy({ 18,0,5 }, YarnEnemyType::Static);
+
+
+    SpawnEnemy({  5,0,5 }, YarnEnemyType::Static);
+    SpawnEnemy({  5,0,8 }, YarnEnemyType::Static);
+    SpawnEnemy({ 5,0,10 }, YarnEnemyType::Static);
+    SpawnEnemy({ 5,0,12 }, YarnEnemyType::Static);
+    SpawnEnemy({ 5,0,15 }, YarnEnemyType::Static);
+    SpawnEnemy({ 5,0,18 }, YarnEnemyType::Static);
+#if 0
     SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveHorizontal);
     SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveVertical);
     //SpawnEnemy({ 0,0,0 }, YarnEnemyType::MoveToCenter);

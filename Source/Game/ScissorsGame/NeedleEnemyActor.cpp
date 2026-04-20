@@ -11,7 +11,7 @@ void NeedleEnemyActor::Initialize(const Transform& transform)
     std::string parentName = "SkeletonWarriorMeshComponent";
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/enemy.glb", false, true);
+    skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/NeedleEnemy.glb", false, true);
     skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Enemy;   // オブジェクトの種類を Enemy に設定
     skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 6.6f;   // emissionPowerの値を大きくして、自己発光の強さを上げてみる
     skeletalMeshComponent->overrideDeferredPipelineName = "deferredFightStage";
@@ -99,29 +99,6 @@ void NeedleEnemyActor::BreakAllWalls()
     {
         wall->Break();
     }
-}
-
-// ダメージを与える　死亡したかどうかを取得する関数
-bool NeedleEnemyActor::TakeDamage(int damage)
-{
-    if (hp <= 0) return true; // すでに倒れている場合は無視
-
-    hp -= damage;
-    Logger::Log(U8("敵にダメージ：") + std::to_string(damage));
-    if (hp <= 0)
-    {
-        if (onDeath)
-        {// WaveManagerにenemyCountを減らすように通知する
-            onDeath();
-        }
-        MarkPendingKill();
-        if (starEffectComponent)
-        {
-            starEffectComponent->Play();
-        }
-        return true;
-    }
-    return false;
 }
 
 // 壁を生成する

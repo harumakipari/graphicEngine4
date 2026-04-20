@@ -14,10 +14,10 @@ public:
 
     void Initialize(const Transform& transform)override;
 
-    void Update(float elapsedTime)override{}
+    void Update(float elapsedTime)override;
 
     // ダメージを与える　死亡したかどうかを取得する関数
-    virtual bool TakeDamage(int damage);
+    bool TakeDamage(int damage);
 
     // 移動の方向を設定する関数
     void SetMoveDirection(const DirectX::XMFLOAT3& dir)
@@ -36,10 +36,18 @@ public:
     // 敵のスコアを取得する関数
     EnemyScoreData GetScoreData() const { return scoreData; }
 
+    // 吹っ飛ばす関数
+    void ApplyKnockBack(DirectX::XMFLOAT3 dir);
+
+    // 死亡したかどうか
+    bool IsDead() const { return isDead; }
 
 protected:
     // 線形移動の処理
     void MoveLinear(float deltaTime);
+
+    // ヒットエフェクトを生成する
+    void SpawnHitEffect();
 
 public:
     // 死亡通知
@@ -62,7 +70,15 @@ protected:
 
     float enemyRadius = 0.5f; // 敵の当たり判定
     int maxHp = 1;
-    EnemyScoreData scoreData={ 100,0 }; // 倒したときのスコア
+    EnemyScoreData scoreData = { 100,0 }; // 倒したときのスコア
 
+
+    // 吹っ飛ばしのための変数
+    XMFLOAT3 velocity = { 0,0,0 };
+    float friction = 8.0f; // 減速
+
+
+    bool isDead = false;// 死亡したかどうか
+    float deathTimer = 0.0f;
 
 };
