@@ -92,7 +92,9 @@ private:
     float waveAmplitude = 1.0f; // U‚ê•
     float waveFrequency = 3.0f; // ‘¬‚³
 
+
 protected:
+    float enemyRadius = 0.5f; // “G‚Ì“–‚½‚è”»’è
     int maxHp = 1;
     EnemyScoreData scoreData{ 100,0 }; // “|‚µ‚½‚Æ‚«‚ÌƒXƒRƒA
 };

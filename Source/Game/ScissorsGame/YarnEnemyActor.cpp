@@ -22,7 +22,7 @@ void YarnEnemyActor::Initialize(const Transform& transform)
     {
         std::shared_ptr<SphereComponent> sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
-        radius = size.x * 0.5f;
+        radius = enemyRadius;
         height = size.y;
         mass = 180.0f;
         sphereComponent->SetRadius(radius);
@@ -49,7 +49,7 @@ void YarnEnemyActor::Initialize(const Transform& transform)
     scoreData = { 100,0 };
 
     // 星のエフェクトを追加
-    starEffectComponent = this->AddComponent<ParticleComponent>("starEffect",parentName);
+    starEffectComponent = this->AddComponent<ParticleComponent>("starEffect", parentName);
     starEffectComponent->Load("./Data/Effect/Files/ScissorsGameStarEffect.json");
 
 
@@ -107,7 +107,8 @@ void YarnEnemyActor::Update(float deltaTime)
         break;
     }
 
-
+    XMFLOAT3 pos = GetPosition();
+    DebugRender::DrawSphere(pos, enemyRadius, { 0,1,1,1 }, 0, true);
 
 }
 
@@ -324,6 +325,8 @@ void YarnEnemyActor::ChasePlayer(float deltaTime)
 void BigYarnEnemyActor::Initialize(const Transform& transform)
 {
     maxHp = 2;
+    enemyRadius = 1.0f;
+
     YarnEnemyActor::Initialize(transform);
 
     // 倒したときのスコア
