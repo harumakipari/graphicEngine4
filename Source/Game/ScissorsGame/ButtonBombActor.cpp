@@ -41,7 +41,7 @@ void ButtonBombActor::Explode()
 {
     float radius = 3.0f;
 
-    for (auto enemy : GetOwnerScene()->GetActorManager()->GetActorsOfType<YarnEnemyActor>())
+    for (auto enemy : GetOwnerScene()->GetActorManager()->GetActorsOfType<ScissorsGameEnemyBase>())
     {
         if (!enemy) continue;
 

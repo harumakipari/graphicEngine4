@@ -14,6 +14,7 @@
 #include "Game/Actors/Dessert/Pudding.h"
 #include "Game/Actors/Player/Player.h"
 #include "Game/Actors/Stage/Cloth.h"
+#include "Game/ScissorsGame/NeedleEnemyActor.h"
 
 
 #include "Physics/Physics.h"
@@ -128,7 +129,7 @@ void GameScene::Start()
     audioComp->Play();
     audioComp->SetVolume(0.5f);
 
-    auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
+    //auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
 
     // ƒV[ƒ“‚ªØ‚è‘Ö‚í‚Á‚½Žž‚É
     SceneTransitionManager::Instance().NotifySceneChanged();
@@ -339,7 +340,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
-        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
@@ -425,8 +426,14 @@ void GameScene::SetUpActors()
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
     pauseActor->SetRetrySceneName("GameScene");
 
+    // ‰¼‚Ì‘Ò‚¿j“G
+    Transform tr({ 5,0,5 }, DirectX::XMFLOAT3{ 0.0f,180.0f,0.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
+    auto needleEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<NeedleEnemyActor>("needleEnemy", tr);
 
-#if 1
+
+
+
+#if 0
     SpawnEnemy({ 5,0,5 }, YarnEnemyType::Static);
     SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveHorizontal);
     SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveVertical);

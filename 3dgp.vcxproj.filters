@@ -543,13 +543,7 @@
     <ClCompile Include="Source\Graphics\PostProcess\MotionBlurEffect.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ScissorsPlayer.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsStage.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ScissorsActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\ScissorsGame\YarnEnemyActor.cpp">
@@ -565,6 +559,18 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\ScissorsGame\TitleScene.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\WaveManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\NeedleEnemyActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\ScissorsGameEnemyBaseActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\RibbonWallActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -896,9 +902,7 @@
     <ClInclude Include="External\imgui\ImCurveEdit.h" />
     <ClInclude Include="External\imgui\ImSequencer.h" />
     <ClInclude Include="Source\Graphics\PostProcess\MotionBlurEffect.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayer.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsStage.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScissorsActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\YarnEnemyActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ButtonBombActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayer1.h" />
@@ -907,6 +911,10 @@
     <ClInclude Include="Source\Game\ScissorsGame\EnemyScoreData.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ComboSystem.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScoreCalculator.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\WaveManagaer.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameEnemyBaseActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\NeedleEnemyActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\RibbonWallActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

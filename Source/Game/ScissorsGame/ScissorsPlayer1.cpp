@@ -4,6 +4,7 @@
 
 #include "ScissorsPlayerStateDerived.h"
 #include "YarnEnemyActor.h"
+#include "ScissorsGameEnemyBaseActor.h"
 #include "Engine/Scene/SceneBase.h"
 #include "Engine/Utility/Time.h"
 #include "Physics/CollisionFunction.h"
@@ -162,7 +163,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 #endif // 0
 
 
-                auto enemy = dynamic_cast<YarnEnemyActor*>(other->GetOwner());
+                auto enemy = dynamic_cast<ScissorsGameEnemyBase*>(other->GetOwner());
                 if (!enemy) return;
 
                 if (hitEnemies.contains(enemy)) return;
@@ -495,7 +496,7 @@ void ScissorsPlayer1::DoAttackHit()
 
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav", 2.0f);
 
-    auto enemies = GetOwnerScene()->GetActorManager()->GetActorsOfType<YarnEnemyActor>();
+    auto enemies = GetOwnerScene()->GetActorManager()->GetActorsOfType<ScissorsGameEnemyBase>();
     Logger::Log(U8("çUåÇÇÇ∑ÇÈ"));
 
 #if 0

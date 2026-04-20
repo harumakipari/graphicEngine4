@@ -318,6 +318,9 @@
     <ClCompile Include="Source\Game\Scenes\PuddingGameScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\SampleScene.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ButtonBombActor.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\NeedleEnemyActor.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\RibbonWallActor.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\ScissorsGameEnemyBaseActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsPlayer1.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsPlayerStateDerived.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsStage.cpp" />
@@ -481,6 +484,9 @@
     <ClInclude Include="Source\Game\ScissorsGame\ButtonBombActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ComboSystem.h" />
     <ClInclude Include="Source\Game\ScissorsGame\EnemyScoreData.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\NeedleEnemyActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\RibbonWallActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameEnemyBaseActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayer1.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayerStateDerived.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsStage.h" />

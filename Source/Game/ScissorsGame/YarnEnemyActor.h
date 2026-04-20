@@ -1,5 +1,6 @@
 #pragma once
 #include "EnemyScoreData.h"
+#include "ScissorsGameEnemyBaseActor.h"
 #include "Components/Controller/ControllerComponent.h"
 #include "Components/Effect/ParticleComponent.h"
 #include "Core/Actor.h"
@@ -7,52 +8,20 @@
 
 class ScissorsPlayer1;
 
-enum class YarnEnemyType :uint8_t
-{
-    Static,   // その場でじっとしている
-    MoveHorizontal, // 横に直線移動する
-    MoveVertical,   // 縦に直線移動する
-    MoveToCenter,   // 中心に向かって移動する
-    WaveHorizontal, // 横に波打ちながら移動する
-    WaveVertical,  // 縦に波打ちながら移動する
-    ChasePlayer,          // プレイヤーを追いかける
-};
-
-class YarnEnemyActor :public Character
+class YarnEnemyActor :public ScissorsGameEnemyBase
 {
 public:
-    explicit YarnEnemyActor(const std::string& actorName) :Character(actorName) {}
+    explicit YarnEnemyActor(const std::string& actorName) :ScissorsGameEnemyBase(actorName) {}
 
     void Initialize(const Transform& transform)override;
 
     void Update(float elapsedTime)override;
 
-    // ダメージを与える　死亡したかどうかを取得する関数
-    bool TakeDamage(int damage);
-
     void SetType(YarnEnemyType type);
-    // 移動の方向を設定する関数
-    void SetMoveDirection(const DirectX::XMFLOAT3& dir)
-    {
-        moveDirection = dir;
-    }
-    // 速度を設定する関数
-    void SetSpeed(float speed)
-    {
-        this->speed = speed;
-    }
 
-    // プレイヤーのダッシュに当たったときの処理
-    virtual bool OnHitByDash(ScissorsPlayer1* player, int dashDamage);
-
-    // 敵のスコアを取得する関数
-    EnemyScoreData GetScoreData() const { return scoreData; }
 
 
 private:
-    // 線形移動の処理
-    void MoveLinear(float deltaTime);
-
     // 中心に向かって移動する処理
     void MoveToCenter(float deltaTime);
 
@@ -65,25 +34,11 @@ private:
     // プレイヤーを追いかける処理
     void ChasePlayer(float deltaTime);
 
-public:
-    // 死亡通知
-    std::function<void()> onDeath;
 
 private:
-    // 描画用コンポーネントを追加
-    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
-    std::shared_ptr<RotationComponent> rotationComponent;
-    std::shared_ptr<ParticleComponent> starEffectComponent;
-
-    YarnEnemyType enemyType = YarnEnemyType::Static;
-
-    // 移動のパラメータ
-    DirectX::XMFLOAT3 moveDirection = { 1.0f, 0.0f, 0.0f }; // 線形移動の方向
-    float speed = 2.0f; // 線形移動の速度
 
     // 中心に向かって移動するパラメータ
     DirectX::XMFLOAT3 centerPosition = { 6.0f, 0.0f, 6.0f }; // 中心の位置
-    DirectX::XMFLOAT3 startPosition = { 0.0f,0.0f,0.0f };   // 中心に向かって移動する前の開始位置
     bool goingToCenter = true; // 中心に向かって移動する途中かどうか
     float reachThreshold = 0.5f; // 中心に到達したとみなす距離の閾値
 
@@ -93,10 +48,6 @@ private:
     float waveFrequency = 3.0f; // 速さ
 
 
-protected:
-    float enemyRadius = 0.5f; // 敵の当たり判定
-    int maxHp = 1;
-    EnemyScoreData scoreData{ 100,0 }; // 倒したときのスコア
 };
 
 class BigYarnEnemyActor :public YarnEnemyActor
@@ -108,5 +59,5 @@ public:
     bool OnHitByDash(ScissorsPlayer1* player, int dashDamage)override;
 
 private:
-    
+
 };

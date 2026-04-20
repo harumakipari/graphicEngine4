@@ -6,7 +6,8 @@
 #include "Game/Actors/Base/Character.h"
 #include "UI/Widgets/Widget.h"
 
-class YarnEnemyActor;
+class ScissorsGameEnemyBase;
+
 
 class ScissorsPlayer1 :public Character
 {
@@ -128,7 +129,7 @@ private:
     //　デバック用
     DirectX::XMFLOAT4 debugPlayerCollisionColor = { 1,1,1,1 }; // プレイヤーの当たり判定の色　通常は白色で、ダメージを受けたときに赤くするなどして使用する
 
-    std::unordered_set<YarnEnemyActor*> hitEnemies; // ハサミ攻撃で当たった敵を記録するためのセット　これに入っている敵にはハサミ攻撃のダメージを与えないようにする
+    std::unordered_set<ScissorsGameEnemyBase*> hitEnemies; // ハサミ攻撃で当たった敵を記録するためのセット　これに入っている敵にはハサミ攻撃のダメージを与えないようにする
 
     // 調整用のパラメータ　これらを調整してゲームバランスを取る
     float dashAttackRange = 0.8f; // ダッシュ攻撃の範囲　dashAttackSphereの半径と同じにする
