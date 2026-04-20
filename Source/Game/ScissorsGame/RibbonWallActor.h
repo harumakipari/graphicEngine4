@@ -1,6 +1,8 @@
 #pragma once
 #include "./Core/Actor.h"
 
+class NeedleEnemyActor;
+
 class RibbonWallActor :public Actor
 {
 public:
@@ -8,10 +10,16 @@ public:
 
     void Initialize(const Transform& transform)override;
 
-    void Update(float elapsedTime)override;
+    void Update(float elapsedTime)override{}
+
+    // •Ç‚ğ‰ó‚·
+    void Break();
+    
+public:
+    // ‚±‚Ì•Ç‚ğŠ—L‚µ‚Ä‚¢‚é“G
+    std::weak_ptr<NeedleEnemyActor> ownerEnemy;
 
 private:
     // •Ç‚Ì“–‚½‚è”»’è
     std::shared_ptr<SphereComponent> wallCollisionComponent;
-
 };

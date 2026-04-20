@@ -1,6 +1,8 @@
 #pragma once
 #include "ScissorsGameEnemyBaseActor.h"
 
+class RibbonWallActor;
+
 class NeedleEnemyActor :public ScissorsGameEnemyBase
 {
 public:
@@ -10,6 +12,12 @@ public:
 
     void Update(float elapsedTime)override;
 
+    // 壁を全て壊す
+    void BreakAllWalls();
+
+    // ダメージを与える　死亡したかどうかを取得する関数
+    bool TakeDamage(int damage)override;
+
 private:
     // 壁を生成
     void SpawnWall(const DirectX::XMFLOAT3& pos);
@@ -17,6 +25,6 @@ private:
 private:
     DirectX::XMFLOAT3 lastDropPos = {}; // 最後に壁を置いた位置
     float dropDistance = 0.6f; // この距離進んだら壁置く
-    std::vector<std::shared_ptr<Actor>> walls;
+    std::vector<std::shared_ptr<RibbonWallActor>> walls;
 
 };

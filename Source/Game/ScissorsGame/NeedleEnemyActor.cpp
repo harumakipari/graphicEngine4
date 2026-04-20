@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "NeedleEnemyActor.h"
 
+#include "RibbonWallActor.h"
 #include "Engine/Scene/Scene.h"
 #include "UI/Widgets/Widget.h"
 
@@ -64,6 +65,13 @@ void NeedleEnemyActor::Initialize(const Transform& transform)
         star->SetSize({ 100,100 });
         uiManager->Add(star);
     }
+
+    // 死亡した時に呼ばれる関数
+    onDeath = [this]()
+        {
+            BreakAllWalls();
+        };
+
 }
 
 void NeedleEnemyActor::Update(float deltaTime)
@@ -84,22 +92,49 @@ void NeedleEnemyActor::Update(float deltaTime)
     }
 }
 
+// 壁を全て壊す
+void NeedleEnemyActor::BreakAllWalls()
+{
+    for (auto& wall:walls)
+    {
+        wall->Break();
+    }
+}
+
+// ダメージを与える　死亡したかどうかを取得する関数
+bool NeedleEnemyActor::TakeDamage(int damage)
+{
+    if (hp <= 0) return true; // すでに倒れている場合は無視
+
+    hp -= damage;
+    Logger::Log(U8("敵にダメージ：") + std::to_string(damage));
+    if (hp <= 0)
+    {
+        if (onDeath)
+        {// WaveManagerにenemyCountを減らすように通知する
+            onDeath();
+        }
+        MarkPendingKill();
+        if (starEffectComponent)
+        {
+            starEffectComponent->Play();
+        }
+        return true;
+    }
+    return false;
+}
+
+// 壁を生成する
 void NeedleEnemyActor::SpawnWall(const DirectX::XMFLOAT3& pos)
 {
     auto scene = GetOwnerScene();
 
     // 壁を生成
     Transform tr{ pos,DirectX::XMFLOAT3{ 0.0f, 0.0f, 0.0f },{ 0.5f, 1.0f, 0.5f } };
-    auto wall = scene->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("RibbonWall", tr);
+    auto wall = scene->GetActorManager()->CreateAndRegisterActorWithTransform<RibbonWallActor>("RibbonWall", tr);
 
-    // 当たり判定だけ付ける
-    auto sphere = wall->AddComponent<SphereComponent>("wallCollision");
-    sphere->SetRadius(0.4f); // ← 少し大きめが重要
-    sphere->SetLayer(CollisionLayer::WorldStatic);
-    sphere->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-    sphere->SetStatic(true); // 壁だから動かせないようにする
-    sphere->Initialize();
-
+    // 壁を所有する敵を設定する
+    wall->ownerEnemy = std::static_pointer_cast<NeedleEnemyActor>(shared_from_this());
     walls.push_back(wall);
 }
 

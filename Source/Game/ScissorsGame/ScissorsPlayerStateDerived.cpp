@@ -112,7 +112,7 @@ void ScissorsPlayerAttackingState::Enter()
     hitDone = false;
 
     // ハサミ攻撃を一体の敵のみに当てるため。
-    player->hasDamageEnemy = false; 
+    player->hasDamageEnemy = false;
     player->debugScissorsCollisionColor = { 1,0,0,1.0f }; // デバッグ用にハサミ攻撃の当たり判定の色を変える　通常は白色で、ダメージを受けたときに赤くするなどして使用する
 }
 
@@ -188,6 +188,8 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     DirectX::XMFLOAT3 pos = player->GetPosition();
     DirectX::XMFLOAT3 unclampedTarget = { pos.x + dashDir.x * dashDistance,pos.y + dashDir.y * dashDistance,pos.z + dashDir.z * dashDistance };
 
+
+
     DirectX::XMFLOAT3 clampedTarget = unclampedTarget;
     // ステージ外に出ないようにクランプ
     float stageMinX = 1.0f;
@@ -196,6 +198,14 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     float stageMaxZ = 19.5f;
     clampedTarget.x = std::clamp(clampedTarget.x, stageMinX, stageMaxX);
     clampedTarget.z = std::clamp(clampedTarget.z, stageMinZ, stageMaxZ);
+
+    HitResultWithActor hitResult = {};
+    uint32_t mask = CollisionHelper::ToBit(CollisionLayer::RibbonWall);
+    if (CollisionFunction::SphereRayCast(pos, clampedTarget, hitResult, 0.1f, mask))
+    {// もしリボンの壁に当たっていたら
+        clampedTarget.x = hitResult.hitPoint.x;
+        clampedTarget.z = hitResult.hitPoint.z;
+    }
 
     // 差があるかチェック
     player->isStun =

@@ -2,6 +2,8 @@
 
 #include "ScissorsPlayer1.h"
 
+#include "NeedleEnemyActor.h"
+#include "RibbonWallActor.h"
 #include "ScissorsPlayerStateDerived.h"
 #include "YarnEnemyActor.h"
 #include "ScissorsGameEnemyBaseActor.h"
@@ -56,6 +58,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         sphereComponent->SetLayer(CollisionLayer::Player);
         sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
         sphereComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+        sphereComponent->SetResponseToLayer(CollisionLayer::RibbonWall, CollisionComponent::CollisionResponse::Block);
         sphereComponent->Initialize();
         sphereComponent->SetOnHitCallback(
             [this](CollisionComponent* self, CollisionComponent* other)
@@ -148,6 +151,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         scissorsAttackSphere->SetRadius(scissorsAttackRange);
         scissorsAttackSphere->SetLayer(CollisionLayer::PlayerWeapon);
         scissorsAttackSphere->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
+        scissorsAttackSphere->SetResponseToLayer(CollisionLayer::RibbonWall, CollisionComponent::CollisionResponse::Trigger);
         scissorsAttackSphere->Initialize();
         scissorsAttackSphere->SetActive(false); // ©’Êí‚ÍOFF
         scissorsAttackSphere->SetOnHitCallback(
@@ -162,6 +166,13 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
 #endif // 0
 
+                auto wall = dynamic_cast<RibbonWallActor*>(other->GetOwner());
+                if (wall)
+                {// •Ç‚ªØ‚ç‚ê‚½‚ç
+                    auto needleEnemy = wall->ownerEnemy.lock();
+                    needleEnemy->BreakAllWalls(); // •Ç‚ð‚·‚×‚Ä”j‰ó‚·‚é
+                    return;
+                }
 
                 auto enemy = dynamic_cast<ScissorsGameEnemyBase*>(other->GetOwner());
                 if (!enemy) return;
