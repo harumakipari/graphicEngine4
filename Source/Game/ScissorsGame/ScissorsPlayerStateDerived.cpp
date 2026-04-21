@@ -279,7 +279,9 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     }
 
     // ‹OÕ’n“_‚ð’Ç‰Á
-    player->trail.trailPoints.push_back({ player->GetPosition(), 0.5f });
+    XMFLOAT3 trailPosition = player->GetPosition();
+    trailPosition.y += 0.4f; // °‚É”í‚é‚Ì–h‚®‚½‚ß‚É•‚‚©‚¹‚é
+    player->trail.trailPoints.push_back({ trailPosition, 0.5f });
 
     elapsedTime += deltaTime;
 

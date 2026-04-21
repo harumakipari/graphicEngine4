@@ -238,6 +238,12 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\SSRPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\TrailPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\TrailVS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\VelocityNeighborMaxPS.cso</FullPath>
     </ContentFile>
     <ContentFile>

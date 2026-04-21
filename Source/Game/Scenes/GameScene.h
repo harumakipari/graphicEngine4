@@ -54,7 +54,8 @@ private:
 private:
 
     TPSCameraComponent* mainCameraComponent = nullptr;
-    std::shared_ptr<ScissorsPlayer1> player; 
+    std::shared_ptr<ScissorsPlayer1> player;
+
 
 
 };

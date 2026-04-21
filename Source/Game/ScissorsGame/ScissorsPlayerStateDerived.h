@@ -147,6 +147,6 @@ public:
 
 private:
     float stunTimer = 0.0f; // スタンタイマー
-    float stunDuration = 1.5f; // スタンしている秒数
+    float stunDuration = 0.1f; // スタンしている秒数
 };
 

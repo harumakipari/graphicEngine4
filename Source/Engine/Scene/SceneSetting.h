@@ -45,9 +45,15 @@ struct SceneLightSaveData
 
 struct SceneShaderConstants
 {
+#if 0//(T_T) ここを変更
     float shadowColor = 0.75f;
     float shadowDepthBias = -0.00207f;
     float slopeBias = 0.005f;
+#else
+    float shadowColor = 0.15f;
+    float shadowDepthBias = 0.0011302f;
+    float slopeBias = 0.005f;
+#endif // 0//(T_T) ここを変更
     float splitU = 0.0f;
 
     float	hueShift = -0.028f;	// 色相調整 -1 から 1 （-1 は負方向の 180 度、0 は変更なし、1 は正方向の 180 度）
@@ -83,10 +89,16 @@ struct SceneShaderConstants
 
 struct CascadedShadowMapConstants
 {
+    float criticalDepthValue = 234.577f;
+    float splitSchemeWeight = 0.488f;// 1.0 に近いほど対数分割寄り
+    bool fitToCascade = true;// true: カスケード毎にnearを変える
+    float zDepthScale = 2.23f;// Z拡張倍率（シャドウ欠け防止）
+#if 0  //(T_T) ここを変更
     float criticalDepthValue = 247.0f;
     float splitSchemeWeight = 0.83f;// 1.0 に近いほど対数分割寄り
     bool fitToCascade = true;// true: カスケード毎にnearを変える
     float zDepthScale = 40.4f;// Z拡張倍率（シャドウ欠け防止）
+#endif // 0  //(T_T) ここを変更
 };
 
 struct FogConstants
