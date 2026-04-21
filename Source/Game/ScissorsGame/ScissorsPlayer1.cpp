@@ -13,11 +13,12 @@
 
 void ScissorsPlayer1::Initialize(const Transform& transform)
 {
-
     std::string parentName = "SkeletonWarriorMeshComponent";
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    skeletalMeshComponent->SetModel("./Data/TeamModels/Player/player.gltf", false, true);
+    //skeletalMeshComponent->SetModel("./Data/TeamModels/Player/player.gltf", false, true);
+
+    skeletalMeshComponent->SetModel("./Data/TeamModels/Player/ScissorsPlayer.glb", false, true);
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
@@ -50,7 +51,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     {
         sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
         radius = playerRadius;
-        height = 1.5f;
+        height = 0.8f;
         mass = 60.0f;
         sphereComponent->SetRadius(radius);
         sphereComponent->SetRelativeLocationDirect({ 0.0f,height,0.0f });
@@ -71,7 +72,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
                 if (other->GetCollisionLayer() == CollisionHelper::ToBit(CollisionLayer::Enemy))
                 {
-                    if (auto enemy=dynamic_cast <ScissorsGameEnemyBase*>(other->GetOwner()))
+                    if (auto enemy = dynamic_cast <ScissorsGameEnemyBase*>(other->GetOwner()))
                     {
                         if (enemy->IsDead())
                         {// 敵が死んでいたら
@@ -103,7 +104,6 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                         characterMovementComponent->AddImpulse(impulse);
                     }
 #endif // 0
-
                     // ダメージを受けたときのエフェクトや音をここで再生する
                 }
             }
@@ -112,8 +112,8 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
     // ダッシュ攻撃用の当たり判定
     {
-        dashAttackSphere = this->AddComponent<SphereComponent>("attackSphere", parentName);
-        dashAttackSphere->SetRelativeLocationDirect({ 0.0f,height,80.0f });
+        dashAttackSphere = this->AddComponent<SphereComponent>("dashAttackSphere", parentName);
+        dashAttackSphere->SetRelativeLocationDirect({ 0.0f,height,0.7f });
         dashAttackSphere->SetRadius(dashAttackRange);
         dashAttackSphere->SetLayer(CollisionLayer::PlayerWeapon);
         dashAttackSphere->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
@@ -158,7 +158,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     // ハサミ攻撃用の当たり判定
     {
         scissorsAttackSphere = this->AddComponent<SphereComponent>("scissorsAttackSphere", parentName);
-        scissorsAttackSphere->SetRelativeLocationDirect({ 0.0f,height,80.0f });
+        scissorsAttackSphere->SetRelativeLocationDirect({ 0.0f,height,1.1f });
         scissorsAttackSphere->SetRadius(scissorsAttackRange);
         scissorsAttackSphere->SetLayer(CollisionLayer::PlayerWeapon);
         scissorsAttackSphere->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
@@ -652,4 +652,20 @@ void ScissorsPlayer1::OnPause()
         stateMachine_->ChangeState("Idle"); // ポーズ中はIdleステートにする チャージダッシュ時もこれで止める
 
     }
+}
+
+// 星を生成する
+void ScissorsPlayer1::SpawnStarParticle(DirectX::XMFLOAT3 pos, XMFLOAT3 playerForward)
+{
+    // 星のテクスチャを生成
+    DirectX::XMFLOAT2 uiPos = WorldToUI(pos);
+    //auto starTex = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/star.png","star");
+    //auto starTex = std::make_shared<UILineEffect>("./Data/Textures/ScissorsUI/star.png",uiPos);
+    auto starTex = std::make_shared<UIDashEffect>("./Data/Textures/ScissorsUI/star.png", uiPos,DirectX::XMFLOAT2 { playerForward.x,playerForward.z });
+    auto uiManager = GetOwnerScene()->GetUIManager();
+    starTex->SetWorldPosition(uiPos);
+    starTex->SetVisible(true);
+    starTex->SetSize({ 50.0f, 50.0f });
+    starTex->SetPivot({ 0.5f, 0.5f });
+    uiManager->Add(starTex);
 }

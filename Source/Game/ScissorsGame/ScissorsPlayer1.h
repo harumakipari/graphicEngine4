@@ -9,7 +9,6 @@
 
 class ScissorsGameEnemyBase;
 
-
 class ScissorsPlayer1 :public Character
 {
     struct AimData
@@ -66,6 +65,9 @@ public:
 
     // ポーズの時に呼ぶ関数　これを呼ぶと歩きのSEが止まる
     void OnPause();
+
+    // 星を生成する
+    void SpawnStarParticle(DirectX::XMFLOAT3 pos, XMFLOAT3 playerForward);
 
 private:
     // 入力から狙いの情報を取得する
@@ -140,9 +142,9 @@ private:
     std::unordered_set<ScissorsGameEnemyBase*> hitEnemies; // ハサミ攻撃で当たった敵を記録するためのセット　これに入っている敵にはハサミ攻撃のダメージを与えないようにする
 
     // 調整用のパラメータ　これらを調整してゲームバランスを取る
-    float dashAttackRange = 0.8f; // ダッシュ攻撃の範囲　dashAttackSphereの半径と同じにする
+    float dashAttackRange = 1.5f; // ダッシュ攻撃の範囲　dashAttackSphereの半径と同じにする
     float scissorsAttackRange = 1.5f; // ハサミ攻撃の範囲　scissorsAttackSphereの半径と同じにする
-    float playerRadius = 0.5f; // プレイヤーの当たり判定の半径　sphereComponentの半径と同じにする
+    float playerRadius = 0.6f; // プレイヤーの当たり判定の半径　sphereComponentの半径と同じにする
 
     int scissorsDamage = 1;// ハサミ攻撃時に与えるダメージ
     int dashDamage = 1;// ダッシュ攻撃時に与えるダメージ

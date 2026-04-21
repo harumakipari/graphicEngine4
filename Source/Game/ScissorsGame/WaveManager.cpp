@@ -21,17 +21,45 @@ void WaveManager::Initialize(const Transform& transform)
        {
             // Wave 1
             {
-                { {3,0,19}, YarnEnemyType::Static, 0.0f },
+                { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
+                { { 8,0,5 },  YarnEnemyType::Static, 0.0f },
+                { { 10,0,5 }, YarnEnemyType::Static, 0.0f },
+                { { 12,0,5 }, YarnEnemyType::Static, 0.0f },
+                { { 15,0,5 }, YarnEnemyType::Static, 0.0f },
+                { { 18,0,5 }, YarnEnemyType::Static, 0.0f },
+
+                { {  5,0,8 }, YarnEnemyType::Static, 0.0f },
+                { { 5,0,10 }, YarnEnemyType::Static, 0.0f },
+                { { 5,0,12 }, YarnEnemyType::Static, 0.0f },
+                { { 5,0,15 }, YarnEnemyType::Static, 0.0f },
+                { { 5,0,18 }, YarnEnemyType::Static, 0.0f },
             },
-            false
+            false,
+           6
         },
 
         {
             // Wave 2（ちょい圧）
-            {
-                { {21,0,15}, YarnEnemyType::MoveHorizontal, 3.0f },
-                { {0,0,6}, YarnEnemyType::MoveHorizontal, 6.0f },
-            },
+    {
+        // 左上　から　右下
+                                { { 18,0,5 },  YarnEnemyType::Static, 0.0f },
+                { { 15,0,7 },  YarnEnemyType::Static, 0.3f },
+                { { 12,0,10 }, YarnEnemyType::Static, 0.5f },
+                { { 10,0,12 }, YarnEnemyType::Static, 0.8f },
+                { { 7,0,15 }, YarnEnemyType::Static, 1.2f },
+                { { 5,0,18 }, YarnEnemyType::Static, 1.5f },
+
+#if 0
+                // 右上　から　左下
+        { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
+        { { 7,0,7 },  YarnEnemyType::Static, 0.3f },
+        { { 10,0,10 }, YarnEnemyType::Static, 0.5f },
+        { { 12,0,12 }, YarnEnemyType::Static, 0.8f },
+        { { 15,0,15 }, YarnEnemyType::Static, 1.2f },
+        { { 18,0,18 }, YarnEnemyType::Static, 1.5f },
+
+        #endif // 0
+    },
             false
         },
 
@@ -177,37 +205,43 @@ void WaveManager::Update(float deltaTime)
         }
     }
 
-    // 次のWaveへ
-    if (wave.waitForClear)
-    {
-        if (allSpawned && AllEnemiesDead())
+    bool shouldGoNextWave = false; // 次のウェーブに行けるかどうか
+    if (wave.requiredKills>=0)
+    {// キル数指定がある場合
+        if (killCount>=wave.requiredKills)
         {
-            currentWave++;
-            timer = 0;
-            hasSpawnedAnyEnemy = false;
-
-            if (currentWave < waves.size())
-            {
-                spawnStates.clear();
-                spawnStates.resize(waves[currentWave].spawns.size());
-            }
+            shouldGoNextWave = true;
+        }
+    }
+    else if (wave.waitForClear)
+    {// 待つ条件がある場合
+        if (allSpawned && AllEnemiesDead())
+        {// 敵が全て出現　かつ　敵が全て死亡したら
+            shouldGoNextWave = true;
         }
     }
     else
-    {
-
+    {// 待つ条件がない場合
         if (allSpawned)
-        {
-            currentWave++;
-            timer = 0;
-
-            if (currentWave < waves.size())
-            {
-                spawnStates.clear();
-                spawnStates.resize(waves[currentWave].spawns.size());
-            }
+        {// 敵が全て出現したら
+            shouldGoNextWave = true;
         }
     }
+
+    if (shouldGoNextWave)
+    {// 次のウェーブに行けたら、
+        currentWave++;
+        timer = 0;
+        killCount = 0; // キル数をリセット
+        hasSpawnedAnyEnemy = false;
+
+        if (currentWave < waves.size())
+        {
+            spawnStates.clear();
+            spawnStates.resize(waves[currentWave].spawns.size());
+        }
+    }
+
 }
 
 // 仮の敵を生成する関数
@@ -216,14 +250,14 @@ void WaveManager::SpawnEnemy(
     YarnEnemyType type,
     float speed, const DirectX::XMFLOAT3& dir)
 {
-    Transform tr(pos, { 0,0,0 }, { 0.5f,0.5f,0.5f });
+    Transform tr(pos, { 0,0,0 }, { 1.0f,1.0f,1.0f });
     auto enemy = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<YarnEnemyActor>("enemy", tr);
     enemy->SetMoveDirection(dir);
     enemy->SetType(type);
     enemy->SetSpeed(speed);
     enemy->onDeath = [this]()
         {
-            enemyCount--;
+            OnDeath();
         };
     hasSpawnedAnyEnemy = true;
 
@@ -243,7 +277,7 @@ void WaveManager::SpawnBigEnemy(
     enemy->SetSpeed(speed);
     enemy->onDeath = [this]()
         {
-            enemyCount--;
+            OnDeath();
         };
     hasSpawnedAnyEnemy = true;
     enemyCount++;

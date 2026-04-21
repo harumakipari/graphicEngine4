@@ -573,6 +573,9 @@
     <ClCompile Include="Source\Game\ScissorsGame\RibbonWallActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\RabbitBossEnemy.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -916,6 +919,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\NeedleEnemyActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\RibbonWallActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\Trail.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\RabbitBossEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -1167,6 +1171,12 @@
     <FxCompile Include="Shader\FinalPassPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\TrailPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\TrailVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ComputeParticle.hlsli">
@@ -1248,6 +1258,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\MotionBlur.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\Trail.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

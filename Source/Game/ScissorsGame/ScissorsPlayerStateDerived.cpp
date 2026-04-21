@@ -179,7 +179,6 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     //    player->rotationComponent->SetDirection(dashDir);
     //}
 
-
     float aimDashPower = aimData.power;
     float dashDistance = minDistance + aimData.power * (maxDistance - minDistance);;
     //float dashDistance = 10.0f;
@@ -279,9 +278,16 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     }
 
     // 軌跡地点を追加
-    XMFLOAT3 trailPosition = player->GetPosition();
+    XMFLOAT3 playerPos = player->GetPosition();
+    XMFLOAT3 trailPosition = playerPos;
     trailPosition.y += 0.4f; // 床に被るの防ぐために浮かせる
     player->trail.trailPoints.push_back({ trailPosition, 0.5f });
+    DirectX::XMFLOAT3 dir = player->GetForward();
+
+#if 0
+    // 星のエフェクトを出す
+    player->SpawnStarParticle(playerPos, dir);
+#endif // 0
 
     elapsedTime += deltaTime;
 

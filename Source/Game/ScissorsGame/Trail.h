@@ -60,10 +60,6 @@ public:
 
         for (size_t i = 1; i < trailPoints.size(); i++)
         {
-#if 0
-            float alpha = trailPoints[i].life / 0.5f;
-            vertices.push_back({ trailPoints[i].position, alpha });
-#else
             auto& previent = trailPoints[i - 1];
             auto& current = trailPoints[i];
 
@@ -72,12 +68,13 @@ public:
             DirectX::XMVECTOR p1 = XMLoadFloat3(&current.position);
             DirectX::XMVECTOR dir = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(p1, p0));
 
-            // 横方向（XZ平面ならこれでOK）
+            // 横方向（XZ平面）
             DirectX::XMVECTOR side = DirectX::XMVector3Cross(dir, DirectX::XMVectorSet(0, 1, 0, 0));
             side = DirectX::XMVector3Normalize(side);
 
             float width = 0.3f; // 太さ
             float alpha = current.life / 0.5f;
+            alpha = alpha * alpha;
 
             DirectX::XMFLOAT3 left, right;
 
@@ -87,10 +84,10 @@ public:
             XMStoreFloat3(&left, leftVec);
             XMStoreFloat3(&right, rightVec);
 
-            vertices.push_back({ left, alpha });
-            vertices.push_back({ right, alpha });
 
-#endif // 0
+            float u = static_cast<float>(i) / (trailPoints.size() - 1);
+            vertices.push_back({ left, alpha, {u, 0.0f} });
+            vertices.push_back({ right, alpha, {u, 1.0f} });
         }
     }
 

@@ -15,6 +15,7 @@
 #include "Game/Actors/Player/Player.h"
 #include "Game/Actors/Stage/Cloth.h"
 #include "Game/ScissorsGame/NeedleEnemyActor.h"
+#include "Game/ScissorsGame/RabbitBossEnemy.h"
 
 
 #include "Physics/Physics.h"
@@ -129,7 +130,7 @@ void GameScene::Start()
     audioComp->Play();
     audioComp->SetVolume(0.5f);
 
-    //auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
+    auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
 
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
@@ -317,6 +318,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
     // 軌跡を描画する 今回のゲームで追加
     {
+        RenderState::BindBlendState(immediateContext, BLEND_STATE::ADD);
         player->RenderTrail(immediateContext);
     }
 
@@ -332,6 +334,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
         //定数バッファ更新
 
+
         // パーティクル描画
         EffectManager::Render(immediateContext);
 
@@ -346,7 +349,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
-        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
@@ -406,7 +409,8 @@ void GameScene::SetUpActors()
 
     {
         PROFILE_SCOPE("Create Player");
-        Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 0.01f,0.01f,0.01f });
+        Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        //Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 0.01f,0.01f,0.01f });
         player = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsPlayer1>("player", playerTr);
     }
     SetActiveCamera(mainCameraActor);
@@ -432,13 +436,20 @@ void GameScene::SetUpActors()
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
     pauseActor->SetRetrySceneName("GameScene");
 
+
+#if 0// ボスを生成　
+    Transform bossTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto rabbitBoss = this->GetActorManager()->CreateAndRegisterActorWithTransform<RabbitBossEnemyActor>("boss", bossTr);
+#endif // 0// ボスを生成　
+
+
 #if 0
     // 仮の待ち針敵
     Transform tr({ 5,0,5 }, DirectX::XMFLOAT3{ 0.0f,180.0f,0.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
     auto needleEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<NeedleEnemyActor>("needleEnemy", tr);
-
 #endif // 0
 
+#if 0
     SpawnEnemy({ 5,0,5 }, YarnEnemyType::Static);
     SpawnEnemy({ 8,0,5 }, YarnEnemyType::Static);
     SpawnEnemy({ 10,0,5 }, YarnEnemyType::Static);
@@ -447,13 +458,14 @@ void GameScene::SetUpActors()
     SpawnEnemy({ 18,0,5 }, YarnEnemyType::Static);
 
 
-    SpawnEnemy({  5,0,5 }, YarnEnemyType::Static);
-    SpawnEnemy({  5,0,8 }, YarnEnemyType::Static);
+    SpawnBigEnemy({  5,0,8 }, YarnEnemyType::Static);
     SpawnEnemy({ 5,0,10 }, YarnEnemyType::Static);
     SpawnEnemy({ 5,0,12 }, YarnEnemyType::Static);
     SpawnEnemy({ 5,0,15 }, YarnEnemyType::Static);
     SpawnEnemy({ 5,0,18 }, YarnEnemyType::Static);
-#if 0
+
+
+
     SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveHorizontal);
     SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveVertical);
     //SpawnEnemy({ 0,0,0 }, YarnEnemyType::MoveToCenter);
@@ -498,14 +510,13 @@ void GameScene::DrawGui()
 
 }
 
-
 // 仮の敵を生成する関数
 void GameScene::SpawnEnemy(
     const XMFLOAT3& pos,
     YarnEnemyType type,
     float speed, const XMFLOAT3& dir)
 {
-    Transform tr(pos, { 0,0,0 }, { 0.5f,0.5f,0.5f });
+    Transform tr(pos, { 0,0,0 }, { 1.0f,1.0f,1.0f });
     auto enemy = GetActorManager()->CreateAndRegisterActorWithTransform<YarnEnemyActor>("enemy", tr);
     enemy->SetMoveDirection(dir);
     enemy->SetType(type);

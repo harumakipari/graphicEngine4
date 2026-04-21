@@ -266,6 +266,8 @@ private:
     XMFLOAT2 startSize;
     XMFLOAT2 endSize;
 };
+
+
 class UILineEffect : public UIImageComponent
 {
 public:
@@ -308,7 +310,7 @@ public:
             return;
         }
 
-        
+
         SetWorldAngleDegree(this->worldAngle + dt * 180.0f);
         // 移動
         pos.x += velocity.x * dt;
@@ -351,6 +353,96 @@ private:
 
     XMFLOAT4 baseColor;
 };
+
+class UIDashEffect : public UIImageComponent
+{
+public:
+    UIDashEffect(const std::string& texPath, XMFLOAT2 center, XMFLOAT2 dir)
+        : UIImageComponent(texPath, "DashEffect")
+    {
+        lifeTime = 1.0f;
+        elapsed = 0.0f;
+
+        pos = center;
+
+        float spread = MathHelper::RandomRange(-0.3f, 0.3f);
+
+        XMFLOAT2 side = { dir.y, dir.x }; // 横方向
+
+        velocity = {
+            dir.x * 300.0f + side.x * spread * 100.0f,
+            dir.y * 300.0f + side.y * spread * 100.0f
+        };
+
+        // 初期サイズランダム
+        float s = MathHelper::RandomRange(30.0f, 80.0f);
+        startSize = { s, s };
+        endSize = { s * 0.7f, s * 0.7f };
+
+        SetSize(startSize);
+        SetPivot({ 0.5f, 0.5f });
+
+        // 色ランダム
+        baseColor = { 0.6f, 0.9f, 1.0f, 1.0f };
+        SetColor(baseColor);
+    }
+
+    void Update(float dt) override
+    {
+        elapsed += dt;
+
+        float t = elapsed / lifeTime;
+        if (t > 1.0f)
+        {
+            MarkPendingKill();
+            return;
+        }
+
+
+        SetWorldAngleDegree(this->worldAngle + dt * 30.0f);
+        // 移動
+        pos.x += velocity.x * dt;
+        pos.y += velocity.y * dt;
+        SetWorldPosition(pos);
+
+        //  サイズ縮小
+        XMFLOAT2 size;
+        size.x = startSize.x + (endSize.x - startSize.x) * t;
+        size.y = startSize.y + (endSize.y - startSize.y) * t;
+        SetSize(size);
+
+        //  フェード
+        float alpha = powf(1.0f - t, 2.0f);
+        SetColor(DirectX::XMFLOAT4{ baseColor.x, baseColor.y, baseColor.z, alpha });
+    }
+
+
+    DirectX::XMFLOAT4 RandomStarColor()
+    {
+        int r = MathHelper::RandomRange(0, 3);
+
+        switch (r)
+        {
+        case 0: return { 1.0f, 0.6f, 0.8f, 1.0f }; // ピンク
+        case 1: return { 1.0f, 1.0f, 0.3f, 1.0f }; // 黄色
+        case 2: return { 0.7f, 0.5f, 1.0f, 1.0f }; // 紫
+        default:return { 0.5f, 1.0f, 1.0f, 1.0f }; // 水色
+        }
+    }
+private:
+    float lifeTime;
+    float elapsed;
+
+    XMFLOAT2 pos;
+    XMFLOAT2 velocity;
+
+    XMFLOAT2 startSize;
+    XMFLOAT2 endSize;
+
+    XMFLOAT4 baseColor;
+};
+
+
 class UISpikeEffect : public UIImageComponent
 {
 public:

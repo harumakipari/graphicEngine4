@@ -28,6 +28,8 @@ struct WaveData
     std::vector<SpawnData> spawns;
 
     bool waitForClear; // 全滅待ちかどうか
+
+    int requiredKills = -1; // 必要キル数
 };
 
 class WaveManager :public Actor
@@ -39,7 +41,6 @@ public:
         Spawning,   // 通常のWave処理
         Finished
     };
-
 public:
     explicit WaveManager(const std::string& actorName) :Actor(actorName) {}
 
@@ -103,6 +104,13 @@ private:
 
         return result;
     }
+
+    // 敵が死んだときに呼ぶ関数として登録する関数
+    void OnDeath()
+    {
+        enemyCount--;
+        killCount++;
+    }
 private:
     int currentWave = 0;  // 今のウェーブ
     float timer = 0.0f;
@@ -112,10 +120,12 @@ private:
     std::vector<SpawnRuntime> spawnStates;
 
     int enemyCount = 0;
+    int killCount = 0; // キルカウント
 
     std::shared_ptr<ParticleComponent> spawnEffectComponent; // 出現エフェクト用コンポーネント
 
     WaveState waveState = WaveState::Ready;
     bool hasSpawnedAnyEnemy = false; //敵がスポーンを開始したかどうか
     float startTimer = 0.0f;// wave１が始まるまでの時間
+
 };
