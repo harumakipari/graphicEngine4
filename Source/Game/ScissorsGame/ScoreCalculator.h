@@ -53,6 +53,8 @@ public:
         combo.Reset();
     }
 
+    int GetCombo()const { return combo.GetComboCount(); }
+
 private:
     ComboSystem combo;
     ScoreCalculator calculator;

@@ -264,6 +264,9 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         }
     }
 
+    // 軌跡初期化
+    trail.Initialize();
+
 }
 
 void ScissorsPlayer1::Update(float deltaTime)
@@ -275,6 +278,9 @@ void ScissorsPlayer1::Update(float deltaTime)
     }
 
     Character::Update(deltaTime);
+
+    //　軌跡更新
+    trail.UpdateTrail(deltaTime);
 
     if (damageCooldownTimer > 0.0f)
     {// ダメージクールダウン中は無敵
@@ -410,6 +416,12 @@ void ScissorsPlayer1::DrawImGuiDetails()
     ImGui::Text("Dash Count: %d", dashCount);
     ImGui::Text("Current State: %s", stateMachine_->GetStateName());
 #endif
+}
+
+// 軌跡を描画する処理
+void ScissorsPlayer1::RenderTrail(ID3D11DeviceContext* immediateContext)
+{
+    trail.Render(immediateContext);
 }
 
 // 入力から狙いの情報を取得する

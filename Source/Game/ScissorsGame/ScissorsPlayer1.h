@@ -1,5 +1,6 @@
 #pragma once
 #include "ScoreCalculator.h"
+#include "Trail.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Components/Controller/ControllerComponent.h"
 #include "Core/Actor.h"
@@ -26,6 +27,9 @@ public:
     void Update(float deltaTime)override;
 
     void DrawImGuiDetails() override;
+
+    // 軌跡を描画する処理
+    void RenderTrail(ID3D11DeviceContext* immediateContext);
 
     // ダメージを受ける処理
     void TakeDamage(int damage);
@@ -96,7 +100,11 @@ public:
     bool isStun = false;// スタンするかどうか  あんまり使っていない
     bool hasDamageEnemy = false; // ハサミ攻撃を一体の敵のみに当てるため。
 
+    ScoreSystem scoreSystem; // スコア計算用のクラス
 
+
+     // 軌跡
+    Trail trail;
 private:
     std::shared_ptr<SphereComponent> dashAttackSphere; // ダッシュ攻撃の当たり判定用のSphereComponent
     std::shared_ptr<SphereComponent> scissorsAttackSphere; // ハサミ攻撃の当たり判定用のSphereComponent
@@ -144,7 +152,6 @@ private:
     float damageCooldownTimer = 0.0f; // ダメージを受けた後の無敵時間のクールダウン
     
 
-    ScoreSystem scoreSystem; // スコア計算用のクラス
 
 
     float dashTime = 0.3f;

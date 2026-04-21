@@ -52,6 +52,9 @@ private:
         float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 } );
 
 private:
+
     TPSCameraComponent* mainCameraComponent = nullptr;
+    std::shared_ptr<ScissorsPlayer1> player; 
+
 
 };

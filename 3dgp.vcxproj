@@ -492,6 +492,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsStage.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScoreCalculator.h" />
     <ClInclude Include="Source\Game\ScissorsGame\TitleScene.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\Trail.h" />
     <ClInclude Include="Source\Game\ScissorsGame\WaveManagaer.h" />
     <ClInclude Include="Source\Game\ScissorsGame\YarnEnemyActor.h" />
     <ClInclude Include="Source\Game\SofyBody\SoftBody.h" />

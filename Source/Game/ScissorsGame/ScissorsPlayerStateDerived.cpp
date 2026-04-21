@@ -278,6 +278,9 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
         return;
     }
 
+    // 軌跡地点を追加
+    player->trail.trailPoints.push_back({ player->GetPosition(), 0.5f });
+
     elapsedTime += deltaTime;
 
     // 時間固定ダッシュ 何秒でtargetPosに着くか

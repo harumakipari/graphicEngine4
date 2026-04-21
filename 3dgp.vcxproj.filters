@@ -915,6 +915,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameEnemyBaseActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\NeedleEnemyActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\RibbonWallActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\Trail.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

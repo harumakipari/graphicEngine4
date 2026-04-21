@@ -70,8 +70,14 @@ bool ScissorsGameEnemyBase::OnHitByDash(ScissorsPlayer1* player, int dashDamage)
 
     XMFLOAT3 dir = MathHelper::Normalize(MathHelper::Subtract(enemyPos, playerPos));
 
+    int combo = player->scoreSystem.GetCombo();
+
+    bool flag = (combo % 2 == 0);
+
+    int multiple = flag ? 1 : -1;
+
     // 吹っ飛ばす
-    ApplyKnockBack(dir);
+    ApplyKnockBack({dir.z*multiple,dir.y,dir.x * multiple });
 
     int prevHp = hp;
     // ダッシュで当たったときの処理
@@ -102,7 +108,10 @@ bool ScissorsGameEnemyBase::TakeDamage(int damage)
         // エフェクトを発生させる
         SpawnHitEffect();
 
-        //MarkPendingKill();
+#if 0 // 吹っ飛ばす前にActorを消す
+        MarkPendingKill();
+
+#endif // 0 // 吹っ飛ばす前にActorを消す
 
 
         if (starEffectComponent)

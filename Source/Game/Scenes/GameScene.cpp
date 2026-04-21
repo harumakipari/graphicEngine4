@@ -306,13 +306,19 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF);
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_FRONT);
     sceneRender.currentRenderPath = RenderPath::Forward;
-    sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ‚±‚±‚ÅŒxo‚é
+    sceneRender.RenderBlend(immediateContext, queues.deferredBlend); 
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Forward;
-    sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // ‚±‚±‚ÅŒxo‚é
+    sceneRender.RenderBlend(immediateContext, queues.deferredBlend); 
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
+
+
+    // ‹OÕ‚ğ•`‰æ‚·‚é ¡‰ñ‚ÌƒQ[ƒ€‚Å’Ç‰Á
+    {
+        player->RenderTrail(immediateContext);
+    }
 
 #if 1
     // PARTICLES
@@ -401,7 +407,7 @@ void GameScene::SetUpActors()
     {
         PROFILE_SCOPE("Create Player");
         Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 0.01f,0.01f,0.01f });
-        auto player = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsPlayer1>("player", playerTr);
+        player = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsPlayer1>("player", playerTr);
     }
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("gameƒV[ƒ“‚ÌƒJƒƒ‰İ’è‚³‚ê‚éB"));

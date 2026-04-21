@@ -4,7 +4,6 @@
 #include <DirectXMath.h>
 #include <memory>
 #include <vector>
-
 #include "Graphics/Core/ConstantBuffer.h"
 #include "Graphics/Resource/InterleavedGltfModel.h"
 
@@ -76,7 +75,7 @@ public:
     */
     static void DrawSphere(ID3D11DeviceContext* immediateContext, const DirectX::XMFLOAT3& position, float radius, const DirectX::XMFLOAT4& color);
     static void DrawDebugSphere(ID3D11DeviceContext* context, const DirectX::XMFLOAT3& center, float radius,
-                         const DirectX::XMFLOAT4& color, int segments);
+        const DirectX::XMFLOAT4& color, int segments);
 
     /**
     * @brief カプセルを描画する（位置のみ）
@@ -205,6 +204,9 @@ private:
     static inline std::unique_ptr<InterleavedGltfModel> capsule = nullptr; /**< カプセルモデル */
     static inline std::unique_ptr<InterleavedGltfModel> cube = nullptr; /**< 箱（底が原点）モデル */
     static inline std::unique_ptr<InterleavedGltfModel> cubeCenter = nullptr; /**< 箱（中心が原点）モデル */
+
+
+
 };
 
 
