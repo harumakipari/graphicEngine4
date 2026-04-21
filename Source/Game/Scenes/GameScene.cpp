@@ -14,6 +14,7 @@
 #include "Game/Actors/Dessert/Pudding.h"
 #include "Game/Actors/Player/Player.h"
 #include "Game/Actors/Stage/Cloth.h"
+#include "Game/ScissorsGame/ButtonCoinActor.h"
 #include "Game/ScissorsGame/NeedleEnemyActor.h"
 #include "Game/ScissorsGame/RabbitBossEnemy.h"
 
@@ -349,7 +350,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
-        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
@@ -442,11 +443,14 @@ void GameScene::SetUpActors()
     auto rabbitBoss = this->GetActorManager()->CreateAndRegisterActorWithTransform<RabbitBossEnemyActor>("boss", bossTr);
 #endif // 0// ƒ{ƒX‚ð¶¬@
 
+    Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("coin", coinTr);
+
 
 #if 0
     // ‰¼‚Ì‘Ò‚¿j“G
     Transform tr({ 5,0,5 }, DirectX::XMFLOAT3{ 0.0f,180.0f,0.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
-    auto needleEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<NeedleEnemyActor>("needleEnemy", tr);
+    auto needleEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("needleEnemy", tr);
 #endif // 0
 
 #if 0

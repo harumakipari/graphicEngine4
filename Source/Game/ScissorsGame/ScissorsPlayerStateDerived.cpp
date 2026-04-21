@@ -281,7 +281,7 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     XMFLOAT3 playerPos = player->GetPosition();
     XMFLOAT3 trailPosition = playerPos;
     trailPosition.y += 0.4f; // °‚É”í‚é‚Ì–h‚®‚½‚ß‚É•‚‚©‚¹‚é
-    player->trail.trailPoints.push_back({ trailPosition, 0.5f });
+    player->trail.trailPoints.push_back({ trailPosition, 1.5f });
     DirectX::XMFLOAT3 dir = player->GetForward();
 
 #if 0

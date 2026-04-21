@@ -318,6 +318,7 @@
     <ClCompile Include="Source\Game\Scenes\PuddingGameScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\SampleScene.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ButtonBombActor.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\ButtonCoinActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\NeedleEnemyActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\RabbitBossEnemy.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\RibbonWallActor.cpp" />
@@ -483,6 +484,7 @@
     <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />
     <ClInclude Include="Source\Game\Scenes\SampleScene.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ButtonBombActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ButtonCoinActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ComboSystem.h" />
     <ClInclude Include="Source\Game\ScissorsGame\EnemyScoreData.h" />
     <ClInclude Include="Source\Game\ScissorsGame\NeedleEnemyActor.h" />
@@ -887,6 +889,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\ScissorsGameEnemyPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\SsaoPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

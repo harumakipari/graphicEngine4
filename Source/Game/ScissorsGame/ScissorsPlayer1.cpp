@@ -16,9 +16,9 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     std::string parentName = "SkeletonWarriorMeshComponent";
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    //skeletalMeshComponent->SetModel("./Data/TeamModels/Player/player.gltf", false, true);
+    skeletalMeshComponent->SetModel("./Data/TeamModels/Player/player.gltf", false, true);
 
-    skeletalMeshComponent->SetModel("./Data/TeamModels/Player/ScissorsPlayer.glb", false, true);
+    //skeletalMeshComponent->SetModel("./Data/TeamModels/Player/ScissorsPlayer.glb", false, true);
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
@@ -193,7 +193,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 hitEnemies.insert(enemy);
 
                 // ヒット処理と倒したかどうかを取得する
-                bool isKilled = enemy->TakeDamage(scissorsDamage);
+                bool isKilled = enemy->OnHitByAttack(this, scissorsDamage);
                 Logger::Log(U8("敵にヒット！"));
 
                 hasDamageEnemy = true;
@@ -661,7 +661,7 @@ void ScissorsPlayer1::SpawnStarParticle(DirectX::XMFLOAT3 pos, XMFLOAT3 playerFo
     DirectX::XMFLOAT2 uiPos = WorldToUI(pos);
     //auto starTex = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/star.png","star");
     //auto starTex = std::make_shared<UILineEffect>("./Data/Textures/ScissorsUI/star.png",uiPos);
-    auto starTex = std::make_shared<UIDashEffect>("./Data/Textures/ScissorsUI/star.png", uiPos,DirectX::XMFLOAT2 { playerForward.x,playerForward.z });
+    auto starTex = std::make_shared<UIDashEffect>("./Data/Textures/ScissorsUI/star.png", uiPos, DirectX::XMFLOAT2{ playerForward.x,playerForward.z });
     auto uiManager = GetOwnerScene()->GetUIManager();
     starTex->SetWorldPosition(uiPos);
     starTex->SetVisible(true);

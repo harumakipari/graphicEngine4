@@ -12,28 +12,26 @@ void YarnEnemyActor::Initialize(const Transform& transform)
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/YarnEnemy.glb", false, true);
-    skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Enemy;   // オブジェクトの種類を Enemy に設定
-    skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 6.6f;   // emissionPowerの値を大きくして、自己発光の強さを上げてみる
-    skeletalMeshComponent->overrideDeferredPipelineName = "deferredFightStage";
-    skeletalMeshComponent->plusAlphaCBuffer->data.brightness = 5.0f;
-    skeletalMeshComponent->plusAlphaCBuffer->data.saturation = 1.4f;
+    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
+    skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
+
 
     // 当たり判定
     {
-        std::shared_ptr<SphereComponent> sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
+        sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
         radius = enemyRadius;
         height = size.y;
         mass = 180.0f;
-        sphereComponent->SetRadius(radius);
-        sphereComponent->SetMass(mass);
-        sphereComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
-        sphereComponent->SetLayer(CollisionLayer::Enemy);
-        sphereComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-        sphereComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
-        sphereComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-        sphereComponent->SetCollisionOffsetY(height * 0.5f);
-        sphereComponent->Initialize();
+        sphereCollisionComponent->SetRadius(radius);
+        sphereCollisionComponent->SetMass(mass);
+        sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+        sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+        sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
+        sphereCollisionComponent->Initialize();
     }
 
     // 回転用コンポーネントを追加
@@ -277,26 +275,26 @@ void BigYarnEnemyActor::Initialize(const Transform& transform)
     skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/YarnBigEnemy.glb", false, true);
     skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Enemy;   // オブジェクトの種類を Enemy に設定
     skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 6.6f;   // emissionPowerの値を大きくして、自己発光の強さを上げてみる
-    skeletalMeshComponent->overrideDeferredPipelineName = "deferredFightStage";
+    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
     skeletalMeshComponent->plusAlphaCBuffer->data.brightness = 5.0f;
     skeletalMeshComponent->plusAlphaCBuffer->data.saturation = 1.4f;
 
     // 当たり判定
     {
-        std::shared_ptr<SphereComponent> sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
+        sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
         radius = enemyRadius;
         height = size.y;
         mass = 180.0f;
-        sphereComponent->SetRadius(radius);
-        sphereComponent->SetMass(mass);
-        sphereComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
-        sphereComponent->SetLayer(CollisionLayer::Enemy);
-        sphereComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-        sphereComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
-        sphereComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-        sphereComponent->SetCollisionOffsetY(height * 0.5f);
-        sphereComponent->Initialize();
+        sphereCollisionComponent->SetRadius(radius);
+        sphereCollisionComponent->SetMass(mass);
+        sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+        sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+        sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
+        sphereCollisionComponent->Initialize();
     }
 
     // 回転用コンポーネントを追加
@@ -324,7 +322,7 @@ bool BigYarnEnemyActor::OnHitByDash(ScissorsPlayer1* player, int dashDamage)
 {
     int prevHp = hp;
 
-    TakeDamage(dashDamage);
+    TakeDamage(dashDamage, true);
     // playerのダッシュを止める処理を追加
     if (hp >= maxHp - 1)
         player->StopDash();

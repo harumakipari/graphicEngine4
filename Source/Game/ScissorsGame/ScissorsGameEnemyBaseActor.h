@@ -17,7 +17,7 @@ public:
     void Update(float elapsedTime)override;
 
     // ダメージを与える　死亡したかどうかを取得する関数
-    bool TakeDamage(int damage);
+    bool TakeDamage(int damage, bool hitByDash);
 
     // 移動の方向を設定する関数
     void SetMoveDirection(const DirectX::XMFLOAT3& dir)
@@ -33,21 +33,28 @@ public:
     // プレイヤーのダッシュに当たったときの処理
     virtual bool OnHitByDash(ScissorsPlayer1* player, int dashDamage);
 
+    // プレイヤーのハサミ攻撃が当たったときの処理  
+    bool OnHitByAttack(ScissorsPlayer1* player, int dashDamage);
+
+
     // 敵のスコアを取得する関数
     EnemyScoreData GetScoreData() const { return scoreData; }
 
     // 吹っ飛ばす関数
-    void ApplyKnockBack(DirectX::XMFLOAT3 dir);
+    void ApplyKnockBack(DirectX::XMFLOAT3 dir, float horizontalPower, float verticalPower);
 
     // 死亡したかどうか
     bool IsDead() const { return isDead; }
+
+    // 死亡した時に呼ぶ関数
+    void CallDeath(bool hitByDash);
 
 protected:
     // 線形移動の処理
     void MoveLinear(float deltaTime);
 
     // ヒットエフェクトを生成する
-    void SpawnHitEffect();
+    void SpawnHitEffect(bool hitByDash);
 
 public:
     // 死亡通知
@@ -56,11 +63,11 @@ public:
 
 protected:
     DirectX::XMFLOAT3 startPosition = { 0.0f,0.0f,0.0f };   // 中心に向かって移動する前の開始位置
-
     // 描画用コンポーネントを追加
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
-    std::shared_ptr<RotationComponent> rotationComponent;
+    std::shared_ptr<RotationComponent> rotationComponent; // 回転のコンポーネント
     std::shared_ptr<ParticleComponent> starEffectComponent;
+    std::shared_ptr<SphereComponent> sphereCollisionComponent; // 当たり判定のコンポーネント
 
     YarnEnemyType enemyType = YarnEnemyType::Static;
     // 移動のパラメータ
@@ -75,10 +82,12 @@ protected:
 
     // 吹っ飛ばしのための変数
     XMFLOAT3 velocity = { 0,0,0 };
-    float friction = 8.0f; // 減速
+    float friction = 5.0f; // 減速
 
 
     bool isDead = false;// 死亡したかどうか
     float deathTimer = 0.0f;
+
+    bool createCoin = false; //  コインを生成する
 
 };

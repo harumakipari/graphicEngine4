@@ -49,18 +49,18 @@ void ButtonBombActor::Explode()
 
         if (dist < radius)
         {
-            enemy->TakeDamage(2);
+            enemy->TakeDamage(2, false);
         }
     }
 
     // プレイヤーにもダメージ
     auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>();
-        if (player)
+    if (player)
+    {
+        float dist = MathHelper::Distance(player->GetPosition(), GetPosition());
+        if (dist < radius)
         {
-            float dist = MathHelper::Distance(player->GetPosition(), GetPosition());
-            if (dist < radius)
-            {
-                player->TakeDamage(20);
-            }
+            player->TakeDamage(20);
         }
+    }
 }

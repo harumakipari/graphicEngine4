@@ -310,6 +310,14 @@ public:
             AddPipeLineState("deferredFightStage", desc);
         }
 
+        // SkeletalMesh deferred ScissorsGameEnemyPS 用　チーム制作で足した(T_T)
+        {
+            hr = CreatePsFromCSO(device, "./Shader/ScissorsGameEnemyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+            AddPipeLineState("ScissorsGameEnemyPS", desc);
+        }
+
         // SkeletalMesh forward Mask 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());

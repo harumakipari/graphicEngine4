@@ -169,17 +169,21 @@ protected:
 class UIRingEffect : public UIImageComponent
 {
 public:
-    UIRingEffect(const std::string& texPath)
+    UIRingEffect(const std::string& texPath,XMFLOAT4 endColor)
         : UIImageComponent(texPath, "RingEffect")
     {
         lifeTime = 0.5f;
         elapsed = 0.0f;
 
         startSize = { 20.0f, 20.0f };
-        endSize = { 300.0f, 300.0f };
+        endSize = { 400.0f, 400.0f };
+        //endSize = { 300.0f, 300.0f };
 
         SetSize(startSize);
         SetPivot({ 0.5f, 0.5f }); // 中心基準
+
+        this->endColor = endColor;
+
     }
 
     void Update(float dt) override
@@ -202,7 +206,7 @@ public:
         // 透明度
          // 色補間（白 → 黄色）
         XMFLOAT4 startColor = { 1,1,1,1 };
-        XMFLOAT4 endColor = { 1,1,0.3f,0 };
+        
 
         XMFLOAT4 color;
         color.x = startColor.x + (endColor.x - startColor.x) * t;
@@ -219,6 +223,8 @@ private:
 
     XMFLOAT2 startSize;
     XMFLOAT2 endSize;
+
+    XMFLOAT4 endColor;
 };
 
 class UICoreFlashEffect : public UIImageComponent

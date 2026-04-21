@@ -67,17 +67,16 @@ void WaveManager::Initialize(const Transform& transform)
             // Wave 3（追い込み）
             {
                 { {21,0,11}, YarnEnemyType::MoveHorizontal, 4.0f },
-                { {19,0,12}, YarnEnemyType::MoveHorizontal, 3.5f ,true},
+                { {19,0,12}, YarnEnemyType::MoveHorizontal, 3.5f },
                 { {21,0,13}, YarnEnemyType::MoveHorizontal, 4.0f },
             },
             false
         },
-
         {
             // Wave 3（追い込み）
             {
                 { {0,0,4}, YarnEnemyType::MoveHorizontal, 4.0f },
-                { {1,0,5}, YarnEnemyType::MoveHorizontal, 3.5f ,true},
+                { {1,0,5}, YarnEnemyType::MoveHorizontal, 3.5f },
                 { {0,0,6}, YarnEnemyType::MoveHorizontal, 4.0f },
             },
             false

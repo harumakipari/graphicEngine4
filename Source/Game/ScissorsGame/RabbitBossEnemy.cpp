@@ -9,26 +9,26 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/BossEnemy.glb", false, true);
     skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Enemy;   // オブジェクトの種類を Enemy に設定
     skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 6.6f;   // emissionPowerの値を大きくして、自己発光の強さを上げてみる
-    skeletalMeshComponent->overrideDeferredPipelineName = "deferredFightStage";
+    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
     skeletalMeshComponent->plusAlphaCBuffer->data.brightness = 5.0f;
     skeletalMeshComponent->plusAlphaCBuffer->data.saturation = 1.4f;
 
     // 当たり判定
     {
-        std::shared_ptr<SphereComponent> sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
+        sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
         radius = size.x * 0.5f;
         height = size.y;
-        sphereComponent->SetStatic(true);
-        sphereComponent->SetRadius(radius);
-        sphereComponent->SetMass(0.0f);
-        sphereComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
-        sphereComponent->SetLayer(CollisionLayer::Enemy);
-        sphereComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-        sphereComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
-        sphereComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-        sphereComponent->SetCollisionOffsetY(height * 0.5f);
-        sphereComponent->Initialize();
+        sphereCollisionComponent->SetStatic(true);
+        sphereCollisionComponent->SetRadius(radius);
+        sphereCollisionComponent->SetMass(0.0f);
+        sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+        sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+        sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
+        sphereCollisionComponent->Initialize();
     }
 
     // 回転用コンポーネントを追加
