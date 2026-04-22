@@ -3,6 +3,8 @@
 #include "./Core/Actor.h"
 
 
+class UIStarEffect;
+
 class ButtonCoinActor :public Actor
 {
     enum class CoinState :uint8_t
@@ -46,6 +48,6 @@ private:
     float burstSize = 100.0f;
     float burstShrinkSpeed = 120.0f;
 
-    // ===== ‹¤’Ê =====
-    bool isBurstTriggered = false;
+
+    std::vector<std::shared_ptr<UIStarEffect>> starEffects;
 };

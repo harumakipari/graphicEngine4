@@ -42,7 +42,7 @@ public:
     // コインの調整　
     struct CoinTuning
     {
-        float duration = 0.6f; // 演出に掛ける時間
+        float duration = 0.9f; // 演出に掛ける時間
         float height = 2.3f;
 
         // ===== 上昇トレイル =====
@@ -50,10 +50,9 @@ public:
         float trailSize = 15.0f;
 
         // ===== バースト =====
-        int burstCount = 8;
-        float burstRadius = 80.0f;
-        float burstSize = 100.0f;
-        float burstShrinkSpeed = 120.0f;
+        int burstCount = 10;
+        float burstSize = 40.0f;
+        float burstShrinkSpeed = 500.0f;
     };
 
 public:

@@ -34,6 +34,13 @@ void ButtonCoinActor::Update(float deltaTime)
     float duration = tuning.duration;
     float height = tuning.height;
 
+    DirectX::XMFLOAT3 position = GetPosition();
+    DirectX::XMFLOAT2 screePos = WorldToUI(position);
+
+    for (auto star:starEffects)
+    {// 星をコインに追従させるため
+        star->SetFollowPos(screePos);
+    }
 
     switch (state)
     {
@@ -55,9 +62,9 @@ void ButtonCoinActor::Update(float deltaTime)
 
 
         if (t >= 0.8f)
-        {
+        {// フラッシュの値を設定
             skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = 1.0f;
-            skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 10.0f;
+            skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 8.5f;
         }
 
         if (t >= 1.0f)
@@ -128,23 +135,39 @@ void ButtonCoinActor::StartPerform()
     skeletalMeshComponent->SetIsVisible(true);
     elapsedTime = 0.0f;
     SetPosition(startPos);
-    particleComponent->Play();
+
+    // 
+    //particleComponent->Play();
 
     // 発光値をリセットする
     skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = 0.0f;
 
     // 星を生成する位置
-    DirectX::XMFLOAT3 starPos = startPos;
-    starPos.y += 0.2f;
-    DirectX::XMFLOAT2 screenPos = WorldToUI(starPos);
+    DirectX::XMFLOAT2 screenPos = WorldToUI(startPos);
 
     auto uiManager = GetOwnerScene()->GetUIManager();
-    // 星を生成する
-    for (int i = 0; i < 4; i++)
+    int count = 4;
+    for (int i = 0; i < count; i++)
     {
-        auto star = std::make_shared<UIStarEffect>("./Data/Textures/ScissorsUI/star.png", screenPos);
+        float baseAngle = static_cast<float>(i) / count * DirectX::XM_2PI;
+        float randomOffset = MathHelper::RandomRange(-0.5f, 0.5f);
+        float angle = baseAngle + randomOffset;
+
+        float speed = 150.0f;
+
+        auto star = std::make_shared<UIStarEffect>(
+            "./Data/Textures/ScissorsUI/star.png",
+            screenPos);
+
+        star->SetVelocity({
+            cosf(angle) * speed,
+            sinf(angle) * speed
+            });
+
         star->SetSize({ 100,100 });
+        star->SetFollowPos(screenPos);
         uiManager->Add(star);
+        starEffects.push_back(star);
     }
 }
 
@@ -156,7 +179,10 @@ void ButtonCoinActor::SpawnBurst()
     auto pos = GetPosition();
     auto screenPos = WorldToUI(pos);
 
-    int count = 8;
+    auto scene = static_cast<GameScene*>(GetOwnerScene());
+    auto& tuning = scene->coinTuning;
+    int count = tuning.burstCount;
+
 
     for (int i = 0; i < count; i++)
     {
@@ -164,7 +190,9 @@ void ButtonCoinActor::SpawnBurst()
         float randomOffset = MathHelper::RandomRange(-0.2f, 0.2f);
         float angle = baseAngle + randomOffset;
 
-        float speed = MathHelper::RandomRange(300.0f, 600.0f);
+        float baseSpeed = tuning.burstShrinkSpeed;
+        float radiusRand = sqrt(MathHelper::RandomRange(0.0f, 1.0f));
+        float speed = baseSpeed * radiusRand;
 
         auto star = std::make_shared<UIStarBurstEffect>(
             "./Data/Textures/ScissorsUI/starClear.png",
@@ -176,7 +204,7 @@ void ButtonCoinActor::SpawnBurst()
             sinf(angle) * speed
             });
 
-        star->SetSize({ 100,100 });
+        star->SetSize({ tuning.burstSize,tuning.burstSize });
         uiManager->Add(star);
     }
 }

@@ -418,7 +418,7 @@ public:
         : UIImageComponent(file, "burst"), center(center)
     {
         pos = center;
-        pivot={0.5f,0.5f};
+        pivot = { 0.5f,0.5f };
     }
 
     void Update(float dt) override
@@ -429,8 +429,8 @@ public:
         // 放射移動
         pos.x += velocity.x * dt;
         pos.y += velocity.y * dt;
-        velocity.x *= 0.92f;
-        velocity.y *= 0.92f;
+        velocity.x *= 0.97f;
+        velocity.y *= 0.97f;
         SetWorldPosition(pos);
 
         // サイズ縮小
@@ -468,13 +468,6 @@ public:
 
         pos = center;
 
-        // ランダム方向
-        float angle = MathHelper::RandomRange(0.0f, 360.0f);
-        angle = DirectX::XMConvertToRadians(angle);
-
-        float speed = MathHelper::RandomRange(50.0f, 100.0f);
-        velocity = { cosf(angle) * speed, 0.0f };
-
         // 初期サイズランダム
         float s = MathHelper::RandomRange(80.0f, 80.0f);
         startSize = { s, s };
@@ -502,7 +495,7 @@ public:
         SetWorldAngleDegree(this->worldAngle + dt * 180.0f);
         // 移動
         pos.x += velocity.x * dt;
-        pos.y += velocity.y * dt;
+        pos.y = followPos.y + velocity.y * dt * 0.2f;
         SetWorldPosition(pos);
 
         //  サイズ縮小
@@ -516,6 +509,15 @@ public:
         SetColor(DirectX::XMFLOAT4{ baseColor.x, baseColor.y, baseColor.z, alpha });
     }
 
+    void SetVelocity(XMFLOAT2 v)
+    {
+        velocity = v;
+    }
+
+    void SetFollowPos(XMFLOAT2 followPos)
+    {
+        this->followPos = followPos;
+    }
 
     DirectX::XMFLOAT4 RandomStarColor()
     {
@@ -540,6 +542,8 @@ private:
     XMFLOAT2 endSize;
 
     XMFLOAT4 baseColor;
+
+    DirectX::XMFLOAT2 followPos = { 0.0f,0.0f };
 };
 
 

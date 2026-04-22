@@ -404,7 +404,7 @@ void GameScene::SetUpActors()
     mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
 
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
-    mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-34.5f));
+    mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-31.0f));
     mainCameraComponent->SetFov(DirectX::XMConvertToRadians(30.0f));
     mainCameraComponent->distance = 10.9f;
 
@@ -537,6 +537,10 @@ void GameScene::DrawGui()
 
         ImGui::DragFloat(U8("コインのトレイルのスポーンの間隔"), &coinTuning.trailSpawnInterval, 0.1f, 0.0f, 20.0f);
         ImGui::DragFloat(U8("コインのトレイルのサイズ"), &coinTuning.trailSize, 2.f, 1.0f, 30.0f);
+
+        ImGui::DragFloat(U8("コインのバーストのサイズ"), &coinTuning.burstSize, 2.f, 1.0f, 100.0f);
+        ImGui::DragInt(U8("コインのバーストの個数"), &coinTuning.burstCount, 1, 1, 15);
+        ImGui::DragFloat(U8("コインのバーストのスピード"), &coinTuning.burstShrinkSpeed, 2.f, 100.0f, 600.0f);
 
         ImGui::TreePop();
     }
