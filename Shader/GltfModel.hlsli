@@ -71,6 +71,7 @@ cbuffer PLUS_ALPHA_CONSTANT_BUFFER : register(b5)
     float4 morphWeights;
 
     float emissionPower; // 自己発光の強さ
+    float flashValue; //　白くフラッシュする値
     int objectType; // オブジェクトの種類 0:通常 1:プレイヤーとか
 }
 

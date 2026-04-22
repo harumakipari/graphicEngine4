@@ -147,6 +147,7 @@ public:
         DirectX::XMFLOAT4 morphWeights = { 0.0f,0.0f,0.0f,0.0f };  // モーフモデルに使用する weight 0.0f ~ 1.0f
 
         float emissionPower; // 自己発光の強さ
+        float flashValue = 0.0f; //　白くフラッシュする値
         ObjectType objectType = ObjectType::Default; // オブジェクトの種類
     };
     std::unique_ptr<ConstantBuffer<PlusAlphaConstants>> plusAlphaCBuffer;

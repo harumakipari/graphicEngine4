@@ -308,12 +308,12 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF);
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_FRONT);
     sceneRender.currentRenderPath = RenderPath::Forward;
-    sceneRender.RenderBlend(immediateContext, queues.deferredBlend); 
+    sceneRender.RenderBlend(immediateContext, queues.deferredBlend);
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
     sceneRender.currentRenderPath = RenderPath::Forward;
-    sceneRender.RenderBlend(immediateContext, queues.deferredBlend); 
+    sceneRender.RenderBlend(immediateContext, queues.deferredBlend);
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
 
@@ -462,7 +462,7 @@ void GameScene::SetUpActors()
     SpawnEnemy({ 18,0,5 }, YarnEnemyType::Static);
 
 
-    SpawnBigEnemy({  5,0,8 }, YarnEnemyType::Static);
+    SpawnBigEnemy({ 5,0,8 }, YarnEnemyType::Static);
     SpawnEnemy({ 5,0,10 }, YarnEnemyType::Static);
     SpawnEnemy({ 5,0,12 }, YarnEnemyType::Static);
     SpawnEnemy({ 5,0,15 }, YarnEnemyType::Static);
@@ -473,7 +473,7 @@ void GameScene::SetUpActors()
     SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveHorizontal);
     SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveVertical);
     //SpawnEnemy({ 0,0,0 }, YarnEnemyType::MoveToCenter);
-    SpawnEnemy({ 0,0,12}, YarnEnemyType::MoveToCenter);
+    SpawnEnemy({ 0,0,12 }, YarnEnemyType::MoveToCenter);
     SpawnEnemy({ 12,0,0 }, YarnEnemyType::MoveToCenter);
     SpawnEnemy({ 12,0,12 }, YarnEnemyType::MoveToCenter);
     //SpawnEnemy({ 0,0,0 }, YarnEnemyType::WaveHorizontal);
@@ -510,6 +510,39 @@ void GameScene::DrawGui()
 {
 #ifdef USE_IMGUI
     SceneBase::DrawGui();
+    ImGui::Begin(U8("調整"));
+    if (ImGui::TreeNode(U8("敵")))
+    {
+        ImGui::DragFloat("Distance Dash", &enemyTuning.knockbackDistanceDash, 0.1f, 0.0f, 20.0f);
+        ImGui::DragFloat("Distance Normal", &enemyTuning.knockbackDistanceNormal, 0.1f, 0.0f, 20.0f);
+
+        ImGui::DragFloat("Height Dash", &enemyTuning.knockbackHeightDash, 0.1f, 0.0f, 20.0f);
+        ImGui::DragFloat("Height Normal", &enemyTuning.knockbackHeightNormal, 0.1f, 0.0f, 20.0f);
+
+        ImGui::DragFloat("Duration Dash", &enemyTuning.knockbackDurationDash, 0.01f, 0.1f, 2.0f);
+        ImGui::DragFloat("Duration Normal", &enemyTuning.knockbackDurationNormal, 0.01f, 0.1f, 2.0f);
+
+        ImGui::Separator();
+
+        ImGui::DragFloat("Flash Duration", &enemyTuning.flashDuration, 0.01f, 0.05f, 2.0f);
+        ImGui::DragFloat("Flash Sharpness", &enemyTuning.flashSharpness, 0.1f, 1.0f, 20.0f);
+        ImGui::DragFloat("Emissive Power", &enemyTuning.emissivePower, 0.5f, 0.0f, 50.0f);
+
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode(U8("コイン")))
+    {
+        ImGui::DragFloat(U8("コインの上昇時間"), &coinTuning.duration, 0.1f, 0.0f, 20.0f);
+        ImGui::DragFloat(U8("コインの上昇距離"), &coinTuning.height, 0.1f, 0.0f, 20.0f);
+
+        ImGui::DragFloat(U8("コインのトレイルのスポーンの間隔"), &coinTuning.trailSpawnInterval, 0.1f, 0.0f, 20.0f);
+        ImGui::DragFloat(U8("コインのトレイルのサイズ"), &coinTuning.trailSize, 2.f, 1.0f, 30.0f);
+
+        ImGui::TreePop();
+    }
+
+    ImGui::End();
+
 #endif
 
 }

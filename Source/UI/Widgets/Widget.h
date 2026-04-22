@@ -169,7 +169,7 @@ protected:
 class UIRingEffect : public UIImageComponent
 {
 public:
-    UIRingEffect(const std::string& texPath,XMFLOAT4 endColor)
+    UIRingEffect(const std::string& texPath, XMFLOAT4 endColor)
         : UIImageComponent(texPath, "RingEffect")
     {
         lifeTime = 0.5f;
@@ -206,7 +206,7 @@ public:
         // 透明度
          // 色補間（白 → 黄色）
         XMFLOAT4 startColor = { 1,1,1,1 };
-        
+
 
         XMFLOAT4 color;
         color.x = startColor.x + (endColor.x - startColor.x) * t;
@@ -359,6 +359,191 @@ private:
 
     XMFLOAT4 baseColor;
 };
+
+
+class UIStarTrailEffect : public UIImageComponent
+{
+public:
+    UIStarTrailEffect(const std::string& file, const std::string& name)
+        : UIImageComponent(file, name)
+    {
+    }
+
+    void Update(float dt) override
+    {
+        elapsedTime += dt;
+
+        float t = elapsedTime / lifeTime;
+
+        // ===== サイズ変化 =====
+        float scaleValue = 1.0f;
+
+        if (t < 0.4f)
+        {
+            // ポンポンする
+            float pulse = sinf(t * 20.0f) * 0.2f; // ←ここ調整
+            scaleValue = 1.0f + pulse;
+        }
+        else
+        {
+            // 最後は縮小
+            float shrinkT = (t - 0.4f) / 0.6f;
+            scaleValue = 1.0f - shrinkT;
+        }
+
+        scale = { scaleValue, scaleValue };
+
+        // ===== 発光っぽいカラー =====
+        float glow = 1.0f + (1.0f - t); // 2 → 1 に落ちる
+        SetColor(XMFLOAT4{ glow, glow, glow, 1.0f });
+
+        // ===== 消滅 =====
+        if (t >= 1.0f)
+        {
+            MarkPendingKill();
+        }
+    }
+
+public:
+    float lifeTime = 0.6f;
+
+private:
+    float elapsedTime = 0.0f;
+};
+
+class UIStarBurstEffect : public UIImageComponent
+{
+public:
+    UIStarBurstEffect(const std::string& file, XMFLOAT2 center)
+        : UIImageComponent(file, "burst"), center(center)
+    {
+        pos = center;
+        pivot={0.5f,0.5f};
+    }
+
+    void Update(float dt) override
+    {
+        elapsedTime += dt;
+        float t = elapsedTime / lifeTime;
+
+        // 放射移動
+        pos.x += velocity.x * dt;
+        pos.y += velocity.y * dt;
+        velocity.x *= 0.92f;
+        velocity.y *= 0.92f;
+        SetWorldPosition(pos);
+
+        // サイズ縮小
+        float scaleValue = 1.0f - (t * t);
+        scale = { scaleValue, scaleValue };
+
+        // フェード
+        SetColor(DirectX::XMFLOAT4{ 2.0f, 2.0f, 2.0f, 1.0f - t });
+
+        if (t >= 1.0f)
+        {
+            MarkPendingKill();
+        }
+    }
+    void SetVelocity(XMFLOAT2 v)
+    {
+        velocity = v;
+    }
+private:
+    XMFLOAT2 center;
+    XMFLOAT2 pos;
+    XMFLOAT2 velocity;
+    float elapsedTime = 0.0f;
+    float lifeTime = 0.5f;
+};
+
+class UIStarEffect : public UIImageComponent
+{
+public:
+    UIStarEffect(const std::string& texPath, XMFLOAT2 center)
+        : UIImageComponent(texPath, "UIStarEffect")
+    {
+        lifeTime = 1.0f;
+        elapsed = 0.0f;
+
+        pos = center;
+
+        // ランダム方向
+        float angle = MathHelper::RandomRange(0.0f, 360.0f);
+        angle = DirectX::XMConvertToRadians(angle);
+
+        float speed = MathHelper::RandomRange(50.0f, 100.0f);
+        velocity = { cosf(angle) * speed, 0.0f };
+
+        // 初期サイズランダム
+        float s = MathHelper::RandomRange(80.0f, 80.0f);
+        startSize = { s, s };
+        endSize = { s * 0.2f, s * 0.2f }; // 小さくなる
+
+        SetSize(startSize);
+        SetPivot({ 0.5f, 0.5f });
+
+        baseColor = { 1.0f, 1.0f, 0.3f, 1.0f }; // 黄色
+        SetColor(baseColor);
+    }
+
+    void Update(float dt) override
+    {
+        elapsed += dt;
+
+        float t = elapsed / lifeTime;
+        if (t > 1.0f)
+        {
+            MarkPendingKill();
+            return;
+        }
+
+
+        SetWorldAngleDegree(this->worldAngle + dt * 180.0f);
+        // 移動
+        pos.x += velocity.x * dt;
+        pos.y += velocity.y * dt;
+        SetWorldPosition(pos);
+
+        //  サイズ縮小
+        XMFLOAT2 size;
+        size.x = startSize.x + (endSize.x - startSize.x) * t;
+        size.y = startSize.y + (endSize.y - startSize.y) * t;
+        SetSize(size);
+
+        //  フェード
+        float alpha = 1.0f - t;
+        SetColor(DirectX::XMFLOAT4{ baseColor.x, baseColor.y, baseColor.z, alpha });
+    }
+
+
+    DirectX::XMFLOAT4 RandomStarColor()
+    {
+        int r = MathHelper::RandomRange(0, 3);
+
+        switch (r)
+        {
+        case 0: return { 1.0f, 0.6f, 0.8f, 1.0f }; // ピンク
+        case 1: return { 1.0f, 1.0f, 0.3f, 1.0f }; // 黄色
+        case 2: return { 0.7f, 0.5f, 1.0f, 1.0f }; // 紫
+        default:return { 0.5f, 1.0f, 1.0f, 1.0f }; // 水色
+        }
+    }
+private:
+    float lifeTime;
+    float elapsed;
+
+    XMFLOAT2 pos;
+    XMFLOAT2 velocity;
+
+    XMFLOAT2 startSize;
+    XMFLOAT2 endSize;
+
+    XMFLOAT4 baseColor;
+};
+
+
+
 
 class UIDashEffect : public UIImageComponent
 {

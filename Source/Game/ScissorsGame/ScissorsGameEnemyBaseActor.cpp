@@ -4,6 +4,7 @@
 #include "ButtonCoinActor.h"
 #include "ScissorsPlayer1.h"
 #include "Engine/Scene/Scene.h"
+#include "Game/Scenes/GameScene.h"
 #include "Physics/CollisionFunction.h"
 
 void ScissorsGameEnemyBase::Initialize(const Transform& transform)
@@ -12,38 +13,77 @@ void ScissorsGameEnemyBase::Initialize(const Transform& transform)
 
 void ScissorsGameEnemyBase::Update(float deltaTime)
 {
-    XMFLOAT3 position = GetPosition();
-    // 移動
-    position.x += velocity.x * deltaTime;
-    position.y += velocity.y * deltaTime;
-
-    SetPosition(position);
-
-    // 減速（超重要）
-    velocity.x -= velocity.x * friction * deltaTime;
-    velocity.z -= velocity.z * friction * deltaTime;
-
     if (isDead)
-    {
-        velocity.y -= 9.8f * deltaTime;
-        deathTimer += deltaTime;
-
-        // 0.8秒後に消す
-        if (deathTimer > 0.45f && !createCoin)
+    {// 死亡したら
+        // 上へ吹っ飛ぶ処理
+        if (isKnockbackActive)
         {
-            // コインを生成する
-            Transform coinTr(position, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-            auto coin = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("coin", coinTr);
-            coin->StartPerform();
-            createCoin = true;
+            if (knockback.elapsedTime < 0.05f)
+            {
+                // 少しだけ強制的に前に押す
+                XMFLOAT3 pos = GetPosition();
+                pos.x += (knockback.targetPos.x - knockback.startPos.x) * 0.1f;
+                pos.z += (knockback.targetPos.z - knockback.startPos.z) * 0.1f;
+                SetPosition(pos);
+            }
 
+            knockback.elapsedTime += deltaTime;
+
+            float t = knockback.elapsedTime / knockback.duration;
+            t = std::clamp(t, 0.0f, 1.0f);
+            float easedT = 1.0f - powf(1.0f - t, 5.0f);
+
+            // 線形補間（XZ）
+            XMFLOAT3 pos;
+            pos.x = std::lerp(knockback.startPos.x, knockback.targetPos.x, easedT);
+            pos.z = std::lerp(knockback.startPos.z, knockback.targetPos.z, easedT);
+
+            // 放物線（Y）
+            float yT = powf(t, 0.7f); // 最初から上がる
+            float height = 4.0f * knockback.height * yT * (1.0f - yT);
+            pos.y = knockback.startPos.y + height;
+
+            SetPosition(pos);
+
+            // 高さでコイン出す
+            if (pos.y > knockback.startPos.y + knockback.height * 0.8f && !createCoin)
+            {
+                SpawnCoin(pos);
+                createCoin = true;
+            }
+            // 終了
+            if (t >= 1.0f)
+            {
+                MarkPendingKill(); // 死亡処理はエフェクトが終わってからにする予定
+                isKnockbackActive = false;
+            }
         }
-        if (deathTimer > 0.8f)
+        // 白くフラッシュする処理
         {
-            MarkPendingKill();
+            hitFlashTimer += deltaTime;
+#if 0
+            float t = (1.0f - hitFlashTimer / hitFlashDuration);
+            t = std::clamp(t, 0.0f, 1.0f);
+#else
+            float t = hitFlashTimer / hitFlashDuration;
+            t = std::clamp(t, 0.0f, 1.0f);
+
+            // 急激に減衰
+            t = powf(1.0f - t, 7.0f);
+#endif // 0
+
+            skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = t;
+
+            if (t >= 1.0f)
+            {
+                skeletalMeshComponent->SetIsVisible(false);
+            }
         }
+
 
     }
+
+
 
 }
 
@@ -112,10 +152,7 @@ bool ScissorsGameEnemyBase::TakeDamage(int damage, bool hitByDash)
 
 #if 0 // 吹っ飛ばす前にActorを消す
         MarkPendingKill();
-
 #endif // 0 // 吹っ飛ばす前にActorを消す
-
-
         if (starEffectComponent)
         {
             //starEffectComponent->Play();
@@ -185,44 +222,57 @@ void ScissorsGameEnemyBase::CallDeath(bool hitByDash)
     }
 
     auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>();
-
     if (!player)
-    {//
+    {
         Logger::Error(U8("CallDeath関数内でプレイヤーがnullです"));
         return;
     }
 
     XMFLOAT3 playerPos = player->GetPosition();
-    XMFLOAT3 enemyPos = GetPosition();
+    XMFLOAT3 start = GetPosition();
 
-    XMFLOAT3 dir = MathHelper::Normalize(MathHelper::Subtract(enemyPos, playerPos));
+    // 吹っ飛ぶ方向
+    XMFLOAT3 dir = MathHelper::Normalize(MathHelper::Subtract(start, playerPos));
 
-    int combo = player->scoreSystem.GetCombo();
+    // 調整のために
+    auto scene = static_cast<GameScene*>(GetOwnerScene());
+    auto& tuning = scene->enemyTuning;
 
-    bool flag = (combo % 2 == 0);
+    float distance = hitByDash ? tuning.knockbackDistanceDash : tuning.knockbackDistanceNormal;
+    float height = hitByDash ? tuning.knockbackHeightDash : tuning.knockbackHeightNormal;
+    float duration = hitByDash ? tuning.knockbackDurationDash : tuning.knockbackDurationNormal;
+    hitFlashDuration = tuning.flashDuration;
+    skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = tuning.emissivePower;
 
-    int multiple = flag ? 1 : -1;
 
-    // 吹っ飛ばす
-    float horizontalPower = 15.0f;
-    float verticalPower = 15.0f; // ← 上は弱め
+    // 目標位置
+    XMFLOAT3 target =
+    {
+        start.x + dir.x * distance,
+        start.y,
+        start.z + dir.z * distance
+    };
 
-    if (!hitByDash)
-    {// 突進によって死亡していない場合
-        horizontalPower = 25.0f;
-        verticalPower = 25.0f; // ← 上は弱め
-    }
-    ApplyKnockBack({ dir.z * multiple,dir.y,dir.x * multiple }, horizontalPower, verticalPower);
+    knockback = { start,target,height,duration,0.0f };
+    isKnockbackActive = true;
 
     // 敵が白くなって薄くなってからまた元の色に戻る
+    hitFlashTimer = 0.0f;
 
 
     // ある程度吹っ飛んだら敵が見えなくする
 
-    // コインを生成する
-
-
     createCoin = false;
 
+}
+
+// コインを生成する
+void ScissorsGameEnemyBase::SpawnCoin(DirectX::XMFLOAT3 pos)
+{
+    // コインを生成する
+    Transform coinTr(pos, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto coin = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("coin", coinTr);
+    coin->StartPerform();
+    createCoin = true;
 
 }

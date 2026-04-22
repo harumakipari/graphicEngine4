@@ -46,8 +46,12 @@ public:
     // 死亡したかどうか
     bool IsDead() const { return isDead; }
 
+private:
     // 死亡した時に呼ぶ関数
     void CallDeath(bool hitByDash);
+
+    // コインを生成する
+    void SpawnCoin(DirectX::XMFLOAT3 pos);
 
 protected:
     // 線形移動の処理
@@ -80,14 +84,25 @@ protected:
     EnemyScoreData scoreData = { 100,0 }; // 倒したときのスコア
 
 
-    // 吹っ飛ばしのための変数
-    XMFLOAT3 velocity = { 0,0,0 };
-    float friction = 5.0f; // 減速
-
-
+private:
     bool isDead = false;// 死亡したかどうか
     float deathTimer = 0.0f;
 
     bool createCoin = false; //  コインを生成する
 
+    // ノックバックのデータ
+    struct KnockbackData
+    {
+        DirectX::XMFLOAT3 startPos;
+        DirectX::XMFLOAT3 targetPos;
+        float height;
+        float duration;
+        float elapsedTime;
+    };
+    KnockbackData knockback;
+    bool isKnockbackActive = false;
+
+    float hitFlashTimer = 0.0f; // フラッシュタイマー
+    float hitFlashDuration = 0.5f; // フラッシュ全体時間
+    bool isDying = false;
 };

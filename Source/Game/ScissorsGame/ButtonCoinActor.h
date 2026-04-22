@@ -3,9 +3,17 @@
 #include "./Core/Actor.h"
 
 
-
 class ButtonCoinActor :public Actor
 {
+    enum class CoinState :uint8_t
+    {
+        Before,
+        Rising,
+        Burst,
+        Finished
+    };
+    CoinState state = CoinState::Before;
+
 public:
     explicit ButtonCoinActor(const std::string& actorName) :Actor(actorName) {}
 
@@ -19,12 +27,25 @@ public:
     void StartPerform();
 
 private:
-    std::shared_ptr<ParticleComponent> particleComponent; 
+    // きらきらバースト
+    void SpawnBurst();
+
+private:
+    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
+    std::shared_ptr<ParticleComponent> particleComponent;
 
     float elapsedTime = 0.0f; // 経過時間
     DirectX::XMFLOAT3 startPos = { 0,0,0 }; // 開始位置
-    float duration = 1.5f; // 演出に掛ける時間
-    float height = 2.0f;
 
-    bool startPerform = false; // 演出を開始するかどうか
+    // ===== 上昇トレイル =====
+    float trailTimer = 0.0f;
+
+    // ===== バースト =====
+    int burstCount = 8;
+    float burstRadius = 80.0f;
+    float burstSize = 100.0f;
+    float burstShrinkSpeed = 120.0f;
+
+    // ===== 共通 =====
+    bool isBurstTriggered = false;
 };

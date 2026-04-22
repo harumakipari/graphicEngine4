@@ -20,6 +20,43 @@
 class GameScene : public SceneBase
 {
 public:
+    //　敵の調整
+    struct EnemyTuning
+    {
+        // 吹っ飛び系
+        float knockbackDistanceDash = 8.0f;
+        float knockbackDistanceNormal = 5.0f;
+
+        float knockbackHeightDash = 5.0f;
+        float knockbackHeightNormal = 8.0f;
+
+        float knockbackDurationDash = 0.7f;
+        float knockbackDurationNormal = 0.9f;
+
+        // 発光系
+        float flashDuration = 0.7f;
+        float emissivePower = 20.0f;
+        float flashSharpness = 7.0f;
+    };
+
+    // コインの調整　
+    struct CoinTuning
+    {
+        float duration = 0.6f; // 演出に掛ける時間
+        float height = 2.3f;
+
+        // ===== 上昇トレイル =====
+        float trailSpawnInterval = 0.15f;
+        float trailSize = 15.0f;
+
+        // ===== バースト =====
+        int burstCount = 8;
+        float burstRadius = 80.0f;
+        float burstSize = 100.0f;
+        float burstShrinkSpeed = 120.0f;
+    };
+
+public:
     bool Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props) override;
 
     void Start() override;
@@ -50,6 +87,10 @@ private:
         const XMFLOAT3& pos,
         YarnEnemyType type,
         float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 } );
+
+public:
+    EnemyTuning enemyTuning = {}; // 敵の調整用
+    CoinTuning coinTuning = {}; // 敵の調整用
 
 private:
 
