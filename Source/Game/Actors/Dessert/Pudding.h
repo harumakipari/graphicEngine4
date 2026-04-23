@@ -26,7 +26,8 @@ public:
         elasticBuilding = this->AddComponent<ElasticMeshComponent>("elasticBuilding");
         //elasticBuilding->SetModel("./Data/Models/pink_pudding/scene.gltf");
         //elasticBuilding->SetModel("./Data/Models/cherry_pudding/scene.gltf");
-        elasticBuilding->SetModel("./Data/Models/cherry_pudding/pudding.glb");
+        elasticBuilding->SetModel("./Data/TeamModels/Enemy/YarnBigEnemy.glb");
+        //elasticBuilding->SetModel("./Data/Models/cherry_pudding/pudding.glb");
         //elasticBuilding->SetModel("./Data/Models/Pudding/pudding_noCherry.glb");
 
         std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "elasticBuilding");
@@ -39,6 +40,7 @@ public:
         boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
         boxComponent->Initialize();
 
+#if 0
         whip = this->AddComponent<SkeletalMeshComponent>("whip", "elasticBuilding");
         //whip->SetModel("./Data/Models/Pudding/whip.glb");
         whip->SetModel("./Data/Models/cherry_pudding/whip.glb");
@@ -47,6 +49,8 @@ public:
         cherry = this->AddComponent<SkeletalMeshComponent>("cherry", "whip");
         //cherry->SetModel("./Data/Models/Pudding/cherry.glb");
         cherry->SetModel("./Data/Models/cherry_pudding/cherry.glb");
+
+#endif // 0
 
 
         particleComponent = this->AddComponent<class ParticleComponent>("particleComponent", "elasticBuilding");
@@ -84,7 +88,7 @@ public:
         }
 
         audioSourceComponent = AddComponent<CoreAudioSourceComponent>("audioComponent", "elasticBuilding");
-        audioSourceComponent->SetSource(L"./Data/Sound/SE/stretch_long.wav");
+        audioSourceComponent->SetSource(L"./Data/Sound/SE1/charge.wav");
 
     }
     void Update(float deltaTime)override
@@ -120,18 +124,17 @@ public:
 
 #endif // 0
         }
-
         if (InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
         {
             if (particleComponent)
             {
                 particleComponent->Play();
-                CoreAudio::PlayOneShot(L"./Data/Sound/SE/pudding.wav");
+                //CoreAudio::PlayOneShot(L"./Data/Sound/SE/pudding.wav");
             }
         }
         XMFLOAT3 surfacePos, tangent;
         elasticBuilding->GetSurfacePositionTangent(surfacePos, tangent);
-        whip->SetWorldLocationDirect(surfacePos);
+        //whip->SetWorldLocationDirect(surfacePos);
 
         // ===== 回転 =====
         XMVECTOR yAxis = XMVector3Normalize(XMLoadFloat3(&tangent));
@@ -161,7 +164,7 @@ public:
         XMVECTOR rotQuat = XMQuaternionRotationMatrix(rotMatrix);
         DirectX::XMFLOAT4 rot;
         XMStoreFloat4(&rot, rotQuat);
-        whip->SetRelativeRotationDirect(rot);
+        //whip->SetRelativeRotationDirect(rot);
 
         // 逆方向
         XMVECTOR dir = -XMVector3Normalize(XMLoadFloat3(&tangent));
@@ -185,13 +188,16 @@ public:
 
         if (InputSystem::GetInputState("MouseLeft", InputStateMask::Release))
         {
-            cherry->SetIsVisible(false);
-            XMFLOAT3 pos = cherry->GetComponentLocation();
-            Transform cherryTr{ pos,{0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f} };
-            auto flyingCherry = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<Cherry>("cherry", cherryTr);
-            if (flyingCherry.get())
+            if (cherry)
             {
-                flyingCherry->Launch(surfacePos, vel);
+                cherry->SetIsVisible(false);
+                XMFLOAT3 pos = cherry->GetComponentLocation();
+                Transform cherryTr{ pos,{0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f} };
+                auto flyingCherry = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<Cherry>("cherry", cherryTr);
+                if (flyingCherry.get())
+                {
+                    flyingCherry->Launch(surfacePos, vel);
+                }
             }
         }
 
@@ -241,7 +247,7 @@ public:
         ImGui::DragFloat(U8("サクランボの最大速度"), &maxPower, 0.02f);
         if (ImGui::Button(U8("サクランボが乗った時")))
         {
-            elasticBuilding->AddCherry();
+            elasticBuilding->AddImpulse({ 0.0f,-0.5f,0.0f });
         }
 #endif
     };

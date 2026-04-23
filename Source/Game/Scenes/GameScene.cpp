@@ -12,6 +12,7 @@
 #include "Engine/Utility/Time.h"
 
 #include "Game/Actors/Dessert/Pudding.h"
+#include "Game/Actors/Dessert/TargetPudding.h"
 #include "Game/Actors/Player/Player.h"
 #include "Game/Actors/Stage/Cloth.h"
 #include "Game/ScissorsGame/ButtonCoinActor.h"
@@ -133,7 +134,7 @@ void GameScene::Start()
     audioComp->Play();
     audioComp->SetVolume(0.5f);
 
-    //auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
+    auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
 
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
@@ -439,18 +440,20 @@ void GameScene::SetUpActors()
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
     pauseActor->SetRetrySceneName("GameScene");
 
-
 #if 0// ボスを生成　
     Transform bossTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto rabbitBoss = this->GetActorManager()->CreateAndRegisterActorWithTransform<RabbitBossEnemyActor>("boss", bossTr);
 #endif // 0// ボスを生成　
 
-
-#if 1// ハリネズミを生成　
+#if 0// ハリネズミを生成　
     Transform needleTr(DirectX::XMFLOAT3{ 1.0f,0.0f,5.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto needleEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<NeedleEnemyActor>("needleEnemy", needleTr);
-    needleEnemy->SetMoveDirection({ 1.0f,0.0f,0.0f });
+    needleEnemy->SetMoveDirection({ 1.0f,0.0f,1.0f });
 #endif // 0// ハリネズミを生成　
+
+
+    SpawnBigEnemy({ 5,0,8 }, YarnEnemyType::Static);
+
 
     Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("coin", coinTr);

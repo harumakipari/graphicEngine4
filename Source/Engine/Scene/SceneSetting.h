@@ -68,7 +68,7 @@ struct SceneShaderConstants
 
     float objectIblIntensity = 23.0f; // オブジェクトのIblIntensity (今は骸骨を明るくするために)
     int renderStep = 0; // デバック表示用のレンダーステップ
-    int enableToneMapping = 1; // トーンマッピング有効化フラグ   (T_T) チーム制作で変更
+    int enableToneMapping = 0; // トーンマッピング有効化フラグ   (T_T) チーム制作で変更
     int enableSsao = 1;
 
     int enableCascadedShadowMaps = 1;

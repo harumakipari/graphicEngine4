@@ -6,7 +6,8 @@ void TargetPudding::Initialize(const Transform& transform)
 {
     // 描画用コンポーネントを追加
     elasticComponent = this->AddComponent<ElasticMeshComponent>("elasticComponent");
-    elasticComponent->SetModel("./Data/Models/cherry_pudding/pudding.glb");
+    elasticComponent->SetModel("./Data/TeamModels/Enemy/YarnBigEnemy.glb");
+    //elasticComponent->SetModel("./Data/Models/cherry_pudding/pudding.glb");
 
     std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", "elasticComponent");
     DirectX::XMFLOAT3 size = elasticComponent->GetModelSize();
@@ -35,7 +36,7 @@ void TargetPudding::Initialize(const Transform& transform)
         {
             if (auto cherry = std::dynamic_pointer_cast<Cherry>(hitPair.second->GetActor()))
             {
-                elasticComponent->AddCherry();
+                elasticComponent->AddImpulse({0.0f,-0.5f,0.0f});
                 if (particleComponent)
                 {
                     particleComponent->Play();

@@ -6,6 +6,7 @@
 #include "Core/Actor.h"
 #include "Game/Actors/Base/Character.h"
 
+class ElasticMeshComponent;
 class ScissorsPlayer1;
 
 class YarnEnemyActor :public ScissorsGameEnemyBase
@@ -55,9 +56,12 @@ class BigYarnEnemyActor :public YarnEnemyActor
 public:
     explicit BigYarnEnemyActor(const std::string& actorName) :YarnEnemyActor(actorName) {}
     void Initialize(const Transform& transform)override;
+    void DrawImGuiDetails() override;
+
     // プレイヤーのダッシュに当たったときの処理
     bool OnHitByDash(ScissorsPlayer1* player, int dashDamage)override;
-
 private:
+    std::shared_ptr<ElasticMeshComponent> elasticMeshComponent;
+    DirectX::XMFLOAT3 impulse = { 0.0f,-1.0f,0.0f };
 
 };

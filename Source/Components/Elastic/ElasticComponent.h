@@ -53,8 +53,8 @@ public:
     // サクランボのためにプリンの表面の位置を取得する関数
     void GetSurfacePositionTangent(DirectX::XMFLOAT3& surfacePosition, DirectX::XMFLOAT3& tangent);
 
-    // サクランボが乗った時
-    void AddCherry();
+    // 力が加わった時
+    void AddImpulse(DirectX::XMFLOAT3 impulse);
 
     // 力をリセットする
     void ClearForce()
@@ -190,7 +190,7 @@ private:
 
     bool useMouseInput = true;
 
-    bool elasticEnabled = false;
+    bool elasticEnabled = true;
 };
 
 class ElasticPullController : public Component

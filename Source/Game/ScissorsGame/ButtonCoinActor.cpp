@@ -110,7 +110,7 @@ void ButtonCoinActor::Update(float deltaTime)
         }
         break;
     case CoinState::Finished:
-        //MarkPendingKill();
+        MarkPendingKill();
         break;
     }
 

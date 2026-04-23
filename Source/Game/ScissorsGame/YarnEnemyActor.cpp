@@ -5,6 +5,7 @@
 #include "Components/Render/PointLightComponent.h"
 #include "Engine/Scene/SceneBase.h"
 #include "ScissorsPlayer1.h"
+#include "Components/Elastic/ElasticComponent.h"
 
 void YarnEnemyActor::Initialize(const Transform& transform)
 {
@@ -286,6 +287,13 @@ void BigYarnEnemyActor::Initialize(const Transform& transform)
     skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
     skeletalMeshComponent->plusAlphaCBuffer->data.brightness = 5.0f;
     skeletalMeshComponent->plusAlphaCBuffer->data.saturation = 1.4f;
+    skeletalMeshComponent->SetIsVisible(false);
+
+
+    elasticMeshComponent= AddComponent<ElasticMeshComponent>(parentName);
+    elasticMeshComponent->SetModel("./Data/TeamModels/Enemy/YarnBigEnemy.glb", false, true);
+    elasticMeshComponent->Initialize();
+    elasticMeshComponent->SetUseMouseInput(false); // ƒ}ƒEƒX“ü—Í‚É‚æ‚Á‚Äˆø‚Á’£‚ç‚ê‚È‚¢
 
     // “–‚½‚è”»’è
     {
@@ -343,3 +351,12 @@ bool BigYarnEnemyActor::OnHitByDash(ScissorsPlayer1* player, int dashDamage)
 
 }
 
+void BigYarnEnemyActor::DrawImGuiDetails()
+{
+    if (ImGui::Button(U8("—Í‚ð‰Á‚¦‚é")))
+    {
+        elasticMeshComponent->AddImpulse(impulse);
+    }
+
+    ImGui::DragFloat3(U8("‰Á‚¦‚é—Í"),&impulse.x, 0.5f, -3.0f, 3.0f);
+}

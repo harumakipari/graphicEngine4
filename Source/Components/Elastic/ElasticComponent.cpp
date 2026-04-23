@@ -14,7 +14,7 @@ void ElasticMeshComponent::Initialize()
     //DirectX::XMFLOAT3 position = actor->GetPosition();
     DirectX::XMFLOAT3 position = GetRelativeLocation();
     modelHeight = model->GetModelSize().y * actor->GetScale().y;
-    float midY = position.y + modelHeight * 0.5f;
+
     // 定数バッファの作成
     elasticBuildingCBuffer = std::make_unique<ConstantBuffer<ElasticConstants>>(Graphics::GetDevice());
     elasticConstants =
@@ -37,8 +37,7 @@ void ElasticMeshComponent::Initialize()
 
 void ElasticMeshComponent::Tick(float deltaTime)
 {
-    DirectX::XMFLOAT3 position = GetRelativeLocation();
-    //DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
+    DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
 
     p3Base = {
 position.x,
@@ -51,7 +50,8 @@ position.z
 
 void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
 {
-    DirectX::XMFLOAT3 position = GetRelativeLocation();
+    DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
+
 
     if (!elasticEnabled)
     {
@@ -228,13 +228,12 @@ bool ElasticMeshComponent::UpdateFromMouse(float deltaTime)
 }
 
 
-void ElasticMeshComponent::AddCherry()
+void ElasticMeshComponent::AddImpulse(DirectX::XMFLOAT3 impulse)
 {
     // 重さ × 重力方向
-    //DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
-    DirectX::XMFLOAT3 position = GetRelativeLocation();
-    XMFLOAT3 down = { 0.0f, -0.5f, 0.0f };
-
+    DirectX::XMFLOAT3 position = owner_.lock()->GetPosition();
+    XMFLOAT3 down = { impulse };
+    down = { 0.0f, -0.5f, 0.0f };
     cherryForce = down;
 
     p3Target = {

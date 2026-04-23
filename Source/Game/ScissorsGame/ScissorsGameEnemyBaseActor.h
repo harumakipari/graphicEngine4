@@ -49,14 +49,16 @@ public:
     // Œõ‚ç‚¹‚é
     void SetHighlight(bool flag)
     {
+#if 0
         if (flag)
         {
-        skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = 1.0f;
+            skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = 1.0f;
         }
         else
         {
             skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = 0.0f;
         }
+#endif // 0
     }
 private:
     // €–S‚µ‚½‚ÉŒÄ‚ÔŠÖ”

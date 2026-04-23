@@ -43,6 +43,10 @@ void NeedleEnemyActor::Initialize(const Transform& transform)
     // 最初の位置を保存
     startPosition = transform.GetLocation();
 
+    // 最初の位置に待ち針を生成する
+    Transform pinTr{ startPosition,{0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f} };
+    needlePinActor= GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<NeedlePinActor>("needlePin", pinTr);
+
     // 倒したときのスコア
     scoreData = { 100,0 };
 
@@ -55,6 +59,10 @@ void NeedleEnemyActor::Initialize(const Transform& transform)
         {
             BreakAllWalls();
         };
+
+
+    // 最初に壁を生成する
+    SpawnWall(transform.GetLocation());
 }
 
 void NeedleEnemyActor::Update(float deltaTime)
@@ -85,7 +93,7 @@ void NeedleEnemyActor::Update(float deltaTime)
     }
 
     if (hp <= 0) // 死んでいる場合は壁を生成しない
-        return; 
+        return;
 
     // 壁生成チェック
     float dx = pos.x - lastDropPos.x;
@@ -97,6 +105,13 @@ void NeedleEnemyActor::Update(float deltaTime)
         lastDropPos = pos;
         SpawnWall(pos);
     }
+}
+
+// 終了時の処理
+void NeedleEnemyActor::Finalize()
+{
+    // 待ち針アクターを削除
+    needlePinActor->MarkPendingKill();
 }
 
 // 壁を全て壊す
@@ -137,4 +152,13 @@ void NeedleEnemyActor::CheckStageEdge()
     {
         isStopped = true;
     }
+}
+
+
+void NeedlePinActor::Initialize(const Transform& transform)
+{
+    std::string parentName = "needleModel";
+    // 待ち針のモデルを追加
+    needlePinComponent = AddComponent<SkeletalMeshComponent>(parentName);
+    needlePinComponent->SetModel("./Data/TeamModels/Enemy/NeedlePin.glb", false, true);
 }
