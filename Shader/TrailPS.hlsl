@@ -13,16 +13,16 @@ float4 main(VS_OUT input) : SV_TARGET
 
     float3 col = lerp(
         float3(0.6, 0.9, 1.0),
-        float3(1, 1, 1),
+        float3(0, 0, 0),
         input.uv.x
     );
 
-    col *= 2.0;
-    col *= mask;
-    col *= starShape;
+    //col *= 2.0;
+    //col *= mask;
+    //col *= starShape;
 
-    float sparkle = smoothstep(0.95, 1.0, noise);
-    col += sparkle * 2.0;
+    //float sparkle = smoothstep(0.95, 1.0, noise);
+    //col += sparkle * 2.0;
 
     return float4(col, alpha);
 }

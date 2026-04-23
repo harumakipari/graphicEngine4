@@ -41,57 +41,57 @@ void WaveManager::Initialize(const Transform& transform)
         {
             // Wave 2（ちょい圧）
     {
-        // 左上　から　右下
-                                { { 18,0,5 },  YarnEnemyType::Static, 0.0f },
-                { { 15,0,7 },  YarnEnemyType::Static, 0.3f },
-                { { 12,0,10 }, YarnEnemyType::Static, 0.5f },
-                { { 10,0,12 }, YarnEnemyType::Static, 0.8f },
-                { { 7,0,15 }, YarnEnemyType::Static, 1.2f },
-                { { 5,0,18 }, YarnEnemyType::Static, 1.5f },
+                // 左上　から　右下
+                                        { { 18,0,5 },  YarnEnemyType::Static, 0.0f },
+                        { { 15,0,7 },  YarnEnemyType::Static, 0.3f },
+                        { { 12,0,10 }, YarnEnemyType::Static, 0.5f },
+                        { { 10,0,12 }, YarnEnemyType::Static, 0.8f },
+                        { { 7,0,15 }, YarnEnemyType::Static, 1.2f },
+                        { { 5,0,18 }, YarnEnemyType::Static, 1.5f },
 
-#if 0
-                // 右上　から　左下
-        { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
-        { { 7,0,7 },  YarnEnemyType::Static, 0.3f },
-        { { 10,0,10 }, YarnEnemyType::Static, 0.5f },
-        { { 12,0,12 }, YarnEnemyType::Static, 0.8f },
-        { { 15,0,15 }, YarnEnemyType::Static, 1.2f },
-        { { 18,0,18 }, YarnEnemyType::Static, 1.5f },
+        #if 0
+                        // 右上　から　左下
+                { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
+                { { 7,0,7 },  YarnEnemyType::Static, 0.3f },
+                { { 10,0,10 }, YarnEnemyType::Static, 0.5f },
+                { { 12,0,12 }, YarnEnemyType::Static, 0.8f },
+                { { 15,0,15 }, YarnEnemyType::Static, 1.2f },
+                { { 18,0,18 }, YarnEnemyType::Static, 1.5f },
 
-        #endif // 0
-    },
-            false
-        },
-
-        {
-            // Wave 3（追い込み）
-            {
-                { {21,0,11}, YarnEnemyType::MoveHorizontal, 4.0f },
-                { {19,0,12}, YarnEnemyType::MoveHorizontal, 3.5f },
-                { {21,0,13}, YarnEnemyType::MoveHorizontal, 4.0f },
+                #endif // 0
             },
-            false
-        },
-        {
-            // Wave 3（追い込み）
-            {
-                { {0,0,4}, YarnEnemyType::MoveHorizontal, 4.0f },
-                { {1,0,5}, YarnEnemyType::MoveHorizontal, 3.5f },
-                { {0,0,6}, YarnEnemyType::MoveHorizontal, 4.0f },
-            },
-            false
-        },
+                    false
+                },
 
-        {
-            // Wave 3（追い込み）
-            {
-                { {14,0,21}, YarnEnemyType::MoveVertical, 4.0f },
-                { {16,0,21}, YarnEnemyType::MoveVertical, 4.0f },
-                { {4,0,0}, YarnEnemyType::MoveVertical, 4.5f },
-                { {6,0,0}, YarnEnemyType::MoveVertical, 4.5f },
-            },
-            false
-        }
+                {
+                    // Wave 3（追い込み）
+                    {
+                        { {21,0,11}, YarnEnemyType::MoveHorizontal, 4.0f },
+                        { {19,0,12}, YarnEnemyType::MoveHorizontal, 3.5f },
+                        { {21,0,13}, YarnEnemyType::MoveHorizontal, 4.0f },
+                    },
+                    false
+                },
+                {
+                    // Wave 3（追い込み）
+                    {
+                        { {0,0,4}, YarnEnemyType::MoveHorizontal, 4.0f },
+                        { {1,0,5}, YarnEnemyType::MoveHorizontal, 3.5f },
+                        { {0,0,6}, YarnEnemyType::MoveHorizontal, 4.0f },
+                    },
+                    false
+                },
+
+                {
+                    // Wave 3（追い込み）
+                    {
+                        { {14,0,21}, YarnEnemyType::MoveVertical, 4.0f },
+                        { {16,0,21}, YarnEnemyType::MoveVertical, 4.0f },
+                        { {4,0,0}, YarnEnemyType::MoveVertical, 4.5f },
+                        { {6,0,0}, YarnEnemyType::MoveVertical, 4.5f },
+                    },
+                    false
+                }
     };
     spawnStates.resize(waves[currentWave].spawns.size());
 
@@ -135,6 +135,13 @@ void WaveManager::Initialize(const Transform& transform)
 
 void WaveManager::Update(float deltaTime)
 {
+    lineCheckTimer += deltaTime;
+    if (lineCheckTimer > 0.3f)
+    {
+        DetectLine();
+        lineCheckTimer = 0.0f;
+    }
+
     if (waveState == WaveState::Ready)
     {
         startTimer += deltaTime;
@@ -173,14 +180,14 @@ void WaveManager::Update(float deltaTime)
         auto& s = wave.spawns[i];
         auto& state = spawnStates[i];
 
-        // ① 予告（ピカピカ＋煙）
+        //  予告
         if (!state.previewed && timer >= s.delay)
         {
             SpawnPreviewEffect(s.position);
             state.previewed = true;
         }
 
-        // ② 実際のスポーン（遅らせる！）
+        //  実際のスポーン遅らせる
         if (!state.spawned && timer >= s.delay + s.spawnDelay)
         {
             if (s.isBig)
@@ -205,9 +212,9 @@ void WaveManager::Update(float deltaTime)
     }
 
     bool shouldGoNextWave = false; // 次のウェーブに行けるかどうか
-    if (wave.requiredKills>=0)
+    if (wave.requiredKills >= 0)
     {// キル数指定がある場合
-        if (killCount>=wave.requiredKills)
+        if (killCount >= wave.requiredKills)
         {
             shouldGoNextWave = true;
         }
@@ -249,16 +256,21 @@ void WaveManager::SpawnEnemy(
     YarnEnemyType type,
     float speed, const DirectX::XMFLOAT3& dir)
 {
-    Transform tr(pos, { 0,0,0 }, { 1.0f,1.0f,1.0f });
+    Transform tr(pos, { 0,180,0 }, { 1.0f,1.0f,1.0f });
     auto enemy = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<YarnEnemyActor>("enemy", tr);
     enemy->SetMoveDirection(dir);
     enemy->SetType(type);
     enemy->SetSpeed(speed);
-    enemy->onDeath = [this]()
+    enemy->onDeath = [this, weak = std::weak_ptr(enemy)]()
         {
-            OnDeath();
+            if (auto e = weak.lock())
+            {
+                OnDeath(e.get());
+            }
         };
     hasSpawnedAnyEnemy = true;
+
+    aliveEnemies.push_back(enemy);
 
     enemyCount++;
 }
@@ -269,21 +281,145 @@ void WaveManager::SpawnBigEnemy(
     YarnEnemyType type,
     float speed, const DirectX::XMFLOAT3& dir)
 {
-    Transform tr(pos, { 0,0,0 }, { 1.0f,1.0f,1.0f });
+    Transform tr(pos, { 0,180,0 }, { 1.0f,1.0f,1.0f });
     auto enemy = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<BigYarnEnemyActor>("enemy", tr);
     enemy->SetMoveDirection(dir);
     enemy->SetType(type);
     enemy->SetSpeed(speed);
-    enemy->onDeath = [this]()
+    enemy->onDeath = [this, weak = std::weak_ptr(enemy)]()
         {
-            OnDeath();
+            if (auto e = weak.lock())
+            {
+                OnDeath(e.get());
+            }
         };
     hasSpawnedAnyEnemy = true;
+    aliveEnemies.push_back(enemy);
     enemyCount++;
 }
 
 
+float DistanceFromLine(
+    const DirectX::XMFLOAT3& p,
+    const DirectX::XMFLOAT3& a,
+    const DirectX::XMFLOAT3& b)
+{
+    XMVECTOR pa = XMLoadFloat3(&p) - XMLoadFloat3(&a);
+    XMVECTOR ba = XMLoadFloat3(&b) - XMLoadFloat3(&a);
 
+    float h = XMVectorGetX(XMVector3Dot(pa, ba)) /
+        XMVectorGetX(XMVector3Dot(ba, ba));
+
+    h = std::clamp(h, 0.0f, 1.0f);
+
+    XMVECTOR proj = XMLoadFloat3(&a) + ba * h;
+
+    return XMVectorGetX(XMVector3Length(XMLoadFloat3(&p) - proj));
+}
+
+// 直線判定
+void WaveManager::DetectLine()
+{
+    aliveEnemies.erase(
+        std::remove_if(aliveEnemies.begin(), aliveEnemies.end(),
+            [](const std::weak_ptr<ScissorsGameEnemyBase>& w)
+            {
+                return w.expired();
+            }),
+        aliveEnemies.end());
+
+    std::vector<ScissorsGameEnemyBase*> enemies;
+
+    for (auto& w : aliveEnemies)
+    {
+        if (auto e = w.lock())
+        {
+            e->SetHighlight(false);
+            enemies.push_back(e.get());
+        }
+    }
+
+    if (enemies.size() < 3) return;
+
+    // 方向ごとにチェック
+    CheckLine(enemies, { 1,0 });   // 横
+    CheckLine(enemies, { 0,1 });   // 縦
+    CheckLine(enemies, { 1,1 });   // 斜め＼
+    CheckLine(enemies, { 1,-1 });  // 斜め／
+}
+
+void WaveManager::CheckLine(
+    const std::vector<ScissorsGameEnemyBase*>& enemies,
+    std::pair<int, int> dir)
+{
+    std::map<int, std::vector<ScissorsGameEnemyBase*>> groups;
+
+    for (auto* e : enemies)
+    {
+        auto p = e->GetPosition();
+
+        float raw;
+
+        if (dir == std::make_pair(1, 0))        raw = p.z;
+        else if (dir == std::make_pair(0, 1))   raw = p.x;
+        else if (dir == std::make_pair(1, 1))   raw = p.x - p.z;
+        else                                    raw = p.x + p.z;
+
+        // ここがポイント
+        int key = (int)round(raw / 3.0f);
+
+        groups[key].push_back(e);
+    }
+
+    for (auto& [key, line] : groups)
+    {
+        if (line.size() < 5) continue;
+
+        // 並び順にソート
+        std::sort(line.begin(), line.end(),
+            [dir](auto* a, auto* b)
+            {
+                if (dir.first != 0)
+                    return a->GetPosition().x < b->GetPosition().x;
+                else
+                    return a->GetPosition().z < b->GetPosition().z;
+            });
+
+        // 可視化
+        for (int i = 0; i < line.size() - 1; i++)
+        {
+            DebugRender::DrawLine(
+                line[i]->GetPosition(),
+                line[i + 1]->GetPosition(),
+                { 1,1,0,1 });
+        }
+
+        for (auto* e : line)
+        {
+            e->SetHighlight(true);
+        }
+    }
+}
+
+// ラインを検出後
+void WaveManager::OnLineDetected(const std::vector<std::weak_ptr<ScissorsGameEnemyBase>>& line)
+{
+    // 線描画
+    for (int i = 0; i < line.size() - 1; i++)
+    {
+        DebugRender::DrawLine(
+            line[i].lock()->GetPosition(),
+            line[i + 1].lock()->GetPosition(),
+            { 1,1,0,1 }
+        );
+    }
+
+    // 光らせる
+    for (auto e : line)
+    {
+        e.lock()->SetHighlight(true); 
+    }
+}
 
 void WaveManager::SpawnPreviewEffect(DirectX::XMFLOAT3 pos)
 {

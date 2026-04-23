@@ -126,7 +126,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 if (stateMachine_->GetStateName() != "Dash")
                     return;
 
-                auto enemy = dynamic_cast<YarnEnemyActor*>(other->GetOwner());
+                auto enemy = dynamic_cast<ScissorsGameEnemyBase*>(other->GetOwner());
                 if (!enemy) return;
 
                 if (enemy->IsDead())

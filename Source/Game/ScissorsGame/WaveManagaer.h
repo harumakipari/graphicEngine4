@@ -32,10 +32,23 @@ struct WaveData
     int requiredKills = -1; // 必要キル数
 };
 
+struct GridPos
+{
+    int x;
+    int z;
+
+    bool operator<(const GridPos& o) const
+    {
+        if (x != o.x) return x < o.x;
+        return z < o.z;
+    }
+};
+
+
 class WaveManager :public Actor
 {
 public:
-    enum class WaveState:uint8_t
+    enum class WaveState :uint8_t
     {
         Ready,      // 3,2,1カウント中
         Spawning,   // 通常のWave処理
@@ -106,11 +119,41 @@ private:
     }
 
     // 敵が死んだときに呼ぶ関数として登録する関数
-    void OnDeath()
+    void OnDeath(YarnEnemyActor* enemy)
     {
         enemyCount--;
         killCount++;
+
+        aliveEnemies.erase(
+            std::remove_if(aliveEnemies.begin(), aliveEnemies.end(),
+                [enemy](const std::weak_ptr<ScissorsGameEnemyBase>& weakEnemy)
+                {
+                    if (auto e = weakEnemy.lock())
+                    {
+                        return e.get() == enemy;
+                    }
+                    return false;
+                }),
+            aliveEnemies.end());
     }
+
+    // 直線判定
+    void DetectLine();
+    void CheckLine(const std::vector<ScissorsGameEnemyBase*>& enemies, std::pair<int, int> dir);
+
+    // ラインを検出後
+    void OnLineDetected(const std::vector<std::weak_ptr<ScissorsGameEnemyBase>>& line);
+
+    GridPos ToGrid(const DirectX::XMFLOAT3& pos)
+    {
+        const float cellSize = 1.0f; // ← ここ重要
+
+        return {
+            (int)round(pos.x / cellSize),
+            (int)round(pos.z / cellSize)
+        };
+    }
+
 private:
     int currentWave = 0;  // 今のウェーブ
     float timer = 0.0f;
@@ -128,4 +171,6 @@ private:
     bool hasSpawnedAnyEnemy = false; //敵がスポーンを開始したかどうか
     float startTimer = 0.0f;// wave１が始まるまでの時間
 
+    std::vector<std::weak_ptr<ScissorsGameEnemyBase>> aliveEnemies;
+    float lineCheckTimer = 0.0f;
 };

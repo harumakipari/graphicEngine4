@@ -79,8 +79,6 @@ void ScissorsGameEnemyBase::Update(float deltaTime)
                 skeletalMeshComponent->SetIsVisible(false);
             }
         }
-
-
     }
 
 
@@ -112,6 +110,9 @@ void ScissorsGameEnemyBase::MoveLinear(float deltaTime)
     }
 
     SetPosition(pos);
+
+    rotationComponent->SetDirection(moveDirection);
+
 }
 
 bool ScissorsGameEnemyBase::OnHitByDash(ScissorsPlayer1* player, int dashDamage)
@@ -175,8 +176,9 @@ void ScissorsGameEnemyBase::SpawnHitEffect(bool hitByDash)
     XMFLOAT4 endColor = { 1,1,0.3f,0.5f };
 
     if (!hitByDash)
-    {// 突進によって死亡していない場合
-        endColor = { 0.96f,0.51f,0.125f,0.5f };
+    {// 突進によって死亡していない場合  
+        endColor = { 0.96f,0.51f,0.125f,0.5f }; //オレンジ色
+        endColor = { 0.16f,0.81f,0.9f,0.5f };
     }
 
     // リング（少し遅らせると良い）

@@ -63,8 +63,8 @@ void ButtonCoinActor::Update(float deltaTime)
 
         if (t >= 0.8f)
         {// フラッシュの値を設定
-            skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = 1.0f;
-            skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 8.5f;
+            //skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = 1.0f;
+            //skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 8.5f;
         }
 
         if (t >= 1.0f)
@@ -136,7 +136,9 @@ void ButtonCoinActor::StartPerform()
     elapsedTime = 0.0f;
     SetPosition(startPos);
 
-    // 
+    // 音を再生
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/button_piro.wav", 1.f);
+
     //particleComponent->Play();
 
     // 発光値をリセットする

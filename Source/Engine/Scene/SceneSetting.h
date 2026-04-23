@@ -45,7 +45,7 @@ struct SceneLightSaveData
 
 struct SceneShaderConstants
 {
-#if 0//(T_T) ここを変更
+#if 1//(T_T) ここを変更
     float shadowColor = 0.75f;
     float shadowDepthBias = -0.00207f;
     float slopeBias = 0.005f;
@@ -68,7 +68,7 @@ struct SceneShaderConstants
 
     float objectIblIntensity = 23.0f; // オブジェクトのIblIntensity (今は骸骨を明るくするために)
     int renderStep = 0; // デバック表示用のレンダーステップ
-    int enableToneMapping = 0; // トーンマッピング有効化フラグ   (T_T) チーム制作で変更
+    int enableToneMapping = 1; // トーンマッピング有効化フラグ   (T_T) チーム制作で変更
     int enableSsao = 1;
 
     int enableCascadedShadowMaps = 1;
@@ -89,15 +89,17 @@ struct SceneShaderConstants
 
 struct CascadedShadowMapConstants
 {
-    float criticalDepthValue = 234.577f;
-    float splitSchemeWeight = 0.488f;// 1.0 に近いほど対数分割寄り
-    bool fitToCascade = true;// true: カスケード毎にnearを変える
-    float zDepthScale = 2.23f;// Z拡張倍率（シャドウ欠け防止）
-#if 0  //(T_T) ここを変更
+#if 1//(T_T) ここを変更
     float criticalDepthValue = 247.0f;
     float splitSchemeWeight = 0.83f;// 1.0 に近いほど対数分割寄り
     bool fitToCascade = true;// true: カスケード毎にnearを変える
     float zDepthScale = 40.4f;// Z拡張倍率（シャドウ欠け防止）
+#else
+    float criticalDepthValue = 234.577f;
+    float splitSchemeWeight = 0.488f;// 1.0 に近いほど対数分割寄り
+    bool fitToCascade = true;// true: カスケード毎にnearを変える
+    float zDepthScale = 2.23f;// Z拡張倍率（シャドウ欠け防止）
+
 #endif // 0  //(T_T) ここを変更
 };
 

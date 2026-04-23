@@ -46,6 +46,18 @@ public:
     // €–S‚µ‚½‚©‚Ç‚¤‚©
     bool IsDead() const { return isDead; }
 
+    // Œõ‚ç‚¹‚é
+    void SetHighlight(bool flag)
+    {
+        if (flag)
+        {
+        skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = 1.0f;
+        }
+        else
+        {
+            skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = 0.0f;
+        }
+    }
 private:
     // €–S‚µ‚½‚ÉŒÄ‚ÔŠÖ”
     void CallDeath(bool hitByDash);

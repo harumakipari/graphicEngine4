@@ -15,14 +15,19 @@ public:
     // 壁を全て壊す
     void BreakAllWalls();
 
-
+    // 進む方向を設定する
+    void SetMoveDirection(DirectX::XMFLOAT3 dir) { moveDirection = dir; }
 private:
     // 壁を生成
     void SpawnWall(const DirectX::XMFLOAT3& pos);
+
+    // ステージ端かどうか
+    void CheckStageEdge();
 
 private:
     DirectX::XMFLOAT3 lastDropPos = {}; // 最後に壁を置いた位置
     float dropDistance = 0.6f; // この距離進んだら壁置く
     std::vector<std::shared_ptr<RibbonWallActor>> walls;
+    bool isStopped = false; // 止まるかどうか
 
 };

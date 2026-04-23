@@ -121,7 +121,8 @@ void YarnEnemyActor::SetType(YarnEnemyType type)
     switch (enemyType)
     {
     case YarnEnemyType::Static:
-        // ‰½‚à‚µ‚È‚¢
+        rotationComponent->SetDirection({ 0,0,-1 });
+        
         break;
     case YarnEnemyType::MoveHorizontal:
         moveDirection = { 1,0,0 };
@@ -173,6 +174,8 @@ void YarnEnemyActor::MoveToCenter(float deltaTime)
     pos.z += dir.z * speed * deltaTime;
 
     SetPosition(pos);
+
+    rotationComponent->SetDirection(dir);
 }
 
 // ‰¡‚É”g‘Å‚¿‚È‚ª‚çˆÚ“®‚·‚éˆ—
@@ -201,6 +204,7 @@ void YarnEnemyActor::MoveWaveHorizontal(float deltaTime)
     {
         moveDirection.x *= -1.0f;
     }
+    rotationComponent->SetDirection(moveDirection);
 
 }
 
@@ -225,6 +229,7 @@ void YarnEnemyActor::MoveWaveVertical(float deltaTime)
     {
         moveDirection.z *= -1.0f;
     }
+    rotationComponent->SetDirection(moveDirection);
 
 }
 
@@ -260,6 +265,9 @@ void YarnEnemyActor::ChasePlayer(float deltaTime)
         pos.z = std::clamp(pos.z, stageMinZ, stageMaxZ);
 
         SetPosition(pos);
+        rotationComponent->SetDirection(dir);
+
+
     }
 }
 

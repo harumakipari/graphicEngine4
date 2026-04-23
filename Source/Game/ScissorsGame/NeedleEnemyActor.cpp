@@ -14,7 +14,7 @@ void NeedleEnemyActor::Initialize(const Transform& transform)
     skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/NeedleEnemy.glb", false, true);
     skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Enemy;   // オブジェクトの種類を Enemy に設定
     skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
-    skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor={1,1,1,1};
+    skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
 
     // 当たり判定
     {
@@ -55,14 +55,37 @@ void NeedleEnemyActor::Initialize(const Transform& transform)
         {
             BreakAllWalls();
         };
-
 }
 
 void NeedleEnemyActor::Update(float deltaTime)
 {
-    MoveLinear(deltaTime);
+    ScissorsGameEnemyBase::Update(deltaTime);
+
+#if 1
+    if (isStopped)
+    {// 止まっていたら
+        return;
+    }
+#endif // 0
 
     DirectX::XMFLOAT3 pos = GetPosition();
+
+    float speed = 3.0f;
+    pos.x += moveDirection.x * speed * deltaTime;
+    pos.z += moveDirection.z * speed * deltaTime;
+
+    SetPosition(pos);
+
+    // ステージの端かどうかを確認する
+    CheckStageEdge();
+
+    if (rotationComponent)
+    {
+        rotationComponent->SetDirection(moveDirection);
+    }
+
+    if (hp <= 0) // 死んでいる場合は壁を生成しない
+        return; 
 
     // 壁生成チェック
     float dx = pos.x - lastDropPos.x;
@@ -79,7 +102,7 @@ void NeedleEnemyActor::Update(float deltaTime)
 // 壁を全て壊す
 void NeedleEnemyActor::BreakAllWalls()
 {
-    for (auto& wall:walls)
+    for (auto& wall : walls)
     {
         wall->Break();
     }
@@ -99,3 +122,19 @@ void NeedleEnemyActor::SpawnWall(const DirectX::XMFLOAT3& pos)
     walls.push_back(wall);
 }
 
+// ステージ端かどうか
+void NeedleEnemyActor::CheckStageEdge()
+{
+    auto pos = GetPosition();
+
+    float stageMinX = 1.0f;
+    float stageMaxX = 19.5f;
+    float stageMinZ = 1.0f;
+    float stageMaxZ = 19.5f;
+
+    if (pos.x < stageMinX || pos.x > stageMaxX ||
+        pos.z < stageMinZ || pos.z > stageMaxZ)
+    {
+        isStopped = true;
+    }
+}

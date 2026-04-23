@@ -19,5 +19,9 @@ void RibbonWallActor::Initialize(const Transform& transform)
 // •Ç‚ð‰ó‚·
 void RibbonWallActor::Break()
 {
+    if (wallCollisionComponent)
+    {
+        wallCollisionComponent->DisableCollision();
+    }
     MarkPendingKill();
 }

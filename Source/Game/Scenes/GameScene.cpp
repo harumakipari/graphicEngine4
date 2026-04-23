@@ -34,8 +34,10 @@
 
 bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
-    lightDirection = { 0.722f, -0.38f, -0.0211f, 0.9f };   // 上の窓からの光
-    lightColor = { 1.0f, 0.8f, 1.0f, 2.6f };
+    //lightDirection = { 0.722f, -0.38f, -0.0211f, 0.9f };   // 
+
+    lightDirection = { 0.652f, -0.63f, 0.98f, 1.0f };   // 上の窓からの光
+    lightColor = { 1.0f, 1.0f, 1.0f, 2.6f };
     {
         sceneCBuffer = std::make_unique<ConstantBuffer<FrameConstants>>(device);
         shaderCBuffer = std::make_unique<ConstantBuffer<SceneShaderConstants>>(device);
@@ -131,7 +133,7 @@ void GameScene::Start()
     audioComp->Play();
     audioComp->SetVolume(0.5f);
 
-    auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
+    //auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
 
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
@@ -443,9 +445,15 @@ void GameScene::SetUpActors()
     auto rabbitBoss = this->GetActorManager()->CreateAndRegisterActorWithTransform<RabbitBossEnemyActor>("boss", bossTr);
 #endif // 0// ボスを生成　
 
+
+#if 1// ハリネズミを生成　
+    Transform needleTr(DirectX::XMFLOAT3{ 1.0f,0.0f,5.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto needleEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<NeedleEnemyActor>("needleEnemy", needleTr);
+    needleEnemy->SetMoveDirection({ 1.0f,0.0f,0.0f });
+#endif // 0// ハリネズミを生成　
+
     Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("coin", coinTr);
-
 
 #if 0
     // 仮の待ち針敵
