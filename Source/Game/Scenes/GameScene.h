@@ -14,6 +14,7 @@
 
 #include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Player/Player.h"
+#include "Game/ScissorsGame/NeedleEnemyActor.h"
 #include "Game/ScissorsGame/YarnEnemyActor.h"
 
 
@@ -95,6 +96,7 @@ private:
 
     TPSCameraComponent* mainCameraComponent = nullptr;
     std::shared_ptr<ScissorsPlayer1> player;
+    std::shared_ptr<NeedleEnemyActor> needleEnemyActor;
 
 
 

@@ -66,6 +66,9 @@ public:
     // ポーズの時に呼ぶ関数　これを呼ぶと歩きのSEが止まる
     void OnPause();
 
+    // ダッシュの方向転換をする関数
+    void RedirectDash(const DirectX::XMFLOAT3& newDir);
+
     // 星を生成する
     void SpawnStarParticle(DirectX::XMFLOAT3 pos, XMFLOAT3 playerForward);
 

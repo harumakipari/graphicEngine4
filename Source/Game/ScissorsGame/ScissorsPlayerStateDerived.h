@@ -122,6 +122,9 @@ public:
     // ステート名を取得
     const char* GetName() const override { return "Dash"; }
 
+
+    void Redirect(const DirectX::XMFLOAT3& newDir);
+
 private:
     float dashDuration = 0.2f;   // ダッシュにかかる時間
     float elapsedTime = 0.0f;    // 経過時間

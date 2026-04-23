@@ -45,7 +45,7 @@ void NeedleEnemyActor::Initialize(const Transform& transform)
 
     // 最初の位置に待ち針を生成する
     Transform pinTr{ startPosition,{0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f} };
-    needlePinActor= GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<NeedlePinActor>("needlePin", pinTr);
+    needlePinActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<NeedlePinActor>("needlePin", pinTr);
 
     // 倒したときのスコア
     scoreData = { 100,0 };
@@ -63,11 +63,17 @@ void NeedleEnemyActor::Initialize(const Transform& transform)
 
     // 最初に壁を生成する
     SpawnWall(transform.GetLocation());
+
+    // 軌跡を初期化する
+    trail.Initialize();
 }
 
 void NeedleEnemyActor::Update(float deltaTime)
 {
     ScissorsGameEnemyBase::Update(deltaTime);
+    DirectX::XMFLOAT3 pos = GetPosition();
+    trail.UpdateTrail(deltaTime);
+    DebugRender::DrawLine(startPosition, pos, { 1,1,0,1 });
 
 #if 1
     if (isStopped)
@@ -76,7 +82,6 @@ void NeedleEnemyActor::Update(float deltaTime)
     }
 #endif // 0
 
-    DirectX::XMFLOAT3 pos = GetPosition();
 
     float speed = 3.0f;
     pos.x += moveDirection.x * speed * deltaTime;
@@ -96,14 +101,32 @@ void NeedleEnemyActor::Update(float deltaTime)
         return;
 
     // 壁生成チェック
-    float dx = pos.x - lastDropPos.x;
-    float dz = pos.z - lastDropPos.z;
-    float dist = sqrt(dx * dx + dz * dz);
-
-    if (dist > dropDistance)
     {
-        lastDropPos = pos;
-        SpawnWall(pos);
+        float dx = pos.x - lastDropPos.x;
+        float dz = pos.z - lastDropPos.z;
+        float dist = sqrt(dx * dx + dz * dz);
+
+        if (dist > dropDistance)
+        {
+            lastDropPos = pos;
+            SpawnWall(pos);
+        }
+    }
+
+    {
+#if 0
+        float dx = pos.x - lastDrawPos.x;
+        float dz = pos.z - lastDrawPos.z;
+        float dist = sqrt(dx * dx + dz * dz);
+
+        if (dist > drawDistance)
+        {
+            lastDrawPos = pos;
+            trail.trailPoints.push_back({ lastDrawPos, 5.0f });
+        }
+
+#endif // 0
+
     }
 }
 
@@ -135,6 +158,12 @@ void NeedleEnemyActor::SpawnWall(const DirectX::XMFLOAT3& pos)
     // 壁を所有する敵を設定する
     wall->ownerEnemy = std::static_pointer_cast<NeedleEnemyActor>(shared_from_this());
     walls.push_back(wall);
+}
+
+// 軌跡を描画する処理
+void NeedleEnemyActor::RenderTrail(ID3D11DeviceContext* immediateContext)
+{
+    trail.Render(immediateContext);
 }
 
 // ステージ端かどうか

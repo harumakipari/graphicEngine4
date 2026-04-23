@@ -1,5 +1,6 @@
 #pragma once
 #include "ScissorsGameEnemyBaseActor.h"
+#include "Trail.h"
 
 class NeedlePinActor;
 class RibbonWallActor;
@@ -21,6 +22,9 @@ public:
 
     // 進む方向を設定する
     void SetMoveDirection(DirectX::XMFLOAT3 dir) { moveDirection = dir; }
+
+    // 軌跡を描画する処理
+    void RenderTrail(ID3D11DeviceContext* immediateContext);
 private:
     // 壁を生成
     void SpawnWall(const DirectX::XMFLOAT3& pos);
@@ -31,12 +35,18 @@ private:
 private:
     DirectX::XMFLOAT3 lastDropPos = {}; // 最後に壁を置いた位置
     float dropDistance = 0.6f; // この距離進んだら壁置く
+
+    DirectX::XMFLOAT3 lastDrawPos = {}; // 最後に描画した位置
+    float drawDistance = 2.0f; // この距離進んだら描画する
     bool isStopped = false; // 止まるかどうか
 
     // 壁
     std::vector<std::shared_ptr<RibbonWallActor>> walls;
     // 待ち針のピン
     std::shared_ptr<NeedlePinActor> needlePinActor;
+
+    // 軌跡
+    Trail trail;
 };
 
 

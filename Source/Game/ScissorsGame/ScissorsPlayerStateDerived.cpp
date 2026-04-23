@@ -328,6 +328,43 @@ void ScissorsPlayerDashState::Exit()
 
 }
 
+void ScissorsPlayerDashState::Redirect(const DirectX::XMFLOAT3& newDir)
+{
+    // 現在位置を新しいスタートにする
+    startPos = player->GetPosition();
+
+    // 残り時間の割合を計算
+    float remainingT = 1.0f - (elapsedTime / dashDuration);
+    remainingT = std::clamp(remainingT, 0.0f, 1.0f);
+
+    float remainingDistance = remainingT * 10; // 適当でもOK（後述）
+
+    // 正規化
+    DirectX::XMFLOAT3 dir = newDir;
+    float len = sqrt(dir.x * dir.x + dir.z * dir.z);
+    if (len > 0.0001f)
+    {
+        dir.x /= len;
+        dir.z /= len;
+    }
+
+    // 新しいターゲットを設定
+    DirectX::XMFLOAT3 newTarget =
+    {
+        startPos.x + dir.x * remainingDistance,
+        startPos.y,
+        startPos.z + dir.z * remainingDistance
+    };
+
+    player->targetPos = newTarget;
+
+    // 時間リセット（重要）
+    elapsedTime = 0.0f;
+
+    // 向きも更新
+    player->rotationComponent->SetDirection(dir);
+}
+
 
 void ScissorsPlayerStunState::Enter()
 {

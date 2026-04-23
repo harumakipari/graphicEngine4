@@ -123,7 +123,7 @@ void YarnEnemyActor::SetType(YarnEnemyType type)
     {
     case YarnEnemyType::Static:
         rotationComponent->SetDirection({ 0,0,-1 });
-        
+
         break;
     case YarnEnemyType::MoveHorizontal:
         moveDirection = { 1,0,0 };
@@ -289,8 +289,7 @@ void BigYarnEnemyActor::Initialize(const Transform& transform)
     skeletalMeshComponent->plusAlphaCBuffer->data.saturation = 1.4f;
     skeletalMeshComponent->SetIsVisible(false);
 
-
-    elasticMeshComponent= AddComponent<ElasticMeshComponent>(parentName);
+    elasticMeshComponent = AddComponent<ElasticMeshComponent>(parentName);
     elasticMeshComponent->SetModel("./Data/TeamModels/Enemy/YarnBigEnemy.glb", false, true);
     elasticMeshComponent->Initialize();
     elasticMeshComponent->SetUseMouseInput(false); // マウス入力によって引っ張られない
@@ -341,7 +340,35 @@ bool BigYarnEnemyActor::OnHitByDash(ScissorsPlayer1* player, int dashDamage)
     TakeDamage(dashDamage, true);
     // playerのダッシュを止める処理を追加
     if (hp >= maxHp - 1)
-        player->StopDash();
+    {
+        //player->StopDash();
+
+        DirectX::XMFLOAT3 dir =
+        {
+            player->GetPosition().x - GetPosition().x,
+            0,
+            player->GetPosition().z - GetPosition().z
+        };
+
+        // 正規化（重要）
+        float len = sqrt(dir.x * dir.x + dir.z * dir.z);
+        if (len > 0.0001f)
+        {
+            dir.x /= len;
+            dir.z /= len;
+        }
+
+        // 90度回転（どっち向きかは好み）
+        DirectX::XMFLOAT3 rotated =
+        {
+            -dir.z,  // 左回転
+            0,
+            dir.x
+        };
+
+        player->RedirectDash(rotated);
+
+    }
 
     // コントローラーを振動させる
     InputSystem::SetVibration(1.0f, 0.15f);
@@ -358,5 +385,5 @@ void BigYarnEnemyActor::DrawImGuiDetails()
         elasticMeshComponent->AddImpulse(impulse);
     }
 
-    ImGui::DragFloat3(U8("加える力"),&impulse.x, 0.5f, -3.0f, 3.0f);
+    ImGui::DragFloat3(U8("加える力"), &impulse.x, 0.5f, -3.0f, 3.0f);
 }

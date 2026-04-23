@@ -11,9 +11,14 @@ void RibbonWallActor::Initialize(const Transform& transform)
     wallCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
     wallCollisionComponent->SetStatic(true); // •Ç‚¾‚©‚ç“®‚©‚¹‚È‚¢‚æ‚¤‚É‚·‚é
     wallCollisionComponent->Initialize();
+    
 
+#if 0
     auto skeletalMeshComponent = AddComponent<SkeletalMeshComponent>("mesh", parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/Wall.glb", false, true);
+#endif // 0
+
+    
 }
 
 // •Ç‚ð‰ó‚·

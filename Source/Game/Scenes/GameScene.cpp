@@ -324,6 +324,10 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         RenderState::BindBlendState(immediateContext, BLEND_STATE::ADD);
         player->RenderTrail(immediateContext);
+        if (needleEnemyActor)
+        {
+            needleEnemyActor->RenderTrail(immediateContext);
+        }
     }
 
 #if 1
@@ -445,23 +449,18 @@ void GameScene::SetUpActors()
     auto rabbitBoss = this->GetActorManager()->CreateAndRegisterActorWithTransform<RabbitBossEnemyActor>("boss", bossTr);
 #endif // 0// ボスを生成　
 
-#if 0// ハリネズミを生成　
+#if 1 // ハリネズミを生成　
     Transform needleTr(DirectX::XMFLOAT3{ 1.0f,0.0f,5.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto needleEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<NeedleEnemyActor>("needleEnemy", needleTr);
-    needleEnemy->SetMoveDirection({ 1.0f,0.0f,1.0f });
+    needleEnemyActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<NeedleEnemyActor>("needleEnemy", needleTr);
+    needleEnemyActor->SetMoveDirection({ 1.0f,0.0f,1.0f });
 #endif // 0// ハリネズミを生成　
 
 
     SpawnBigEnemy({ 5,0,8 }, YarnEnemyType::Static);
 
-
+#if 0
     Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("coin", coinTr);
-
-#if 0
-    // 仮の待ち針敵
-    Transform tr({ 5,0,5 }, DirectX::XMFLOAT3{ 0.0f,180.0f,0.0f }, DirectX::XMFLOAT3{ 0.5f,0.5f,0.5f });
-    auto needleEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("needleEnemy", tr);
 #endif // 0
 
 #if 0

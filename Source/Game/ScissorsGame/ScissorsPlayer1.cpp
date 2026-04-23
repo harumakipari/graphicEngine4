@@ -16,9 +16,9 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     std::string parentName = "SkeletonWarriorMeshComponent";
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    skeletalMeshComponent->SetModel("./Data/TeamModels/Player/player.gltf", false, true);
+    //skeletalMeshComponent->SetModel("./Data/TeamModels/Player/player.gltf", false, true);
 
-    //skeletalMeshComponent->SetModel("./Data/TeamModels/Player/ScissorsPlayer.glb", false, true);
+    skeletalMeshComponent->SetModel("./Data/TeamModels/Player/ScissorsPlayer.glb", false, true);
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
@@ -652,6 +652,37 @@ void ScissorsPlayer1::OnPause()
         stateMachine_->ChangeState("Idle"); // ポーズ中はIdleステートにする チャージダッシュ時もこれで止める
 
     }
+}
+
+// ダッシュの方向転換をする関数
+void ScissorsPlayer1::RedirectDash(const DirectX::XMFLOAT3& newDir)
+{
+    // 正規化
+    DirectX::XMFLOAT3 dir = newDir;
+    float len = sqrt(dir.x * dir.x + dir.z * dir.z);
+
+    if (len > 0.0001f)
+    {
+        dir.x /= len;
+        dir.z /= len;
+    }
+
+    // 向き更新
+    moveDir = dir;
+
+    // ダッシュステート側にも反映（重要）
+    if (auto state = stateMachine_->GetCurrentState())
+    {
+        if (stateMachine_->GetStateName() == "Dash")
+        {
+            // DashStateに方向を持たせてるならそこにも渡す
+            auto dashState = static_cast<ScissorsPlayerDashState*>(state);
+            dashState->Redirect(dir);
+        }
+    }
+
+    // 回転も更新
+    rotationComponent->SetDirection(dir);
 }
 
 // 星を生成する
