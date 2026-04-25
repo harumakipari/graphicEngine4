@@ -24,7 +24,6 @@ public:
         Big,
     };
 
-
 public:
     explicit EnemyBase(const std::string& actorName) :Character(actorName) {}
 
@@ -50,9 +49,23 @@ public:
     // 向き
     void Face(const DirectX::XMFLOAT3& dir);
 
-    // セット関数
+    // 振る舞いセット関数
     void SetBehavior(std::unique_ptr<EnemyBehavior> newBehavior);
 
+    // サイズのセット関数
+    void SetEnemySize(const YarnSize size);
+
+    // 移動方向を取得する
+    DirectX::XMFLOAT3 GetMoveDirection() const { return moveDirection; }
+
+    // 移動方向を設定する
+    void SetMoveDirection(const DirectX::XMFLOAT3 moveDir) { moveDirection = moveDir; }
+
+    // 速度を取得する
+    float GetSpeed() const { return speed; }
+
+    // 速度を設定する
+    void SetSpeed(const float speed) { this->speed = speed; }
 private:
     // 死亡した時に呼ぶ関数
     void CallDeath(bool hitByDash);
@@ -67,7 +80,7 @@ private:
     void UpdateTied(float deltaTime);
 
     // 玉止めをほどく
-    void ReleasedTiled();
+    void ReleasedTied();
 
     // 死亡中の更新処理
     void UpdateDead(float deltaTime);
@@ -81,7 +94,7 @@ public:
 protected:
     DirectX::XMFLOAT3 startPosition = { 0.0f,0.0f,0.0f };   // 中心に向かって移動する前の開始位置
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
-    std::shared_ptr<SkeletalMeshComponent> tiedMeshComponent; // 玉止め用のモデル
+    std::vector<std::shared_ptr<SkeletalMeshComponent>> tiedMeshes;// 玉止め用のモデル
     std::shared_ptr<RotationComponent> rotationComponent; // 回転のコンポーネント
     std::shared_ptr<SphereComponent> sphereCollisionComponent; // 当たり判定のコンポーネント
 
@@ -97,7 +110,7 @@ protected:
     float tieTimer = 0.0f; // 自力解除用
 
     YarnState state = YarnState::Active;
-    YarnSize size = YarnSize::Small; 
+    YarnSize size = YarnSize::Small;
 private:
     bool isDead = false;// 死亡したかどうか
     float deathTimer = 0.0f;
@@ -120,5 +133,9 @@ private:
     float hitFlashDuration = 0.5f; // フラッシュ全体時間
     bool isDying = false;
 
-    std::unique_ptr<EnemyBehavior> behavior;
+    std::unique_ptr<EnemyBehavior> behavior; // 振る舞い
+
+    std::string parentName = "EnemyBase";// RootComponentの名前
+
+
 };

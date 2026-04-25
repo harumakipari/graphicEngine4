@@ -10,7 +10,7 @@ public:
     virtual void Exit(EnemyBase* e) {}
 };
 
-class IdleEnemyBehavior : public EnemyBehavior
+class StaticBehavior : public EnemyBehavior
 {
 public:
     void Enter(EnemyBase* e) override
@@ -24,6 +24,17 @@ public:
     void Exit(EnemyBase* e) override
     {
     }
+};
+
+
+class LinearBehavior : public EnemyBehavior
+{
+public:
+    void Enter(EnemyBase* e) override;
+
+    void Update(EnemyBase* e, float dt) override;
+
+    void Exit(EnemyBase* e) override;
 };
 
 

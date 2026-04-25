@@ -1,4 +1,6 @@
 #include "pch.h"
+
+#include "EnemyBase.h"
 #include "WaveManagaer.h"
 #include "Engine/Scene/Scene.h"
 
@@ -135,13 +137,6 @@ void WaveManager::Initialize(const Transform& transform)
 
 void WaveManager::Update(float deltaTime)
 {
-    lineCheckTimer += deltaTime;
-    if (lineCheckTimer > 0.3f)
-    {
-        DetectLine();
-        lineCheckTimer = 0.0f;
-    }
-
     if (waveState == WaveState::Ready)
     {
         startTimer += deltaTime;
@@ -256,10 +251,28 @@ void WaveManager::SpawnEnemy(
     YarnEnemyType type,
     float speed, const DirectX::XMFLOAT3& dir)
 {
-    Transform tr(pos, { 0,180,0 }, { 1.0f,1.0f,1.0f });
-    auto enemy = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<YarnEnemyActor>("enemy", tr);
+    Transform tr(pos, { 0,0,0 }, { 1.0f,1.0f,1.0f });
+    auto enemy = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemy", tr);
     enemy->SetMoveDirection(dir);
-    enemy->SetType(type);
+    enemy->SetEnemySize(EnemyBase::Small);
+
+    switch (type)
+    {
+    case YarnEnemyType::Static:
+        enemy->SetBehavior(std::make_unique<StaticBehavior>());
+        break;
+
+    case YarnEnemyType::MoveHorizontal:
+        enemy->SetBehavior(std::make_unique<LinearBehavior>());
+        enemy->SetMoveDirection({ 1,0,0 });
+        break;
+
+    case YarnEnemyType::MoveVertical:
+        enemy->SetBehavior(std::make_unique<LinearBehavior>());
+        enemy->SetMoveDirection({ 0,0,1 });
+        break;
+
+    }
     enemy->SetSpeed(speed);
     enemy->onDeath = [this, weak = std::weak_ptr(enemy)]()
         {
@@ -269,7 +282,6 @@ void WaveManager::SpawnEnemy(
             }
         };
     hasSpawnedAnyEnemy = true;
-
     aliveEnemies.push_back(enemy);
 
     enemyCount++;
@@ -281,10 +293,28 @@ void WaveManager::SpawnBigEnemy(
     YarnEnemyType type,
     float speed, const DirectX::XMFLOAT3& dir)
 {
-    Transform tr(pos, { 0,180,0 }, { 1.0f,1.0f,1.0f });
-    auto enemy = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<BigYarnEnemyActor>("enemy", tr);
+    Transform tr(pos, { 0,0,0 }, { 1.0f,1.0f,1.0f });
+    auto enemy = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemyBig", tr);
     enemy->SetMoveDirection(dir);
-    enemy->SetType(type);
+    enemy->SetEnemySize(EnemyBase::Big);
+
+    switch (type)
+    {
+    case YarnEnemyType::Static:
+        enemy->SetBehavior(std::make_unique<StaticBehavior>());
+        break;
+
+    case YarnEnemyType::MoveHorizontal:
+        enemy->SetBehavior(std::make_unique<LinearBehavior>());
+        enemy->SetMoveDirection({ 1,0,0 });
+        break;
+
+    case YarnEnemyType::MoveVertical:
+        enemy->SetBehavior(std::make_unique<LinearBehavior>());
+        enemy->SetMoveDirection({ 0,0,1 });
+        break;
+
+    }
     enemy->SetSpeed(speed);
     enemy->onDeath = [this, weak = std::weak_ptr(enemy)]()
         {
@@ -295,6 +325,7 @@ void WaveManager::SpawnBigEnemy(
         };
     hasSpawnedAnyEnemy = true;
     aliveEnemies.push_back(enemy);
+
     enemyCount++;
 }
 
@@ -315,37 +346,6 @@ float DistanceFromLine(
     XMVECTOR proj = XMLoadFloat3(&a) + ba * h;
 
     return XMVectorGetX(XMVector3Length(XMLoadFloat3(&p) - proj));
-}
-
-// íºê¸îªíË
-void WaveManager::DetectLine()
-{
-    aliveEnemies.erase(
-        std::remove_if(aliveEnemies.begin(), aliveEnemies.end(),
-            [](const std::weak_ptr<ScissorsGameEnemyBase>& w)
-            {
-                return w.expired();
-            }),
-        aliveEnemies.end());
-
-    std::vector<ScissorsGameEnemyBase*> enemies;
-
-    for (auto& w : aliveEnemies)
-    {
-        if (auto e = w.lock())
-        {
-            e->SetHighlight(false);
-            enemies.push_back(e.get());
-        }
-    }
-
-    if (enemies.size() < 3) return;
-
-    // ï˚å¸Ç≤Ç∆Ç…É`ÉFÉbÉN
-    CheckLine(enemies, { 1,0 });   // â°
-    CheckLine(enemies, { 0,1 });   // èc
-    CheckLine(enemies, { 1,1 });   // éŒÇﬂÅ_
-    CheckLine(enemies, { 1,-1 });  // éŒÇﬂÅ^
 }
 
 void WaveManager::CheckLine(
@@ -417,7 +417,7 @@ void WaveManager::OnLineDetected(const std::vector<std::weak_ptr<ScissorsGameEne
     // åıÇÁÇπÇÈ
     for (auto e : line)
     {
-        e.lock()->SetHighlight(true); 
+        e.lock()->SetHighlight(true);
     }
 }
 

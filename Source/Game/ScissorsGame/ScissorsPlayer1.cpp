@@ -67,12 +67,14 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 if (stateMachine_->GetStateName() == "Attack") // 攻撃中の時はダメージを受けない
                     return;
 
-                if (damageCooldownTimer > 0.0f) return;
+                if (stateMachine_->GetStateName() == "Dash") // ダッシュ中の時はダメージを受けない
+                    return;
 
+                if (damageCooldownTimer > 0.0f) return;
 
                 if (other->GetCollisionLayer() == CollisionHelper::ToBit(CollisionLayer::Enemy))
                 {
-                    if (auto enemy = dynamic_cast <ScissorsGameEnemyBase*>(other->GetOwner()))
+                    if (auto enemy = dynamic_cast <EnemyBase*>(other->GetOwner()))
                     {
                         if (enemy->IsDead())
                         {// 敵が死んでいたら
@@ -289,15 +291,17 @@ void ScissorsPlayer1::Update(float deltaTime)
         return;
     }
 
-    Character::Update(deltaTime);
-
-    //　軌跡更新
-    trail.UpdateTrail(deltaTime);
 
     if (damageCooldownTimer > 0.0f)
     {// ダメージクールダウン中は無敵
         damageCooldownTimer -= deltaTime;
     }
+
+
+    Character::Update(deltaTime);
+
+    //　軌跡更新
+    trail.UpdateTrail(deltaTime);
 
     // 入力に基づいて移動と回転を更新
     auto intent = inputComponent->GetIntent();
@@ -451,9 +455,13 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
     // ゲームパッド
     if (isGamepad)
     {
-#if 1 // 操作入力反転
+#if 0 // 操作入力反転
         float x = -intent.rightMove.x;
         float z = -intent.rightMove.y;
+#else
+        float x = intent.rightMove.x;
+        float z = intent.rightMove.y;
+
 #endif // 1 // 操作入力反転
 
         float len = sqrt(x * x + z * z);
@@ -484,6 +492,7 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
     // マウス
     else
     {
+#if 0
         // 押した瞬間
         if (InputSystem::GetInputState("ScissorsAction", InputStateMask::Trigger))
         {
@@ -552,7 +561,8 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
         {
             isDragging = false;
         }
-#if 0// マウスが操作　ステージにあった方向に向く
+
+#else// マウスが操作　ステージにあった方向に向く
         HitResultWithActor result;
 
         if (!InputSystem::GetInputState("MouseLeft"))

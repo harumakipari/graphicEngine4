@@ -119,14 +119,14 @@ private:
     }
 
     // “G‚ª€‚ñ‚¾‚Æ‚«‚ÉŒÄ‚ÔŠÖ”‚Æ‚µ‚Ä“o˜^‚·‚éŠÖ”
-    void OnDeath(YarnEnemyActor* enemy)
+    void OnDeath(EnemyBase* enemy)
     {
         enemyCount--;
         killCount++;
 
         aliveEnemies.erase(
             std::remove_if(aliveEnemies.begin(), aliveEnemies.end(),
-                [enemy](const std::weak_ptr<ScissorsGameEnemyBase>& weakEnemy)
+                [enemy](const std::weak_ptr<EnemyBase>& weakEnemy)
                 {
                     if (auto e = weakEnemy.lock())
                     {
@@ -171,6 +171,6 @@ private:
     bool hasSpawnedAnyEnemy = false; //“G‚ªƒXƒ|[ƒ“‚ğŠJn‚µ‚½‚©‚Ç‚¤‚©
     float startTimer = 0.0f;// wave‚P‚ªn‚Ü‚é‚Ü‚Å‚ÌŠÔ
 
-    std::vector<std::weak_ptr<ScissorsGameEnemyBase>> aliveEnemies;
+    std::vector<std::weak_ptr<EnemyBase>> aliveEnemies;
     float lineCheckTimer = 0.0f;
 };

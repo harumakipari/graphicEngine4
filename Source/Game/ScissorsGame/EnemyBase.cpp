@@ -9,35 +9,9 @@
 
 void EnemyBase::Initialize(const Transform& transform)
 {
-    std::string parentName = "EnemyBase";
+    parentName = "EnemyBase";
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/YarnEnemy.glb", false, true);
-    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
-    skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
-
-    // “–‚½‚è”»’è
-    {
-        sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
-        DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
-        radius = enemyRadius;
-        height = size.y;
-        mass = 180.0f;
-        sphereCollisionComponent->SetRadius(radius);
-        sphereCollisionComponent->SetMass(mass);
-        sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
-        sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-        sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
-        sphereCollisionComponent->Initialize();
-    }
-
-    // ‹Ê~‚ßƒ‚ƒfƒ‹
-    tiedMeshComponent = AddComponent<SkeletalMeshComponent>("tiedMeshComponent", parentName);
-    tiedMeshComponent->SetModel("./Data/TeamModels/Effect/TiedModel.glb", false, true);
-    tiedMeshComponent->SetIsVisible(false);
 
     // ‰ñ“]—pƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ’Ç‰Á
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
@@ -49,7 +23,7 @@ void EnemyBase::Initialize(const Transform& transform)
     scoreData = { 100,0 };
 
     state = YarnState::Active;
-    SetBehavior(std::make_unique<IdleEnemyBehavior>());
+    SetBehavior(std::make_unique<StaticBehavior>());
 }
 
 void EnemyBase::Update(float deltaTime)
@@ -90,6 +64,8 @@ bool EnemyBase::OnHitByDash()
         {
             // 2‰ñ–Ú ¨ €–S
             state = YarnState::Dead;
+            // U“®‚³‚¹‚é
+            InputSystem::SetVibration(1.0f, 0.15f);
             CallDeath(true);
             return true;
         }
@@ -101,8 +77,6 @@ bool EnemyBase::OnHitByDash()
         }
     }
 
-    // U“®‚³‚¹‚é
-    InputSystem::SetVibration(1.0f, 0.15f);
     return false;
 }
 
@@ -141,13 +115,45 @@ void EnemyBase::SpawnHitEffect(bool hitByDash)
 // ‹Ê~‚ß‚³‚ê‚Ä‚¢‚é
 void EnemyBase::UpdateTied(float deltaTime)
 {
-    tiedMeshComponent->SetIsVisible(true);
+    int showCount = 0;
+
+    if (size == YarnSize::Small)
+    {
+        showCount = 2; // ¬‚Í1‰ñ‚Å2ŒÂ
+    }
+    else
+    {
+        showCount = tieCount; // ‘å‚Í‰ñ”‚É‰‚¶‚Ä‘‚¦‚é
+    }
+
+    for (int i = 0; i < tiedMeshes.size(); i++)
+    {
+        tiedMeshes[i]->SetIsVisible(i < showCount);
+        tiedMeshes[i]->SetRelativeEulerRotationDirect({ 0.0f,180.0f,0.0f });
+    }
+
+
+    if (size == YarnSize::Big)
+    {// ‘å‚«‚¢“G‚¾‚Á‚½‚ç
+        tieTimer += deltaTime;
+
+        if (tieTimer > 3.0f)
+        {// ©—Í‚Å’Eo‚·‚é
+            ReleasedTied();
+        }
+    }
 }
 
 // ‹Ê~‚ß‚ğ‚Ù‚Ç‚­
-void EnemyBase::ReleasedTiled()
+void EnemyBase::ReleasedTied()
 {
+    tieCount = 0;
+    state = YarnState::Active;
 
+    for (auto& tied : tiedMeshes)
+    {
+        tied->SetIsVisible(false);
+    }
 }
 
 // €–S’†‚ÌXVˆ—
@@ -318,4 +324,84 @@ void EnemyBase::SetBehavior(std::unique_ptr<EnemyBehavior> newBehavior)
     behavior = std::move(newBehavior);
 
     if (behavior) behavior->Enter(this);
+}
+
+// ƒTƒCƒY‚ÌƒZƒbƒgŠÖ”
+void EnemyBase::SetEnemySize(const YarnSize size)
+{
+    this->size = size;
+
+    switch (size)
+    {
+    case Small:
+    {
+        skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/YarnEnemy.glb", false, true);
+        skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
+
+        // “–‚½‚è”»’è
+        sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
+        DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
+        radius = enemyRadius;
+        height = size.y;
+        mass = 180.0f;
+        sphereCollisionComponent->SetRadius(radius);
+        sphereCollisionComponent->SetMass(mass);
+        sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+        sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+        sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
+        sphereCollisionComponent->Initialize();
+
+        // ‹Ê~‚ßƒ‚ƒfƒ‹
+        auto tiedLeft = AddComponent<SkeletalMeshComponent>("tiedLeftMeshComponent", parentName);
+        tiedLeft->SetModel("./Data/TeamModels/Item/tiedModelLeft.glb", false, true);
+        tiedLeft->SetIsVisible(false);
+        tiedMeshes.push_back(tiedLeft);
+
+        auto tiedRight = AddComponent<SkeletalMeshComponent>("tiedRightMeshComponent", parentName);
+        tiedRight->SetModel("./Data/TeamModels/Item/tiedModelRight.glb", false, true);
+        tiedRight->SetIsVisible(false);
+        tiedMeshes.push_back(tiedRight);
+
+    }
+    break;
+    case Big:
+    {
+        skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/YarnBigEnemy.glb", false, true);
+        skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
+
+        // “–‚½‚è”»’è
+        sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
+        DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
+        radius = enemyRadius;
+        height = size.y;
+        mass = 180.0f;
+        sphereCollisionComponent->SetRadius(radius);
+        sphereCollisionComponent->SetMass(mass);
+        sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+        sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+        sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
+        sphereCollisionComponent->Initialize();
+
+        // ‹Ê~‚ßƒ‚ƒfƒ‹
+        auto tiedLeft = AddComponent<SkeletalMeshComponent>("tiedLeftMeshComponent", parentName);
+        tiedLeft->SetModel("./Data/TeamModels/Item/tiedModelLeftBig.glb", false, true);
+        tiedLeft->SetIsVisible(false);
+        tiedMeshes.push_back(tiedLeft);
+
+        auto tiedRight = AddComponent<SkeletalMeshComponent>("tiedRightMeshComponent", parentName);
+        tiedRight->SetModel("./Data/TeamModels/Item/tiedModelRightBig.glb", false, true);
+        tiedRight->SetIsVisible(false);
+        tiedMeshes.push_back(tiedRight);
+
+    }
+        break;
+    }
 }
