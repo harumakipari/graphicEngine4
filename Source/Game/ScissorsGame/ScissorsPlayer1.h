@@ -91,8 +91,7 @@ public:
     DirectX::XMFLOAT3 targetPos = { 0.0f,0.0f,0.0f }; // ダッシュの移動先
     float hitStopTimer = 0.0f; // ヒットストップのタイマー　攻撃が当たったときに一定時間動きを止めるために使用する
     // ダッシュの狙いを表示する矢印のUIコンポーネント
-    std::shared_ptr<UIArrowComponent> dashAimArrowComponent;
-    std::shared_ptr<UIArrowComponent> redirectArrowComponent;
+    std::shared_ptr<UIArrowComponent> arrowComponents[5];
 
     std::shared_ptr<RotationComponent> rotationComponent;
 

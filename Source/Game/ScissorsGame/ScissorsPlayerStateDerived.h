@@ -101,7 +101,11 @@ public:
 
 private:
     float minDistance = 4.0f; // ダッシュの最小距離　
-    float maxDistance = 15.0f; // ダッシュの最大距離 
+    float maxDistance = 15.0f; // ダッシュの最大距離
+
+    DirectX::XMFLOAT3 currentPos = { 0,0,0 }; // 今の位置
+    DirectX::XMFLOAT3 dashDir = { 0,0,0 }; // ダッシュの方向
+
 
 };
 
@@ -128,7 +132,13 @@ public:
 private:
     float dashDuration = 0.2f;   // ダッシュにかかる時間
     float elapsedTime = 0.0f;    // 経過時間
-    DirectX::XMFLOAT3 startPos;  // 開始位置
+    DirectX::XMFLOAT3 startPos = { 0.0f,0.0f,0.0f };  // 開始位置
+
+    int currentSegment = 0;
+    DirectX::XMFLOAT3 segmentStart = { 0.0f,0.0f,0.0f };
+    DirectX::XMFLOAT3 segmentEnd = { 0.0f,0.0f,0.0f };
+    float segmentElapsed = 0.0f;
+    float segmentDuration = 0.0f;
 };
 
 // スタンステートオブジェクト

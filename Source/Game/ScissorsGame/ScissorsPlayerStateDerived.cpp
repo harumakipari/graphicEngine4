@@ -157,11 +157,9 @@ void ScissorsPlayerAttackingState::Exit()
 
 void ScissorsPlayerChargeDashState::Enter()
 {
-
     // ダッシュアニメーションを再生
     player->PlayAnimation("ChargeDash", false, true, 0.1f);
-    // ダッシュの狙いを表示する矢印のUIコンポーネントを表示する
-    player->dashAimArrowComponent->SetVisible(true);
+
     // チャージ音を再生する
     //player->chargeAudioComponent->Play();
 
@@ -179,18 +177,128 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     // ダッシュの方向や溜めの強さを取得する
     auto aimData = player->GetAimData();
     // ダッシュの方向
-    DirectX::XMFLOAT3 dashDir = aimData.dir;
+    dashDir = aimData.dir;
+    // 今の位置
+    currentPos = player->GetPosition();
 
-    if (!InputSystem::IsGamepadConnected())
+    // プレイヤーのダッシュの位置の保存を削除する
+    player->dashPoints.clear();
+    player->dashPoints.push_back(currentPos); // 始点を入れる
+
+    /*if (!InputSystem::IsGamepadConnected())
     {
         player->rotationComponent->SetDirection(dashDir);
-    }
+    }*/
 
     float dashDistance = minDistance + aimData.power * (maxDistance - minDistance);
-    
+    float remainingDist = dashDistance;
+
+    // ダッシュの距離
+    for (int i = 0; i < 3; i++) // 最大3回反射
+    {
+        XMFLOAT3 nextTarget =
+        {
+            currentPos.x + dashDir.x * remainingDist,
+            currentPos.y,
+            currentPos.z + dashDir.z * remainingDist
+        };
+
+        HitResultWithActor hit;
+        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Wall);
+
+        if (CollisionFunction::SphereRayCast(currentPos, nextTarget, hit, 0.1f, mask))
+        {
+            // 壁に当たった地点
+            player->dashPoints.push_back(hit.hitPoint);
+
+            // 残り距離
+            float traveled = MathHelper::Distance(currentPos, hit.hitPoint);
+            traveled = std::min<float>(traveled, remainingDist);
+
+            remainingDist -= traveled;
+
+            if (remainingDist < 0.01f)
+            {
+                player->dashPoints.push_back(hit.hitPoint);
+                break;
+            }
+            
+
+            // 反射
+            XMFLOAT3 normal = hit.normal;
+
+            DebugRender::DrawLine(hit.hitPoint,
+                { hit.hitPoint.x + hit.normal.x,
+                  hit.hitPoint.y,
+                  hit.hitPoint.z + hit.normal.z },
+                { 1,1,0,1 });
+
+            float dot = dashDir.x * normal.x + dashDir.z * normal.z;
+
+            //dashDir.x =  normal.x;
+            //dashDir.z =  normal.z;
+            dashDir.x = dashDir.x - 2 * dot * normal.x;
+            dashDir.z = dashDir.z - 2 * dot * normal.z;
+
+            Logger::Log("dahDir x: " + std::to_string(dashDir.x) + "y: " + std::to_string(dashDir.y) + "z: " + std::to_string(dashDir.z));
+            Logger::Log("normal x: " + std::to_string(normal.x) + "y: " + std::to_string(normal.y) + "z: " + std::to_string(normal.z));
+
+            // 正規化
+            float len = sqrt(dashDir.x * dashDir.x + dashDir.z * dashDir.z);
+            if (len < 0.0001f)
+            {
+                // fallback（元の方向維持）
+                dashDir = aimData.dir;
+            }
+            else
+            {
+                dashDir.x /= len;
+                dashDir.z /= len;
+            }
+            currentPos = hit.hitPoint;
+
+            // 反射後 壁に埋まっているのを直す
+            const float pushOut = 0.2f;
+
+            currentPos =
+            {
+                hit.hitPoint.x + normal.x * pushOut,
+                hit.hitPoint.y,
+                hit.hitPoint.z + normal.z * pushOut
+            };
+
+        }
+        else
+        {
+            player->dashPoints.push_back(nextTarget);
+            break;
+        }
+    }
+
+
+    int arrowCount = _countof(player->arrowComponents);
+    int segmentCount = player->dashPoints.size() - 1;
+
+    int count = std::min<int>(arrowCount, segmentCount);
+
+    // 全部非表示
+    for (int i = 0; i < arrowCount; i++)
+    {
+        player->arrowComponents[i]->SetVisible(false);
+    }
+
+    // 必要な分だけ表示
+    for (int i = 0; i < count; i++)
+    {
+        player->arrowComponents[i]->SetStart(player->dashPoints[i]);
+        player->arrowComponents[i]->SetEnd(player->dashPoints[i + 1]);
+        player->arrowComponents[i]->SetVisible(true);
+    }
+
+
+#if 0  // 反射しない処理
     // ダッシュの移動先を計算する　
-    DirectX::XMFLOAT3 pos = player->GetPosition();
-    DirectX::XMFLOAT3 unclampedTarget = { pos.x + dashDir.x * dashDistance,pos.y + dashDir.y * dashDistance,pos.z + dashDir.z * dashDistance };
+    DirectX::XMFLOAT3 unclampedTarget = { currentPos.x + dashDir.x * dashDistance,currentPos.y + dashDir.y * dashDistance,currentPos.z + dashDir.z * dashDistance };
 
     DirectX::XMFLOAT3 clampedTarget = unclampedTarget;
     // ステージ外に出ないようにクランプ
@@ -290,7 +398,7 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     // 目的地のスクリーン座標
     XMFLOAT2 uiTargetPos = WorldToUI(player->targetPos);
     // プレイヤーの位置のスクリーン座標
-    XMFLOAT2 uiPlayerPos = WorldToUI(pos);
+    XMFLOAT2 uiPlayerPos = WorldToUI(currentPos);
 
     float distance = MathHelper::DistanceFloat2(uiTargetPos, uiPlayerPos);
 
@@ -306,6 +414,8 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     // ダッシュの方向にUIを出す
     DebugRender::DrawSphere(player->targetPos, 0.3f, { 1,0,0,1 });
 
+#endif // 0  // 反射しない処理
+
     if (player->IsDashTriggered())
     {
         player->UseDash();
@@ -317,7 +427,10 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
 void ScissorsPlayerChargeDashState::Exit()
 {
     // ダッシュの狙いを表示する矢印のUIコンポーネントを非表示にする
-    player->dashAimArrowComponent->SetVisible(false);
+    for (int i = 0; i < _countof(player->arrowComponents); i++)
+    {
+        player->arrowComponents[i]->SetVisible(false);
+    }
 
     // チャージ音を止める
     player->chargeAudioComponent->Stop();
@@ -334,20 +447,21 @@ void ScissorsPlayerDashState::Enter()
     startPos = player->GetPosition();
     elapsedTime = 0.0f;
 
-    DirectX::XMFLOAT3 dir =
-    {
-        player->targetPos.x - startPos.x,
-        0,
-        player->targetPos.z - startPos.z
-    };
+    currentSegment = 0;
 
-    float len = sqrt(dir.x * dir.x + dir.z * dir.z);
-    if (len > 0.0001f)
+    if (player->dashPoints.size() < 2)
     {
-        dir.x /= len;
-        dir.z /= len;
-        player->rotationComponent->SetDirection(dir);
+        player->GetStateMachine()->ChangeState("Idle");
+        return;
     }
+
+    segmentStart = player->dashPoints[0];
+    segmentEnd = player->dashPoints[1];
+
+    float dist = MathHelper::Distance(segmentStart, segmentEnd);
+    segmentDuration = dist / 20.0f; // speed=20とか
+    segmentElapsed = 0.0f;
+
 
     // ダッシュ音を再生する
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/dash.wav", 0.5f);
@@ -375,6 +489,53 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
 
     elapsedTime += deltaTime;
 
+
+    segmentElapsed += deltaTime;
+
+    float t = segmentElapsed / segmentDuration;
+    t = std::clamp(t, 0.0f, 1.0f);
+
+    // 補間
+    XMFLOAT3 nextPos = MathHelper::Lerp(segmentStart, segmentEnd, t);
+    player->SetPosition(nextPos);
+
+    // セグメント終了
+    if (t >= 1.0f)
+    {
+        currentSegment++;
+
+        if (currentSegment >= player->dashPoints.size() - 1)
+        {
+            player->GetStateMachine()->ChangeState("Idle");
+            return;
+        }
+
+        // 次の区間へ
+        segmentStart = player->dashPoints[currentSegment];
+        segmentEnd = player->dashPoints[currentSegment + 1];
+
+        float dist = MathHelper::Distance(segmentStart, segmentEnd);
+        segmentDuration = dist / 20.0f;
+        segmentElapsed = 0.0f;
+
+        // 向き更新
+        XMFLOAT3 dir =
+        {
+            segmentEnd.x - segmentStart.x,
+            0,
+            segmentEnd.z - segmentStart.z
+        };
+
+        float len = sqrt(dir.x * dir.x + dir.z * dir.z);
+        if (len > 0.0001f)
+        {
+            dir.x /= len;
+            dir.z /= len;
+            player->rotationComponent->SetDirection(dir);
+        }
+    }
+
+#if 0
     // 時間固定ダッシュ 何秒でtargetPosに着くか
     float t = elapsedTime / dashDuration;
     t = std::clamp(t, 0.0f, 1.0f);
@@ -400,6 +561,8 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     {
         player->GetStateMachine()->ChangeState("Idle");
     }
+#endif // 0
+
 
 }
 

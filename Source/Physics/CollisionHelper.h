@@ -17,6 +17,7 @@ enum class CollisionLayer :uint32_t
     PlayerWeapon,// プレイヤーの武器
     RibbonWall, // リボンの壁
     Floor,
+    Wall,
     Max,
 };
 constexpr uint32_t COLLISION_EVERYTHING = 0xFFFFFFFF;

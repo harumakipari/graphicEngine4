@@ -415,7 +415,7 @@ void GameScene::SetUpActors()
 
     {
         PROFILE_SCOPE("Create Player");
-        Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        Transform playerTr(DirectX::XMFLOAT3{ 5.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
         //Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 0.01f,0.01f,0.01f });
         player = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsPlayer1>("player", playerTr);
     }
@@ -435,7 +435,7 @@ void GameScene::SetUpActors()
     cameraManager->SetMovieCamera(movieCameraActor);
 
     // ステージを生成
-    Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,180.0f,0.0f }, DirectX::XMFLOAT3{ 0.1f,0.1f,0.1f });
+    Transform stageTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,180.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
     auto stage = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsStage>("stage", stageTr);
 
     // ポーズアクターを生成

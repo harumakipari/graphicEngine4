@@ -218,24 +218,18 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
     rotationComponent->SetRotateTime(0.1f); // 回転を速くする
 
-    // ダッシュの狙いを表示する矢印のUIコンポーネントを追加
-    dashAimArrowComponent = std::make_unique<UIArrowComponent>("./Data/Textures/ScissorsUI/Arrow.png", "dashAimArrow");
     auto uiManager = GetOwnerScene()->GetUIManager();
-    dashAimArrowComponent->SetWorldPosition({ 0.0f, 0.0f });
-    dashAimArrowComponent->SetVisible(true);
-    dashAimArrowComponent->SetSize({ 300.0f, 50.0f });
-    dashAimArrowComponent->SetPivot({ 0.0f, 0.5f }); // 矢印の根元をプレイヤーの位置に合わせる
-    dashAimArrowComponent->SetVisible(false);
-    uiManager->Add(dashAimArrowComponent);
-
-    // リダイレクトダッシュの時の矢印のUIコンポーネントを追加
-    redirectArrowComponent = std::make_unique<UIArrowComponent>("./Data/Textures/ScissorsUI/Arrow.png", "redirectArrowComponent");
-    redirectArrowComponent->SetWorldPosition({ 0.0f, 0.0f });
-    redirectArrowComponent->SetVisible(true);
-    redirectArrowComponent->SetSize({ 300.0f, 50.0f });
-    redirectArrowComponent->SetPivot({ 0.0f, 0.5f }); // 矢印の根元をプレイヤーの位置に合わせる
-    redirectArrowComponent->SetVisible(false);
-    uiManager->Add(redirectArrowComponent);
+    // ダッシュの狙いを表示する矢印のUIコンポーネントを追加
+    for (int i = 0; i < _countof(arrowComponents); i++)
+    {
+        arrowComponents[i] = std::make_unique<UIArrowComponent>("./Data/Textures/ScissorsUI/Arrow.png", "dashAimArrow");
+        arrowComponents[i]->SetWorldPosition({ 0.0f, 0.0f });
+        arrowComponents[i]->SetVisible(true);
+        arrowComponents[i]->SetSize({ 300.0f, 50.0f });
+        arrowComponents[i]->SetPivot({ 0.0f, 0.5f }); // 矢印の根元をプレイヤーの位置に合わせる
+        arrowComponents[i]->SetVisible(false);
+        uiManager->Add(arrowComponents[i]);
+    }
 
     // ダッシュ回数を初期化
     dashCount = maxDashCount;
@@ -308,6 +302,7 @@ void ScissorsPlayer1::Update(float deltaTime)
 
     XMFLOAT3 pos = GetPosition();
 
+#if 1
     {// ステージ外に出ないようにクランプ
         float stageMinX = 1.0f;
         float stageMaxX = 19.5f;
@@ -316,8 +311,9 @@ void ScissorsPlayer1::Update(float deltaTime)
 
         pos.x = std::clamp(pos.x, stageMinX, stageMaxX);
         pos.z = std::clamp(pos.z, stageMinZ, stageMaxZ);
-        SetPosition(pos);
     }
+#endif // 0
+    SetPosition(pos);
 
     {// 入力を検知するための処理
 
@@ -398,12 +394,15 @@ void ScissorsPlayer1::Update(float deltaTime)
     // スコアシステムの更新
     scoreSystem.Update(deltaTime);
 
+#if 0
     // ダッシュの狙いを表示する矢印のUIを更新
     XMFLOAT2 uiPos = WorldToUI(pos);
     if (dashAimArrowComponent)
     {
         dashAimArrowComponent->SetWorldPosition({ uiPos.x, uiPos.y });
     }
+
+#endif // 0
 
     // playerの当たり判定をデバッグ表示
     DebugRender::DrawSphere(sphereComponent->GetComponentLocation(), playerRadius, debugPlayerCollisionColor, 0, true);
@@ -489,7 +488,7 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
                 if (CollisionFunction::RaycastFromMouse(
                     cursor,
                     result,
-                    CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
+                    CollisionHelper::ToBit(CollisionLayer::Floor)))
                 {
                     dragStartWorld = result.hitPoint;
                     isDragging = true;
@@ -507,7 +506,7 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
             if (!CollisionFunction::RaycastFromMouse(
                 cursor,
                 result,
-                CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
+                CollisionHelper::ToBit(CollisionLayer::Floor)))
                 return lastValidAimData;
 
             DirectX::XMFLOAT3 current = result.hitPoint;
@@ -560,7 +559,7 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
         if (!CollisionFunction::RaycastFromMouse(
             cursor,
             result,
-            CollisionHelper::ToBit(CollisionLayer::WorldStatic)))
+            CollisionHelper::ToBit(CollisionLayer::Floor)))
             return aim;
 
         if (InputSystem::GetInputState("ScissorsAction", InputStateMask::Press))
@@ -794,7 +793,7 @@ void ScissorsPlayer1::SpawnStarParticle(DirectX::XMFLOAT3 pos, XMFLOAT3 playerFo
     // 星のテクスチャを生成
     DirectX::XMFLOAT2 uiPos = WorldToUI(pos);
     //auto starTex = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/star.png","star");
-    auto starTex = std::make_shared<UILineEffect>("./Data/Textures/ScissorsUI/star.png",uiPos);
+    auto starTex = std::make_shared<UILineEffect>("./Data/Textures/ScissorsUI/star.png", uiPos);
     //auto starTex = std::make_shared<UIDashEffect>("./Data/Textures/ScissorsUI/star.png", uiPos, DirectX::XMFLOAT2{ playerForward.x,playerForward.z });
     auto uiManager = GetOwnerScene()->GetUIManager();
     starTex->SetWorldPosition(uiPos);
