@@ -1,4 +1,5 @@
 #pragma once
+#include "EnemyBehavior.h"
 #include "EnemyScoreData.h"
 #include "Components/Controller/ControllerComponent.h"
 #include "Components/Effect/ParticleComponent.h"
@@ -7,7 +8,7 @@
 
 class ScissorsPlayer1;
 
-class ScissorsGameEnemyBase :public Character
+class EnemyBase :public Character
 {
 public:
     enum class YarnState
@@ -17,60 +18,41 @@ public:
         Dead
     };
 
+    enum YarnSize
+    {
+        Small,
+        Big,
+    };
+
+
 public:
-    explicit ScissorsGameEnemyBase(const std::string& actorName) :Character(actorName) {}
+    explicit EnemyBase(const std::string& actorName) :Character(actorName) {}
 
     void Initialize(const Transform& transform)override;
 
     void Update(float elapsedTime)override;
 
-    // ダメージを与える　死亡したかどうかを取得する関数
-    bool TakeDamage(int damage, bool hitByDash);
-
-    // 移動の方向を設定する関数
-    void SetMoveDirection(const DirectX::XMFLOAT3& dir)
-    {
-        moveDirection = dir;
-    }
-    // 速度を設定する関数
-    void SetSpeed(float speed)
-    {
-        this->speed = speed;
-    }
-
-    // プレイヤーのダッシュに当たったときの処理
-    virtual bool OnHitByDash(ScissorsPlayer1* player, int dashDamage);
-
-    // プレイヤーのハサミ攻撃が当たったときの処理  
-    bool OnHitByAttack(ScissorsPlayer1* player, int dashDamage);
-
-
     // 敵のスコアを取得する関数
     EnemyScoreData GetScoreData() const { return scoreData; }
-
-    // 吹っ飛ばす関数
-    void ApplyKnockBack(DirectX::XMFLOAT3 dir, float horizontalPower, float verticalPower);
 
     // 死亡したかどうか
     bool IsDead() const { return isDead; }
 
     // 玉止めに必要な回数
-    int GetNeedTiedCount()const { return 1; }
+    int GetNeedTiedCount()const { return (size == YarnSize::Big) ? 2 : 1; }
 
-    // 光らせる
-    void SetHighlight(bool flag)
-    {
-#if 0
-        if (flag)
-        {
-            skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = 1.0f;
-        }
-        else
-        {
-            skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = 0.0f;
-        }
-#endif // 0
-    }
+    // ダッシュ攻撃時に呼ぶ関数
+    bool OnHitByDash();
+
+    // 移動
+    void Move(const DirectX::XMFLOAT3& dir, float deltaTime);
+
+    // 向き
+    void Face(const DirectX::XMFLOAT3& dir);
+
+    // セット関数
+    void SetBehavior(std::unique_ptr<EnemyBehavior> newBehavior);
+
 private:
     // 死亡した時に呼ぶ関数
     void CallDeath(bool hitByDash);
@@ -78,41 +60,44 @@ private:
     // コインを生成する
     void SpawnCoin(DirectX::XMFLOAT3 pos);
 
-protected:
-    // 線形移動の処理
-    void MoveLinear(float deltaTime);
-
     // ヒットエフェクトを生成する
     void SpawnHitEffect(bool hitByDash);
+
+    // 玉止めされている時
+    void UpdateTied(float deltaTime);
+
+    // 玉止めをほどく
+    void ReleasedTiled();
+
+    // 死亡中の更新処理
+    void UpdateDead(float deltaTime);
 
 public:
     // 死亡通知
     std::function<void()> onDeath;
 
-
+    // 最後にヒットしたダッシュ区間
+    int lastHitSegment = -1;
 protected:
     DirectX::XMFLOAT3 startPosition = { 0.0f,0.0f,0.0f };   // 中心に向かって移動する前の開始位置
-    // 描画用コンポーネントを追加
-    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
+    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
+    std::shared_ptr<SkeletalMeshComponent> tiedMeshComponent; // 玉止め用のモデル
     std::shared_ptr<RotationComponent> rotationComponent; // 回転のコンポーネント
-    std::shared_ptr<ParticleComponent> starEffectComponent;
     std::shared_ptr<SphereComponent> sphereCollisionComponent; // 当たり判定のコンポーネント
 
-    YarnEnemyType enemyType = YarnEnemyType::Static;
     // 移動のパラメータ
     DirectX::XMFLOAT3 moveDirection = { 1.0f, 0.0f, 0.0f }; // 線形移動の方向
     float speed = 2.0f; // 線形移動の速度
-
 
     float enemyRadius = 0.5f; // 敵の当たり判定
     int maxHp = 1;
     EnemyScoreData scoreData = { 100,0 }; // 倒したときのスコア
 
-
-    YarnState state = YarnState::Active;
     int tieCount = 0;      // 何回止められたか
     float tieTimer = 0.0f; // 自力解除用
 
+    YarnState state = YarnState::Active;
+    YarnSize size = YarnSize::Small; 
 private:
     bool isDead = false;// 死亡したかどうか
     float deathTimer = 0.0f;
@@ -134,4 +119,6 @@ private:
     float hitFlashTimer = 0.0f; // フラッシュタイマー
     float hitFlashDuration = 0.5f; // フラッシュ全体時間
     bool isDying = false;
+
+    std::unique_ptr<EnemyBehavior> behavior;
 };

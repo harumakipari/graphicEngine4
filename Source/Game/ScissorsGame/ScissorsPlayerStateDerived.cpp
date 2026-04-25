@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ScissorsPlayerStateDerived.h"
 
+#include "EnemyBase.h"
 #include "ScissorsGameEnemyBaseActor.h"
 #include "Game/Actors/Base/Character.h"
 #include "ScissorsPlayer1.h"
@@ -447,7 +448,6 @@ void ScissorsPlayerDashState::Enter()
     startPos = player->GetPosition();
     elapsedTime = 0.0f;
 
-    currentSegment = 0;
 
     if (player->dashPoints.size() < 2)
     {
@@ -462,6 +462,15 @@ void ScissorsPlayerDashState::Enter()
     segmentDuration = dist / 20.0f; // speed=20とか
     segmentElapsed = 0.0f;
 
+    // プレイヤーのダッシュの値をリセット
+    player->currentSegment = 0;
+
+    // 全敵のヒット情報リセット
+    auto enemies = player->GetOwnerScene()->GetActorManager()->GetActorsOfType<EnemyBase>();
+    for (auto e : enemies)
+    {
+        e->lastHitSegment = -1;
+    }
 
     // ダッシュ音を再生する
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/dash.wav", 0.5f);
@@ -486,10 +495,7 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     // 星のエフェクトを出す
     player->SpawnStarParticle(playerPos, dir);
 #endif // 0
-
     elapsedTime += deltaTime;
-
-
     segmentElapsed += deltaTime;
 
     float t = segmentElapsed / segmentDuration;
@@ -502,17 +508,17 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     // セグメント終了
     if (t >= 1.0f)
     {
-        currentSegment++;
+        player->currentSegment++;
 
-        if (currentSegment >= player->dashPoints.size() - 1)
+        if (player->currentSegment >= player->dashPoints.size() - 1)
         {
             player->GetStateMachine()->ChangeState("Idle");
             return;
         }
 
         // 次の区間へ
-        segmentStart = player->dashPoints[currentSegment];
-        segmentEnd = player->dashPoints[currentSegment + 1];
+        segmentStart = player->dashPoints[player->currentSegment];
+        segmentEnd = player->dashPoints[player->currentSegment + 1];
 
         float dist = MathHelper::Distance(segmentStart, segmentEnd);
         segmentDuration = dist / 20.0f;

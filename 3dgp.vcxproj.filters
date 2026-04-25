@@ -576,6 +576,15 @@
     <ClCompile Include="Source\Game\ScissorsGame\RabbitBossEnemy.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\ButtonCoinActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\EnemyBase.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\EnemyBehavior.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -920,6 +929,10 @@
     <ClInclude Include="Source\Game\ScissorsGame\RibbonWallActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\Trail.h" />
     <ClInclude Include="Source\Game\ScissorsGame\RabbitBossEnemy.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ButtonCoinActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\EnemyBehavior.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\EnemyBase.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameState.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -1175,6 +1188,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\TrailVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ScissorsGameEnemyPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

@@ -113,6 +113,9 @@ public:
 
     // ダッシュ時の軌跡
     Trail trail;
+
+    // ダッシュの区間
+    int currentSegment = 0; 
 private:
     std::shared_ptr<SphereComponent> dashAttackSphere; // ダッシュ攻撃の当たり判定用のSphereComponent
     std::shared_ptr<SphereComponent> scissorsAttackSphere; // ハサミ攻撃の当たり判定用のSphereComponent

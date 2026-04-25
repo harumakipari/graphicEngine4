@@ -13,6 +13,25 @@ void ScissorsGameEnemyBase::Initialize(const Transform& transform)
 
 void ScissorsGameEnemyBase::Update(float deltaTime)
 {
+    if (state == YarnState::Dead)
+        return;
+
+    if (state == YarnState::Tied)
+    {
+        tieTimer += deltaTime;
+
+#if 0
+        // ˆê’èŠÔ‚Å©—Í‰ğœ
+        if (tieTimer > 3.0f)
+        {
+            ReleaseTie();
+        }
+
+#endif // 0
+        return; // “®‚©‚È‚¢
+    }
+
+
     if (isDead)
     {// €–S‚µ‚½‚ç
         // ã‚Ö‚Á”ò‚Ôˆ—
@@ -117,6 +136,34 @@ void ScissorsGameEnemyBase::MoveLinear(float deltaTime)
 
 bool ScissorsGameEnemyBase::OnHitByDash(ScissorsPlayer1* player, int dashDamage)
 {
+    if (state == YarnState::Dead) return false;
+
+    tieCount++;
+
+    // ‹Ê~‚ß‚É•K—v‚È‰ñ”‚ğæ“¾‚·‚é
+    int needTie = GetNeedTiedCount();
+
+    if (tieCount >= needTie)
+    {
+        if (state == YarnState::Tied)
+        {
+            // 2‰ñ–Ú ¨ €–S
+            state = YarnState::Dead;
+            CallDeath(true);
+            return true;
+        }
+        else
+        {
+            // 1‰ñ–Ú ¨ ‹…~‚ß
+            state = YarnState::Tied;
+            tieTimer = 0.0f;
+        }
+    }
+
+    InputSystem::SetVibration(1.0f, 0.15f);
+    return false;
+
+
     int prevHp = hp;
     // ƒ_ƒbƒVƒ…‚Å“–‚½‚Á‚½‚Æ‚«‚Ìˆ—
     TakeDamage(dashDamage, true);

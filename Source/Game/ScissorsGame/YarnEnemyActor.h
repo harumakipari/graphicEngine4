@@ -23,7 +23,6 @@ public:
     // ‘å‚«‚¢“G‚©‚Ç‚¤‚©
     virtual bool IsBigYarn() { return false; }
 
-
 private:
     // ’†S‚ÉŒü‚©‚Á‚ÄˆÚ“®‚·‚éˆ—
     void MoveToCenter(float deltaTime);

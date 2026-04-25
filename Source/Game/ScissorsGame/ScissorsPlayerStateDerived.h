@@ -134,7 +134,6 @@ private:
     float elapsedTime = 0.0f;    // 経過時間
     DirectX::XMFLOAT3 startPos = { 0.0f,0.0f,0.0f };  // 開始位置
 
-    int currentSegment = 0;
     DirectX::XMFLOAT3 segmentStart = { 0.0f,0.0f,0.0f };
     DirectX::XMFLOAT3 segmentEnd = { 0.0f,0.0f,0.0f };
     float segmentElapsed = 0.0f;

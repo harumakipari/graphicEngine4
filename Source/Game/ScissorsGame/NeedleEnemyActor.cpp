@@ -2,6 +2,7 @@
 #include "NeedleEnemyActor.h"
 
 #include "RibbonWallActor.h"
+#include "ScissorsGameState.h"
 #include "Engine/Scene/Scene.h"
 #include "UI/Widgets/Widget.h"
 
@@ -171,13 +172,8 @@ void NeedleEnemyActor::CheckStageEdge()
 {
     auto pos = GetPosition();
 
-    float stageMinX = 1.0f;
-    float stageMaxX = 19.5f;
-    float stageMinZ = 1.0f;
-    float stageMaxZ = 19.5f;
-
-    if (pos.x < stageMinX || pos.x > stageMaxX ||
-        pos.z < stageMinZ || pos.z > stageMaxZ)
+    if (pos.x < ScissorsGameState::stageMinX || pos.x > ScissorsGameState::stageMaxX ||
+        pos.z < ScissorsGameState::stageMinZ || pos.z > ScissorsGameState::stageMaxZ)
     {
         isStopped = true;
     }

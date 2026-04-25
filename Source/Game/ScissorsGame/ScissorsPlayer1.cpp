@@ -2,11 +2,13 @@
 
 #include "ScissorsPlayer1.h"
 
+#include "EnemyBase.h"
 #include "NeedleEnemyActor.h"
 #include "RibbonWallActor.h"
 #include "ScissorsPlayerStateDerived.h"
 #include "YarnEnemyActor.h"
 #include "ScissorsGameEnemyBaseActor.h"
+#include "ScissorsGameState.h"
 #include "Engine/Scene/SceneBase.h"
 #include "Engine/Utility/Time.h"
 #include "Physics/CollisionFunction.h"
@@ -124,19 +126,28 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 if (stateMachine_->GetStateName() != "Dash")
                     return;
 
-                auto enemy = dynamic_cast<ScissorsGameEnemyBase*>(other->GetOwner());
+                auto enemy = dynamic_cast<EnemyBase*>(other->GetOwner());
                 if (!enemy) return;
 
                 if (enemy->IsDead())
-                {// 敵が死亡して場合
+                {// 敵が死亡している場合
                     return;
                 }
+
+                // 同じセグメントなら無視
+                if (enemy->lastHitSegment==currentSegment)
+                {
+                    return;
+                }
+
+                enemy->lastHitSegment = currentSegment;
 
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
                 //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav",1.0f);
 
                 // ヒット処理と倒したかどうかを取得する
-                bool isKilled = enemy->OnHitByDash(this, dashDamage);
+                bool isKilled = enemy->OnHitByDash();
+                //bool isKilled = enemy->OnHitByDash(this, dashDamage);
 
                 // スコアデータを取得する
                 auto data = enemy->GetScoreData();
@@ -304,13 +315,8 @@ void ScissorsPlayer1::Update(float deltaTime)
 
 #if 1
     {// ステージ外に出ないようにクランプ
-        float stageMinX = 1.0f;
-        float stageMaxX = 19.5f;
-        float stageMinZ = 1.0f;
-        float stageMaxZ = 19.5f;
-
-        pos.x = std::clamp(pos.x, stageMinX, stageMaxX);
-        pos.z = std::clamp(pos.z, stageMinZ, stageMaxZ);
+        pos.x = std::clamp(pos.x, ScissorsGameState::stageMinX, ScissorsGameState::stageMaxX);
+        pos.z = std::clamp(pos.z, ScissorsGameState::stageMinZ, ScissorsGameState::stageMaxZ);
     }
 #endif // 0
     SetPosition(pos);

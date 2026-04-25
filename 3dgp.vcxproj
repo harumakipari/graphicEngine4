@@ -319,6 +319,8 @@
     <ClCompile Include="Source\Game\Scenes\SampleScene.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ButtonBombActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ButtonCoinActor.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\EnemyBase.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\EnemyBehavior.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\NeedleEnemyActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\RabbitBossEnemy.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\RibbonWallActor.cpp" />
@@ -486,11 +488,14 @@
     <ClInclude Include="Source\Game\ScissorsGame\ButtonBombActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ButtonCoinActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ComboSystem.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\EnemyBase.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\EnemyBehavior.h" />
     <ClInclude Include="Source\Game\ScissorsGame\EnemyScoreData.h" />
     <ClInclude Include="Source\Game\ScissorsGame\NeedleEnemyActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\RabbitBossEnemy.h" />
     <ClInclude Include="Source\Game\ScissorsGame\RibbonWallActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameEnemyBaseActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameState.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayer1.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayerStateDerived.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsStage.h" />
