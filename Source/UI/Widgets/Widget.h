@@ -166,6 +166,32 @@ protected:
 };
 
 
+class UIArrowComponent : public UIImageComponent
+{
+public:
+    UIArrowComponent(const std::string& filename, const std::string& name) :UIImageComponent(filename, name)
+    {
+        texture = std::make_shared<Sprite>(Graphics::GetDevice(), std::wstring(filename.begin(), filename.end()).c_str());
+        uv.w = texture->GetTextureSize().x;
+        uv.h = texture->GetTextureSize().y;
+    }
+
+    UIArrowComponent() = default;
+
+    void SetStart(DirectX::XMFLOAT3 startPos)
+    {
+        this->startPos = startPos;
+    }
+
+    void SetEnd(DirectX::XMFLOAT3 endPos);
+   
+
+private:
+    DirectX::XMFLOAT3 startPos = { 0,0,0 };
+    DirectX::XMFLOAT3 endPos = { 0,0,0 };
+
+};
+
 class UIRingEffect : public UIImageComponent
 {
 public:

@@ -20,6 +20,8 @@ public:
 
     void SetType(YarnEnemyType type);
 
+    // 大きい敵かどうか
+    virtual bool IsBigYarn() { return false; }
 
 
 private:
@@ -57,6 +59,10 @@ public:
     explicit BigYarnEnemyActor(const std::string& actorName) :YarnEnemyActor(actorName) {}
     void Initialize(const Transform& transform)override;
     void DrawImGuiDetails() override;
+
+    // 大きい敵かどうか
+    bool IsBigYarn()override { return true; }
+
 
     // プレイヤーのダッシュに当たったときの処理
     bool OnHitByDash(ScissorsPlayer1* player, int dashDamage)override;

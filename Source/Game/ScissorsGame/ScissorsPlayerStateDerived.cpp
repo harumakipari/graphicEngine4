@@ -1,7 +1,10 @@
 #include "pch.h"
 #include "ScissorsPlayerStateDerived.h"
+
+#include "ScissorsGameEnemyBaseActor.h"
 #include "Game/Actors/Base/Character.h"
 #include "ScissorsPlayer1.h"
+#include "YarnEnemyActor.h"
 #include "Physics/CollisionFunction.h"
 
 ScissorsPlayerStateBase::ScissorsPlayerStateBase(ScissorsPlayer1* actor) :State(actor), player(actor)
@@ -154,6 +157,7 @@ void ScissorsPlayerAttackingState::Exit()
 
 void ScissorsPlayerChargeDashState::Enter()
 {
+
     // ダッシュアニメーションを再生
     player->PlayAnimation("ChargeDash", false, true, 0.1f);
     // ダッシュの狙いを表示する矢印のUIコンポーネントを表示する
@@ -163,6 +167,9 @@ void ScissorsPlayerChargeDashState::Enter()
 
     // スタンするかどうかフラグをリセットする
     player->isStun = false;
+
+    // プレイヤーのダッシュの位置の保存を削除する
+    player->dashPoints.clear();
 
     player->debugDashCollisionColor = { 1,0,0,1 }; // デバッグ用にダッシュの当たり判定の色を変える　通常は透明で、攻撃中は赤くするなどして使用する
 }
@@ -174,20 +181,16 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     // ダッシュの方向
     DirectX::XMFLOAT3 dashDir = aimData.dir;
 
-    //if (!InputSystem::IsGamepadConnected())
-    //{
-    //    player->rotationComponent->SetDirection(dashDir);
-    //}
+    if (!InputSystem::IsGamepadConnected())
+    {
+        player->rotationComponent->SetDirection(dashDir);
+    }
 
-    float aimDashPower = aimData.power;
-    float dashDistance = minDistance + aimData.power * (maxDistance - minDistance);;
-    //float dashDistance = 10.0f;
-
+    float dashDistance = minDistance + aimData.power * (maxDistance - minDistance);
+    
     // ダッシュの移動先を計算する　
     DirectX::XMFLOAT3 pos = player->GetPosition();
     DirectX::XMFLOAT3 unclampedTarget = { pos.x + dashDir.x * dashDistance,pos.y + dashDir.y * dashDistance,pos.z + dashDir.z * dashDistance };
-
-
 
     DirectX::XMFLOAT3 clampedTarget = unclampedTarget;
     // ステージ外に出ないようにクランプ
@@ -197,6 +200,7 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     float stageMaxZ = 19.5f;
     clampedTarget.x = std::clamp(clampedTarget.x, stageMinX, stageMaxX);
     clampedTarget.z = std::clamp(clampedTarget.z, stageMinZ, stageMaxZ);
+#if 0
 
     HitResultWithActor hitResult = {};
     uint32_t mask = CollisionHelper::ToBit(CollisionLayer::RibbonWall);
@@ -205,6 +209,76 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
         clampedTarget.x = hitResult.hitPoint.x;
         clampedTarget.z = hitResult.hitPoint.z;
     }
+
+    // 反射する敵に当たっていたら、
+    uint32_t enemyMask = CollisionHelper::ToBit(CollisionLayer::Enemy);
+    HitResultWithActor enemyHit = {};
+    bool hitEnemy = CollisionFunction::SphereRayCast(
+        pos,
+        clampedTarget,
+        enemyHit,
+        0.3f,
+        enemyMask
+    );
+    bool canRedirect = false;
+    DirectX::XMFLOAT3 redirectDir = {};
+
+    if (hitEnemy)
+    {
+        auto enemy = dynamic_cast<YarnEnemyActor*>(enemyHit.actor);
+        if (!enemy)
+        {
+            _ASSERT_EXPR(FALSE, "redirect Hit enemy is nullptr!!");
+        }
+        // BigYarnEnemyだけとか条件つける
+        if (enemy->IsBigYarn()) // 
+        {
+            canRedirect = true;
+
+            // ↓今のOnHitByDashと同じロジック
+            DirectX::XMFLOAT3 dir =
+            {
+                enemyHit.hitPoint.x - pos.x,
+                0,
+                enemyHit.hitPoint.z - pos.z
+            };
+
+            float len = sqrt(dir.x * dir.x + dir.z * dir.z);
+            if (len > 0.0001f)
+            {
+                dir.x /= len;
+                dir.z /= len;
+            }
+
+            redirectDir = { -dir.z, 0, dir.x }; // 90度回転
+        }
+    }
+    player->dashPoints.push_back(pos); // 最初の地点を追加
+    if (canRedirect)
+    {
+        //  最初の矢印
+        player->dashAimArrowComponent->SetStart(pos);
+        player->dashAimArrowComponent->SetEnd(enemyHit.hitPoint);
+        //  分岐矢印
+        player->redirectArrowComponent->SetVisible(true);
+
+        player->dashPoints.push_back(enemyHit.hitPoint); // 次の地点を追加
+
+        DirectX::XMFLOAT3 redirectTarget =
+        {
+            enemyHit.hitPoint.x + redirectDir.x * dashDistance * 0.5f,
+            enemyHit.hitPoint.y,
+            enemyHit.hitPoint.z + redirectDir.z * dashDistance * 0.5f
+        };
+
+        player->redirectArrowComponent->SetStart(enemyHit.hitPoint);
+        player->redirectArrowComponent->SetEnd(redirectTarget);
+    }
+    else
+    {
+        player->redirectArrowComponent->SetVisible(false);
+    }
+#endif // 0
 
     // 差があるかチェック
     player->isStun =
@@ -228,10 +302,6 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     DirectX::XMFLOAT2 dir = MathHelper::SubtractFloat2(uiTargetPos, uiPlayerPos);
     float angle = atan2f(dir.y, dir.x);
     player->dashAimArrowComponent->SetWorldAngleDegree(DirectX::XMConvertToDegrees(angle));
-
-
-    //float angle = DirectX::XMConvertToDegrees(atan2f(aimData.dir.x, aimData.dir.z));
-
 
     // ダッシュの方向にUIを出す
     DebugRender::DrawSphere(player->targetPos, 0.3f, { 1,0,0,1 });
@@ -264,6 +334,21 @@ void ScissorsPlayerDashState::Enter()
     startPos = player->GetPosition();
     elapsedTime = 0.0f;
 
+    DirectX::XMFLOAT3 dir =
+    {
+        player->targetPos.x - startPos.x,
+        0,
+        player->targetPos.z - startPos.z
+    };
+
+    float len = sqrt(dir.x * dir.x + dir.z * dir.z);
+    if (len > 0.0001f)
+    {
+        dir.x /= len;
+        dir.z /= len;
+        player->rotationComponent->SetDirection(dir);
+    }
+
     // ダッシュ音を再生する
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/dash.wav", 0.5f);
 }
@@ -282,7 +367,6 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     XMFLOAT3 trailPosition = playerPos;
     trailPosition.y += 0.4f; // 床に被るの防ぐために浮かせる
     player->trail.trailPoints.push_back({ trailPosition, 1.5f });
-    DirectX::XMFLOAT3 dir = player->GetForward();
 
 #if 0
     // 星のエフェクトを出す
@@ -337,7 +421,7 @@ void ScissorsPlayerDashState::Redirect(const DirectX::XMFLOAT3& newDir)
     float remainingT = 1.0f - (elapsedTime / dashDuration);
     remainingT = std::clamp(remainingT, 0.0f, 1.0f);
 
-    float remainingDistance = remainingT * 10; // 適当でもOK（後述）
+    float remainingDistance = remainingT * 20; // 適当でもOK（後述）
 
     // 正規化
     DirectX::XMFLOAT3 dir = newDir;

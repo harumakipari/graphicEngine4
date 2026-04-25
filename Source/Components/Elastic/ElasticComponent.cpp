@@ -11,8 +11,8 @@
 void ElasticMeshComponent::Initialize()
 {
     auto actor = owner_.lock();
-    //DirectX::XMFLOAT3 position = actor->GetPosition();
-    DirectX::XMFLOAT3 position = GetRelativeLocation();
+    DirectX::XMFLOAT3 position = actor->GetPosition();
+    //DirectX::XMFLOAT3 position = GetRelativeLocation();
     modelHeight = model->GetModelSize().y * actor->GetScale().y;
 
     // 定数バッファの作成

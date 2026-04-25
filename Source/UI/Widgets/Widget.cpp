@@ -4,6 +4,8 @@
 #include <imgui.h>
 
 #include "Engine/Scene/Scene.h"
+#include "Physics/CollisionFunction.h"
+
 
 void UICoreComponent::DrawImGui()
 {
@@ -134,4 +136,27 @@ void UIButtonComponent::Update(float dt)
 void UITextPopup::Update(float dt)
 {
     easingRunner->Tick(dt);
+}
+
+
+void UIArrowComponent::SetEnd(DirectX::XMFLOAT3 endPos)
+{
+    this->endPos = endPos;
+    // 目的地のスクリーン座標
+    XMFLOAT2 uiTargetPos = WorldToUI(endPos);
+    // 開始の位置のスクリーン座標
+    XMFLOAT2 uiStartPos = WorldToUI(startPos);
+
+    float distance = MathHelper::DistanceFloat2(uiTargetPos, uiStartPos);
+
+    float arrowSizeX = size.x;
+    float uiScale = abs(distance) / arrowSizeX;
+    SetScale({ uiScale,1.0f });
+
+    //　方向ベクトル
+    DirectX::XMFLOAT2 dir = MathHelper::SubtractFloat2(uiTargetPos, uiStartPos);
+    float angle = atan2f(dir.y, dir.x);
+    SetWorldAngleDegree(DirectX::XMConvertToDegrees(angle));
+
+    SetWorldPosition(uiStartPos);
 }

@@ -35,9 +35,7 @@
 
 bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
-    //lightDirection = { 0.722f, -0.38f, -0.0211f, 0.9f };   // 
-
-    lightDirection = { 0.652f, -0.63f, 0.98f, 1.0f };   // 上の窓からの光
+    lightDirection = { 0.652f, -0.63f, 0.98f, 1.0f }; // 上の窓からの光
     lightColor = { 1.0f, 1.0f, 1.0f, 2.6f };
     {
         sceneCBuffer = std::make_unique<ConstantBuffer<FrameConstants>>(device);
@@ -357,7 +355,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
-        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
@@ -449,15 +447,11 @@ void GameScene::SetUpActors()
     auto rabbitBoss = this->GetActorManager()->CreateAndRegisterActorWithTransform<RabbitBossEnemyActor>("boss", bossTr);
 #endif // 0// ボスを生成　
 
-#if 1 // ハリネズミを生成　
+#if 1// ハリネズミを生成　
     Transform needleTr(DirectX::XMFLOAT3{ 1.0f,0.0f,5.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     needleEnemyActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<NeedleEnemyActor>("needleEnemy", needleTr);
     needleEnemyActor->SetMoveDirection({ 1.0f,0.0f,1.0f });
 #endif // 0// ハリネズミを生成　
-
-
-    SpawnBigEnemy({ 5,0,8 }, YarnEnemyType::Static);
-
 #if 0
     Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("coin", coinTr);

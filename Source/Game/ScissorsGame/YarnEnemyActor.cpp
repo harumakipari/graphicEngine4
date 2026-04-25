@@ -39,7 +39,7 @@ void YarnEnemyActor::Initialize(const Transform& transform)
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
 
     // Hp‚Ì‰Šú‰»
-    hp = maxHp;
+    hp = 3;
 
     // Å‰‚ÌˆÊ’u‚ğ•Û‘¶
     startPosition = transform.GetLocation();

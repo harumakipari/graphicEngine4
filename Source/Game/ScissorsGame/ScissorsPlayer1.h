@@ -49,7 +49,7 @@ public:
     bool IsAttackTriggered() const { return attackTrigger; }
 
     // 狙いの情報を取得する関数　これでダッシュの方向や溜めの強さを決める
-    AimData GetAimData() const { return aimData; }
+    AimData GetAimData() const { return lastValidAimData; }
 
     // ダッシュ可能かどうかを取得する関数
     bool CanDash() const { return dashCount > 0; }
@@ -91,7 +91,9 @@ public:
     DirectX::XMFLOAT3 targetPos = { 0.0f,0.0f,0.0f }; // ダッシュの移動先
     float hitStopTimer = 0.0f; // ヒットストップのタイマー　攻撃が当たったときに一定時間動きを止めるために使用する
     // ダッシュの狙いを表示する矢印のUIコンポーネント
-    std::shared_ptr<UIImageComponent> dashAimArrowComponent;
+    std::shared_ptr<UIArrowComponent> dashAimArrowComponent;
+    std::shared_ptr<UIArrowComponent> redirectArrowComponent;
+
     std::shared_ptr<RotationComponent> rotationComponent;
 
 
@@ -107,8 +109,10 @@ public:
 
     ScoreSystem scoreSystem; // スコア計算用のクラス
 
+    // ダッシュ時の到達地点を保存
+    std::vector<DirectX::XMFLOAT3> dashPoints;
 
-     // 軌跡
+    // ダッシュ時の軌跡
     Trail trail;
 private:
     std::shared_ptr<SphereComponent> dashAttackSphere; // ダッシュ攻撃の当たり判定用のSphereComponent
@@ -119,7 +123,6 @@ private:
     bool triggerDash = false; // ダッシュトリガー
     bool triggerChargeDash = false; // ダッシュ溜めを検知するトリガー
     bool attackTrigger = false; // 攻撃トリガー
-    AimData aimData; // 狙いの情報
 
     bool usingStick = false; // スティックを使用しているかどうか
     bool stickReleased = false; // スティックが離されたかどうか
@@ -155,9 +158,14 @@ private:
     float damageCooldownInterval = 0.8f; // 無敵時間
 
     float damageCooldownTimer = 0.0f; // ダメージを受けた後の無敵時間のクールダウン
-    
 
+    // 常に保持
+    AimData currentAimData;
+    AimData lastValidAimData;
 
+    // マウス操作時に使用する
+    DirectX::XMFLOAT3 dragStartWorld = { 0.0f,0.0f,0.0f };  //  マウスクリックした時の最初の位置
+    bool isDragging = false;
 
     float dashTime = 0.3f;
     float dashTimer = 0.0f;
