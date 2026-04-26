@@ -52,7 +52,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     {
         sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
         radius = playerRadius;
-        height = 0.8f;
+        height = 0.2f;
         mass = 60.0f;
         sphereComponent->SetRadius(radius);
         sphereComponent->SetRelativeLocationDirect({ 0.0f,height,0.0f });
@@ -79,6 +79,10 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     {
                         if (enemy->IsDead())
                         {// 敵が死んでいたら
+                            return;
+                        }
+                        if (enemy->GetState()==EnemyBase::YarnState::Tied)
+                        {// 敵が玉止めされていたら
                             return;
                         }
                     }
@@ -157,7 +161,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     // スコアデータを取得する
                     auto data = enemy->GetScoreData();
 
-                    // スコア処理　足されたスコアを取得する
+                    // スコア処理　足されたスコアを取得する コンボ加算
                     int addScore = scoreSystem.ProcessHit(data, isKilled);
 
                     // スロー再生
@@ -433,7 +437,13 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
             aim.dir = lastDir;
         }
 
+#if 0
         aim.power = chargeTime / maxChargeTime;
+#else
+        float t = chargeTime / maxChargeTime;
+        t = t * t;
+        aim.power = t;
+#endif // 0
         //aim.power = lastStickPower;
         aim.isValid = true;
     }

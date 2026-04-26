@@ -25,6 +25,7 @@ public:
     {
         comboCount++;
         comboTimer = comboResetTime;
+        //comboTimer = comboResetTime + comboCount * 0.1f;
     }
 
     int GetComboCount() const
@@ -34,11 +35,21 @@ public:
 
     float GetMultiplier() const
     {
+#if 0
         if (comboCount <= 1) return 1.0f;
         if (comboCount == 2) return 1.3f;
         if (comboCount == 3) return 1.5f;
         if (comboCount == 4) return 1.7f;
         return 2.0f;
+#else
+        if (comboCount <= 1) return 1.0f;
+        if (comboCount <= 3) return 1.2f;
+        if (comboCount <= 5) return 1.5f;
+        if (comboCount <= 7) return 2.0f;
+        if (comboCount <= 9) return 3.0f;
+        return 4.0f;
+#endif // 0
+
     }
 
 private:

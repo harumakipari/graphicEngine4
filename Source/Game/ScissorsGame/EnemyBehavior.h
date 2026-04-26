@@ -91,5 +91,6 @@ private:
     EnemyBase* FindTiedEnemy(const EnemyBase* self);
 
     EnemyBase* target = nullptr;
-
+    float rescueTimer = 0.0f;
+    const float rescueTime = 1.5f; // •‚¯‚é‚É‚©‚©‚éŠÔ
 };

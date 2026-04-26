@@ -112,6 +112,9 @@ public:
 
     // 最後にヒットしたダッシュ区間
     int lastHitSegment = -1;
+
+    // 予約用の敵（玉止めを外す時）
+    EnemyBase* reservedBy = nullptr;
 protected:
     DirectX::XMFLOAT3 startPosition = { 0.0f,0.0f,0.0f };   // 敵の出現の開始位置　波うちの時に基準とする
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
@@ -149,6 +152,9 @@ private:
     };
     KnockbackData knockback;
     bool isKnockbackActive = false;
+
+    float selfRescueTimeInterval = 5.0f;// 自力脱出までかかる時間
+
 
     float hitFlashTimer = 0.0f; // フラッシュタイマー
     float hitFlashDuration = 0.5f; // フラッシュ全体時間

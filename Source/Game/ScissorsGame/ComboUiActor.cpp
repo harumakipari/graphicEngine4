@@ -58,6 +58,7 @@ void ComboUiActor::Update(float elapsedTime)
 
         comboDigits[i]->SetWorldPosition(pos);
     }
+
 }
 
 void ComboUiActor::DrawImGuiDetails()
@@ -76,25 +77,17 @@ void ComboUiActor::UpdateScoreDigits(int combo) const
         d->SetVisible(false);
     }
 
-    // 0‚Ì‚Æ‚«
-    if (combo == 0)
-    {
-        comboDigits[0]->SetUV({ 0.0f, 0.0f, 150.0f, 200.0f });
-        comboDigits[0]->SetVisible(true);
-        return;
-    }
+    int i = 0;
 
-    // ’Êíˆ—
-    for (int i = 0; i < comboDigits.size(); i++)
+    do
     {
         int digit = combo % 10;
-        combo /= 10;
 
         comboDigits[i]->SetUV({ 150.0f * digit, 0.0f, 150.0f, 200.0f });
+        comboDigits[i]->SetVisible(true);
 
-        if (i == 0 || combo > 0)
-        {
-            comboDigits[i]->SetVisible(true);
-        }
-    }
+        combo /= 10;
+        i++;
+
+    } while (combo > 0 && i < comboDigits.size());
 }

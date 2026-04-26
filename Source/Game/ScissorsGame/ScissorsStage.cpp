@@ -24,7 +24,7 @@ void ScissorsStage::Initialize(const Transform& transform)
         // 左壁の当たり判定用のボックスコリジョンコンポーネント
         std::shared_ptr<BoxComponent> wallComponent = this->AddComponent<class BoxComponent>("wallLeftComponent", parentName);
         wallComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(1.0f, 5.0f, 20.0f));
-        wallComponent->SetRelativeLocationDirect({ 1.0f,-0.f,-4.0f });
+        wallComponent->SetRelativeLocationDirect({ 1.5f,-0.f,-4.0f });
         wallComponent->SetStatic(true);
         wallComponent->SetLayer(CollisionLayer::Wall);
         wallComponent->Initialize();

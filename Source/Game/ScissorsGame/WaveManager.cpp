@@ -37,7 +37,7 @@ void WaveManager::Initialize(const Transform& transform)
                 { { 5,0,18 }, YarnEnemyType::RescueEnemy, 0.0f },
             },
             false,
-           6
+           1
         },
 
         {
@@ -46,10 +46,10 @@ void WaveManager::Initialize(const Transform& transform)
                 // 左上　から　右下
                                         { { 18,0,5 },  YarnEnemyType::Static, 0.0f },
                         { { 15,0,7 },  YarnEnemyType::Static, 0.3f },
-                        { { 12,0,10 }, YarnEnemyType::Static, 0.5f },
+                        { { 12,0,10 }, YarnEnemyType::RescueEnemy, 0.5f },
                         { { 10,0,12 }, YarnEnemyType::Static, 0.8f },
                         { { 7,0,15 }, YarnEnemyType::Static, 1.2f },
-                        { { 5,0,18 }, YarnEnemyType::Static, 1.5f },
+                        { { 5,0,18 }, YarnEnemyType::RescueEnemy, 1.5f },
 
         #if 0
                         // 右上　から　左下

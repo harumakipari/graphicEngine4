@@ -161,14 +161,61 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
     // ターゲットがない or 無効なら探す
     if (!target || target->IsDead() || target->GetState() != EnemyBase::YarnState::Tied)
     {
+        // 予約解除
+        if (target && target->reservedBy == e)
+        {
+            target->reservedBy = nullptr;
+        }
+
         target = FindTiedEnemy(e);
-        if (!target) return;
+        rescueTimer = 0.0f;
+
+        // ターゲットいない → 逃げる
+        if (!target)
+        {
+            auto player = e->GetPlayer();
+            if (player)
+            {
+                DirectX::XMFLOAT3 dir = MathHelper::Normalize(MathHelper::Subtract(e->GetPosition(), player->GetPosition()));
+
+                auto pos = e->GetPosition();
+
+                float speed = e->GetSpeed();
+
+                // 次の位置を仮計算
+                DirectX::XMFLOAT3 next =
+                {
+                    pos.x + dir.x * speed * dt,
+                    pos.y,
+                    pos.z + dir.z * speed * dt
+                };
+
+                // はみ出そうなら方向を反転
+                if (next.x < ScissorsGameState::stageMinX || next.x > ScissorsGameState::stageMaxX)
+                {
+                    dir.x *= -1;
+                }
+                if (next.z < ScissorsGameState::stageMinZ || next.z > ScissorsGameState::stageMaxZ)
+                {
+                    dir.z *= -1;
+                }
+
+                e->Move(dir, dt);
+                e->Face(dir);
+            }
+            return;
+        }
+
+        // 予約
+        target->reservedBy = e;
     }
+
+    // ===== ターゲットに向かう =====
 
     auto pos = e->GetPosition();
     auto targetPos = target->GetPosition();
 
-    XMFLOAT3 dir =
+    DirectX::XMFLOAT3 dir =
     {
         targetPos.x - pos.x,
         0,
@@ -176,19 +223,37 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
     };
 
     float len = sqrt(dir.x * dir.x + dir.z * dir.z);
-    if (len < 0.01f) return;
+    if (len > 0.001f)
+    {
+        dir.x /= len;
+        dir.z /= len;
 
-    dir.x /= len;
-    dir.z /= len;
+        e->Move(dir, dt);
+        e->Face(dir);
+    }
 
-    e->Move(dir, dt);
-    e->Face(dir);
-
-    // 近づいたら救出
+    // ===== 救出処理（時間制） =====
     if (len < 1.5f)
     {
-        target->ReleasedTied();
-        target = nullptr;
+        rescueTimer += dt;
+
+        if (rescueTimer >= rescueTime)
+        {
+            target->ReleasedTied();
+
+            // 予約解除
+            if (target->reservedBy == e)
+            {
+                target->reservedBy = nullptr;
+            }
+
+            target = nullptr;
+            rescueTimer = 0.0f;
+        }
+    }
+    else
+    {
+        rescueTimer = 0.0f;
     }
 }
 
@@ -204,6 +269,9 @@ EnemyBase* RescueBehavior::FindTiedEnemy(const EnemyBase* self)
     {
         if (enemy.get() == self) continue;
         if (enemy->GetState() != EnemyBase::YarnState::Tied) continue;
+
+        // ★追加：予約されてたらスキップ
+        if (enemy->reservedBy != nullptr) continue;
 
         float dist = MathHelper::Distance(self->GetPosition(), enemy->GetPosition());
         if (dist < minDist)

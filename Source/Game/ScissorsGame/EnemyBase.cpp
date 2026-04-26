@@ -124,7 +124,7 @@ void EnemyBase::UpdateTied(float deltaTime)
     {// 大きい敵だったら
         tieTimer += deltaTime;
 
-        if (tieTimer > 3.0f)
+        if (tieTimer > selfRescueTimeInterval)
         {// 自力で脱出する
             ReleasedTied();
         }
@@ -347,6 +347,9 @@ void EnemyBase::SetEnemySize(const YarnSize size)
     {
     case Small:
     {
+        // スコアの設定
+        scoreData = { 100,0 };
+
         skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/YarnEnemy.glb", false, true);
         skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
         skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
@@ -382,6 +385,9 @@ void EnemyBase::SetEnemySize(const YarnSize size)
     break;
     case Big:
     {
+        // スコアの設定
+        scoreData = { 200,0 };
+
         skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/YarnBigEnemy.glb", false, true);
         skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
         skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
@@ -402,6 +408,7 @@ void EnemyBase::SetEnemySize(const YarnSize size)
         sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
         sphereCollisionComponent->Initialize();
 
+#if 0
         // 反射用の当たり判定
         redirectCollisionComponent = this->AddComponent<class SphereComponent>("redirectLeftCollisionComponent", parentName);
         //redirectLeftCollisionComponent->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
@@ -414,6 +421,7 @@ void EnemyBase::SetEnemySize(const YarnSize size)
         redirectCollisionComponent->SetLayer(CollisionLayer::EnemyRedirect);
         redirectCollisionComponent->SetCollisionOffsetY(height * 0.5f);
         redirectCollisionComponent->Initialize();
+#endif // 0
 
         // 玉止めモデル
         auto tiedLeft = AddComponent<SkeletalMeshComponent>("tiedLeftMeshComponent", parentName);

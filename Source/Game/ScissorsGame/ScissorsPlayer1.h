@@ -110,6 +110,8 @@ public:
 
     // ダッシュ時の到達地点を保存
     std::vector<DirectX::XMFLOAT3> dashPoints;
+    // 離したときの瞬間の結果を固定する
+    std::vector<DirectX::XMFLOAT3> fixedDashPoints;
 
     // ダッシュ時の軌跡
     Trail trail;
@@ -139,7 +141,7 @@ private:
 
     bool isCharging = false; // ダッシュを溜めているかどうか
     float chargeTime = 0.0f; // ダッシュの溜め時間
-    float maxChargeTime = 1.5f;   // ダッシュの最大溜め時間　この時間以上溜めてもさらに強くならない
+    float maxChargeTime = 1.0f;   // ダッシュの最大溜め時間　この時間以上溜めてもさらに強くならない
 
     // プレイヤーのHPを表示するUI　
     std::vector<std::shared_ptr<UIImageComponent>> hpUiComponents;
@@ -150,7 +152,7 @@ private:
     std::unordered_set<ScissorsGameEnemyBase*> hitEnemies; // ハサミ攻撃で当たった敵を記録するためのセット　これに入っている敵にはハサミ攻撃のダメージを与えないようにする
 
     // 調整用のパラメータ　これらを調整してゲームバランスを取る
-    float dashAttackRange = 1.5f; // ダッシュ攻撃の範囲　dashAttackSphereの半径と同じにする
+    float dashAttackRange = 1.3f; // ダッシュ攻撃の範囲　dashAttackSphereの半径と同じにする
     float scissorsAttackRange = 1.5f; // ハサミ攻撃の範囲　scissorsAttackSphereの半径と同じにする
     float playerRadius = 0.6f; // プレイヤーの当たり判定の半径　sphereComponentの半径と同じにする
 

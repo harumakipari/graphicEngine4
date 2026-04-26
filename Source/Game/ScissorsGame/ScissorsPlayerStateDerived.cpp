@@ -6,6 +6,7 @@
 #include "Game/Actors/Base/Character.h"
 #include "ScissorsPlayer1.h"
 #include "YarnEnemyActor.h"
+#include "Engine/Utility/Time.h"
 #include "Physics/CollisionFunction.h"
 
 ScissorsPlayerStateBase::ScissorsPlayerStateBase(ScissorsPlayer1* actor) :State(actor), player(actor)
@@ -469,6 +470,9 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
 
     if (player->IsDashTriggered())
     {
+        player->fixedDashPoints = player->dashPoints;
+
+
         player->UseDash();
         // ダッシュトリガーが離されたらダッシュステートに移行する
         player->GetStateMachine()->ChangeState("Dash");
@@ -499,14 +503,14 @@ void ScissorsPlayerDashState::Enter()
     elapsedTime = 0.0f;
 
 
-    if (player->dashPoints.size() < 2)
+    if (player->fixedDashPoints.size() < 2)
     {
         player->GetStateMachine()->ChangeState("Idle");
         return;
     }
 
-    segmentStart = player->dashPoints[0];
-    segmentEnd = player->dashPoints[1];
+    segmentStart = player->fixedDashPoints[0];
+    segmentEnd = player->fixedDashPoints[1];
 
     float dist = MathHelper::Distance(segmentStart, segmentEnd);
     segmentDuration = dist / 20.0f; // speed=20とか
@@ -536,14 +540,14 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     }
 
     // 軌跡地点を追加
-    XMFLOAT3 playerPos = player->GetPosition();
-    XMFLOAT3 trailPosition = playerPos;
+    XMFLOAT3 currentPos = player->GetPosition();
+    XMFLOAT3 trailPosition = currentPos;
     trailPosition.y += 0.4f; // 床に被るの防ぐために浮かせる
     player->trail.trailPoints.push_back({ trailPosition, 1.5f });
 
 #if 0
     // 星のエフェクトを出す
-    player->SpawnStarParticle(playerPos, dir);
+    player->SpawnStarParticle(currentPos, dir);
 #endif // 0
     elapsedTime += deltaTime;
     segmentElapsed += deltaTime;
@@ -555,20 +559,31 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     XMFLOAT3 nextPos = MathHelper::Lerp(segmentStart, segmentEnd, t);
     player->SetPosition(nextPos);
 
+    DirectX::XMFLOAT3 playerDir = MathHelper::Normalize(MathHelper::Subtract(nextPos, currentPos));
+    player->rotationComponent->SetDirection(playerDir);
+
     // セグメント終了
     if (t >= 1.0f)
     {
         player->currentSegment++;
 
-        if (player->currentSegment >= player->dashPoints.size() - 1)
+        if (player->currentSegment >= player->fixedDashPoints.size() - 1)
         {
             player->GetStateMachine()->ChangeState("Idle");
             return;
         }
 
+#if 0
+        // 曲がりでスロー再生
+        if (player->currentSegment > 0)
+        {
+            Time::SetSlow(0.6f, 0.06f);
+        }
+#endif /a/ 0
+
         // 次の区間へ
-        segmentStart = player->dashPoints[player->currentSegment];
-        segmentEnd = player->dashPoints[player->currentSegment + 1];
+        segmentStart = player->fixedDashPoints[player->currentSegment];
+        segmentEnd = player->fixedDashPoints[player->currentSegment + 1];
 
         float dist = MathHelper::Distance(segmentStart, segmentEnd);
         segmentDuration = dist / 20.0f;
