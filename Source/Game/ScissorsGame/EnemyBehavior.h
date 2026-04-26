@@ -91,6 +91,10 @@ private:
     EnemyBase* FindTiedEnemy(const EnemyBase* self);
 
     EnemyBase* target = nullptr;
+
+    DirectX::XMFLOAT3 wanderDir = { 0,0,0 };
+    float wanderTimer = 0.0f;
+
     float rescueTimer = 0.0f;
-    const float rescueTime = 1.5f; // •‚¯‚é‚É‚©‚©‚éŠÔ
+    const float rescueTime = 2.5f; // •‚¯‚é‚É‚©‚©‚éŠÔ
 };

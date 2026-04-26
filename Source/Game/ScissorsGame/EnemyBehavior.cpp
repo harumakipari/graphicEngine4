@@ -176,6 +176,7 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
             auto player = e->GetPlayer();
             if (player)
             {
+#if 0 // ƒvƒŒƒCƒ„[‚©‚ç“¦‚°‚é
                 DirectX::XMFLOAT3 dir = MathHelper::Normalize(MathHelper::Subtract(e->GetPosition(), player->GetPosition()));
 
                 auto pos = e->GetPosition();
@@ -202,6 +203,49 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
 
                 e->Move(dir, dt);
                 e->Face(dir);
+#else
+                wanderTimer -= dt;
+
+                if (wanderTimer <= 0.0f)
+                {
+                    wanderTimer = MathHelper::RandomRange(1.0f, 3.0f);
+
+                    wanderDir =
+                    {
+                        MathHelper::RandomRange(-1.0f, 1.0f),
+                        0,
+                        MathHelper::RandomRange(-1.0f, 1.0f)
+                    };
+
+                    wanderDir = MathHelper::Normalize(wanderDir);
+                }
+
+                auto pos = e->GetPosition();
+                float speed = e->GetSpeed();
+
+                DirectX::XMFLOAT3 next =
+                {
+                    pos.x + wanderDir.x * speed * dt,
+                    pos.y,
+                    pos.z + wanderDir.z * speed * dt
+                };
+
+                // •Ç‚Å”½ŽË
+                if (next.x < ScissorsGameState::stageMinX || next.x > ScissorsGameState::stageMaxX)
+                {
+                    wanderDir.x *= -1;
+                }
+                if (next.z < ScissorsGameState::stageMinZ || next.z > ScissorsGameState::stageMaxZ)
+                {
+                    wanderDir.z *= -1;
+                }
+
+                e->Move(wanderDir, dt);
+                e->Face(wanderDir);
+
+                return;
+#endif // 0
+
             }
             return;
         }
@@ -215,19 +259,14 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
     auto pos = e->GetPosition();
     auto targetPos = target->GetPosition();
 
-    DirectX::XMFLOAT3 dir =
-    {
-        targetPos.x - pos.x,
-        0,
-        targetPos.z - pos.z
-    };
+    DirectX::XMFLOAT3 dir = MathHelper::Normalize(MathHelper::Subtract(targetPos, pos));
 
-    float len = sqrt(dir.x * dir.x + dir.z * dir.z);
-    if (len > 0.001f)
-    {
-        dir.x /= len;
-        dir.z /= len;
+    float len = MathHelper::Distance(targetPos, pos);
 
+    float stopDist = 1.2f;
+
+    if (len > stopDist)
+    {
         e->Move(dir, dt);
         e->Face(dir);
     }
@@ -250,6 +289,7 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
             target = nullptr;
             rescueTimer = 0.0f;
         }
+        return;
     }
     else
     {
