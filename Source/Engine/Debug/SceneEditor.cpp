@@ -15,7 +15,7 @@ void SceneEditor::Draw()
         initialized = true;
     }
 
-    ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Always);
+    //ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Always);
     ImGui::Begin("SceneTransition");
     ImGui::Text("Scenes");
     ImGui::Separator();

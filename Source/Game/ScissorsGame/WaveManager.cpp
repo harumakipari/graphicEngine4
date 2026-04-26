@@ -25,7 +25,7 @@ void WaveManager::Initialize(const Transform& transform)
             {
                 { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
                 { { 8,0,5 },  YarnEnemyType::Static, 0.0f },
-                { { 10,0,5 }, YarnEnemyType::Static, 0.0f ,true},
+                { { 10,0,5 }, YarnEnemyType::MoveVertical, 0.0f ,true},
                 { { 12,0,5 }, YarnEnemyType::Static, 0.0f },
                 { { 15,0,5 }, YarnEnemyType::Static, 0.0f },
                 { { 18,0,5 }, YarnEnemyType::Static, 0.0f },

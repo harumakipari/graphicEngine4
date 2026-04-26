@@ -70,7 +70,7 @@ bool SceneBase::Initialize(ID3D11Device* device, const UINT64 width, UINT height
 
     frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
     finalBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
-    //imGuiGizmoBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
+    imGuiGizmoBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
 
     // GBUFFER
     gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
@@ -205,6 +205,7 @@ bool SceneBase::OnSizeChanged(ID3D11Device* device, const UINT64 width, UINT hei
 
     frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
     finalBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
+    imGuiGizmoBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
 
     return true;
 }
@@ -724,9 +725,11 @@ void SceneBase::DrawGui()
 {
 #ifdef USE_IMGUI
     SetupImGuiStyle();
-    //DrawDockSpace();
+
+    DrawDockSpace();
+    DrawGizmo();//
+
     DrawOutliner();
-    //DrawGizmo();//
     Logger::DrawImGui();
     Time::DrawImGui();
     DrawInspector();

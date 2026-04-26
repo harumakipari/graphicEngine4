@@ -31,6 +31,8 @@ public:
 
     void Update(float elapsedTime)override;
 
+    void DrawImGuiDetails() override{}
+
     // 敵のスコアを取得する関数
     EnemyScoreData GetScoreData() const { return scoreData; }
 
@@ -66,6 +68,7 @@ public:
 
     // 速度を設定する
     void SetSpeed(const float speed) { this->speed = speed; }
+
 private:
     // 死亡した時に呼ぶ関数
     void CallDeath(bool hitByDash);
@@ -76,7 +79,7 @@ private:
     // ヒットエフェクトを生成する
     void SpawnHitEffect(bool hitByDash);
 
-    // 玉止めされている時
+    // 玉止めされている時の更新処理
     void UpdateTied(float deltaTime);
 
     // 玉止めをほどく
@@ -84,6 +87,9 @@ private:
 
     // 死亡中の更新処理
     void UpdateDead(float deltaTime);
+
+    // 玉止め表示更新処理
+    void UpdateTiedVisual();
 
 public:
     // 死亡通知
@@ -102,7 +108,7 @@ protected:
     DirectX::XMFLOAT3 moveDirection = { 1.0f, 0.0f, 0.0f }; // 線形移動の方向
     float speed = 2.0f; // 線形移動の速度
 
-    float enemyRadius = 0.5f; // 敵の当たり判定
+    float enemyRadius = 1.0f; // 敵の当たり判定
     int maxHp = 1;
     EnemyScoreData scoreData = { 100,0 }; // 倒したときのスコア
 
@@ -137,5 +143,7 @@ private:
 
     std::string parentName = "EnemyBase";// RootComponentの名前
 
+    std::shared_ptr<SphereComponent> redirectLeftCollisionComponent; // 反射判定の左コンポーネント
+    std::shared_ptr<SphereComponent> redirectRightCollisionComponent; // 反射判定の右コンポーネント
 
 };

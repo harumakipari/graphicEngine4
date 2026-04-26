@@ -28,25 +28,29 @@ void EnemyBase::Initialize(const Transform& transform)
 
 void EnemyBase::Update(float deltaTime)
 {
-    // Dead
-    if (state == YarnState::Dead)
-    {
-        UpdateDead(deltaTime);
-        return;
-    }
+    // 玉止めの描画更新処理
+    UpdateTiedVisual();
 
-    // Tied
-    if (state == YarnState::Tied)
+
+    switch (state)
     {
+    case YarnState::Active:
+        if (behavior)
+        {
+            behavior->Update(this, deltaTime);
+        }
+        break;
+    case YarnState::Tied:
         UpdateTied(deltaTime);
-        return;
+        break;
+    case YarnState::Dead:
+        UpdateDead(deltaTime);
+        break;
     }
 
-    // Active
-    if (behavior)
-    {
-        behavior->Update(this, deltaTime);
-    }
+    // 反射の当たり判定をデバッグ表示
+    //DebugRender::DrawSphere(redirectLeftCollisionComponent->GetComponentLocation(), dashAttackRange, { 1,1,0,1 }, 0, true);
+
 }
 
 bool EnemyBase::OnHitByDash()
@@ -115,24 +119,6 @@ void EnemyBase::SpawnHitEffect(bool hitByDash)
 // 玉止めされている時
 void EnemyBase::UpdateTied(float deltaTime)
 {
-    int showCount = 0;
-
-    if (size == YarnSize::Small)
-    {
-        showCount = 2; // 小は1回で2個
-    }
-    else
-    {
-        showCount = tieCount; // 大は回数に応じて増える
-    }
-
-    for (int i = 0; i < tiedMeshes.size(); i++)
-    {
-        tiedMeshes[i]->SetIsVisible(i < showCount);
-        tiedMeshes[i]->SetRelativeEulerRotationDirect({ 0.0f,180.0f,0.0f });
-    }
-
-
     if (size == YarnSize::Big)
     {// 大きい敵だったら
         tieTimer += deltaTime;
@@ -141,6 +127,31 @@ void EnemyBase::UpdateTied(float deltaTime)
         {// 自力で脱出する
             ReleasedTied();
         }
+    }
+}
+
+// 玉止め表示更新処理
+void EnemyBase::UpdateTiedVisual()
+{
+    int showCount = 0;
+
+    if (size == YarnSize::Small)
+    {
+        if (tieCount == 1)
+        {
+            showCount = 2; // 小は1回で2個
+        }
+    }
+    else if (size == YarnSize::Big)
+    {
+        if (tieCount == 1) showCount = 1;
+        else if (tieCount >= 2) showCount = 2;
+    }
+
+    for (int i = 0; i < tiedMeshes.size(); i++)
+    {
+        tiedMeshes[i]->SetIsVisible(i < showCount);
+        tiedMeshes[i]->SetRelativeEulerRotationDirect({ 0.0f,180.0f,0.0f });
     }
 }
 
@@ -342,7 +353,7 @@ void EnemyBase::SetEnemySize(const YarnSize size)
         // 当たり判定
         sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
-        radius = enemyRadius;
+        radius = size.x * 0.5f;
         height = size.y;
         mass = 180.0f;
         sphereCollisionComponent->SetRadius(radius);
@@ -377,7 +388,7 @@ void EnemyBase::SetEnemySize(const YarnSize size)
         // 当たり判定
         sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
-        radius = enemyRadius;
+        radius = size.x * 0.5f;
         height = size.y;
         mass = 180.0f;
         sphereCollisionComponent->SetRadius(radius);
@@ -389,6 +400,35 @@ void EnemyBase::SetEnemySize(const YarnSize size)
         sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
         sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
         sphereCollisionComponent->Initialize();
+
+        // 反射用の当たり判定
+        redirectLeftCollisionComponent = this->AddComponent<class SphereComponent>("redirectLeftCollisionComponent", parentName);
+        //redirectLeftCollisionComponent->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
+        radius = enemyRadius;
+        height = size.y;
+        mass = 180.0f;
+        redirectLeftCollisionComponent->SetRadius(radius);
+        redirectLeftCollisionComponent->SetMass(mass);
+        redirectLeftCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+        redirectLeftCollisionComponent->SetLayer(CollisionLayer::EnemyRedirect);
+        redirectLeftCollisionComponent->SetCollisionOffsetY(height * 0.5f);
+        redirectLeftCollisionComponent->Initialize();
+
+#if 0
+        redirectRightCollisionComponent = this->AddComponent<class SphereComponent>("redirectRightCollisionComponent", parentName);
+        redirectRightCollisionComponent->SetRelativeLocationDirect({ -1.0f,0.0f,0.0f });
+        radius = enemyRadius;
+        height = size.y;
+        mass = 180.0f;
+        redirectRightCollisionComponent->SetRadius(radius);
+        redirectRightCollisionComponent->SetMass(mass);
+        redirectRightCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+        redirectRightCollisionComponent->SetLayer(CollisionLayer::EnemyRedirect);
+        redirectRightCollisionComponent->SetCollisionOffsetY(height * 0.5f);
+        redirectRightCollisionComponent->Initialize();
+
+#endif // 0
+
 
         // 玉止めモデル
         auto tiedLeft = AddComponent<SkeletalMeshComponent>("tiedLeftMeshComponent", parentName);
@@ -402,6 +442,6 @@ void EnemyBase::SetEnemySize(const YarnSize size)
         tiedMeshes.push_back(tiedRight);
 
     }
-        break;
+    break;
     }
 }

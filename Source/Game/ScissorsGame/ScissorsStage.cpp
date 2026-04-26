@@ -44,7 +44,7 @@ void ScissorsStage::Initialize(const Transform& transform)
     {
         std::shared_ptr<BoxComponent> wallComponent = this->AddComponent<class BoxComponent>("wallFrontComponent", parentName);
         wallComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(20.0f, 5.0f, 1.0f));
-        wallComponent->SetRelativeLocationDirect({ -3.0f,-0.f,1.0f });
+        wallComponent->SetRelativeLocationDirect({ -3.0f,-0.f,1.7f });
         wallComponent->SetStatic(true);
         wallComponent->SetLayer(CollisionLayer::Wall);
         wallComponent->Initialize();

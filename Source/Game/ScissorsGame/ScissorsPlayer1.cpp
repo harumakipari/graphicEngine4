@@ -72,7 +72,8 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
                 if (damageCooldownTimer > 0.0f) return;
 
-                if (other->GetCollisionLayer() == CollisionHelper::ToBit(CollisionLayer::Enemy))
+                uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Enemy);
+                if (other->GetCollisionLayer() == mask)
                 {
                     if (auto enemy = dynamic_cast <EnemyBase*>(other->GetOwner()))
                     {
@@ -137,7 +138,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 }
 
                 // 同じセグメントなら無視
-                if (enemy->lastHitSegment==currentSegment)
+                if (enemy->lastHitSegment == currentSegment)
                 {
                     return;
                 }
@@ -151,74 +152,23 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 bool isKilled = enemy->OnHitByDash();
                 //bool isKilled = enemy->OnHitByDash(this, dashDamage);
 
-                // スコアデータを取得する
-                auto data = enemy->GetScoreData();
+                if (isKilled)
+                {
+                    // スコアデータを取得する
+                    auto data = enemy->GetScoreData();
 
-                // スコア処理　足されたスコアを取得する
-                int addScore = scoreSystem.ProcessHit(data, isKilled);
+                    // スコア処理　足されたスコアを取得する
+                    int addScore = scoreSystem.ProcessHit(data, isKilled);
 
-                // スロー再生
-                //Time::SetSlow(0.5f, 0.3f);
+                    // スロー再生
+                    //Time::SetSlow(0.5f, 0.3f);
 
-                // ヒットストップ
-                hitStopTimer = hitStopDuration;
-            }
-        );
-    }
-
-    // ハサミ攻撃用の当たり判定
-    {
-        scissorsAttackSphere = this->AddComponent<SphereComponent>("scissorsAttackSphere", parentName);
-        scissorsAttackSphere->SetRelativeLocationDirect({ 0.0f,height,1.1f });
-        scissorsAttackSphere->SetRadius(scissorsAttackRange);
-        scissorsAttackSphere->SetLayer(CollisionLayer::PlayerWeapon);
-        scissorsAttackSphere->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
-        scissorsAttackSphere->SetResponseToLayer(CollisionLayer::RibbonWall, CollisionComponent::CollisionResponse::Trigger);
-        scissorsAttackSphere->Initialize();
-        scissorsAttackSphere->SetActive(false); // ←通常はOFF
-        scissorsAttackSphere->SetOnHitCallback(
-            [this](CollisionComponent* self, CollisionComponent* other)
-            {
-                if (stateMachine_->GetStateName() != "Attack")
-                    return;
-
-#if 0
-                if (hasDamageEnemy) // 既にダメージが入っていたら無視
-                    return;
-
-#endif // 0
-
-                auto wall = dynamic_cast<RibbonWallActor*>(other->GetOwner());
-                if (wall)
-                {// 壁が切られたら
-                    auto needleEnemy = wall->ownerEnemy.lock();
-                    needleEnemy->BreakAllWalls(); // 壁をすべて破壊する
-                    return;
+                    // ヒットストップ
+                    hitStopTimer = hitStopDuration;
                 }
-
-                auto enemy = dynamic_cast<ScissorsGameEnemyBase*>(other->GetOwner());
-                if (!enemy) return;
-
-                if (hitEnemies.contains(enemy)) return;
-
-                hitEnemies.insert(enemy);
-
-                // ヒット処理と倒したかどうかを取得する
-                bool isKilled = enemy->OnHitByAttack(this, scissorsDamage);
-                Logger::Log(U8("敵にヒット！"));
-
-                hasDamageEnemy = true;
-
-                // スコアデータを取得する
-                auto data = enemy->GetScoreData();
-
-                // スコア処理　足されたスコアを取得する
-                int addScore = scoreSystem.ProcessHit(data, isKilled);
-
             }
         );
     }
-
 
     // 入力用のコンポーネントを追加
     inputComponent = this->AddComponent<class InputComponent>("inputComponent", parentName);
@@ -418,8 +368,6 @@ void ScissorsPlayer1::Update(float deltaTime)
     DebugRender::DrawSphere(sphereComponent->GetComponentLocation(), playerRadius, debugPlayerCollisionColor, 0, true);
     // ダッシュ攻撃の当たり判定をデバッグ表示
     DebugRender::DrawSphere(dashAttackSphere->GetComponentLocation(), dashAttackRange, debugDashCollisionColor, 0, true);
-    // ハサミ攻撃の当たり判定をデバッグ表示
-    DebugRender::DrawSphere(scissorsAttackSphere->GetComponentLocation(), scissorsAttackRange, debugScissorsCollisionColor, 0, true);
 
     debugPlayerCollisionColor = { 1,1,1,1 };
 

@@ -139,7 +139,7 @@ private:
 
     bool isCharging = false; // ダッシュを溜めているかどうか
     float chargeTime = 0.0f; // ダッシュの溜め時間
-    float maxChargeTime = 1.0f;   // ダッシュの最大溜め時間　この時間以上溜めてもさらに強くならない
+    float maxChargeTime = 1.5f;   // ダッシュの最大溜め時間　この時間以上溜めてもさらに強くならない
 
     // プレイヤーのHPを表示するUI　
     std::vector<std::shared_ptr<UIImageComponent>> hpUiComponents;

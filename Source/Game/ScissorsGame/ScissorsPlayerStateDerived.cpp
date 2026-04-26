@@ -205,9 +205,9 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
         };
 
         HitResultWithActor hit;
-        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Wall);
+        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Wall) | CollisionHelper::ToBit(CollisionLayer::EnemyRedirect);
 
-        if (CollisionFunction::SphereRayCast(currentPos, nextTarget, hit, 0.1f, mask))
+        if (CollisionFunction::SphereRayCast(currentPos, nextTarget, hit, 0.2f, mask))
         {
             // 壁に当たった地点
             player->dashPoints.push_back(hit.hitPoint);
@@ -223,50 +223,100 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
                 player->dashPoints.push_back(hit.hitPoint);
                 break;
             }
-            
 
-            // 反射
-            XMFLOAT3 normal = hit.normal;
 
+            // 反射敵にヒットした場合
+            if (auto enemy = dynamic_cast<EnemyBase*>(hit.actor))
+            {
+                // 敵ヒット → 90度曲がり
+                // 敵の中心
+                XMFLOAT3 enemyPos = enemy->GetPosition();
+
+                // ヒット位置との差
+                XMFLOAT3 local =
+                {
+                    hit.hitPoint.x - enemyPos.x,
+                    0.0f,
+                    hit.hitPoint.z - enemyPos.z
+                };
+
+                // 敵の右方向（なければ {1,0,0}）
+                XMFLOAT3 right = { 1,0,0 };
+                //XMFLOAT3 right = enemy->GetRight();
+
+                // dotで左右判定
+                float dot = local.x * right.x + local.z * right.z;
+
+                // 90度回転
+                if (dot > 0)
+                {
+                    // 右側ヒット → 右に曲がる
+                    dashDir = { dashDir.z, 0.0f, -dashDir.x };
+                }
+                else
+                {
+                    // 左側ヒット → 左に曲がる
+                    dashDir = { -dashDir.z, 0.0f, dashDir.x };
+                }
+                //  正規化
+                float len = sqrt(dashDir.x * dashDir.x + dashDir.z * dashDir.z);
+                if (len > 0.0001f)
+                {
+                    dashDir.x /= len;
+                    dashDir.z /= len;
+                }
+
+                //  進行方向に押し出す（ここ重要）
+                const float pushOut = 1.0f;
+
+                currentPos =
+                {
+                    hit.hitPoint.x + dashDir.x * pushOut,
+                    hit.hitPoint.y,
+                    hit.hitPoint.z + dashDir.z * pushOut
+                };
+            }
+            else
+            {
+                // 反射
+                XMFLOAT3 normal = hit.normal;
+
+
+                float dot = dashDir.x * normal.x + dashDir.z * normal.z;
+
+                dashDir.x = dashDir.x - 2 * dot * normal.x;
+                dashDir.z = dashDir.z - 2 * dot * normal.z;
+
+
+                // 正規化
+                float len = sqrt(dashDir.x * dashDir.x + dashDir.z * dashDir.z);
+                if (len < 0.0001f)
+                {
+                    // fallback（元の方向維持）
+                    dashDir = aimData.dir;
+                }
+                else
+                {
+                    dashDir.x /= len;
+                    dashDir.z /= len;
+                }
+                currentPos = hit.hitPoint;
+
+                // 反射後 壁に埋まっているのを直す
+                const float pushOut = 1.0f;
+
+                currentPos =
+                {
+                    hit.hitPoint.x + normal.x * pushOut,
+                    hit.hitPoint.y,
+                    hit.hitPoint.z + normal.z * pushOut
+                };
+            }
             DebugRender::DrawLine(hit.hitPoint,
                 { hit.hitPoint.x + hit.normal.x,
                   hit.hitPoint.y,
                   hit.hitPoint.z + hit.normal.z },
                 { 1,1,0,1 });
-
-            float dot = dashDir.x * normal.x + dashDir.z * normal.z;
-
-            //dashDir.x =  normal.x;
-            //dashDir.z =  normal.z;
-            dashDir.x = dashDir.x - 2 * dot * normal.x;
-            dashDir.z = dashDir.z - 2 * dot * normal.z;
-
-            Logger::Log("dahDir x: " + std::to_string(dashDir.x) + "y: " + std::to_string(dashDir.y) + "z: " + std::to_string(dashDir.z));
-            Logger::Log("normal x: " + std::to_string(normal.x) + "y: " + std::to_string(normal.y) + "z: " + std::to_string(normal.z));
-
-            // 正規化
-            float len = sqrt(dashDir.x * dashDir.x + dashDir.z * dashDir.z);
-            if (len < 0.0001f)
-            {
-                // fallback（元の方向維持）
-                dashDir = aimData.dir;
-            }
-            else
-            {
-                dashDir.x /= len;
-                dashDir.z /= len;
-            }
-            currentPos = hit.hitPoint;
-
-            // 反射後 壁に埋まっているのを直す
-            const float pushOut = 0.2f;
-
-            currentPos =
-            {
-                hit.hitPoint.x + normal.x * pushOut,
-                hit.hitPoint.y,
-                hit.hitPoint.z + normal.z * pushOut
-            };
 
         }
         else
