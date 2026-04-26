@@ -72,10 +72,21 @@ public:
     // 敵の出現開始位置を取得する
     DirectX::XMFLOAT3 GetStartPosition() const { return startPosition; }
 
+    // 敵の出現開始位置を設定する
     void SetStartPosition(const DirectX::XMFLOAT3 startPos) { this->startPosition = startPos; }
 
     // プレイヤーを取得する
     ScissorsPlayer1* GetPlayer();
+
+    // 状態を取得する関数
+    YarnState GetState() const { return state; }
+
+    // 玉止めをほどく
+    void ReleasedTied();
+
+    // ハサミを生成する
+    void EnableScissorsVisual();
+
 private:
     // 死亡した時に呼ぶ関数
     void CallDeath(bool hitByDash);
@@ -88,9 +99,6 @@ private:
 
     // 玉止めされている時の更新処理
     void UpdateTied(float deltaTime);
-
-    // 玉止めをほどく
-    void ReleasedTied();
 
     // 死亡中の更新処理
     void UpdateDead(float deltaTime);
@@ -150,6 +158,7 @@ private:
 
     std::string parentName = "EnemyBase";// RootComponentの名前
 
-    std::shared_ptr<SphereComponent> redirectLeftCollisionComponent; // 反射判定の左コンポーネント
+    std::shared_ptr<SphereComponent> redirectCollisionComponent; // 反射判定の左コンポーネント
 
+    std::shared_ptr<SkeletalMeshComponent> scissorsMeshComponent;// ハサミ描画用コンポーネント
 };

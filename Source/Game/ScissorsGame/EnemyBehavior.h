@@ -13,11 +13,11 @@ public:
 class StaticBehavior : public EnemyBehavior
 {
 public:
-    void Enter(EnemyBase* e) override{}
+    void Enter(EnemyBase* e) override {}
 
     void Update(EnemyBase* e, float dt) override;
 
-    void Exit(EnemyBase* e) override{}
+    void Exit(EnemyBase* e) override {}
 };
 
 class LinearBehavior : public EnemyBehavior
@@ -33,11 +33,11 @@ public:
 class WaveHorizontalBehavior : public EnemyBehavior
 {
 public:
-    void Enter(EnemyBase* e) override{}
+    void Enter(EnemyBase* e) override {}
 
     void Update(EnemyBase* e, float dt) override;
 
-    void Exit(EnemyBase* e) override{}
+    void Exit(EnemyBase* e) override {}
 
 private:
     // ”g‘Å‚¿ˆÚ“®‚Ìƒpƒ‰ƒ[ƒ^
@@ -73,17 +73,23 @@ public:
 
 private:
     float avoidDist = 1.5f; // “G‚ÌL‚ª‚è
-    float separationWeight = 0.8f; // ‚Ç‚ê‚­‚ç‚¢‚Î‚ç‚¯‚é‚©
+    float separationWeight = 0.3f; // ‚Ç‚ê‚­‚ç‚¢‚Î‚ç‚¯‚é‚©
 
 };
 
-class RescueBehavior:public EnemyBehavior
+class RescueBehavior :public EnemyBehavior
 {
 public:
-    void Enter(EnemyBase* e) override {}
+    void Enter(EnemyBase* e) override;
 
     void Update(EnemyBase* e, float dt) override;
 
     void Exit(EnemyBase* e) override {}
+
+private:
+    // ‹Ê~‚ß‚³‚ê‚Ä‚¢‚é“G‚ğ’T‚·
+    EnemyBase* FindTiedEnemy(const EnemyBase* self);
+
+    EnemyBase* target = nullptr;
 
 };

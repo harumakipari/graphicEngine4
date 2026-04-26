@@ -403,33 +403,17 @@ void EnemyBase::SetEnemySize(const YarnSize size)
         sphereCollisionComponent->Initialize();
 
         // 反射用の当たり判定
-        redirectLeftCollisionComponent = this->AddComponent<class SphereComponent>("redirectLeftCollisionComponent", parentName);
+        redirectCollisionComponent = this->AddComponent<class SphereComponent>("redirectLeftCollisionComponent", parentName);
         //redirectLeftCollisionComponent->SetRelativeLocationDirect({ 0.0f,0.0f,0.0f });
         radius = enemyRadius;
         height = size.y;
         mass = 180.0f;
-        redirectLeftCollisionComponent->SetRadius(radius);
-        redirectLeftCollisionComponent->SetMass(mass);
-        redirectLeftCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
-        redirectLeftCollisionComponent->SetLayer(CollisionLayer::EnemyRedirect);
-        redirectLeftCollisionComponent->SetCollisionOffsetY(height * 0.5f);
-        redirectLeftCollisionComponent->Initialize();
-
-#if 0
-        redirectRightCollisionComponent = this->AddComponent<class SphereComponent>("redirectRightCollisionComponent", parentName);
-        redirectRightCollisionComponent->SetRelativeLocationDirect({ -1.0f,0.0f,0.0f });
-        radius = enemyRadius;
-        height = size.y;
-        mass = 180.0f;
-        redirectRightCollisionComponent->SetRadius(radius);
-        redirectRightCollisionComponent->SetMass(mass);
-        redirectRightCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
-        redirectRightCollisionComponent->SetLayer(CollisionLayer::EnemyRedirect);
-        redirectRightCollisionComponent->SetCollisionOffsetY(height * 0.5f);
-        redirectRightCollisionComponent->Initialize();
-
-#endif // 0
-
+        redirectCollisionComponent->SetRadius(radius);
+        redirectCollisionComponent->SetMass(mass);
+        redirectCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+        redirectCollisionComponent->SetLayer(CollisionLayer::EnemyRedirect);
+        redirectCollisionComponent->SetCollisionOffsetY(height * 0.5f);
+        redirectCollisionComponent->Initialize();
 
         // 玉止めモデル
         auto tiedLeft = AddComponent<SkeletalMeshComponent>("tiedLeftMeshComponent", parentName);
@@ -460,4 +444,15 @@ ScissorsPlayer1* EnemyBase::GetPlayer()
         return player.get();
     }
     return nullptr;
+}
+
+// ハサミを生成する
+void EnemyBase::EnableScissorsVisual()
+{
+    if (scissorsMeshComponent.get()) return; // 既にあるなら何もしない
+
+    scissorsMeshComponent = AddComponent<SkeletalMeshComponent>("ScissorsMesh",parentName);
+    scissorsMeshComponent->SetRelativeLocationDirect({ 0, 1.0f, 0 });
+    scissorsMeshComponent->SetRelativeScaleDirect({ 0.5f,0.5f,0.5f });
+    scissorsMeshComponent->SetModel("./Data/TeamModels/Item/ScissorsModel.glb");
 }

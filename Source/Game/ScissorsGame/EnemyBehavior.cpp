@@ -10,7 +10,6 @@ void StaticBehavior::Update(EnemyBase* e, float dt)
     e->Face({ 0.0f,0.0f,-1.0f });
 }
 
-
 void LinearBehavior::Update(EnemyBase* e, float deltaTime)
 {
     DirectX::XMFLOAT3 pos = e->GetPosition();
@@ -152,11 +151,15 @@ void ChaseBehavior::Update(EnemyBase* e, float dt)
     e->Face(dir);
 }
 
+void RescueBehavior::Enter(EnemyBase* e)
+{
+    e->EnableScissorsVisual();
+}
+
 void RescueBehavior::Update(EnemyBase* e, float dt)
 {
-#if 0
     // ƒ^[ƒQƒbƒg‚ª‚È‚¢ or –³Œø‚È‚ç’T‚·
-    if (!target || target->IsDead() || target->GetState() != YarnState::Tied)
+    if (!target || target->IsDead() || target->GetState() != EnemyBase::YarnState::Tied)
     {
         target = FindTiedEnemy(e);
         if (!target) return;
@@ -187,6 +190,28 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
         target->ReleasedTied();
         target = nullptr;
     }
-#endif // 0
+}
 
+EnemyBase* RescueBehavior::FindTiedEnemy(const EnemyBase* self)
+{
+    auto scene = self->GetOwnerScene();
+    auto enemies = scene->GetActorManager()->GetActorsOfType<EnemyBase>();
+
+    EnemyBase* nearest = nullptr;
+    float minDist = 99999.0f;
+
+    for (auto enemy : enemies)
+    {
+        if (enemy.get() == self) continue;
+        if (enemy->GetState() != EnemyBase::YarnState::Tied) continue;
+
+        float dist = MathHelper::Distance(self->GetPosition(), enemy->GetPosition());
+        if (dist < minDist)
+        {
+            minDist = dist;
+            nearest = enemy.get();
+        }
+    }
+
+    return nearest;
 }

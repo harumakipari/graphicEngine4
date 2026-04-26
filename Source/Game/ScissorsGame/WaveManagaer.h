@@ -64,13 +64,9 @@ public:
 private:
     void SpawnEnemy(
         const DirectX::XMFLOAT3& pos,
-        YarnEnemyType type,
+        YarnEnemyType type,  bool isBig,
         float speed = 2.0f, const DirectX::XMFLOAT3& dir = { 1,0,0 });
 
-    void SpawnBigEnemy(
-        const DirectX::XMFLOAT3& pos,
-        YarnEnemyType type,
-        float speed = 2.0f, const DirectX::XMFLOAT3& dir = { 1,0,0 });
 
     // èoåªà íuÇÃï‚ê≥
     DirectX::XMFLOAT3 CalcAlignedSpawnPos(

@@ -34,7 +34,7 @@ void WaveManager::Initialize(const Transform& transform)
                 { { 5,0,10 }, YarnEnemyType::ChasePlayer, 0.0f },
                 { { 5,0,12 }, YarnEnemyType::WaveHorizontal, 0.0f },
                 { { 5,0,15 }, YarnEnemyType::WaveVertical, 0.0f },
-                { { 5,0,18 }, YarnEnemyType::Static, 0.0f },
+                { { 5,0,18 }, YarnEnemyType::RescueEnemy, 0.0f },
             },
             false,
            6
@@ -185,11 +185,7 @@ void WaveManager::Update(float deltaTime)
         //  ŽÀÛ‚ÌƒXƒ|[ƒ“’x‚ç‚¹‚é
         if (!state.spawned && timer >= s.delay + s.spawnDelay)
         {
-            if (s.isBig)
-                SpawnBigEnemy(s.position, s.type, s.speed, s.dir);
-            else
-                SpawnEnemy(s.position, s.type, s.speed, s.dir);
-
+            SpawnEnemy(s.position, s.type, s.isBig,s.speed, s.dir);
             state.spawned = true;
         }
     }
@@ -248,14 +244,15 @@ void WaveManager::Update(float deltaTime)
 // ‰¼‚Ì“G‚ð¶¬‚·‚éŠÖ”
 void WaveManager::SpawnEnemy(
     const DirectX::XMFLOAT3& pos,
-    YarnEnemyType type,
+    YarnEnemyType type, bool isBig,
     float speed, const DirectX::XMFLOAT3& dir)
 {
     Transform tr(pos, { 0,180,0 }, { 1.0f,1.0f,1.0f });
     auto enemy = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemy", tr);
     enemy->SetMoveDirection(dir);
 
-    enemy->SetEnemySize(EnemyBase::Small);
+    auto size = isBig ? EnemyBase::Big : EnemyBase::Small;
+    enemy->SetEnemySize(size);
 
     switch (type)
     {
@@ -286,63 +283,9 @@ void WaveManager::SpawnEnemy(
     case YarnEnemyType::ChasePlayer:
         enemy->SetBehavior(std::make_unique<ChaseBehavior>());
         break;
-
-    }
-    enemy->SetSpeed(speed);
-    enemy->onDeath = [this, weak = std::weak_ptr(enemy)]()
-        {
-            if (auto e = weak.lock())
-            {
-                OnDeath(e.get());
-            }
-        };
-    hasSpawnedAnyEnemy = true;
-    aliveEnemies.push_back(enemy);
-
-    enemyCount++;
-}
-
-// ‰¼‚Ì“G‚ð¶¬‚·‚éŠÖ”
-void WaveManager::SpawnBigEnemy(
-    const DirectX::XMFLOAT3& pos,
-    YarnEnemyType type,
-    float speed, const DirectX::XMFLOAT3& dir)
-{
-    Transform tr(pos, { 0,180,0 }, { 1.0f,1.0f,1.0f });
-    auto enemy = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemyBig", tr);
-    enemy->SetMoveDirection(dir);
-    enemy->SetEnemySize(EnemyBase::Big);
-
-    switch (type)
-    {
-    case YarnEnemyType::Static:
-        enemy->SetBehavior(std::make_unique<StaticBehavior>());
+    case YarnEnemyType::RescueEnemy:
+        enemy->SetBehavior(std::make_unique<RescueBehavior>());
         break;
-
-    case YarnEnemyType::MoveHorizontal:
-        enemy->SetBehavior(std::make_unique<LinearBehavior>());
-        enemy->SetMoveDirection({ 1,0,0 });
-        break;
-
-    case YarnEnemyType::MoveVertical:
-        enemy->SetBehavior(std::make_unique<LinearBehavior>());
-        enemy->SetMoveDirection({ 0,0,1 });
-        break;
-
-    case YarnEnemyType::WaveHorizontal:
-        enemy->SetBehavior(std::make_unique<WaveHorizontalBehavior>());
-        enemy->SetMoveDirection({ 1,0,0 });
-        break;
-
-    case YarnEnemyType::WaveVertical:
-        enemy->SetBehavior(std::make_unique<WaveVerticalBehavior>());
-        enemy->SetMoveDirection({ 0,0,1 });
-        break;
-
-    case YarnEnemyType::ChasePlayer:
-        enemy->SetBehavior(std::make_unique<ChaseBehavior>());
-        break;
-
     }
     enemy->SetSpeed(speed);
     enemy->onDeath = [this, weak = std::weak_ptr(enemy)]()
