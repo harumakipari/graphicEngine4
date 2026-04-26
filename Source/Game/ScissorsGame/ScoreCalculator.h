@@ -55,6 +55,8 @@ public:
 
     int GetCombo()const { return combo.GetComboCount(); }
 
+    // ‘ƒXƒRƒA‚ğæ“¾‚·‚éŠÖ”
+    int GetTotalScore() const { return totalScore; }
 private:
     ComboSystem combo;
     ScoreCalculator calculator;

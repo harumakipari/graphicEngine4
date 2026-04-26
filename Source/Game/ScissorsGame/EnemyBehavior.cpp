@@ -60,9 +60,17 @@ void WaveHorizontalBehavior::Update(EnemyBase* e, float dt)
 
     e->SetPosition(pos);
 
-    if (pos.x < ScissorsGameState::stageMinX || pos.x > ScissorsGameState::stageMaxX)
+    if (pos.x < ScissorsGameState::stageMinX)
     {
-        moveDirection.x *= -1.0f;
+        pos.x = ScissorsGameState::stageMinX;
+        start.x = pos.x;
+        moveDirection.x = 1.0f;
+    }
+    else if (pos.x > ScissorsGameState::stageMaxX)
+    {
+        pos.x = ScissorsGameState::stageMaxX;
+        start.x = pos.x;
+        moveDirection.x = -1.0f;
     }
 
     e->SetMoveDirection(moveDirection);
@@ -88,10 +96,19 @@ void WaveVerticalBehavior::Update(EnemyBase* e, float dt)
 
     e->SetPosition(pos);
 
-    if (pos.z < ScissorsGameState::stageMinZ || pos.z > ScissorsGameState::stageMaxZ)
+    if (pos.z < ScissorsGameState::stageMinZ)
     {
-        moveDirection.z *= -1.0f;
+        pos.z = ScissorsGameState::stageMinZ;
+        start.z = pos.z;
+        moveDirection.z = 1.0f;
     }
+    else if (pos.z > ScissorsGameState::stageMaxZ)
+    {
+        pos.z = ScissorsGameState::stageMaxZ;
+        start.z = pos.z;
+        moveDirection.z = -1.0f;
+    }
+
 
     e->SetMoveDirection(moveDirection);
     e->Face(moveDirection);

@@ -16,6 +16,7 @@
 #include "Game/Actors/Player/Player.h"
 #include "Game/Actors/Stage/Cloth.h"
 #include "Game/ScissorsGame/ButtonCoinActor.h"
+#include "Game/ScissorsGame/ComboUiActor.h"
 #include "Game/ScissorsGame/EnemyBase.h"
 #include "Game/ScissorsGame/NeedleEnemyActor.h"
 #include "Game/ScissorsGame/RabbitBossEnemy.h"
@@ -24,6 +25,7 @@
 #include "Physics/Physics.h"
 #include "Game/ScissorsGame/ScissorsPlayer1.h"
 #include "Game/ScissorsGame/ScissorsStage.h"
+#include "Game/ScissorsGame/ScoreUiActor.h"
 #include "Game/ScissorsGame/WaveManagaer.h"
 #include "Game/ScissorsGame/YarnEnemyActor.h"
 #include "Graphics/PostProcess/BloomEffect.h"
@@ -451,6 +453,14 @@ void GameScene::SetUpActors()
     // ポーズアクターを生成
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
     pauseActor->SetRetrySceneName("GameScene");
+
+    // スコア表示アクターを生成
+    Transform scoreUiTr(DirectX::XMFLOAT3{ 16.0f,11.6f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
+    auto scoreUiActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScoreUiActor>("scoreUiActor", scoreUiTr);
+
+    // コンボ表示アクターを生成
+    Transform comboUiTr(DirectX::XMFLOAT3{ 2.5f,9.3f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
+    auto comboUiActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ComboUiActor>("comboUiActor", comboUiTr);
 
 #if 0// ボスを生成　
     Transform bossTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
