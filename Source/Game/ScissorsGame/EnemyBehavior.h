@@ -13,58 +13,77 @@ public:
 class StaticBehavior : public EnemyBehavior
 {
 public:
-    void Enter(EnemyBase* e) override
-    {
-    }
+    void Enter(EnemyBase* e) override{}
 
-    void Update(EnemyBase* e, float dt) override
-    {
-    }
+    void Update(EnemyBase* e, float dt) override;
 
-    void Exit(EnemyBase* e) override
-    {
-    }
+    void Exit(EnemyBase* e) override{}
 };
-
 
 class LinearBehavior : public EnemyBehavior
 {
 public:
-    void Enter(EnemyBase* e) override;
+    void Enter(EnemyBase* e) override {}
 
     void Update(EnemyBase* e, float dt) override;
 
-    void Exit(EnemyBase* e) override;
+    void Exit(EnemyBase* e) override {}
 };
 
+class WaveHorizontalBehavior : public EnemyBehavior
+{
+public:
+    void Enter(EnemyBase* e) override{}
 
-#if 0
+    void Update(EnemyBase* e, float dt) override;
+
+    void Exit(EnemyBase* e) override{}
+
+private:
+    // ”g‘Å‚¿ˆÚ“®‚Ìƒpƒ‰ƒ[ƒ^
+    float waveTime = 0.0f;
+    float waveAmplitude = 1.0f; // U‚ê•
+    float waveFrequency = 3.0f; // ‘¬‚³
+};
+
+class WaveVerticalBehavior : public EnemyBehavior
+{
+public:
+    void Enter(EnemyBase* e) override {}
+
+    void Update(EnemyBase* e, float dt) override;
+
+    void Exit(EnemyBase* e) override {}
+
+private:
+    // ”g‘Å‚¿ˆÚ“®‚Ìƒpƒ‰ƒ[ƒ^
+    float waveTime = 0.0f;
+    float waveAmplitude = 1.0f; // U‚ê•
+    float waveFrequency = 3.0f; // ‘¬‚³
+};
+
 class ChaseBehavior : public EnemyBehavior
 {
 public:
-    void Update(EnemyBase* e, float dt) override
-    {
-        auto player = e->GetPlayer();
-        if (!player) return;
+    void Enter(EnemyBase* e) override {}
 
-        auto pos = e->GetPosition();
-        auto target = player->GetPosition();
+    void Update(EnemyBase* e, float dt) override;
 
-        DirectX::XMFLOAT3 dir =
-        {
-            target.x - pos.x,
-            0,
-            target.z - pos.z
-        };
+    void Exit(EnemyBase* e) override {}
 
-        float len = sqrt(dir.x * dir.x + dir.z * dir.z);
-        if (len < 0.001f) return;
+private:
+    float avoidDist = 1.5f; // “G‚ÌL‚ª‚è
+    float separationWeight = 0.8f; // ‚Ç‚ê‚­‚ç‚¢‚Î‚ç‚¯‚é‚©
 
-        dir.x /= len;
-        dir.z /= len;
-
-        e->Move(dir, dt);
-        e->Face(dir);
-    }
 };
-#endif // 0
+
+class RescueBehavior:public EnemyBehavior
+{
+public:
+    void Enter(EnemyBase* e) override {}
+
+    void Update(EnemyBase* e, float dt) override;
+
+    void Exit(EnemyBase* e) override {}
+
+};

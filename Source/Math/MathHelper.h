@@ -354,6 +354,19 @@ namespace MathHelper
         return ans;
     }
 
+    // Š|‚¯ŽZ
+    inline DirectX::XMFLOAT3 Multiply(
+        const DirectX::XMFLOAT3& a,
+        const float& scale)
+    {
+        DirectX::XMVECTOR va = XMLoadFloat3(&a);
+        va = DirectX::XMVectorScale(va, scale);
+        DirectX::XMFLOAT3 ans;
+        DirectX::XMStoreFloat3(&ans, va);
+        return ans;
+    }
+
+
     // ‰ÁŽZ a+b
     inline DirectX::XMFLOAT3 Add(
         const DirectX::XMFLOAT3& a,

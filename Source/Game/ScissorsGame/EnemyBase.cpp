@@ -24,6 +24,7 @@ void EnemyBase::Initialize(const Transform& transform)
 
     state = YarnState::Active;
     SetBehavior(std::make_unique<StaticBehavior>());
+
 }
 
 void EnemyBase::Update(float deltaTime)
@@ -444,4 +445,19 @@ void EnemyBase::SetEnemySize(const YarnSize size)
     }
     break;
     }
+
+    // 位置を更新　当たり判定が{0,0,0}にくるのを防ぐため
+    UpdateAllComponentTransforms();
+
+}
+
+// プレイヤーを取得する
+ScissorsPlayer1* EnemyBase::GetPlayer()
+{
+    auto actorManager = GetOwnerScene()->GetActorManager();
+    if (auto player=actorManager->GetActorOfType<ScissorsPlayer1>())
+    {
+        return player.get();
+    }
+    return nullptr;
 }

@@ -31,7 +31,7 @@ public:
 
     void Update(float elapsedTime)override;
 
-    void DrawImGuiDetails() override{}
+    void DrawImGuiDetails() override {}
 
     // 敵のスコアを取得する関数
     EnemyScoreData GetScoreData() const { return scoreData; }
@@ -69,6 +69,13 @@ public:
     // 速度を設定する
     void SetSpeed(const float speed) { this->speed = speed; }
 
+    // 敵の出現開始位置を取得する
+    DirectX::XMFLOAT3 GetStartPosition() const { return startPosition; }
+
+    void SetStartPosition(const DirectX::XMFLOAT3 startPos) { this->startPosition = startPos; }
+
+    // プレイヤーを取得する
+    ScissorsPlayer1* GetPlayer();
 private:
     // 死亡した時に呼ぶ関数
     void CallDeath(bool hitByDash);
@@ -98,7 +105,7 @@ public:
     // 最後にヒットしたダッシュ区間
     int lastHitSegment = -1;
 protected:
-    DirectX::XMFLOAT3 startPosition = { 0.0f,0.0f,0.0f };   // 中心に向かって移動する前の開始位置
+    DirectX::XMFLOAT3 startPosition = { 0.0f,0.0f,0.0f };   // 敵の出現の開始位置　波うちの時に基準とする
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
     std::vector<std::shared_ptr<SkeletalMeshComponent>> tiedMeshes;// 玉止め用のモデル
     std::shared_ptr<RotationComponent> rotationComponent; // 回転のコンポーネント
@@ -144,6 +151,5 @@ private:
     std::string parentName = "EnemyBase";// RootComponentの名前
 
     std::shared_ptr<SphereComponent> redirectLeftCollisionComponent; // 反射判定の左コンポーネント
-    std::shared_ptr<SphereComponent> redirectRightCollisionComponent; // 反射判定の右コンポーネント
 
 };
