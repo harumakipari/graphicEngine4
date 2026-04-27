@@ -591,6 +591,12 @@
     <ClCompile Include="Source\Game\ScissorsGame\ComboUiActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\EnemyAttack.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\NeedleActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -941,6 +947,8 @@
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameState.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScoreUiActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ComboUiActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\EnemyAttack.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\NeedleActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

@@ -24,13 +24,13 @@ void WaveManager::Initialize(const Transform& transform)
             // Wave 1
             {
                 { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
-                { { 8,0,5 },  YarnEnemyType::MoveHorizontal, 0.0f },
-                { { 10,0,5 }, YarnEnemyType::ChasePlayer, 0.0f ,true},
+                { { 8,0,5 },  YarnEnemyType::LongRangeAttack, 0.0f,true },
+                { { 10,0,5 }, YarnEnemyType::Static, 0.0f ,true},
                 { { 12,0,5 }, YarnEnemyType::Static, 0.0f },
                 { { 15,0,5 }, YarnEnemyType::WaveHorizontal, 0.0f },
                 { { 18,0,5 }, YarnEnemyType::WaveVertical, 0.0f },
 
-                { {  5,0,8 }, YarnEnemyType::Static, 0.0f },
+                { {  5,0,8 }, YarnEnemyType::LongRangeAttack, 0.0f },
                 { { 5,0,10 }, YarnEnemyType::ChasePlayer, 0.0f },
                 { { 5,0,12 }, YarnEnemyType::WaveHorizontal, 0.0f },
                 { { 5,0,15 }, YarnEnemyType::WaveVertical, 0.0f },
@@ -185,7 +185,7 @@ void WaveManager::Update(float deltaTime)
         //  ŽÀÛ‚ÌƒXƒ|[ƒ“’x‚ç‚¹‚é
         if (!state.spawned && timer >= s.delay + s.spawnDelay)
         {
-            SpawnEnemy(s.position, s.type, s.isBig,s.speed, s.dir);
+            SpawnEnemy(s.position, s.type, s.isBig, s.speed, s.dir);
             state.spawned = true;
         }
     }
@@ -253,6 +253,7 @@ void WaveManager::SpawnEnemy(
 
     auto size = isBig ? EnemyBase::Big : EnemyBase::Small;
     enemy->SetEnemySize(size);
+    enemy->SetEnemyType(type);
 
     switch (type)
     {
@@ -286,6 +287,9 @@ void WaveManager::SpawnEnemy(
     case YarnEnemyType::RescueEnemy:
         enemy->SetBehavior(std::make_unique<RescueBehavior>());
         break;
+    case YarnEnemyType::LongRangeAttack:
+        enemy->SetAttack(std::make_unique<NeedleAttack>());
+        break;
     }
     enemy->SetSpeed(speed);
     enemy->onDeath = [this, weak = std::weak_ptr(enemy)]()
@@ -295,6 +299,8 @@ void WaveManager::SpawnEnemy(
                 OnDeath(e.get());
             }
         };
+
+    enemy->SetUpVisual();
     hasSpawnedAnyEnemy = true;
     aliveEnemies.push_back(enemy);
 

@@ -134,7 +134,7 @@ private:
     bool preUsingStick = false; // 前フレームでスティックを使用していたかどうか
 
     int dashCount = 3; // ダッシュの残り回数
-    int maxDashCount = 50; // ダッシュの最大回数
+    int maxDashCount = 1000; // ダッシュの最大回数
 
     float dashRecoverTimer = 0.0f;
     float dashRecoverInterval = 10.0f; // ダッシュ回復のインターバル

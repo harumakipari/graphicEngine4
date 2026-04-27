@@ -1,4 +1,5 @@
 #pragma once
+#include "EnemyAttack.h"
 #include "EnemyBehavior.h"
 #include "EnemyScoreData.h"
 #include "Components/Controller/ControllerComponent.h"
@@ -54,8 +55,11 @@ public:
     // 振る舞いセット関数
     void SetBehavior(std::unique_ptr<EnemyBehavior> newBehavior);
 
+    // 攻撃セット関数
+    void SetAttack(std::unique_ptr<EnemyAttack> newAttack);
+
     // サイズのセット関数
-    void SetEnemySize(const YarnSize size);
+    void SetEnemySize(const YarnSize size) { this->size = size; }
 
     // 移動方向を取得する
     DirectX::XMFLOAT3 GetMoveDirection() const { return moveDirection; }
@@ -85,8 +89,13 @@ public:
     void ReleasedTied();
 
     // ハサミを生成する
-    void EnableScissorsVisual();
+    void CreateScissorsVisual();
 
+    // タイプを設定
+    void SetEnemyType(const YarnEnemyType type) { enemyType = type; }
+
+    // タイプとサイズから見た目を生成する
+    void SetUpVisual();
 private:
     // 死亡した時に呼ぶ関数
     void CallDeath(bool hitByDash);
@@ -155,16 +164,18 @@ private:
 
     float selfRescueTimeInterval = 5.0f;// 自力脱出までかかる時間
 
-
     float hitFlashTimer = 0.0f; // フラッシュタイマー
     float hitFlashDuration = 0.5f; // フラッシュ全体時間
     bool isDying = false;
 
     std::unique_ptr<EnemyBehavior> behavior; // 振る舞い
+    std::unique_ptr<EnemyAttack> attack; // 攻撃
 
     std::string parentName = "EnemyBase";// RootComponentの名前
 
     std::shared_ptr<SphereComponent> redirectCollisionComponent; // 反射判定の左コンポーネント
 
     std::shared_ptr<SkeletalMeshComponent> scissorsMeshComponent;// ハサミ描画用コンポーネント
+
+    YarnEnemyType enemyType = YarnEnemyType::Static; // 敵のタイプ
 };

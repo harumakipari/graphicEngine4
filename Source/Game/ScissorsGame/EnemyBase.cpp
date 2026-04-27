@@ -24,7 +24,6 @@ void EnemyBase::Initialize(const Transform& transform)
 
     state = YarnState::Active;
     SetBehavior(std::make_unique<StaticBehavior>());
-
 }
 
 void EnemyBase::Update(float deltaTime)
@@ -32,13 +31,16 @@ void EnemyBase::Update(float deltaTime)
     // 玉止めの描画更新処理
     UpdateTiedVisual();
 
-
     switch (state)
     {
     case YarnState::Active:
         if (behavior)
         {
             behavior->Update(this, deltaTime);
+        }
+        if (attack)
+        {
+            attack->Update(this, deltaTime);
         }
         break;
     case YarnState::Tied:
@@ -338,10 +340,77 @@ void EnemyBase::SetBehavior(std::unique_ptr<EnemyBehavior> newBehavior)
     if (behavior) behavior->Enter(this);
 }
 
-// サイズのセット関数
-void EnemyBase::SetEnemySize(const YarnSize size)
+// 攻撃セット関数
+void EnemyBase::SetAttack(std::unique_ptr<EnemyAttack> newAttack)
 {
-    this->size = size;
+    attack = std::move(newAttack);
+}
+
+
+// プレイヤーを取得する
+ScissorsPlayer1* EnemyBase::GetPlayer()
+{
+    auto actorManager = GetOwnerScene()->GetActorManager();
+    if (auto player=actorManager->GetActorOfType<ScissorsPlayer1>())
+    {
+        return player.get();
+    }
+    return nullptr;
+}
+
+// ハサミを生成する
+void EnemyBase::CreateScissorsVisual()
+{
+    if (scissorsMeshComponent.get()) return; // 既にあるなら何もしない
+
+    scissorsMeshComponent = AddComponent<SkeletalMeshComponent>("ScissorsMesh",parentName);
+    scissorsMeshComponent->SetRelativeLocationDirect({ 0, 1.0f, 0 });
+    scissorsMeshComponent->SetRelativeScaleDirect({ 0.5f,0.5f,0.5f });
+    scissorsMeshComponent->SetModel("./Data/TeamModels/Item/ScissorsModel.glb");
+}
+
+
+void EnemyBase::SetUpVisual()
+{
+    if (enemyType == YarnEnemyType::LongRangeAttack)
+    {
+        // ハリネズミモデル
+        skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/NeedleEnemy.glb", false, true);
+        skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
+
+        // 当たり判定
+        sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
+        DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
+        radius = size.x * 0.5f;
+        height = size.y;
+        mass = 180.0f;
+        sphereCollisionComponent->SetRadius(radius);
+        sphereCollisionComponent->SetMass(mass);
+        sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+        sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+        sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
+        sphereCollisionComponent->Initialize();
+
+        // 玉止めモデル
+        auto tiedLeft = AddComponent<SkeletalMeshComponent>("tiedLeftMeshComponent", parentName);
+        tiedLeft->SetModel("./Data/TeamModels/Item/tiedModelLeftBig.glb", false, true);
+        tiedLeft->SetRelativeScaleDirect({ 1.2f,1.2f,1.2f });
+        tiedLeft->SetIsVisible(false);
+        tiedMeshes.push_back(tiedLeft);
+
+        auto tiedRight = AddComponent<SkeletalMeshComponent>("tiedRightMeshComponent", parentName);
+        tiedRight->SetModel("./Data/TeamModels/Item/tiedModelRightBig.glb", false, true);
+        tiedRight->SetRelativeScaleDirect({ 1.2f,1.2f,1.2f });
+        tiedRight->SetIsVisible(false);
+        tiedMeshes.push_back(tiedRight);
+        return;
+    }
+
+
 
     switch (size)
     {
@@ -438,29 +507,8 @@ void EnemyBase::SetEnemySize(const YarnSize size)
     break;
     }
 
+
     // 位置を更新　当たり判定が{0,0,0}にくるのを防ぐため
     UpdateAllComponentTransforms();
 
-}
-
-// プレイヤーを取得する
-ScissorsPlayer1* EnemyBase::GetPlayer()
-{
-    auto actorManager = GetOwnerScene()->GetActorManager();
-    if (auto player=actorManager->GetActorOfType<ScissorsPlayer1>())
-    {
-        return player.get();
-    }
-    return nullptr;
-}
-
-// ハサミを生成する
-void EnemyBase::EnableScissorsVisual()
-{
-    if (scissorsMeshComponent.get()) return; // 既にあるなら何もしない
-
-    scissorsMeshComponent = AddComponent<SkeletalMeshComponent>("ScissorsMesh",parentName);
-    scissorsMeshComponent->SetRelativeLocationDirect({ 0, 1.0f, 0 });
-    scissorsMeshComponent->SetRelativeScaleDirect({ 0.5f,0.5f,0.5f });
-    scissorsMeshComponent->SetModel("./Data/TeamModels/Item/ScissorsModel.glb");
 }

@@ -153,7 +153,7 @@ void ChaseBehavior::Update(EnemyBase* e, float dt)
 
 void RescueBehavior::Enter(EnemyBase* e)
 {
-    e->EnableScissorsVisual();
+    e->CreateScissorsVisual();
 }
 
 void RescueBehavior::Update(EnemyBase* e, float dt)
@@ -170,7 +170,7 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
         target = FindTiedEnemy(e);
         rescueTimer = 0.0f;
 
-        // ターゲットいない → 逃げる
+        // ターゲットいない
         if (!target)
         {
             auto player = e->GetPlayer();
@@ -203,7 +203,7 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
 
                 e->Move(dir, dt);
                 e->Face(dir);
-#else
+#else// 徘徊する
                 wanderTimer -= dt;
 
                 if (wanderTimer <= 0.0f)
@@ -254,7 +254,7 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
         target->reservedBy = e;
     }
 
-    // ===== ターゲットに向かう =====
+    // ターゲットに向かう 
 
     auto pos = e->GetPosition();
     auto targetPos = target->GetPosition();
@@ -271,8 +271,8 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
         e->Face(dir);
     }
 
-    // ===== 救出処理（時間制） =====
-    if (len < 1.5f)
+    //救出処理
+    if (len < 1.5f)// ターゲットに被らないように
     {
         rescueTimer += dt;
 
@@ -291,10 +291,7 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
         }
         return;
     }
-    else
-    {
-        rescueTimer = 0.0f;
-    }
+    rescueTimer = 0.0f;
 }
 
 EnemyBase* RescueBehavior::FindTiedEnemy(const EnemyBase* self)

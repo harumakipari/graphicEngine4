@@ -19,6 +19,7 @@ enum class CollisionLayer :uint32_t
     Floor,
     Wall, // ”½ŽË•Ç
     EnemyRedirect, // ”½ŽË“G
+    Projectile, // ’eŠÛ
 
     Max,
 };

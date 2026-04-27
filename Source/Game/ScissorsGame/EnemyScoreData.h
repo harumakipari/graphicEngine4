@@ -18,4 +18,5 @@ enum class YarnEnemyType :uint8_t
     WaveVertical,  // c‚É”g‘Å‚¿‚È‚ª‚çˆÚ“®‚·‚é
     ChasePlayer,          // ƒvƒŒƒCƒ„[‚ğ’Ç‚¢‚©‚¯‚é
     RescueEnemy, // “G‚ğ•‚¯‚é
+    LongRangeAttack, // ‰“‹——£UŒ‚
 };
