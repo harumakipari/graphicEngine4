@@ -55,6 +55,7 @@ void RabbitBossEnemyActor::Update(float deltaTime)
     if (attackTimer > attackTimeInterval)
     {
         EnlargeRandomEnemies(3); // 3‘Ì‹­‰»
+        Logger::Log(U8("ƒ{ƒX‚ÌUŒ‚"));
         attackTimer = 0.0f;
     }
 }

@@ -55,6 +55,7 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
 
         frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
         finalBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
+        imGuiGizmoBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
 
         // GBUFFER
         gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
@@ -120,7 +121,82 @@ void TitleScene::Start()
     audioComp->SetSource(L"./Data/Sound/BGM1/title_bgm.wav");
     audioComp->SetLoop(true);
     audioComp->Play();
-    audioComp->SetVolume(0.2f);
+    audioComp->SetVolume(0.8f);
+
+#if 1
+    // スタート簡単ボタンの作成
+    {
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/easy.png", "button");
+        button->SetWorldPosition({ 300, 50 });
+        button->SetSize({ 400, 150 });
+        uiManager->Add(button);
+
+        button->onClick = []()
+            {
+                Logger::Log(u8"ボタンButton Clicked!");
+                const char* types[] = { "0", "1" };
+                //   Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"), {"difficulty","0"} });
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "GameScene"), {"difficulty","0"} });
+
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            };
+    }
+
+    // スタート普通ボタンの作成
+    {
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/normal.png", "button");
+        button->SetWorldPosition({ 600, 50 });
+        button->SetSize({ 400, 150 });
+        uiManager->Add(button);
+
+        button->onClick = []()
+            {
+                Logger::Log(u8"ボタンButton Clicked!");
+                const char* types[] = { "0", "1" };
+                //Scene::_transition("LoadingScene", { std::make_pair("preload", "GameScene"),{"difficulty","1"} });
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "MainScene"), {"difficulty","1"} });
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            };
+    }
+
+    // スタート難しいボタンの作成
+    {
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/difficult.png", "button");
+        button->SetWorldPosition({ 900, 50 });
+        button->SetSize({ 400, 150 });
+        uiManager->Add(button);
+
+        button->onClick = []()
+            {
+                Logger::Log(u8"難しいButton Clicked!");
+                const char* types[] = { "0", "1" };
+                //Scene::_transition("LoadingScene", { std::make_pair("preload", "GameScene"),  {"difficulty","2"} });
+
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            };
+    }
+
+    // スタートチュートリアルボタンの作成
+    {
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/tutorial_button.png", "tutorial_button");
+        button->SetWorldPosition({ 300, 250 });
+        button->SetSize({ 400, 150 });
+        uiManager->Add(button);
+
+        button->onClick = []()
+            {
+                Logger::Log(u8"tutorial_button Clicked!");
+                const char* types[] = { "0", "1" };
+                Scene::_transition("LoadingScene", { std::make_pair("preload", "TutorialScene"),  {"difficulty","1"} });
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TutorialScene"), {"difficulty","1"} });
+
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            };
+    }
+
+#endif // 1
+
+
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
 
@@ -222,6 +298,12 @@ void TitleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         Logger::Error(U8("カメラがない"));
     }
+
+#ifdef USE_IMGUI
+    imGuiGizmoBuffer->Clear(immediateContext);
+    imGuiGizmoBuffer->Activate(immediateContext);
+#endif
+
 
     // ディファードレンダリング
     gBufferRenderTarget->Clear(immediateContext);
@@ -369,6 +451,11 @@ void TitleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
     // UIの描画
     Draw(immediateContext);
+
+#ifdef USE_IMGUI
+    imGuiGizmoBuffer->Deactivate(immediateContext);
+#endif
+
 }
 
 void TitleScene::SetUpActors()

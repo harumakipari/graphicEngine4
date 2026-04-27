@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "LoadingScene.h"
 
+#include "Engine/Framework/Framework.h"
+
 #ifdef USE_IMGUI
 #define IMGUI_ENABLE_DOCKING
 #include "../External/imgui/imgui.h"
@@ -133,8 +135,8 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime
         shaderToyCBuffer->Activate(immediateContext, 7);
     }
     SceneBase::Render(immediateContext, deltaTime);
-    //loadingSprite->Render(immediateContext, 0, 0, 1920.0f, 1080.0f);
-    // sprite->Draw(immediateContext);
+    loadingSprite->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    //sprite->Draw(immediateContext);
 }
 
 

@@ -1,36 +1,10 @@
 #pragma once
+#include "StageData.h"
 #include "Core/Actor.h"
 
 #include "YarnEnemyActor.h"
 #include "Components/Effect/ParticleComponent.h"
 
-struct SpawnData
-{
-    DirectX::XMFLOAT3 position;
-    YarnEnemyType type;
-    float delay; // この敵が出るまでの時間
-
-    bool isBig = false;
-    float spawnDelay = 1.0f; // ← 予告から出るまで
-
-    float speed = 2.0f;
-    DirectX::XMFLOAT3 dir = { 1,0,0 };
-};
-
-struct SpawnRuntime
-{
-    bool previewed = false;
-    bool spawned = false;
-};
-
-struct WaveData
-{
-    std::vector<SpawnData> spawns;
-
-    bool waitForClear; // 全滅待ちかどうか
-
-    int requiredKills = -1; // 必要キル数
-};
 
 struct GridPos
 {

@@ -332,6 +332,7 @@
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsPlayerStateDerived.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsStage.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScoreUiActor.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\StageLoader.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\TitleScene.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\WaveManager.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\YarnEnemyActor.cpp" />
@@ -508,6 +509,8 @@
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsStage.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScoreUiActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScoreCalculator.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\StageData.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\StageLoader.h" />
     <ClInclude Include="Source\Game\ScissorsGame\TitleScene.h" />
     <ClInclude Include="Source\Game\ScissorsGame\Trail.h" />
     <ClInclude Include="Source\Game\ScissorsGame\WaveManagaer.h" />

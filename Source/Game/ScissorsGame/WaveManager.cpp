@@ -16,7 +16,7 @@ void WaveManager::Initialize(const Transform& transform)
     spawnStates.clear();
     waveState = WaveState::Ready;
     startTimer = 0.0f;
-     
+
 #if 1
     waves =
     {
@@ -24,8 +24,8 @@ void WaveManager::Initialize(const Transform& transform)
             // Wave 1
             {
                 { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
-#if 0
                                 { { 8,0,5 },  YarnEnemyType::LongRangeAttack, 0.0f,true },
+#if 0
                 { { 10,0,5 }, YarnEnemyType::Static, 0.0f ,true},
                 { { 12,0,5 }, YarnEnemyType::Static, 0.0f },
                 { { 15,0,5 }, YarnEnemyType::WaveHorizontal, 0.0f },

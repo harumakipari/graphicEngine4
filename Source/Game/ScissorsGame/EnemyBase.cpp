@@ -394,6 +394,7 @@ void EnemyBase::SetUpVisual()
         height = size.y;
         mass = 180.0f;
         sphereCollisionComponent->SetRadius(radius);
+        sphereCollisionComponent->SetStatic(true);
         sphereCollisionComponent->SetMass(mass);
         sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
         sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
@@ -408,13 +409,19 @@ void EnemyBase::SetUpVisual()
         tiedLeft->SetModel("./Data/TeamModels/Item/tiedModelLeftBig.glb", false, true);
         tiedLeft->SetRelativeScaleDirect({ 1.2f,1.2f,1.2f });
         tiedLeft->SetIsVisible(false);
+        tiedLeft->SetIsCastShadow(false);
         tiedMeshes.push_back(tiedLeft);
 
         auto tiedRight = AddComponent<SkeletalMeshComponent>("tiedRightMeshComponent", parentName);
         tiedRight->SetModel("./Data/TeamModels/Item/tiedModelRightBig.glb", false, true);
         tiedRight->SetRelativeScaleDirect({ 1.2f,1.2f,1.2f });
         tiedRight->SetIsVisible(false);
+        tiedRight->SetIsCastShadow(false);
         tiedMeshes.push_back(tiedRight);
+
+
+        // 位置を更新　当たり判定が{0,0,0}にくるのを防ぐため
+        UpdateAllComponentTransforms();
         return;
     }
 
@@ -439,6 +446,7 @@ void EnemyBase::SetUpVisual()
         mass = 180.0f;
         sphereCollisionComponent->SetRadius(radius);
         sphereCollisionComponent->SetMass(mass);
+        sphereCollisionComponent->SetStatic(true);
         sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
         sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
         sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
@@ -451,12 +459,15 @@ void EnemyBase::SetUpVisual()
         auto tiedLeft = AddComponent<SkeletalMeshComponent>("tiedLeftMeshComponent", parentName);
         tiedLeft->SetModel("./Data/TeamModels/Item/tiedModelLeft.glb", false, true);
         tiedLeft->SetIsVisible(false);
+        tiedLeft->SetIsCastShadow(false);
         tiedMeshes.push_back(tiedLeft);
 
         auto tiedRight = AddComponent<SkeletalMeshComponent>("tiedRightMeshComponent", parentName);
         tiedRight->SetModel("./Data/TeamModels/Item/tiedModelRight.glb", false, true);
         tiedRight->SetIsVisible(false);
+        tiedRight->SetIsCastShadow(false);
         tiedMeshes.push_back(tiedRight);
+
 
     }
     break;
@@ -476,6 +487,7 @@ void EnemyBase::SetUpVisual()
         height = size.y;
         mass = 180.0f;
         sphereCollisionComponent->SetRadius(radius);
+        sphereCollisionComponent->SetStatic(true);
         sphereCollisionComponent->SetMass(mass);
         sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
         sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
@@ -504,11 +516,13 @@ void EnemyBase::SetUpVisual()
         auto tiedLeft = AddComponent<SkeletalMeshComponent>("tiedLeftMeshComponent", parentName);
         tiedLeft->SetModel("./Data/TeamModels/Item/tiedModelLeftBig.glb", false, true);
         tiedLeft->SetIsVisible(false);
+        tiedLeft->SetIsCastShadow(false);
         tiedMeshes.push_back(tiedLeft);
 
         auto tiedRight = AddComponent<SkeletalMeshComponent>("tiedRightMeshComponent", parentName);
         tiedRight->SetModel("./Data/TeamModels/Item/tiedModelRightBig.glb", false, true);
         tiedRight->SetIsVisible(false);
+        tiedRight->SetIsCastShadow(false);
         tiedMeshes.push_back(tiedRight);
 
     }

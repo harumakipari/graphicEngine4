@@ -9,6 +9,8 @@ void NeedleActor::Initialize(const Transform& transform)
     mesh = AddComponent<SkeletalMeshComponent>(parentName);
     mesh->SetModel("./Data/TeamModels/Enemy/NeedlePin.glb", false, true);
 
+    hasHit = false; // ヒットしたかどうかのフラグをリセットする
+
     collision = AddComponent<SphereComponent>("collision", parentName);
     float mass = 100.0f;
     collision->SetRadius(radius);
@@ -21,9 +23,18 @@ void NeedleActor::Initialize(const Transform& transform)
     collision->SetOnHitCallback(
         [this](CollisionComponent* self, CollisionComponent* other)
         {
+            if (hasHit) return;
+
             auto player = dynamic_cast<ScissorsPlayer1*>(other->GetOwner());
             if (!player) return;
+
+            hasHit = true;
+
             Logger::Log(U8("プレイヤーに針が当たる"));
+            player->TakeDamage(1);
+
+            // 針を消す
+            MarkPendingKill();
         }
     );
 }
@@ -41,7 +52,6 @@ void NeedleActor::Update(float deltaTime)
     }
 
     // 重力
-    float gravity = -4.9f;
     velocity.y += gravity * deltaTime;
 
     auto pos = GetPosition();
@@ -76,8 +86,6 @@ void NeedleActor::SetTargetPos(const DirectX::XMFLOAT3& targetPos)
     // 到達時間
     float time = std::clamp(dist * 0.2f, 0.5f, 1.0f);
 
-    // 重力
-    float gravity = -4.9f;
 
     // 初速計算
     velocity.x = horizontal.x / time;

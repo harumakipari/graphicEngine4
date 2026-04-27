@@ -28,5 +28,9 @@ private:
     bool isStuck = false; // ’n–Ê‚É•t‚¢‚½‚©‚Ç‚¤‚©
     float lifeTimer = 0.0f;
     float lifeTimeInterval = 0.5f; // ’n–Ê‚É‚Â‚¢‚Ä‚©‚çÁ‚¦‚é‚Ü‚Å‚ÌŠÔ
+
+    bool hasHit = false; // “–‚½‚Á‚½‚©‚Ç‚¤‚©
+    float gravity = -2.0f;
+
 };
 
