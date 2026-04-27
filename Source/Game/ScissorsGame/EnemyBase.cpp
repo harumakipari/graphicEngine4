@@ -532,24 +532,19 @@ void EnemyBase::ChangeSize(YarnSize newSize)
     }
     size = newSize;
 
-#if 0
+    // 玉止め解除
+    ReleasedTied();
+
+#if 1
     // 既存コンポーネントを削除
-    if (sphereCollisionComponent)
-    {
-        sphereCollisionComponent->Destroy();
-        sphereCollisionComponent = nullptr;
-    }
-
-    for (auto& m : tiedMeshes)
-    {
-        m->Destroy();
-    }
-
-#endif // 0
+    RequestDestroyComponent("sphereComponent");
+    RequestDestroyComponent("tiedLeftMeshComponent");
+    RequestDestroyComponent("tiedRightMeshComponent");
     tiedMeshes.clear();
+#endif // 0
+
 
     // 見た目・当たり判定を再生成
     SetUpVisual();
-
-    //UpdateAllComponentTransforms();
+    UpdateAllComponentTransforms();
 }

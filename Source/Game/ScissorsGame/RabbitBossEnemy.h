@@ -14,5 +14,7 @@ public:
 
     void Update(float elapsedTime)override;
 
+    //void EnlargeRandomEnemies(int count);
+
 };
 
