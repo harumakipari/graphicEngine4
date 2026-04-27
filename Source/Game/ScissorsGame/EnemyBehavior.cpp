@@ -307,8 +307,18 @@ EnemyBase* RescueBehavior::FindTiedEnemy(const EnemyBase* self)
         if (enemy.get() == self) continue;
         if (enemy->GetState() != EnemyBase::YarnState::Tied) continue;
 
-        // ★追加：予約されてたらスキップ
-        if (enemy->reservedBy != nullptr) continue;
+        if (enemy->reservedBy != nullptr)
+        {// 予約されてたらスキップ
+            // 予約者が死んでたら解除
+            if (enemy->reservedBy->IsDead())
+            {
+                enemy->reservedBy = nullptr;
+            }
+            else
+            {
+                continue;
+            }
+        }
 
         float dist = MathHelper::Distance(self->GetPosition(), enemy->GetPosition());
         if (dist < minDist)

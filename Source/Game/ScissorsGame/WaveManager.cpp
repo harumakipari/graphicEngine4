@@ -16,7 +16,7 @@ void WaveManager::Initialize(const Transform& transform)
     spawnStates.clear();
     waveState = WaveState::Ready;
     startTimer = 0.0f;
-
+     
 #if 1
     waves =
     {

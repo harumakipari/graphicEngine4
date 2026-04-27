@@ -10,16 +10,13 @@ void NeedleActor::Initialize(const Transform& transform)
     mesh->SetModel("./Data/TeamModels/Enemy/NeedlePin.glb", false, true);
 
     collision = AddComponent<SphereComponent>("collision", parentName);
-    float radius = 0.5f;
-    float height = radius;
     float mass = 100.0f;
     collision->SetRadius(radius);
     collision->SetMass(mass);
     collision->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
     collision->SetLayer(CollisionLayer::Projectile);
-    collision->SetStatic(true); // 動かさない
     collision->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-    collision->SetCollisionOffsetY(height * 0.5f);
+    collision->SetCollisionOffsetY(radius);
     collision->Initialize();
     collision->SetOnHitCallback(
         [this](CollisionComponent* self, CollisionComponent* other)
@@ -33,8 +30,72 @@ void NeedleActor::Initialize(const Transform& transform)
 
 void NeedleActor::Update(float deltaTime)
 {
+    if (isStuck)
+    {// 地面に付いたら、
+        lifeTimer -= deltaTime;
+        if (lifeTimer <= 0.0f)
+        {
+            MarkPendingKill();
+        }
+        return;
+    }
+
+    // 重力
+    float gravity = -4.9f;
+    velocity.y += gravity * deltaTime;
+
     auto pos = GetPosition();
-    pos.x += velocity.x * speed * deltaTime;
-    pos.z += velocity.z * speed * deltaTime;
+    pos.x += velocity.x *deltaTime;
+    pos.y += velocity.y *deltaTime;
+    pos.z += velocity.z *deltaTime;
     SetPosition(pos);
+
+    // 地面判定
+    if (pos.y <= 0.0f)
+    {
+        Stick();
+    }
+
+    DebugRender::DrawSphere(collision->GetComponentLocation(), radius, { 1,0.5f,0,1 }, 0, true);
+}
+
+// 飛ばす最終目的位置
+void NeedleActor::SetTargetPos(const DirectX::XMFLOAT3& targetPos)
+{
+    this->targetPos = targetPos;
+
+    auto start = GetPosition();
+
+    // 差分
+    DirectX::XMFLOAT3 diff = MathHelper::Subtract(targetPos, start);
+
+    // 水平距離
+    DirectX::XMFLOAT3 horizontal = { diff.x, 0.0f, diff.z };
+    float dist = MathHelper::Length(horizontal);
+
+    // 到達時間
+    float time = std::clamp(dist * 0.2f, 0.5f, 1.0f);
+
+    // 重力
+    float gravity = -4.9f;
+
+    // 初速計算
+    velocity.x = horizontal.x / time;
+    velocity.z = horizontal.z / time;
+    velocity.y = (diff.y - 0.5f * gravity * time * time) / time;
+}
+
+// 刺さる処理
+void NeedleActor::Stick()
+{
+    isStuck = true;
+    velocity = { 0,0,0 };
+
+    auto pos = GetPosition();
+    pos.y = -0.2f; // 地面に固定
+    SetPosition(pos);
+
+    lifeTimer = lifeTimeInterval;
+
+    collision->SetStatic(true);
 }
