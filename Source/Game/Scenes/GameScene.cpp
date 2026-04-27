@@ -38,8 +38,8 @@
 
 bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
-    lightDirection = { 0.652f, -0.63f, 0.98f, 1.0f }; // 上の窓からの光
-    lightColor = { 1.0f, 1.0f, 1.0f, 2.6f };
+    lightDirection = { -1.0f,-0.66f,0.6f, 1.0f }; // 上の窓からの光
+    lightColor = { 1.0f, 1.0f, 1.0f, 3.6f };
     {
         sceneCBuffer = std::make_unique<ConstantBuffer<FrameConstants>>(device);
         shaderCBuffer = std::make_unique<ConstantBuffer<SceneShaderConstants>>(device);
@@ -47,8 +47,9 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
         // ライト
         {
-            LightManager::Instance().Initialize(device);
-            LightManager::Instance().SetDirectionalLight(lightDirection, lightColor);
+            lightManager = std::make_unique<LightManager>();
+            lightManager->Initialize(device);
+            lightManager->SetDirectionalLight(this,lightDirection, lightColor);
         }
 
         {
@@ -277,8 +278,8 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         shaderCBuffer->Activate(immediateContext, 9);
     }
     // シーンからポイントライト集める
-    LightManager::Instance().CollectPointLightsFromScene(*this);
-    LightManager::Instance().Apply(immediateContext, 11);
+    lightManager->CollectPointLightsFromScene(*this);
+    lightManager->Apply(immediateContext, 11);
 
     // カメラのビュー定数を更新
     ViewConstants data = {};
@@ -324,7 +325,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     auto& shadow = Scene::GetCurrentScene()->GetSceneSettings().cascadedShadowMapConstants;
 
     cascadedShadowMaps->Clear(immediateContext);
-    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, LightManager::Instance().GetLightDirection(), shadow.criticalDepthValue, 3/*cbSlot*/);
+    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), shadow.criticalDepthValue, 3/*cbSlot*/);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);

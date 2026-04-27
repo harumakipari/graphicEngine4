@@ -11,8 +11,11 @@ struct SceneLightConstants
 {
     DirectX::XMFLOAT4 lightDirection = { 0.722f, -0.38f, -0.0211f, 0.85f };// w:attenuation Rate
     DirectX::XMFLOAT4 lightColor = { 1.0f, 0.8f, 1.0f, 2.3f }; //w colorPower
-
+#if 0//(T_T) こっち自作
     float iblIntensity = 0.4f;
+#else // こっちチーム制作
+    float iblIntensity = 3.412f;
+#endif // 0
     int directionalLightEnable = 1;// 平行光源の on / off
     int pointLightEnable = 1;
     int pointLightCount = 40;
@@ -45,13 +48,13 @@ struct SceneLightSaveData
 
 struct SceneShaderConstants
 {
-#if 1//(T_T) ここを変更
+#if 0//(T_T) こっち自作
     float shadowColor = 0.75f;
     float shadowDepthBias = -0.00207f;
     float slopeBias = 0.005f;
-#else
-    float shadowColor = 0.15f;
-    float shadowDepthBias = 0.0011302f;
+#else // こっちチーム制作
+    float shadowColor = 0.75f;
+    float shadowDepthBias = 0.00011f;
     float slopeBias = 0.005f;
 #endif // 0//(T_T) ここを変更
     float splitU = 0.0f;
@@ -89,16 +92,16 @@ struct SceneShaderConstants
 
 struct CascadedShadowMapConstants
 {
-#if 1//(T_T) ここを変更
+#if 0//(T_T) こっち自作
     float criticalDepthValue = 247.0f;
-    float splitSchemeWeight = 0.83f;// 1.0 に近いほど対数分割寄り
+    float splitSchemeWeight = 0.83f;
+    float zDepthScale = 40.4f;
     bool fitToCascade = true;// true: カスケード毎にnearを変える
-    float zDepthScale = 40.4f;// Z拡張倍率（シャドウ欠け防止）
-#else
-    float criticalDepthValue = 234.577f;
-    float splitSchemeWeight = 0.488f;// 1.0 に近いほど対数分割寄り
+#else // こっちチーム制作
+    float criticalDepthValue = 389.180f;
+    float splitSchemeWeight = 0.545f;// 1.0 に近いほど対数分割寄り
     bool fitToCascade = true;// true: カスケード毎にnearを変える
-    float zDepthScale = 2.23f;// Z拡張倍率（シャドウ欠け防止）
+    float zDepthScale = 4.284f;// Z拡張倍率（シャドウ欠け防止）
 
 #endif // 0  //(T_T) ここを変更
 };

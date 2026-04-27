@@ -32,7 +32,7 @@ public:
 
     void Update(float elapsedTime)override;
 
-    void DrawImGuiDetails() override {}
+    void DrawImGuiDetails() override;
 
     // 敵のスコアを取得する関数
     EnemyScoreData GetScoreData() const { return scoreData; }
@@ -96,6 +96,9 @@ public:
 
     // タイプとサイズから見た目を生成する
     void SetUpVisual();
+
+    // 敵のサイズを変更する
+    void ChangeSize(YarnSize newSize);
 private:
     // 死亡した時に呼ぶ関数
     void CallDeath(bool hitByDash);

@@ -125,7 +125,7 @@ protected:
     std::unique_ptr<MultipleRenderTargets> multipleRenderTargets;
     std::unique_ptr<GBuffer> gBufferRenderTarget;
     std::unique_ptr<SkyMap> skyMap;
-    //std::unique_ptr<LightManager> lightManager;
+    std::unique_ptr<LightManager> lightManager;
     //std::unique_ptr<PostEffectManager> postEffectManager;
     std::unique_ptr<SceneEffectManager> sceneEffectManager;
     std::unique_ptr<SceneRenderer> sceneRenderer_;

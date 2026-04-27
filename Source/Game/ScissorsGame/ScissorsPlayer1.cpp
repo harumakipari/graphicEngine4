@@ -18,8 +18,8 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     std::string parentName = "SkeletonWarriorMeshComponent";
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    skeletalMeshComponent->SetModel("./Data/TeamModels/Player/player.gltf", false, true);
-    //skeletalMeshComponent->SetModel("./Data/TeamModels/Player/ScissorsPlayer.glb", false, true);
+    //skeletalMeshComponent->SetModel("./Data/TeamModels/Player/player.gltf", false, true);
+    skeletalMeshComponent->SetModel("./Data/TeamModels/Player/ScissorsPlayer.gltf", false, true);
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
@@ -275,6 +275,7 @@ void ScissorsPlayer1::Update(float deltaTime)
     {// ステージ外に出ないようにクランプ
         pos.x = std::clamp(pos.x, ScissorsGameState::stageMinX, ScissorsGameState::stageMaxX);
         pos.z = std::clamp(pos.z, ScissorsGameState::stageMinZ, ScissorsGameState::stageMaxZ);
+        pos.y = 0.0f;
     }
 #endif // 0
     SetPosition(pos);

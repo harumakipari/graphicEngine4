@@ -33,8 +33,9 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
 
         // ライト
         {
-            LightManager::Instance().Initialize(device);
-            LightManager::Instance().SetDirectionalLight(lightDirection, lightColor);
+            lightManager = std::make_unique<LightManager>();
+            lightManager->Initialize(device);
+            lightManager->SetDirectionalLight(this,lightDirection, lightColor);
         }
 
         {
@@ -207,8 +208,8 @@ void TitleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         shaderCBuffer->Activate(immediateContext, 9);
     }
     // シーンからポイントライト集める
-    LightManager::Instance().CollectPointLightsFromScene(*this);
-    LightManager::Instance().Apply(immediateContext, 11);
+    lightManager->CollectPointLightsFromScene(*this);
+    lightManager->Apply(immediateContext, 11);
 
     // カメラのビュー定数を更新
     ViewConstants data = {};
@@ -250,7 +251,7 @@ void TitleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     auto& shadow = Scene::GetCurrentScene()->GetSceneSettings().cascadedShadowMapConstants;
 
     cascadedShadowMaps->Clear(immediateContext);
-    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, LightManager::Instance().GetLightDirection(), shadow.criticalDepthValue, 3/*cbSlot*/);
+    cascadedShadowMaps->Activate(immediateContext, cameraView, cameraProjection, lightManager->GetLightDirection(), shadow.criticalDepthValue, 3/*cbSlot*/);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);

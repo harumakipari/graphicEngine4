@@ -56,6 +56,14 @@ void EnemyBase::Update(float deltaTime)
 
 }
 
+void EnemyBase::DrawImGuiDetails()
+{
+    if (ImGui::Button(U8("敵のサイズを大きくする")))
+    {
+        ChangeSize(YarnSize::Big);
+    }
+}
+
 bool EnemyBase::OnHitByDash()
 {
     if (state == YarnState::Dead) return false;
@@ -351,7 +359,7 @@ void EnemyBase::SetAttack(std::unique_ptr<EnemyAttack> newAttack)
 ScissorsPlayer1* EnemyBase::GetPlayer()
 {
     auto actorManager = GetOwnerScene()->GetActorManager();
-    if (auto player=actorManager->GetActorOfType<ScissorsPlayer1>())
+    if (auto player = actorManager->GetActorOfType<ScissorsPlayer1>())
     {
         return player.get();
     }
@@ -363,7 +371,7 @@ void EnemyBase::CreateScissorsVisual()
 {
     if (scissorsMeshComponent.get()) return; // 既にあるなら何もしない
 
-    scissorsMeshComponent = AddComponent<SkeletalMeshComponent>("ScissorsMesh",parentName);
+    scissorsMeshComponent = AddComponent<SkeletalMeshComponent>("ScissorsMesh", parentName);
     scissorsMeshComponent->SetRelativeLocationDirect({ 0, 1.0f, 0 });
     scissorsMeshComponent->SetRelativeScaleDirect({ 0.5f,0.5f,0.5f });
     scissorsMeshComponent->SetModel("./Data/TeamModels/Item/ScissorsModel.glb");
@@ -511,4 +519,37 @@ void EnemyBase::SetUpVisual()
     // 位置を更新　当たり判定が{0,0,0}にくるのを防ぐため
     UpdateAllComponentTransforms();
 
+}
+
+
+// 敵のサイズを変更する
+void EnemyBase::ChangeSize(YarnSize newSize)
+{
+    if (size == newSize)
+    {// 現在のサイズと同じだったら
+        Logger::Log(U8(""));
+        return;
+    }
+    size = newSize;
+
+#if 0
+    // 既存コンポーネントを削除
+    if (sphereCollisionComponent)
+    {
+        sphereCollisionComponent->Destroy();
+        sphereCollisionComponent = nullptr;
+    }
+
+    for (auto& m : tiedMeshes)
+    {
+        m->Destroy();
+    }
+
+#endif // 0
+    tiedMeshes.clear();
+
+    // 見た目・当たり判定を再生成
+    SetUpVisual();
+
+    //UpdateAllComponentTransforms();
 }

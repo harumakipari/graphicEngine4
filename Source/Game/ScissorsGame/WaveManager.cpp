@@ -24,7 +24,8 @@ void WaveManager::Initialize(const Transform& transform)
             // Wave 1
             {
                 { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
-                { { 8,0,5 },  YarnEnemyType::LongRangeAttack, 0.0f,true },
+#if 0
+                                { { 8,0,5 },  YarnEnemyType::LongRangeAttack, 0.0f,true },
                 { { 10,0,5 }, YarnEnemyType::Static, 0.0f ,true},
                 { { 12,0,5 }, YarnEnemyType::Static, 0.0f },
                 { { 15,0,5 }, YarnEnemyType::WaveHorizontal, 0.0f },
@@ -35,6 +36,8 @@ void WaveManager::Initialize(const Transform& transform)
                 { { 5,0,12 }, YarnEnemyType::WaveHorizontal, 0.0f },
                 { { 5,0,15 }, YarnEnemyType::WaveVertical, 0.0f },
                 { { 5,0,18 }, YarnEnemyType::RescueEnemy, 0.0f },
+
+                #endif // 0
             },
             false,
            1

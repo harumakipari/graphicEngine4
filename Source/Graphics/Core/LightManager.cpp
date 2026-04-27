@@ -189,9 +189,9 @@ SharedLightParam LightManager::FindSharedLight(const std::string& name)
 }
 
 
-void LightManager::SetDirectionalLight(const DirectX::XMFLOAT4& dir, const DirectX::XMFLOAT4& color)
+void LightManager::SetDirectionalLight(Scene* scene, const DirectX::XMFLOAT4& dir, const DirectX::XMFLOAT4& color)
 {
-    auto& lightData = Scene::GetCurrentScene()->GetSceneSettings().sceneLightSaveData;
+    auto& lightData = scene->GetSceneSettings().sceneLightSaveData;
     auto& light = lightData.sceneConstants;
     light.lightDirection = dir;
     light.lightColor = color;
