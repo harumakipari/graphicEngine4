@@ -22,12 +22,12 @@ private:
     DirectX::XMFLOAT3 targetPos = { 0.0f,0.0f,0.0f };
     DirectX::XMFLOAT3 velocity = { 0.0f,0.0f,0.0f };
     float speed = 10.0f;
-    float radius = 0.2f;
+    float radius = 0.6f;
     std::shared_ptr<SkeletalMeshComponent> mesh;
     std::shared_ptr<SphereComponent> collision;
     bool isStuck = false; // 地面に付いたかどうか
     float lifeTimer = 0.0f;
-    float lifeTimeInterval = 0.5f; // 地面についてから消えるまでの時間
+    float lifeTimeInterval = 1.0f; // 地面についてから消えるまでの時間
 
     bool hasHit = false; // 当たったかどうか
     float gravity = -2.0f;

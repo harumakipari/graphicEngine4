@@ -86,7 +86,6 @@ void NeedleActor::SetTargetPos(const DirectX::XMFLOAT3& targetPos)
     // “’BŠÔ
     float time = std::clamp(dist * 0.2f, 0.5f, 1.0f);
 
-
     // ‰‘¬ŒvZ
     velocity.x = horizontal.x / time;
     velocity.z = horizontal.z / time;

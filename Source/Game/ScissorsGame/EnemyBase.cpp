@@ -425,8 +425,6 @@ void EnemyBase::SetUpVisual()
         return;
     }
 
-
-
     switch (size)
     {
     case Small:

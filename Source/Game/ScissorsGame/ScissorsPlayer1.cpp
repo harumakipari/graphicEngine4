@@ -120,7 +120,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     // ダッシュ攻撃用の当たり判定
     {
         dashAttackSphere = this->AddComponent<SphereComponent>("dashAttackSphere", parentName);
-        dashAttackSphere->SetRelativeLocationDirect({ 0.0f,height,0.7f });
+        dashAttackSphere->SetRelativeLocationDirect({ 0.0f,height,1.1f });
         dashAttackSphere->SetRadius(dashAttackRange);
         dashAttackSphere->SetLayer(CollisionLayer::PlayerWeapon);
         dashAttackSphere->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
@@ -567,6 +567,10 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
 DirectX::XMFLOAT3 ScissorsPlayer1::GetLookDirection() const
 {
     if (useGamePad && stateMachine_->GetStateName() == "ChargeDash")
+    {
+        return lastValidAimData.dir;
+    }
+    else if (stateMachine_->GetStateName() == "ChargeDash")
     {
         return lastValidAimData.dir;
     }
