@@ -93,11 +93,11 @@ public:
     CoinTuning coinTuning = {}; // 敵の調整用
 
 private:
-
     TPSCameraComponent* mainCameraComponent = nullptr;
     std::shared_ptr<ScissorsPlayer1> player;
     std::shared_ptr<NeedleEnemyActor> needleEnemyActor;
 
-
-
+    std::shared_ptr<UIImageComponent> mouseCursorPar;   // マウスパー
+    std::shared_ptr<UIImageComponent> mouseCursorGrab;  // マウス掴み
+    std::shared_ptr<UIImageComponent> mouseCursorPause; // マウス　ポーズ
 };

@@ -124,6 +124,26 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         SetUpActors();
     }
 
+
+    // マウスパー
+    XMFLOAT2 mouseSize = { 100.0f,100.0f };
+
+    mouseCursorPar = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/mousecursor_pa.png", "mousecursor_pa");
+    mouseCursorPar->SetSize(mouseSize);
+    mouseCursorPar->SetPivot({ 0.6f, 0.5f });
+    mouseCursorPar->SetVisible(false);
+    // マウス掴み
+    mouseCursorGrab = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/mousecursor_gu.png", "mousecursor_gu");
+    mouseCursorGrab->SetSize(mouseSize);
+    mouseCursorGrab->SetPivot({ 0.6f, 0.5f });
+    mouseCursorGrab->SetVisible(false);
+
+    // マウス　ポーズ
+    mouseCursorPause = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/mousecursor_pose.png", "mousecursor_pose");
+    mouseCursorPause->SetSize(mouseSize);
+    mouseCursorPause->SetPivot({ 0.1f, 0.1f });
+    mouseCursorPause->SetVisible(false);
+
     return true;
 }
 
@@ -147,14 +167,44 @@ void GameScene::Update(float deltaTime)
 {
     using namespace DirectX;
 
-
-
     SceneBase::Update(deltaTime);
 
     Physics::Instance().Update(Time::UnscaledDeltaTime());
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
 
+    // マウスカーソルの更新処理
+    {
+        DirectX::XMFLOAT2 cursor;
+        // ビューポート外だったら、入力しない
+        InputSystem::GetMousePositionUI(cursor);
+
+        mouseCursorPar->SetWorldPosition(cursor);
+        mouseCursorGrab->SetWorldPosition(cursor);
+        mouseCursorPause->SetWorldPosition(cursor);
+        // ポーズ中はゲーム入力を一切受け付けない
+        if (Scene::GetCurrentScene()->IsPaused())
+        {
+            mouseCursorPause->SetVisible(true);
+
+            mouseCursorGrab->SetVisible(false);
+            mouseCursorPar->SetVisible(false);
+        }
+        else
+        {
+            mouseCursorPause->SetVisible(false);
+            if (InputSystem::GetInputState("MouseLeft"))
+            {
+                mouseCursorGrab->SetVisible(true);
+                mouseCursorPar->SetVisible(false);
+            }
+            else
+            {
+                mouseCursorPar->SetVisible(true);
+                mouseCursorGrab->SetVisible(false);
+            }
+        }
+    }
 
     if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
     {
@@ -404,6 +454,15 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
     // UIの描画
     Draw(immediateContext);
+
+    // マウスカーソルの描画
+    if (mouseCursorPar->IsVisible())
+        mouseCursorPar->Draw(immediateContext);
+    if (mouseCursorPause->IsVisible())
+        mouseCursorPause->Draw(immediateContext);
+    if (mouseCursorGrab->IsVisible())
+        mouseCursorGrab->Draw(immediateContext);
+
 
 #ifdef USE_IMGUI
     imGuiGizmoBuffer->Deactivate(immediateContext);
