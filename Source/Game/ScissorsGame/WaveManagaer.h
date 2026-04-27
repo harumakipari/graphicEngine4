@@ -64,7 +64,7 @@ public:
 private:
     void SpawnEnemy(
         const DirectX::XMFLOAT3& pos,
-        YarnEnemyType type,  bool isBig,
+        YarnEnemyType type, bool isBig,
         float speed = 2.0f, const DirectX::XMFLOAT3& dir = { 1,0,0 });
 
 
@@ -150,6 +150,9 @@ private:
         };
     }
 
+public:
+    std::vector<std::weak_ptr<EnemyBase>> aliveEnemies; // 生き残っている敵
+
 private:
     int currentWave = 0;  // 今のウェーブ
     float timer = 0.0f;
@@ -167,6 +170,8 @@ private:
     bool hasSpawnedAnyEnemy = false; //敵がスポーンを開始したかどうか
     float startTimer = 0.0f;// wave１が始まるまでの時間
 
-    std::vector<std::weak_ptr<EnemyBase>> aliveEnemies;
     float lineCheckTimer = 0.0f;
+
+
+
 };

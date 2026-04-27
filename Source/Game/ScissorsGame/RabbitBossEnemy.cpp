@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "RabbitBossEnemy.h"
 
+#include "EnemyBase.h"
+#include "WaveManagaer.h"
+#include "Engine/Scene/Scene.h"
+
 void RabbitBossEnemyActor::Initialize(const Transform& transform)
 {
     std::string parentName = "SkeletonWarriorMeshComponent";
@@ -44,8 +48,49 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     scoreData = { 100,0 };
 }
 
-void RabbitBossEnemyActor::Update(float elapsedTime)
+void RabbitBossEnemyActor::Update(float deltaTime)
 {
-    
+    attackTimer += deltaTime;
+
+    if (attackTimer > attackTimeInterval)
+    {
+        EnlargeRandomEnemies(3); // 3体強化
+        attackTimer = 0.0f;
+    }
 }
+
+// ランダムに大きい敵に変更する処理
+void RabbitBossEnemyActor::EnlargeRandomEnemies(int count)
+{
+    std::vector<std::shared_ptr<EnemyBase>> candidates;
+
+    auto waveManager = GetOwnerScene()->GetActorManager()->GetActorOfType<WaveManager>();
+
+    // Smallだけ集める
+    for (auto& w : waveManager->aliveEnemies)
+    {
+        if (auto e = w.lock())
+        {
+            if (!e->IsDead() &&
+                e->GetState() == EnemyBase::YarnState::Active &&
+                e->GetNeedTiedCount() == 1) // Small判定
+            {
+                candidates.push_back(e);
+            }
+        }
+    }
+
+    if (candidates.empty()) return;
+
+    // シャッフル
+    std::shuffle(candidates.begin(), candidates.end(), std::mt19937(std::random_device{}()));
+
+    int changeCount = std::min<int>(count, static_cast<int>(candidates.size()));
+
+    for (int i = 0; i < changeCount; i++)
+    {
+        candidates[i]->ChangeSize(EnemyBase::Big);
+    }
+}
+
 

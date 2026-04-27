@@ -12,9 +12,13 @@ public:
 
     void Initialize(const Transform& transform)override;
 
-    void Update(float elapsedTime)override;
+    void Update(float deltaTime)override;
 
-    //void EnlargeRandomEnemies(int count);
+    // ƒ‰ƒ“ƒ_ƒ€‚É‘å‚«‚¢“G‚É•ÏX‚·‚éˆ—
+    void EnlargeRandomEnemies(int count);
 
+private:
+    float attackTimer = 0.0f;
+    const float attackTimeInterval = 5.0f; // UŒ‚‚ÌŠÔŠu
 };
 
