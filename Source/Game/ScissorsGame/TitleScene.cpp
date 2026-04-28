@@ -124,19 +124,35 @@ void TitleScene::Start()
     audioComp->SetVolume(0.8f);
 
 #if 1
-    // スタート簡単ボタンの作成
+    // ステージ１の作成
     {
-        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/easy.png", "button");
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/1.png", "1-1");
         button->SetWorldPosition({ 300, 50 });
         button->SetSize({ 400, 150 });
         uiManager->Add(button);
 
         button->onClick = []()
             {
-                Logger::Log(u8"ボタンButton Clicked!");
-                const char* types[] = { "0", "1" };
+                Logger::Log(u8"ボタン1-1Button Clicked!");
                 //   Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"), {"difficulty","0"} });
-                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "GameScene"), {"difficulty","0"} });
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "GameScene"), {"stageId","1"} });
+
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            };
+    }
+
+    // ステージ2の作成
+    {
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/2.png", "1-2");
+        button->SetWorldPosition({ 400, 50 });
+        button->SetSize({ 400, 250 });
+        uiManager->Add(button);
+
+        button->onClick = []()
+            {
+                Logger::Log(u8"ボタン1-2Button Clicked!");
+                //   Scene::_transition("LoadingScene", { std::make_pair("preload", "MainScene"), {"difficulty","0"} });
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "GameScene"), {"stageId","2"} });
 
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
             };

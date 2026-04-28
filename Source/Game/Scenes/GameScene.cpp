@@ -157,8 +157,16 @@ void GameScene::Start()
     audioComp->Play();
     audioComp->SetVolume(0.5f);
 
-    auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
+    auto& param = SceneTransitionManager::Instance().GetParams();
+    int stageId = 2;
 
+    if (param.contains("stageId"))
+    {
+        stageId = std::stoi(param.at("stageId"));
+    }
+
+    auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
+    waveManagerActor->SetWaves(stageId);
     // ƒV[ƒ“‚ªØ‚è‘Ö‚í‚Á‚½‚É
     SceneTransitionManager::Instance().NotifySceneChanged();
 

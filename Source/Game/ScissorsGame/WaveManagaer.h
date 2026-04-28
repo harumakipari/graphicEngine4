@@ -33,6 +33,9 @@ public:
 
     void Initialize(const Transform& transform)override;
 
+    // 指定したステージのウェーブを設定
+    void SetWaves(int stageId);
+
     void Update(float deltaTime)override;
 
 private:
