@@ -140,6 +140,11 @@ public:
 
     bool isCutting = false; // 初回の切る
     float scissorsCutTimer = 0.0f;
+    float rescueTimer = 0.0f;
+
+    // 調整値
+    const float prepareTimeInterval = 0.7f; //敵のハサミの切る準備時間
+    const float cutTimeInterval = 0.2f; //敵のハサミの切るのにかかる時間
 
 protected:
     DirectX::XMFLOAT3 startPosition = { 0.0f,0.0f,0.0f };   // 敵の出現の開始位置　波うちの時に基準とする

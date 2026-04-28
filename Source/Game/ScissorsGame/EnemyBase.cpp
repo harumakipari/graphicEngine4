@@ -214,12 +214,19 @@ void EnemyBase::UpdateScissors(float deltaTime)
         float base = 5.0f;
         angle = base + wave;
     }
+    else if (isRescuing && !isCutting)
+    {
+        float openMax = 50.0f;
+
+        float t = rescueTimer / prepareTimeInterval;
+        if (t > 1.0f) t = 1.0f;
+
+        angle = openMax * t;
+    }
     else if (isCutting)
     {
         scissorsCutTimer += deltaTime;
-
-        float duration = 0.2f; // êÿÇÈë¨Ç≥ÅiíZÇ¢ÇŸÇ«ÉLÉåÇ™Ç¢Ç¢Åj
-        float t = scissorsCutTimer / duration;
+        float t = scissorsCutTimer / cutTimeInterval;
 
         if (t >= 1.0f)
         {
@@ -227,7 +234,7 @@ void EnemyBase::UpdateScissors(float deltaTime)
         }
 
         // 30 Å® 0 Ç…ï‚ä‘
-        angle = 30.0f * (1.0f - t);
+        angle = 50.0f * (1.0f - t);
     }
     else
     {

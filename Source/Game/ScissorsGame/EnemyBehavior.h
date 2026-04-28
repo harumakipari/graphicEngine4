@@ -95,6 +95,4 @@ private:
     DirectX::XMFLOAT3 wanderDir = { 0,0,0 };
     float wanderTimer = 0.0f;
 
-    float rescueTimer = 0.0f;
-    const float rescueTime = 2.0f; // •‚¯‚é‚É‚©‚©‚éŠÔ
 };

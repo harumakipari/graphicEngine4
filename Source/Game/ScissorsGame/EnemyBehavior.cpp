@@ -168,7 +168,7 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
         }
 
         target = FindTiedEnemy(e);
-        rescueTimer = 0.0f;
+      e->  rescueTimer = 0.0f;
 
         // ƒ^[ƒQƒbƒg‚¢‚È‚¢
         if (!target)
@@ -277,30 +277,35 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
     {
         e->SetIsRescue(true);
 
-        rescueTimer += dt;
+        e->rescueTimer += dt;
 
-        if (!e->isCutting)
+
+        if (e->rescueTimer >= e->prepareTimeInterval && !e->isCutting)
         {
             e->isCutting = true;
             e->scissorsCutTimer = 0.0f;
         }
-
-        if (rescueTimer >= rescueTime)
+        if (e->isCutting)
         {
-            target->ReleasedTied();
 
-            // —\–ñ‰ðœ
-            if (target->reservedBy == e)
+            if (e->scissorsCutTimer >= e->cutTimeInterval)
             {
-                target->reservedBy = nullptr;
-            }
+                target->ReleasedTied();
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav");
 
-            target = nullptr;
-            rescueTimer = 0.0f;
+                // —\–ñ‰ðœ
+                if (target->reservedBy == e)
+                {
+                    target->reservedBy = nullptr;
+                }
+
+                target = nullptr;
+                e->rescueTimer = 0.0f;
+            }
         }
         return;
     }
-    rescueTimer = 0.0f;
+    e->rescueTimer = 0.0f;
 }
 
 EnemyBase* RescueBehavior::FindTiedEnemy(const EnemyBase* self)

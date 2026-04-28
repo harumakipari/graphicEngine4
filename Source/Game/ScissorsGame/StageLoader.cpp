@@ -12,7 +12,8 @@ StageData StageLoader::Load(int stageId)
             {
                 {
                     { {5,0,5}, YarnEnemyType::RescueEnemy, 0.0f },
-                    { {8,0,5}, YarnEnemyType::Static, 0.0f, true }
+                    { {8,0,5}, YarnEnemyType::Static, 0.0f, true },
+                    { {2,0,5}, YarnEnemyType::Static, 0.0f }
                 },
                 false,
                 1
