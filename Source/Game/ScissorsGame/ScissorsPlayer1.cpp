@@ -9,6 +9,7 @@
 #include "YarnEnemyActor.h"
 #include "ScissorsGameEnemyBaseActor.h"
 #include "ScissorsGameState.h"
+#include "ScorePopupActor.h"
 #include "Engine/Scene/SceneBase.h"
 #include "Engine/Utility/Time.h"
 #include "Physics/CollisionFunction.h"
@@ -159,10 +160,10 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 {
                     // スコアデータを取得する
                     auto data = enemy->GetScoreData();
-
+                    auto pos = enemy->GetPosition();
                     // スコア処理　足されたスコアを取得する コンボ加算
                     int addScore = scoreSystem.ProcessHit(data, isKilled);
-
+                    SpawnScorePopup(pos, addScore);
                     // スロー再生
                     //Time::SetSlow(0.5f, 0.3f);
 
@@ -680,6 +681,14 @@ void ScissorsPlayer1::UpdateHpUI()
             hpUiComponents[i]->SetVisible(false);
         }
     }
+}
+
+// スコアポップアップを生成する関数
+void ScissorsPlayer1::SpawnScorePopup(const DirectX::XMFLOAT3& pos, int score)
+{
+    Transform scoreTr{ pos,XMFLOAT3{0,0,0},XMFLOAT3{1,1,1} };
+    auto popup = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<ScorePopupActor>("ScorePopup", scoreTr);
+    popup->SetScore(score);
 }
 
 //　ダッシュを使用する関数　これを呼ぶとダッシュの残り回数が減る

@@ -78,6 +78,13 @@ namespace MathHelper
         return dist(gen);
     }
 
+    inline float RandomRange(std::mt19937& gen, float min, float max)
+    {
+        if (min >= max) std::swap(min, max);
+        std::uniform_real_distribution<float> dist(min, max);
+        return dist(gen);
+    }
+
     inline int RandomRange(int min, int max)
     {
         if (min >= max)

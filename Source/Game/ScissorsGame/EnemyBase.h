@@ -28,7 +28,11 @@ public:
     };
 
 public:
-    explicit EnemyBase(const std::string& actorName) :Character(actorName) {}
+    explicit EnemyBase(const std::string& actorName) :Character(actorName)
+    {
+        std::random_device rd;
+        rng.seed(rd());
+    }
 
     void Initialize(const Transform& transform)override;
 
@@ -153,6 +157,9 @@ public:
     // 調整値
     const float prepareTimeInterval = 1.3f; //敵のハサミの切る準備時間
     const float cutTimeInterval = 0.2f; //敵のハサミの切るのにかかる時間
+
+    // 乱数エンジン
+    std::mt19937 rng;
 
 protected:
     DirectX::XMFLOAT3 startPosition = { 0.0f,0.0f,0.0f };   // 敵の出現の開始位置　波うちの時に基準とする

@@ -139,12 +139,21 @@ void NeedleAttack::UpdateWander(EnemyBase* e, float dt)
     float dist = MathHelper::Length(MathHelper::Subtract(wanderTarget, pos));
     if (dist < 1.0f)
     {
+#if 0
         wanderTarget =
         {
             MathHelper::RandomRange(ScissorsGameState::stageMinX, ScissorsGameState::stageMaxX),
             0.0f,
             MathHelper::RandomRange(ScissorsGameState::stageMinZ, ScissorsGameState::stageMaxZ)
         };
+#else
+        wanderTarget =
+        {
+            MathHelper::RandomRange(e->rng, ScissorsGameState::stageMinX, ScissorsGameState::stageMaxX),
+            0.0f,
+            MathHelper::RandomRange(e->rng,ScissorsGameState::stageMinX, ScissorsGameState::stageMaxX)
+        };
+#endif // 0
     }
 
     auto dir = MathHelper::Normalize(MathHelper::Subtract(wanderTarget, pos));

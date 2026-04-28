@@ -85,6 +85,8 @@ private:
     // HPを表示するUIを更新する関数　
     void UpdateHpUI();
 
+    // スコアポップアップを生成する関数
+    void SpawnScorePopup(const DirectX::XMFLOAT3& pos, int score);
 public:
     std::shared_ptr<InputComponent> inputComponent;
     std::shared_ptr<CharacterMovementComponent> characterMovementComponent;
