@@ -32,10 +32,10 @@ void EnemyBase::Update(float deltaTime)
     // 玉止めの描画更新処理
     UpdateTiedVisual();
 
-
     switch (state)
     {
     case YarnState::Active:
+    case YarnState::Tying:
         if (behavior)
         {
             behavior->Update(this, deltaTime);
@@ -44,11 +44,13 @@ void EnemyBase::Update(float deltaTime)
         {
             attack->Update(this, deltaTime);
         }
+        // ハサミを持つ敵でハサミの更新処理
         UpdateScissors(deltaTime);
         break;
     case YarnState::Tied:
         UpdateTied(deltaTime);
         break;
+
     case YarnState::Dead:
         UpdateDead(deltaTime);
         break;
@@ -164,7 +166,7 @@ void EnemyBase::UpdateTied(float deltaTime)
     SetPosition(shakenPos);
 
 #endif // 0
-    if (size == YarnSize::Big)
+    if (yarnSize == YarnSize::Big)
     {// 大きい敵だったら
         tieTimer += deltaTime;
 
@@ -180,16 +182,20 @@ void EnemyBase::UpdateTiedVisual()
 {
     int showCount = 0;
 
-    if (size == YarnSize::Small)
+    if (yarnSize == YarnSize::Small)
     {
         if (tieCount == 1)
         {
             showCount = 2; // 小は1回で2個
         }
     }
-    else if (size == YarnSize::Big)
+    else if (yarnSize == YarnSize::Big)
     {
-        if (tieCount == 1) showCount = 1;
+        if (tieCount == 1)
+        {
+            showCount = 1;
+            state = YarnState::Tying; // 玉止めの途中とする
+        }
         else if (tieCount >= 2) showCount = 2;
     }
 
@@ -505,10 +511,13 @@ void EnemyBase::SetUpVisual()
 
         // 位置を更新　当たり判定が{0,0,0}にくるのを防ぐため
         UpdateAllComponentTransforms();
+
+        // ハリネズミはサイズを二倍にする
+        yarnSize = Big;
         return;
     }
 
-    switch (size)
+    switch (yarnSize)
     {
     case Small:
     {
@@ -618,14 +627,14 @@ void EnemyBase::SetUpVisual()
 
 
 // 敵のサイズを変更する
-void EnemyBase::ChangeSize(YarnSize newSize)
+void EnemyBase::ChangeSize(EnemyBase::YarnSize newSize)
 {
-    if (size == newSize)
+    if (yarnSize == newSize)
     {// 現在のサイズと同じだったら
         Logger::Log(U8(""));
         return;
     }
-    size = newSize;
+    yarnSize = newSize;
 
     // 玉止め解除
     ReleasedTied();

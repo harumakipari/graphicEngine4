@@ -16,7 +16,8 @@ public:
     enum class YarnState
     {
         Active,        // 通常
-        Tied,          // 球止め（動けない）
+        Tying,  // 玉止め途中　（サイズが大きい敵のみ、速度が遅くなる）
+        Tied,          // 玉止め（動けない）
         Dead
     };
 
@@ -42,7 +43,7 @@ public:
     bool IsDead() const { return isDead; }
 
     // 玉止めに必要な回数
-    int GetNeedTiedCount()const { return (size == YarnSize::Big) ? 2 : 1; }
+    int GetNeedTiedCount()const { return (yarnSize == YarnSize::Big) ? 2 : 1; }
 
     // ダッシュ攻撃時に呼ぶ関数
     bool OnHitByDash();
@@ -60,7 +61,7 @@ public:
     void SetAttack(std::unique_ptr<EnemyAttack> newAttack);
 
     // サイズのセット関数
-    void SetEnemySize(const YarnSize size) { this->size = size; }
+    void SetEnemySize(const YarnSize size) { this->yarnSize = size; }
 
     // 移動方向を取得する
     DirectX::XMFLOAT3 GetMoveDirection() const { return moveDirection; }
@@ -69,7 +70,14 @@ public:
     void SetMoveDirection(const DirectX::XMFLOAT3 moveDir) { moveDirection = moveDir; }
 
     // 速度を取得する
-    float GetSpeed() const { return speed; }
+    float GetSpeed() const
+    {
+        if (state==YarnState::Tying)
+        {// 半分玉止めされていたら
+            return speed * 0.5f;
+        }
+        return speed;
+    }
 
     // 速度を設定する
     void SetSpeed(const float speed) { this->speed = speed; }
@@ -143,7 +151,7 @@ public:
     float rescueTimer = 0.0f;
 
     // 調整値
-    const float prepareTimeInterval = 0.7f; //敵のハサミの切る準備時間
+    const float prepareTimeInterval = 1.3f; //敵のハサミの切る準備時間
     const float cutTimeInterval = 0.2f; //敵のハサミの切るのにかかる時間
 
 protected:
@@ -165,7 +173,7 @@ protected:
     float tieTimer = 0.0f; // 自力解除用
 
     YarnState state = YarnState::Active;
-    YarnSize size = YarnSize::Small;
+    YarnSize yarnSize = YarnSize::Small;
 private:
     bool isDead = false;// 死亡したかどうか
     float deathTimer = 0.0f;

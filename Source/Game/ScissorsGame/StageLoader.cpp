@@ -12,8 +12,11 @@ StageData StageLoader::Load(int stageId)
             {
                 {
                     { {5,0,5}, YarnEnemyType::RescueEnemy, 0.0f },
-                    { {8,0,5}, YarnEnemyType::Static, 0.0f, true },
-                    { {2,0,5}, YarnEnemyType::Static, 0.0f }
+                    { {8,0,5}, YarnEnemyType::MoveVertical, 0.0f, true },
+                    { {2,0,5}, YarnEnemyType::Static, 0.0f },
+                    { { 6,0,8 }, YarnEnemyType::LongRangeAttack, 0.0f },
+                    { { 9,0,8 }, YarnEnemyType::LongRangeAttack, 0.0f ,true},
+
                 },
                 false,
                 1
@@ -28,7 +31,7 @@ StageData StageLoader::Load(int stageId)
                 {
                     { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
                     { { 8,0,5 },  YarnEnemyType::Static, 0.0f,true },
-    #if 0
+    #if 1
                     { { 10,0,5 }, YarnEnemyType::Static, 0.0f ,true},
                     { { 12,0,5 }, YarnEnemyType::Static, 0.0f },
                     { { 15,0,5 }, YarnEnemyType::WaveHorizontal, 0.0f },

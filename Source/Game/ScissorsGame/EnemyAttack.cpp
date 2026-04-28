@@ -153,7 +153,7 @@ void NeedleAttack::UpdateWander(EnemyBase* e, float dt)
     e->Face(dir);
 
     // ˆÚ“®
-    float speed = 3.0f;
+    float speed = e->GetSpeed();
     pos.x += dir.x * speed * dt;
     pos.z += dir.z * speed * dt;
 

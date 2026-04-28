@@ -159,7 +159,9 @@ void RescueBehavior::Enter(EnemyBase* e)
 void RescueBehavior::Update(EnemyBase* e, float dt)
 {
     // ターゲットがない or 無効なら探す
-    if (!target || target->IsDead() || target->GetState() != EnemyBase::YarnState::Tied)
+    if (!target || target->IsDead() ||
+        !(target->GetState() == EnemyBase::YarnState::Tied ||
+            target->GetState() == EnemyBase::YarnState::Tying))
     {
         // 予約解除
         if (target && target->reservedBy == e)
@@ -168,7 +170,7 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
         }
 
         target = FindTiedEnemy(e);
-      e->  rescueTimer = 0.0f;
+        e->rescueTimer = 0.0f;
 
         // ターゲットいない
         if (!target)
@@ -279,6 +281,8 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
 
         e->rescueTimer += dt;
 
+        // 移動しながらでもOKにする
+        //e->Move(dir, dt * 0.5f); // ゆっくり追いながら切る
 
         if (e->rescueTimer >= e->prepareTimeInterval && !e->isCutting)
         {
@@ -287,7 +291,6 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
         }
         if (e->isCutting)
         {
-
             if (e->scissorsCutTimer >= e->cutTimeInterval)
             {
                 target->ReleasedTied();
@@ -301,6 +304,9 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
 
                 target = nullptr;
                 e->rescueTimer = 0.0f;
+                e->isCutting = false;
+                e->scissorsCutTimer = 0.0f;
+                e->SetIsRescue(false);
             }
         }
         return;
@@ -313,13 +319,14 @@ EnemyBase* RescueBehavior::FindTiedEnemy(const EnemyBase* self)
     auto scene = self->GetOwnerScene();
     auto enemies = scene->GetActorManager()->GetActorsOfType<EnemyBase>();
 
-    EnemyBase* nearest = nullptr;
-    float minDist = 99999.0f;
+    EnemyBase* best = nullptr;
+    float bestScore = FLT_MAX;
 
     for (auto enemy : enemies)
     {
         if (enemy.get() == self) continue;
-        if (enemy->GetState() != EnemyBase::YarnState::Tied) continue;
+        auto state = enemy->GetState();
+        if (!(state == EnemyBase::YarnState::Tied || state == EnemyBase::YarnState::Tying)) continue;
 
         if (enemy->reservedBy != nullptr)
         {// 予約されてたらスキップ
@@ -335,12 +342,17 @@ EnemyBase* RescueBehavior::FindTiedEnemy(const EnemyBase* self)
         }
 
         float dist = MathHelper::Distance(self->GetPosition(), enemy->GetPosition());
-        if (dist < minDist)
+
+        float priority = (state == EnemyBase::YarnState::Tied) ? 0.0f : 5.0f;
+        float score = dist + priority;
+
+
+        if (score < bestScore)
         {
-            minDist = dist;
-            nearest = enemy.get();
+            bestScore = score;
+            best = enemy.get();
         }
     }
 
-    return nearest;
+    return best;
 }
