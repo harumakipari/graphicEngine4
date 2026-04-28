@@ -2,6 +2,7 @@
 #include "EnemyBase.h"
 
 #include "ButtonCoinActor.h"
+#include "ScissorsGameElasticComponent.h"
 #include "ScissorsPlayer1.h"
 #include "Engine/Scene/Scene.h"
 #include "Game/Scenes/GameScene.h"
@@ -31,6 +32,7 @@ void EnemyBase::Update(float deltaTime)
     // 玉止めの描画更新処理
     UpdateTiedVisual();
 
+
     switch (state)
     {
     case YarnState::Active:
@@ -42,6 +44,7 @@ void EnemyBase::Update(float deltaTime)
         {
             attack->Update(this, deltaTime);
         }
+        UpdateScissors(deltaTime);
         break;
     case YarnState::Tied:
         UpdateTied(deltaTime);
@@ -62,6 +65,12 @@ void EnemyBase::DrawImGuiDetails()
     {
         ChangeSize(YarnSize::Big);
     }
+    if (ImGui::Button(U8("敵に力を加える")))
+    {
+        //elasticMeshComponent->AddImpulse({1, 1, 1});
+    }
+
+    
 }
 
 bool EnemyBase::OnHitByDash()
@@ -130,6 +139,31 @@ void EnemyBase::SpawnHitEffect(bool hitByDash)
 // 玉止めされている時
 void EnemyBase::UpdateTied(float deltaTime)
 {
+#if 0
+    static float totalTime = 0.0f;
+    totalTime += deltaTime;
+
+    // ===== 揺れ設定 =====
+    float shakeAmp = (size == YarnSize::Big) ? 0.15f : 0.07f;
+    float shakeSpeed = 20.0f;
+
+    float noiseX = sinf(totalTime * shakeSpeed + 1.0f) * shakeAmp;
+    float noiseZ = sinf(totalTime * shakeSpeed + 2.3f) * shakeAmp;
+
+    // 元位置をベースにする
+    XMFLOAT3 basePos = GetPosition();
+
+    // ※ここ重要：元の位置を保持しておく変数を使うのが理想
+    // もし無いなら startPosition を使う
+    basePos = startPosition;
+
+    XMFLOAT3 shakenPos = basePos;
+    shakenPos.x += noiseX;
+    shakenPos.z += noiseZ;
+
+    SetPosition(shakenPos);
+
+#endif // 0
     if (size == YarnSize::Big)
     {// 大きい敵だったら
         tieTimer += deltaTime;
@@ -164,6 +198,45 @@ void EnemyBase::UpdateTiedVisual()
         tiedMeshes[i]->SetIsVisible(i < showCount);
         tiedMeshes[i]->SetRelativeEulerRotationDirect({ 0.0f,180.0f,0.0f });
     }
+}
+
+// ハサミの角度を変更する処理
+void EnemyBase::UpdateScissors(float deltaTime)
+{
+    if (!scissorsFirstMeshComponent || !scissorsSecondMeshComponent) return;
+    scissorsAnimTime += deltaTime;
+
+    float angle = 0.0f;
+    if (!isRescuing)
+    {
+        //  徘徊中
+        float wave = abs(sin(scissorsAnimTime * 3.0f)) * 10.0f;
+        float base = 5.0f;
+        angle = base + wave;
+    }
+    else if (isCutting)
+    {
+        scissorsCutTimer += deltaTime;
+
+        float duration = 0.2f; // 切る速さ（短いほどキレがいい）
+        float t = scissorsCutTimer / duration;
+
+        if (t >= 1.0f)
+        {
+            t = 1.0f;
+        }
+
+        // 30 → 0 に補間
+        angle = 30.0f * (1.0f - t);
+    }
+    else
+    {
+        angle = 0.0f;
+    }
+
+    scissorsFirstMeshComponent->SetRelativeEulerRotationDirect({ 0, angle, 0 });
+    scissorsSecondMeshComponent->SetRelativeEulerRotationDirect({ 0, -angle, 0 });
+
 }
 
 // 玉止めをほどく
@@ -249,8 +322,6 @@ void EnemyBase::UpdateDead(float deltaTime)
         }
     }
 }
-
-
 
 // 死亡した時に呼ぶ関数
 void EnemyBase::CallDeath(bool hitByDash)
@@ -369,12 +440,17 @@ ScissorsPlayer1* EnemyBase::GetPlayer()
 // ハサミを生成する
 void EnemyBase::CreateScissorsVisual()
 {
-    if (scissorsMeshComponent.get()) return; // 既にあるなら何もしない
+    if (scissorsFirstMeshComponent.get() && scissorsSecondMeshComponent.get()) return; // 既にあるなら何もしない
 
-    scissorsMeshComponent = AddComponent<SkeletalMeshComponent>("ScissorsMesh", parentName);
-    scissorsMeshComponent->SetRelativeLocationDirect({ 0, 1.0f, 0 });
-    scissorsMeshComponent->SetRelativeScaleDirect({ 0.5f,0.5f,0.5f });
-    scissorsMeshComponent->SetModel("./Data/TeamModels/Item/ScissorsModel.glb");
+    scissorsFirstMeshComponent = AddComponent<SkeletalMeshComponent>("ScissorsFirstModel", parentName);
+    scissorsFirstMeshComponent->SetRelativeLocationDirect({ 0, 1.0f, 0 });
+    scissorsFirstMeshComponent->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
+    scissorsFirstMeshComponent->SetModel("./Data/TeamModels/Item/ScissorsFirstModel.glb");
+
+    scissorsSecondMeshComponent = AddComponent<SkeletalMeshComponent>("ScissorsSecondModel", parentName);
+    scissorsSecondMeshComponent->SetRelativeLocationDirect({ 0, 1.0f, 0 });
+    scissorsSecondMeshComponent->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
+    scissorsSecondMeshComponent->SetModel("./Data/TeamModels/Item/ScissorsSecondModel.glb");
 }
 
 
@@ -392,7 +468,7 @@ void EnemyBase::SetUpVisual()
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
         radius = size.x * 0.5f;
         height = size.y;
-        mass = 180.0f;
+        mass = 0.0f;
         sphereCollisionComponent->SetRadius(radius);
         sphereCollisionComponent->SetStatic(true);
         sphereCollisionComponent->SetMass(mass);
@@ -441,7 +517,7 @@ void EnemyBase::SetUpVisual()
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
         radius = size.x * 0.5f;
         height = size.y;
-        mass = 180.0f;
+        mass = 0.0f;
         sphereCollisionComponent->SetRadius(radius);
         sphereCollisionComponent->SetMass(mass);
         sphereCollisionComponent->SetStatic(true);
@@ -465,8 +541,6 @@ void EnemyBase::SetUpVisual()
         tiedRight->SetIsVisible(false);
         tiedRight->SetIsCastShadow(false);
         tiedMeshes.push_back(tiedRight);
-
-
     }
     break;
     case Big:
@@ -477,13 +551,18 @@ void EnemyBase::SetUpVisual()
         skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/YarnBigEnemy.glb", false, true);
         skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
         skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
+        skeletalMeshComponent->SetIsVisible(false);
+
+        elasticMeshComponent = AddComponent<ScissorsGameElasticMeshComponent>(parentName);
+        elasticMeshComponent->SetModel("./Data/TeamModels/Enemy/YarnBigEnemy.glb", false, true);
+        elasticMeshComponent->Initialize();
 
         // 当たり判定
         sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
         radius = size.x * 0.5f;
         height = size.y;
-        mass = 180.0f;
+        mass = 0.0f;
         sphereCollisionComponent->SetRadius(radius);
         sphereCollisionComponent->SetStatic(true);
         sphereCollisionComponent->SetMass(mass);
@@ -494,7 +573,6 @@ void EnemyBase::SetUpVisual()
         sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
         sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
         sphereCollisionComponent->Initialize();
-
 #if 0
         // 反射用の当たり判定
         redirectCollisionComponent = this->AddComponent<class SphereComponent>("redirectLeftCollisionComponent", parentName);
@@ -509,7 +587,6 @@ void EnemyBase::SetUpVisual()
         redirectCollisionComponent->SetCollisionOffsetY(height * 0.5f);
         redirectCollisionComponent->Initialize();
 #endif // 0
-
         // 玉止めモデル
         auto tiedLeft = AddComponent<SkeletalMeshComponent>("tiedLeftMeshComponent", parentName);
         tiedLeft->SetModel("./Data/TeamModels/Item/tiedModelLeftBig.glb", false, true);
@@ -526,7 +603,6 @@ void EnemyBase::SetUpVisual()
     }
     break;
     }
-
 
     // 位置を更新　当たり判定が{0,0,0}にくるのを防ぐため
     UpdateAllComponentTransforms();

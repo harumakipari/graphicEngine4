@@ -11,8 +11,8 @@ StageData StageLoader::Load(int stageId)
         data.waves = {
             {
                 {
-                    { {5,0,5}, YarnEnemyType::Static, 0.0f },
-                    { {8,0,5}, YarnEnemyType::LongRangeAttack, 0.0f, true }
+                    { {5,0,5}, YarnEnemyType::RescueEnemy, 0.0f },
+                    { {8,0,5}, YarnEnemyType::Static, 0.0f, true }
                 },
                 false,
                 1
@@ -26,7 +26,7 @@ StageData StageLoader::Load(int stageId)
                 // Wave 1
                 {
                     { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
-                                    { { 8,0,5 },  YarnEnemyType::LongRangeAttack, 0.0f,true },
+                    { { 8,0,5 },  YarnEnemyType::Static, 0.0f,true },
     #if 0
                     { { 10,0,5 }, YarnEnemyType::Static, 0.0f ,true},
                     { { 12,0,5 }, YarnEnemyType::Static, 0.0f },

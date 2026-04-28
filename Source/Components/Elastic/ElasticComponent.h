@@ -185,6 +185,8 @@ private:
     DirectX::XMFLOAT3 p3Current;  // 実際に描画やシェーダに渡す p3（結果）
     DirectX::XMFLOAT3 p3Base;
 
+    DirectX::XMFLOAT3 velocity = { 0.0f,0.0f,0.0f};
+
     DirectX::XMFLOAT3 mouseForce = { 0.0f,0.0f,0.0f };
     DirectX::XMFLOAT3 cherryForce = { 0.0f,0.0f,0.0f };
 

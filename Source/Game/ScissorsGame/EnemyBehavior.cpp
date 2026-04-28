@@ -243,9 +243,11 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
                 e->Move(wanderDir, dt);
                 e->Face(wanderDir);
 
+                e->SetIsRescue(false);
+                e->isCutting = false;
+
                 return;
 #endif // 0
-
             }
             return;
         }
@@ -255,7 +257,6 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
     }
 
     // ターゲットに向かう 
-
     auto pos = e->GetPosition();
     auto targetPos = target->GetPosition();
 
@@ -274,7 +275,15 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
     //救出処理
     if (len < 1.5f)// ターゲットに被らないように
     {
+        e->SetIsRescue(true);
+
         rescueTimer += dt;
+
+        if (!e->isCutting)
+        {
+            e->isCutting = true;
+            e->scissorsCutTimer = 0.0f;
+        }
 
         if (rescueTimer >= rescueTime)
         {

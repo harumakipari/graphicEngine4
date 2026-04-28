@@ -81,7 +81,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                         {// “G‚ªŽ€‚ñ‚Å‚¢‚½‚ç
                             return;
                         }
-                        if (enemy->GetState()==EnemyBase::YarnState::Tied)
+                        if (enemy->GetState() == EnemyBase::YarnState::Tied)
                         {// “G‚ª‹ÊŽ~‚ß‚³‚ê‚Ä‚¢‚½‚ç
                             return;
                         }
@@ -89,7 +89,6 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     debugPlayerCollisionColor = { 1.0f,0.0f,0.0f,1.0f };
                     TakeDamage(1);
                     damageCooldownTimer = damageCooldownInterval; // –³“GŽžŠÔ‚ðÝ’è
-
 #if 0
                     // ƒmƒbƒNƒoƒbƒN
                     DirectX::XMFLOAT3 dir =
@@ -231,10 +230,8 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
             hpUiComponents.push_back(hpUI);
         }
     }
-
     // ‹OÕ‰Šú‰»
     trail.Initialize();
-
 }
 
 void ScissorsPlayer1::Update(float deltaTime)
@@ -250,7 +247,6 @@ void ScissorsPlayer1::Update(float deltaTime)
     {// ƒ_ƒ[ƒWƒN[ƒ‹ƒ_ƒEƒ“’†‚Í–³“G
         damageCooldownTimer -= deltaTime;
     }
-
 
     Character::Update(deltaTime);
 
@@ -310,7 +306,6 @@ void ScissorsPlayer1::Update(float deltaTime)
         {
             lastValidAimData = currentAimData;
         }
-
 
         if (!InputSystem::isUIUsingMouse)
         {
@@ -373,9 +368,7 @@ void ScissorsPlayer1::Update(float deltaTime)
     DebugRender::DrawSphere(sphereComponent->GetComponentLocation(), playerRadius, debugPlayerCollisionColor, 0, true);
     // ƒ_ƒbƒVƒ…UŒ‚‚Ì“–‚½‚è”»’è‚ðƒfƒoƒbƒO•\Ž¦
     DebugRender::DrawSphere(dashAttackSphere->GetComponentLocation(), dashAttackRange, debugDashCollisionColor, 0, true);
-
     debugPlayerCollisionColor = { 1,1,1,1 };
-
 }
 
 void ScissorsPlayer1::DrawImGuiDetails()
@@ -408,13 +401,12 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
     // ƒQ[ƒ€ƒpƒbƒh
     if (isGamepad)
     {
-#if 0 // ‘€ì“ü—Í”½“]
+#if 0// ‘€ì“ü—Í”½“]
         float x = -intent.rightMove.x;
         float z = -intent.rightMove.y;
 #else
         float x = intent.rightMove.x;
         float z = intent.rightMove.y;
-
 #endif // 1 // ‘€ì“ü—Í”½“]
 
         float len = sqrt(x * x + z * z);
@@ -552,7 +544,6 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
             aim.isValid = true;
         }
 #endif // 0
-
     }
 
     if (aim.isValid)
@@ -570,7 +561,7 @@ DirectX::XMFLOAT3 ScissorsPlayer1::GetLookDirection() const
     {
         return lastValidAimData.dir;
     }
-    else if (stateMachine_->GetStateName() == "ChargeDash")
+    else if (!useGamePad && (stateMachine_->GetStateName() == "ChargeDash" /*|| stateMachine_->GetStateName() == "Dash"*/))
     {
         return lastValidAimData.dir;
     }

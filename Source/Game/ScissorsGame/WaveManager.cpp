@@ -60,6 +60,14 @@ void WaveManager::SetWaves(int stageId)
     auto stage = StageLoader::Load(stageId);
     waves = stage.waves;
 
+    currentWave = 0;
+    timer = 0.0f;
+    killCount = 0;
+    spawnIndex = 0;
+    hasSpawnedAnyEnemy = false;
+
+    spawnStates.clear();
+
     if (!waves.empty())
     {
         spawnStates.resize(waves[currentWave].spawns.size());

@@ -600,6 +600,15 @@
     <ClCompile Include="Source\Game\ScissorsGame\StageLoader.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\ScissorsGameElasticMeshComponent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\BobbinActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\YarnWallActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -954,6 +963,9 @@
     <ClInclude Include="Source\Game\ScissorsGame\NeedleActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\StageData.h" />
     <ClInclude Include="Source\Game\ScissorsGame\StageLoader.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameElasticComponent.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\BobbinActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\YarnWallActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

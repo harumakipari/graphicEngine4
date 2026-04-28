@@ -101,7 +101,7 @@ struct CascadedShadowMapConstants
     float criticalDepthValue = 389.180f;
     float splitSchemeWeight = 0.545f;// 1.0 に近いほど対数分割寄り
     bool fitToCascade = true;// true: カスケード毎にnearを変える
-    float zDepthScale = 4.284f;// Z拡張倍率（シャドウ欠け防止）
+    float zDepthScale = 1.0f;// Z拡張倍率（シャドウ欠け防止）
 
 #endif // 0  //(T_T) ここを変更
 };

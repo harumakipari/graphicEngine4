@@ -15,6 +15,7 @@
 #include "Game/Actors/Dessert/TargetPudding.h"
 #include "Game/Actors/Player/Player.h"
 #include "Game/Actors/Stage/Cloth.h"
+#include "Game/ScissorsGame/BobbinActor.h"
 #include "Game/ScissorsGame/ButtonCoinActor.h"
 #include "Game/ScissorsGame/ComboUiActor.h"
 #include "Game/ScissorsGame/EnemyBase.h"
@@ -28,6 +29,7 @@
 #include "Game/ScissorsGame/ScoreUiActor.h"
 #include "Game/ScissorsGame/WaveManagaer.h"
 #include "Game/ScissorsGame/YarnEnemyActor.h"
+#include "Game/ScissorsGame/YarnWallActor.h"
 #include "Graphics/PostProcess/BloomEffect.h"
 
 
@@ -158,7 +160,7 @@ void GameScene::Start()
     audioComp->SetVolume(0.5f);
 
     auto& param = SceneTransitionManager::Instance().GetParams();
-    int stageId = 2;
+    int stageId = 1;
 
     if (param.contains("stageId"))
     {
@@ -552,6 +554,15 @@ void GameScene::SetUpActors()
     Transform needleTr(DirectX::XMFLOAT3{ 1.0f,0.0f,5.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto Actor = this->GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemy", needleTr);
 
+#endif // 0
+#if 0
+    Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", coinTr);
+#endif // 0
+
+#if 1
+    Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr);
 #endif // 0
 
 

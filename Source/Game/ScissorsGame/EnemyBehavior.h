@@ -96,5 +96,5 @@ private:
     float wanderTimer = 0.0f;
 
     float rescueTimer = 0.0f;
-    const float rescueTime = 2.5f; // •‚¯‚é‚É‚©‚©‚éŠÔ
+    const float rescueTime = 2.0f; // •‚¯‚é‚É‚©‚©‚éŠÔ
 };

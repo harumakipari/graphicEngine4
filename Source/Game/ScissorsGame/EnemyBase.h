@@ -7,6 +7,7 @@
 #include "Core/Actor.h"
 #include "Game/Actors/Base/Character.h"
 
+class ScissorsGameElasticMeshComponent;
 class ScissorsPlayer1;
 
 class EnemyBase :public Character
@@ -99,6 +100,12 @@ public:
 
     // 敵のサイズを変更する
     void ChangeSize(YarnSize newSize);
+
+    // 助けるか銅貨を設定する
+    void SetIsRescue(const bool rescue)
+    {
+        this->isRescuing = rescue;
+    }
 private:
     // 死亡した時に呼ぶ関数
     void CallDeath(bool hitByDash);
@@ -118,6 +125,9 @@ private:
     // 玉止め表示更新処理
     void UpdateTiedVisual();
 
+    // ハサミの角度を変更する処理
+    void UpdateScissors(float deltaTime);
+
 public:
     // 死亡通知
     std::function<void()> onDeath;
@@ -127,6 +137,10 @@ public:
 
     // 予約用の敵（玉止めを外す時）
     EnemyBase* reservedBy = nullptr;
+
+    bool isCutting = false; // 初回の切る
+    float scissorsCutTimer = 0.0f;
+
 protected:
     DirectX::XMFLOAT3 startPosition = { 0.0f,0.0f,0.0f };   // 敵の出現の開始位置　波うちの時に基準とする
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
@@ -178,7 +192,14 @@ private:
 
     std::shared_ptr<SphereComponent> redirectCollisionComponent; // 反射判定の左コンポーネント
 
-    std::shared_ptr<SkeletalMeshComponent> scissorsMeshComponent;// ハサミ描画用コンポーネント
+    std::shared_ptr<SkeletalMeshComponent> scissorsFirstMeshComponent;// ハサミ描画用コンポーネント
+    std::shared_ptr<SkeletalMeshComponent> scissorsSecondMeshComponent;// ハサミ描画用コンポーネント
 
     YarnEnemyType enemyType = YarnEnemyType::Static; // 敵のタイプ
+
+    std::shared_ptr<ScissorsGameElasticMeshComponent> elasticMeshComponent; // 弾性描画用コンポーネント
+
+
+    bool isRescuing = false; // 助けているかどうか
+    float scissorsAnimTime = 0.0f; // ハサミの時間
 };

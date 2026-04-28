@@ -854,15 +854,14 @@ void SceneBase::DrawOutliner()
 void SceneBase::DrawSceneSettingsTab()
 {
     // -------------------------
-// Light Settings
-// -------------------------
+    // Light Settings
+    // -------------------------
     if (ImGui::CollapsingHeader(U8("Light Settings"), ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Checkbox("useDeferredRendering", &useDeferredRendering);
         ImGui::Checkbox("useDrawDebug", &useDrawDebug);
         lightManager->DrawGui();
     }
-
 }
 
 

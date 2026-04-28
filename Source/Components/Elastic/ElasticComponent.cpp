@@ -83,17 +83,19 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
 
     //p3Current = p3Target;
 
-    if (!hasExternalForce)
+    //if (!hasExternalForce)
     {// 左ボタンを押していない時
         pullInfo.active = false;
 
-        //DirectX::XMFLOAT3 p = { elasticConstants.p3.x,elasticConstants.p3.y,elasticConstants.p3.z };
+#if 0
         float targetX = position.x;
         float targetY = position.y + modelHeight;
         float targetZ = position.z;
-        //float gradX = p.x - targetX;// x - a
-        //float gradY = p.y - targetY;// x - a
-        //float gradZ = p.z - targetZ;// x - a
+#else
+        float targetX = p3Target.x;
+        float targetY = p3Target.y;
+        float targetZ = p3Target.z;
+#endif // 1
 
         float gradX = p3Current.x - targetX;// x - a
         float gradY = p3Current.y - targetY;// x - a
@@ -103,9 +105,33 @@ void ElasticMeshComponent::UpdatePushElastic(float deltaTime)
         elasticParameters.momentumX = elasticParameters.damping * elasticParameters.momentumX + gradX/*parmator*/;
         elasticParameters.momentumY = elasticParameters.damping * elasticParameters.momentumY + gradY/*parmator*/;
         elasticParameters.momentumZ = elasticParameters.damping * elasticParameters.momentumZ + gradZ/*parmator*/;
+#if 0
         p3Current.x -= Time::UnscaledDeltaTime() * elasticParameters.stiffness * elasticParameters.momentumX;
         p3Current.y -= Time::UnscaledDeltaTime() * elasticParameters.stiffness * elasticParameters.momentumY;
         p3Current.z -= Time::UnscaledDeltaTime() * elasticParameters.stiffness * elasticParameters.momentumZ;
+#else
+        float dt = Time::UnscaledDeltaTime();
+
+        // バネ（Hookeっぽい）
+        float k = elasticParameters.stiffness;   // 硬さ
+        float d = elasticParameters.damping;     // 減衰
+
+        // 目標との差
+        DirectX::XMFLOAT3 diff;
+        diff.x = p3Current.x - p3Target.x;
+        diff.y = (p3Current.y - p3Target.y) * 0.2f; // ←縦弱め
+        diff.z = p3Current.z - p3Target.z;
+
+        // 加速度 = -kx - dv
+        velocity.x += (-k * diff.x - d * velocity.x) * dt;
+        velocity.y += (-k * diff.y - d * velocity.y) * dt;
+        velocity.z += (-k * diff.z - d * velocity.z) * dt;
+
+        // 位置更新
+        p3Current.x += velocity.x * dt;
+        p3Current.y += velocity.y * dt;
+        p3Current.z += velocity.z * dt;
+#endif // 0
 
     }
     elasticConstants.maxAngleDegree = elasticParameters.maxAngleDegrees;
@@ -235,6 +261,10 @@ void ElasticMeshComponent::AddImpulse(DirectX::XMFLOAT3 impulse)
     XMFLOAT3 down = { impulse };
     down = { 0.0f, -0.5f, 0.0f };
     cherryForce = down;
+    float power = 2.0f;
+    velocity.x += (rand() % 100 / 100.0f - 0.5f) * power;
+    velocity.y += 0.0f; // 縦は抑える
+    velocity.z += (rand() % 100 / 100.0f - 0.5f) * power;
 
     p3Target = {
         p3Base.x + down.x,
