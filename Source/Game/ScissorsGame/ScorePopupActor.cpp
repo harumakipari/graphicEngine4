@@ -11,6 +11,7 @@ void ScorePopupActor::Initialize(const Transform& transform)
     easingRunner = std::make_shared<EasingRunner>();
     auto uiManager = GetOwnerScene()->GetUIManager();
 
+    // 
     lifeTime = lifeTimeDuration;
 
     for (int i = 0; i < 6; i++) // 6桁くらい確保
@@ -24,21 +25,28 @@ void ScorePopupActor::Initialize(const Transform& transform)
         scoreDigits.push_back(digit);
     }
 
+    DirectX::XMFLOAT2 baseUI = WorldToUI(transform.GetLocation());
 
+    uiStartPos = baseUI;
+    uiTargetPos = baseUI;
+    uiTargetPos.y -= 100.0f; // UIのターゲット位置を設定する
+    uiTime = 0.0f;
 }
 
-void ScorePopupActor::Update(float elapsedTime)
+void ScorePopupActor::Update(float deltaTime)
 {
-    lifeTime -= elapsedTime;
-    easingRunner->Tick(elapsedTime);
+    lifeTime -= deltaTime;
+    uiTime += deltaTime;
 
-    // ワールド位置
-    auto pos = GetPosition();
-    pos.y += elapsedTime * 2.0f; // 調整
-    SetPosition(pos);
+    float t = uiTime / lifeTimeDuration;
+    t = std::clamp(t, 0.0f, 1.0f);
 
-    // UI座標に変換
-    DirectX::XMFLOAT2 uiPos = WorldToUI(pos);
+    // easeOutCubic
+    float easeT = 1.0f - powf(1.0f - t, 3.0f);
+
+    DirectX::XMFLOAT2 uiPos;
+    uiPos.x = uiStartPos.x + (uiTargetPos.x - uiStartPos.x) * easeT;
+    uiPos.y = uiStartPos.y + (uiTargetPos.y - uiStartPos.y) * easeT;
 
     float alpha = lifeTime / lifeTimeDuration;
 

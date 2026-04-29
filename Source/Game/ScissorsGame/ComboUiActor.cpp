@@ -8,7 +8,6 @@
 
 void ComboUiActor::Initialize(const Transform& transform)
 {
-    easingRunner = std::make_shared<EasingRunner>();
     auto uiManager = GetOwnerScene()->GetUIManager();
 
     for (int i = 0; i < 2; i++) // 2桁くらい確保
@@ -21,12 +20,39 @@ void ComboUiActor::Initialize(const Transform& transform)
         uiManager->Add(digit);
         comboDigits.push_back(digit);
     }
+
+#if 0
+    stamp = std::make_shared<UIImageComponent>(
+        "./Data/Textures/ScissorsUI/1.png",
+        "ComboStamp"
+    );
+    stamp->SetSize({ 90, 120 });
+    stamp->SetPivot({ 0.5f, 0.5f });
+    stamp->SetWorldPosition({ 200,200 });
+    uiManager->Add(stamp);
+#endif // 0
+
+    stampStructs.resize(10);
+
+    for (int i = 0; i < 10; i++)
+    {
+        std::string textureName = "./Data/Textures/ScissorsUI/" + std::to_string(i) + ".png";
+        std::string componentName = "ComboStamp_" + std::to_string(i);
+        stampStructs[i].comboNumberUi = std::make_shared<UIImageComponent>(
+            textureName,
+            componentName
+        );
+        stampStructs[i].comboNumberUi->SetSize({ 90, 120 });
+        stampStructs[i].comboNumberUi->SetPivot({ 0.5f, 0.5f });
+        stampStructs[i].comboNumberUi->SetWorldPosition({ 200,200 });
+        uiManager->Add(stampStructs[i].comboNumberUi);
+
+        stampStructs[i].easingRunner = std::make_shared<EasingRunner>();
+    }
 }
 
 void ComboUiActor::Update(float elapsedTime)
 {
-    easingRunner->Tick(elapsedTime);
-
     // UIの位置
     DirectX::XMFLOAT3 position = GetPosition();
     DirectX::XMFLOAT3 bubbleWorldPos = { position.x , position.y, position.z };
@@ -42,9 +68,8 @@ void ComboUiActor::Update(float elapsedTime)
 
     auto& scoreSystem = player->scoreSystem;
 
-    int combo = scoreSystem.GetCombo();
-    UpdateScoreDigits(combo);
-
+    currentCombo = scoreSystem.GetCombo();
+    UpdateScoreDigits(currentCombo);
 
     float digitSpacing = 90.0f; // 桁の間隔（調整ポイント）
 
@@ -59,18 +84,42 @@ void ComboUiActor::Update(float elapsedTime)
         comboDigits[i]->SetWorldPosition(pos);
     }
 
+
+    for (auto stamp : stampStructs)
+    {
+        if (stamp.comboNumberUi)
+        {
+            stamp.comboNumberUi->SetScale({ stamp.stampScale, stamp.stampScale });
+            stamp.comboNumberUi->SetVisible(stamp.isVisible);
+        }
+        stamp.easingRunner->Tick(elapsedTime);
+    }
+
+    if (currentCombo > prevCombo)
+    {// コンボが増えたら
+        AddCombo(currentCombo);
+        Logger::Log(U8("コンボが増えた:") + std::to_string(currentCombo));
+    }
+
+    prevCombo = currentCombo;// コンボの値を保存する
 }
 
 void ComboUiActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
+    if (ImGui::Button(U8("コンボスタンプ")))
+    {
+        AddCombo(prevCombo);
+    }
+    ImGui::DragInt("Combo", &prevCombo);
 #endif
 }
 
 
 // スコアを桁ごとに分解する
-void ComboUiActor::UpdateScoreDigits(int combo) const
+void ComboUiActor::UpdateScoreDigits(int combo)
 {
+#if 1
     // 全部非表示
     for (auto& d : comboDigits)
     {
@@ -90,4 +139,82 @@ void ComboUiActor::UpdateScoreDigits(int combo) const
         i++;
 
     } while (combo > 0 && i < comboDigits.size());
+#endif // 0
+
+}
+
+// コンボが足される時の表現
+void ComboUiActor::AddCombo(int combo)
+{
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/stamp_budge.wav", 1.0f);
+
+    if (stampStructs.size() < combo)
+    {
+        return;
+    }
+
+#if 0
+    float fadeInTime = 0.8f;
+
+    // フェードイン のスケールを触る
+    {
+        TestEasingHandler handler;
+        handler.AddWait(0.1f);
+
+        handler.AddEasing(
+            TestEaseType::OutExp,
+            10.0f,
+            1.0f,
+            fadeInTime
+        );
+
+        handler.SetCompletedFunction([this]()
+            {
+                stamp->SetScale({ 1.0f,1.0f });
+            });
+        PropertyAccessor<float> accessor;
+
+        accessor.getter = [this]() { return stampScale; };
+        accessor.setter = [this](float t)
+            {
+                stampScale = t;
+            };
+
+        easingRunner->StartHandler(handler, accessor);
+    }
+#else
+    float fadeInTime = 0.3f;
+
+    // フェードイン のスケールを触る
+    {
+        TestEasingHandler handler;
+        stampStructs[currentCombo].isVisible = true;
+
+        handler.AddWait(0.1f);
+
+        handler.AddEasing(
+            TestEaseType::OutExp,
+            10.0f,
+            1.0f,
+            fadeInTime
+        );
+
+        handler.SetCompletedFunction([this]()
+            {
+                stampStructs[currentCombo].comboNumberUi->SetScale({ 1.0f,1.0f });
+            });
+        PropertyAccessor<float> accessor;
+
+        accessor.getter = [this]() { return stampStructs[currentCombo].stampScale; };
+        accessor.setter = [this](float t)
+            {
+                stampStructs[currentCombo].stampScale = t;
+            };
+
+        stampStructs[currentCombo].easingRunner->StartHandler(handler, accessor);
+    }
+
+#endif // 0
+
+
 }

@@ -39,7 +39,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     stateMachine_ = std::make_shared<StateMachine>();
     stateMachine_->RegisterState(std::make_unique<ScissorsPlayerIdleState>(this));
     stateMachine_->RegisterState(std::make_unique<ScissorsPlayerRunningState>(this));
-    stateMachine_->RegisterState(std::make_unique<ScissorsPlayerAttackingState>(this));
+    //stateMachine_->RegisterState(std::make_unique<ScissorsPlayerAttackingState>(this));
     stateMachine_->RegisterState(std::make_unique<ScissorsPlayerDashState>(this));
     stateMachine_->RegisterState(std::make_unique<ScissorsPlayerChargeDashState>(this));
     stateMachine_->RegisterState(std::make_unique<ScissorsPlayerStunState>(this));
@@ -710,13 +710,16 @@ void ScissorsPlayer1::SpawnScorePopup(const DirectX::XMFLOAT3& pos, int score)
 //　ダッシュを使用する関数　これを呼ぶとダッシュの残り回数が減る
 void ScissorsPlayer1::UseDash()
 {
+#if 0
     if (dashCount > 0)
     {
         dashCount--;
     }
+
+#endif // 0
     chargeTime = 0.0f;
 
-    Logger::Log("Dash used. Remaining dash count: " + std::to_string(dashCount));
+    //Logger::Log("Dash used. Remaining dash count: " + std::to_string(dashCount));
 }
 
 // ダッシュが失敗した時に呼ぶ関数　これを呼ぶとダッシュの残り回数が減らない

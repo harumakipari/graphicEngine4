@@ -18,12 +18,25 @@ public:
 
 private:
     // スコアを桁ごとに分解する
-    void UpdateScoreDigits(int combo) const;
+    void UpdateScoreDigits(int combo) ;
 
-
+    // コンボが足される時の表現
+    void AddCombo(int currentCombo);
 private:
     // スコアの数字描画
     std::vector<std::shared_ptr<UIImageComponent>> comboDigits;
-    std::shared_ptr<EasingRunner> easingRunner;
     std::shared_ptr<UIImageComponent> scoreBackUi;  // スコアの裏
+
+    int prevCombo = 0; // 前回のコンボ値
+    int currentCombo = 0; // 現在のコンボ値
+
+    struct Stamp
+    {
+        std::shared_ptr<EasingRunner> easingRunner;
+        std::shared_ptr<UIImageComponent> comboNumberUi;  // 数字
+        bool isVisible = false;
+        float stampScale = 10.0f;
+    };
+    std::vector<Stamp> stampStructs;
+
 };

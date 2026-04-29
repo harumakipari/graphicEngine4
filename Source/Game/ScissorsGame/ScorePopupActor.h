@@ -14,7 +14,7 @@ public:
 
     void Initialize(const Transform& transform)override;
 
-    void Update(float elapsedTime)override;
+    void Update(float deltaTime)override;
 
     void DrawImGuiDetails() override;
 
@@ -31,6 +31,10 @@ private:
     std::shared_ptr<EasingRunner> easingRunner;
 
     float lifeTime = 1.0f;
-    float lifeTimeDuration = 3.0f;
+    float lifeTimeDuration = 1.0f;
     int popupScore = 0;
+
+    DirectX::XMFLOAT2 uiStartPos={0.0f,0.0f}; // UIの最初の位置
+    DirectX::XMFLOAT2 uiTargetPos={0.0f,0.0f}; // UIのターゲットの位置
+    float uiTime = 0.0f;
 };
