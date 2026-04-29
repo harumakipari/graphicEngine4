@@ -22,6 +22,9 @@ private:
 
     // コンボが足される時の表現
     void AddCombo(int currentCombo);
+
+    // コンボがリセットされる時の表現
+    void ResetCombo();
 private:
     // スコアの数字描画
     std::vector<std::shared_ptr<UIImageComponent>> comboDigits;
@@ -32,10 +35,14 @@ private:
 
     struct Stamp
     {
-        std::shared_ptr<EasingRunner> easingRunner;
+        std::shared_ptr<EasingRunner> scaleEasingRunner;
+        std::shared_ptr<EasingRunner> alphaEasingRunner;
         std::shared_ptr<UIImageComponent> comboNumberUi;  // 数字
         bool isVisible = false;
-        float stampScale = 10.0f;
+        float stampScale = 5.0f;
+        float degreeRotation = 0.0f; // 回転角度  度数
+        float alpha = 1.0f; // 透明度
+
     };
     std::vector<Stamp> stampStructs;
 

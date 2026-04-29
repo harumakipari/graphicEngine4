@@ -32,9 +32,9 @@ void ComboUiActor::Initialize(const Transform& transform)
     uiManager->Add(stamp);
 #endif // 0
 
-    stampStructs.resize(10);
+    stampStructs.resize(11);
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 11; i++)
     {
         std::string textureName = "./Data/Textures/ScissorsUI/" + std::to_string(i) + ".png";
         std::string componentName = "ComboStamp_" + std::to_string(i);
@@ -45,9 +45,10 @@ void ComboUiActor::Initialize(const Transform& transform)
         stampStructs[i].comboNumberUi->SetSize({ 90, 120 });
         stampStructs[i].comboNumberUi->SetPivot({ 0.5f, 0.5f });
         stampStructs[i].comboNumberUi->SetWorldPosition({ 200,200 });
+        stampStructs[i].degreeRotation = MathHelper::RandomRange(-30.0f, 30.0f);
         uiManager->Add(stampStructs[i].comboNumberUi);
 
-        stampStructs[i].easingRunner = std::make_shared<EasingRunner>();
+        stampStructs[i].scaleEasingRunner = std::make_shared<EasingRunner>();
     }
 }
 
@@ -89,16 +90,25 @@ void ComboUiActor::Update(float elapsedTime)
     {
         if (stamp.comboNumberUi)
         {
+            stamp.comboNumberUi->SetWorldPosition(uiPos);
             stamp.comboNumberUi->SetScale({ stamp.stampScale, stamp.stampScale });
             stamp.comboNumberUi->SetVisible(stamp.isVisible);
+            stamp.comboNumberUi->SetWorldAngleDegree(stamp.degreeRotation);
         }
-        stamp.easingRunner->Tick(elapsedTime);
+        stamp.scaleEasingRunner->Tick(elapsedTime);
     }
 
-#if 0
+#if 1
     if (currentCombo > prevCombo)
     {// コンボが増えたら
         AddCombo(currentCombo);
+#if 0
+        for (int i = prevCombo + 1; i <= currentCombo; i++)
+        {
+            AddCombo(i);
+        }
+
+#endif // 0
         Logger::Log(U8("コンボが増えた:") + std::to_string(currentCombo));
     }
 
@@ -108,16 +118,22 @@ void ComboUiActor::Update(float elapsedTime)
     {
         Logger::Log(U8("コンボがリセットされた"));
 
-        for (int i = 1; i < 10; i++)
+        for (int i = 1; i < stampStructs.size(); i++)
         {
             stampStructs[i].isVisible = false;
-            stampStructs[i].stampScale = 10.0f; // 初期値に戻す
+            stampStructs[i].stampScale = 5.0f; // 初期値に戻す
 
             if (stampStructs[i].comboNumberUi)
             {
                 stampStructs[i].comboNumberUi->SetVisible(false);
             }
         }
+    }
+    if (currentCombo == 0)
+    {
+        // ゼロは特別扱いする
+        stampStructs[0].isVisible = true;
+        stampStructs[0].stampScale = 1.0f;
     }
 
     prevCombo = currentCombo;// コンボの値を保存する
@@ -171,10 +187,8 @@ void ComboUiActor::AddCombo(int combo)
     int index = combo;
 
 
-    if (10 < combo)
-    {
+    if (combo >= stampStructs.size())
         return;
-    }
 
 #if 0
     float fadeInTime = 0.8f;
@@ -206,7 +220,7 @@ void ComboUiActor::AddCombo(int combo)
         easingRunner->StartHandler(handler, accessor);
     }
 #else
-    float fadeInTime = 0.3f;
+    float fadeInTime = MathHelper::RandomRange(0.5f, 0.8f);
 
 
     // フェードイン のスケールを触る
@@ -214,11 +228,10 @@ void ComboUiActor::AddCombo(int combo)
         stampStructs[index].isVisible = true;
 
         TestEasingHandler handler; // UIのハンドラー
-        handler.AddWait(0.1f);
 
         handler.AddEasing(
             TestEaseType::OutExp,
-            10.0f,
+            5.0f,
             1.0f,
             fadeInTime
         );
@@ -235,10 +248,17 @@ void ComboUiActor::AddCombo(int combo)
                 stampStructs[index].stampScale = t;
             };
 
-        stampStructs[index].easingRunner->StartHandler(handler, accessor);
+        stampStructs[index].scaleEasingRunner->StartHandler(handler, accessor);
     }
 
 #endif // 0
 
 
+}
+
+
+// コンボがリセットされる時の表現
+void ComboUiActor::ResetCombo()
+{
+    
 }

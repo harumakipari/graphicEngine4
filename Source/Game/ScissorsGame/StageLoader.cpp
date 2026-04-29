@@ -61,7 +61,7 @@ StageData StageLoader::Load(int stageId)
                 {
                     { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
                     { { 8,0,5 },  YarnEnemyType::WaveVertical, 0.0f,true },
-    #if 1
+    #if 0
                     { { 10,0,5 }, YarnEnemyType::Static, 0.0f ,true},
                     { { 12,0,5 }, YarnEnemyType::Static, 0.0f },
                     { { 15,0,5 }, YarnEnemyType::WaveHorizontal, 0.0f },

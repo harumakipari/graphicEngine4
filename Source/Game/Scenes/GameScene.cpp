@@ -161,6 +161,7 @@ void GameScene::Start()
 
     auto& param = SceneTransitionManager::Instance().GetParams();
     int stageId = 1;
+    stageId = 2;
 
     if (param.contains("stageId"))
     {
