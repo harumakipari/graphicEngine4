@@ -90,6 +90,8 @@ private:
 public:
     std::shared_ptr<InputComponent> inputComponent;
     std::shared_ptr<CharacterMovementComponent> characterMovementComponent;
+    std::shared_ptr<SphereComponent> sphereComponent; // プレイヤーの当たり判定用のSphereComponent dash時にon/offする
+
     DirectX::XMFLOAT3 targetPos = { 0.0f,0.0f,0.0f }; // ダッシュの移動先
     float hitStopTimer = 0.0f; // ヒットストップのタイマー　攻撃が当たったときに一定時間動きを止めるために使用する
     // ダッシュの狙いを表示する矢印のUIコンポーネント
@@ -123,7 +125,6 @@ public:
 private:
     std::shared_ptr<SphereComponent> dashAttackSphere; // ダッシュ攻撃の当たり判定用のSphereComponent
     std::shared_ptr<SphereComponent> scissorsAttackSphere; // ハサミ攻撃の当たり判定用のSphereComponent
-    std::shared_ptr<SphereComponent> sphereComponent; // プレイヤーの当たり判定用のSphereComponent
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
     DirectX::XMFLOAT3 moveDir = { 0,0,0 }; // 移動方向
     bool triggerDash = false; // ダッシュトリガー

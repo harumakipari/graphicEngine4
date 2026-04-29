@@ -528,6 +528,9 @@ void ScissorsPlayerDashState::Enter()
 
     // ダッシュ音を再生する
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/dash.wav", 0.5f);
+
+    // 当たり判定の押出を消す
+    player->sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::None);
 }
 
 void ScissorsPlayerDashState::Execute(float deltaTime)
@@ -643,6 +646,9 @@ void ScissorsPlayerDashState::Exit()
     player->characterMovementComponent->ResetSpeed(); // ダッシュが終わったら移動速度をリセットする
 
     player->debugDashCollisionColor = { 1,1,1,0 }; // デバッグ用にダッシュの当たり判定の色を変える　通常は透明で、攻撃中は赤くするなどして使用する
+
+    // 当たり判定の押出を戻す
+    player->sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
 }
 
 void ScissorsPlayerDashState::Redirect(const DirectX::XMFLOAT3& newDir)

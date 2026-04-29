@@ -46,6 +46,10 @@ void EnemyBase::Update(float deltaTime)
         }
         // ハサミを持つ敵でハサミの更新処理
         UpdateScissors(deltaTime);
+
+        // ベース位置を設定する
+        basePosition = GetPosition();
+
         break;
     case YarnState::Tied:
         UpdateTied(deltaTime);
@@ -141,25 +145,19 @@ void EnemyBase::SpawnHitEffect(bool hitByDash)
 // 玉止めされている時
 void EnemyBase::UpdateTied(float deltaTime)
 {
-#if 0
+#if 0 // 玉止め抜ける時の揺れ
     static float totalTime = 0.0f;
     totalTime += deltaTime;
 
     // ===== 揺れ設定 =====
-    float shakeAmp = (size == YarnSize::Big) ? 0.15f : 0.07f;
+    float shakeAmp = (yarnSize == YarnSize::Big) ? 0.15f : 0.07f;
     float shakeSpeed = 20.0f;
 
     float noiseX = sinf(totalTime * shakeSpeed + 1.0f) * shakeAmp;
     float noiseZ = sinf(totalTime * shakeSpeed + 2.3f) * shakeAmp;
 
-    // 元位置をベースにする
-    XMFLOAT3 basePos = GetPosition();
 
-    // ※ここ重要：元の位置を保持しておく変数を使うのが理想
-    // もし無いなら startPosition を使う
-    basePos = startPosition;
-
-    XMFLOAT3 shakenPos = basePos;
+    XMFLOAT3 shakenPos = basePosition;
     shakenPos.x += noiseX;
     shakenPos.z += noiseZ;
 

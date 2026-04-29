@@ -222,4 +222,6 @@ private:
 
     bool isRescuing = false; // •‚¯‚Ä‚¢‚é‚©‚Ç‚¤‚©
     float scissorsAnimTime = 0.0f; // ƒnƒTƒ~‚ÌŠÔ
+
+    DirectX::XMFLOAT3 basePosition={0.0f,0.0f,0.0f};
 };
