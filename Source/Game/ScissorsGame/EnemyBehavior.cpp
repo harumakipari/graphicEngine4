@@ -158,6 +158,64 @@ void RescueBehavior::Enter(EnemyBase* e)
 
 void RescueBehavior::Update(EnemyBase* e, float dt)
 {
+    // クールタイム中
+    if (rescueCooldown > 0.0f)
+    {
+        rescueCooldown -= dt;
+
+        // 予約してたら解除
+        if (target && target->reservedBy == e)
+        {
+            target->reservedBy = nullptr;
+        }
+        target = nullptr;
+
+        // 軽く徘徊させる
+        wanderTimer -= dt;
+
+        if (wanderTimer <= 0.0f)
+        {
+            wanderTimer = MathHelper::RandomRange(1.0f, 3.0f);
+
+            wanderDir =
+            {
+                MathHelper::RandomRange(-1.0f, 1.0f),
+                0,
+                MathHelper::RandomRange(-1.0f, 1.0f)
+            };
+
+            wanderDir = MathHelper::Normalize(wanderDir);
+        }
+
+        auto pos = e->GetPosition();
+        float speed = e->GetSpeed();
+
+        DirectX::XMFLOAT3 next =
+        {
+            pos.x + wanderDir.x * speed * dt,
+            pos.y,
+            pos.z + wanderDir.z * speed * dt
+        };
+
+        if (next.x < ScissorsGameState::stageMinX || next.x > ScissorsGameState::stageMaxX)
+        {
+            wanderDir.x *= -1;
+        }
+        if (next.z < ScissorsGameState::stageMinZ || next.z > ScissorsGameState::stageMaxZ)
+        {
+            wanderDir.z *= -1;
+        }
+
+        e->Move(wanderDir, dt);
+        e->Face(wanderDir);
+
+        e->SetIsRescue(false);
+        e->isCutting = false;
+
+        return;
+    }
+
+
     // ターゲットがない or 無効なら探す
     if (!target || target->IsDead() ||
         !(target->GetState() == EnemyBase::YarnState::Tied ||
@@ -275,7 +333,12 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
     }
 
     //救出処理
-    if (len < 1.5f)// ターゲットに被らないように
+    auto forward = e->GetForward();
+    auto toTarget = MathHelper::Normalize(MathHelper::Subtract(targetPos, pos));
+    float dot = MathHelper::Dot(forward, toTarget);
+    float facingThreshold = 0.8f;
+
+    if (len < 1.5f && dot > facingThreshold)
     {
         e->SetIsRescue(true);
 
@@ -294,6 +357,7 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
             if (e->scissorsCutTimer >= e->cutTimeInterval)
             {
                 target->ReleasedTied();
+                rescueCooldown = MathHelper::RandomRange(0.8f, 1.2f);   // クールタイムを設定
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav");
 
                 // 予約解除

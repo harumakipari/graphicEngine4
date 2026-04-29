@@ -189,7 +189,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     // ダッシュの狙いを表示する矢印のUIコンポーネントを追加
     for (int i = 0; i < _countof(arrowComponents); i++)
     {
-        arrowComponents[i] = std::make_unique<UIArrowComponent>("./Data/Textures/ScissorsUI/Arrow.png", "dashAimArrow");
+        arrowComponents[i] = std::make_unique<UIArrowComponent>("./Data/Textures/ScissorsUI/aaa.png", "dashAimArrow");
         arrowComponents[i]->SetWorldPosition({ 0.0f, 0.0f });
         arrowComponents[i]->SetVisible(true);
         arrowComponents[i]->SetSize({ 300.0f, 50.0f });
