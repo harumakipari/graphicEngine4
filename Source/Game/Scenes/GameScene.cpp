@@ -560,7 +560,7 @@ void GameScene::SetUpActors()
     auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", coinTr);
 #endif // 0
 
-#if 0
+#if 1
     Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr);
 #endif // 0

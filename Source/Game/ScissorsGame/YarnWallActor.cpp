@@ -11,9 +11,11 @@ void YarnWallActor::Initialize(const Transform& transform)
     skeletalMeshComponent->SetRelativeLocationDirect({ 0, 0.0f, 0 });
     skeletalMeshComponent->SetModel("./Data/TeamModels/Item/YarnWallModel.glb");
 
+
+    DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
     // ”½ŽË—p‚Ì“–‚½‚è”»’è
     redirectCollisionComponent = this->AddComponent<BoxComponent>("redirectCollisionComponent", parentName);
-    redirectCollisionComponent->SetBoxExtent({ 3.0f,1.0f,1.0f });
+    redirectCollisionComponent->SetBoxExtent(size);
     redirectCollisionComponent->SetMass(0.0f);
     redirectCollisionComponent->SetLayer(CollisionLayer::EnemyRedirect);
     redirectCollisionComponent->Initialize();

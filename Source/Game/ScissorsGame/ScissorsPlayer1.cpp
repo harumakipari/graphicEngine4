@@ -263,8 +263,12 @@ void ScissorsPlayer1::Update(float deltaTime)
 
     moveDir.x = stickX;
     moveDir.z = stickZ;
+    auto state = stateMachine_->GetStateName();
 
-    rotationComponent->SetDirection(GetLookDirection());
+    if (state != "Dash")
+    {
+        rotationComponent->SetDirection(GetLookDirection());
+    }
 
     XMFLOAT3 pos = GetPosition();
 
