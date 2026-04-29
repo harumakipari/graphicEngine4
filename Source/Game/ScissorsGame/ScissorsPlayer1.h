@@ -121,7 +121,10 @@ public:
     Trail trail;
 
     // ダッシュの区間
-    int currentSegment = 0; 
+    int currentSegment = 0;
+
+    float postDashInvincibleTimer = 0.0f;   // ダッシュ後の無敵時間タイマー
+    float postDashInvincibleDuration = 0.2f; // ダッシュ後の無敵時間
 private:
     std::shared_ptr<SphereComponent> dashAttackSphere; // ダッシュ攻撃の当たり判定用のSphereComponent
     std::shared_ptr<SphereComponent> scissorsAttackSphere; // ハサミ攻撃の当たり判定用のSphereComponent

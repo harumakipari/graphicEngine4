@@ -71,7 +71,15 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 if (stateMachine_->GetStateName() == "Dash") // ダッシュ中の時はダメージを受けない
                     return;
 
-                if (damageCooldownTimer > 0.0f) return;
+                if (damageCooldownTimer > 0.0f)
+                {// ダメージ後のクールタイムを設定する
+                    return;
+                }
+
+                if (postDashInvincibleTimer > 0.0f)
+                {// ダッシュ後のクールタイムを設定する
+                    return;
+                }
 
                 uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Enemy);
                 if (other->GetCollisionLayer() == mask)
@@ -243,10 +251,14 @@ void ScissorsPlayer1::Update(float deltaTime)
         return;
     }
 
-
     if (damageCooldownTimer > 0.0f)
     {// ダメージクールダウン中は無敵
         damageCooldownTimer -= deltaTime;
+    }
+
+    if (postDashInvincibleTimer > 0.0f)
+    {// ダッシュ後のダメージクールダウン中は無敵
+        postDashInvincibleTimer -= deltaTime;
     }
 
     Character::Update(deltaTime);

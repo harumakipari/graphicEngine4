@@ -327,7 +327,6 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
         }
     }
 
-
     int arrowCount = _countof(player->arrowComponents);
     int segmentCount = player->dashPoints.size() - 1;
 
@@ -649,6 +648,9 @@ void ScissorsPlayerDashState::Exit()
 
     // 当たり判定の押出を戻す
     player->sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
+
+    // ダッシュ後の無敵時間を設定する
+    player->postDashInvincibleTimer = player->postDashInvincibleDuration;
 }
 
 void ScissorsPlayerDashState::Redirect(const DirectX::XMFLOAT3& newDir)
