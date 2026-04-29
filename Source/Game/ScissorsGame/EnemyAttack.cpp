@@ -7,6 +7,18 @@
 #include "ScissorsPlayer1.h"
 #include "Engine/Scene/Scene.h"
 
+void NeedleAttack::Enter(EnemyBase* e)
+{
+    auto pos = e->GetPosition();
+
+    wanderTarget =
+    {
+        MathHelper::RandomRange(e->rng, ScissorsGameState::stageMinX, ScissorsGameState::stageMaxX),
+        0.0f,
+        MathHelper::RandomRange(e->rng, ScissorsGameState::stageMinZ, ScissorsGameState::stageMaxZ)
+    };
+}
+
 void NeedleAttack::Update(EnemyBase* e, float dt)
 {
     stateTimer -= dt;
@@ -151,7 +163,7 @@ void NeedleAttack::UpdateWander(EnemyBase* e, float dt)
         {
             MathHelper::RandomRange(e->rng, ScissorsGameState::stageMinX, ScissorsGameState::stageMaxX),
             0.0f,
-            MathHelper::RandomRange(e->rng,ScissorsGameState::stageMinX, ScissorsGameState::stageMaxX)
+            MathHelper::RandomRange(e->rng,ScissorsGameState::stageMinZ, ScissorsGameState::stageMaxZ)
         };
 #endif // 0
     }

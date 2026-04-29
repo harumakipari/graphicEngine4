@@ -434,6 +434,7 @@ void EnemyBase::SetBehavior(std::unique_ptr<EnemyBehavior> newBehavior)
 void EnemyBase::SetAttack(std::unique_ptr<EnemyAttack> newAttack)
 {
     attack = std::move(newAttack);
+    if (attack) attack->Enter(this);
 }
 
 

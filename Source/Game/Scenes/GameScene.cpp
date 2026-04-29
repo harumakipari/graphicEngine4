@@ -160,7 +160,7 @@ void GameScene::Start()
     audioComp->SetVolume(0.5f);
 
     auto& param = SceneTransitionManager::Instance().GetParams();
-    int stageId = 2;
+    int stageId = 1;
 
     if (param.contains("stageId"))
     {

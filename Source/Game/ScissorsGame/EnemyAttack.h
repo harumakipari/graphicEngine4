@@ -5,6 +5,8 @@ class EnemyBase;
 class EnemyAttack
 {
 public:
+    virtual void Enter(EnemyBase* e)  {}
+
     virtual void Update(EnemyBase* e, float dt) {}
 };
 
@@ -18,6 +20,8 @@ class NeedleAttack :public EnemyAttack
         Fire
     };
 public:
+    void Enter(EnemyBase* e) override;
+
     void Update(EnemyBase* e, float dt) override;
 
 private:

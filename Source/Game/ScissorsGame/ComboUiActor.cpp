@@ -95,10 +95,29 @@ void ComboUiActor::Update(float elapsedTime)
         stamp.easingRunner->Tick(elapsedTime);
     }
 
+#if 0
     if (currentCombo > prevCombo)
     {// コンボが増えたら
         AddCombo(currentCombo);
         Logger::Log(U8("コンボが増えた:") + std::to_string(currentCombo));
+    }
+
+#endif // 0
+
+    if (currentCombo == 0 && prevCombo != 0)
+    {
+        Logger::Log(U8("コンボがリセットされた"));
+
+        for (int i = 1; i < 10; i++)
+        {
+            stampStructs[i].isVisible = false;
+            stampStructs[i].stampScale = 10.0f; // 初期値に戻す
+
+            if (stampStructs[i].comboNumberUi)
+            {
+                stampStructs[i].comboNumberUi->SetVisible(false);
+            }
+        }
     }
 
     prevCombo = currentCombo;// コンボの値を保存する
@@ -107,11 +126,12 @@ void ComboUiActor::Update(float elapsedTime)
 void ComboUiActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
+    static     int a = 0;
     if (ImGui::Button(U8("コンボスタンプ")))
     {
-        AddCombo(prevCombo);
+        AddCombo(a);
     }
-    ImGui::DragInt("Combo", &prevCombo);
+    ImGui::DragInt("Combo", &a);
 #endif
 }
 
@@ -146,9 +166,12 @@ void ComboUiActor::UpdateScoreDigits(int combo)
 // コンボが足される時の表現
 void ComboUiActor::AddCombo(int combo)
 {
-    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/stamp_budge.wav", 1.0f);
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/stamp_budge.wav", 2.0f);
 
-    if (stampStructs.size() < combo)
+    int index = combo;
+
+
+    if (10 < combo)
     {
         return;
     }
@@ -185,11 +208,12 @@ void ComboUiActor::AddCombo(int combo)
 #else
     float fadeInTime = 0.3f;
 
+
     // フェードイン のスケールを触る
     {
-        TestEasingHandler handler;
-        stampStructs[currentCombo].isVisible = true;
+        stampStructs[index].isVisible = true;
 
+        TestEasingHandler handler; // UIのハンドラー
         handler.AddWait(0.1f);
 
         handler.AddEasing(
@@ -199,19 +223,19 @@ void ComboUiActor::AddCombo(int combo)
             fadeInTime
         );
 
-        handler.SetCompletedFunction([this]()
+        handler.SetCompletedFunction([this, index]()
             {
-                stampStructs[currentCombo].comboNumberUi->SetScale({ 1.0f,1.0f });
+                stampStructs[index].comboNumberUi->SetScale({ 1.0f,1.0f });
             });
         PropertyAccessor<float> accessor;
 
-        accessor.getter = [this]() { return stampStructs[currentCombo].stampScale; };
-        accessor.setter = [this](float t)
+        accessor.getter = [this, index]() { return stampStructs[index].stampScale; };
+        accessor.setter = [this, index](float t)
             {
-                stampStructs[currentCombo].stampScale = t;
+                stampStructs[index].stampScale = t;
             };
 
-        stampStructs[currentCombo].easingRunner->StartHandler(handler, accessor);
+        stampStructs[index].easingRunner->StartHandler(handler, accessor);
     }
 
 #endif // 0

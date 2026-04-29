@@ -11,16 +11,46 @@ StageData StageLoader::Load(int stageId)
         data.waves = {
             {
                 {
-                    { {5,0,5}, YarnEnemyType::RescueEnemy, 0.0f },
-                    { {8,0,5}, YarnEnemyType::MoveVertical, 0.0f, true },
+                    { {5,0,5}, YarnEnemyType::MoveVertical, 0.0f },
+                    { {8,0,5}, YarnEnemyType::MoveVertical, 0.0f },
                     { {2,0,5}, YarnEnemyType::Static, 0.0f },
-                    { { 6,0,8 }, YarnEnemyType::LongRangeAttack, 0.0f },
-                    { { 9,0,8 }, YarnEnemyType::LongRangeAttack, 0.0f ,true},
+                    { { 6,0,8 }, YarnEnemyType::MoveHorizontal, 0.0f },
+                    { { 9,0,8 }, YarnEnemyType::MoveHorizontal, 0.0f },
 
                 },
                 false,
-                1
-            }
+                
+            },
+            {
+                // Wave 3（追い込み）
+                {
+                    { {21,0,11}, YarnEnemyType::MoveHorizontal, 4.0f },
+                    { {19,0,12}, YarnEnemyType::MoveHorizontal, 3.5f },
+                    { {21,0,13}, YarnEnemyType::MoveHorizontal, 4.0f },
+                },
+                false
+            },
+            {
+                // Wave 3（追い込み）
+                {
+                    { {0,0,4}, YarnEnemyType::MoveHorizontal, 4.0f },
+                    { {1,0,5}, YarnEnemyType::MoveHorizontal, 3.5f },
+                    { {0,0,6}, YarnEnemyType::MoveHorizontal, 4.0f },
+                },
+                false
+            },
+
+            {
+                // Wave 3（追い込み）
+                {
+                    { {14,0,21}, YarnEnemyType::MoveVertical, 4.0f },
+                    { {16,0,21}, YarnEnemyType::MoveVertical, 4.0f },
+                    { {4,0,0}, YarnEnemyType::MoveVertical, 4.5f },
+                    { {6,0,0}, YarnEnemyType::MoveVertical, 4.5f },
+                },
+                false
+            },
+
         };
         break;
 
@@ -48,6 +78,7 @@ StageData StageLoader::Load(int stageId)
                 false,
                1
             },
+                            
 
             {
                 // Wave 2（ちょい圧）
