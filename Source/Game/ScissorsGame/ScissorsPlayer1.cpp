@@ -58,7 +58,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         sphereComponent->SetMass(mass);
         sphereComponent->SetLayer(CollisionLayer::Player);
         sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
-        sphereComponent->SetResponseToLayer(CollisionLayer::RibbonWall, CollisionComponent::CollisionResponse::Block);
+        sphereComponent->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Block);
         sphereComponent->Initialize();
         sphereComponent->SetOnHitCallback(
             [this](CollisionComponent* self, CollisionComponent* other)
@@ -130,6 +130,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         dashAttackSphere->SetRadius(dashAttackRange);
         dashAttackSphere->SetLayer(CollisionLayer::PlayerWeapon);
         dashAttackSphere->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
+        dashAttackSphere->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Trigger);
         dashAttackSphere->SetCollisionOffsetY(height);
         dashAttackSphere->Initialize();
         dashAttackSphere->SetActive(false); // ©’Êí‚ÍOFF

@@ -15,7 +15,7 @@ enum class CollisionLayer :uint32_t
     Camera ,   // カメラ
     Interactable,  // プレイヤーが近づいてインタラクトできるもの
     PlayerWeapon,// プレイヤーの武器
-    RibbonWall, // リボンの壁
+    Bobbin, //
     Floor,
     Wall, // 反射壁
     EnemyRedirect, // 反射敵

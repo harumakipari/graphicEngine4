@@ -7,7 +7,7 @@ void RibbonWallActor::Initialize(const Transform& transform)
 
     wallCollisionComponent = AddComponent<SphereComponent>(parentName);
     wallCollisionComponent->SetRadius(0.4f); // © ­‚µ‘å‚«‚ß‚ªd—v
-    wallCollisionComponent->SetLayer(CollisionLayer::RibbonWall);
+    wallCollisionComponent->SetLayer(CollisionLayer::Convex);
     wallCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
     wallCollisionComponent->SetStatic(true); // •Ç‚¾‚©‚ç“®‚©‚¹‚È‚¢‚æ‚¤‚É‚·‚é
     wallCollisionComponent->Initialize();

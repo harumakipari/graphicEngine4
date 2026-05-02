@@ -121,9 +121,11 @@ void EnemyBase::ForceTied()
     if (state == YarnState::Tying)
         return; // 一旦何もしない
 
-    state = YarnState::Tying;
+    state = YarnState::Tied;
     tieTimer = 0.0f;
     shakeTimer = 0.0f; // 振動のタイマーをリセットする
+
+    tieCount = GetNeedTiedCount();
 }
 
 
@@ -511,6 +513,7 @@ void EnemyBase::SetUpVisual()
         sphereCollisionComponent->SetMass(mass);
         sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
         sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Block);
         sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
         sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
         sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
@@ -564,6 +567,7 @@ void EnemyBase::SetUpVisual()
         sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
         sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
         sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Block);
         sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
         sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
         sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
@@ -608,6 +612,7 @@ void EnemyBase::SetUpVisual()
         sphereCollisionComponent->SetMass(mass);
         sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
         sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
+        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Block);
         sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
         sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
         sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
