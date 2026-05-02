@@ -318,6 +318,7 @@ public:
             AddPipeLineState("ScissorsGameEnemyPS", desc);
         }
 
+
         // SkeletalMesh forward Mask 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
@@ -343,6 +344,14 @@ public:
 
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
             AddPipeLineState("forwardBlendSkeletalMesh", desc);
+        }
+
+        // SkeletalMesh deferred ScissorsGameBossPS 用　チーム制作で足した(T_T)
+        {
+            hr = CreatePsFromCSO(device, "./Shader/ScissorsGameBossPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
+            AddPipeLineState("ScissorsGameBossPS", desc);
         }
 
         // SkeletalMesh deferred Blend 用

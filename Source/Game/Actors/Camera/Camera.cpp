@@ -3,6 +3,9 @@
 
 #include "Components/Controller/ControllerComponent.h"
 #include "Engine/Scene/SceneBase.h"
+#include "Game/ScissorsGame/RabbitBossEnemy.h"
+#include "Game/ScissorsGame/ScissorsPlayer1.h"
+#include "Physics/CollisionFunction.h"
 
 void Camera::Initialize(const Transform& transform)
 {
@@ -30,7 +33,7 @@ void MainCamera::Update(float deltaTime)
 
     // カメラ回転
     mainCameraComponent->AddYaw(rightStick.x * deltaTime * 2.0f);
-    mainCameraComponent->AddPitch( -rightStick.y * deltaTime * 2.0f);
+    mainCameraComponent->AddPitch(-rightStick.y * deltaTime * 2.0f);
 
     //const float limit = DirectX::XMConvertToRadians(80.0f);
 
@@ -49,20 +52,34 @@ void MainCamera::Update(float deltaTime)
 
 void FixedCamera::Update(float deltaTime)
 {
-    // プレイヤー移動方向
-    XMFLOAT3 moveDir = {};
-
-    if (auto target = tpsController.target.lock())
+    XMFLOAT3 pos = GetPosition();
+    auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>();
+    if (player)
     {
-        auto actor = target->GetOwner();
+        XMFLOAT3 playerPos = player->GetPosition();
+        HitResultWithActor hit;
+        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Boss);
 
-        if (auto movement = actor->GetComponent<CharacterMovementComponent>())
+        auto boss = GetOwnerScene()->GetActorManager()->GetActorOfType<RabbitBossEnemyActor>();
+        if (CollisionFunction::SphereRayCast(pos, playerPos, hit, 0.2f, mask))
         {
-            moveDir = movement->GetVelocity();
+            if (boss)
+            {
+                boss->SetRenderOpacity(0.5f);
+            }
+            Logger::Log(U8("カメラとプレイヤーの間にボスがいる"));
         }
+        else
+        {
+            if (boss)
+            {
+                boss->SetRenderOpacity(1.0f);
+            }
+        }
+        
     }
 
-    // Controller更新
-    tpsController.Update(deltaTime);
+        // Controller更新
+        tpsController.Update(deltaTime);
 }
 

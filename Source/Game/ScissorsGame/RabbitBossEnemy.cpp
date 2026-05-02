@@ -13,14 +13,11 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/BossEnemy.glb", false, true);
     skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Enemy;   // オブジェクトの種類を Enemy に設定
-    skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 6.6f;   // emissionPowerの値を大きくして、自己発光の強さを上げてみる
-    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
-    skeletalMeshComponent->plusAlphaCBuffer->data.brightness = 5.0f;
-    skeletalMeshComponent->plusAlphaCBuffer->data.saturation = 1.4f;
+    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameBossPS";
 
     // 当たり判定
     {
-        auto boxComponent= this->AddComponent<BoxComponent>("boxComponent", parentName);
+        auto boxComponent = this->AddComponent<BoxComponent>("boxComponent", parentName);
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
         boxComponent->SetBoxExtent(size);
         boxComponent->SetStatic(true);
@@ -110,6 +107,12 @@ float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext
         damage *= 3.0f;
 
     return damage;
+}
+
+// 半透明の処理
+void RabbitBossEnemyActor::SetRenderOpacity(float opacity)
+{
+    skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor.w = opacity;
 }
 
 // ランダムに大きい敵に変更する処理

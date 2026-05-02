@@ -28,6 +28,9 @@ public:
     // ダメージ処理
     float ComputeDamage(const BossDamageContext& damageContext);
 
+    // 半透明の処理
+    void SetRenderOpacity(float opacity);
+
 private:
     // ランダムに大きい敵に変更する処理
     void EnlargeRandomEnemies(int count);
