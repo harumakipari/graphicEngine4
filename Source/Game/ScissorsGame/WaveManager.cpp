@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "EnemyBase.h"
+#include "RabbitBossEnemy.h"
 #include "StageLoader.h"
 #include "WaveManagaer.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
@@ -52,6 +53,7 @@ void WaveManager::Initialize(const Transform& transform)
     spawnEffectComponent = this->AddComponent<class ParticleComponent>(parentName);
     spawnEffectComponent->Load("./Data/Effect/Files/ScissorsGameCloudEffect.json");
 
+
 }
 
 void WaveManager::SetWaves(int stageId)
@@ -72,6 +74,8 @@ void WaveManager::SetWaves(int stageId)
     {
         spawnStates.resize(waves[currentWave].spawns.size());
     }
+
+    SpawnBossIfNeeded(stage);
 #endif // 0
 }
 
@@ -208,7 +212,7 @@ void WaveManager::SpawnEnemy(
     }
     else
     {
-        scale = { 1.3f, 1.3f, 1.3f };
+        scale = { 1.1f, 1.1f, 1.1f };
     }
 
     Transform tr(pos, { 0,180,0 }, scale);
@@ -290,78 +294,6 @@ float DistanceFromLine(
     return XMVectorGetX(XMVector3Length(XMLoadFloat3(&p) - proj));
 }
 
-void WaveManager::CheckLine(
-    const std::vector<ScissorsGameEnemyBase*>& enemies,
-    std::pair<int, int> dir)
-{
-    std::map<int, std::vector<ScissorsGameEnemyBase*>> groups;
-
-    for (auto* e : enemies)
-    {
-        auto p = e->GetPosition();
-
-        float raw;
-
-        if (dir == std::make_pair(1, 0))        raw = p.z;
-        else if (dir == std::make_pair(0, 1))   raw = p.x;
-        else if (dir == std::make_pair(1, 1))   raw = p.x - p.z;
-        else                                    raw = p.x + p.z;
-
-        // ここがポイント
-        int key = (int)round(raw / 3.0f);
-
-        groups[key].push_back(e);
-    }
-
-    for (auto& [key, line] : groups)
-    {
-        if (line.size() < 5) continue;
-
-        // 並び順にソート
-        std::sort(line.begin(), line.end(),
-            [dir](auto* a, auto* b)
-            {
-                if (dir.first != 0)
-                    return a->GetPosition().x < b->GetPosition().x;
-                else
-                    return a->GetPosition().z < b->GetPosition().z;
-            });
-
-        // 可視化
-        for (int i = 0; i < line.size() - 1; i++)
-        {
-            DebugRender::DrawLine(
-                line[i]->GetPosition(),
-                line[i + 1]->GetPosition(),
-                { 1,1,0,1 });
-        }
-
-        for (auto* e : line)
-        {
-            e->SetHighlight(true);
-        }
-    }
-}
-
-// ラインを検出後
-void WaveManager::OnLineDetected(const std::vector<std::weak_ptr<ScissorsGameEnemyBase>>& line)
-{
-    // 線描画
-    for (int i = 0; i < line.size() - 1; i++)
-    {
-        DebugRender::DrawLine(
-            line[i].lock()->GetPosition(),
-            line[i + 1].lock()->GetPosition(),
-            { 1,1,0,1 }
-        );
-    }
-
-    // 光らせる
-    for (auto e : line)
-    {
-        e.lock()->SetHighlight(true);
-    }
-}
 
 void WaveManager::SpawnPreviewEffect(DirectX::XMFLOAT3 pos)
 {
@@ -379,4 +311,17 @@ void WaveManager::OnLastEnemySpawned()
     auto audioActor = GetOwnerScene()->GetActorManager()->GetActorByName("Audio");
     auto audioComp = audioActor->GetComponent<CoreAudioSourceComponent>();
     audioComp->SetPitch(1.2f);
+}
+
+// 必要ならボスを生成する
+void WaveManager::SpawnBossIfNeeded(const StageData& stageData) const
+{
+    if (!stageData.bossData.hasBoss) return;
+
+    const auto& b = stageData.bossData;
+
+    Transform tr(b.position, { 0,180,0 }, { 1,1,1 });
+
+    auto boss = GetOwnerScene()->GetActorManager()
+        ->CreateAndRegisterActorWithTransform<RabbitBossEnemyActor>("boss", tr);
 }

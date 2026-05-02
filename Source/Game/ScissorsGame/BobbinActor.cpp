@@ -142,4 +142,6 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
             e->ForceTied();
         }
     }
+
+    
 }

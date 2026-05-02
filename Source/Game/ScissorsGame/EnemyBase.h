@@ -79,7 +79,7 @@ public:
     // 速度を取得する
     float GetSpeed() const
     {
-        if (state==YarnState::Tying)
+        if (state == YarnState::Tying)
         {// 半分玉止めされていたら
             return speed * 0.5f;
         }
@@ -185,7 +185,7 @@ protected:
     YarnState state = YarnState::Active;
     YarnSize yarnSize = YarnSize::Small;
 
-    
+
 private:
     bool isDead = false;// 死亡したかどうか
     float deathTimer = 0.0f;
@@ -205,7 +205,8 @@ private:
     bool isKnockbackActive = false;
 
     float selfRescueTimeInterval = 15.0f;// 自力脱出までかかる時間
-    float selfBigRescueTimeInterval = 8.0f;// 自力脱出までかかる時間
+    const float selfBigRescueTimeInterval = 8.0f;// 大きい敵が自力脱出までかかる時間
+    const float selfSmallRescueTimeInterval = 15.0f;// 小さい敵が自力脱出までかかる時間
 
     float hitFlashTimer = 0.0f; // フラッシュタイマー
     float hitFlashDuration = 0.5f; // フラッシュ全体時間
@@ -229,7 +230,7 @@ private:
     bool isRescuing = false; // 助けているかどうか
     float scissorsAnimTime = 0.0f; // ハサミの時間
 
-    DirectX::XMFLOAT3 basePosition={0.0f,0.0f,0.0f};
+    DirectX::XMFLOAT3 basePosition = { 0.0f,0.0f,0.0f };
 
     float shakeTimer = 0.0f; // 振動の時間
 };

@@ -5,6 +5,7 @@
 #include "ScissorsPlayer1.h"
 #include "WaveManagaer.h"
 #include "Engine/Scene/Scene.h"
+#include "Physics/CollisionFunction.h"
 
 void RabbitBossEnemyActor::Initialize(const Transform& transform)
 {
@@ -51,14 +52,35 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
     rotationComponent->SetDirection({ 0,0,-1 });
     // Hpの初期化
-    maxHp = 10;
+    maxHp = 500;
     hp = maxHp;
+
 
     // 最初の位置を保存
     startPosition = transform.GetLocation();
 
     // 倒したときのスコア
     scoreData = { 3000,0 };
+
+    auto uiManager = GetOwnerScene()->GetUIManager();
+    DirectX::XMFLOAT2 gaugeSize={400.0f,50.0f};
+
+    // ボスのHPゲージのフレームスプライト描画コンポーネントを追加
+    gaugeFrameBackComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/bar_back.png", "bar_back_ui");
+    gaugeFrameBackComponent->SetWorldPosition({ 67, 965 });
+    gaugeFrameBackComponent->SetScale({ 1.0f, 1.0f });
+    gaugeFrameBackComponent->SetSize(gaugeSize);
+    gaugeFrameBackComponent->zOrder = 10;
+    //gaugeFrameBackComponent->SetPivot({ 0.0f,0.5f });
+    gaugeFrameBackComponent->SetColor(CoreColor::White);
+    uiManager->Add(gaugeFrameBackComponent);
+
+    gaugeUi = std::make_shared<UIGaugeComponent>("./Data/Textures/ScissorsUI/bar_line.png", "./Data/Textures/ScissorsUI/bar.png", "bossGauge");
+    gaugeUi->SetWorldPosition({ 50, 300 });
+    gaugeUi->zOrder = 15;
+    gaugeUi->SetSize(gaugeSize);
+
+    uiManager->Add(gaugeUi);
 
     spawnPoints =
     {
@@ -72,6 +94,8 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 
 void RabbitBossEnemyActor::Update(float deltaTime)
 {
+    DirectX::XMFLOAT3 pos = GetPosition();
+
     attackTimer += deltaTime;
 #if 0
 
@@ -84,13 +108,37 @@ void RabbitBossEnemyActor::Update(float deltaTime)
 
 #endif // 0
 
+    // HPバーの処理
+    {
+        DirectX::XMFLOAT2 uiPos = WorldToUI(pos);
+        float hpGauge = static_cast<float>(hp);
+        float hpGaugeMax = static_cast<float>(maxHp);
+        uiPos.x += gaugeUiOffset.x;
+        uiPos.y += gaugeUiOffset.y;
+        if (gaugeUi)
+        {
+            gaugeUi->SetValue(hpGauge, hpGaugeMax);
+            gaugeUi->SetWorldPosition({ uiPos.x, uiPos.y });
+            //gaugeUi->SetColor({ color.x,color.y,color.z,color.w });
+            gaugeUi->SetGaugeOffset(gaugeFrameOffset);
+
+            gaugeFrameBackComponent->SetWorldPosition({ uiPos.x, uiPos.y });
+        }
+
+
+    }
     //DebugRender::DrawSphere(center, currentRadius, { 1,0,0.5f,1 }, 0, true);
 }
 
 void RabbitBossEnemyActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
+
+    ImGui::DragFloat2(U8("ゲージのオフセット値"), &gaugeUiOffset.x, 2.0f);
+    ImGui::DragFloat2(U8("ゲージフレームのオフセット値"), &gaugeFrameOffset.x, 2.0f);
     ImGui::DragFloat(U8("出現攻撃範囲"), &spawnAttackRange, 0.5f, 0.0f, 10.0f);
+
+
 #endif
 }
 
@@ -100,11 +148,14 @@ float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext
 {
     float damage = damageContext.baseDamage;
 
-    if (damageContext.isKilledEnemyBeforeHit)
-        damage *= 2.0f;
+    if (damageContext.killedEnemyBeforeHitCount)    // 
+    {
+        float multiple = 1.0f + 0.2f * damageContext.killedEnemyBeforeHitCount;
+        damage *= multiple;
+    }
 
-    if (damageContext.isBossStunned)
-        damage *= 3.0f;
+    if (damageContext.isBossStunned) // 20ダメージ
+        damage *= 2.0f;
 
     return damage;
 }

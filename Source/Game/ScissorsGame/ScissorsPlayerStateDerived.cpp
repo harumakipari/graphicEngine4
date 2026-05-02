@@ -172,6 +172,9 @@ void ScissorsPlayerChargeDashState::Enter()
     // プレイヤーのダッシュの位置の保存を削除する
     player->dashPoints.clear();
 
+    // ダッシュ中に倒した敵をリセットする
+    player->killedEnemyCountInDash = 0;
+
     player->debugDashCollisionColor = { 1,0,0,1 }; // デバッグ用にダッシュの当たり判定の色を変える　通常は透明で、攻撃中は赤くするなどして使用する
 }
 
@@ -560,6 +563,9 @@ void ScissorsPlayerDashState::Exit()
 
     // ダッシュ後の無敵時間を設定する
     player->postDashInvincibleTimer = player->postDashInvincibleDuration;
+
+    // ダッシュ中に倒した敵の数をリセットする
+    player->killedEnemyCountInDash = 0;
 }
 
 void ScissorsPlayerDashState::Redirect(const DirectX::XMFLOAT3& newDir)

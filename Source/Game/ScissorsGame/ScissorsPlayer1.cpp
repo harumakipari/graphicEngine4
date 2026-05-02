@@ -160,33 +160,40 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
                 if (auto boss = dynamic_cast<RabbitBossEnemyActor*>(enemy))
                 {
+                    BossDamageContext bossDamageContext = {};
+                    bossDamageContext.killedEnemyBeforeHitCount = killedEnemyCountInDash;
+                    bossDamageContext.baseDamage = 10.0f;
+                    bossDamageContext.isBossStunned = boss->IsStunned();
 
+                    float damage = boss->ComputeDamage(bossDamageContext);
+                    Logger::Log(U8("ボスにダメージ：") + std::to_string(damage));
+                    boss->TakeDamage(damage);
                 }
-
-
-                CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
-                //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav",1.0f);
-
-                // ヒット処理と倒したかどうかを取得する
-                bool isKilled = enemy->OnHitByDash();
-                //bool isKilled = enemy->OnHitByDash(this, dashDamage);
-
-                if (isKilled)
+                else
                 {
-                    // スコアデータを取得する
-                    auto data = enemy->GetScoreData();
-                    auto pos = enemy->GetPosition();
-                    // スコア処理　足されたスコアを取得する コンボ加算
-                    int addScore = scoreSystem.ProcessHit(data, isKilled);
-                    SpawnScorePopup(pos, addScore);
-                    // スロー再生
-                    //Time::SetSlow(0.5f, 0.3f);
+                    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
+                    //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav",1.0f);
+
+                    // ヒット処理と倒したかどうかを取得する
+                    bool isKilled = enemy->OnHitByDash();
+
+                    if (isKilled)
+                    {
+                        // スコアデータを取得する
+                        auto data = enemy->GetScoreData();
+                        auto pos = enemy->GetPosition();
+                        // スコア処理　足されたスコアを取得する コンボ加算
+                        int addScore = scoreSystem.ProcessHit(data, isKilled);
+                        SpawnScorePopup(pos, addScore);
+                        // スロー再生
+                        //Time::SetSlow(0.5f, 0.3f);
 
 
-                    // ヒットストップ
-                    hitStopTimer = hitStopDuration;
+                        // ヒットストップ
+                        hitStopTimer = hitStopDuration;
 
-                    killedEnemyCountInDash++; // ダッシュ中に倒した敵をカウントする
+                        killedEnemyCountInDash++; // ダッシュ中に倒した敵をカウントする
+                    }
                 }
             }
         );

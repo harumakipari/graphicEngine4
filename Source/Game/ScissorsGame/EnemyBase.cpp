@@ -105,6 +105,7 @@ bool EnemyBase::OnHitByDash()
             state = YarnState::Tied;
             tieTimer = 0.0f;
             shakeTimer = 0.0f; // 振動のタイマーをリセットする
+            selfRescueTimeInterval = (yarnSize == YarnSize::Big) ? selfBigRescueTimeInterval : selfSmallRescueTimeInterval; // 自力脱出にかかる時間を設定
         }
     }
 
@@ -123,6 +124,7 @@ void EnemyBase::ForceTied()
 
     state = YarnState::Tied;
     tieTimer = 0.0f;
+    selfRescueTimeInterval = (yarnSize == YarnSize::Big) ? selfBigRescueTimeInterval : selfSmallRescueTimeInterval; // 自力脱出にかかる時間を設定
     shakeTimer = 0.0f; // 振動のタイマーをリセットする
 
     tieCount = GetNeedTiedCount();
@@ -164,8 +166,9 @@ void EnemyBase::SpawnHitEffect(bool hitByDash)
 // 玉止めされている時
 void EnemyBase::UpdateTied(float deltaTime)
 {
-#if 1// 玉止め抜ける時の揺れ
+#if 0// 玉止め抜ける時の揺れ
     shakeTimer += deltaTime;
+
 
     // ===== 揺れ設定 =====
     float shakeAmp = (yarnSize == YarnSize::Big) ? 0.15f : 0.07f;
@@ -181,23 +184,35 @@ void EnemyBase::UpdateTied(float deltaTime)
     SetPosition(shakenPos);
 
 #endif // 0
-    if (yarnSize == YarnSize::Big)
-    {// 大きい敵だったら
-        tieTimer += deltaTime;
+    tieTimer += deltaTime;
 
-        if (tieTimer > selfRescueTimeInterval)
-        {// 自力で脱出する
-            ReleasedTied();
-        }
+    float timeLeft = selfRescueTimeInterval - tieTimer;
+
+    //  5秒前から揺れ開始
+    if (timeLeft <= 5.0f)
+    {
+        float shakeRatio = 1.0f - (timeLeft / 5.0f); // 0 → 1 に増える
+        shakeTimer += deltaTime;
+
+        float baseAmp = (yarnSize == YarnSize::Big) ? 0.15f : 0.07f;
+        float shakeAmp = baseAmp * shakeRatio; // 徐々に強く
+
+        float shakeSpeed = 20.0f + 30.0f * shakeRatio; // 徐々に速く
+
+        float noiseX = sinf(shakeTimer * shakeSpeed + 1.0f) * shakeAmp;
+        float noiseZ = sinf(shakeTimer * shakeSpeed + 2.3f) * shakeAmp;
+
+        XMFLOAT3 shakenPos = basePosition;
+        shakenPos.x += noiseX;
+        shakenPos.z += noiseZ;
+
+        SetPosition(shakenPos);
     }
-    else if (yarnSize == YarnSize::Small)
-    {// 大きい敵だったら
-        tieTimer += deltaTime;
 
-        if (tieTimer > selfRescueTimeInterval)
-        {// 自力で脱出する
-            ReleasedTied();
-        }
+    // 脱出
+    if (tieTimer > selfRescueTimeInterval)
+    {
+        ReleasedTied();
     }
 
 }

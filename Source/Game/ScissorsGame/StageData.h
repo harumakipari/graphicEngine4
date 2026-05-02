@@ -30,7 +30,14 @@ struct WaveData
     int requiredKills = -1; // 必要キル数
 };
 
+struct BossData
+{
+    bool hasBoss = false; // ボスを生成するかどうか
+    DirectX::XMFLOAT3 position = { 0.0f,0.0f,0.0f };
+};
+
 struct StageData
 {
     std::vector<WaveData> waves;
+    BossData bossData;
 };

@@ -45,23 +45,6 @@ private:
         float speed = 2.0f, const DirectX::XMFLOAT3& dir = { 1,0,0 });
 
 
-    // 出現位置の補正
-    DirectX::XMFLOAT3 CalcAlignedSpawnPos(
-        DirectX::XMFLOAT3 targetPos,
-        DirectX::XMFLOAT3 dir,
-        float speed,
-        float spawnTime,
-        float alignTime)
-    {
-        float moveTime = alignTime - spawnTime;
-
-        return {
-            targetPos.x - dir.x * speed * moveTime,
-            targetPos.y,
-            targetPos.z - dir.z * speed * moveTime
-        };
-    }
-
     bool AllEnemiesDead() const
     {
         return enemyCount == 0;
@@ -70,26 +53,6 @@ private:
     // 出現エフェクトを生成
     void SpawnPreviewEffect(DirectX::XMFLOAT3 pos);
 
-    // ラインを作る関数
-    std::vector<DirectX::XMFLOAT3> MakeDiagonalLine(
-        DirectX::XMFLOAT3 start,
-        DirectX::XMFLOAT3 dir,
-        int count,
-        float spacing)
-    {
-        std::vector<DirectX::XMFLOAT3> result;
-
-        for (int i = 0; i < count; i++)
-        {
-            result.push_back({
-                start.x + dir.x * spacing * i,
-                start.y,
-                start.z + dir.z * spacing * i
-                });
-        }
-
-        return result;
-    }
 
     // 敵が死んだときに呼ぶ関数として登録する関数
     void OnDeath(EnemyBase* enemy)
@@ -110,26 +73,11 @@ private:
             aliveEnemies.end());
     }
 
-    // 直線判定
-    void DetectLine();
-    void CheckLine(const std::vector<ScissorsGameEnemyBase*>& enemies, std::pair<int, int> dir);
-
-    // ラインを検出後
-    void OnLineDetected(const std::vector<std::weak_ptr<ScissorsGameEnemyBase>>& line);
-
-    GridPos ToGrid(const DirectX::XMFLOAT3& pos)
-    {
-        const float cellSize = 1.0f; // ← ここ重要
-
-        return {
-            (int)round(pos.x / cellSize),
-            (int)round(pos.z / cellSize)
-        };
-    }
-
     // ステージ全体の最後のWaveの、最後の1体
     void OnLastEnemySpawned();
 
+    // 必要ならボスを生成する
+    void SpawnBossIfNeeded(const StageData& stageData) const;
 
 public:
     std::vector<std::weak_ptr<EnemyBase>> aliveEnemies; // 生き残っている敵

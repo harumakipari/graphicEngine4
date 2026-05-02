@@ -154,13 +154,6 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
 void GameScene::Start()
 {
-    auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
-    auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
-    audioComp->SetSource(L"./Data/Sound/BGM1/game_bgm.wav");
-    audioComp->SetLoop(true);
-    audioComp->Play();
-    audioComp->SetVolume(0.5f);
-
     auto& param = SceneTransitionManager::Instance().GetParams();
     int stageId = 1;
 
@@ -169,6 +162,27 @@ void GameScene::Start()
         stageId = std::stoi(param.at("stageId"));
     }
     stageId = 4;
+
+
+    auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
+    auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
+
+    switch (stageId)
+    {
+    case 5:
+        audioComp->SetSource(L"./Data/Sound/BGM1/boss_bgm.wav");
+        audioComp->SetLoop(true);
+        audioComp->Play();
+        audioComp->SetVolume(0.5f);
+        break;
+    default:
+        audioComp->SetSource(L"./Data/Sound/BGM1/game_bgm.wav");
+        audioComp->SetLoop(true);
+        audioComp->Play();
+        audioComp->SetVolume(0.5f);
+        break;
+    }
+
 
     auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
     waveManagerActor->SetWaves(stageId);

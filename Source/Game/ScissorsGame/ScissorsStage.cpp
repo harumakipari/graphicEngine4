@@ -10,7 +10,7 @@ void ScissorsStage::Initialize(const Transform& transform)
     std::string parentName = "ScissorsStage";
 
     staticMeshComponent = AddComponent<StaticMeshComponent>(parentName);
-    staticMeshComponent->SetModel("./Data/TeamModels/Stage/ScissorsStage.glb", false, false);
+    staticMeshComponent->SetModel("./Data/TeamModels/Stage/ScissorsStage.gltf", false, false);
 
     // 床の当たり判定用のボックスコリジョンコンポーネント
     std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", parentName);

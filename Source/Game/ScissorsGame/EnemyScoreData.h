@@ -24,8 +24,8 @@ enum class YarnEnemyType :uint8_t
 // ボスに与えるダメージ
 struct BossDamageContext
 {
-    float baseDamage;
+    float baseDamage = 10.0f;
 
-    bool isKilledEnemyBeforeHit = false;
+    int killedEnemyBeforeHitCount = 0;
     bool isBossStunned = false;
 };

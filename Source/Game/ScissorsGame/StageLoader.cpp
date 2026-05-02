@@ -329,6 +329,15 @@ StageData StageLoader::Load(int stageId)
 
 #endif // 0
         break;
+    case 5:
+        data.waves=
+            {
+        
+    };
+
+        data.bossData.hasBoss = true;
+        data.bossData.position = { 10.5f, 0.0f, 12.7f };
+        break;
     }
 
     return data;
