@@ -72,7 +72,7 @@ void BobbinActor::Update(float deltaTime)
         break;
     }
 
-    // playerの当たり判定をデバッグ表示
+    // ボビンの当たり判定をデバッグ表示
     DebugRender::DrawSphere(center, currentRadius, { 1,0,0.5f,1 }, 0, true);
 
 }

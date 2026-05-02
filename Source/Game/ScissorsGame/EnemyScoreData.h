@@ -20,3 +20,12 @@ enum class YarnEnemyType :uint8_t
     RescueEnemy, // 敵を助ける
     LongRangeAttack, // 遠距離攻撃
 };
+
+// ボスに与えるダメージ
+struct BossDamageContext
+{
+    float baseDamage;
+
+    bool isKilledEnemyBeforeHit = false;
+    bool isBossStunned = false;
+};

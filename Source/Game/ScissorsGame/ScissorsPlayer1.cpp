@@ -4,6 +4,7 @@
 
 #include "EnemyBase.h"
 #include "NeedleEnemyActor.h"
+#include "RabbitBossEnemy.h"
 #include "RibbonWallActor.h"
 #include "ScissorsPlayerStateDerived.h"
 #include "YarnEnemyActor.h"
@@ -58,6 +59,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         sphereComponent->SetMass(mass);
         sphereComponent->SetLayer(CollisionLayer::Player);
         sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
+        sphereComponent->SetResponseToLayer(CollisionLayer::Boss, CollisionComponent::CollisionResponse::Block);
         sphereComponent->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Block);
         sphereComponent->Initialize();
         sphereComponent->SetOnHitCallback(
@@ -156,6 +158,12 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
                 enemy->lastHitSegment = currentSegment;
 
+                if (auto boss = dynamic_cast<RabbitBossEnemyActor*>(enemy))
+                {
+
+                }
+
+
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
                 //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav",1.0f);
 
@@ -174,8 +182,11 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     // スロー再生
                     //Time::SetSlow(0.5f, 0.3f);
 
+
                     // ヒットストップ
                     hitStopTimer = hitStopDuration;
+
+                    killedEnemyCountInDash++; // ダッシュ中に倒した敵をカウントする
                 }
             }
         );

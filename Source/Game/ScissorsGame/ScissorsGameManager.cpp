@@ -18,7 +18,7 @@ void ScissorsGameManager::Update(float deltaTime)
     remainingTime = std::max<float>(remainingTime, 0.0f);
     if (IsTimeUp())
     {
-        Logger::Log(U8("ゲームが終わりました"));
+        //Logger::Log(U8("ゲームが終わりました"));
         //EndGame();
     }
 }

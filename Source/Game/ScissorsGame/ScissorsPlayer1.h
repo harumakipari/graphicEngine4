@@ -125,6 +125,9 @@ public:
 
     float postDashInvincibleTimer = 0.0f;   // ダッシュ後の無敵時間タイマー
     float postDashInvincibleDuration = 0.2f; // ダッシュ後の無敵時間
+
+    // １dash中に敵を倒した数
+    int killedEnemyCountInDash = 0;
 private:
     std::shared_ptr<SphereComponent> dashAttackSphere; // ダッシュ攻撃の当たり判定用のSphereComponent
     std::shared_ptr<SphereComponent> scissorsAttackSphere; // ハサミ攻撃の当たり判定用のSphereComponent

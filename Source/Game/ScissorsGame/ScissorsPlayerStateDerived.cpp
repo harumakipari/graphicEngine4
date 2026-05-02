@@ -2,6 +2,7 @@
 #include "ScissorsPlayerStateDerived.h"
 
 #include "EnemyBase.h"
+#include "RabbitBossEnemy.h"
 #include "ScissorsGameEnemyBaseActor.h"
 #include "Game/Actors/Base/Character.h"
 #include "ScissorsPlayer1.h"
@@ -206,12 +207,19 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
         };
 
         HitResultWithActor hit;
-        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Wall) | CollisionHelper::ToBit(CollisionLayer::EnemyRedirect);
+        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Wall) | CollisionHelper::ToBit(CollisionLayer::EnemyRedirect) |
+            CollisionHelper::ToBit(CollisionLayer::Boss);
 
         if (CollisionFunction::SphereRayCast(currentPos, nextTarget, hit, 0.2f, mask))
         {
             // 壁に当たった地点
             player->dashPoints.push_back(hit.hitPoint);
+
+            if (auto boss = dynamic_cast<RabbitBossEnemyActor*>(hit.actor))
+            {// ボスに当たったら、
+                //Logger::Log(U8("ダッシュ予測中にボスに当たった"));
+                break;
+            }
 
             // 残り距離
             float traveled = MathHelper::Distance(currentPos, hit.hitPoint);
@@ -438,9 +446,29 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     float t = segmentElapsed / segmentDuration;
     t = std::clamp(t, 0.0f, 1.0f);
 
+
     // 補間
     XMFLOAT3 nextPos = MathHelper::Lerp(segmentStart, segmentEnd, t);
     player->SetPosition(nextPos);
+
+    // ボスがいるかどうかの判定
+    {
+        XMFLOAT3 prevPos = currentPos;
+        HitResultWithActor hit;
+        uint32_t bossMask = CollisionHelper::ToBit(CollisionLayer::Boss);
+
+        if (CollisionFunction::SphereRayCast(prevPos, nextPos, hit, 0.5f, bossMask))
+        {
+            // ヒット位置に補正
+            player->SetPosition({ hit.hitPoint.x,0.0f,hit.hitPoint.z });
+
+            // ダッシュ停止
+            player->GetStateMachine()->ChangeState("Idle");
+            return;
+        }
+    }
+
+
 
     DirectX::XMFLOAT3 playerDir = MathHelper::Normalize(MathHelper::Subtract(nextPos, currentPos));
     player->rotationComponent->SetDirection(playerDir);

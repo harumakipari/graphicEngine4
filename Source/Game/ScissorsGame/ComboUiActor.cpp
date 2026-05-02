@@ -32,17 +32,17 @@ void ComboUiActor::Initialize(const Transform& transform)
     uiManager->Add(stamp);
 #endif // 0
 
-    stampStructs.resize(11);
+    stampStructs.resize(21);
 
-    for (int i = 0; i < 11; i++)
+    for (int i = 0; i < 21; i++)
     {
-        std::string textureName = "./Data/Textures/ScissorsUI/" + std::to_string(i) + ".png";
+        std::string textureName = "./Data/Textures/ScissorsUI/number/" + std::to_string(i) + ".png";
         std::string componentName = "ComboStamp_" + std::to_string(i);
         stampStructs[i].comboNumberUi = std::make_shared<UIImageComponent>(
             textureName,
             componentName
         );
-        stampStructs[i].comboNumberUi->SetSize({ 90, 120 });
+        stampStructs[i].comboNumberUi->SetSize({ 226, 216 });
         stampStructs[i].comboNumberUi->SetPivot({ 0.5f, 0.5f });
         stampStructs[i].comboNumberUi->SetWorldPosition({ 200,200 });
         stampStructs[i].degreeRotation = MathHelper::RandomRange(-30.0f, 30.0f);

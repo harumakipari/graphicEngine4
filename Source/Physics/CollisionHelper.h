@@ -10,6 +10,7 @@ enum class CollisionLayer :uint32_t
     WorldStatic ,
     Player ,
     Enemy ,
+    Boss,
     Convex ,
     WorldProps , // stage ‚Ì object
     Camera ,   // ƒJƒƒ‰
