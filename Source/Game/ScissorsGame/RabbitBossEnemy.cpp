@@ -226,3 +226,10 @@ void RabbitBossEnemyActor::SpawnRandomPoint()
     // 出現ダメージ
     CreteDamageZone(pos);
 }
+
+// スタン状態に入る
+void RabbitBossEnemyActor::EnterStun()
+{
+    bossState = BossState::Stun;
+    Logger::Log(U8("ボスがスタンした！"));
+}

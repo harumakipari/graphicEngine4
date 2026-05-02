@@ -11,7 +11,7 @@ class RabbitBossEnemyActor :public EnemyBase
     enum class BossState:uint8_t
     {
         Normal,
-        Stunned, // ボビンで止められている時
+        Stun, // ボビンで止められている時
     };
 
 public:
@@ -24,7 +24,7 @@ public:
     void DrawImGuiDetails() override;
 
     // スタン状態かどうか
-    bool IsStunned() const { return bossState == BossState::Stunned; }
+    bool IsStunned() const { return bossState == BossState::Stun; }
 
     // ダメージ処理
     float ComputeDamage(const BossDamageContext& damageContext);
@@ -34,6 +34,12 @@ public:
 
     // 被ダメージ処理
     void TakeDamage(const int damage) { hp -= damage; }
+
+    // ボビンによって玉止めされた時
+    void OnTied() override
+    {
+        EnterStun();
+    }
 
 private:
     // ランダムに大きい敵に変更する処理
@@ -45,6 +51,8 @@ private:
     // ランダムな場所から出現する処理
     void SpawnRandomPoint();
 
+    // スタン状態に入る
+    void EnterStun();
 private:
     BossState bossState = BossState::Normal;
     std::vector<DirectX::XMFLOAT3> spawnPoints; // 出現位置

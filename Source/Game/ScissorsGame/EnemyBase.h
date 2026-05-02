@@ -10,7 +10,17 @@
 class ScissorsGameElasticMeshComponent;
 class ScissorsPlayer1;
 
-class EnemyBase :public Character
+
+// ‹Ê~‚ß‚Å‚«‚é‘ÎÛ
+class ITieable
+{
+public:
+    virtual ~ITieable() = default;
+    virtual void OnTied() = 0;
+};
+
+
+class EnemyBase :public Character,public ITieable
 {
 public:
     enum class YarnState
@@ -52,8 +62,12 @@ public:
     // ƒ_ƒbƒVƒ…UŒ‚‚ÉŒÄ‚ÔŠÖ”
     bool OnHitByDash();
 
-    // ‹­§“I‚É‹Ê~‚ß‚É‚·‚é
-    void ForceTied();
+    // ƒ{ƒrƒ“‚É‚æ‚Á‚Ä‹Ê~‚ß‚³‚ê‚½
+    void OnTied() override
+    {
+        // ‹­§“I‚É‹Ê~‚ß‚É‚·‚é
+        ForceTied();
+    }
 
     // ˆÚ“®
     void Move(const DirectX::XMFLOAT3& dir, float deltaTime);
@@ -151,6 +165,10 @@ private:
 
     // “–‚½‚è”»’è‚ğì¬
     void CreateCollisionComponent();
+
+    // ‹­§“I‚É‹Ê~‚ß‚É‚·‚é
+    void ForceTied();
+
 public:
     // €–S’Ê’m
     std::function<void()> onDeath;

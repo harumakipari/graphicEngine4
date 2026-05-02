@@ -2,6 +2,7 @@
 #include "BobbinActor.h"
 
 #include "EnemyBase.h"
+#include "RabbitBossEnemy.h"
 #include "ScissorsPlayer1.h"
 #include "WaveManagaer.h"
 #include "Engine/Scene/Scene.h"
@@ -111,7 +112,7 @@ void BobbinActor::Reset()
 // “G‚ð‹ÊŽ~‚ß‚·‚é
 void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
 {
-    std::vector<std::shared_ptr<EnemyBase>> candidates;
+    std::vector<std::shared_ptr<ITieable>> candidates;
 
     auto waveManager = GetOwnerScene()->GetActorManager()->GetActorOfType<WaveManager>();
 
@@ -127,10 +128,19 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
         }
     }
 
+    auto boss = GetOwnerScene()->GetActorManager()->GetActorOfType<RabbitBossEnemyActor>();
+    if (boss)
+    {// ƒ{ƒX‚ª‚¢‚½‚ç
+        candidates.push_back(boss);
+    }
 
     for (auto e : candidates)
     {
-        DirectX::XMFLOAT3 enemyPos = e->GetPosition();
+        auto actor = dynamic_cast<Actor*>(e.get());
+        if (!actor) continue;
+
+        auto enemyPos = actor->GetPosition();
+
         float dx = enemyPos.x - center.x;
         float dz = enemyPos.z - center.z;
 
@@ -139,9 +149,8 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
 
         if (distanceSq <= radiusSq)
         {
-            e->ForceTied();
+            e->OnTied();
         }
     }
-
     
 }
