@@ -292,6 +292,73 @@ void EnemyBase::UpdateScissors(float deltaTime)
 
 }
 
+// モデル選択関数
+std::string EnemyBase::GetModelPath()
+{
+    switch (enemyType)
+    {
+    case YarnEnemyType::LongRangeAttack:
+        return "./Data/TeamModels/Enemy/NeedleEnemy.glb";
+
+    case YarnEnemyType::ChasePlayer:
+        return (yarnSize == Big)
+            ? "./Data/TeamModels/Enemy/YarnBigEnemyChase.glb"
+            : "./Data/TeamModels/Enemy/YarnEnemyChase.glb";
+
+    default:
+        return (yarnSize == Big)
+            ? "./Data/TeamModels/Enemy/YarnBigEnemy.glb"
+            : "./Data/TeamModels/Enemy/YarnEnemy.glb";
+    }
+}
+
+// 玉止めのモデル選択
+void EnemyBase::GetTiedModelPath(std::string& leftTiedModelPath, std::string& rightTiedModelPath) const
+{
+    switch (enemyType)
+    {
+    case YarnEnemyType::LongRangeAttack:
+        leftTiedModelPath = "./Data/TeamModels/Item/tiedModelLeftBigNeedle.glb";
+        rightTiedModelPath = "./Data/TeamModels/Item/tiedModelRightBigNeedle.glb";
+        break;
+    default:
+        if (yarnSize == Big)
+        {
+            leftTiedModelPath = "./Data/TeamModels/Item/tiedModelLeftBig.glb";
+            rightTiedModelPath = "./Data/TeamModels/Item/tiedModelRightBig.glb";
+        }
+        else
+        {
+            leftTiedModelPath = "./Data/TeamModels/Item/tiedModelLeft.glb";
+            rightTiedModelPath = "./Data/TeamModels/Item/tiedModelRight.glb";
+        }
+        break;
+    }
+
+}
+
+// 当たり判定を作成
+void EnemyBase::CreateCollisionComponent()
+{
+    // 当たり判定
+    sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
+    DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
+    radius = size.x * 0.5f;
+    height = size.y;
+    mass = 0.0f;
+    sphereCollisionComponent->SetRadius(radius);
+    sphereCollisionComponent->SetStatic(true);
+    sphereCollisionComponent->SetMass(mass);
+    sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+    sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
+    sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Block);
+    sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+    sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
+    sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+    sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
+    sphereCollisionComponent->Initialize();
+}
+
 // 玉止めをほどく
 void EnemyBase::ReleasedTied()
 {
@@ -505,59 +572,40 @@ void EnemyBase::CreateScissorsVisual()
     scissorsSecondMeshComponent->SetRelativeLocationDirect({ 0, 1.0f, 0 });
     scissorsSecondMeshComponent->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
     scissorsSecondMeshComponent->SetModel("./Data/TeamModels/Item/ScissorsSecondModel.glb");
+
+    selfBigRescueTimeInterval = 3.0f;// 大きい敵が自力脱出までかかる時間
+    selfSmallRescueTimeInterval = 5.0f;// 小さい敵が自力脱出までかかる時間
 }
 
 
 void EnemyBase::SetUpVisual()
 {
-    if (enemyType == YarnEnemyType::LongRangeAttack)
-    {
-        // ハリネズミモデル
-        skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/NeedleEnemy.glb", false, true);
-        skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
-        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
+    std::string modelPath = GetModelPath();
 
-        // 当たり判定
-        sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
-        DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
-        radius = size.x * 0.5f;
-        height = size.y;
-        mass = 0.0f;
-        sphereCollisionComponent->SetRadius(radius);
-        sphereCollisionComponent->SetStatic(true);
-        sphereCollisionComponent->SetMass(mass);
-        sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
-        sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Block);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-        sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
-        sphereCollisionComponent->Initialize();
+    skeletalMeshComponent->SetModel(modelPath, false, true);
+    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
+    skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
 
-        // 玉止めモデル
-        auto tiedLeft = AddComponent<SkeletalMeshComponent>("tiedLeftMeshComponent", parentName);
-        tiedLeft->SetModel("./Data/TeamModels/Item/tiedModelLeftBig.glb", false, true);
-        tiedLeft->SetRelativeScaleDirect({ 1.2f,1.2f,1.2f });
-        tiedLeft->SetIsVisible(false);
-        tiedLeft->SetIsCastShadow(false);
-        tiedMeshes.push_back(tiedLeft);
+    // 当たり判定を作成する
+    CreateCollisionComponent();
 
-        auto tiedRight = AddComponent<SkeletalMeshComponent>("tiedRightMeshComponent", parentName);
-        tiedRight->SetModel("./Data/TeamModels/Item/tiedModelRightBig.glb", false, true);
-        tiedRight->SetRelativeScaleDirect({ 1.2f,1.2f,1.2f });
-        tiedRight->SetIsVisible(false);
-        tiedRight->SetIsCastShadow(false);
-        tiedMeshes.push_back(tiedRight);
+    std::string leftTiedModelName = "";
+    std::string rightTiedModelName = "";
+    GetTiedModelPath(leftTiedModelName, rightTiedModelName);
 
+    // 玉止めモデル
+    auto tiedLeft = AddComponent<SkeletalMeshComponent>("tiedLeftMeshComponent", parentName);
+    tiedLeft->SetModel(leftTiedModelName, false, true);
+    tiedLeft->SetIsVisible(false);
+    tiedLeft->SetIsCastShadow(false);
+    tiedMeshes.push_back(tiedLeft);
 
-        // 位置を更新　当たり判定が{0,0,0}にくるのを防ぐため
-        UpdateAllComponentTransforms();
+    auto tiedRight = AddComponent<SkeletalMeshComponent>("tiedRightMeshComponent", parentName);
+    tiedRight->SetModel(rightTiedModelName, false, true);
+    tiedRight->SetIsVisible(false);
+    tiedRight->SetIsCastShadow(false);
+    tiedMeshes.push_back(tiedRight);
 
-        // ハリネズミはサイズを二倍にする
-        yarnSize = Big;
-        return;
-    }
 
     switch (yarnSize)
     {
@@ -565,74 +613,12 @@ void EnemyBase::SetUpVisual()
     {
         // スコアの設定
         scoreData = { 100,0 };
-
-        skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/YarnEnemy.glb", false, true);
-        skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
-        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
-
-        // 当たり判定
-        sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
-        DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
-        radius = size.x * 0.5f;
-        height = size.y;
-        mass = 0.0f;
-        sphereCollisionComponent->SetRadius(radius);
-        sphereCollisionComponent->SetMass(mass);
-        sphereCollisionComponent->SetStatic(true);
-        sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
-        sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Block);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-        sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
-        sphereCollisionComponent->Initialize();
-
-        // 玉止めモデル
-        auto tiedLeft = AddComponent<SkeletalMeshComponent>("tiedLeftMeshComponent", parentName);
-        tiedLeft->SetModel("./Data/TeamModels/Item/tiedModelLeft.glb", false, true);
-        tiedLeft->SetIsVisible(false);
-        tiedLeft->SetIsCastShadow(false);
-        tiedMeshes.push_back(tiedLeft);
-
-        auto tiedRight = AddComponent<SkeletalMeshComponent>("tiedRightMeshComponent", parentName);
-        tiedRight->SetModel("./Data/TeamModels/Item/tiedModelRight.glb", false, true);
-        tiedRight->SetIsVisible(false);
-        tiedRight->SetIsCastShadow(false);
-        tiedMeshes.push_back(tiedRight);
     }
     break;
     case Big:
     {
         // スコアの設定
         scoreData = { 200,0 };
-
-        skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/YarnBigEnemy.glb", false, true);
-        skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
-        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
-        skeletalMeshComponent->SetIsVisible(false);
-
-        elasticMeshComponent = AddComponent<ScissorsGameElasticMeshComponent>(parentName);
-        elasticMeshComponent->SetModel("./Data/TeamModels/Enemy/YarnBigEnemy.glb", false, true);
-        elasticMeshComponent->Initialize();
-
-        // 当たり判定
-        sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
-        DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
-        radius = size.x * 0.5f;
-        height = size.y;
-        mass = 0.0f;
-        sphereCollisionComponent->SetRadius(radius);
-        sphereCollisionComponent->SetStatic(true);
-        sphereCollisionComponent->SetMass(mass);
-        sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
-        sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Block);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
-        sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-        sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
-        sphereCollisionComponent->Initialize();
 #if 0
         // 反射用の当たり判定
         redirectCollisionComponent = this->AddComponent<class SphereComponent>("redirectLeftCollisionComponent", parentName);
@@ -647,21 +633,16 @@ void EnemyBase::SetUpVisual()
         redirectCollisionComponent->SetCollisionOffsetY(height * 0.5f);
         redirectCollisionComponent->Initialize();
 #endif // 0
-        // 玉止めモデル
-        auto tiedLeft = AddComponent<SkeletalMeshComponent>("tiedLeftMeshComponent", parentName);
-        tiedLeft->SetModel("./Data/TeamModels/Item/tiedModelLeftBig.glb", false, true);
-        tiedLeft->SetIsVisible(false);
-        tiedLeft->SetIsCastShadow(false);
-        tiedMeshes.push_back(tiedLeft);
-
-        auto tiedRight = AddComponent<SkeletalMeshComponent>("tiedRightMeshComponent", parentName);
-        tiedRight->SetModel("./Data/TeamModels/Item/tiedModelRightBig.glb", false, true);
-        tiedRight->SetIsVisible(false);
-        tiedRight->SetIsCastShadow(false);
-        tiedMeshes.push_back(tiedRight);
 
     }
     break;
+    }
+
+
+    if (enemyType == YarnEnemyType::LongRangeAttack)
+    {
+        yarnSize = Big; // 見た目に合わせる
+        scoreData = { 250,0 };
     }
 
     // 位置を更新　当たり判定が{0,0,0}にくるのを防ぐため

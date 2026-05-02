@@ -246,7 +246,7 @@ StageData StageLoader::Load(int stageId)
                 {
                     { { 5,0,5 },  YarnEnemyType::LongRangeAttack, 0.0f,true },
                     { { 8,0,5 },  YarnEnemyType::ChasePlayer, 0.0f},
-                    { { 10,0,5 }, YarnEnemyType::ChasePlayer, 0.0f },
+                    { { 10,0,5 }, YarnEnemyType::ChasePlayer, 0.0f ,true},
                     { { 12,0,5 }, YarnEnemyType::ChasePlayer, 0.0f },
                     { { 15,0,5 }, YarnEnemyType::WaveHorizontal, 0.0f,true },
                     { { 18,0,5 }, YarnEnemyType::WaveVertical, 0.0f },

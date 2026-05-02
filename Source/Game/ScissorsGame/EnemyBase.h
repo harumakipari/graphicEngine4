@@ -143,6 +143,14 @@ private:
     // ハサミの角度を変更する処理
     void UpdateScissors(float deltaTime);
 
+    // モデル選択関数
+    std::string GetModelPath();
+
+    // 玉止めのモデル選択
+    void GetTiedModelPath(std::string& leftTiedModelPath,std::string& rightTiedModelPath) const;
+
+    // 当たり判定を作成
+    void CreateCollisionComponent();
 public:
     // 死亡通知
     std::function<void()> onDeath;
@@ -205,8 +213,8 @@ private:
     bool isKnockbackActive = false;
 
     float selfRescueTimeInterval = 15.0f;// 自力脱出までかかる時間
-    const float selfBigRescueTimeInterval = 8.0f;// 大きい敵が自力脱出までかかる時間
-    const float selfSmallRescueTimeInterval = 15.0f;// 小さい敵が自力脱出までかかる時間
+    float selfBigRescueTimeInterval = 8.0f;// 大きい敵が自力脱出までかかる時間
+    float selfSmallRescueTimeInterval = 15.0f;// 小さい敵が自力脱出までかかる時間
 
     float hitFlashTimer = 0.0f; // フラッシュタイマー
     float hitFlashDuration = 0.5f; // フラッシュ全体時間

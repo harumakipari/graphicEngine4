@@ -138,7 +138,6 @@ void RabbitBossEnemyActor::DrawImGuiDetails()
     ImGui::DragFloat2(U8("ゲージフレームのオフセット値"), &gaugeFrameOffset.x, 2.0f);
     ImGui::DragFloat(U8("出現攻撃範囲"), &spawnAttackRange, 0.5f, 0.0f, 10.0f);
 
-
 #endif
 }
 
