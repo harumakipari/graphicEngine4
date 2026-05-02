@@ -60,6 +60,7 @@ void FixedCamera::Update(float deltaTime)
         HitResultWithActor hit;
         uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Boss);
 
+#if 1
         auto boss = GetOwnerScene()->GetActorManager()->GetActorOfType<RabbitBossEnemyActor>();
         if (CollisionFunction::SphereRayCast(pos, playerPos, hit, 0.2f, mask))
         {
@@ -76,6 +77,8 @@ void FixedCamera::Update(float deltaTime)
                 boss->SetRenderOpacity(1.0f);
             }
         }
+#endif // 0
+
         
     }
 

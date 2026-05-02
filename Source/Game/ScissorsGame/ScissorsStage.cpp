@@ -24,7 +24,7 @@ void ScissorsStage::Initialize(const Transform& transform)
         // 左壁の当たり判定用のボックスコリジョンコンポーネント
         std::shared_ptr<BoxComponent> wallComponent = this->AddComponent<class BoxComponent>("wallLeftComponent", parentName);
         wallComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(1.0f, 5.0f, 20.0f));
-        wallComponent->SetRelativeLocationDirect({ 1.5f,-0.f,-4.0f });
+        wallComponent->SetRelativeLocationDirect({ 1.5f,-0.f,-8.0f });
         wallComponent->SetStatic(true);
         wallComponent->SetLayer(CollisionLayer::Wall);
         wallComponent->Initialize();
@@ -34,13 +34,13 @@ void ScissorsStage::Initialize(const Transform& transform)
     {
         std::shared_ptr<BoxComponent> wallComponent = this->AddComponent<class BoxComponent>("wallRightComponent", parentName);
         wallComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(1.0f, 5.0f, 20.0f));
-        wallComponent->SetRelativeLocationDirect({ -21.8f,-0.f,-4.0f });
+        wallComponent->SetRelativeLocationDirect({ -24.5f,-0.f,-4.0f });
         wallComponent->SetStatic(true);
         wallComponent->SetLayer(CollisionLayer::Wall);
         wallComponent->Initialize();
     }
 
-    // 壁の当たり判定用のボックスコリジョンコンポーネント
+    // 手前壁の当たり判定用のボックスコリジョンコンポーネント
     {
         std::shared_ptr<BoxComponent> wallComponent = this->AddComponent<class BoxComponent>("wallFrontComponent", parentName);
         wallComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(20.0f, 5.0f, 1.0f));
@@ -50,11 +50,11 @@ void ScissorsStage::Initialize(const Transform& transform)
         wallComponent->Initialize();
     }
 
-    // 壁の当たり判定用のボックスコリジョンコンポーネント
+    // 奥壁の当たり判定用のボックスコリジョンコンポーネント
     {
         std::shared_ptr<BoxComponent> wallComponent = this->AddComponent<class BoxComponent>("wallBackComponent", parentName);
         wallComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(20.0f, 5.0f, 1.0f));
-        wallComponent->SetRelativeLocationDirect({ -3.0f,-0.f,-21.7f });
+        wallComponent->SetRelativeLocationDirect({ -5.2f,-0.f,-24.2f });
         wallComponent->SetStatic(true);
         wallComponent->SetLayer(CollisionLayer::Wall);
         wallComponent->Initialize();

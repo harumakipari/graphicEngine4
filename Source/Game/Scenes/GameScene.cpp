@@ -441,7 +441,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
-        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
@@ -502,10 +502,9 @@ void GameScene::SetUpActors()
     Transform mainCameraTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<FixedCamera>("fixedCameraActor", mainCameraTr);
     mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
-    mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(40), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 20.f, 500.0f);
+    mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(30), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 20.f, 500.0f);
 
-
-    Transform cameraTargetTr(DirectX::XMFLOAT3{ 9.7f,10.5f,-9.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ 11.992f,10.5f,-9.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
     mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
 
