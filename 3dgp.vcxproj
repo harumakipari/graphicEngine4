@@ -327,6 +327,7 @@
     <ClCompile Include="Source\Game\ScissorsGame\NeedleActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\NeedleEnemyActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\RabbitBossEnemy.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\RabbitBossState.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\RibbonWallActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsGameElasticMeshComponent.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsGameEnemyBaseActor.cpp" />
@@ -529,6 +530,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\WaveManagaer.h" />
     <ClInclude Include="Source\Game\ScissorsGame\YarnEnemyActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\YarnWallActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\RabbitBossState.h" />
     <ClInclude Include="Source\Game\SofyBody\SoftBody.h" />
     <ClInclude Include="Source\Game\State\StateMachine.h" />
     <ClInclude Include="Source\Game\State\StateBase.h" />

@@ -3,6 +3,8 @@
 
 #include "EnemyBase.h"
 #include "ScissorsPlayer1.h"
+#include "RabbitBossState.h"
+#include "ScissorsPlayerStateDerived.h"
 #include "WaveManagaer.h"
 #include "Engine/Scene/Scene.h"
 #include "Physics/CollisionFunction.h"
@@ -62,26 +64,46 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     // 倒したときのスコア
     scoreData = { 3000,0 };
 
-    auto uiManager = GetOwnerScene()->GetUIManager();
-    DirectX::XMFLOAT2 gaugeSize={400.0f,50.0f};
+    // ボスのHPのUI
+    {
+        auto uiManager = GetOwnerScene()->GetUIManager();
+        DirectX::XMFLOAT2 gaugeSize = { 400.0f,50.0f };
 
-    // ボスのHPゲージのフレームスプライト描画コンポーネントを追加
-    gaugeFrameBackComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/bar_back.png", "bar_back_ui");
-    gaugeFrameBackComponent->SetWorldPosition({ 67, 965 });
-    gaugeFrameBackComponent->SetScale({ 1.0f, 1.0f });
-    gaugeFrameBackComponent->SetSize(gaugeSize);
-    gaugeFrameBackComponent->zOrder = 10;
-    //gaugeFrameBackComponent->SetPivot({ 0.0f,0.5f });
-    gaugeFrameBackComponent->SetColor(CoreColor::White);
-    uiManager->Add(gaugeFrameBackComponent);
+        // ボスのHPゲージのフレームスプライト描画コンポーネントを追加
+        gaugeFrameBackComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/bar_back.png", "bar_back_ui");
+        gaugeFrameBackComponent->SetWorldPosition({ 67, 965 });
+        gaugeFrameBackComponent->SetScale({ 1.0f, 1.0f });
+        gaugeFrameBackComponent->SetSize(gaugeSize);
+        gaugeFrameBackComponent->zOrder = 10;
+        //gaugeFrameBackComponent->SetPivot({ 0.0f,0.5f });
+        gaugeFrameBackComponent->SetColor(CoreColor::White);
+        uiManager->Add(gaugeFrameBackComponent);
 
-    gaugeUi = std::make_shared<UIGaugeComponent>("./Data/Textures/ScissorsUI/bar_line.png", "./Data/Textures/ScissorsUI/bar.png", "bossGauge");
-    gaugeUi->SetWorldPosition({ 50, 300 });
-    gaugeUi->zOrder = 15;
-    gaugeUi->SetSize(gaugeSize);
+        gaugeUi = std::make_shared<UIGaugeComponent>("./Data/Textures/ScissorsUI/bar_line.png", "./Data/Textures/ScissorsUI/bar.png", "bossGauge");
+        gaugeUi->SetWorldPosition({ 50, 300 });
+        gaugeUi->zOrder = 15;
+        gaugeUi->SetSize(gaugeSize);
 
-    uiManager->Add(gaugeUi);
+        uiManager->Add(gaugeUi);
+    }
 
+    // ステートマシンを作成
+    stateMachine_ = std::make_shared<StateMachine>();
+    stateMachine_->RegisterState(std::make_unique<RabbitBossIdleState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackSelectState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackWarpPreviewState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackWarpState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackBuffPreviewState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackBuffState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossStunState>(this));
+
+    // ステートマシンを character に追加
+    this->SetStateMachine(stateMachine_);
+    // 初期ステートを設定
+    stateMachine_->ChangeState("Idle");
+
+
+    // 出現ポイント
     spawnPoints =
     {
         {2,0,11},
@@ -94,19 +116,9 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 
 void RabbitBossEnemyActor::Update(float deltaTime)
 {
+    Character::Update(deltaTime);
+
     DirectX::XMFLOAT3 pos = GetPosition();
-
-    attackTimer += deltaTime;
-#if 0
-
-    if (attackTimer > attackTimeInterval)
-    {
-        EnlargeRandomEnemies(3); // 3体強化
-        Logger::Log(U8("ボスの攻撃"));
-        attackTimer = 0.0f;
-    }
-
-#endif // 0
 
     // HPバーの処理
     {
@@ -124,9 +136,9 @@ void RabbitBossEnemyActor::Update(float deltaTime)
 
             gaugeFrameBackComponent->SetWorldPosition({ uiPos.x, uiPos.y });
         }
-
-
     }
+
+    // 出現範囲のデバック描画
     //DebugRender::DrawSphere(center, currentRadius, { 1,0,0.5f,1 }, 0, true);
 }
 
@@ -141,11 +153,20 @@ void RabbitBossEnemyActor::DrawImGuiDetails()
 #endif
 }
 
+// スタン状態かどうか
+bool RabbitBossEnemyActor::IsStunned() 
+{
+    return (GetStateMachine()->GetStateName() == "Stun");
+}
+
 
 // ダメージ処理計算
 float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext)
 {
     float damage = damageContext.baseDamage;
+
+    if (damageContext.isBossStunned) // 20ダメージ
+        damage *= 2.0f;
 
     if (damageContext.killedEnemyBeforeHitCount)    // 
     {
@@ -153,8 +174,6 @@ float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext
         damage *= multiple;
     }
 
-    if (damageContext.isBossStunned) // 20ダメージ
-        damage *= 2.0f;
 
     return damage;
 }
@@ -218,11 +237,9 @@ void RabbitBossEnemyActor::SpawnRandomPoint()
 {
     if (spawnPoints.empty()) return;
 
-    int index = rand() % spawnPoints.size();
+    int index = MathHelper::RandomRange(0, static_cast<int>(spawnPoints.size()-1));
     auto pos = spawnPoints[index];
-
     SetPosition(pos);
-
     // 出現ダメージ
     CreteDamageZone(pos);
 }
@@ -230,6 +247,6 @@ void RabbitBossEnemyActor::SpawnRandomPoint()
 // スタン状態に入る
 void RabbitBossEnemyActor::EnterStun()
 {
-    bossState = BossState::Stun;
+    GetStateMachine()->ChangeState("Stun");
     Logger::Log(U8("ボスがスタンした！"));
 }

@@ -210,20 +210,21 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
         };
 
         HitResultWithActor hit;
-        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Wall) | CollisionHelper::ToBit(CollisionLayer::EnemyRedirect) |
-            CollisionHelper::ToBit(CollisionLayer::Boss);
+        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Wall) | CollisionHelper::ToBit(CollisionLayer::EnemyRedirect) 
+            |CollisionHelper::ToBit(CollisionLayer::Boss);
 
         if (CollisionFunction::SphereRayCast(currentPos, nextTarget, hit, 0.2f, mask))
         {
             // 壁に当たった地点
             player->dashPoints.push_back(hit.hitPoint);
 
+#if 1
             if (auto boss = dynamic_cast<RabbitBossEnemyActor*>(hit.actor))
             {// ボスに当たったら、
                 //Logger::Log(U8("ダッシュ予測中にボスに当たった"));
                 break;
             }
-
+#endif
             // 残り距離
             float traveled = MathHelper::Distance(currentPos, hit.hitPoint);
             traveled = std::min<float>(traveled, remainingDist);
@@ -454,6 +455,7 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     XMFLOAT3 nextPos = MathHelper::Lerp(segmentStart, segmentEnd, t);
     player->SetPosition(nextPos);
 
+#if 1
     // ボスがいるかどうかの判定
     {
         XMFLOAT3 prevPos = currentPos;
@@ -470,6 +472,8 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
             return;
         }
     }
+
+#endif // 0
 
 
 

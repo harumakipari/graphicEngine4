@@ -168,6 +168,29 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     float damage = boss->ComputeDamage(bossDamageContext);
                     Logger::Log(U8("ボスにダメージ：") + std::to_string(damage));
                     boss->TakeDamage(damage);
+
+#if 1
+                    // ノックバック
+                    DirectX::XMFLOAT3 dir =
+                    {
+                        self->GetOwner()->GetPosition().x - other->GetOwner()->GetPosition().x,
+                        0,
+                        self->GetOwner()->GetPosition().z - other->GetOwner()->GetPosition().z
+                    };
+
+                    float len = sqrt(dir.x * dir.x + dir.z * dir.z);
+                    if (len > 0.0001f)
+                    {
+                        dir.x /= len;
+                        dir.z /= len;
+                    }
+                    XMFLOAT3 impulse = { dir.x * 15.0f, 0.0f, dir.z * 15.0f }; // ノックバックの強さ
+                    if (characterMovementComponent)
+                    {
+                        characterMovementComponent->AddImpulse(impulse);
+                    }
+#endif // 0
+
                 }
                 else
                 {
