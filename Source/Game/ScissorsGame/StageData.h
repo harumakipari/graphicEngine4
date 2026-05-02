@@ -8,9 +8,10 @@ struct SpawnData
     float delay; // ‚±‚Ì“G‚ªo‚é‚Ü‚Å‚ÌŠÔ
 
     bool isBig = false;
-    float spawnDelay = 1.0f; // © —\‚©‚ço‚é‚Ü‚Å
-
     float speed = 2.0f;
+
+    float spawnDelay = 1.3f; // © —\‚©‚ço‚é‚Ü‚Å
+
     DirectX::XMFLOAT3 dir = { 1,0,0 };
 };
 

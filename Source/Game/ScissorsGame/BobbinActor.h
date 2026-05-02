@@ -12,7 +12,18 @@ public:
 
     void Update(float deltaTime)override;
 
+    //　機能をリセットする
+    void Reset();
+
 private:
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
+
+    bool isActivated = false; // 使用フラグ
+    float currentRadius = 0.0f;
+
+
+    // 調整
+    float expandSpeed = 2.0f; // 広がる速度
+    float maxRadius = 6.0f; // 最大半径
 };
 

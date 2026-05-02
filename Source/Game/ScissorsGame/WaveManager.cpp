@@ -3,6 +3,7 @@
 #include "EnemyBase.h"
 #include "StageLoader.h"
 #include "WaveManagaer.h"
+#include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Engine/Scene/Scene.h"
 
 void WaveManager::Initialize(const Transform& transform)
@@ -17,7 +18,6 @@ void WaveManager::Initialize(const Transform& transform)
     spawnStates.clear();
     waveState = WaveState::Ready;
     startTimer = 0.0f;
-
 
 #if 0
     float alignTime = 5.0f;
@@ -81,7 +81,7 @@ void WaveManager::Update(float deltaTime)
     {
         startTimer += deltaTime;
 
-        if (startTimer < 3.0f)
+        if (startTimer < 0.5f)
         {
             return;
         }
@@ -142,6 +142,20 @@ void WaveManager::Update(float deltaTime)
         }
     }
 
+    bool isLastWave = (currentWave == waves.size() - 1);
+
+    if (isLastWave)
+    {
+        static float time = 0.0f;
+        time += deltaTime;
+        if (time >= 1.0f)
+        {
+            OnLastEnemySpawned(); //  最終Waveだけ
+        }
+
+    }
+
+
     bool shouldGoNextWave = false; // 次のウェーブに行けるかどうか
     if (wave.requiredKills >= 0)
     {// キル数指定がある場合
@@ -187,7 +201,17 @@ void WaveManager::SpawnEnemy(
     YarnEnemyType type, bool isBig,
     float speed, const DirectX::XMFLOAT3& dir)
 {
-    Transform tr(pos, { 0,180,0 }, { 1.0f,1.0f,1.0f });
+    DirectX::XMFLOAT3 scale = { 1.0f,1.0f,1.0f };
+    if (isBig)
+    {
+        scale = { 1.0f, 1.0f, 1.0f };
+    }
+    else
+    {
+        scale = { 1.3f, 1.3f, 1.3f };
+    }
+
+    Transform tr(pos, { 0,180,0 }, scale);
     auto enemy = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemy", tr);
     enemy->SetMoveDirection(dir);
 
@@ -347,4 +371,12 @@ void WaveManager::SpawnPreviewEffect(DirectX::XMFLOAT3 pos)
         spawnEffectComponent->SetWorldLocationDirect(pos);
         spawnEffectComponent->Play();
     }
+}
+
+// ステージ全体の最後のWaveの、最後の1体
+void WaveManager::OnLastEnemySpawned()
+{
+    auto audioActor = GetOwnerScene()->GetActorManager()->GetActorByName("Audio");
+    auto audioComp = audioActor->GetComponent<CoreAudioSourceComponent>();
+    audioComp->SetPitch(1.2f);
 }

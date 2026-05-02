@@ -63,7 +63,6 @@ void PlayerRunningState::Execute(float deltaTime)
     if (std::abs(dir.x - 0.0f) <= FLT_EPSILON && std::abs(dir.y - 0.0f) <= FLT_EPSILON && std::abs(dir.z - 0.0f) <= FLT_EPSILON)
     {
         player->GetStateMachine()->ChangeState("Idle");
-        return;
     }
 }
 

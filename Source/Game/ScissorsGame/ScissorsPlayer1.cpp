@@ -19,17 +19,15 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     std::string parentName = "SkeletonWarriorMeshComponent";
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    //skeletalMeshComponent->SetModel("./Data/TeamModels/Player/player.gltf", false, true);
-    skeletalMeshComponent->SetModel("./Data/TeamModels/Player/ScissorsPlayer.gltf", false, true);
+    skeletalMeshComponent->SetModel("./Data/TeamModels/Player/player.gltf", false, true);
+    //skeletalMeshComponent->SetModel("./Data/TeamModels/Player/ScissorsPlayer.gltf", false, true);
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
     controller->AddAnimation("Idle", 0);
-    controller->AddAnimation("Death", 1);
-    controller->AddAnimation("ChargeDash", 2);
-    controller->AddAnimation("Dash", 3);
-    controller->AddAnimation("Run", 4);
-    controller->AddAnimation("Attack", 5);
+    controller->AddAnimation("ChargeDash", 1);
+    controller->AddAnimation("Dash", 2);
+    controller->AddAnimation("Run", 3);
 
     // アニメーションコントローラーを character に追加
     this->SetAnimationController(controller);
@@ -188,6 +186,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     // 移動用コンポーネントを追加
     characterMovementComponent = this->AddComponent<CharacterMovementComponent>("movementComponent", parentName);
     characterMovementComponent->SetUseGravity(false);
+    characterMovementComponent->SetInitialSpeed(6.0f);
 
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
@@ -429,8 +428,9 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
         float len = sqrt(x * x + z * z);
 
         static XMFLOAT3 lastDir = { 0,0,1 };
+        static bool dirLocked = false;
 
-        if (len > 0.2f)
+        if (len > 0.4f)
         {
             aim.dir = { x / len, 0.0f, z / len };
             lastDir = aim.dir;
@@ -710,7 +710,7 @@ void ScissorsPlayer1::SpawnScorePopup(const DirectX::XMFLOAT3& pos, int score)
 //　ダッシュを使用する関数　これを呼ぶとダッシュの残り回数が減る
 void ScissorsPlayer1::UseDash()
 {
-#if 0
+#if 1
     if (dashCount > 0)
     {
         dashCount--;
@@ -719,7 +719,7 @@ void ScissorsPlayer1::UseDash()
 #endif // 0
     chargeTime = 0.0f;
 
-    //Logger::Log("Dash used. Remaining dash count: " + std::to_string(dashCount));
+    Logger::Log("Dash used. Remaining dash count: " + std::to_string(dashCount));
 }
 
 // ダッシュが失敗した時に呼ぶ関数　これを呼ぶとダッシュの残り回数が減らない

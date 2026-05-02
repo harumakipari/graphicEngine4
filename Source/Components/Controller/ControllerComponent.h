@@ -84,11 +84,18 @@ public:
         return velocity_;
     }
 
+    // 初速を設定する
+    void SetInitialSpeed(const float s)
+    {
+        this->initialSpeed = s;
+        this->speed_ = s;
+    }
+
     // 速さを設定する
     void SetSpeed(const float speed) { this->speed_ = speed; }
 
     // 速さをリセットする
-    void ResetSpeed() { this->speed_ = 5.0f; }
+    void ResetSpeed() { this->speed_ = initialSpeed; }
 
     // ジャンプや吹き飛ばしなどで外部から速度を加算するための関数
     void AddImpulse(const DirectX::XMFLOAT3& impulse)
@@ -108,6 +115,8 @@ private:
     float groundOffset_ = 1.0f;
     float radius_ = 0.4f;
     bool useGravity = true;
+
+    float initialSpeed = 5.0f; // 初速
 
 
     DirectX::XMFLOAT3 inputDir_{ 0,0,0 };

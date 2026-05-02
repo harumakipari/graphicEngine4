@@ -217,7 +217,8 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
             float traveled = MathHelper::Distance(currentPos, hit.hitPoint);
             traveled = std::min<float>(traveled, remainingDist);
 
-            remainingDist -= traveled;
+            //remainingDist -= traveled;
+            remainingDist = dashDistance * 0.8f;
 
             if (remainingDist < 0.01f)
             {
@@ -347,126 +348,6 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     }
 
 
-#if 0  // 反射しない処理
-    // ダッシュの移動先を計算する　
-    DirectX::XMFLOAT3 unclampedTarget = { currentPos.x + dashDir.x * dashDistance,currentPos.y + dashDir.y * dashDistance,currentPos.z + dashDir.z * dashDistance };
-
-    DirectX::XMFLOAT3 clampedTarget = unclampedTarget;
-    // ステージ外に出ないようにクランプ
-    float stageMinX = 1.0f;
-    float stageMaxX = 19.5f;
-    float stageMinZ = 1.0f;
-    float stageMaxZ = 19.5f;
-    clampedTarget.x = std::clamp(clampedTarget.x, stageMinX, stageMaxX);
-    clampedTarget.z = std::clamp(clampedTarget.z, stageMinZ, stageMaxZ);
-#if 0
-
-    HitResultWithActor hitResult = {};
-    uint32_t mask = CollisionHelper::ToBit(CollisionLayer::RibbonWall);
-    if (CollisionFunction::SphereRayCast(pos, clampedTarget, hitResult, 0.1f, mask))
-    {// もしリボンの壁に当たっていたら
-        clampedTarget.x = hitResult.hitPoint.x;
-        clampedTarget.z = hitResult.hitPoint.z;
-    }
-
-    // 反射する敵に当たっていたら、
-    uint32_t enemyMask = CollisionHelper::ToBit(CollisionLayer::Enemy);
-    HitResultWithActor enemyHit = {};
-    bool hitEnemy = CollisionFunction::SphereRayCast(
-        pos,
-        clampedTarget,
-        enemyHit,
-        0.3f,
-        enemyMask
-    );
-    bool canRedirect = false;
-    DirectX::XMFLOAT3 redirectDir = {};
-
-    if (hitEnemy)
-    {
-        auto enemy = dynamic_cast<YarnEnemyActor*>(enemyHit.actor);
-        if (!enemy)
-        {
-            _ASSERT_EXPR(FALSE, "redirect Hit enemy is nullptr!!");
-        }
-        // BigYarnEnemyだけとか条件つける
-        if (enemy->IsBigYarn()) // 
-        {
-            canRedirect = true;
-
-            // ↓今のOnHitByDashと同じロジック
-            DirectX::XMFLOAT3 dir =
-            {
-                enemyHit.hitPoint.x - pos.x,
-                0,
-                enemyHit.hitPoint.z - pos.z
-            };
-
-            float len = sqrt(dir.x * dir.x + dir.z * dir.z);
-            if (len > 0.0001f)
-            {
-                dir.x /= len;
-                dir.z /= len;
-            }
-
-            redirectDir = { -dir.z, 0, dir.x }; // 90度回転
-        }
-    }
-    player->dashPoints.push_back(pos); // 最初の地点を追加
-    if (canRedirect)
-    {
-        //  最初の矢印
-        player->dashAimArrowComponent->SetStart(pos);
-        player->dashAimArrowComponent->SetEnd(enemyHit.hitPoint);
-        //  分岐矢印
-        player->redirectArrowComponent->SetVisible(true);
-
-        player->dashPoints.push_back(enemyHit.hitPoint); // 次の地点を追加
-
-        DirectX::XMFLOAT3 redirectTarget =
-        {
-            enemyHit.hitPoint.x + redirectDir.x * dashDistance * 0.5f,
-            enemyHit.hitPoint.y,
-            enemyHit.hitPoint.z + redirectDir.z * dashDistance * 0.5f
-        };
-
-        player->redirectArrowComponent->SetStart(enemyHit.hitPoint);
-        player->redirectArrowComponent->SetEnd(redirectTarget);
-    }
-    else
-    {
-        player->redirectArrowComponent->SetVisible(false);
-    }
-#endif // 0
-
-    // 差があるかチェック
-    player->isStun =
-        (unclampedTarget.x != clampedTarget.x) ||
-        (unclampedTarget.z != clampedTarget.z);
-
-    player->targetPos = clampedTarget;
-
-    // 目的地のスクリーン座標
-    XMFLOAT2 uiTargetPos = WorldToUI(player->targetPos);
-    // プレイヤーの位置のスクリーン座標
-    XMFLOAT2 uiPlayerPos = WorldToUI(currentPos);
-
-    float distance = MathHelper::DistanceFloat2(uiTargetPos, uiPlayerPos);
-
-    float arrowSizeX = player->dashAimArrowComponent->GetSize().x;
-    float uiScale = abs(distance) / arrowSizeX;
-    player->dashAimArrowComponent->SetScale({ uiScale,1.0f });
-
-    //　方向ベクトル
-    DirectX::XMFLOAT2 dir = MathHelper::SubtractFloat2(uiTargetPos, uiPlayerPos);
-    float angle = atan2f(dir.y, dir.x);
-    player->dashAimArrowComponent->SetWorldAngleDegree(DirectX::XMConvertToDegrees(angle));
-
-    // ダッシュの方向にUIを出す
-    DebugRender::DrawSphere(player->targetPos, 0.3f, { 1,0,0,1 });
-
-#endif // 0  // 反射しない処理
-
     if (player->IsDashTriggered())
     {
         player->fixedDashPoints = player->dashPoints;
@@ -581,7 +462,7 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
         {
             Time::SetSlow(0.6f, 0.06f);
         }
-#endif /a/ 0
+#endif // 0
 
         // 次の区間へ
         segmentStart = player->fixedDashPoints[player->currentSegment];

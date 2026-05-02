@@ -612,6 +612,15 @@
     <ClCompile Include="Source\Game\ScissorsGame\ScorePopupActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\ScissorsUIStartActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\ScissorsGameManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\ScissorsUiTimerActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -970,6 +979,9 @@
     <ClInclude Include="Source\Game\ScissorsGame\BobbinActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\YarnWallActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScorePopupActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScissorsUIStartActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameManager.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScissorsUiTimerActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

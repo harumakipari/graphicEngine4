@@ -246,7 +246,7 @@ void CascadedShadowMaps::Activate(ID3D11DeviceContext* immediateContext, const D
         }
 
 
-#if 1
+#if 0
         // ===== テクセルスナップ開始 =====
 
         float shadowMapResolution = 4096.0f;

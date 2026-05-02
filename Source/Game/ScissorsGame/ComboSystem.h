@@ -47,7 +47,7 @@ public:
         if (comboCount <= 5) return 1.5f;
         if (comboCount <= 7) return 2.0f;
         if (comboCount <= 9) return 3.0f;
-        return 4.0f;
+        return 4.0f; 
 #endif // 0
 
     }

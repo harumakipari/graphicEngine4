@@ -52,6 +52,9 @@ public:
     // ダッシュ攻撃時に呼ぶ関数
     bool OnHitByDash();
 
+    // 強制的に玉止めにする
+    void ForceTied();
+
     // 移動
     void Move(const DirectX::XMFLOAT3& dir, float deltaTime);
 
@@ -181,6 +184,8 @@ protected:
 
     YarnState state = YarnState::Active;
     YarnSize yarnSize = YarnSize::Small;
+
+    
 private:
     bool isDead = false;// 死亡したかどうか
     float deathTimer = 0.0f;
@@ -199,7 +204,8 @@ private:
     KnockbackData knockback;
     bool isKnockbackActive = false;
 
-    float selfRescueTimeInterval = 5.0f;// 自力脱出までかかる時間
+    float selfRescueTimeInterval = 15.0f;// 自力脱出までかかる時間
+    float selfBigRescueTimeInterval = 8.0f;// 自力脱出までかかる時間
 
     float hitFlashTimer = 0.0f; // フラッシュタイマー
     float hitFlashDuration = 0.5f; // フラッシュ全体時間
@@ -224,4 +230,6 @@ private:
     float scissorsAnimTime = 0.0f; // ハサミの時間
 
     DirectX::XMFLOAT3 basePosition={0.0f,0.0f,0.0f};
+
+    float shakeTimer = 0.0f; // 振動の時間
 };

@@ -46,7 +46,6 @@ public:
     bool IsChargeDashTriggered() const { return triggerChargeDash; }
 
     // 攻撃トリガーが引かれたかどうかを取得する関数
-    //bool IsAttackTriggered() const { return attackTrigger; }
     bool IsAttackTriggered() const { return false; }
 
     // 狙いの情報を取得する関数　これでダッシュの方向や溜めの強さを決める

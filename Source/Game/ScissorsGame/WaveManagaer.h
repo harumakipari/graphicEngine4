@@ -127,6 +127,10 @@ private:
         };
     }
 
+    // ステージ全体の最後のWaveの、最後の1体
+    void OnLastEnemySpawned();
+
+
 public:
     std::vector<std::weak_ptr<EnemyBase>> aliveEnemies; // 生き残っている敵
 
@@ -150,5 +154,5 @@ private:
     float lineCheckTimer = 0.0f;
 
 
-
+    bool hasTriggeredLastSpawn = false;
 };

@@ -21,11 +21,13 @@
 #include "Game/ScissorsGame/EnemyBase.h"
 #include "Game/ScissorsGame/NeedleEnemyActor.h"
 #include "Game/ScissorsGame/RabbitBossEnemy.h"
+#include "Game/ScissorsGame/ScissorsGameManager.h"
 
 
 #include "Physics/Physics.h"
 #include "Game/ScissorsGame/ScissorsPlayer1.h"
 #include "Game/ScissorsGame/ScissorsStage.h"
+#include "Game/ScissorsGame/ScissorsUiTimerActor.h"
 #include "Game/ScissorsGame/ScoreUiActor.h"
 #include "Game/ScissorsGame/WaveManagaer.h"
 #include "Game/ScissorsGame/YarnEnemyActor.h"
@@ -161,12 +163,12 @@ void GameScene::Start()
 
     auto& param = SceneTransitionManager::Instance().GetParams();
     int stageId = 1;
-    stageId = 2;
 
     if (param.contains("stageId"))
     {
         stageId = std::stoi(param.at("stageId"));
     }
+    stageId = 4;
 
     auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
     waveManagerActor->SetWaves(stageId);
@@ -425,7 +427,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
-        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
@@ -486,6 +488,8 @@ void GameScene::SetUpActors()
     Transform mainCameraTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<FixedCamera>("fixedCameraActor", mainCameraTr);
     mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
+    mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(40), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 20.f, 500.0f);
+
 
     Transform cameraTargetTr(DirectX::XMFLOAT3{ 9.7f,10.5f,-9.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
@@ -556,15 +560,30 @@ void GameScene::SetUpActors()
     auto Actor = this->GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemy", needleTr);
 
 #endif // 0
-#if 0
+#if 1
     Transform coinTr(DirectX::XMFLOAT3{ 1,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", coinTr);
 #endif // 0
 
-#if 1
+#if 0
     Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr);
+
+    Transform coinTr1(DirectX::XMFLOAT3{ 6,0.0f,5 }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto coin1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr1);
+
+    Transform coinTr2(DirectX::XMFLOAT3{ 1,0.0f,10 }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto coin2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr2);
+
+    Transform coinTr3(DirectX::XMFLOAT3{ 15,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto coin3= this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr3);
 #endif // 0
+    Transform gameManagerTransform(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto gameManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsGameManager>("gameManagerActor", gameManagerTransform);
+    gameManagerActor->StartGame();
+
+    Transform timerActorTransform(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto scissorsUiTimeActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiTimerActor>("timeActor", timerActorTransform);
 
 
 #if 0

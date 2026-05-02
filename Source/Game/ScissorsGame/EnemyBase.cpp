@@ -76,7 +76,7 @@ void EnemyBase::DrawImGuiDetails()
         //elasticMeshComponent->AddImpulse({1, 1, 1});
     }
 
-    
+
 }
 
 bool EnemyBase::OnHitByDash()
@@ -104,11 +104,28 @@ bool EnemyBase::OnHitByDash()
             // 1回目 → 球止め
             state = YarnState::Tied;
             tieTimer = 0.0f;
+            shakeTimer = 0.0f; // 振動のタイマーをリセットする
         }
     }
 
     return false;
 }
+
+// 強制的に玉止めする
+void EnemyBase::ForceTied()
+{
+    if (state == YarnState::Dead)
+        return;
+
+    //　既に玉止め状態の場合
+    if (state == YarnState::Tying)
+        return; // 一旦何もしない
+
+    state = YarnState::Tying;
+    tieTimer = 0.0f;
+    shakeTimer = 0.0f; // 振動のタイマーをリセットする
+}
+
 
 // ヒットエフェクトを生成する
 void EnemyBase::SpawnHitEffect(bool hitByDash)
@@ -145,17 +162,15 @@ void EnemyBase::SpawnHitEffect(bool hitByDash)
 // 玉止めされている時
 void EnemyBase::UpdateTied(float deltaTime)
 {
-#if 0 // 玉止め抜ける時の揺れ
-    static float totalTime = 0.0f;
-    totalTime += deltaTime;
+#if 1// 玉止め抜ける時の揺れ
+    shakeTimer += deltaTime;
 
     // ===== 揺れ設定 =====
     float shakeAmp = (yarnSize == YarnSize::Big) ? 0.15f : 0.07f;
     float shakeSpeed = 20.0f;
 
-    float noiseX = sinf(totalTime * shakeSpeed + 1.0f) * shakeAmp;
-    float noiseZ = sinf(totalTime * shakeSpeed + 2.3f) * shakeAmp;
-
+    float noiseX = sinf(shakeTimer * shakeSpeed + 1.0f) * shakeAmp;
+    float noiseZ = sinf(shakeTimer * shakeSpeed + 2.3f) * shakeAmp;
 
     XMFLOAT3 shakenPos = basePosition;
     shakenPos.x += noiseX;
@@ -173,6 +188,16 @@ void EnemyBase::UpdateTied(float deltaTime)
             ReleasedTied();
         }
     }
+    else if (yarnSize == YarnSize::Small)
+    {// 大きい敵だったら
+        tieTimer += deltaTime;
+
+        if (tieTimer > selfRescueTimeInterval)
+        {// 自力で脱出する
+            ReleasedTied();
+        }
+    }
+
 }
 
 // 玉止め表示更新処理

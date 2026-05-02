@@ -101,7 +101,7 @@ public:
 
 private:
     float minDistance = 4.0f; // ダッシュの最小距離　
-    float maxDistance = 20.0f; // ダッシュの最大距離
+    float maxDistance = 15.0f; // ダッシュの最大距離
 
     DirectX::XMFLOAT3 currentPos = { 0,0,0 }; // 今の位置
     DirectX::XMFLOAT3 dashDir = { 0,0,0 }; // ダッシュの方向
