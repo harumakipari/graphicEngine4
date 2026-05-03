@@ -149,6 +149,19 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     mouseCursorPause->SetPivot({ 0.1f, 0.1f });
     mouseCursorPause->SetVisible(false);
 
+
+    normalCoin = {
+    0.9f, 2.3f,
+    0.15f, 15.0f,
+    10, 40.0f, 500.0f,
+    "./Data/TeamModels/Item/NormalButtonCoin.glb" };
+
+    bonusCoin = {
+    0.7f, 5.8f,
+    0.05f, 30.0f,
+    25, 80.0f, 800.0f,
+    "./Data/TeamModels/Item/BonusButtonCoin.glb" };
+
     return true;
 }
 
@@ -183,9 +196,10 @@ void GameScene::Start()
         break;
     }
 
-
+#if 1
     auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
     waveManagerActor->SetWaves(stageId);
+#endif // 0
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
 
@@ -560,7 +574,7 @@ void GameScene::SetUpActors()
     needleEnemyActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<NeedleEnemyActor>("needleEnemy", needleTr);
     needleEnemyActor->SetMoveDirection({ 1.0f,0.0f,1.0f });
 #endif // 0// ハリネズミを生成　
-#if 0
+#if 1
     Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("coin", coinTr);
 #endif // 0
@@ -578,7 +592,7 @@ void GameScene::SetUpActors()
     auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
 #endif // 0
 
-#if 1
+#if 0
     Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr);
 
@@ -640,9 +654,6 @@ void GameScene::SetUpActors()
 
 }
 
-
-
-
 bool GameScene::Uninitialize(ID3D11Device* device)
 {
     SceneBase::Uninitialize(device);
@@ -676,15 +687,29 @@ void GameScene::DrawGui()
     }
     if (ImGui::TreeNode(U8("コイン")))
     {
-        ImGui::DragFloat(U8("コインの上昇時間"), &coinTuning.duration, 0.1f, 0.0f, 20.0f);
-        ImGui::DragFloat(U8("コインの上昇距離"), &coinTuning.height, 0.1f, 0.0f, 20.0f);
+        ImGui::DragFloat(U8("コインの上昇時間"), &normalCoin.duration, 0.1f, 0.0f, 20.0f);
+        ImGui::DragFloat(U8("コインの上昇距離"), &normalCoin.height, 0.1f, 0.0f, 20.0f);
 
-        ImGui::DragFloat(U8("コインのトレイルのスポーンの間隔"), &coinTuning.trailSpawnInterval, 0.1f, 0.0f, 20.0f);
-        ImGui::DragFloat(U8("コインのトレイルのサイズ"), &coinTuning.trailSize, 2.f, 1.0f, 30.0f);
+        ImGui::DragFloat(U8("コインのトレイルのスポーンの間隔"), &normalCoin.trailSpawnInterval, 0.1f, 0.0f, 20.0f);
+        ImGui::DragFloat(U8("コインのトレイルのサイズ"), &normalCoin.trailSize, 2.f, 1.0f, 30.0f);
 
-        ImGui::DragFloat(U8("コインのバーストのサイズ"), &coinTuning.burstSize, 2.f, 1.0f, 100.0f);
-        ImGui::DragInt(U8("コインのバーストの個数"), &coinTuning.burstCount, 1, 1, 15);
-        ImGui::DragFloat(U8("コインのバーストのスピード"), &coinTuning.burstShrinkSpeed, 2.f, 100.0f, 600.0f);
+        ImGui::DragFloat(U8("コインのバーストのサイズ"), &normalCoin.burstSize, 2.f, 1.0f, 100.0f);
+        ImGui::DragInt(U8("コインのバーストの個数"), &normalCoin.burstCount, 1, 1, 15);
+        ImGui::DragFloat(U8("コインのバーストのスピード"), &normalCoin.burstShrinkSpeed, 2.f, 100.0f, 600.0f);
+
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode(U8("ボーナスコイン")))
+    {
+        ImGui::DragFloat(U8("コインの上昇時間"), &bonusCoin.duration, 0.1f, 0.0f, 20.0f);
+        ImGui::DragFloat(U8("コインの上昇距離"), &bonusCoin.height, 0.1f, 0.0f, 20.0f);
+
+        ImGui::DragFloat(U8("コインのトレイルのスポーンの間隔"), &bonusCoin.trailSpawnInterval, 0.1f, 0.0f, 20.0f);
+        ImGui::DragFloat(U8("コインのトレイルのサイズ"), &bonusCoin.trailSize, 2.f, 1.0f, 100.0f);
+
+        ImGui::DragFloat(U8("コインのバーストのサイズ"), &bonusCoin.burstSize, 2.f, 1.0f, 200.0f);
+        ImGui::DragInt(U8("コインのバーストの個数"), &bonusCoin.burstCount, 1, 1, 50);
+        ImGui::DragFloat(U8("コインのバーストのスピード"), &bonusCoin.burstShrinkSpeed, 2.f, 100.0f, 1000.0f);
 
         ImGui::TreePop();
     }

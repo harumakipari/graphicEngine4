@@ -43,8 +43,8 @@ public:
     // コインの調整　
     struct CoinTuning
     {
-        float duration = 0.9f; // 演出に掛ける時間
-        float height = 2.3f;
+        float duration = 2.0f; // 演出に掛ける時間
+        float height = 1.5f;
 
         // ===== 上昇トレイル =====
         float trailSpawnInterval = 0.15f;
@@ -54,6 +54,7 @@ public:
         int burstCount = 10;
         float burstSize = 40.0f;
         float burstShrinkSpeed = 500.0f;
+        std::string modelPath = "./Data/TeamModels/Item/NormalButtonCoin.glb";
     };
 
 public:
@@ -90,7 +91,8 @@ private:
 
 public:
     EnemyTuning enemyTuning = {}; // 敵の調整用
-    CoinTuning coinTuning = {}; // 敵の調整用
+    CoinTuning normalCoin = {}; // コインの調整用
+    CoinTuning  bonusCoin = {}; // ボーナスコインの調整用
 
 private:
     TPSCameraComponent* mainCameraComponent = nullptr;

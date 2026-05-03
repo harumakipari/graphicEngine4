@@ -9,14 +9,6 @@
 
 void ButtonCoinActor::Initialize(const Transform& transform)
 {
-    std::string parentName = "buttonCoin";
-    skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    skeletalMeshComponent->SetModel("./Data/TeamModels/Item/NormalButtonCoin.glb");
-    skeletalMeshComponent->SetIsCastShadow(false); // 
-    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
-
-    particleComponent = AddComponent<ParticleComponent>("particleComponent", parentName);
-    particleComponent->Load("./Data/Effect/Files/ScissorsGameCoinAppearEffect.json");
     //particleComponent->Load("./Data/Effect/Files/ScissorsGameCoinBurstEffect.json");
 
     // 開始位置を設定
@@ -28,7 +20,7 @@ void ButtonCoinActor::Update(float deltaTime)
 {
     // 調整のために
     auto scene = static_cast<GameScene*>(GetOwnerScene());
-    auto& tuning = scene->coinTuning;
+    auto& tuning = isBonus ? scene->bonusCoin : scene->normalCoin;
     float trailSpawnInterval = tuning.trailSpawnInterval;
     float trailSize = tuning.trailSize;
     float duration = tuning.duration;
@@ -37,7 +29,7 @@ void ButtonCoinActor::Update(float deltaTime)
     DirectX::XMFLOAT3 position = GetPosition();
     DirectX::XMFLOAT2 screePos = WorldToUI(position);
 
-    for (auto star:starEffects)
+    for (auto star : starEffects)
     {// 星をコインに追従させるため
         star->SetFollowPos(screePos);
     }
@@ -110,7 +102,7 @@ void ButtonCoinActor::Update(float deltaTime)
         }
         break;
     case CoinState::Finished:
-        MarkPendingKill();
+        //MarkPendingKill();
         break;
     }
 
@@ -123,18 +115,33 @@ void ButtonCoinActor::DrawImGuiDetails()
 #ifdef USE_IMGUI
     if (ImGui::Button(U8("演出開始")))
     {
-        StartPerform();
+        StartPerform(true);
     }
 #endif
 }
 
 // 演出開始する
-void ButtonCoinActor::StartPerform()
+void ButtonCoinActor::StartPerform(bool isBonus)
 {
+    this->isBonus = isBonus;
+    auto scene = static_cast<GameScene*>(GetOwnerScene());
+    auto& tuning = isBonus ? scene->bonusCoin : scene->normalCoin;
+    
+    std::string parentName = "buttonCoin";
+    skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
+    skeletalMeshComponent->SetModel(tuning.modelPath);
+    skeletalMeshComponent->SetIsCastShadow(false); // 
+    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
+
+    particleComponent = AddComponent<ParticleComponent>("particleComponent", parentName);
+    particleComponent->Load("./Data/Effect/Files/ScissorsGameCoinAppearEffect.json");
+
+
     state = CoinState::Rising; // 上昇中に変更
     skeletalMeshComponent->SetIsVisible(true);
     elapsedTime = 0.0f;
     SetPosition(startPos);
+
 
     // 音を再生
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/button_piro.wav", 1.f);
@@ -182,7 +189,7 @@ void ButtonCoinActor::SpawnBurst()
     auto screenPos = WorldToUI(pos);
 
     auto scene = static_cast<GameScene*>(GetOwnerScene());
-    auto& tuning = scene->coinTuning;
+    auto& tuning = scene->normalCoin;
     int count = tuning.burstCount;
 
 

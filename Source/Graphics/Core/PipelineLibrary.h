@@ -346,6 +346,7 @@ public:
             AddPipeLineState("forwardBlendSkeletalMesh", desc);
         }
 
+#if 0
         // SkeletalMesh deferred ScissorsGameBossPS 用　チーム制作で足した(T_T)
         {
             hr = CreatePsFromCSO(device, "./Shader/ScissorsGameBossPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
@@ -353,6 +354,8 @@ public:
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
             AddPipeLineState("ScissorsGameBossPS", desc);
         }
+
+#endif // 0
 
         // SkeletalMesh deferred Blend 用
         {

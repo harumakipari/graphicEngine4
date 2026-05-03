@@ -99,7 +99,7 @@ bool EnemyBase::OnHitByDash(bool isReflected)
             else
             {
                 // U“®‚³‚¹‚é
-                InputSystem::SetVibration(1.0f, 0.15f);
+                InputSystem::SetVibration(0.8f, 0.15f);
                 CallDeath(false);
             }
             // 2‰ñ–Ú ¨ Ž€–S
@@ -559,7 +559,7 @@ void EnemyBase::SpawnCoin(DirectX::XMFLOAT3 pos)
     // ƒRƒCƒ“‚ð¶¬‚·‚é
     Transform coinTr(pos, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("coin", coinTr);
-    coin->StartPerform();
+    coin->StartPerform(false);
 }
 
 

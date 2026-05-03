@@ -2,6 +2,7 @@
 
 #include "ScissorsPlayer1.h"
 
+#include "ButtonCoinActor.h"
 #include "EnemyBase.h"
 #include "NeedleEnemyActor.h"
 #include "RabbitBossEnemy.h"
@@ -173,6 +174,9 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     boss->TakeDamage(damage);
 
 #if 1
+                    // 無敵時間を追加
+                    damageCooldownTimer = damageCooldownInterval; // 無敵時間を設定
+
                     // ノックバック
                     DirectX::XMFLOAT3 dir =
                     {
@@ -309,7 +313,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
             fill->SetTexture(heartFull);
             fill->SetWorldPosition({ x, y }); // 同じ位置に重ねる
             fill->SetSize({ 150.0f, 150.0f });
-            fill->zOrder = 2; 
+            fill->zOrder = 2;
 
             uiManager->Add(fill);
             heartFillsHpUiComponents.push_back(fill);
@@ -915,10 +919,17 @@ void ScissorsPlayer1::ResolveReflectedKills()
     // ダッシュボーナス
     int dashBonus = (killedEnemyCountInDash / 5) * 500;
     scoreSystem.AddBonusScore(dashBonus);
+    if (reflectedKillCount > 0)
+    {// 反射攻撃で死んでいたら
+        InputSystem::SetVibration(1.0f, 0.2f);
+    }
+    if (killedEnemyCountInDash>=5)
+    {// 5体以上
+        SpawnBonusCoinBurst();
+    }
 
     Logger::Log("ReflectionBonus: " + std::to_string(reflectionBonus));
     Logger::Log("DashBonus: " + std::to_string(dashBonus));
-
 
     dashHits.clear();
 }
@@ -980,4 +991,33 @@ void ScissorsPlayer1::SpawnStarParticle(DirectX::XMFLOAT3 pos, XMFLOAT3 playerFo
     starTex->SetSize({ 50.0f, 50.0f });
     starTex->SetPivot({ 0.5f, 0.5f });
     uiManager->Add(starTex);
+}
+
+// ボーナスコインを生成する関数
+void ScissorsPlayer1::SpawnBonusCoinBurst()
+{
+    auto pos = GetPosition();
+    auto scene = GetOwnerScene();
+    int coinCount = 1;
+
+    for (int i = 0; i < coinCount; i++)
+    {
+        float angle = static_cast<float>(i) / coinCount * DirectX::XM_2PI;
+
+        DirectX::XMFLOAT3 offset =
+        {
+            cosf(angle) * 1.5f,
+            0.5f,
+            sinf(angle) * 1.5f
+        };
+
+        XMFLOAT3 coinPos = MathHelper::Add(pos, offset);
+
+        Transform tr(coinPos, { 0,0,0 }, { 1.0f,1.0f,1.0f }); // ←少し大きい
+
+        auto coin = scene->GetActorManager()
+            ->CreateAndRegisterActorWithTransform<ButtonCoinActor>("bonusCoin", tr);
+
+        coin->StartPerform(true); //  ボーナス指定
+    }
 }

@@ -321,7 +321,7 @@ void ScissorsGameEnemyBase::SpawnCoin(DirectX::XMFLOAT3 pos)
     // ƒRƒCƒ“‚ð¶¬‚·‚é
     Transform coinTr(pos, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("coin", coinTr);
-    coin->StartPerform();
+    //coin->StartPerform();
     createCoin = true;
 
 }

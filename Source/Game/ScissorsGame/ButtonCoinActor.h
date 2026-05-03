@@ -26,7 +26,7 @@ public:
     void DrawImGuiDetails() override;
 
     // 演出開始する
-    void StartPerform();
+    void StartPerform(bool isBonus);
 
 private:
     // きらきらバースト
@@ -50,4 +50,6 @@ private:
 
 
     std::vector<std::shared_ptr<UIStarEffect>> starEffects;
+
+    bool isBonus = false; // ボーナスコインかどうか
 };
