@@ -62,6 +62,22 @@ private:
     float waveFrequency = 3.0f; // ‘¬‚³
 };
 
+class WaveMoveBehavior : public EnemyBehavior
+{
+public:
+    void Enter(EnemyBase* e) override {}
+
+    void Update(EnemyBase* e, float dt) override;
+
+    void Exit(EnemyBase* e) override {}
+
+private:
+    // ”g‘Å‚¿ˆÚ“®‚Ìƒpƒ‰ƒ[ƒ^
+    float waveTime = 0.0f;
+    float waveAmplitude = 1.0f; // U‚ê•
+    float waveFrequency = 3.0f; // ‘¬‚³
+};
+
 class ChaseBehavior : public EnemyBehavior
 {
 public:

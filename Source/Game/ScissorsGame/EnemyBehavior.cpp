@@ -113,6 +113,72 @@ void WaveVerticalBehavior::Update(EnemyBase* e, float dt)
     e->Face(moveDirection);
 }
 
+void WaveMoveBehavior::Update(EnemyBase* e, float dt)
+{
+    waveTime += dt;
+
+    auto pos = e->GetPosition();
+
+    auto start = e->GetStartPosition();
+    auto moveDir = e->GetMoveDirection();
+    float speed = e->GetSpeed();
+
+    // ----------- 正規化（超重要）-----------
+    XMVECTOR dirVec = XMVector3Normalize(XMLoadFloat3(&moveDir));
+    XMStoreFloat3(&moveDir, dirVec);
+
+    // ----------- 進行方向に移動 -----------
+    start.x += moveDir.x * speed * dt;
+    start.z += moveDir.z * speed * dt;
+
+    // ----------- 壁判定＆反射 -----------
+    bool reflected = false;
+
+    // X壁
+    if (start.x < ScissorsGameState::stageMinX)
+    {
+        start.x = ScissorsGameState::stageMinX;
+        moveDir.x *= -1.0f;
+        reflected = true;
+    }
+    else if (start.x > ScissorsGameState::stageMaxX)
+    {
+        start.x = ScissorsGameState::stageMaxX;
+        moveDir.x *= -1.0f;
+        reflected = true;
+    }
+
+    // Z壁
+    if (start.z < ScissorsGameState::stageMinZ)
+    {
+        start.z = ScissorsGameState::stageMinZ;
+        moveDir.z *= -1.0f;
+        reflected = true;
+    }
+    else if (start.z > ScissorsGameState::stageMaxZ)
+    {
+        start.z = ScissorsGameState::stageMaxZ;
+        moveDir.z *= -1.0f;
+        reflected = true;
+    }
+
+    // ----------- 直交ベクトル（波方向）-----------
+    XMFLOAT3 sideDir = { -moveDir.z, 0.0f, moveDir.x };
+
+    // ----------- 波適用 -----------
+    float wave = sin(waveTime * waveFrequency) * waveAmplitude;
+
+    pos.x = start.x + sideDir.x * wave;
+    pos.z = start.z + sideDir.z * wave;
+    pos.y = start.y;
+
+    // ----------- 反映 -----------
+    e->SetStartPosition(start);
+    e->SetPosition(pos);
+    e->SetMoveDirection(moveDir);
+    e->Face(moveDir);
+}
+
 void ChaseBehavior::Update(EnemyBase* e, float dt)
 {
     auto player = e->GetPlayer();

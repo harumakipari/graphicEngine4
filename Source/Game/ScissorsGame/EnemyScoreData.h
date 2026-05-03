@@ -16,6 +16,7 @@ enum class YarnEnemyType :uint8_t
     MoveToCenter,   // ’†S‚ÉŒü‚©‚Á‚ÄˆÚ“®‚·‚é
     WaveHorizontal, // ‰¡‚É”g‘Å‚¿‚È‚ª‚çˆÚ“®‚·‚é
     WaveVertical,  // c‚É”g‘Å‚¿‚È‚ª‚çˆÚ“®‚·‚é
+    WaveMoveBehavior, // ”g‚¤‚¿‚È‚ª‚çˆÚ“®‚·‚é
     ChasePlayer,          // ƒvƒŒƒCƒ„[‚ğ’Ç‚¢‚©‚¯‚é
     RescueEnemy, // “G‚ğ•‚¯‚é
     LongRangeAttack, // ‰“‹——£UŒ‚

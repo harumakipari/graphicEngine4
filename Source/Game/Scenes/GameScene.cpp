@@ -174,7 +174,7 @@ void GameScene::Start()
     {
         stageId = std::stoi(param.at("stageId"));
     }
-    stageId = 4;
+    stageId = 1;
 
 
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
@@ -419,6 +419,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
 
     // ‹OÕ‚ð•`‰æ‚·‚é ¡‰ñ‚ÌƒQ[ƒ€‚Å’Ç‰Á
+#if 0
     {
         RenderState::BindBlendState(immediateContext, BLEND_STATE::ADD);
         player->RenderTrail(immediateContext);
@@ -427,6 +428,8 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             needleEnemyActor->RenderTrail(immediateContext);
         }
     }
+
+#endif // 0
 
 #if 1
     // PARTICLES
@@ -587,7 +590,7 @@ void GameScene::SetUpActors()
     auto Actor = this->GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemy", needleTr);
 
 #endif // 0
-#if 1
+#if 0
     Transform bobbinTr(DirectX::XMFLOAT3{ 1,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
 #endif // 0

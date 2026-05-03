@@ -184,8 +184,10 @@ public:
     float rescueTimer = 0.0f;
 
     // 調整値
-    const float prepareTimeInterval = 1.3f; //敵のハサミの切る準備時間
-    const float cutTimeInterval = 0.2f; //敵のハサミの切るのにかかる時間
+    const float prepareTimeInterval = 1.5f; //敵のハサミの切る準備時間
+    const float cutTimeInterval = 0.5f; //敵のハサミの切るのにかかる時間
+    //const float prepareTimeInterval = 1.3f; //敵のハサミの切る準備時間
+    //const float cutTimeInterval = 0.2f; //敵のハサミの切るのにかかる時間
 
     // 乱数エンジン
     std::mt19937 rng;

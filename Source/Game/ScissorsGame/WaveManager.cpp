@@ -249,6 +249,10 @@ void WaveManager::SpawnEnemy(
         enemy->SetMoveDirection({ 0,0,1 });
         break;
 
+    case YarnEnemyType::WaveMoveBehavior:
+        enemy->SetBehavior(std::make_unique<WaveMoveBehavior>());
+        break;
+
     case YarnEnemyType::ChasePlayer:
         enemy->SetBehavior(std::make_unique<ChaseBehavior>());
         break;
