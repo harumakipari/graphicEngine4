@@ -61,6 +61,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
         sphereComponent->SetResponseToLayer(CollisionLayer::Boss, CollisionComponent::CollisionResponse::Block);
         sphereComponent->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Block);
+        sphereComponent->SetResponseToLayer(CollisionLayer::EnemyRedirect, CollisionComponent::CollisionResponse::Block);
         sphereComponent->Initialize();
         sphereComponent->SetOnHitCallback(
             [this](CollisionComponent* self, CollisionComponent* other)
@@ -96,7 +97,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                         }
                     }
                     debugPlayerCollisionColor = { 1.0f,0.0f,0.0f,1.0f };
-                    TakeDamage(1);
+                    TakeDamage(2);
                     damageCooldownTimer = damageCooldownInterval; // 無敵時間を設定
 #if 0
                     // ノックバック

@@ -364,11 +364,40 @@ void EnemyBase::CreateCollisionComponent()
     sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
     sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
     sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Block);
+    sphereCollisionComponent->SetResponseToLayer(CollisionLayer::EnemyRedirect, CollisionComponent::CollisionResponse::Block);
     sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
     sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
     sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
     sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
     sphereCollisionComponent->Initialize();
+    sphereCollisionComponent->SetOnHitCallback([this](CollisionComponent* self, CollisionComponent* other)
+        {
+            uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Bobbin) | CollisionHelper::ToBit(CollisionLayer::EnemyRedirect);
+            if (!(other->GetCollisionLayer() & mask))
+                return;
+
+            auto dir = GetMoveDirection();
+
+            auto myPos = GetPosition();
+            auto otherPos = other->GetOwner()->GetPosition();
+
+            float dx = myPos.x - otherPos.x;
+            float dz = myPos.z - otherPos.z;
+
+            // ‚Ç‚Á‚¿•ûŒü‚ÌÕ“Ë‚ª‹­‚¢‚©
+            if (abs(dx) > abs(dz))
+            {
+                // ‰¡‚©‚ç“–‚½‚Á‚½ ¨ X”½“]
+                dir.x *= -1.0f;
+            }
+            else
+            {
+                // c‚©‚ç“–‚½‚Á‚½ ¨ Z”½“]
+                dir.z *= -1.0f;
+            }
+
+            SetMoveDirection(dir);
+        });
 }
 
 // ‹Ê~‚ß‚ğ‚Ù‚Ç‚­
@@ -610,8 +639,8 @@ void EnemyBase::SetUpVisual()
     // “–‚½‚è”»’è‚ğì¬‚·‚é
     CreateCollisionComponent();
 
-    std::string leftTiedModelName = "";
-    std::string rightTiedModelName = "";
+    std::string leftTiedModelName;
+    std::string rightTiedModelName;
     GetTiedModelPath(leftTiedModelName, rightTiedModelName);
 
     // ‹Ê~‚ßƒ‚ƒfƒ‹

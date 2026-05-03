@@ -20,6 +20,8 @@ void YarnWallActor::Initialize(const Transform& transform)
     redirectCollisionComponent->SetMass(0.0f);
     redirectCollisionComponent->SetCollisionOffsetY(0.3f);
     redirectCollisionComponent->SetLayer(CollisionLayer::EnemyRedirect);
+    redirectCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+
     redirectCollisionComponent->Initialize();
 }
 

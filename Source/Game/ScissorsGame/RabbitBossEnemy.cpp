@@ -229,7 +229,7 @@ void RabbitBossEnemyActor::CreteDamageZone(const DirectX::XMFLOAT3& pos)
 
     if (MathHelper::Distance(player->GetPosition(), pos) < spawnAttackRange)
     {
-        player->TakeDamage(2);
+        player->TakeDamage(3);
     }
 }
 
