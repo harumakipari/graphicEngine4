@@ -366,7 +366,7 @@ bool BigYarnEnemyActor::OnHitByDash(ScissorsPlayer1* player, int dashDamage)
             dir.x
         };
 
-        player->RedirectDash(rotated);
+        //player->RedirectDash(rotated);
 
     }
 

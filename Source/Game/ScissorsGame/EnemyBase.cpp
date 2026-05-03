@@ -79,7 +79,7 @@ void EnemyBase::DrawImGuiDetails()
 
 }
 
-bool EnemyBase::OnHitByDash()
+bool EnemyBase::OnHitByDash(bool isReflected)
 {
     if (state == YarnState::Dead) return false;
 
@@ -92,11 +92,19 @@ bool EnemyBase::OnHitByDash()
     {
         if (state == YarnState::Tied)
         {
+            if (isReflected)
+            {// 反射によって死亡したら
+                pendingDeath = true;
+            }
+            else
+            {
+                // 振動させる
+                InputSystem::SetVibration(1.0f, 0.15f);
+                CallDeath(false);
+            }
             // 2回目 → 死亡
-            state = YarnState::Dead;
-            // 振動させる
-            InputSystem::SetVibration(1.0f, 0.15f);
-            CallDeath(true);
+            state = YarnState::Dead; // startKnockbackがtrueにならないと吹っ飛ばない
+
             return true;
         }
         else
@@ -132,7 +140,7 @@ void EnemyBase::ForceTied()
 
 
 // ヒットエフェクトを生成する
-void EnemyBase::SpawnHitEffect(bool hitByDash)
+void EnemyBase::SpawnHitEffect(bool hitByReflected)
 {
     auto uiManager = GetOwnerScene()->GetUIManager();
 
@@ -141,17 +149,21 @@ void EnemyBase::SpawnHitEffect(bool hitByDash)
     XMFLOAT2 screenPos = WorldToUI(pos);
 
     XMFLOAT4 endColor = { 1,1,0.3f,0.5f };
+    XMFLOAT2 endSize = { 400.0f, 400.0f }; // リングサイズ
 
-    if (!hitByDash)
-    {// 突進によって死亡していない場合  
-        endColor = { 0.96f,0.51f,0.125f,0.5f }; //オレンジ色
-        endColor = { 0.16f,0.81f,0.9f,0.5f };
+    if (hitByReflected)
+    {// 反射によって死亡した場合
+        endColor = { 0.16f,0.81f,0.9f,0.5f };   // 水色
+        endColor = { 0.93f,0.1f,0.24f,0.5f }; //赤色
+        endSize = { 600.0f,600.f };
     }
 
     // リング
     auto ring = std::make_shared<UIRingEffect>("./Data/Textures/ScissorsUI/ring.png", endColor);
     ring->SetWorldPosition(screenPos);
     ring->SetSize({ 100,100 });
+    ring->SetEndSize(endSize);
+
     uiManager->Add(ring);
 
     // 星
@@ -374,7 +386,7 @@ void EnemyBase::ReleasedTied()
 // 死亡中の更新処理
 void EnemyBase::UpdateDead(float deltaTime)
 {
-    if (isDead)
+    if (startKnockback)
     {// 死亡したら
         // 上へ吹っ飛ぶ処理
         if (isKnockbackActive)
@@ -441,12 +453,21 @@ void EnemyBase::UpdateDead(float deltaTime)
             }
         }
     }
+    else
+    {
+        // 常に白くする
+        skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = 1.0f;
+        // 発光強めると分かりやすい
+        skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 2.0f;
+        // 
+        tieCount = GetNeedTiedCount();
+    }
 }
 
 // 死亡した時に呼ぶ関数
-void EnemyBase::CallDeath(bool hitByDash)
+void EnemyBase::CallDeath(bool hitByReflected)
 {
-    isDead = true;
+    startKnockback = true;
 
     if (onDeath)
     {// WaveManagerにenemyCountを減らすように通知する
@@ -454,7 +475,7 @@ void EnemyBase::CallDeath(bool hitByDash)
     }
 
     // エフェクトを発生させる
-    SpawnHitEffect(hitByDash);
+    SpawnHitEffect(hitByReflected);
 
     // 当たり判定を消す
     if (sphereCollisionComponent)
@@ -479,9 +500,9 @@ void EnemyBase::CallDeath(bool hitByDash)
     auto scene = static_cast<GameScene*>(GetOwnerScene());
     auto& tuning = scene->enemyTuning;
 
-    float distance = hitByDash ? tuning.knockbackDistanceDash : tuning.knockbackDistanceNormal;
-    float height = hitByDash ? tuning.knockbackHeightDash : tuning.knockbackHeightNormal;
-    float duration = hitByDash ? tuning.knockbackDurationDash : tuning.knockbackDurationNormal;
+    float distance = hitByReflected ? tuning.knockbackDistanceNormal : tuning.knockbackDistanceDash;
+    float height = hitByReflected ? tuning.knockbackHeightNormal : tuning.knockbackHeightDash;
+    float duration = hitByReflected ? tuning.knockbackDurationNormal : tuning.knockbackDurationDash;
     hitFlashDuration = tuning.flashDuration;
     skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = tuning.emissivePower;
 
@@ -573,8 +594,8 @@ void EnemyBase::CreateScissorsVisual()
     scissorsSecondMeshComponent->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
     scissorsSecondMeshComponent->SetModel("./Data/TeamModels/Item/ScissorsSecondModel.glb");
 
-    selfBigRescueTimeInterval = 3.0f;// 大きい敵が自力脱出までかかる時間
-    selfSmallRescueTimeInterval = 5.0f;// 小さい敵が自力脱出までかかる時間
+    selfBigRescueTimeInterval = 5.0f;// 大きい敵が自力脱出までかかる時間
+    selfSmallRescueTimeInterval = 8.0f;// 小さい敵が自力脱出までかかる時間
 }
 
 

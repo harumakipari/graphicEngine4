@@ -20,7 +20,7 @@ public:
 };
 
 
-class EnemyBase :public Character,public ITieable
+class EnemyBase :public Character, public ITieable
 {
 public:
     enum class YarnState
@@ -54,13 +54,13 @@ public:
     EnemyScoreData GetScoreData() const { return scoreData; }
 
     // 死亡したかどうか
-    bool IsDead() const { return isDead; }
+    bool IsDead() const { return state == YarnState::Dead; }
 
     // 玉止めに必要な回数
     int GetNeedTiedCount()const { return (yarnSize == YarnSize::Big) ? 2 : 1; }
 
-    // ダッシュ攻撃時に呼ぶ関数
-    bool OnHitByDash();
+    // ダッシュ攻撃時に呼ぶ関数　反射攻撃によって死亡したかどうか
+    bool OnHitByDash(bool isReflected);
 
     // ボビンによって玉止めされた時
     void OnTied() override
@@ -135,15 +135,15 @@ public:
     {
         this->isRescuing = rescue;
     }
-private:
-    // 死亡した時に呼ぶ関数
-    void CallDeath(bool hitByDash);
 
+    // 死亡した時に呼ぶ関数
+    void CallDeath(bool hitByReflected);
+private:
     // コインを生成する
     void SpawnCoin(DirectX::XMFLOAT3 pos);
 
     // ヒットエフェクトを生成する
-    void SpawnHitEffect(bool hitByDash);
+    void SpawnHitEffect(bool hitByReflected);
 
     // 玉止めされている時の更新処理
     void UpdateTied(float deltaTime);
@@ -161,7 +161,7 @@ private:
     std::string GetModelPath();
 
     // 玉止めのモデル選択
-    void GetTiedModelPath(std::string& leftTiedModelPath,std::string& rightTiedModelPath) const;
+    void GetTiedModelPath(std::string& leftTiedModelPath, std::string& rightTiedModelPath) const;
 
     // 当たり判定を作成
     void CreateCollisionComponent();
@@ -190,6 +190,8 @@ public:
     // 乱数エンジン
     std::mt19937 rng;
 
+    bool pendingDeath = false;  // 死亡処理の演出に遅延を入れるかどうか
+
 protected:
     DirectX::XMFLOAT3 startPosition = { 0.0f,0.0f,0.0f };   // 敵の出現の開始位置　波うちの時に基準とする
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
@@ -213,7 +215,7 @@ protected:
 
 
 private:
-    bool isDead = false;// 死亡したかどうか
+    bool startKnockback = false;// 吹っ飛ぶかどうか
     float deathTimer = 0.0f;
 
     bool createCoin = false; //  コインを生成する
@@ -231,7 +233,7 @@ private:
     bool isKnockbackActive = false;
 
     float selfRescueTimeInterval = 15.0f;// 自力脱出までかかる時間
-    float selfBigRescueTimeInterval = 8.0f;// 大きい敵が自力脱出までかかる時間
+    float selfBigRescueTimeInterval = 10.0f;// 大きい敵が自力脱出までかかる時間
     float selfSmallRescueTimeInterval = 15.0f;// 小さい敵が自力脱出までかかる時間
 
     float hitFlashTimer = 0.0f; // フラッシュタイマー
@@ -259,4 +261,5 @@ private:
     DirectX::XMFLOAT3 basePosition = { 0.0f,0.0f,0.0f };
 
     float shakeTimer = 0.0f; // 振動の時間
+
 };

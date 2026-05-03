@@ -210,8 +210,8 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
         };
 
         HitResultWithActor hit;
-        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Wall) | CollisionHelper::ToBit(CollisionLayer::EnemyRedirect) 
-            |CollisionHelper::ToBit(CollisionLayer::Boss);
+        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Wall) | CollisionHelper::ToBit(CollisionLayer::EnemyRedirect)
+            | CollisionHelper::ToBit(CollisionLayer::Boss);
 
         if (CollisionFunction::SphereRayCast(currentPos, nextTarget, hit, 0.2f, mask))
         {
@@ -405,7 +405,7 @@ void ScissorsPlayerDashState::Enter()
     segmentEnd = player->fixedDashPoints[1];
 
     float dist = MathHelper::Distance(segmentStart, segmentEnd);
-    segmentDuration = dist / 20.0f; // speed=20とか
+    segmentDuration = dist / speed;
     segmentElapsed = 0.0f;
 
     // プレイヤーのダッシュの値をリセット
@@ -450,7 +450,6 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     float t = segmentElapsed / segmentDuration;
     t = std::clamp(t, 0.0f, 1.0f);
 
-
     // 補間
     XMFLOAT3 nextPos = MathHelper::Lerp(segmentStart, segmentEnd, t);
     player->SetPosition(nextPos);
@@ -474,6 +473,25 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     }
 
 #endif // 0
+#if 1
+    // 敵がいるかどうかの判定
+    {
+        XMFLOAT3 prevPos = currentPos;
+        HitResultWithActor hit;
+        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Enemy);
+
+        float radius =1.5f;
+        if (CollisionFunction::SphereRayCast(prevPos, nextPos, hit, radius, mask))
+        {
+            if (auto enemy = dynamic_cast<EnemyBase*>(hit.actor))
+            {
+                // 敵に吸着
+                nextPos = enemy->GetPosition();
+            }
+        }
+    }
+
+#endif // 1
 
 
 
@@ -565,48 +583,15 @@ void ScissorsPlayerDashState::Exit()
     // 当たり判定の押出を戻す
     player->sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
 
+    // 反射敵の通知
+    player->ResolveReflectedKills();
+
     // ダッシュ後の無敵時間を設定する
     player->postDashInvincibleTimer = player->postDashInvincibleDuration;
 
     // ダッシュ中に倒した敵の数をリセットする
     player->killedEnemyCountInDash = 0;
-}
 
-void ScissorsPlayerDashState::Redirect(const DirectX::XMFLOAT3& newDir)
-{
-    // 現在位置を新しいスタートにする
-    startPos = player->GetPosition();
-
-    // 残り時間の割合を計算
-    float remainingT = 1.0f - (elapsedTime / dashDuration);
-    remainingT = std::clamp(remainingT, 0.0f, 1.0f);
-
-    float remainingDistance = remainingT * 20; // 適当でもOK（後述）
-
-    // 正規化
-    DirectX::XMFLOAT3 dir = newDir;
-    float len = sqrt(dir.x * dir.x + dir.z * dir.z);
-    if (len > 0.0001f)
-    {
-        dir.x /= len;
-        dir.z /= len;
-    }
-
-    // 新しいターゲットを設定
-    DirectX::XMFLOAT3 newTarget =
-    {
-        startPos.x + dir.x * remainingDistance,
-        startPos.y,
-        startPos.z + dir.z * remainingDistance
-    };
-
-    player->targetPos = newTarget;
-
-    // 時間リセット（重要）
-    elapsedTime = 0.0f;
-
-    // 向きも更新
-    player->rotationComponent->SetDirection(dir);
 }
 
 

@@ -7,10 +7,17 @@
 #include "Game/Actors/Base/Character.h"
 #include "UI/Widgets/Widget.h"
 
-class ScissorsGameEnemyBase;
+class EnemyBase;
 
 class ScissorsPlayer1 :public Character
 {
+    // ダッシュ時の情報
+    struct DashHitInfo
+    {
+        EnemyBase* enemy;
+        bool isReflected;   // 反射区間かどうか
+    };
+
     struct AimData
     {
         DirectX::XMFLOAT3 dir;
@@ -72,6 +79,11 @@ public:
     // 星を生成する
     void SpawnStarParticle(DirectX::XMFLOAT3 pos, XMFLOAT3 playerForward);
 
+    // 反射キルを適用する
+    void ResolveReflectedKills();
+
+    // ダッシュ中の攻撃処理
+    void AttackDash(EnemyBase* enemy);
 private:
     // 入力から狙いの情報を取得する
     AimData GetAimData(const MoveIntent& intent, float deltaTime);
@@ -128,8 +140,10 @@ public:
 
     // １dash中に敵を倒した数
     int killedEnemyCountInDash = 0;
+
+    float dashAttackRange = 1.3f; // ダッシュ攻撃の範囲　dashAttackSphereの半径と同じにする
 private:
-    std::shared_ptr<SphereComponent> dashAttackSphere; // ダッシュ攻撃の当たり判定用のSphereComponent
+    std::shared_ptr<BoxComponent> dashAttackBox; // ダッシュ攻撃の当たり判定用のSphereComponent
     std::shared_ptr<SphereComponent> scissorsAttackSphere; // ハサミ攻撃の当たり判定用のSphereComponent
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
     DirectX::XMFLOAT3 moveDir = { 0,0,0 }; // 移動方向
@@ -152,16 +166,17 @@ private:
     float chargeTime = 0.0f; // ダッシュの溜め時間
     float maxChargeTime = 1.0f;   // ダッシュの最大溜め時間　この時間以上溜めてもさらに強くならない
 
+    std::vector<DashHitInfo> dashHits;  // ダッシュ時のヒット情報
+
     // プレイヤーのHPを表示するUI　
-    std::vector<std::shared_ptr<UIImageComponent>> hpUiComponents;
+    std::vector<std::shared_ptr<UIImageComponent>> heartFillsHpUiComponents; // 中身
+    std::vector<std::shared_ptr<UIImageComponent>> heartFramesHpUiComponents;   // 枠
 
     //　デバック用
     DirectX::XMFLOAT4 debugPlayerCollisionColor = { 1,1,1,1 }; // プレイヤーの当たり判定の色　通常は白色で、ダメージを受けたときに赤くするなどして使用する
 
-    std::unordered_set<ScissorsGameEnemyBase*> hitEnemies; // ハサミ攻撃で当たった敵を記録するためのセット　これに入っている敵にはハサミ攻撃のダメージを与えないようにする
 
     // 調整用のパラメータ　これらを調整してゲームバランスを取る
-    float dashAttackRange = 1.3f; // ダッシュ攻撃の範囲　dashAttackSphereの半径と同じにする
     float scissorsAttackRange = 1.5f; // ハサミ攻撃の範囲　scissorsAttackSphereの半径と同じにする
     float playerRadius = 0.6f; // プレイヤーの当たり判定の半径　sphereComponentの半径と同じにする
 
@@ -196,4 +211,8 @@ private:
     float dashDistance;
     DirectX::XMFLOAT3 dashStartPos;
 
+    //　HP画像
+    std::shared_ptr<Sprite> heartFull;
+    std::shared_ptr<Sprite> heartHalf;
+    std::shared_ptr<Sprite> heartEmpty;
 };

@@ -57,6 +57,15 @@ public:
 
     // 総スコアを取得する関数
     int GetTotalScore() const { return totalScore; }
+
+    // ボーナススコアを追加する関数
+    void AddBonusScore(int score)
+    {
+        totalScore += score;
+        Logger::Log("Bonus Score: " + std::to_string(score) +
+            " (Total: " + std::to_string(totalScore) + ")");
+    }
+
 private:
     ComboSystem combo;
     ScoreCalculator calculator;

@@ -212,6 +212,8 @@ public:
 
     }
 
+    void SetEndSize(DirectX::XMFLOAT2 endSize) { this->endSize = endSize; }
+
     void Update(float dt) override
     {
         elapsed += dt;

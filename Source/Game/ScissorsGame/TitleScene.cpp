@@ -126,7 +126,7 @@ void TitleScene::Start()
 #if 1
     // ステージ１の作成
     {
-        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/1.png", "1-1");
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/number/1.png", "1-1");
         button->SetWorldPosition({ 300, 50 });
         button->SetSize({ 400, 150 });
         uiManager->Add(button);
@@ -143,7 +143,7 @@ void TitleScene::Start()
 
     // ステージ2の作成
     {
-        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/2.png", "1-2");
+        std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/number/2.png", "1-2");
         button->SetWorldPosition({ 400, 50 });
         button->SetSize({ 400, 250 });
         uiManager->Add(button);

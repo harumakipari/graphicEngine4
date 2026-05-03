@@ -16,7 +16,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/BossEnemy.glb", false, true);
     skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Enemy;   // オブジェクトの種類を Enemy に設定
-    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameBossPS";
+    //skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameBossPS";
 
     // 当たり判定
     {

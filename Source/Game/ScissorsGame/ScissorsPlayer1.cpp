@@ -127,16 +127,16 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
     // ダッシュ攻撃用の当たり判定
     {
-        dashAttackSphere = this->AddComponent<SphereComponent>("dashAttackSphere", parentName);
-        dashAttackSphere->SetRelativeLocationDirect({ 0.0f,height,1.1f });
-        dashAttackSphere->SetRadius(dashAttackRange);
-        dashAttackSphere->SetLayer(CollisionLayer::PlayerWeapon);
-        dashAttackSphere->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
-        dashAttackSphere->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Trigger);
-        dashAttackSphere->SetCollisionOffsetY(height);
-        dashAttackSphere->Initialize();
-        dashAttackSphere->SetActive(false); // ←通常はOFF
-        dashAttackSphere->SetOnHitCallback(
+        dashAttackBox = this->AddComponent<BoxComponent>("dashAttackBox", parentName);
+        dashAttackBox->SetRelativeLocationDirect({ 0.0f,height,1.1f });
+        dashAttackBox->SetHalfBoxExtent({ dashAttackRange,height * 0.5f,dashAttackRange });
+        dashAttackBox->SetLayer(CollisionLayer::PlayerWeapon);
+        dashAttackBox->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
+        dashAttackBox->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Trigger);
+        dashAttackBox->SetCollisionOffsetY(height);
+        dashAttackBox->Initialize();
+        dashAttackBox->SetActive(false); // ←通常はOFF
+        dashAttackBox->SetOnHitCallback(
             [this](CollisionComponent* self, CollisionComponent* other)
             {
                 if (stateMachine_->GetStateName() != "Dash")
@@ -157,6 +157,8 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 }
 
                 enemy->lastHitSegment = currentSegment;
+
+
 
                 if (auto boss = dynamic_cast<RabbitBossEnemyActor*>(enemy))
                 {
@@ -197,17 +199,30 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
                     //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav",1.0f);
 
+                    bool isReflected = (currentSegment > 0);    // 反射かどうか
+
                     // ヒット処理と倒したかどうかを取得する
-                    bool isKilled = enemy->OnHitByDash();
+                    bool isKilled = enemy->OnHitByDash(isReflected);
 
                     if (isKilled)
                     {
-                        // スコアデータを取得する
-                        auto data = enemy->GetScoreData();
-                        auto pos = enemy->GetPosition();
-                        // スコア処理　足されたスコアを取得する コンボ加算
-                        int addScore = scoreSystem.ProcessHit(data, isKilled);
-                        SpawnScorePopup(pos, addScore);
+                        if (isReflected)
+                        {// 反射キル
+                            DashHitInfo info;
+                            info.enemy = enemy;
+                            info.isReflected = true;
+                            dashHits.push_back(info);
+
+                        }
+                        else
+                        {
+                            // スコアデータを取得する
+                            auto data = enemy->GetScoreData();
+                            auto pos = enemy->GetPosition();
+                            // スコア処理　足されたスコアを取得する コンボ加算
+                            int addScore = scoreSystem.ProcessHit(data, isKilled);
+                            SpawnScorePopup(pos, addScore);
+                        }
                         // スロー再生
                         //Time::SetSlow(0.5f, 0.3f);
 
@@ -218,6 +233,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                         killedEnemyCountInDash++; // ダッシュ中に倒した敵をカウントする
                     }
                 }
+
             }
         );
     }
@@ -264,20 +280,38 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
     // プレイヤーのHPを表示するUIを作成
     {
-        int maxHp = 5;
+        // テクスチャを作成
+        heartEmpty = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/heart_empty.png");
+        heartFull = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/heart_full.png");
+        heartHalf = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/heart_half.png");
+
+        int maxHp = 10;
         hp = maxHp;
-        for (int i = 0; i < maxHp; i++)
+        int heartCount = maxHp / 2;
+
+        for (int i = 0; i < heartCount; i++)
         {
-            auto hpUI = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/heart.png", "hpUI");
+            float x = 100.0f + i * 160.0f;
+            float y = 50.0f;
 
-            // 横に並べる
-            hpUI->SetWorldPosition({ 100.0f + i * 160.0f, 50.0f });
+            //  枠
+            auto frame = std::make_shared<UIImageComponent>("hpFrame");
+            frame->SetTexture(heartEmpty);
+            frame->SetWorldPosition({ x, y });
+            frame->SetSize({ 150.0f, 150.0f });
 
-            hpUI->SetSize({ 150.0f, 150.0f });
-            hpUI->SetVisible(true);
+            uiManager->Add(frame);
+            heartFramesHpUiComponents.push_back(frame);
 
-            uiManager->Add(hpUI);
-            hpUiComponents.push_back(hpUI);
+            //  中身（最初はフル）
+            auto fill = std::make_shared<UIImageComponent>("hpFill");
+            fill->SetTexture(heartFull);
+            fill->SetWorldPosition({ x, y }); // 同じ位置に重ねる
+            fill->SetSize({ 150.0f, 150.0f });
+            fill->zOrder = 2; 
+
+            uiManager->Add(fill);
+            heartFillsHpUiComponents.push_back(fill);
         }
     }
     // 軌跡初期化
@@ -425,7 +459,8 @@ void ScissorsPlayer1::Update(float deltaTime)
     // playerの当たり判定をデバッグ表示
     DebugRender::DrawSphere(sphereComponent->GetComponentLocation(), playerRadius, debugPlayerCollisionColor, 0, true);
     // ダッシュ攻撃の当たり判定をデバッグ表示
-    DebugRender::DrawSphere(dashAttackSphere->GetComponentLocation(), dashAttackRange, debugDashCollisionColor, 0, true);
+    //DebugRender::DrawSphere(dashAttackSphere->GetComponentLocation(), dashAttackRange, debugDashCollisionColor, 0, true);
+    DebugRender::DrawBox(dashAttackBox->GetComponentLocation(), { dashAttackRange,height ,dashAttackRange }, debugDashCollisionColor, 0, true);
     debugPlayerCollisionColor = { 1,1,1,1 };
 }
 
@@ -470,8 +505,8 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
         float len = sqrt(x * x + z * z);
 
         static XMFLOAT3 lastDir = { 0,0,1 };
-        static bool dirLocked = false;
 
+#if 0
         if (len > 0.4f)
         {
             aim.dir = { x / len, 0.0f, z / len };
@@ -488,6 +523,43 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
         {
             aim.dir = lastDir;
         }
+#else
+        static XMFLOAT3 smoothDir = { 0,0,1 };
+
+        float deadZone = 0.25f;   // ← 小さい入力無視（手ブレ防止）
+        float smoothSpeed = 15.0f; // ← 反応速度（大きいほどキビキビ）
+
+        if (len > deadZone)
+        {
+            XMFLOAT3 targetDir = { x / len, 0.0f, z / len };
+
+            //  補間（ここが全て）
+            smoothDir.x += (targetDir.x - smoothDir.x) * std::clamp(deltaTime * smoothSpeed, 0.0f, 1.0f);
+            smoothDir.z += (targetDir.z - smoothDir.z) * std::clamp(deltaTime * smoothSpeed, 0.0f, 1.0f);
+
+            // 正規化
+            float l = sqrt(smoothDir.x * smoothDir.x + smoothDir.z * smoothDir.z);
+            if (l > 0.0001f)
+            {
+                smoothDir.x /= l;
+                smoothDir.z /= l;
+            }
+
+            // チャージ開始と継続
+            isCharging = true;
+            chargeTime += deltaTime;
+            chargeTime = std::min<float>(chargeTime, maxChargeTime);
+
+            lastDir = smoothDir;
+        }
+        else
+        {
+            // 入力弱いときは前の方向維持
+            smoothDir = lastDir;
+        }
+
+        aim.dir = smoothDir;
+#endif // 0
 
 #if 0
         aim.power = chargeTime / maxChargeTime;
@@ -657,7 +729,6 @@ void ScissorsPlayer1::TakeDamage(int damage)
 void ScissorsPlayer1::DoAttackHit()
 {
     // 攻撃が当たった敵を記録するためのセットをクリア
-    hitEnemies.clear();
 
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav", 2.0f);
 
@@ -728,15 +799,26 @@ void ScissorsPlayer1::RecoverDash(float deltaTime)
 // HPを表示するUIを更新する関数　
 void ScissorsPlayer1::UpdateHpUI()
 {
-    for (int i = 0; i < hpUiComponents.size(); i++)
+    for (int i = 0; i < heartFillsHpUiComponents.size(); i++)
     {
-        if (i < hp)
+        int heartBase = i * 2;
+
+        if (hp >= heartBase + 2)
         {
-            hpUiComponents[i]->SetVisible(true);
+            // フル
+            heartFillsHpUiComponents[i]->SetTexture(heartFull);
+            heartFillsHpUiComponents[i]->SetVisible(true);
+        }
+        else if (hp == heartBase + 1)
+        {
+            // 半分
+            heartFillsHpUiComponents[i]->SetTexture(heartHalf);
+            heartFillsHpUiComponents[i]->SetVisible(true);
         }
         else
         {
-            hpUiComponents[i]->SetVisible(false);
+            // 空 → 中身を消す（枠だけ残る）
+            heartFillsHpUiComponents[i]->SetVisible(false);
         }
     }
 }
@@ -796,35 +878,91 @@ void ScissorsPlayer1::OnPause()
     }
 }
 
-// ダッシュの方向転換をする関数
-void ScissorsPlayer1::RedirectDash(const DirectX::XMFLOAT3& newDir)
-{
-    // 正規化
-    DirectX::XMFLOAT3 dir = newDir;
-    float len = sqrt(dir.x * dir.x + dir.z * dir.z);
 
-    if (len > 0.0001f)
+// 反射キルを適用する
+void ScissorsPlayer1::ResolveReflectedKills()
+{
+    std::unordered_set<EnemyBase*> unique;
+    int reflectedKillCount = 0;
+
+    for (auto& hit : dashHits)
     {
-        dir.x /= len;
-        dir.z /= len;
+        auto enemy = hit.enemy;
+
+        if (!enemy) continue;
+        if (unique.count(enemy)) continue;
+
+        unique.insert(enemy);
+
+        if (!enemy->pendingDeath) continue;
+
+        // ここで初めて吹っ飛ぶ
+        enemy->CallDeath(true);
+
+        reflectedKillCount++;
+
+        // 通常スコア　コンボ込み
+        auto data = enemy->GetScoreData();
+        int addScore = scoreSystem.ProcessHit(data, true);
+
+        SpawnScorePopup(enemy->GetPosition(), addScore);
     }
 
-    // 向き更新
-    moveDir = dir;
+    // 反射ボーナス
+    int reflectionBonus = reflectedKillCount * 50;
+    scoreSystem.AddBonusScore(reflectionBonus);
+    // ダッシュボーナス
+    int dashBonus = (killedEnemyCountInDash / 5) * 500;
+    scoreSystem.AddBonusScore(dashBonus);
 
-    // ダッシュステート側にも反映（重要）
-    if (auto state = stateMachine_->GetCurrentState())
+    Logger::Log("ReflectionBonus: " + std::to_string(reflectionBonus));
+    Logger::Log("DashBonus: " + std::to_string(dashBonus));
+
+
+    dashHits.clear();
+}
+
+// ダッシュ中の攻撃処理
+void ScissorsPlayer1::AttackDash(EnemyBase* enemy)
+{
+    if (!enemy)
     {
-        if (stateMachine_->GetStateName() == "Dash")
+        Logger::Warning(U8("エネミーがnullptrです"));
+        return;
+    }
+
+    if (enemy->IsDead())
+    {// 敵が死亡している場合
+        return;
+    }
+
+
+    // 同じセグメントなら無視
+    if (enemy && enemy->lastHitSegment != currentSegment)
+    {
+        enemy->lastHitSegment = currentSegment;
+
+        bool isReflected = (currentSegment > 0);
+
+        if (bool isKilled = enemy->OnHitByDash(isReflected))
         {
-            // DashStateに方向を持たせてるならそこにも渡す
-            auto dashState = static_cast<ScissorsPlayerDashState*>(state);
-            dashState->Redirect(dir);
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
+
+            if (isReflected)
+            {
+                dashHits.push_back({ enemy, true });
+            }
+            else
+            {
+                auto data = enemy->GetScoreData();
+                int addScore = scoreSystem.ProcessHit(data, true);
+                SpawnScorePopup(enemy->GetPosition(), addScore);
+            }
+
+            killedEnemyCountInDash++;
+            hitStopTimer = hitStopDuration;
         }
     }
-
-    // 回転も更新
-    rotationComponent->SetDirection(dir);
 }
 
 // 星を生成する
