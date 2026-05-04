@@ -220,6 +220,13 @@ void ChaseBehavior::Update(EnemyBase* e, float dt)
 void RescueBehavior::Enter(EnemyBase* e)
 {
     e->CreateScissorsVisual();
+
+    wanderTarget =
+    {
+        MathHelper::RandomRange(e->rng, ScissorsGameState::stageMinX, ScissorsGameState::stageMaxX),
+        0.0f,
+        MathHelper::RandomRange(e->rng, ScissorsGameState::stageMinZ, ScissorsGameState::stageMaxZ)
+    };
 }
 
 void RescueBehavior::Update(EnemyBase* e, float dt)
@@ -237,46 +244,7 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
         target = nullptr;
 
         // åyÇ≠úpújÇ≥ÇπÇÈ
-        wanderTimer -= dt;
-
-        if (wanderTimer <= 0.0f)
-        {
-            wanderTimer = MathHelper::RandomRange(1.0f, 3.0f);
-
-            wanderDir =
-            {
-                MathHelper::RandomRange(-1.0f, 1.0f),
-                0,
-                MathHelper::RandomRange(-1.0f, 1.0f)
-            };
-
-            wanderDir = MathHelper::Normalize(wanderDir);
-        }
-
-        auto pos = e->GetPosition();
-        float speed = e->GetSpeed();
-
-        DirectX::XMFLOAT3 next =
-        {
-            pos.x + wanderDir.x * speed * dt,
-            pos.y,
-            pos.z + wanderDir.z * speed * dt
-        };
-
-        if (next.x < ScissorsGameState::stageMinX || next.x > ScissorsGameState::stageMaxX)
-        {
-            wanderDir.x *= -1;
-        }
-        if (next.z < ScissorsGameState::stageMinZ || next.z > ScissorsGameState::stageMaxZ)
-        {
-            wanderDir.z *= -1;
-        }
-
-        e->Move(wanderDir, dt);
-        e->Face(wanderDir);
-
-        e->SetIsRescue(false);
-        e->isCutting = false;
+        UpdateWander(e, dt);
 
         return;
     }
@@ -299,82 +267,7 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
         // É^Å[ÉQÉbÉgÇ¢Ç»Ç¢
         if (!target)
         {
-            auto player = e->GetPlayer();
-            if (player)
-            {
-#if 0 // ÉvÉåÉCÉÑÅ[Ç©ÇÁì¶Ç∞ÇÈ
-                DirectX::XMFLOAT3 dir = MathHelper::Normalize(MathHelper::Subtract(e->GetPosition(), player->GetPosition()));
-
-                auto pos = e->GetPosition();
-
-                float speed = e->GetSpeed();
-
-                // éüÇÃà íuÇâºåvéZ
-                DirectX::XMFLOAT3 next =
-                {
-                    pos.x + dir.x * speed * dt,
-                    pos.y,
-                    pos.z + dir.z * speed * dt
-                };
-
-                // ÇÕÇ›èoÇªÇ§Ç»ÇÁï˚å¸ÇîΩì]
-                if (next.x < ScissorsGameState::stageMinX || next.x > ScissorsGameState::stageMaxX)
-                {
-                    dir.x *= -1;
-                }
-                if (next.z < ScissorsGameState::stageMinZ || next.z > ScissorsGameState::stageMaxZ)
-                {
-                    dir.z *= -1;
-                }
-
-                e->Move(dir, dt);
-                e->Face(dir);
-#else// úpújÇ∑ÇÈ
-                wanderTimer -= dt;
-
-                if (wanderTimer <= 0.0f)
-                {
-                    wanderTimer = MathHelper::RandomRange(1.0f, 3.0f);
-
-                    wanderDir =
-                    {
-                        MathHelper::RandomRange(-1.0f, 1.0f),
-                        0,
-                        MathHelper::RandomRange(-1.0f, 1.0f)
-                    };
-
-                    wanderDir = MathHelper::Normalize(wanderDir);
-                }
-
-                auto pos = e->GetPosition();
-                float speed = e->GetSpeed();
-
-                DirectX::XMFLOAT3 next =
-                {
-                    pos.x + wanderDir.x * speed * dt,
-                    pos.y,
-                    pos.z + wanderDir.z * speed * dt
-                };
-
-                // ï«Ç≈îΩéÀ
-                if (next.x < ScissorsGameState::stageMinX || next.x > ScissorsGameState::stageMaxX)
-                {
-                    wanderDir.x *= -1;
-                }
-                if (next.z < ScissorsGameState::stageMinZ || next.z > ScissorsGameState::stageMaxZ)
-                {
-                    wanderDir.z *= -1;
-                }
-
-                e->Move(wanderDir, dt);
-                e->Face(wanderDir);
-
-                e->SetIsRescue(false);
-                e->isCutting = false;
-
-                return;
-#endif // 0
-            }
+            UpdateWander(e, dt);
             return;
         }
 
@@ -442,6 +335,33 @@ void RescueBehavior::Update(EnemyBase* e, float dt)
         return;
     }
     e->rescueTimer = 0.0f;
+}
+
+// úpújèàóù
+void RescueBehavior::UpdateWander(EnemyBase* e, float dt)
+{
+    auto pos = e->GetPosition();
+
+    float dist = MathHelper::Distance(pos, wanderTarget);
+
+    // ãﬂÇ√Ç¢ÇΩÇÁéüÇÃñ⁄ìIín
+    if (dist < 1.0f)
+    {
+        wanderTarget =
+        {
+            MathHelper::RandomRange(e->rng, ScissorsGameState::stageMinX, ScissorsGameState::stageMaxX),
+            0.0f,
+            MathHelper::RandomRange(e->rng, ScissorsGameState::stageMinZ, ScissorsGameState::stageMaxZ)
+        };
+    }
+
+    auto dir = MathHelper::Normalize(MathHelper::Subtract(wanderTarget, pos));
+
+    e->Move(dir, dt);
+    e->Face(dir);
+
+    e->SetIsRescue(false);
+    e->isCutting = false;
 }
 
 EnemyBase* RescueBehavior::FindTiedEnemy(const EnemyBase* self)

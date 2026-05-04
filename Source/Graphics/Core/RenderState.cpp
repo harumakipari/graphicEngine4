@@ -227,6 +227,32 @@ void RenderState::Initialize()
         hr = device->CreateDepthStencilState(&depthStencilDesc, depthStencilStates[static_cast<size_t>(DEPTH_STATE::ZT_OFF_ZW_OFF)].GetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
     }
+    // デカール用深度バッファ 制限用深度
+    {
+        D3D11_DEPTH_STENCIL_DESC depthStencilDesc{};
+        depthStencilDesc.DepthEnable = TRUE;
+        //	深度比較は行うが書き込まない
+        depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+        depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+        depthStencilDesc.StencilEnable = TRUE;
+        depthStencilDesc.StencilReadMask = 0xFF;
+        depthStencilDesc.StencilWriteMask = 0xFF;
+
+        //	ステンシルの設定
+        //	裏面描画時はステンシルを書き込み
+        depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+        depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+        depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;
+        depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_ZERO;
+        //	表面描画時はステンシルを比較
+        depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+        depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_ZERO;
+        depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_ZERO;
+        depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_ZERO;
+        hr = device->CreateDepthStencilState(&depthStencilDesc, depthStencilStates[static_cast<size_t>(DEPTH_STATE::DECAL)].GetAddressOf());
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+    }
 
     // ブレンディングステートを作成する処理
     // BLEND_STATE::NONE ブレンドなしの設定

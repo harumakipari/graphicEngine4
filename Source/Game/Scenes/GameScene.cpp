@@ -42,6 +42,8 @@
 
 bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
+    HRESULT hr = { S_OK };
+
     lightDirection = { -1.0f,-0.66f,0.6f, 1.0f }; // 上の窓からの光
     lightColor = { 1.0f, 1.0f, 1.0f, 3.6f };
     {
@@ -53,7 +55,7 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         {
             lightManager = std::make_unique<LightManager>();
             lightManager->Initialize(device);
-            lightManager->SetDirectionalLight(this,lightDirection, lightColor);
+            lightManager->SetDirectionalLight(this, lightDirection, lightColor);
         }
 
         {
@@ -65,7 +67,6 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
             }
         }
 
-        HRESULT hr = { S_OK };
 
         //スカイマップ
         skyMap = std::make_unique<decltype(skyMap)::element_type>(device, L"./Data/Environment/Sky/Night2/skybox.dds");
@@ -150,6 +151,50 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     mouseCursorPause->SetVisible(false);
 
 
+    // デカール用関連
+    {
+        //	描画用プリミティブ生成
+        decal_cube = std::make_unique<GeometricCube>();
+        //	デカールテクスチャ読み込み
+        D3D11_TEXTURE2D_DESC texture2d_desc;
+        decal_textures.resize(1);
+        hr = LoadTextureFromFile(device, L"./Data/Textures/Decal/gun_holes.png", decal_textures[0].color_shader_resource_view.GetAddressOf(), &texture2d_desc);
+        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+        //	事前に置いておく
+        decal_datas.resize(1);
+        decal_datas[0].translation.z = 0;
+        decal_datas[0].rotation.x = DirectX::XM_PIDIV2;
+        decal_datas[0].scaling = { 10, 10, 10 };
+        decal_datas[0].decal_index = 0;
+
+        // 定数バッファを生成する
+        decalCBuffer = std::make_shared<ConstantBuffer<gbuffer_decal_constants>>(device);
+
+
+    }
+
+    // ジオメトリックシェーダー
+    {
+
+        //	ジオメトリプリミティブ用シェーダー準備
+        {
+            D3D11_INPUT_ELEMENT_DESC input_element_desc[]
+            {
+                { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+                { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            };
+            hr = CreateVsFromCSO(device, "./Shader/geometricPrimitiveVS.cso", geometric_primitive_vertex_shader.GetAddressOf(), geometric_primitive_input_layout.GetAddressOf(), input_element_desc, ARRAYSIZE(input_element_desc));
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+            hr=CreatePsFromCSO(device, "./Shader/geometricPrimitivePS.cso", geometric_primitive_pixel_shader.GetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+            //	gbuffer decalシェーダー
+            //create_ps_from_cso(get_renderdata()->device.Get(), "gbuffer_decal_primitive_ps.cso", gbuffer_decal_pixel_shader.GetAddressOf());
+        }
+
+    }
+
     normalCoin = {
     0.9f, 2.3f,
     0.15f, 15.0f,
@@ -161,6 +206,8 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     0.05f, 30.0f,
     25, 80.0f, 800.0f,
     "./Data/TeamModels/Item/BonusButtonCoin.glb" };
+
+
 
     return true;
 }
@@ -246,7 +293,42 @@ void GameScene::Update(float deltaTime)
                 mouseCursorGrab->SetVisible(false);
             }
         }
+
+        //　デカールテスト
+#if 0
+        HitResultWithActor hit = {};
+        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Floor);
+        if (CollisionFunction::RaycastFromMouse(cursor, hit, mask))
+        {
+            ViewConstants viewData = {};
+            if (auto camera = cameraManager->GetRenderCamera(this))
+            {
+                viewData = camera->GetViewConstants();
+            }
+            else
+            {
+                Logger::Error(U8("カメラがない"));
+            }
+
+            DirectX::XMMATRIX camera_world_matrix;
+            camera_world_matrix = DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&viewData.view));
+            DirectX::XMVECTOR Scale, Rotation, Translation;
+            DirectX::XMMatrixDecompose(&Scale, &Rotation, &Translation, camera_world_matrix);
+            DirectX::XMFLOAT4 rotation;
+            DirectX::XMStoreFloat4(&rotation, Rotation);
+
+            decal_data data;
+            data.scaling.z = 3;	//	適当に引き延ばす
+            data.rotation = MathHelper::ConvertQuaternionToEuler(rotation);
+            data.translation = hit.hitPoint;
+
+            data.decal_index = 0;
+            decal_datas.push_back(data);
+        }
+#endif // 0
+
     }
+
 
     if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
     {
@@ -333,6 +415,8 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         Logger::Error(U8("カメラがない"));
     }
+
+
 #ifdef USE_IMGUI
     imGuiGizmoBuffer->Clear(immediateContext);
     imGuiGizmoBuffer->Activate(immediateContext);
@@ -353,8 +437,13 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     sceneRender.RenderMask(immediateContext, queues.deferredMask);
     ExecuteHooks(RenderPass::Mask, immediateContext);
 
+
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
     gBufferRenderTarget->Deactivate(immediateContext);
+
+
+    //GBufferDecalPass(immediateContext);
+
 
     DirectX::XMFLOAT4X4 cameraView;
     DirectX::XMFLOAT4X4 cameraProjection;
@@ -402,6 +491,9 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         fullscreenQuad->Blit(immediateContext, shaderResourceViews, 0, _countof(shaderResourceViews), deferredPs.Get());
         frameBuffer->Deactivate(immediateContext);
     }
+
+
+
 
     frameBuffer->Activate(immediateContext, gBufferRenderTarget->depthStencilView);
 
@@ -606,7 +698,7 @@ void GameScene::SetUpActors()
     auto coin2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr2);
 
     Transform coinTr3(DirectX::XMFLOAT3{ 15,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto coin3= this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr3);
+    auto coin3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr3);
 #endif // 0
     Transform gameManagerTransform(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto gameManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsGameManager>("gameManagerActor", gameManagerTransform);
@@ -656,6 +748,115 @@ void GameScene::SetUpActors()
 #endif // 1
 
 }
+
+// デカールパス
+void GameScene::GBufferDecalPass(ID3D11DeviceContext* immediateContext)
+{
+    static constexpr int SceneCBVIndex = 1;
+    static constexpr int GBufferSRVIndex = 0;
+    static constexpr int SamplerStateIndex[5] = { 0, 1 , 2, 3, 4 };
+
+    //	出力先をGBufferに変更
+    {
+        auto rtv = gBufferRenderTarget->renderTargetViews[static_cast<int>(SRV_SLOT::COLOR)];
+
+        immediateContext->OMSetRenderTargets(
+            1,
+            &rtv,
+            gBufferRenderTarget->depthStencilView
+        );
+        //	ステンシルを利用するのでクリア
+        immediateContext->ClearDepthStencilView(gBufferRenderTarget->depthStencilView, D3D11_CLEAR_STENCIL, 0.0f, 0);
+    }
+
+    // ビューポートの設定
+    D3D11_VIEWPORT scene_viewport{};
+    scene_viewport.TopLeftX = 0;
+    scene_viewport.TopLeftY = 0;
+    scene_viewport.Width = Graphics::GetScreenWidth();
+    scene_viewport.Height = Graphics::GetScreenHeight();
+    scene_viewport.MinDepth = 0.0f;
+    scene_viewport.MaxDepth = 1.0f;
+    immediateContext->RSSetViewports(1, &scene_viewport);
+
+    RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
+
+    //	デカール書き込み
+    for (auto& decal : decal_datas)
+    {
+        //	姿勢生成
+        DirectX::XMMATRIX S = DirectX::XMMatrixScaling(decal.scaling.x, decal.scaling.y, decal.scaling.z);
+        DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(decal.rotation.x, decal.rotation.y, decal.rotation.z);
+        DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(decal.translation.x, decal.translation.y, decal.translation.z);
+        DirectX::XMMATRIX World = S * R * T;
+        DirectX::XMFLOAT4X4 world;
+        DirectX::XMStoreFloat4x4(&world, World);
+
+        //	SRVとして他のGBufferを利用するので設定
+        ID3D11ShaderResourceView* shader_resource_views[] =
+        {
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],	//	カラーには書き込みを行うので適当にダミーを設定
+             gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],
+             gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::PBR_VALUE)],
+            gBufferRenderTarget->depthStencilShaderResourceView,
+        };
+        immediateContext->PSSetShaderResources(GBufferSRVIndex, _countof(shader_resource_views), shader_resource_views);
+
+        // 必要な情報を設定しておく
+#if 0
+        {
+            static constexpr int GbufferDecalTextureSRVIndex = 10;
+            static constexpr int GbufferDecalTextureCBVIndex = 10;
+            immediateContext->PSSetShaderResources(GbufferDecalTextureSRVIndex, 1, decal_textures[decal.decal_index].color_shader_resource_view.GetAddressOf());
+
+            gbuffer_decal_constants decal_constant;
+            {
+                //	ボックスの向きを保存
+                DirectX::XMStoreFloat4(&decal_constant.decal_direction, R.r[2]);
+                decal_constant.decal_direction.w = 0;
+
+                //	ボックスの空間に変換するための行列
+                DirectX::XMMATRIX V = DirectX::XMMatrixInverse(nullptr, World);
+                DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(1, 1, 0, 1);
+                DirectX::XMStoreFloat4x4(&decal_constant.decal_inverse_transform, V * P);
+            }
+            decalCBuffer->data = decal_constant;
+            decalCBuffer->Activate(immediateContext, 5);
+        }
+#endif // 0
+
+
+        {
+            //	頂点シェーダー等の設定
+            immediateContext->VSSetShader(geometric_primitive_vertex_shader.Get(), nullptr, 0);
+            immediateContext->IASetInputLayout(geometric_primitive_input_layout.Get());
+            immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+            //	裏面描画してステンシル値1を書き込む
+            {
+                RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_FRONT);
+                RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::DECAL, 1);
+                immediateContext->PSSetShader(nullptr, nullptr, 0);
+                DirectX::XMFLOAT4 color = { 1, 1, 1, 1 };
+                decal_cube->Render(world, color);
+            }
+
+            //	表面描画してステンシル値1と比較
+            {
+                RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
+                RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::DECAL, 0);
+                immediateContext->PSSetShader(geometric_primitive_pixel_shader.Get(), nullptr, 0);
+                decal_cube->Render(world, decal.color);
+            }
+        }
+
+
+
+    }
+
+}
+
 
 bool GameScene::Uninitialize(ID3D11Device* device)
 {

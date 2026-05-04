@@ -10,7 +10,7 @@ StageData StageLoader::Load(int stageId)
     case 1:
 
         data.waves = {
-            // Wave1：近くて簡単
+            // Wave1：横一列
           {
               {
                   { {6,0,12}, YarnEnemyType::Static ,0.0f},
@@ -20,7 +20,7 @@ StageData StageLoader::Load(int stageId)
 
           },
 
-          // Wave2：少し離す
+          // Wave2：直線
           {
               {
                   { {3,0,0}, YarnEnemyType::MoveVertical,2.0f },
@@ -31,28 +31,15 @@ StageData StageLoader::Load(int stageId)
 
           },
 
-          //// Wave3：溜めさせる
-          //{
-          //    {
-          //        { {1,0,10}, YarnEnemyType::MoveHorizontal,2.0f },
-          //        { {1,0,10}, YarnEnemyType::MoveHorizontal,4.0f },
-          //        { {21,0,10}, YarnEnemyType::MoveHorizontal,2.0f },
-          //        { {21,0,10}, YarnEnemyType::MoveHorizontal,4.0f },
-          //    },
-
-          //},
-
-          // Wave4：急かす
+          // Wave3：
           {
               {
-                  { {0,0,24}, YarnEnemyType::RescueEnemy,6.0f,false,3.0f },
-                  { {24,0,24}, YarnEnemyType::RescueEnemy,6.0f, false,3.0f},
-                  //{ {3,0,5}, YarnEnemyType::ChasePlayer,5.0f, },
-                  //{ {9,0,5}, YarnEnemyType::ChasePlayer,5.0f, },
+                  { {0,0,23.5}, YarnEnemyType::RescueEnemy,6.0f,false,3.0f },
+                  { {23.5,0,23.5}, YarnEnemyType::RescueEnemy,6.0f, false,3.0f},
               },
 
           },
-          // Wave4：急かす
+          // Wave4：ミッキー
         {
             {
                 { { 23.5,0,18 }, YarnEnemyType::MoveHorizontal,8.0f,true, },
@@ -65,7 +52,7 @@ StageData StageLoader::Load(int stageId)
             },
 
         },
-        // Wave4：波波
+        // Wave5：波波
     {
     {
         // 左上
@@ -91,7 +78,7 @@ StageData StageLoader::Load(int stageId)
     },
 
     },
-    // Wave4：急かす
+    // Wave6：急かす
 {
     {
         { {0,0,12}, YarnEnemyType::RescueEnemy,5.0f,false,3.0f },

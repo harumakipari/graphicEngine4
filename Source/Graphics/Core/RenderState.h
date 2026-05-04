@@ -25,7 +25,7 @@ enum class DEPTH_STATE :uint8_t
     ZT_ON_ZW_OFF,
     ZT_OFF_ZW_ON,
     ZT_OFF_ZW_OFF,
-
+    DECAL, // [“x”äŠr‚ðs‚¤‚ª‘‚«ž‚Ü‚È‚¢
     ENUM_COUNT,
 };
 

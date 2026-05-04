@@ -79,15 +79,19 @@ public:
     static inline Scene::Autoenrollment<GameScene> _autoenrollment;
 
 private:
+    // デカールパス
+    void GBufferDecalPass(ID3D11DeviceContext* immediateContext);
+
+
     void SpawnEnemy(
         const XMFLOAT3& pos,
         YarnEnemyType type,
-        float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 } );
+        float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 });
 
     void SpawnBigEnemy(
         const XMFLOAT3& pos,
         YarnEnemyType type,
-        float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 } );
+        float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 });
 
 public:
     EnemyTuning enemyTuning = {}; // 敵の調整用
@@ -102,4 +106,41 @@ private:
     std::shared_ptr<UIImageComponent> mouseCursorPar;   // マウスパー
     std::shared_ptr<UIImageComponent> mouseCursorGrab;  // マウス掴み
     std::shared_ptr<UIImageComponent> mouseCursorPause; // マウス　ポーズ
+
+    // デカール用
+    std::unique_ptr<GeometricCube> decal_cube;// デバック用のキューブ
+    // デカール用テクスチャ
+    struct decal_texture
+    {
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> color_shader_resource_view;
+    };
+    std::vector<decal_texture> decal_textures;
+    // デカール用データ
+    struct decal_data
+    {
+        DirectX::XMFLOAT3	translation{ 0, 0, 0 };
+        DirectX::XMFLOAT3	scaling{ 1, 1, 1 };
+        DirectX::XMFLOAT3	rotation{ 0, 0, 0 };
+        DirectX::XMFLOAT4	color{ 1, 1, 1, 1 };
+        int decal_index = -1;
+    };
+    std::vector<decal_data> decal_datas;
+    // デカール用定数バッファ
+    struct gbuffer_decal_constants
+    {
+        DirectX::XMFLOAT4X4 decal_inverse_transform;
+        DirectX::XMFLOAT4 decal_direction;
+    };
+    std::shared_ptr<ConstantBuffer<gbuffer_decal_constants>> decalCBuffer;
+
+    // 
+    Microsoft::WRL::ComPtr<ID3D11PixelShader> gbuffer_decal_pixel_shader;
+
+    // ジオメトリックシェーダー
+    Microsoft::WRL::ComPtr<ID3D11VertexShader> geometric_primitive_vertex_shader;
+    Microsoft::WRL::ComPtr<ID3D11InputLayout> geometric_primitive_input_layout;
+    Microsoft::WRL::ComPtr<ID3D11PixelShader> geometric_primitive_pixel_shader;
+
+
+
 };

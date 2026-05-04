@@ -103,6 +103,9 @@ public:
     void Exit(EnemyBase* e) override {}
 
 private:
+    // œpœjˆ—
+    void UpdateWander(EnemyBase* e, float dt);
+
     // ‹Ê~‚ß‚³‚ê‚Ä‚¢‚é“G‚ğ’T‚·
     EnemyBase* FindTiedEnemy(const EnemyBase* self);
 
@@ -113,4 +116,6 @@ private:
 
     float rescueCooldown = 0.0f;
     float rescueCooldownTime = 1.0f; //@Ÿ‚Ì‹~•‚Ü‚Å‚ÌƒN[ƒ‹ƒ^ƒCƒ€
+
+    DirectX::XMFLOAT3 wanderTarget = { 0.0f,0.0f,0.0f };
 };

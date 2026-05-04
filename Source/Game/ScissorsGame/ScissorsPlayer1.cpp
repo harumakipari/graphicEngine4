@@ -171,7 +171,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
                     float damage = boss->ComputeDamage(bossDamageContext);
                     Logger::Log(U8("ボスにダメージ：") + std::to_string(damage));
-                    boss->TakeDamage(damage);
+                    boss->TakeDamage(static_cast<int>(damage));
 
 #if 1
                     // 無敵時間を追加
@@ -464,8 +464,8 @@ void ScissorsPlayer1::Update(float deltaTime)
     // playerの当たり判定をデバッグ表示
     DebugRender::DrawSphere(sphereComponent->GetComponentLocation(), playerRadius, debugPlayerCollisionColor, 0, true);
     // ダッシュ攻撃の当たり判定をデバッグ表示
-    //DebugRender::DrawSphere(dashAttackSphere->GetComponentLocation(), dashAttackRange, debugDashCollisionColor, 0, true);
-    DebugRender::DrawBox(dashAttackBox->GetComponentLocation(), { dashAttackRange,height ,dashAttackRange }, debugDashCollisionColor, 0, true);
+    DebugRender::DrawSphere(dashAttackBox->GetComponentLocation(), dashAttackRange, debugDashCollisionColor, 0, true);
+    //DebugRender::DrawBox(dashAttackBox->GetComponentLocation(), { dashAttackRange,height ,dashAttackRange }, debugDashCollisionColor, 0, true);
     debugPlayerCollisionColor = { 1,1,1,1 };
 }
 

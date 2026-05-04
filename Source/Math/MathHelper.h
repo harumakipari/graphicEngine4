@@ -401,6 +401,34 @@ namespace MathHelper
         DirectX::XMStoreFloat4(&out, v);
         return out;
     }
+
+    inline DirectX::XMFLOAT3 ConvertQuaternion4X4ToEuler(const DirectX::XMFLOAT4X4& rotation)
+    {
+        //	ZXY‰ñ“]
+        DirectX::XMFLOAT3 euler;
+        if (1.0f - fabs(rotation.m[2][1]) < 1.0e-6f)
+        {
+            euler.x = rotation.m[2][1] < 0 ? DirectX::XM_PIDIV2 : -DirectX::XM_PIDIV2;
+            euler.y = atan2f(rotation.m[1][0], rotation.m[0][0]);
+            euler.z = 0;
+        }
+        else
+        {
+            euler.x = asinf(-rotation.m[2][1]);
+            euler.y = atan2f(rotation.m[2][0], rotation.m[2][2]);
+            euler.z = atan2f(rotation.m[0][1], rotation.m[1][1]);
+        }
+        return euler;
+    }
+
+    inline DirectX::XMFLOAT3 ConvertQuaternionToEuler(const DirectX::XMFLOAT4 quaternion)
+    {
+        DirectX::XMMATRIX Rotation = DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&quaternion));
+        DirectX::XMFLOAT4X4 rotation;
+        DirectX::XMStoreFloat4x4(&rotation, Rotation);
+        return ConvertQuaternion4X4ToEuler(rotation);
+    }
+
 }
 
 #endif //MATH_HELPER_H
