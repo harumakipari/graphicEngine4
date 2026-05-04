@@ -56,10 +56,9 @@ void ScoreUiActor::Update(float elapsedTime)
         return;
     }
 
-    auto& scoreSystem = player->scoreSystem;
 
-    int score = scoreSystem.GetTotalScore();
-    int combo = scoreSystem.GetCombo();
+    int score = ScoreSystem::GetTotalScore();
+    int combo = ScoreSystem::GetCombo();
     UpdateScoreDigits(score);
 
 

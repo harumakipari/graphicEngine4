@@ -207,6 +207,8 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     25, 80.0f, 800.0f,
     "./Data/TeamModels/Item/BonusButtonCoin.glb" };
 
+    // スコアシステムの初期化
+    ScoreSystem::Reset();
 
 
     return true;
@@ -261,6 +263,11 @@ void GameScene::Update(float deltaTime)
     Physics::Instance().Update(Time::UnscaledDeltaTime());
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
+
+    // スコアシステムの更新処理
+    ScoreSystem::Update(deltaTime);
+
+
 
     // マウスカーソルの更新処理
     {

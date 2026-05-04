@@ -12,6 +12,7 @@ class BobbinActor :public Actor
         CoolDown, // クールダウン
         Charging, //溜め中
         Fired, // 発動した瞬間
+        Executing,
     };
 
 public:
@@ -32,6 +33,9 @@ private:
 
     // 敵を玉止めする
     void ApplyToEnemies(DirectX::XMFLOAT3 center);
+
+    // ボーナスボタンを生成する
+    void SpawnBonusCoinBurst();
 private:
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
 
@@ -46,5 +50,6 @@ private:
     float maxRadius = 6.0f; // 最大半径
     float cooldownInterval = 0.1f;// クールタイム
     float chargeTime = 3.5f; // 何秒でMaxになるか
+
 };
 

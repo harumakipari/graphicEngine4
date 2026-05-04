@@ -347,7 +347,7 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     }
 
     int arrowCount = _countof(player->arrowComponents);
-    int segmentCount = player->dashPoints.size() - 1;
+    int segmentCount = static_cast<int>(player->dashPoints.size()) - 1;
 
     int count = std::min<int>(arrowCount, segmentCount);
 

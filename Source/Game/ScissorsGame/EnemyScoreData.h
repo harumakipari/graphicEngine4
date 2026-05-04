@@ -31,3 +31,11 @@ struct BossDamageContext
     int killedEnemyBeforeHitCount = 0;
     bool isBossStunned = false;
 };
+
+// “G‚ªŽ€–S‚µ‚½Œ´ˆö
+enum class KillType:uint8_t
+{
+    Dash,
+    Reflected,
+    Bobbin,
+};

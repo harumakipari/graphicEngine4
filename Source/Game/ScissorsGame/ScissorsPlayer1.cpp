@@ -221,12 +221,14 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                         }
                         else
                         {
+#if 0
                             // スコアデータを取得する
                             auto data = enemy->GetScoreData();
                             auto pos = enemy->GetPosition();
                             // スコア処理　足されたスコアを取得する コンボ加算
-                            int addScore = scoreSystem.ProcessHit(data, isKilled);
+                            int addScore = ScoreSystem::ProcessHit(data, isKilled);
                             SpawnScorePopup(pos, addScore);
+#endif // 0
                         }
                         // スロー再生
                         //Time::SetSlow(0.5f, 0.3f);
@@ -447,9 +449,6 @@ void ScissorsPlayer1::Update(float deltaTime)
 
     // ダッシュ回復
     RecoverDash(deltaTime);
-
-    // スコアシステムの更新
-    scoreSystem.Update(deltaTime);
 
 #if 0
     // ダッシュの狙いを表示する矢印のUIを更新
@@ -727,7 +726,7 @@ void ScissorsPlayer1::TakeDamage(int damage)
     UpdateHpUI();
 
     // ダメージを受けたらコンボをリセットする
-    scoreSystem.ResetCombo();
+    ScoreSystem::ResetCombo();
 }
 
 // プレイヤーの攻撃処理
@@ -786,6 +785,7 @@ void ScissorsPlayer1::DoAttackHit()
 // ダッシュの回数を回復する関数　
 void ScissorsPlayer1::RecoverDash(float deltaTime)
 {
+#if 0
     // ダッシュ回復
     dashRecoverTimer += deltaTime;
 
@@ -799,6 +799,7 @@ void ScissorsPlayer1::RecoverDash(float deltaTime)
             Logger::Log("Dash recovered. Current dash count: " + std::to_string(dashCount));
         }
     }
+#endif // 0
 }
 
 // HPを表示するUIを更新する関数　
@@ -839,16 +840,16 @@ void ScissorsPlayer1::SpawnScorePopup(const DirectX::XMFLOAT3& pos, int score)
 //　ダッシュを使用する関数　これを呼ぶとダッシュの残り回数が減る
 void ScissorsPlayer1::UseDash()
 {
-#if 1
+#if 0
     if (dashCount > 0)
     {
         dashCount--;
     }
+    Logger::Log("Dash used. Remaining dash count: " + std::to_string(dashCount));
 
 #endif // 0
     chargeTime = 0.0f;
 
-    Logger::Log("Dash used. Remaining dash count: " + std::to_string(dashCount));
 }
 
 // ダッシュが失敗した時に呼ぶ関数　これを呼ぶとダッシュの残り回数が減らない
@@ -906,30 +907,30 @@ void ScissorsPlayer1::ResolveReflectedKills()
 
         reflectedKillCount++;
 
-        // 通常スコア　コンボ込み
-        auto data = enemy->GetScoreData();
-        int addScore = scoreSystem.ProcessHit(data, true);
+        //// 通常スコア　コンボ込み
+        //auto data = enemy->GetScoreData();
+        //int addScore = ScoreSystem::ProcessHit(data, true);
 
-        SpawnScorePopup(enemy->GetPosition(), addScore);
+        //SpawnScorePopup(enemy->GetPosition(), addScore);
     }
 
     // 反射ボーナス
     int reflectionBonus = reflectedKillCount * 80;
-    scoreSystem.AddBonusScore(reflectionBonus);
     // ダッシュボーナス
     int dashBonus = (killedEnemyCountInDash / 5) * 500;
-    scoreSystem.AddBonusScore(dashBonus);
-    if (reflectedKillCount > 0)
+    if (reflectionBonus > 0)
     {// 反射攻撃で死んでいたら
+        ScoreSystem::AddBonusScore(reflectionBonus);
         InputSystem::SetVibration(1.0f, 0.2f);
+        Logger::Log("ReflectionBonus: " + std::to_string(reflectionBonus));
     }
-    if (killedEnemyCountInDash>=5)
+    if (dashBonus > 0)
     {// 5体以上
+        ScoreSystem::AddBonusScore(dashBonus);
         SpawnBonusCoinBurst();
+        Logger::Log("DashBonus: " + std::to_string(dashBonus));
     }
 
-    Logger::Log("ReflectionBonus: " + std::to_string(reflectionBonus));
-    Logger::Log("DashBonus: " + std::to_string(dashBonus));
 
     dashHits.clear();
 }
@@ -964,12 +965,15 @@ void ScissorsPlayer1::AttackDash(EnemyBase* enemy)
             {
                 dashHits.push_back({ enemy, true });
             }
+#if 0
             else
             {
                 auto data = enemy->GetScoreData();
-                int addScore = scoreSystem.ProcessHit(data, true);
+                int addScore = ScoreSystem::ProcessHit(data, true);
                 SpawnScorePopup(enemy->GetPosition(), addScore);
             }
+
+#endif // 0
 
             killedEnemyCountInDash++;
             hitStopTimer = hitStopDuration;

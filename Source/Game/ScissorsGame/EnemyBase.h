@@ -145,6 +145,15 @@ public:
 
     // ステートを変更する
     void ChangeEnemyState(const YarnState state) { this->state = state; }
+
+    // 吹っ飛び前の遅延演出処理
+    void SetDelayBeforeKnockback(float delay)
+    {
+        delayBeforeKnockback = delay;
+        delayTimer = 0.0f;
+        waitBeforeKnockback = true;
+        startKnockback = false;
+    }
 private:
     // コインを生成する
     void SpawnCoin(DirectX::XMFLOAT3 pos);
@@ -175,6 +184,9 @@ private:
 
     // 強制的に玉止めにする
     void ForceTied();
+
+    // スコアポップアップを生成する関数
+    void SpawnScorePopup(const DirectX::XMFLOAT3& pos, int score);
 
 public:
     // 死亡通知
@@ -270,5 +282,13 @@ private:
     DirectX::XMFLOAT3 basePosition = { 0.0f,0.0f,0.0f };
 
     float shakeTimer = 0.0f; // 振動の時間
+
+
+    // 死亡処理時の遅延演出処理
+    float delayTimer = 0.0f;
+    float delayBeforeKnockback = 0.0f;
+    bool waitBeforeKnockback = false;
+
+    bool popupScore = false; // スコアをポップアップさせるフラグ
 
 };

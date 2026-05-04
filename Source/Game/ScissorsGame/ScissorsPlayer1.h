@@ -125,7 +125,6 @@ public:
     bool isStun = false;// スタンするかどうか  あんまり使っていない
     bool hasDamageEnemy = false; // ハサミ攻撃を一体の敵のみに当てるため。
 
-    ScoreSystem scoreSystem; // スコア計算用のクラス
 
     // ダッシュ時の到達地点を保存
     std::vector<DirectX::XMFLOAT3> dashPoints;

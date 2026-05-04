@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "BobbinActor.h"
 
+#include "ButtonCoinActor.h"
 #include "EnemyBase.h"
 #include "RabbitBossEnemy.h"
 #include "ScissorsPlayer1.h"
@@ -72,10 +73,8 @@ void BobbinActor::Update(float deltaTime)
         Reset();
         break;
     }
-
     // ボビンの当たり判定をデバッグ表示
     DebugRender::DrawSphere(center, currentRadius, { 1,0,0.5f,1 }, 0, true);
-
 }
 
 
@@ -134,6 +133,8 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
         candidates.push_back(boss);
     }
 
+    int index = 0;
+
     for (auto e : candidates)
     {
         auto actor = dynamic_cast<Actor*>(e.get());
@@ -155,7 +156,10 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
                 if (auto enemy = dynamic_cast<EnemyBase*>(actor))
                 {
                     enemy->ChangeEnemyState(EnemyBase::YarnState::Dead);
-                    enemy->CallDeath(false);
+                    enemy->CallDeath(false); // 死亡演出開始処理
+                    // 死亡演出に遅延を入れる
+                    enemy->SetDelayBeforeKnockback(index * 0.08f);
+                    index++;
                 }
             }
             else
@@ -164,5 +168,45 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
                 e->OnTied();
             }
         }
+    }
+
+
+    // 複数ボーナス
+    int dashBonus = (index / 5) * 500;
+    if (dashBonus > 0)
+    {// 5体以上
+        ScoreSystem::AddBonusScore(dashBonus);
+        SpawnBonusCoinBurst();
+        Logger::Log("DashBonus: " + std::to_string(dashBonus));
+    }
+
+
+}
+
+void BobbinActor::SpawnBonusCoinBurst()
+{
+    auto pos = GetPosition();
+    auto scene = GetOwnerScene();
+    int coinCount = 1;
+
+    for (int i = 0; i < coinCount; i++)
+    {
+        float angle = static_cast<float>(i) / coinCount * DirectX::XM_2PI;
+
+        DirectX::XMFLOAT3 offset =
+        {
+            cosf(angle) * 1.5f,
+            0.5f,
+            sinf(angle) * 1.5f
+        };
+
+        XMFLOAT3 coinPos = MathHelper::Add(pos, offset);
+
+        Transform tr(coinPos, { 0,0,0 }, { 1.0f,1.0f,1.0f }); // ←少し大きい
+
+        auto coin = scene->GetActorManager()
+            ->CreateAndRegisterActorWithTransform<ButtonCoinActor>("bonusCoin", tr);
+
+        coin->StartPerform(true); //  ボーナス指定
     }
 }

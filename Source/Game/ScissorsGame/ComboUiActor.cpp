@@ -67,9 +67,7 @@ void ComboUiActor::Update(float elapsedTime)
         return;
     }
 
-    auto& scoreSystem = player->scoreSystem;
-
-    currentCombo = scoreSystem.GetCombo();
+    currentCombo = ScoreSystem::GetCombo();
     UpdateScoreDigits(currentCombo);
 
     float digitSpacing = 90.0f; // 桁の間隔（調整ポイント）

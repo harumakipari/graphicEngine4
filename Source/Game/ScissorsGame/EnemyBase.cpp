@@ -4,6 +4,7 @@
 #include "ButtonCoinActor.h"
 #include "ScissorsGameElasticComponent.h"
 #include "ScissorsPlayer1.h"
+#include "ScorePopupActor.h"
 #include "Engine/Scene/Scene.h"
 #include "Game/Scenes/GameScene.h"
 #include "Physics/CollisionFunction.h"
@@ -140,6 +141,13 @@ void EnemyBase::ForceTied()
     tieCount = GetNeedTiedCount();
 }
 
+// スコアポップアップを生成する関数
+void EnemyBase::SpawnScorePopup(const DirectX::XMFLOAT3& pos, int score)
+{
+    Transform scoreTr{ pos,XMFLOAT3{0,0,0},XMFLOAT3{1,1,1} };
+    auto popup = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<ScorePopupActor>("ScorePopup", scoreTr);
+    popup->SetScore(score);
+}
 
 // ヒットエフェクトを生成する
 void EnemyBase::SpawnHitEffect(bool hitByReflected)
@@ -417,11 +425,33 @@ void EnemyBase::ReleasedTied()
 // 死亡中の更新処理
 void EnemyBase::UpdateDead(float deltaTime)
 {
+    if (waitBeforeKnockback)
+    {
+        delayTimer += deltaTime;
+
+        if (delayTimer >= delayBeforeKnockback)
+        {
+            waitBeforeKnockback = false;
+            startKnockback = true; // ←ここで発火
+        }
+    }
+
     if (startKnockback)
     {// 死亡したら
         // 上へ吹っ飛ぶ処理
         if (isKnockbackActive)
         {
+            if (!popupScore)
+            {
+                // スコアデータを取得する
+                auto data = GetScoreData();
+                auto pos = GetPosition();
+                // スコア処理　足されたスコアを取得する コンボ加算
+                int addScore = ScoreSystem::ProcessHit(data, true);
+                SpawnScorePopup(pos, addScore);
+                popupScore = true;
+            }
+
             if (knockback.elapsedTime < 0.05f)
             {
                 // 少しだけ強制的に前に押す
@@ -452,12 +482,15 @@ void EnemyBase::UpdateDead(float deltaTime)
             // 高さでコイン出す
             if (pos.y > knockback.startPos.y + knockback.height * 0.8f && !createCoin)
             {
+
                 SpawnCoin(pos);
                 createCoin = true;
             }
             // 終了
             if (t >= 1.0f)
             {
+
+
                 MarkPendingKill(); // 死亡処理はエフェクトが終わってからにする予定
                 isKnockbackActive = false;
             }

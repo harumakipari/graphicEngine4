@@ -15,6 +15,7 @@
 #include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Player/Player.h"
 #include "Game/ScissorsGame/NeedleEnemyActor.h"
+#include "Game/ScissorsGame/ScoreCalculator.h"
 #include "Game/ScissorsGame/YarnEnemyActor.h"
 
 
@@ -97,6 +98,7 @@ public:
     EnemyTuning enemyTuning = {}; // 敵の調整用
     CoinTuning normalCoin = {}; // コインの調整用
     CoinTuning  bonusCoin = {}; // ボーナスコインの調整用
+
 
 private:
     TPSCameraComponent* mainCameraComponent = nullptr;

@@ -116,7 +116,6 @@ StageData StageLoader::Load(int stageId)
                     { {21,0,22.5}, YarnEnemyType::MoveLinear,6.0f, false,2.0f,1.0f,{-1,0,-1}},
                     { {22.5,0,21}, YarnEnemyType::MoveLinear,6.0f, false,2.0f,1.0f,{-1,0,-1}},
 
-
                     // ç∂â∫
                             { {3,0,3}, YarnEnemyType::MoveLinear,6.0f,true,2.0f ,1.0f,{1,0,1}},
                     { {3,0,1.5}, YarnEnemyType::MoveLinear,6.0f, false,2.0f,1.0f,{1,0,1}},
