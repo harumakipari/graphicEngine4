@@ -239,6 +239,10 @@ void WaveManager::SpawnEnemy(
         enemy->SetMoveDirection({ 0,0,1 });
         break;
 
+    case YarnEnemyType::MoveLinear:
+        enemy->SetBehavior(std::make_unique<LinearBehavior>());
+        break;
+
     case YarnEnemyType::WaveHorizontal:
         enemy->SetBehavior(std::make_unique<WaveHorizontalBehavior>());
         enemy->SetMoveDirection({ 1,0,0 });

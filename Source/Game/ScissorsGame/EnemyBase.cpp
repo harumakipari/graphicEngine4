@@ -126,9 +126,11 @@ void EnemyBase::ForceTied()
     if (state == YarnState::Dead)
         return;
 
+#if 0
     //@Šù‚É‹ÊŽ~‚ßó‘Ô‚Ìê‡
     if (state == YarnState::Tying)
         return; // ˆê’U‰½‚à‚µ‚È‚¢
+#endif // 0
 
     state = YarnState::Tied;
     tieTimer = 0.0f;
@@ -363,7 +365,7 @@ void EnemyBase::CreateCollisionComponent()
     sphereCollisionComponent->SetMass(mass);
     sphereCollisionComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
     sphereCollisionComponent->SetLayer(CollisionLayer::Enemy);
-    sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Block);
+    //sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Block);
     sphereCollisionComponent->SetResponseToLayer(CollisionLayer::EnemyRedirect, CollisionComponent::CollisionResponse::Block);
     sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
     sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
@@ -372,7 +374,7 @@ void EnemyBase::CreateCollisionComponent()
     sphereCollisionComponent->Initialize();
     sphereCollisionComponent->SetOnHitCallback([this](CollisionComponent* self, CollisionComponent* other)
         {
-            uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Bobbin) | CollisionHelper::ToBit(CollisionLayer::EnemyRedirect);
+            uint32_t mask = /*CollisionHelper::ToBit(CollisionLayer::Bobbin) |*/ CollisionHelper::ToBit(CollisionLayer::EnemyRedirect);
             if (!(other->GetCollisionLayer() & mask))
                 return;
 

@@ -20,6 +20,12 @@ public:
     // スタン状態かどうか
     bool IsStunned() ;
 
+    // 
+    bool IsTied()  override
+    {
+        return IsStunned();
+    }
+
     // ダメージ処理
     float ComputeDamage(const BossDamageContext& damageContext);
 

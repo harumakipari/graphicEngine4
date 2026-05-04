@@ -35,11 +35,12 @@ public:
 
     float GetMultiplier() const
     {
-#if 0
+#if 1
         if (comboCount <= 1) return 1.0f;
-        if (comboCount == 2) return 1.3f;
-        if (comboCount == 3) return 1.5f;
-        if (comboCount == 4) return 1.7f;
+        if (comboCount <= 3) return 1.2f;
+        if (comboCount <= 5) return 1.5f;
+        if (comboCount <= 7) return 1.7f;
+        if (comboCount <= 9) return 2.0f;
         return 2.0f;
 #else
         if (comboCount <= 1) return 1.0f;
@@ -56,5 +57,5 @@ private:
     int comboCount = 0;
 
     float comboTimer = 0.0f;
-    float comboResetTime = 1.5f; // コンボをリセットするまでの秒数
+    float comboResetTime = 1.3f; // コンボをリセットするまでの秒数
 };

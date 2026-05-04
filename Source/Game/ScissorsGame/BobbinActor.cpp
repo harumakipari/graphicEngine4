@@ -15,13 +15,13 @@ void BobbinActor::Initialize(const Transform& transform)
 
 
     auto boxComponent = this->AddComponent<class BoxComponent>("boxComponent", parentName);
-    DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
+    DirectX::XMFLOAT3 size = MathHelper::MultiplyF3XF3(skeletalMeshComponent->GetModelSize(), transform.GetScale());
     float  mass = 0.0f;
     boxComponent->SetBoxExtent(size);
     boxComponent->SetRelativeLocationDirect({ 0.0f,size.y * 0.5f ,0.0f });
     boxComponent->SetMass(mass);
     boxComponent->SetLayer(CollisionLayer::Bobbin);
-    boxComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
+    //boxComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Block);
     boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
     boxComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
     boxComponent->Initialize();
@@ -35,7 +35,7 @@ void BobbinActor::Initialize(const Transform& transform)
             auto player = dynamic_cast<ScissorsPlayer1*>(other->GetOwner());
             if (!player) return;
 
-            if (player->GetStateMachine()->GetStateName()=="Dash")
+            if (player->GetStateMachine()->GetStateName() == "Dash")
             {// playerÇ™ìÀêiíÜÇæÇ¡ÇΩÇÁ
                 UseBobbin();
             }
@@ -52,21 +52,21 @@ void BobbinActor::Update(float deltaTime)
     {
     case BobbinState::CoolDown:
         cooldownTimer -= deltaTime;
-        if (cooldownTimer<0.0f)
+        if (cooldownTimer < 0.0f)
         {
             bobbinState = BobbinState::Charging;
         }
         break;
     case BobbinState::Charging:
-        {
-            chargeTimer += deltaTime;
+    {
+        chargeTimer += deltaTime;
 
-            float t = chargeTimer / chargeTime;
-            t = std::clamp(t, 0.0f, 1.0f);
+        float t = chargeTimer / chargeTime;
+        t = std::clamp(t, 0.0f, 1.0f);
 
-            currentRadius = maxRadius * t;
-        }
-        break;
+        currentRadius = maxRadius * t;
+    }
+    break;
     case BobbinState::Fired:
         ApplyToEnemies(center);
         Reset();
@@ -86,9 +86,9 @@ void BobbinActor::DrawImGuiDetails()
     {
         UseBobbin();
     }
-    ImGui::DragFloat(U8("çLÇ™ÇÈç≈ëÂîºåa"), &maxRadius,0.5f);
-    ImGui::DragFloat(U8("ÉNÅ[ÉãÉ^ÉCÉÄ"), &cooldownInterval,0.5f);
-    ImGui::DragFloat(U8("maxÇ…Ç»ÇÈÇ‹Ç≈Ç…Ç©Ç©ÇÈéûä‘"), &chargeTime,0.5f);
+    ImGui::DragFloat(U8("çLÇ™ÇÈç≈ëÂîºåa"), &maxRadius, 0.5f);
+    ImGui::DragFloat(U8("ÉNÅ[ÉãÉ^ÉCÉÄ"), &cooldownInterval, 0.5f);
+    ImGui::DragFloat(U8("maxÇ…Ç»ÇÈÇ‹Ç≈Ç…Ç©Ç©ÇÈéûä‘"), &chargeTime, 0.5f);
 
 #endif
 }
@@ -121,7 +121,7 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
     {
         if (auto e = w.lock())
         {
-            if (!e->IsDead() && e->GetState() == EnemyBase::YarnState::Active)
+            if (!e->IsDead())
             {
                 candidates.push_back(e);
             }
@@ -149,8 +149,20 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
 
         if (distanceSq <= radiusSq)
         {
-            e->OnTied();
+            if (e->IsTied())
+            {
+                // Ç∑Ç≈Ç…ã é~ÇﬂÇ≥ÇÍÇƒÇ¢ÇÈ Å® éÄñS
+                if (auto enemy = dynamic_cast<EnemyBase*>(actor))
+                {
+                    enemy->ChangeEnemyState(EnemyBase::YarnState::Dead);
+                    enemy->CallDeath(false);
+                }
+            }
+            else
+            {
+                // ã é~ÇﬂÇ≥ÇÍÇƒÇ¢Ç»Ç¢ Å® ã é~Çﬂ
+                e->OnTied();
+            }
         }
     }
-    
 }

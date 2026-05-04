@@ -17,13 +17,14 @@ class ITieable
 public:
     virtual ~ITieable() = default;
     virtual void OnTied() = 0;
+    virtual bool IsTied() = 0;
 };
 
 
 class EnemyBase :public Character, public ITieable
 {
 public:
-    enum class YarnState
+    enum class YarnState :uint8_t
     {
         Active,        // 通常
         Tying,  // 玉止め途中　（サイズが大きい敵のみ、速度が遅くなる）
@@ -100,6 +101,9 @@ public:
         return speed;
     }
 
+    // 玉止めされているかどうか
+    bool IsTied()  override { return tieCount >= GetNeedTiedCount(); }
+
     // 速度を設定する
     void SetSpeed(const float speed) { this->speed = speed; }
 
@@ -138,6 +142,9 @@ public:
 
     // 死亡した時に呼ぶ関数
     void CallDeath(bool hitByReflected);
+
+    // ステートを変更する
+    void ChangeEnemyState(const YarnState state) { this->state = state; }
 private:
     // コインを生成する
     void SpawnCoin(DirectX::XMFLOAT3 pos);

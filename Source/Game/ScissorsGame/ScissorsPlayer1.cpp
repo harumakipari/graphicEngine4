@@ -914,7 +914,7 @@ void ScissorsPlayer1::ResolveReflectedKills()
     }
 
     // 反射ボーナス
-    int reflectionBonus = reflectedKillCount * 50;
+    int reflectionBonus = reflectedKillCount * 80;
     scoreSystem.AddBonusScore(reflectionBonus);
     // ダッシュボーナス
     int dashBonus = (killedEnemyCountInDash / 5) * 500;

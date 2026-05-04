@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ScissorsPlayerStateDerived.h"
 
+#include "BobbinActor.h"
 #include "EnemyBase.h"
 #include "RabbitBossEnemy.h"
 #include "ScissorsGameEnemyBaseActor.h"
@@ -211,7 +212,7 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
 
         HitResultWithActor hit;
         uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Wall) | CollisionHelper::ToBit(CollisionLayer::EnemyRedirect)
-            | CollisionHelper::ToBit(CollisionLayer::Boss);
+            | CollisionHelper::ToBit(CollisionLayer::Boss) | CollisionHelper::ToBit(CollisionLayer::Bobbin);
 
         if (CollisionFunction::SphereRayCast(currentPos, nextTarget, hit, 0.2f, mask))
         {
@@ -220,6 +221,11 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
 
 #if 1
             if (auto boss = dynamic_cast<RabbitBossEnemyActor*>(hit.actor))
+            {// ボスに当たったら、
+                //Logger::Log(U8("ダッシュ予測中にボスに当たった"));
+                break;
+            }
+            if (auto bobbin = dynamic_cast<BobbinActor*>(hit.actor))
             {// ボスに当たったら、
                 //Logger::Log(U8("ダッシュ予測中にボスに当たった"));
                 break;
@@ -455,13 +461,13 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     player->SetPosition(nextPos);
 
 #if 1
-    // ボスがいるかどうかの判定
+    // ボスと糸巻がいるかどうかの判定 
     {
         XMFLOAT3 prevPos = currentPos;
         HitResultWithActor hit;
-        uint32_t bossMask = CollisionHelper::ToBit(CollisionLayer::Boss);
+        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Boss) | CollisionHelper::ToBit(CollisionLayer::Bobbin);
 
-        if (CollisionFunction::SphereRayCast(prevPos, nextPos, hit, 0.5f, bossMask))
+        if (CollisionFunction::SphereRayCast(prevPos, nextPos, hit, 0.5f, mask))
         {
             // ヒット位置に補正
             player->SetPosition({ hit.hitPoint.x,0.0f,hit.hitPoint.z });
@@ -472,6 +478,7 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
         }
     }
 
+
 #endif // 0
 #if 1
     // 敵がいるかどうかの判定
@@ -480,7 +487,7 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
         HitResultWithActor hit;
         uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Enemy);
 
-        float radius =1.5f;
+        float radius = 1.5f;
         if (CollisionFunction::SphereRayCast(prevPos, nextPos, hit, radius, mask))
         {
             if (auto enemy = dynamic_cast<EnemyBase*>(hit.actor))

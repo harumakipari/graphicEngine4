@@ -373,6 +373,19 @@ namespace MathHelper
         return ans;
     }
 
+    // Š|‚¯ŽZ
+    inline DirectX::XMFLOAT3 MultiplyF3XF3(
+        const DirectX::XMFLOAT3& a,
+        const DirectX::XMFLOAT3& b)
+    {
+        DirectX::XMFLOAT3 ans = { 0.0f,0.0f,0.0f };
+        ans.x = a.x * b.x;
+        ans.y = a.y * b.y;
+        ans.z = a.z * b.z;
+        return ans;
+    }
+
+
 
     // ‰ÁŽZ a+b
     inline DirectX::XMFLOAT3 Add(

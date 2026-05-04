@@ -13,6 +13,7 @@ enum class YarnEnemyType :uint8_t
     Static,   // ‚»‚Ìê‚Å‚¶‚Á‚Æ‚µ‚Ä‚¢‚é
     MoveHorizontal, // ‰¡‚É’¼üˆÚ“®‚·‚é
     MoveVertical,   // c‚É’¼üˆÚ“®‚·‚é
+    MoveLinear, // ’¼üˆÚ“®‚·‚é
     MoveToCenter,   // ’†S‚ÉŒü‚©‚Á‚ÄˆÚ“®‚·‚é
     WaveHorizontal, // ‰¡‚É”g‘Å‚¿‚È‚ª‚çˆÚ“®‚·‚é
     WaveVertical,  // c‚É”g‘Å‚¿‚È‚ª‚çˆÚ“®‚·‚é

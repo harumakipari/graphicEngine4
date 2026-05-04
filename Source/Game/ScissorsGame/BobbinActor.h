@@ -44,7 +44,7 @@ private:
 
     // 調整
     float maxRadius = 6.0f; // 最大半径
-    float cooldownInterval = 0.5f;// クールタイム
-    float chargeTime = 5.0f; // 何秒でMaxになるか
+    float cooldownInterval = 0.1f;// クールタイム
+    float chargeTime = 3.5f; // 何秒でMaxになるか
 };
 

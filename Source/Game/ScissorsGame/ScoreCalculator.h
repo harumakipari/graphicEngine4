@@ -59,7 +59,7 @@ public:
     int GetTotalScore() const { return totalScore; }
 
     // ボーナススコアを追加する関数
-    void AddBonusScore(int score)
+    void AddBonusScore(const int score)
     {
         totalScore += score;
         Logger::Log("Bonus Score: " + std::to_string(score) +

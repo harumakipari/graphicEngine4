@@ -221,7 +221,7 @@ void GameScene::Start()
     {
         stageId = std::stoi(param.at("stageId"));
     }
-    stageId = 1;
+    stageId = 2;
 
 
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
@@ -669,7 +669,7 @@ void GameScene::SetUpActors()
     needleEnemyActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<NeedleEnemyActor>("needleEnemy", needleTr);
     needleEnemyActor->SetMoveDirection({ 1.0f,0.0f,1.0f });
 #endif // 0// ハリネズミを生成　
-#if 1
+#if 0
     Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("coin", coinTr);
 #endif // 0
@@ -682,22 +682,22 @@ void GameScene::SetUpActors()
     auto Actor = this->GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemy", needleTr);
 
 #endif // 0
-#if 0
-    Transform bobbinTr(DirectX::XMFLOAT3{ 1,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+#if 1
+    Transform bobbinTr(DirectX::XMFLOAT3{ 12.0f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
 #endif // 0
 
 #if 0
-    Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr);
 
-    Transform coinTr1(DirectX::XMFLOAT3{ 6,0.0f,5 }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform coinTr1(DirectX::XMFLOAT3{ 13.5f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr1);
 
-    Transform coinTr2(DirectX::XMFLOAT3{ 1,0.0f,10 }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform coinTr2(DirectX::XMFLOAT3{ 12.0f,0.0f,13.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr2);
 
-    Transform coinTr3(DirectX::XMFLOAT3{ 15,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform coinTr3(DirectX::XMFLOAT3{ 12.0f,0.0f,10.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr3);
 #endif // 0
     Transform gameManagerTransform(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
