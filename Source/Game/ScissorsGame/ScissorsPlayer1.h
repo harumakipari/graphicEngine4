@@ -138,7 +138,7 @@ public:
     int currentSegment = 0;
 
     float postDashInvincibleTimer = 0.0f;   // ダッシュ後の無敵時間タイマー
-    float postDashInvincibleDuration = 0.2f; // ダッシュ後の無敵時間
+    float postDashInvincibleDuration = 0.5f; // ダッシュ後の無敵時間
 
     // １dash中に敵を倒した数
     int killedEnemyCountInDash = 0;
@@ -185,9 +185,14 @@ private:
     int scissorsDamage = 1;// ハサミ攻撃時に与えるダメージ
     int dashDamage = 1;// ダッシュ攻撃時に与えるダメージ
     float hitStopDuration = 0.03f; // ヒットストップの時間　攻撃が当たったときに動きを止める時間
-    float damageCooldownInterval = 0.8f; // 無敵時間
+    float damageCooldownInterval = 1.0f; // 無敵時間
 
     float damageCooldownTimer = 0.0f; // ダメージを受けた後の無敵時間のクールダウン
+
+    // 被ダメージ時の点滅用
+    float blinkTimer = 0.0f;
+    float blinkInterval = 0.1f; // 点滅速度
+    bool isBlinkOn = false;
 
     // 常に保持
     AimData currentAimData;

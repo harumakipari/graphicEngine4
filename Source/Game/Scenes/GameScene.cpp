@@ -225,7 +225,6 @@ void GameScene::Start()
     }
     stageId = 2;
 
-
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
 
@@ -689,7 +688,7 @@ void GameScene::SetUpActors()
     auto Actor = this->GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemy", needleTr);
 
 #endif // 0
-#if 1
+#if  1
     Transform bobbinTr(DirectX::XMFLOAT3{ 12.0f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
 #endif // 0

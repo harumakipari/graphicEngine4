@@ -154,6 +154,12 @@ public:
         waitBeforeKnockback = true;
         startKnockback = false;
     }
+
+    // 玉止め時の基本位置を設定する
+    void SetBasePosition(const DirectX::XMFLOAT3 basePosition)
+    {
+        this->basePosition = basePosition;
+    }
 private:
     // コインを生成する
     void SpawnCoin(DirectX::XMFLOAT3 pos);

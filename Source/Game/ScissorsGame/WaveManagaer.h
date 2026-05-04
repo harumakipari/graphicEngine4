@@ -42,7 +42,7 @@ private:
     void SpawnEnemy(
         const DirectX::XMFLOAT3& pos,
         YarnEnemyType type, bool isBig,
-        float speed = 2.0f, const DirectX::XMFLOAT3& dir = { 1,0,0 });
+        float speed , const DirectX::XMFLOAT3& dir,bool isTied);
 
 
     bool AllEnemiesDead() const

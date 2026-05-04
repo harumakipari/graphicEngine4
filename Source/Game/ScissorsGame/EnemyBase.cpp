@@ -433,6 +433,7 @@ void EnemyBase::UpdateDead(float deltaTime)
         {
             waitBeforeKnockback = false;
             startKnockback = true; // Å©Ç±Ç±Ç≈î≠âŒ
+            InputSystem::SetVibration(0.5f, 0.1f);
         }
     }
 

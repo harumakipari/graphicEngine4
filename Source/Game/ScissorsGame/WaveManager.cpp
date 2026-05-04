@@ -129,7 +129,7 @@ void WaveManager::Update(float deltaTime)
         //  ŽÀÛ‚ÌƒXƒ|[ƒ“’x‚ç‚¹‚é
         if (!state.spawned && timer >= s.delay + s.spawnDelay)
         {
-            SpawnEnemy(s.position, s.type, s.isBig, s.speed, s.dir);
+            SpawnEnemy(s.position, s.type, s.isBig, s.speed, s.dir, s.isTied);
             state.spawned = true;
         }
     }
@@ -203,7 +203,7 @@ void WaveManager::Update(float deltaTime)
 void WaveManager::SpawnEnemy(
     const DirectX::XMFLOAT3& pos,
     YarnEnemyType type, bool isBig,
-    float speed, const DirectX::XMFLOAT3& dir)
+    float speed, const DirectX::XMFLOAT3& dir, bool isTied)
 {
     DirectX::XMFLOAT3 scale = { 1.0f,1.0f,1.0f };
     if (isBig)
@@ -279,6 +279,12 @@ void WaveManager::SpawnEnemy(
     enemy->SetUpVisual();
     hasSpawnedAnyEnemy = true;
     aliveEnemies.push_back(enemy);
+
+    if (isTied)
+    {// ‹ÊŽ~‚ß‚³‚ê‚Ä‚¢‚½‚ç
+        enemy->OnTied();
+        enemy->SetBasePosition(pos);
+    }
 
     enemyCount++;
 }

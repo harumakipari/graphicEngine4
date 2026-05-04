@@ -202,8 +202,7 @@ void BobbinActor::SpawnBonusCoinBurst()
 
         XMFLOAT3 coinPos = MathHelper::Add(pos, offset);
 
-        Transform tr(coinPos, { 0,0,0 }, { 1.0f,1.0f,1.0f }); // ©­‚µ‘å‚«‚¢
-
+        Transform tr(coinPos, { 0,0,0 }, { 1.0f,1.0f,1.0f }); 
         auto coin = scene->GetActorManager()
             ->CreateAndRegisterActorWithTransform<ButtonCoinActor>("bonusCoin", tr);
 

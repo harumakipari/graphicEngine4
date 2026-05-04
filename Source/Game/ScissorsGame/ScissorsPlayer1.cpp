@@ -22,6 +22,8 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Player/player.gltf", false, true);
+    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGamePlayerPS";
+
     //skeletalMeshComponent->SetModel("./Data/TeamModels/Player/ScissorsPlayer.gltf", false, true);
 
     // アニメーションコントローラーを作成
@@ -99,7 +101,6 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     }
                     debugPlayerCollisionColor = { 1.0f,0.0f,0.0f,1.0f };
                     TakeDamage(2);
-                    damageCooldownTimer = damageCooldownInterval; // 無敵時間を設定
 #if 0
                     // ノックバック
                     DirectX::XMFLOAT3 dir =
@@ -174,7 +175,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     boss->TakeDamage(static_cast<int>(damage));
 
 #if 1
-                    // 無敵時間を追加
+                    // 無敵時間を追加 ノックバックのための
                     damageCooldownTimer = damageCooldownInterval; // 無敵時間を設定
 
                     // ノックバック
@@ -336,6 +337,45 @@ void ScissorsPlayer1::Update(float deltaTime)
     if (damageCooldownTimer > 0.0f)
     {// ダメージクールダウン中は無敵
         damageCooldownTimer -= deltaTime;
+
+#if 0
+        // 点滅処理
+        blinkTimer += deltaTime;
+        if (blinkTimer >= blinkInterval)
+        {
+            blinkTimer = 0.0f;
+            isBlinkOn = !isBlinkOn;
+        }
+
+        // cpuColor反映
+        if (isBlinkOn)
+        {
+            skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1, 0, 0, 1 }; // 赤
+        }
+        else
+        {
+            skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1, 1, 1, 1 }; // 白
+        }
+#else
+        blinkTimer += deltaTime;
+
+        float t = sinf(blinkTimer * 20.0f) * 0.5f + 0.5f;
+
+        // 赤フラッシュ
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor =
+        {
+            1.0f,
+            t,
+            t,
+            1.0f
+        };
+
+#endif // 0
+    }
+    else
+    {
+        // 無敵終了 → 色戻す
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1, 1, 1, 1 };
     }
 
     if (postDashInvincibleTimer > 0.0f)
@@ -537,7 +577,7 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
         {
             XMFLOAT3 targetDir = { x / len, 0.0f, z / len };
 
-            //  補間（ここが全て）
+            //  補間
             smoothDir.x += (targetDir.x - smoothDir.x) * std::clamp(deltaTime * smoothSpeed, 0.0f, 1.0f);
             smoothDir.z += (targetDir.z - smoothDir.z) * std::clamp(deltaTime * smoothSpeed, 0.0f, 1.0f);
 
@@ -709,6 +749,11 @@ DirectX::XMFLOAT3 ScissorsPlayer1::GetLookDirection() const
 // ダメージを受けたときの処理
 void ScissorsPlayer1::TakeDamage(int damage)
 {
+    damageCooldownTimer = damageCooldownInterval; // 無敵時間を設定
+
+    blinkTimer = 0.0f;     // 点滅リセット
+    isBlinkOn = true;      // 点滅開始
+
     // デバック用に当たり判定を赤くする
     debugPlayerCollisionColor = { 1,0,0,1 };
 

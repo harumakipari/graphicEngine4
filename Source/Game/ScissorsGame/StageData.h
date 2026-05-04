@@ -13,6 +13,8 @@ struct SpawnData
     float spawnDelay = 1.3f; // © —\‚©‚ço‚é‚Ü‚Å
 
     DirectX::XMFLOAT3 dir = { 1,0,0 };
+
+    bool isTied = false; // ‹Ê~‚ß‚³‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©
 };
 
 struct SpawnRuntime

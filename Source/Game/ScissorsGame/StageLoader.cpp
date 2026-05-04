@@ -92,14 +92,14 @@ StageData StageLoader::Load(int stageId)
 
         break;
 
-    case 2:
+    case 2: // 中央糸巻ステージ
         data.waves = {
           {
               {
                   { {12,0,15}, YarnEnemyType::Static ,0.0f,true},
                   { {9,0,12}, YarnEnemyType::Static ,0.0f,true},
                   { {15,0,12}, YarnEnemyType::Static ,0.0f,true},
-                  
+
               },
               true,
           },
@@ -188,81 +188,174 @@ StageData StageLoader::Load(int stageId)
     // 真ん中上
     { {12,0,3}, YarnEnemyType::WaveMoveBehavior,8.0f,false,2.0f ,1.0f,{0,0,1}},
 
-        // 左下
-                { {3,0,3}, YarnEnemyType::WaveMoveBehavior,6.0f,true,2.0f ,1.0f,{1,0,1}},
+    // 左下
+            { {3,0,3}, YarnEnemyType::WaveMoveBehavior,6.0f,true,2.0f ,1.0f,{1,0,1}},
 
-                // 左横
-        { {3,0,12}, YarnEnemyType::WaveMoveBehavior,8.0f,false,2.0f ,1.0f,{1,0,0}},
-
-
-    },
-
-    },
+            // 左横
+    { {3,0,12}, YarnEnemyType::WaveMoveBehavior,8.0f,false,2.0f ,1.0f,{1,0,0}},
 
 
+},
 
+},
         };
         break;
-    case 3:
-        data.waves = {
-       {
-                // Wave 1
+    case 3: // ハリネズミ敵ステージ
+        data.waves =
+        {
+#if 1
+                       {
+                // Wave 1 ハリネズミ
                 {
-                    { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
-                    { { 8,0,5 },  YarnEnemyType::WaveVertical, 0.0f,true },
-    #if 1
-                    { { 10,0,5 }, YarnEnemyType::WaveVertical, 0.0f ,true},
-                    { { 12,0,5 }, YarnEnemyType::Static, 0.0f },
-                    { { 15,0,5 }, YarnEnemyType::WaveHorizontal, 0.0f },
-                    { { 18,0,5 }, YarnEnemyType::WaveVertical, 0.0f },
-
-                    //{ {  5,0,8 }, YarnEnemyType::LongRangeAttack, 0.0f },
-                    { { 5,0,10 }, YarnEnemyType::ChasePlayer, 0.0f },
-                    { { 5,0,18 }, YarnEnemyType::RescueEnemy, 0.0f },
-
-                    #endif // 0
+                    { { 12,0,12},  YarnEnemyType::LongRangeAttack, 0.0f },
                 },
-                false,
-               1
             },
 
 
             {
-                // Wave 2（ちょい圧）
+                // Wave 2　ハリネズミ＋追尾4体
         {
-                    // 左上　から　右下
-                                            { { 18,0,5 },  YarnEnemyType::Static, 0.0f },
-                                            //{ { 12,0,10 }, YarnEnemyType::RescueEnemy, 0.5f },
-                                            { { 10,0,12 }, YarnEnemyType::Static, 0.8f },
-                                            { { 7,0,15 }, YarnEnemyType::Static, 1.2f },
-                                            { { 5,0,18 }, YarnEnemyType::RescueEnemy, 1.5f },
+                    { { 12,0,12},  YarnEnemyType::LongRangeAttack, 5.0f },
 
-                            #if 0
-                                            // 右上　から　左下
-                                    { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
-                                    { { 7,0,7 },  YarnEnemyType::Static, 0.3f },
-                                    { { 10,0,10 }, YarnEnemyType::Static, 0.5f },
-                                    { { 12,0,12 }, YarnEnemyType::Static, 0.8f },
-                                    { { 15,0,15 }, YarnEnemyType::Static, 1.2f },
-                                    { { 18,0,18 }, YarnEnemyType::Static, 1.5f },
+                    // 左下
+                { { 2.5f,0,2 }, YarnEnemyType::ChasePlayer,7.0f,false,2.0f,1.0f,{0,0,1}},
+                { {3.5f,0,2}, YarnEnemyType::ChasePlayer,7.0f, false,2.0f,1.0f,{0,0,1}},
+                // 右上　
+                { { 20.5f,0,22.0f }, YarnEnemyType::ChasePlayer,7.0f,false,2.0f,1.0f,{0,0,-1}},
+                { {21.5f,0,22.0f}, YarnEnemyType::ChasePlayer,7.0f, false,2.0f,1.0f,{0,0,-1}},
 
-                                    #endif // 0
-                                },
-                                        false
-                                    },
+                // 右下
+                    { { 20.5f,0,2 }, YarnEnemyType::ChasePlayer,9.0f,false,2.0f,1.0f,{0,0,1}},
+        { {21.5f,0,2}, YarnEnemyType::ChasePlayer,9.0f, false,2.0f,1.0f,{0,0,1}},
+        // 左上　
+        { { 2.5f,0,22.0f }, YarnEnemyType::ChasePlayer,9.0f,false,2.0f,1.0f,{0,0,-1}},
+        { {3.5f,0,22.0f}, YarnEnemyType::ChasePlayer,9.0f, false,2.0f,1.0f,{0,0,-1}},
 
-
-
-                                    {
-                                        // Wave 3（追い込み）
-                                        {
-                                            { {14,0,21}, YarnEnemyType::MoveHorizontal, 4.0f },
-                                            { {16,0,21}, YarnEnemyType::MoveHorizontal, 4.0f },
-                                            { {4,0,0}, YarnEnemyType::MoveVertical, 4.5f },
-                                            { {6,0,0}, YarnEnemyType::MoveVertical, 4.5f },
                                         },
-                                        false
-                                    }
+
+                                            },
+       {
+           // Wave 3 ハリネズミ ハサミ
+           {
+               { { 12,0,12},  YarnEnemyType::LongRangeAttack, 10.0f },
+                                 { {1.0f,0,12.0f}, YarnEnemyType::RescueEnemy,10.0f,false,3.0f },
+                  { {23.0f,0,12.0f}, YarnEnemyType::RescueEnemy,10.0f, false,3.0f},
+           },
+       },
+              {
+                  // Wave ４　波波　ハサミ
+                  {
+                      // 右下
+                      { { 18,0,2},  YarnEnemyType::WaveMoveBehavior, 10.0f ,false,2.0f ,1.0f,{0,0,1}},
+                      { { 19,0,1},  YarnEnemyType::WaveMoveBehavior, 10.0f ,false,2.0f ,1.0f,{0,0,1}},
+                      { { 17,0,1},  YarnEnemyType::WaveMoveBehavior, 10.0f ,false,2.0f ,1.0f,{0,0,1}},
+
+                      // 左上
+                      { { 6,0,22},  YarnEnemyType::WaveMoveBehavior, 10.0f ,false,2.0f ,1.0f,{0,0,-1}},
+                      { { 7,0,23},  YarnEnemyType::WaveMoveBehavior, 10.0f ,false,2.0f ,1.0f,{0,0,-1}},
+                      { { 5,0,23},  YarnEnemyType::WaveMoveBehavior, 10.0f ,false,2.0f ,1.0f,{0,0,-1}},
+
+                      // ハサミ
+                                 { {12.0f,0,1.0f}, YarnEnemyType::RescueEnemy,12.0f,false,3.0f },
+                  { {12.0f,0,23.0f}, YarnEnemyType::RescueEnemy,12.0f, false,3.0f},
+
+                  },
+                  //true
+              },
+                #endif // 0
+
+
+            // Wave 5　ひん死の敵
+        {
+                      {
+#if 0
+
+                                          { { 7.5,0,16.5},  YarnEnemyType::Static, 15.0f ,false,2.0f ,1.0f,{0,0,1},true},
+                       {{10.5,0,16.5},  YarnEnemyType::Static,15.0f+ 0.2f ,false,2.0f ,1.0f,{0,0,1},true},
+                       {{13.5,0,16.5},  YarnEnemyType::Static,15.0f+ 0.4f ,false,2.0f ,1.0f,{0,0,1},true},
+                       {{16.5,0,16.5},  YarnEnemyType::Static,15.0f+ 0.6f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{16.5,0,13.5},  YarnEnemyType::Static,15.0f+ 0.8f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{16.5,0,10.5},  YarnEnemyType::Static,15.0f+ 1.0f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{16.5,0,7.5},  YarnEnemyType::Static, 15.0f+1.2f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{13.5,0,7.5},  YarnEnemyType::Static, 15.0f+1.4f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{10.5,0,7.5},  YarnEnemyType::Static, 15.0f+1.6f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{7.5,0,7.5},  YarnEnemyType::Static, 15.0f+1.8f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{7.5,0,10.5},  YarnEnemyType::Static, 15.0f+2.0f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{7.5,0,13.5},  YarnEnemyType::Static, 15.0f+2.2f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{7.5,0,16.5},  YarnEnemyType::Static, 15.0f+2.4f ,false,2.0f ,1.0f,{0,0,1},true },
+#else
+                        { { 6.0,0,15.0},  YarnEnemyType::Static, 15.0f ,false,2.0f ,1.0f,{0,0,1},true},
+                       {{10.0,0,15.0},  YarnEnemyType::Static,15.0f + 0.2f ,false,2.0f ,1.0f,{0,0,1},true},
+                       {{12.0,0,18.0},  YarnEnemyType::Static,15.0f + 0.4f ,false,2.0f ,1.0f,{0,0,1},true},
+                       {{14.0,0,15.0},  YarnEnemyType::Static,15.0f + 0.6f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{18.0,0,15.0},  YarnEnemyType::Static,15.0f + 0.8f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{16.0,0,12.0},  YarnEnemyType::Static,15.0f + 1.0f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{18.0,0,9.0},  YarnEnemyType::Static, 15.0f + 1.2f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{14.0,0,9.0},  YarnEnemyType::Static, 15.0f + 1.4f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{12.0,0,6.0},  YarnEnemyType::Static, 15.0f + 1.6f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{10.0,0,9.0},  YarnEnemyType::Static, 15.0f + 1.8f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{6.0,0,9.0},  YarnEnemyType::Static, 15.0f + 2.0f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{8.0,0,12.0},  YarnEnemyType::Static, 15.0f + 2.2f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{12.0,0,12.0},  YarnEnemyType::Static, 15.0f + 2.4f ,true,2.0f ,1.0f,{0,0,1},true },
+
+                #endif // 0
+
+    },
+        },
+        // Wave 6 ハリネズミ　大直線４　　ハサミ
+        {
+            {
+               { { 12,0,12},  YarnEnemyType::LongRangeAttack, 15.0f },
+
+                // 大きい
+               { { 4.5,0,4.5},  YarnEnemyType::MoveLinear, 15.0f ,true,2.0f,1.0f,{1.0,0.0,1.0}},
+               { { 4.5,0,19.5},  YarnEnemyType::MoveLinear, 15.0f ,true,2.0f,1.0f,{1.0,0.0,-1.0}},
+               { { 19.5,0,19.5},  YarnEnemyType::MoveLinear, 15.0f ,true,2.0f,1.0f,{-1.0,0.0,-1.0}},
+               { { 19.5,0,4.5},  YarnEnemyType::MoveLinear, 15.0f ,true,2.0f,1.0f,{-1.0,0.0,1.0}},
+
+               // ハサミ
+                // 右上
+           { {22.5f,0,22.5f}, YarnEnemyType::RescueEnemy,15.0f,false,3.0f },
+                // 左下
+            { {1.5f,0,1.5f}, YarnEnemyType::RescueEnemy,15.0f, false,3.0f},
+
+            },
+        },
+        // Wave 7 ハリネズミ　追尾
+{
+    {
+       { { 12,0,12},  YarnEnemyType::LongRangeAttack, 15.0f },
+
+       
+           // 左上
+           { {3,0,21}, YarnEnemyType::ChasePlayer,15.0f,false,2.0f ,1.0f,{1,0,-1}},
+           { {3,0,22.5}, YarnEnemyType::ChasePlayer,15.0f, false,2.0f,1.0f,{1,0,-1}},
+           { {1.5,0,21}, YarnEnemyType::ChasePlayer,15.0f, false,2.0f,1.0f,{1,0,-1}},
+
+           // 左下
+                   { {3,0,3}, YarnEnemyType::ChasePlayer,15.0f,false,2.0f ,1.0f,{1,0,1}},
+           { {3,0,1.5}, YarnEnemyType::ChasePlayer,15.0f, false,2.0f,1.0f,{1,0,1}},
+           { {1.5,0,3}, YarnEnemyType::ChasePlayer,15.0f, false,2.0f,1.0f,{1,0,1}},
+
+           // 右上
+                   { {21,0,21}, YarnEnemyType::ChasePlayer,15.0f,false,2.0f ,1.0f,{-1,0,-1}},
+           { {21,0,22.5}, YarnEnemyType::ChasePlayer,15.0f, false,2.0f,1.0f,{-1,0,-1}},
+           { {22.5,0,21}, YarnEnemyType::ChasePlayer,15.0f, false,2.0f,1.0f,{-1,0,-1}},
+
+           // 右下
+           { {21,0,3}, YarnEnemyType::ChasePlayer,15.0f,false,2.0f ,1.0f,{-1,0,1}},
+           { {21,0,1.5}, YarnEnemyType::ChasePlayer,15.0f, false,2.0f,1.0f,{-1,0,1}},
+           { {22.5,0,3}, YarnEnemyType::ChasePlayer,15.0f, false,2.0f,1.0f,{-1,0,1}},
+
+
+      // ハサミ
+  { {1.0f,0,12.0f}, YarnEnemyType::RescueEnemy,15.0f,false,3.0f },
+   { {23.0f,0,12.0f}, YarnEnemyType::RescueEnemy,15.0f, false,3.0f},
+
+   },
+},
+
+
         };
         break;
 

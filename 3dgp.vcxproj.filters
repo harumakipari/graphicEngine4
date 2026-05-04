@@ -621,6 +621,9 @@
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsUiTimerActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\RabbitBossState.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -982,6 +985,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsUIStartActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameManager.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsUiTimerActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\RabbitBossState.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -1240,6 +1244,12 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\ScissorsGameEnemyPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ScissorsGameBossPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ScissorsPlayerPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

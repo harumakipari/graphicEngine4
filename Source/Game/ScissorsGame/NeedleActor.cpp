@@ -31,7 +31,7 @@ void NeedleActor::Initialize(const Transform& transform)
             hasHit = true;
 
             Logger::Log(U8("ƒvƒŒƒCƒ„[‚Éj‚ª“–‚½‚é"));
-            player->TakeDamage(1);
+            player->TakeDamage(2);
 
             // j‚ğÁ‚·
             MarkPendingKill();
