@@ -14,9 +14,10 @@ void BobbinActor::Initialize(const Transform& transform)
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Item/BobbinModel.glb", false, true);
 
+    DirectX::XMFLOAT3 size={1.9f,2.9f,1.9f};
 
     auto boxComponent = this->AddComponent<class BoxComponent>("boxComponent", parentName);
-    DirectX::XMFLOAT3 size = MathHelper::MultiplyF3XF3(skeletalMeshComponent->GetModelSize(), transform.GetScale());
+    //DirectX::XMFLOAT3 size = MathHelper::MultiplyF3XF3(skeletalMeshComponent->GetModelSize(), transform.GetScale());
     float  mass = 0.0f;
     boxComponent->SetBoxExtent(size);
     boxComponent->SetRelativeLocationDirect({ 0.0f,size.y * 0.5f ,0.0f });
@@ -90,6 +91,29 @@ void BobbinActor::DrawImGuiDetails()
     ImGui::DragFloat(U8("maxになるまでにかかる時間"), &chargeTime, 0.5f);
 
 #endif
+}
+
+// ボビンのサイズを設定する
+void BobbinActor::SetBobbinSize(BobbinSize bobbinSize)
+{
+    switch (bobbinSize)
+    {
+    case BobbinSize::Small:
+        maxRadius = 3.0f; // 最大半径
+        cooldownInterval = 0.1f;// クールタイム
+        chargeTime = 3.5f; // 何秒でMaxになるか
+        break;
+    case BobbinSize::Medium:
+        maxRadius = 4.5f; // 最大半径
+        cooldownInterval = 0.1f;// クールタイム
+        chargeTime = 3.5f; // 何秒でMaxになるか
+        break;
+    case BobbinSize::Big:
+        maxRadius = 6.0f; // 最大半径
+        cooldownInterval = 0.1f;// クールタイム
+        chargeTime = 3.5f; // 何秒でMaxになるか
+        break;
+    }
 }
 
 // ボビンを使用する

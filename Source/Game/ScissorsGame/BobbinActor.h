@@ -7,6 +7,15 @@ class EnemyBase;
 
 class BobbinActor :public Actor
 {
+public:
+    enum class BobbinSize :uint8_t
+    {
+        Small,
+        Medium,
+        Big,
+    };
+
+private:
     enum class BobbinState:uint8_t
     {
         CoolDown, // クールダウン
@@ -14,7 +23,6 @@ class BobbinActor :public Actor
         Fired, // 発動した瞬間
         Executing,
     };
-
 public:
     explicit BobbinActor(const std::string& actorName) :Actor(actorName) {}
 
@@ -24,6 +32,8 @@ public:
 
     void DrawImGuiDetails() override;
 
+    // ボビンのサイズを設定する
+    void SetBobbinSize(BobbinSize bobbinSize);
 private:
     // ボビンを使用する
     void UseBobbin();

@@ -318,6 +318,7 @@
     <ClCompile Include="Source\Game\Scenes\PuddingGameScene.cpp" />
     <ClCompile Include="Source\Game\Scenes\SampleScene.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\BobbinActor.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\BossSpawner.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ButtonBombActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ButtonCoinActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ComboUiActor.cpp" />
@@ -499,6 +500,7 @@
     <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />
     <ClInclude Include="Source\Game\Scenes\SampleScene.h" />
     <ClInclude Include="Source\Game\ScissorsGame\BobbinActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\BossSpawner.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ButtonBombActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ButtonCoinActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ComboSystem.h" />

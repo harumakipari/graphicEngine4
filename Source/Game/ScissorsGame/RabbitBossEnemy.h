@@ -53,6 +53,10 @@ private:
 
     // スタン状態に入る
     void EnterStun();
+
+
+public:
+
 private:
     std::vector<DirectX::XMFLOAT3> spawnPoints; // 出現位置
 

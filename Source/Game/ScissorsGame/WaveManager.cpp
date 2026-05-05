@@ -1,5 +1,6 @@
 #include "pch.h"
 
+#include "BossSpawner.h"
 #include "EnemyBase.h"
 #include "RabbitBossEnemy.h"
 #include "StageLoader.h"
@@ -81,6 +82,7 @@ void WaveManager::SetWaves(int stageId)
 
 void WaveManager::Update(float deltaTime)
 {
+  
     switch (waveState)
     {
     case WaveState::Ready:
@@ -123,6 +125,9 @@ void WaveManager::UpdateReady(float deltaTime)
 // wave 間の更新処理
 void WaveManager::UpdateWaiting(float deltaTime)
 {
+    if (currentWave >= waves.size())
+        return;
+
     auto& wave = waves[currentWave];
 
     startTimer += deltaTime;
@@ -145,6 +150,9 @@ void WaveManager::UpdateWaiting(float deltaTime)
 // 敵スポーンの更新処理
 void WaveManager::UpdateSpawning(float deltaTime)
 {
+    if (currentWave >= waves.size())
+        return;
+
     auto& wave = waves[currentWave];
 
     timer += deltaTime;
@@ -314,6 +322,7 @@ void WaveManager::SpawnEnemy(
     {// 玉止めされていたら
         enemy->OnTied();
         enemy->SetBasePosition(pos);
+        enemy->Face({ 0,0,1 });
     }
 
     enemyCount++;
@@ -369,6 +378,16 @@ void WaveManager::SpawnBossIfNeeded(const StageData& stageData) const
 
     Transform tr(b.position, { 0,180,0 }, { 1,1,1 });
 
+    auto spawner = GetOwnerScene()->GetActorManager()
+        ->CreateAndRegisterActorWithTransform<BossSpawner>("bossSpawner", tr);
+    spawner->Activate();
+
     auto boss = GetOwnerScene()->GetActorManager()
         ->CreateAndRegisterActorWithTransform<RabbitBossEnemyActor>("boss", tr);
+
+    boss->onDeath = [spawner]()
+        {
+            spawner->KillAllEnemies();
+        };
+
 }

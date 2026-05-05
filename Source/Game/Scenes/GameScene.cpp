@@ -223,7 +223,7 @@ void GameScene::Start()
     {
         stageId = std::stoi(param.at("stageId"));
     }
-    stageId = 2;
+    stageId = 5;
 
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
@@ -691,6 +691,7 @@ void GameScene::SetUpActors()
 #if  1
     Transform bobbinTr(DirectX::XMFLOAT3{ 12.0f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
+    bobbin->SetBobbinSize(BobbinActor::BobbinSize::Small);
 #endif // 0
 
 #if 0

@@ -624,6 +624,9 @@
     <ClCompile Include="Source\Game\ScissorsGame\RabbitBossState.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\BossSpawner.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -986,6 +989,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameManager.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsUiTimerActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\RabbitBossState.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\BossSpawner.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

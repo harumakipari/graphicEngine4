@@ -260,8 +260,8 @@ StageData StageLoader::Load(int stageId)
        },
                 #endif // 0
               {
-                  // Wave ４　波波　ハサミ
-                  {
+                // Wave ４　波波　ハサミ
+                {
                       // 右下
                       { { 18,0,2},  YarnEnemyType::WaveMoveBehavior, 0.0f ,false,2.0f ,1.0f,{0,0,1}},
                       { { 19,0,1},  YarnEnemyType::WaveMoveBehavior, 0.0f ,false,2.0f ,1.0f,{0,0,1}},
@@ -286,22 +286,7 @@ StageData StageLoader::Load(int stageId)
             // Wave 5　ひん死の敵
         {
                       {
-#if 0
 
-                                          { { 7.5,0,16.5},  YarnEnemyType::Static, 15.0f ,false,2.0f ,1.0f,{0,0,1},true},
-                       {{10.5,0,16.5},  YarnEnemyType::Static,15.0f+ 0.2f ,false,2.0f ,1.0f,{0,0,1},true},
-                       {{13.5,0,16.5},  YarnEnemyType::Static,15.0f+ 0.4f ,false,2.0f ,1.0f,{0,0,1},true},
-                       {{16.5,0,16.5},  YarnEnemyType::Static,15.0f+ 0.6f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{16.5,0,13.5},  YarnEnemyType::Static,15.0f+ 0.8f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{16.5,0,10.5},  YarnEnemyType::Static,15.0f+ 1.0f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{16.5,0,7.5},  YarnEnemyType::Static, 15.0f+1.2f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{13.5,0,7.5},  YarnEnemyType::Static, 15.0f+1.4f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{10.5,0,7.5},  YarnEnemyType::Static, 15.0f+1.6f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{7.5,0,7.5},  YarnEnemyType::Static, 15.0f+1.8f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{7.5,0,10.5},  YarnEnemyType::Static, 15.0f+2.0f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{7.5,0,13.5},  YarnEnemyType::Static, 15.0f+2.2f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{7.5,0,16.5},  YarnEnemyType::Static, 15.0f+2.4f ,false,2.0f ,1.0f,{0,0,1},true },
-#else
                         { { 6.0,0,15.0},  YarnEnemyType::Static, .0f ,false,2.0f ,1.0f,{0,0,1},true},
                        {{10.0,0,15.0},  YarnEnemyType::Static,0.0f + 0.2f ,false,2.0f ,1.0f,{0,0,1},true},
                        {{12.0,0,18.0},  YarnEnemyType::Static,0.0f + 0.4f ,false,2.0f ,1.0f,{0,0,1},true},
@@ -316,41 +301,39 @@ StageData StageLoader::Load(int stageId)
                        {{8.0,0,12.0},  YarnEnemyType::Static, 0.0f + 2.2f ,false,2.0f ,1.0f,{0,0,1},true },
                        {{12.0,0,12.0},  YarnEnemyType::Static, 0.0f + 2.4f ,true,2.0f ,1.0f,{0,0,1},true },
 
-                #endif // 0
-
     },   false,
                   -1,
                   15.0f,
                   true
         },
-        // Wave 6 ハリネズミ　大直線４　　ハサミ
-        {
+            // Wave 6 ハリネズミ　大直線４　　ハサミ
             {
-               { { 12,0,12},  YarnEnemyType::LongRangeAttack, 0.0f },
+                {
+                   { { 12,0,12},  YarnEnemyType::LongRangeAttack, 0.0f },
 
-                // 大きい
-               { { 4.5,0,4.5},  YarnEnemyType::MoveLinear, 0.0f ,true,2.0f,1.0f,{1.0,0.0,1.0}},
-               { { 4.5,0,19.5},  YarnEnemyType::MoveLinear, 0.0f ,true,2.0f,1.0f,{1.0,0.0,-1.0}},
-               { { 19.5,0,19.5},  YarnEnemyType::MoveLinear, 0.0f ,true,2.0f,1.0f,{-1.0,0.0,-1.0}},
-               { { 19.5,0,4.5},  YarnEnemyType::MoveLinear, 0.0f ,true,2.0f,1.0f,{-1.0,0.0,1.0}},
+                   // 大きい
+                  { { 4.5,0,4.5},  YarnEnemyType::MoveLinear, 0.0f ,true,2.0f,1.0f,{1.0,0.0,1.0}},
+                  { { 4.5,0,19.5},  YarnEnemyType::MoveLinear, 0.0f ,true,2.0f,1.0f,{1.0,0.0,-1.0}},
+                  { { 19.5,0,19.5},  YarnEnemyType::MoveLinear, 0.0f ,true,2.0f,1.0f,{-1.0,0.0,-1.0}},
+                  { { 19.5,0,4.5},  YarnEnemyType::MoveLinear, 0.0f ,true,2.0f,1.0f,{-1.0,0.0,1.0}},
 
-               // ハサミ
-                // 右上
-           { {22.5f,0,22.5f}, YarnEnemyType::RescueEnemy,1.0f,false,3.0f },
-                // 左下
-            { {1.5f,0,1.5f}, YarnEnemyType::RescueEnemy,1.0f, false,3.0f},
+                  // ハサミ
+                   // 右上
+              { {22.5f,0,22.5f}, YarnEnemyType::RescueEnemy,1.0f,false,3.0f },
+              // 左下
+          { {1.5f,0,1.5f}, YarnEnemyType::RescueEnemy,1.0f, false,3.0f},
 
-            }, false,
-                  -1,
-                  15.0f,
-                  true
-        },
-        // Wave 7 ハリネズミ　追尾
-{
+          }, false,
+                -1,
+                15.0f,
+                true
+      },
+            // Wave 7 ハリネズミ　追尾
     {
-       { { 12,0,12},  YarnEnemyType::LongRangeAttack, 0.0f },
+        {
+           { { 12,0,12},  YarnEnemyType::LongRangeAttack, 0.0f },
 
-       
+
            // 左上
            { {3,0,21}, YarnEnemyType::ChasePlayer,0.0f,false,2.0f ,1.0f,{1,0,-1}},
            { {3,0,22.5}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{1,0,-1}},
@@ -372,16 +355,16 @@ StageData StageLoader::Load(int stageId)
            { {22.5,0,3}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{-1,0,1}},
 
 
-      // ハサミ
-  { {1.0f,0,12.0f}, YarnEnemyType::RescueEnemy,0.0f,false,3.0f },
-   { {23.0f,0,12.0f}, YarnEnemyType::RescueEnemy,0.0f, false,3.0f},
+           // ハサミ
+       { {1.0f,0,12.0f}, YarnEnemyType::RescueEnemy,0.0f,false,3.0f },
+        { {23.0f,0,12.0f}, YarnEnemyType::RescueEnemy,0.0f, false,3.0f},
 
-   },
-    false,
-                  -1,
-                  15.0f,
-                  true
-},
+        },
+         false,
+                       -1,
+                       15.0f,
+                       true
+     },
 
 
         };
