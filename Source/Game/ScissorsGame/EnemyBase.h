@@ -131,6 +131,9 @@ public:
     // タイプとサイズから見た目を生成する
     void SetUpVisual();
 
+    // サイズを取得する関数
+    YarnSize GetYarnSize() const { return yarnSize; }
+
     // 敵のサイズを変更する
     void ChangeSize(YarnSize newSize);
 

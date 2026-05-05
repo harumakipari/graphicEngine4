@@ -2,6 +2,7 @@
 #include "RabbitBossState.h"
 
 #include "RabbitBossEnemy.h"
+#include "ScissorsPlayer1.h"
 
 
 RabbitBossStateBase::RabbitBossStateBase(RabbitBossEnemyActor* enemy) :State(enemy), enemy(enemy)
@@ -36,6 +37,7 @@ void RabbitBossAttackSelectState::Enter()
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     int select = MathHelper::RandomRange(0, 1);
+    select = 1;
 
     if (select == 0)
     {// ワープ攻撃予兆へ遷移
@@ -55,7 +57,6 @@ void RabbitBossAttackSelectState::Exit()
 // ワーププレビュー
 void RabbitBossAttackWarpPreviewState::Enter()
 {
-
 }
 
 void RabbitBossAttackWarpPreviewState::Execute(float deltaTime)
@@ -71,19 +72,70 @@ void RabbitBossAttackWarpPreviewState::Exit()
 // ワープ
 void RabbitBossAttackWarpState::Enter()
 {
-
+    phase = WarpPhase::Dive;
+    timer = 0.0f;
+    enemy->StartDive();
+    // 当たり判定を無効にする
+    enemy->collisionBoxComponent->DisableCollision();
 }
 
 void RabbitBossAttackWarpState::Execute(float deltaTime)
 {
-    enemy->SpawnRandomPoint();
+    switch (phase)
+    {
+    case WarpPhase::Dive:
+        if (enemy->IsFinishedDive())
+        {// 潜りが終わったら
+            phase = WarpPhase::Chase;
+        }
+        break;
+    case WarpPhase::Chase:
+        timer += deltaTime;
 
-    enemy->GetStateMachine()->ChangeState("Idle");
+        if (auto player = enemy->GetPlayer())
+        {
+            DirectX::XMFLOAT3 playerPos = player->GetPosition();
+            DirectX::XMFLOAT3 pos = enemy->GetPosition();
+
+            DirectX::XMFLOAT3 dir;
+            dir.x = playerPos.x - pos.x;
+            dir.z = playerPos.z - pos.z;
+            dir.y = 0.0f;
+
+            dir = MathHelper::Normalize(dir);
+
+            float moveSpeed = 5.0f;
+
+            pos.x += dir.x * moveSpeed * deltaTime;
+            pos.z += dir.z * moveSpeed * deltaTime;
+
+
+            enemy->SetPosition(pos);
+        }
+        if (timer > chaseTime)
+        {
+            phase = WarpPhase::Emerge;
+            timer = 0.0f;
+            enemy->StartEmerge();
+        }
+        break;
+    case WarpPhase::Emerge:
+        if (enemy->IsFinishedEmerge())
+        {
+            // 出現ダメージ
+           enemy->ApplyLandingDamage(); 
+
+            enemy->GetStateMachine()->ChangeState("Idle");
+        }
+        break;
+    }
+
 }
 
 void RabbitBossAttackWarpState::Exit()
 {
-
+    // 当たり判定を有効にする
+    enemy->collisionBoxComponent->EnableCollision();
 }
 
 // バフプレビュー

@@ -43,7 +43,7 @@ public:
 
 private:
     float attackTimer = 0.0f;
-    float attackTimerInterval = 2.0f; // 攻撃までのインターバル
+    float attackTimerInterval = 6.0f; // 攻撃までのインターバル
 };
 
 
@@ -90,6 +90,13 @@ private:
 // ワープオブジェクト
 class RabbitBossAttackWarpState : public RabbitBossStateBase
 {
+    enum class WarpPhase :uint8_t
+    {
+        Dive,     // 潜る
+        Chase,    // 追尾
+        Emerge    // 出現
+    };
+
 public:
     // コンストラクタ
     RabbitBossAttackWarpState(RabbitBossEnemyActor* enemy) :RabbitBossStateBase(enemy) {}
@@ -105,6 +112,12 @@ public:
     const char* GetName() const override { return "Warp"; }
 
 private:
+    WarpPhase phase = WarpPhase::Dive;
+    float timer = 0.0f;
+
+    const float diveTime = 0.5f;
+    const float chaseTime = 3.0f;
+
 };
 
 // バフプレビューオブジェクト
@@ -145,7 +158,7 @@ public:
     const char* GetName() const override { return "Buff"; }
 
 private:
-    int enemyBuffCount = 3; // ステージ上のどれくらいの数の敵を強化させるか
+    int enemyBuffCount = 1; // ステージ上のどれくらいの数の敵を強化させるか
 };
 
 // スタンオブジェクト

@@ -80,6 +80,11 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     return;
                 }
 
+                if (knockBackTimer > 0.0f)
+                {// ノックバック後のクールタイムを設定する
+                    return;
+                }
+
                 if (postDashInvincibleTimer > 0.0f)
                 {// ダッシュ後のクールタイムを設定する
                     return;
@@ -176,7 +181,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
 #if 1
                     // 無敵時間を追加 ノックバックのための
-                    damageCooldownTimer = damageCooldownInterval; // 無敵時間を設定
+                    knockBackTimer = knockBackInterval; // 無敵時間を設定
 
                     // ノックバック
                     DirectX::XMFLOAT3 dir =
@@ -381,6 +386,11 @@ void ScissorsPlayer1::Update(float deltaTime)
     if (postDashInvincibleTimer > 0.0f)
     {// ダッシュ後のダメージクールダウン中は無敵
         postDashInvincibleTimer -= deltaTime;
+    }
+
+    if (knockBackTimer > 0.0f)
+    {// ノックバック中のは無敵
+        knockBackTimer -= deltaTime;
     }
 
     Character::Update(deltaTime);

@@ -124,9 +124,6 @@ void BossSpawner::SpawnEnemy(
     enemy->SetEnemySize(size);
     enemy->SetEnemyType(type);
 
-    // ¶‚«c‚Á‚Ä‚¢‚é“G‚Æ‚µ‚Ä“o˜^‚·‚é
-    aliveEnemies.push_back(enemy);
-
     switch (type)
     {
     case YarnEnemyType::Static:
@@ -176,10 +173,14 @@ void BossSpawner::SpawnEnemy(
         {
             if (auto e = weak.lock())
             {
+                OnDeath(e.get());
             }
         };
 
     enemy->SetUpVisual();
+    // ¶‚«c‚Á‚Ä‚¢‚é“G‚Æ‚µ‚Ä“o˜^‚·‚é
+    aliveEnemies.push_back(enemy);
+
 
     if (isTied)
     {// ‹Ê~‚ß‚³‚ê‚Ä‚¢‚½‚ç
@@ -199,6 +200,24 @@ int BossSpawner::GetAliveEnemyCount()
         aliveEnemies.end());
 
     return static_cast<int>(aliveEnemies.size());
+}
+
+// “G‚ª€–S‚µ‚½‚ÉŒÄ‚ÔŠÖ”‚Æ‚µ‚Ä“o˜^‚·‚éŠÖ”
+void BossSpawner::OnDeath(EnemyBase* enemy)
+{
+    killCount++;
+
+    aliveEnemies.erase(
+        std::remove_if(aliveEnemies.begin(), aliveEnemies.end(),
+            [enemy](const std::weak_ptr<EnemyBase>& weakEnemy)
+            {
+                if (auto e = weakEnemy.lock())
+                {
+                    return e.get() == enemy;
+                }
+                return false;
+            }),
+        aliveEnemies.end());
 }
 
 void BossSpawner::KillAllEnemies()

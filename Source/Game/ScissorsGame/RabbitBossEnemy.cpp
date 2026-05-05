@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "RabbitBossEnemy.h"
 
+#include "BossSpawner.h"
 #include "EnemyBase.h"
 #include "ScissorsPlayer1.h"
 #include "RabbitBossState.h"
@@ -20,17 +21,17 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 
     // 当たり判定
     {
-        auto boxComponent = this->AddComponent<BoxComponent>("boxComponent", parentName);
+        collisionBoxComponent = this->AddComponent<BoxComponent>("boxComponent", parentName);
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
-        boxComponent->SetBoxExtent(size);
-        boxComponent->SetStatic(true);
-        boxComponent->SetMass(0.0f);
-        boxComponent->SetLayer(CollisionLayer::Boss);
-        boxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-        boxComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
-        boxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
-        boxComponent->SetCollisionOffsetY(size.y * 0.5f);
-        boxComponent->Initialize();
+        collisionBoxComponent->SetBoxExtent(size);
+        collisionBoxComponent->SetStatic(true);
+        collisionBoxComponent->SetMass(0.0f);
+        collisionBoxComponent->SetLayer(CollisionLayer::Boss);
+        collisionBoxComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        collisionBoxComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
+        collisionBoxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+        collisionBoxComponent->SetCollisionOffsetY(size.y * 0.5f);
+        collisionBoxComponent->Initialize();
 
 #if 0
         sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
@@ -138,8 +139,36 @@ void RabbitBossEnemyActor::Update(float deltaTime)
         }
     }
 
+    // 沈む処理
+    if (isDiving)
+    {
+        diveOffsetY -= diveSpeed * deltaTime;
+
+        if (diveOffsetY <= maxDiveDepth)
+        {
+            diveOffsetY = maxDiveDepth;
+            isDiving = false;
+        }
+
+        ApplyDiveOffset();
+    }
+
+    // 出現処理
+    if (isEmerging)
+    {
+        diveOffsetY += diveSpeed * deltaTime;
+
+        if (diveOffsetY >= 0.0f)
+        {
+            diveOffsetY = 0.0f;
+            isEmerging = false;
+        }
+
+        ApplyDiveOffset();
+    }
+
     // 出現範囲のデバック描画
-    //DebugRender::DrawSphere(center, currentRadius, { 1,0,0.5f,1 }, 0, true);
+    DebugRender::DrawSphere(pos, spawnAttackRange, { 1,0,0.5f,1 }, 0, true);
 }
 
 void RabbitBossEnemyActor::DrawImGuiDetails()
@@ -154,7 +183,7 @@ void RabbitBossEnemyActor::DrawImGuiDetails()
 }
 
 // スタン状態かどうか
-bool RabbitBossEnemyActor::IsStunned() 
+bool RabbitBossEnemyActor::IsStunned()
 {
     return (GetStateMachine()->GetStateName() == "Stun");
 }
@@ -184,21 +213,38 @@ void RabbitBossEnemyActor::SetRenderOpacity(float opacity)
     skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor.w = opacity;
 }
 
+void RabbitBossEnemyActor::OnTied()
+{
+    if (GetStateMachine()->GetStateName() == "Warp")
+    {// ワープ中は 
+        return;// スタンしない
+    }
+    // スタン状態に入る
+    EnterStun();
+}
+
+
 // ランダムに大きい敵に変更する処理
 void RabbitBossEnemyActor::EnlargeRandomEnemies(int count)
 {
     std::vector<std::shared_ptr<EnemyBase>> candidates;
 
-    auto waveManager = GetOwnerScene()->GetActorManager()->GetActorOfType<WaveManager>();
+    auto bossSpawner = GetOwnerScene()->GetActorManager()->GetActorOfType<BossSpawner>();
+
+    if (!bossSpawner)
+    {
+        Logger::Warning(U8("bossSpawner が nullptr　です！"));
+        return;
+    }
 
     // Smallだけ集める
-    for (auto& w : waveManager->aliveEnemies)
+    for (auto& w : bossSpawner->aliveEnemies)
     {
         if (auto e = w.lock())
         {
             if (!e->IsDead() &&
-                e->GetState() == EnemyBase::YarnState::Active &&
-                e->GetNeedTiedCount() == 1) // Small判定
+                /*e->GetState() == EnemyBase::YarnState::Active &&*/
+                e->GetYarnSize() == Small) // Small判定
             {
                 candidates.push_back(e);
             }
@@ -219,7 +265,7 @@ void RabbitBossEnemyActor::EnlargeRandomEnemies(int count)
 }
 
 
-void RabbitBossEnemyActor::CreteDamageZone(const DirectX::XMFLOAT3& pos)
+void RabbitBossEnemyActor::CreteDamageZone()
 {
     auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>();
     if (!player)
@@ -227,21 +273,15 @@ void RabbitBossEnemyActor::CreteDamageZone(const DirectX::XMFLOAT3& pos)
         Logger::Warning(U8("playerがnullptrです！"));
     }
 
-    if (MathHelper::Distance(player->GetPosition(), pos) < spawnAttackRange)
+    DirectX::XMFLOAT3 playerPos = player->GetPosition();
+    playerPos.y = 0.0f;
+    DirectX::XMFLOAT3 enemyPos = GetPosition();
+    enemyPos.y = 0.0f;
+
+    if (MathHelper::Distance(playerPos, enemyPos) < spawnAttackRange)
     {
         player->TakeDamage(3);
     }
-}
-
-void RabbitBossEnemyActor::SpawnRandomPoint()
-{
-    if (spawnPoints.empty()) return;
-
-    int index = MathHelper::RandomRange(0, static_cast<int>(spawnPoints.size()-1));
-    auto pos = spawnPoints[index];
-    SetPosition(pos);
-    // 出現ダメージ
-    CreteDamageZone(pos);
 }
 
 // スタン状態に入る
@@ -249,4 +289,37 @@ void RabbitBossEnemyActor::EnterStun()
 {
     GetStateMachine()->ChangeState("Stun");
     Logger::Log(U8("ボスがスタンした！"));
+}
+
+// 爆弾を生成する
+void RabbitBossEnemyActor::SpawnButtonBombs()
+{
+    const float offset = 2.0f;
+    auto pos = GetPosition();
+
+    std::vector<DirectX::XMFLOAT3> offsets =
+    {
+        { offset,0,0},
+        {-offset,0,0},
+        {0,0,offset},
+        {0,0,-offset}
+    };
+
+    for (auto& o : offsets)
+    {
+        auto bombPos = pos;
+        bombPos.x += o.x;
+        bombPos.z += o.z;
+
+        // TODO: ButtonBomb生成
+        // CreateActor<ButtonBomb>(bombPos);
+    }
+}
+
+// Ｙ座標を下げる処理
+void RabbitBossEnemyActor::ApplyDiveOffset()
+{
+    auto pos = GetPosition();
+    pos.y = 0.0f + diveOffsetY;
+    SetPosition(pos);
 }

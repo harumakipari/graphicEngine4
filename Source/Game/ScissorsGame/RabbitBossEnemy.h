@@ -36,26 +36,57 @@ public:
     void TakeDamage(const int damage) { hp -= damage; }
 
     // ボビンによって玉止めされた時
-    void OnTied() override
-    {
-        EnterStun();
-    }
+    void OnTied() override;
 
     // ランダムに大きい敵に変更する処理
     void EnlargeRandomEnemies(int count);
 
-    // ランダムな場所から出現する処理
-    void SpawnRandomPoint();
+    // 沈み開始する処理
+    void StartDive()
+    {
+        isDiving = true;
+        baseY = GetPosition().y;
+    }
 
+    // 出現を開始する処理
+    void StartEmerge()
+    {
+        isEmerging = true;
+        baseY = GetPosition().y;
+    }
+
+    // 沈みが終わる処理
+    bool IsFinishedDive()
+    {
+        return !isDiving;
+    }
+
+    // 出現が終わる処理
+    bool IsFinishedEmerge()
+    {
+        return !isEmerging;
+    }
+
+    // 着地ダメージを適用
+    void ApplyLandingDamage()
+    {
+        CreteDamageZone();
+    }
 private:
     // ダメージが入る場所を生成する
-    void CreteDamageZone(const DirectX::XMFLOAT3& pos);
+    void CreteDamageZone();
 
     // スタン状態に入る
     void EnterStun();
 
+    // 爆弾を生成する
+    void SpawnButtonBombs();
+
+    // Ｙ座標を下げる処理
+    void ApplyDiveOffset();
 
 public:
+    std::shared_ptr<BoxComponent> collisionBoxComponent; // ボスの当たり判定
 
 private:
     std::vector<DirectX::XMFLOAT3> spawnPoints; // 出現位置
@@ -63,7 +94,7 @@ private:
     float attackTimer = 0.0f;
 
     const float attackTimeInterval = 5.0f; // 攻撃の間隔
-    float spawnAttackRange = 3.0f;// 出現時の攻撃範囲
+    float spawnAttackRange = 4.5f;// 出現時の攻撃範囲
 
 
     std::shared_ptr<UIImageComponent> gaugeFrameBackComponent;  // ボスHPゲージのスプライト描画
@@ -71,6 +102,12 @@ private:
     DirectX::XMFLOAT2 gaugeUiOffset={-184.0f,-366.0f}; // ゲージのUIオフセット値
     DirectX::XMFLOAT2 gaugeFrameOffset = { 8.0f,0.0f }; // ゲージフレームのオフセット値
 
+    float diveOffsetY = 0.0f;
+    bool isDiving = false;
+    bool isEmerging = false;
 
+    const float maxDiveDepth = -7.0f;
+    const float diveSpeed = 5.0f;
+    float baseY = 0.0f; // 開始位置
 };
 

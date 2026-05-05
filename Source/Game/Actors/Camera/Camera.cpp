@@ -68,7 +68,7 @@ void FixedCamera::Update(float deltaTime)
             {
                 boss->SetRenderOpacity(0.5f);
             }
-            Logger::Log(U8("カメラとプレイヤーの間にボスがいる"));
+            //Logger::Log(U8("カメラとプレイヤーの間にボスがいる"));
         }
         else
         {

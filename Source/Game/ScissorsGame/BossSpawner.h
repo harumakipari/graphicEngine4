@@ -52,7 +52,16 @@ private:
 
     // ¶‚«c‚Á‚Ä‚¢‚é“G‚Ì”
     int GetAliveEnemyCount();
+
+    // “G‚ª€–S‚µ‚½‚ÉŒÄ‚ÔŠÖ”‚Æ‚µ‚Ä“o˜^‚·‚éŠÖ”
+    void OnDeath(EnemyBase* enemy);
+
+public:
+    std::vector<std::weak_ptr<EnemyBase>> aliveEnemies; //@¶‚«c‚Á‚Ä‚¢‚é“G
+
 private:
+    int killCount = 0; // ƒLƒ‹ƒJƒEƒ“ƒg
+
     float timer = 0.0f;
     float interval = 5.0f; // “G‚ªoŒ»‚·‚éŠÔŠu•b”
 
@@ -62,5 +71,4 @@ private:
 
     int currentPattern = 0;
     std::vector<BossSpawnPattern> patterns; // “GoŒ»
-    std::vector<std::weak_ptr<EnemyBase>> aliveEnemies; //@¶‚«c‚Á‚Ä‚¢‚é“G
 };
