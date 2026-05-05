@@ -6,25 +6,13 @@
 #include "Components/Effect/ParticleComponent.h"
 
 
-struct GridPos
-{
-    int x;
-    int z;
-
-    bool operator<(const GridPos& o) const
-    {
-        if (x != o.x) return x < o.x;
-        return z < o.z;
-    }
-};
-
-
 class WaveManager :public Actor
 {
 public:
     enum class WaveState :uint8_t
     {
         Ready,      // 3,2,1カウント中
+        WaitingNextWave, // 次のwaveまでの待ち時間
         Spawning,   // 通常のWave処理
         Finished
     };
@@ -39,6 +27,18 @@ public:
     void Update(float deltaTime)override;
 
 private:
+    // 最初の待ち更新処理
+    void UpdateReady(float deltaTime);
+
+    // wave 間の更新処理
+    void UpdateWaiting(float deltaTime);
+
+    // 敵スポーンの更新処理
+    void UpdateSpawning(float deltaTime);
+
+    // 次のwaveに行くときの処理
+    void GoToNextWave();
+
     void SpawnEnemy(
         const DirectX::XMFLOAT3& pos,
         YarnEnemyType type, bool isBig,
@@ -103,4 +103,5 @@ private:
 
 
     bool hasTriggeredLastSpawn = false;
+
 };

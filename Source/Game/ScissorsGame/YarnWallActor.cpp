@@ -10,6 +10,7 @@ void YarnWallActor::Initialize(const Transform& transform)
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetRelativeLocationDirect({ 0, 0.0f, 0 });
     skeletalMeshComponent->SetModel("./Data/TeamModels/Item/YarnWallModel.gltf");
+    //skeletalMeshComponent->SetModel("./Data/TeamModels/Item/YarnWallModel.glb");
 
 
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();

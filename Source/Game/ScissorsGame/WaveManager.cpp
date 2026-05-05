@@ -81,62 +81,95 @@ void WaveManager::SetWaves(int stageId)
 
 void WaveManager::Update(float deltaTime)
 {
-    if (waveState == WaveState::Ready)
+    switch (waveState)
     {
-        startTimer += deltaTime;
+    case WaveState::Ready:
+        UpdateReady(deltaTime);
+        break;
 
-        if (startTimer < 0.5f)
-        {
-            return;
-        }
+    case WaveState::WaitingNextWave:
+        UpdateWaiting(deltaTime);
+        break;
 
+    case WaveState::Spawning:
+        UpdateSpawning(deltaTime);
+        break;
+    }
+
+
+    //bool isClearNow = enemyCount == 0 && !spawnStates.empty();
+    //Logger::Log(U8("エネミーの数") + std::to_string(enemyCount));
+    //std::string log = hasSpawnedAnyEnemy ? "hasSpawnedAnyEnemy is true!" : "hasSpawnedAnyEnemy is false!";
+    //Logger::Log(log);
+    //Logger::Log(U8("スポーンステートの数") + std::to_string(spawnStates.size()));
+
+
+}
+
+// 最初の待ち更新処理
+void WaveManager::UpdateReady(float deltaTime)
+{
+    startTimer += deltaTime;
+
+    if (startTimer < 0.5f)
+    {
+        return;
+    }
+
+    waveState = WaveState::Spawning;
+    timer = 0.0f;
+}
+
+// wave 間の更新処理
+void WaveManager::UpdateWaiting(float deltaTime)
+{
+    auto& wave = waves[currentWave];
+
+    startTimer += deltaTime;
+
+    // ★ 全滅ならスキップ
+    if (wave.skipDelayIfCleared && enemyCount == 0)
+    {
+        waveState = WaveState::Spawning;
+        timer = 0.0f;
+        return;
+    }
+
+    if (startTimer >= wave.startDelay)
+    {
         waveState = WaveState::Spawning;
         timer = 0.0f;
     }
+}
 
-    if (currentWave >= waves.size()) return;
-
+// 敵スポーンの更新処理
+void WaveManager::UpdateSpawning(float deltaTime)
+{
     auto& wave = waves[currentWave];
+
     timer += deltaTime;
 
-#if 0
-    // スポーン処理
-    while (spawnIndex < wave.spawns.size() &&
-        timer >= wave.spawns[spawnIndex].delay)
-    {
-        auto& s = wave.spawns[spawnIndex];
-
-        if (s.isBig)
-            SpawnBigEnemy(s.position, s.type, s.speed, s.dir);
-        else
-            SpawnEnemy(s.position, s.type, s.speed, s.dir);
-
-        spawnIndex++;
-    }
-#else
+    // --- spawn処理 ---
     for (int i = 0; i < wave.spawns.size(); i++)
     {
         auto& s = wave.spawns[i];
         auto& state = spawnStates[i];
 
-        //  予告
         if (!state.previewed && timer >= s.delay)
         {
             SpawnPreviewEffect(s.position);
             state.previewed = true;
         }
 
-        //  実際のスポーン遅らせる
         if (!state.spawned && timer >= s.delay + s.spawnDelay)
         {
             SpawnEnemy(s.position, s.type, s.isBig, s.speed, s.dir, s.isTied);
             state.spawned = true;
         }
     }
-#endif // 0
 
+    // --- 全spawn確認 ---
     bool allSpawned = true;
-
     for (auto& s : spawnStates)
     {
         if (!s.spawned)
@@ -146,57 +179,54 @@ void WaveManager::Update(float deltaTime)
         }
     }
 
-    bool isLastWave = (currentWave == waves.size() - 1);
+    // --- Wave終了判定 ---
+    bool shouldNext = false;
 
-    if (isLastWave)
+    if (wave.requiredKills > 0)
     {
-        static float time = 0.0f;
-        time += deltaTime;
-        if (time >= 1.0f)
-        {
-            OnLastEnemySpawned(); //  最終Waveだけ
-        }
-
-    }
-
-
-    bool shouldGoNextWave = false; // 次のウェーブに行けるかどうか
-    if (wave.requiredKills >= 0)
-    {// キル数指定がある場合
         if (killCount >= wave.requiredKills)
-        {
-            shouldGoNextWave = true;
-        }
-    }
-    else if (wave.waitForClear)
-    {// 待つ条件がある場合
-        if (allSpawned && AllEnemiesDead())
-        {// 敵が全て出現　かつ　敵が全て死亡したら
-            shouldGoNextWave = true;
-        }
+            shouldNext = true;
     }
     else
-    {// 待つ条件がない場合
-        if (allSpawned)
-        {// 敵が全て出現したら
-            shouldGoNextWave = true;
-        }
-    }
+    {
 
-    if (shouldGoNextWave)
-    {// 次のウェーブに行けたら、
-        currentWave++;
-        timer = 0;
-        killCount = 0; // キル数をリセット
-        hasSpawnedAnyEnemy = false;
-
-        if (currentWave < waves.size())
+        if (wave.waitForClear)
         {
-            spawnStates.clear();
-            spawnStates.resize(waves[currentWave].spawns.size());
+            if (enemyCount == 0)
+                shouldNext = true;
+        }
+        else
+        {
+                shouldNext = true;
         }
     }
 
+    if (allSpawned&&shouldNext)
+    {
+        GoToNextWave();
+    }
+}
+
+// 次のwaveに行くときの処理
+void WaveManager::GoToNextWave()
+{
+    currentWave++;
+    Logger::Log(U8("今のcurretWave") + std::to_string(currentWave));
+
+    timer = 0;
+    killCount = 0;
+    hasSpawnedAnyEnemy = false;
+
+    if (currentWave >= waves.size())
+    {
+        waveState = WaveState::Finished;
+        return;
+    }
+
+    spawnStates.assign(waves[currentWave].spawns.size(), {});
+
+    startTimer = 0.0f;
+    waveState = WaveState::WaitingNextWave;
 }
 
 // 仮の敵を生成する関数
@@ -322,9 +352,12 @@ void WaveManager::SpawnPreviewEffect(DirectX::XMFLOAT3 pos)
 // ステージ全体の最後のWaveの、最後の1体
 void WaveManager::OnLastEnemySpawned()
 {
+#if 0
     auto audioActor = GetOwnerScene()->GetActorManager()->GetActorByName("Audio");
     auto audioComp = audioActor->GetComponent<CoreAudioSourceComponent>();
     audioComp->SetPitch(1.2f);
+
+#endif // 0
 }
 
 // 必要ならボスを生成する

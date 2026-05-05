@@ -201,7 +201,7 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     float remainingDist = dashDistance;
 
     // ƒ_ƒbƒVƒ…‚Ì‹——£
-    for (int i = 0; i < 3; i++) // Å‘å3‰ñ”½ŽË
+    for (int i = 0; i < 5; i++) // Å‘å5‰ñ”½ŽË
     {
         XMFLOAT3 nextTarget =
         {
