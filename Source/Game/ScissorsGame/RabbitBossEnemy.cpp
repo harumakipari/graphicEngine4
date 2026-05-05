@@ -260,7 +260,7 @@ void RabbitBossEnemyActor::EnlargeRandomEnemies(int count)
 
     for (int i = 0; i < changeCount; i++)
     {
-        candidates[i]->ChangeSize(EnemyBase::Big);
+        candidates[i]->StartChangeSize(EnemyBase::Big);
     }
 }
 

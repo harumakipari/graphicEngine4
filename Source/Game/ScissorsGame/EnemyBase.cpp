@@ -33,6 +33,12 @@ void EnemyBase::Update(float deltaTime)
     // 玉止めの描画更新処理
     UpdateTiedVisual();
 
+    // サイズ変更演出
+    if (isSizeChanging)
+    {
+        UpdateSizeChanging(deltaTime);
+    }
+
     switch (state)
     {
     case YarnState::Active:
@@ -265,6 +271,41 @@ void EnemyBase::UpdateTiedVisual()
     {
         tiedMeshes[i]->SetIsVisible(i < showCount);
         tiedMeshes[i]->SetRelativeEulerRotationDirect({ 0.0f,180.0f,0.0f });
+    }
+}
+
+// サイズ変更演出更新処理
+void EnemyBase::UpdateSizeChanging(float deltaTime)
+{
+    sizeChangeTimer += deltaTime;
+
+    // 点滅
+    blinkTimer += deltaTime;
+    if (blinkTimer >= blinkInterval)
+    {
+        blinkTimer = 0.0f;
+        blinkOn = !blinkOn;
+    }
+
+    if (blinkOn)
+    {
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
+    }
+    else
+    {
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,0.3f,0.3f,1 }; // 赤っぽく
+    }
+
+    // 終了
+    if (sizeChangeTimer >= sizeChangeDuration)
+    {
+        isSizeChanging = false;
+
+        // 色戻す
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
+
+        // 実際のサイズ変更
+        ChangeSize(pendingSize);
     }
 }
 
@@ -587,6 +628,19 @@ void EnemyBase::CallDeath(bool hitByReflected)
 
     // コインフラグをオフにしておく
     createCoin = false;
+}
+
+// サイズを変更演出を開始する
+void EnemyBase::StartChangeSize(YarnSize newSize)
+{
+    if (yarnSize == newSize) return;
+
+    isSizeChanging = true;
+    sizeChangeTimer = 0.0f;
+    blinkTimer = 0.0f;
+    blinkOn = false;
+
+    pendingSize = newSize;
 }
 
 // コインを生成する

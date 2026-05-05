@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "BobbinActor.h"
 
+#include "BossSpawner.h"
 #include "ButtonCoinActor.h"
 #include "EnemyBase.h"
 #include "RabbitBossEnemy.h"
@@ -14,7 +15,7 @@ void BobbinActor::Initialize(const Transform& transform)
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Item/BobbinModel.glb", false, true);
 
-    DirectX::XMFLOAT3 size={1.9f,2.9f,1.9f};
+    DirectX::XMFLOAT3 size = { 1.9f,2.9f,1.9f };
 
     auto boxComponent = this->AddComponent<class BoxComponent>("boxComponent", parentName);
     //DirectX::XMFLOAT3 size = MathHelper::MultiplyF3XF3(skeletalMeshComponent->GetModelSize(), transform.GetScale());
@@ -151,6 +152,24 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
         }
     }
 
+    if (auto bossSpawner = GetOwnerScene()->GetActorManager()->GetActorOfType<BossSpawner>())
+    {// 
+        // “G‚ðW‚ß‚é
+        for (auto& w : bossSpawner->aliveEnemies)
+        {
+            if (auto e = w.lock())
+            {
+                if (!e->IsDead())
+                {
+                    candidates.push_back(e);
+                }
+            }
+        }
+    }
+
+
+
+
     auto boss = GetOwnerScene()->GetActorManager()->GetActorOfType<RabbitBossEnemyActor>();
     if (boss)
     {// ƒ{ƒX‚ª‚¢‚½‚ç
@@ -226,7 +245,7 @@ void BobbinActor::SpawnBonusCoinBurst()
 
         XMFLOAT3 coinPos = MathHelper::Add(pos, offset);
 
-        Transform tr(coinPos, { 0,0,0 }, { 1.0f,1.0f,1.0f }); 
+        Transform tr(coinPos, { 0,0,0 }, { 1.0f,1.0f,1.0f });
         auto coin = scene->GetActorManager()
             ->CreateAndRegisterActorWithTransform<ButtonCoinActor>("bonusCoin", tr);
 

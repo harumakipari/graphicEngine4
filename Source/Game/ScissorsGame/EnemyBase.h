@@ -134,9 +134,6 @@ public:
     // サイズを取得する関数
     YarnSize GetYarnSize() const { return yarnSize; }
 
-    // 敵のサイズを変更する
-    void ChangeSize(YarnSize newSize);
-
     // 助けるか銅貨を設定する
     void SetIsRescue(const bool rescue)
     {
@@ -145,6 +142,9 @@ public:
 
     // 死亡した時に呼ぶ関数
     void CallDeath(bool hitByReflected);
+
+    // サイズを変更演出を開始する
+    void StartChangeSize(YarnSize newSize);
 
     // ステートを変更する
     void ChangeEnemyState(const YarnState state) { this->state = state; }
@@ -163,7 +163,12 @@ public:
     {
         this->basePosition = basePosition;
     }
+
+
 private:
+    // 敵のサイズを変更する
+    void ChangeSize(YarnSize newSize);
+
     // コインを生成する
     void SpawnCoin(DirectX::XMFLOAT3 pos);
 
@@ -178,6 +183,9 @@ private:
 
     // 玉止め表示更新処理
     void UpdateTiedVisual();
+
+    // サイズ変更演出更新処理
+    void UpdateSizeChanging(float deltaTime);
 
     // ハサミの角度を変更する処理
     void UpdateScissors(float deltaTime);
@@ -299,5 +307,15 @@ private:
     bool waitBeforeKnockback = false;
 
     bool popupScore = false; // スコアをポップアップさせるフラグ
+
+    // サイズ変更演出用
+    bool isSizeChanging = false;
+    float sizeChangeTimer = 0.0f;
+    float sizeChangeDuration = 2.0f; // チカチカ時間
+
+    float blinkTimer = 0.0f;
+    float blinkInterval = 0.1f;
+    bool blinkOn = false;
+    YarnSize pendingSize;
 
 };
