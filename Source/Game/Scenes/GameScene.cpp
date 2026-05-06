@@ -20,6 +20,7 @@
 #include "Game/ScissorsGame/ButtonCoinActor.h"
 #include "Game/ScissorsGame/ComboUiActor.h"
 #include "Game/ScissorsGame/EnemyBase.h"
+#include "Game/ScissorsGame/ItemHeartActor.h"
 #include "Game/ScissorsGame/NeedleEnemyActor.h"
 #include "Game/ScissorsGame/RabbitBossEnemy.h"
 #include "Game/ScissorsGame/ScissorsGameManager.h"
@@ -695,18 +696,20 @@ void GameScene::SetUpActors()
     bobbin->SetBobbinSize(BobbinActor::BobbinSize::Big);
 #endif // 0
 #if  1
-    Transform bobbinTr(DirectX::XMFLOAT3{ 3.0f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform bobbinTr(DirectX::XMFLOAT3{ 4.5f,0.0f,19.5f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
-    bobbin->SetBobbinSize(BobbinActor::BobbinSize::Big);
+    bobbin->SetBobbinSize(BobbinActor::BobbinSize::Medium);
 
-    Transform bobbinTr1(DirectX::XMFLOAT3{ 21.0f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform bobbinTr1(DirectX::XMFLOAT3{ 19.5f,0.0f,4.5f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto bobbin1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr1);
-    bobbin1->SetBobbinSize(BobbinActor::BobbinSize::Big);
+    bobbin1->SetBobbinSize(BobbinActor::BobbinSize::Medium);
 #endif // 0
 
-    Transform bombTr(DirectX::XMFLOAT3{ 10.5f,0.0f,4.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto bomb = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonBombActor>("BombActor", bombTr);
+    //Transform bombTr(DirectX::XMFLOAT3{ 10.5f,0.0f,4.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    //auto bomb = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonBombActor>("BombActor", bombTr);
 
+    Transform bombTr(DirectX::XMFLOAT3{ 10.5f,0.0f,4.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto bomb = this->GetActorManager()->CreateAndRegisterActorWithTransform<ItemHeartActor>("HeartItemActor", bombTr);
 
 #if 0
     Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });

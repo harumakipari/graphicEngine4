@@ -176,6 +176,8 @@ void RabbitBossAttackBuffState::Exit()
 void RabbitBossStunState::Enter()
 {
     stunTimer = stunTimerInterval;
+
+    enemy->stunModel->SetIsVisible(true);
 }
 
 void RabbitBossStunState::Execute(float deltaTime)
@@ -189,6 +191,6 @@ void RabbitBossStunState::Execute(float deltaTime)
 
 void RabbitBossStunState::Exit()
 {
-
+    enemy->stunModel->SetIsVisible(false);;
 }
 

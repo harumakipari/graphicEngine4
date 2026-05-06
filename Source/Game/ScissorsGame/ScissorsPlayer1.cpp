@@ -299,7 +299,6 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         heartFull = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/heart_full.png");
         heartHalf = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/heart_half.png");
 
-        int maxHp = 10;
         hp = maxHp;
         int heartCount = maxHp / 2;
 
@@ -784,6 +783,16 @@ void ScissorsPlayer1::TakeDamage(int damage)
     // ダメージを受けたらコンボをリセットする
     ScoreSystem::ResetCombo();
 }
+
+void ScissorsPlayer1::RecoverHp(int recoverHp)
+{
+    hp += recoverHp;
+    hp = std::min<int>(hp, maxHp);
+    Logger::Log(U8("プレイヤーHPをが回復する HP:") + std::to_string(hp));
+    // HPを表示するUIを更新
+    UpdateHpUI();
+}
+
 
 // プレイヤーの攻撃処理
 void ScissorsPlayer1::DoAttackHit()

@@ -87,6 +87,7 @@ private:
 
 public:
     std::shared_ptr<BoxComponent> collisionBoxComponent; // ボスの当たり判定
+    std::shared_ptr<SkeletalMeshComponent> stunModel; // スタン中に表示するモデル
 
 private:
     std::vector<DirectX::XMFLOAT3> spawnPoints; // 出現位置
@@ -109,5 +110,7 @@ private:
     const float maxDiveDepth = -7.0f;
     const float diveSpeed = 5.0f;
     float baseY = 0.0f; // 開始位置
+
+    bool spawnBomb = false; // 爆弾を発生させるかどうか
 };
 

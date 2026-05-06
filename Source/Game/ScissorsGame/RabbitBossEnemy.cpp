@@ -6,6 +6,7 @@
 #include "EnemyBase.h"
 #include "ScissorsPlayer1.h"
 #include "RabbitBossState.h"
+#include "ScissorsGameState.h"
 #include "ScissorsPlayerStateDerived.h"
 #include "WaveManagaer.h"
 #include "Engine/Scene/Scene.h"
@@ -17,7 +18,6 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/BossEnemy.glb", false, true);
-    
     //skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameBossPS";
 
     // 当たり判定
@@ -88,6 +88,12 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 
         uiManager->Add(gaugeUi);
     }
+
+    // スタンモデルを生成
+    stunModel = AddComponent<SkeletalMeshComponent>(parentName);
+    stunModel->SetModel("./Data/TeamModels/Item/StunVisualModel.glb", false, true);
+    stunModel->SetIsCastShadow(false);
+    stunModel->SetIsVisible(false);
 
     // ステートマシンを作成
     stateMachine_ = std::make_shared<StateMachine>();
@@ -193,10 +199,6 @@ bool RabbitBossEnemyActor::IsStunned()
 // ダメージ処理計算
 float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext)
 {
-    if (!damageContext.isBossStunned)
-    {// ボスがスタン状態じゃなかったら
-        SpawnButtonBombs(); // 爆弾を生成する
-    }
 
     float damage = damageContext.baseDamage;
 
@@ -207,6 +209,11 @@ float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext
     {
         float multiple = 1.0f + 0.2f * damageContext.killedEnemyBeforeHitCount;
         damage *= multiple;
+    }
+
+    if (!damageContext.isBossStunned)
+    {// ボスがスタン状態じゃなかったら
+        SpawnButtonBombs(); // 爆弾を生成する
     }
 
     return damage;
@@ -299,35 +306,59 @@ void RabbitBossEnemyActor::EnterStun()
 // 爆弾を生成する
 void RabbitBossEnemyActor::SpawnButtonBombs()
 {
-    const float offset = 2.0f;
+    spawnBomb = !spawnBomb;
+    if (!spawnBomb)
+    {
+        return;
+    }
+
     auto pos = GetPosition();
     const float spawnHeight = 3.0f;
 
-    std::vector<DirectX::XMFLOAT3> offsets =
+    std::vector<DirectX::XMFLOAT3> dirs =
     {
-           { offset,0, offset},   // 右前
-    {-offset,0, offset},   // 左前
-    { offset,0,-offset},   // 右後
-    {-offset,0,-offset}    // 左後
+        { 1,0, 1},   // 右前
+        {-1,0, 1},   // 左前
+        { 1,0,-1},   // 右後
+        {-1,0,-1}    // 左後
     };
 
-
-
-    for (auto& o : offsets)
+    for (auto& d : dirs)
     {
+        // 距離をランダムにする
+        float offset = MathHelper::RandomRange(1.5f, 3.5f);
+
+        // 爆破位置
+        DirectX::XMFLOAT3 bombPos = pos;
+        bombPos.x += d.x * offset;
+        bombPos.z += d.z * offset;
+
+        // ステージ外チェック
+        if (bombPos.x < ScissorsGameState::stageMinX ||
+            bombPos.x > ScissorsGameState::stageMaxX ||
+            bombPos.z < ScissorsGameState::stageMinZ ||
+            bombPos.z > ScissorsGameState::stageMaxZ)
+        {
+            continue; // 生成しない
+        }
+
+        // スポーン位置
         DirectX::XMFLOAT3 spawnBombPos = pos;
         spawnBombPos.y += spawnHeight;
 
-        // 爆破場所
-        DirectX::XMFLOAT3 bombPos = pos;
-        bombPos.x += o.x;
-        bombPos.z += o.z;
+        Transform bombTr(
+            spawnBombPos,
+            DirectX::XMFLOAT3{ 0,0,0 },
+            DirectX::XMFLOAT3{ 1,1,1 });
 
-        // 爆弾を生成する
-        Transform bombTr(spawnBombPos, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-        auto bombActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonBombActor>("bombActor", bombTr);
+        auto bombActor =
+            GetOwnerScene()->GetActorManager()
+            ->CreateAndRegisterActorWithTransform<ButtonBombActor>("bombActor", bombTr);
+
         bombActor->LaunchTo(bombPos);
     }
+
+
 }
 
 // Ｙ座標を下げる処理

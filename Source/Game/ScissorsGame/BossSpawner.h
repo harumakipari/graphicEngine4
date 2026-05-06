@@ -1,5 +1,6 @@
 #pragma once
 #include "EnemyScoreData.h"
+#include "Components/Effect/ParticleComponent.h"
 #include "Core/Actor.h"
 
 class EnemyBase;
@@ -56,6 +57,9 @@ private:
     // 敵が死亡した時に呼ぶ関数として登録する関数
     void OnDeath(EnemyBase* enemy);
 
+    // 出現エフェクトを生成
+    void SpawnPreviewEffect(DirectX::XMFLOAT3 pos);
+
 public:
     std::vector<std::weak_ptr<EnemyBase>> aliveEnemies; //　生き残っている敵
 
@@ -71,4 +75,6 @@ private:
 
     int currentPattern = 0;
     std::vector<BossSpawnPattern> patterns; // 敵出現
+    std::shared_ptr<ParticleComponent> spawnEffectComponent; // 出現エフェクト用コンポーネント
+
 };

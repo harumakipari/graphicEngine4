@@ -325,6 +325,7 @@
     <ClCompile Include="Source\Game\ScissorsGame\EnemyAttack.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\EnemyBase.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\EnemyBehavior.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\ItemHeartActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\NeedleActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\NeedleEnemyActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\RabbitBossEnemy.cpp" />
@@ -509,6 +510,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\EnemyBase.h" />
     <ClInclude Include="Source\Game\ScissorsGame\EnemyBehavior.h" />
     <ClInclude Include="Source\Game\ScissorsGame\EnemyScoreData.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ItemHeartActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\NeedleActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\NeedleEnemyActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\RabbitBossEnemy.h" />

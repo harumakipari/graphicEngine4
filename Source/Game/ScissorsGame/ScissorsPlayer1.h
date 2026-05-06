@@ -40,6 +40,9 @@ public:
     // ダメージを受ける処理
     void TakeDamage(int damage);
 
+    // HPを回復する処理
+    void RecoverHp(int recoverHp);
+
     // 攻撃時に呼ぶ処理
     void DoAttackHit();
 
@@ -84,6 +87,7 @@ public:
 
     // ダッシュ中の攻撃処理
     void AttackDash(EnemyBase* enemy);
+
 private:
     // 入力から狙いの情報を取得する
     AimData GetAimData(const MoveIntent& intent, float deltaTime);
@@ -226,4 +230,5 @@ private:
     std::shared_ptr<Sprite> heartFull;
     std::shared_ptr<Sprite> heartHalf;
     std::shared_ptr<Sprite> heartEmpty;
+    int maxHp = 10;
 };
