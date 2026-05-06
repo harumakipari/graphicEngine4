@@ -90,21 +90,14 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
 
     pout.gBuffer3Normal = float4(N.xyz, objectType); // world space
 
-
-#if 1
-    float3 color = baseColorFactor.rgb;
-
-    // 点滅
-    color *= cpuColor.rgb;
-
-    //フラッシュ
-    color = lerp(color, float3(1, 1, 1), flashValue);
+    float t = flashValue;
 
     // ここで白く発光する処理
-    emissiveFactor.rgb += flashValue * emissionPower;
+    baseColorFactor.rgb = lerp(baseColorFactor.rgb, float3(1, 1, 1), t);
+    emissiveFactor.rgb += t * emissionPower;
 
-    pout.albedo = float4(color, baseColorFactor.a);
-#endif
+
+    pout.albedo = baseColorFactor;
 
     pout.position = pin.wPosition; // world space 
 

@@ -311,7 +311,7 @@ private:
     // サイズ変更演出用
     bool isSizeChanging = false;
     float sizeChangeTimer = 0.0f;
-    float sizeChangeDuration = 2.0f; // チカチカ時間
+    float sizeChangeDuration = 5.0f; // サイズが大きくなるまで点滅している時間
 
     float blinkTimer = 0.0f;
     float blinkInterval = 0.1f;

@@ -799,6 +799,12 @@ void EnemyBase::ChangeSize(EnemyBase::YarnSize newSize)
         Logger::Log(U8(""));
         return;
     }
+
+    if (IsDead())
+    {// 死亡していたら
+        return;
+    }
+
     yarnSize = newSize;
 
     // 玉止め解除
@@ -811,6 +817,16 @@ void EnemyBase::ChangeSize(EnemyBase::YarnSize newSize)
     RequestDestroyComponent("tiedRightMeshComponent");
     tiedMeshes.clear();
 #endif // 0
+
+
+    if (scissorsFirstMeshComponent.get() && scissorsSecondMeshComponent.get())
+    {// 大きくなる敵がハサミ持ちの場合場所を調整する
+        scissorsFirstMeshComponent->SetRelativeLocationDirect({ 0, 1.3f, 0 });
+        scissorsFirstMeshComponent->SetRelativeScaleDirect({ 1.2f,1.2f,1.2f });
+
+        scissorsSecondMeshComponent->SetRelativeLocationDirect({ 0, 1.3f, 0 });
+        scissorsSecondMeshComponent->SetRelativeScaleDirect({ 1.2f,1.2f,1.2f });
+    }
 
 
     // 見た目・当たり判定を再生成

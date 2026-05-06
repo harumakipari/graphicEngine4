@@ -129,7 +129,7 @@ void ButtonCoinActor::StartPerform(bool isBonus)
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel(tuning.modelPath);
     skeletalMeshComponent->SetIsCastShadow(false); // 
-    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
+    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameCoinPS";
 
     particleComponent = AddComponent<ParticleComponent>("particleComponent", parentName);
     particleComponent->Load("./Data/Effect/Files/ScissorsGameCoinAppearEffect.json");
