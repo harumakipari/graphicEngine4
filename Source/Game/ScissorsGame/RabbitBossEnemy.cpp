@@ -2,6 +2,7 @@
 #include "RabbitBossEnemy.h"
 
 #include "BossSpawner.h"
+#include "ButtonBombActor.h"
 #include "EnemyBase.h"
 #include "ScissorsPlayer1.h"
 #include "RabbitBossState.h"
@@ -16,7 +17,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/BossEnemy.glb", false, true);
-    skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Enemy;   // オブジェクトの種類を Enemy に設定
+    
     //skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameBossPS";
 
     // 当たり判定
@@ -192,6 +193,11 @@ bool RabbitBossEnemyActor::IsStunned()
 // ダメージ処理計算
 float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext)
 {
+    if (!damageContext.isBossStunned)
+    {// ボスがスタン状態じゃなかったら
+        SpawnButtonBombs(); // 爆弾を生成する
+    }
+
     float damage = damageContext.baseDamage;
 
     if (damageContext.isBossStunned) // 20ダメージ
@@ -202,7 +208,6 @@ float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext
         float multiple = 1.0f + 0.2f * damageContext.killedEnemyBeforeHitCount;
         damage *= multiple;
     }
-
 
     return damage;
 }
@@ -296,23 +301,32 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
 {
     const float offset = 2.0f;
     auto pos = GetPosition();
+    const float spawnHeight = 3.0f;
 
     std::vector<DirectX::XMFLOAT3> offsets =
     {
-        { offset,0,0},
-        {-offset,0,0},
-        {0,0,offset},
-        {0,0,-offset}
+           { offset,0, offset},   // 右前
+    {-offset,0, offset},   // 左前
+    { offset,0,-offset},   // 右後
+    {-offset,0,-offset}    // 左後
     };
+
+
 
     for (auto& o : offsets)
     {
-        auto bombPos = pos;
+        DirectX::XMFLOAT3 spawnBombPos = pos;
+        spawnBombPos.y += spawnHeight;
+
+        // 爆破場所
+        DirectX::XMFLOAT3 bombPos = pos;
         bombPos.x += o.x;
         bombPos.z += o.z;
 
-        // TODO: ButtonBomb生成
-        // CreateActor<ButtonBomb>(bombPos);
+        // 爆弾を生成する
+        Transform bombTr(spawnBombPos, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        auto bombActor = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonBombActor>("bombActor", bombTr);
+        bombActor->LaunchTo(bombPos);
     }
 }
 

@@ -57,11 +57,19 @@ void ButtonBombActor::Update(float deltaTime)
     switch (bombState)
     {
     case BombState::Falling:
-        //// 地面に当たったら
-        //if (IsGrounded())
     {
-        bombState = BombState::Waiting;
-        elapsedTime = 0.0f;
+        velocity.y -= gravity * deltaTime;
+        pos.x += velocity.x * deltaTime; 
+        pos.y += velocity.y * deltaTime;
+        pos.z += velocity.z * deltaTime; 
+
+        if (pos.y <= groundY)
+        {
+            pos.y = groundY;
+            bombState = BombState::Waiting;
+            elapsedTime = 0.0f;
+        }
+        SetPosition(pos);
     }
 
     break;
@@ -183,6 +191,26 @@ void ButtonBombActor::Explode()
             Logger::Log(U8("爆弾によってプレイヤーにダメージが入った"));
         }
     }
+}
+
+// ボス位置から爆弾位置まで発射する処理
+void ButtonBombActor::LaunchTo(const DirectX::XMFLOAT3& targetPos)
+{
+    auto start = GetPosition();
+
+    DirectX::XMFLOAT3 diff;
+    diff.x = targetPos.x - start.x;
+    diff.y = targetPos.y - start.y;
+    diff.z = targetPos.z - start.z;
+
+    float t = 0.8f;        // ← 落ちる時間
+
+    velocity.x = diff.x / t;
+    velocity.z = diff.z / t;
+
+    velocity.y = (diff.y + 0.5f * gravity * t * t) / t;
+
+    bombState = BombState::Falling;
 }
 
 // 爆発エフェクトを再生する
