@@ -86,13 +86,9 @@ private:
 
     void SpawnEnemy(
         const XMFLOAT3& pos,
-        YarnEnemyType type,
+        YarnEnemyType type,bool isBig,
         float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 });
 
-    void SpawnBigEnemy(
-        const XMFLOAT3& pos,
-        YarnEnemyType type,
-        float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 });
 
 public:
     EnemyTuning enemyTuning = {}; // ìGÇÃí≤êÆóp

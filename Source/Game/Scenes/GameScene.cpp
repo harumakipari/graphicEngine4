@@ -16,6 +16,7 @@
 #include "Game/Actors/Player/Player.h"
 #include "Game/Actors/Stage/Cloth.h"
 #include "Game/ScissorsGame/BobbinActor.h"
+#include "Game/ScissorsGame/ButtonBombActor.h"
 #include "Game/ScissorsGame/ButtonCoinActor.h"
 #include "Game/ScissorsGame/ComboUiActor.h"
 #include "Game/ScissorsGame/EnemyBase.h"
@@ -703,6 +704,10 @@ void GameScene::SetUpActors()
     bobbin1->SetBobbinSize(BobbinActor::BobbinSize::Big);
 #endif // 0
 
+    Transform bombTr(DirectX::XMFLOAT3{ 10.5f,0.0f,4.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto bomb = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonBombActor>("BombActor", bombTr);
+
+
 #if 0
     Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
     auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr);
@@ -722,8 +727,9 @@ void GameScene::SetUpActors()
 
     Transform timerActorTransform(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto scissorsUiTimeActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiTimerActor>("timeActor", timerActorTransform);
+
+    SpawnEnemy({ 10.5f,0,5 }, YarnEnemyType::Static,true);
 #if 0
-    SpawnEnemy({ 5,0,5 }, YarnEnemyType::Static);
     SpawnEnemy({ 8,0,5 }, YarnEnemyType::Static);
     SpawnEnemy({ 10,0,5 }, YarnEnemyType::Static);
     SpawnEnemy({ 12,0,5 }, YarnEnemyType::Static);
@@ -943,25 +949,73 @@ void GameScene::DrawGui()
 // ‰¼‚Ì“G‚ð¶¬‚·‚éŠÖ”
 void GameScene::SpawnEnemy(
     const XMFLOAT3& pos,
-    YarnEnemyType type,
+    YarnEnemyType type, bool isBig,
     float speed, const XMFLOAT3& dir)
 {
-    Transform tr(pos, { 0,0,0 }, { 1.0f,1.0f,1.0f });
-    auto enemy = GetActorManager()->CreateAndRegisterActorWithTransform<YarnEnemyActor>("enemy", tr);
+    DirectX::XMFLOAT3 scale = { 1.0f,1.0f,1.0f };
+
+    if (isBig)
+    {
+        scale = { 1.0f, 1.0f, 1.0f };
+    }
+    else
+    {
+        scale = { 1.1f, 1.1f, 1.1f };
+    }
+
+    Transform tr(pos, { 0,180,0 }, scale);
+    auto enemy =GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemy", tr);
     enemy->SetMoveDirection(dir);
-    enemy->SetType(type);
+
+    auto size = isBig ? EnemyBase::Big : EnemyBase::Small;
+    enemy->SetEnemySize(size);
+    enemy->SetEnemyType(type);
+
+    switch (type)
+    {
+    case YarnEnemyType::Static:
+        enemy->SetBehavior(std::make_unique<StaticBehavior>());
+        break;
+
+    case YarnEnemyType::MoveHorizontal:
+        enemy->SetBehavior(std::make_unique<LinearBehavior>());
+        enemy->SetMoveDirection({ 1,0,0 });
+        break;
+
+    case YarnEnemyType::MoveVertical:
+        enemy->SetBehavior(std::make_unique<LinearBehavior>());
+        enemy->SetMoveDirection({ 0,0,1 });
+        break;
+
+    case YarnEnemyType::MoveLinear:
+        enemy->SetBehavior(std::make_unique<LinearBehavior>());
+        break;
+
+    case YarnEnemyType::WaveHorizontal:
+        enemy->SetBehavior(std::make_unique<WaveHorizontalBehavior>());
+        enemy->SetMoveDirection({ 1,0,0 });
+        break;
+
+    case YarnEnemyType::WaveVertical:
+        enemy->SetBehavior(std::make_unique<WaveVerticalBehavior>());
+        enemy->SetMoveDirection({ 0,0,1 });
+        break;
+
+    case YarnEnemyType::WaveMoveBehavior:
+        enemy->SetBehavior(std::make_unique<WaveMoveBehavior>());
+        break;
+
+    case YarnEnemyType::ChasePlayer:
+        enemy->SetBehavior(std::make_unique<ChaseBehavior>());
+        break;
+    case YarnEnemyType::RescueEnemy:
+        enemy->SetBehavior(std::make_unique<RescueBehavior>());
+        break;
+    case YarnEnemyType::LongRangeAttack:
+        enemy->SetAttack(std::make_unique<NeedleAttack>());
+        break;
+    }
     enemy->SetSpeed(speed);
+    enemy->SetUpVisual();
 }
 
-// ‰¼‚Ì“G‚ð¶¬‚·‚éŠÖ”
-void GameScene::SpawnBigEnemy(
-    const XMFLOAT3& pos,
-    YarnEnemyType type,
-    float speed, const XMFLOAT3& dir)
-{
-    Transform tr(pos, { 0,0,0 }, { 1.0f,1.0f,1.0f });
-    auto enemy = GetActorManager()->CreateAndRegisterActorWithTransform<BigYarnEnemyActor>("enemy", tr);
-    enemy->SetMoveDirection(dir);
-    enemy->SetType(type);
-    enemy->SetSpeed(speed);
-}

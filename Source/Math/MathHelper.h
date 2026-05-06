@@ -287,12 +287,32 @@ namespace MathHelper
         const DirectX::XMFLOAT3& b
     )
     {
-        const float dx = a.x - b.x;
-        const float dy = a.y - b.y;
-        const float dz = a.z - b.z;
+        DirectX::XMFLOAT3 va = a;
+        DirectX::XMVECTOR Va = DirectX::XMLoadFloat3(&va);
 
-        return std::sqrt(dx * dx + dy * dy + dz * dz);
+        DirectX::XMFLOAT3 vb = b;
+        DirectX::XMVECTOR Vb = DirectX::XMLoadFloat3(&vb);
+
+        float distance = DirectX::XMVectorGetX(DirectX::XMVector3Length(DirectX::XMVectorSubtract(Va, Vb)));
+        return distance;
     }
+
+    // 距離計算（Vector3）
+    inline float DistanceSq(
+        const DirectX::XMFLOAT3& a,
+        const DirectX::XMFLOAT3& b
+    )
+    {
+        DirectX::XMFLOAT3 va = a;
+        DirectX::XMVECTOR Va = DirectX::XMLoadFloat3(&va);
+
+        DirectX::XMFLOAT3 vb = b;
+        DirectX::XMVECTOR Vb = DirectX::XMLoadFloat3(&vb);
+
+        float distanceSq = DirectX::XMVectorGetX(DirectX::XMVector3LengthSq(DirectX::XMVectorSubtract(Va, Vb)));
+        return distanceSq;
+    }
+
 
     // 距離計算（Vector2） a - b
     inline float DistanceFloat2(

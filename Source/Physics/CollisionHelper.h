@@ -21,7 +21,7 @@ enum class CollisionLayer :uint32_t
     Wall, // ”½ŽË•Ç
     EnemyRedirect, // ”½ŽË“G
     Projectile, // ’eŠÛ
-
+    Bomb, // ”š’e
     Max,
 };
 constexpr uint32_t COLLISION_EVERYTHING = 0xFFFFFFFF;
