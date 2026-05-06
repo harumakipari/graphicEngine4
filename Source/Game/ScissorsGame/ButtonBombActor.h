@@ -6,6 +6,14 @@
 
 class ButtonBombActor :public Actor
 {
+    enum class BombState :uint8_t
+    {
+        Falling,    // 落下中
+        Waiting,    // 地面で待機
+        Blinking,   // 点滅
+        Exploded    // 爆発済み
+    };
+
 public:
     explicit ButtonBombActor(const std::string& actorName) :Actor(actorName) {}
 
@@ -25,8 +33,17 @@ private:
 private:
     // 描画用コンポーネントを追加
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
-    float explodeRange = 2.5f; // 爆発影響範囲
+    // 爆発パーティクルコンポーネントを追加
     std::shared_ptr<ParticleComponent> bombEffectComponent;
 
+
+    BombState bombState = BombState::Falling;
+    float elapsedTime;    // 経過時間
+    bool hasExploded = false;   // 爆発したかどうか
+
+    // 調整値
+    float explodeRange = 2.5f; // 爆発影響範囲
+    float blinkDelay = 2.0f;     // 点滅が始まるまで
+    float explodeDelay = 3.0f;   // 爆発するまで
 
 };

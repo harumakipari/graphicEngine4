@@ -318,7 +318,15 @@ public:
             AddPipeLineState("ScissorsGameEnemyPS", desc);
         }
 
-        // SkeletalMesh deferred ScissorsGameEnemyPS 用　チーム制作で足した(T_T)
+        // SkeletalMesh deferred ScissorsGameBlinkPS 用　チーム制作で足した(T_T)
+        {
+            hr = CreatePsFromCSO(device, "./Shader/ScissorsGameBlinkPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+            AddPipeLineState("ScissorsGameBlinkPS", desc);
+        }
+
+        // SkeletalMesh deferred ScissorsGameCoinPS 用　チーム制作で足した(T_T)
         {
             hr = CreatePsFromCSO(device, "./Shader/ScissorsGameCoinPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));

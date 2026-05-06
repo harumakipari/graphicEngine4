@@ -313,6 +313,7 @@ private:
     float sizeChangeTimer = 0.0f;
     float sizeChangeDuration = 5.0f; // サイズが大きくなるまで点滅している時間
 
+    // 点滅処理用
     float blinkTimer = 0.0f;
     float blinkInterval = 0.1f;
     bool blinkOn = false;

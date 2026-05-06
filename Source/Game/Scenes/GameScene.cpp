@@ -728,7 +728,7 @@ void GameScene::SetUpActors()
     Transform timerActorTransform(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto scissorsUiTimeActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiTimerActor>("timeActor", timerActorTransform);
 
-    SpawnEnemy({ 10.5f,0,5 }, YarnEnemyType::Static,true);
+    //SpawnEnemy({ 10.5f,0,5 }, YarnEnemyType::Static,true);
 #if 0
     SpawnEnemy({ 8,0,5 }, YarnEnemyType::Static);
     SpawnEnemy({ 10,0,5 }, YarnEnemyType::Static);

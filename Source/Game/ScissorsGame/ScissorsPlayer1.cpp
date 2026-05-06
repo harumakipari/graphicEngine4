@@ -65,6 +65,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         sphereComponent->SetResponseToLayer(CollisionLayer::Boss, CollisionComponent::CollisionResponse::Block);
         sphereComponent->SetResponseToLayer(CollisionLayer::Bobbin, CollisionComponent::CollisionResponse::Block);
         sphereComponent->SetResponseToLayer(CollisionLayer::EnemyRedirect, CollisionComponent::CollisionResponse::Block);
+        sphereComponent->SetResponseToLayer(CollisionLayer::Bomb, CollisionComponent::CollisionResponse::Trigger);
         sphereComponent->Initialize();
         sphereComponent->SetOnHitCallback(
             [this](CollisionComponent* self, CollisionComponent* other)

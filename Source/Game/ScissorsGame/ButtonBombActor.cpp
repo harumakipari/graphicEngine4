@@ -12,6 +12,7 @@ void ButtonBombActor::Initialize(const Transform& transform)
     std::string parentName = "SkeletonWarriorMeshComponent";
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Item/BombModel.glb", false, true);
+    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameBlinkPS";
 
     // 当たり判定
     {
@@ -32,7 +33,7 @@ void ButtonBombActor::Initialize(const Transform& transform)
             [this](CollisionComponent* self, CollisionComponent* other)
             {
                 uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Enemy) | CollisionHelper::ToBit(CollisionLayer::Player);
-                if (other->GetCollisionLayer() == mask)
+                if (other->GetCollisionLayer() & mask)
                 {// 敵かplayerが当たったら、爆発する
                     Explode();
                 }
@@ -42,7 +43,7 @@ void ButtonBombActor::Initialize(const Transform& transform)
 
 
     // 登場エフェクト用のコンポーネントを追加
-    bombEffectComponent = this->AddComponent<class ParticleComponent>("bombEffect",parentName);
+    bombEffectComponent = this->AddComponent<class ParticleComponent>("bombEffect", parentName);
     bombEffectComponent->Load("./Data/Effect/Files/ScissorsGameBombEffect.json");
 
 
@@ -51,6 +52,48 @@ void ButtonBombActor::Initialize(const Transform& transform)
 void ButtonBombActor::Update(float deltaTime)
 {
     DirectX::XMFLOAT3 pos = GetPosition();
+    elapsedTime += deltaTime;
+
+    switch (bombState)
+    {
+    case BombState::Falling:
+        //// 地面に当たったら
+        //if (IsGrounded())
+    {
+        bombState = BombState::Waiting;
+        elapsedTime = 0.0f;
+    }
+
+    break;
+    case BombState::Waiting:
+        if (elapsedTime >= blinkDelay)
+        {
+            bombState = BombState::Blinking;
+            elapsedTime = 0.0f;
+        }
+        break;
+    case BombState::Blinking:
+        // 点滅
+        // オレンジ固定
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 0.89f,0.53f,0.01f,1 };
+        // 点滅ON/OFFだけ送る
+        skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = (sinf(elapsedTime * 20.0f) + 1.0f) * 0.5f;
+
+        if (elapsedTime >= explodeDelay)
+        {
+            Explode();
+            bombState = BombState::Exploded;
+            elapsedTime = 0.0f;
+        }
+
+        break;
+    case BombState::Exploded:
+        if (elapsedTime>=0.5f)
+        {
+            MarkPendingKill();
+        }
+        break;
+    }
 
     // 爆発範囲のデバック描画
     DebugRender::DrawSphere(pos, explodeRange, { 1,1,0.5f,1 }, 0, true);
@@ -61,8 +104,14 @@ void ButtonBombActor::DrawImGuiDetails()
 #ifdef USE_IMGUI
     if (ImGui::Button(U8("爆発する")))
     {
+        hasExploded = false;
         Explode();
     }
+    if (ImGui::Button(U8("リセットする")))
+    {
+        hasExploded = false;
+    }
+
 
 #endif
 }
@@ -70,6 +119,16 @@ void ButtonBombActor::DrawImGuiDetails()
 // 爆発処理
 void ButtonBombActor::Explode()
 {
+    if (hasExploded)
+    {// 爆発したことがあったら、
+        return;
+    }
+
+    hasExploded = true;
+    bombState = BombState::Exploded;
+
+    skeletalMeshComponent->SetIsVisible(false);
+
     DirectX::XMFLOAT3 pos = GetPosition();
 
     // エフェクトを生成する
@@ -132,6 +191,10 @@ void ButtonBombActor::PlayBombEffect(DirectX::XMFLOAT3 pos)
     if (bombEffectComponent)
     {
         bombEffectComponent->SetWorldLocationDirect(pos);
-        bombEffectComponent->Play();
+        bombEffectComponent->UpdateComponentToWorld(); // これ入れないと最初に呼ばれる時に位置がずれる
+        XMFLOAT3 position = bombEffectComponent->GetComponentLocation();
+        XMFLOAT3 rotation = bombEffectComponent->GetComponentEulerRotation();
+        EffectManager::EmitParticle(bombEffectComponent->GetEffectHandle(), position, rotation);
+
     }
 }

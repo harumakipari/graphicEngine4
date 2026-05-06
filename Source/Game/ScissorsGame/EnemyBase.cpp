@@ -419,6 +419,7 @@ void EnemyBase::CreateCollisionComponent()
     sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
     sphereCollisionComponent->SetResponseToLayer(CollisionLayer::PlayerWeapon, CollisionComponent::CollisionResponse::Trigger);
     sphereCollisionComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+    sphereCollisionComponent->SetResponseToLayer(CollisionLayer::Bomb, CollisionComponent::CollisionResponse::Trigger);
     sphereCollisionComponent->SetCollisionOffsetY(height * 0.5f);
     sphereCollisionComponent->Initialize();
     sphereCollisionComponent->SetOnHitCallback([this](CollisionComponent* self, CollisionComponent* other)

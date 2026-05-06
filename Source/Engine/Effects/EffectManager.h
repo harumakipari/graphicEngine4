@@ -142,6 +142,9 @@ public:
     //エディタGUI描画
     //static void DrawGUI();
 
+        //
+    static void EmitParticle(EffectHandle handle, const XMFLOAT3& pos, const XMFLOAT3& rot);
+
 private:
     static int RegisterCurve(const FloatCurve& curve); // カーブ → 1Dテクスチャ化関数
 
@@ -154,8 +157,6 @@ private:
     // 形状エミッタ設定適用
     static void ApplyShapeEmitterSettings(const EmitterShapeData& settings, CoreComputeParticleSystem::EmitParticleData& emitData, int index, int emitCount);
 
-    //
-    static void EmitParticle(EffectHandle handle, const XMFLOAT3& pos, const XMFLOAT3& rot);
 
     // ランダム値取得
     static float Random(float min, float max);
