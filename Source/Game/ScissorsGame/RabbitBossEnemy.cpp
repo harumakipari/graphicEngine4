@@ -56,12 +56,12 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 #endif // 0
     }
 
-
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
     rotationComponent->SetDirection({ 0,0,-1 });
     // Hpの初期化
     maxHp = 500;
+    maxHp = 100;
     hp = maxHp;
 
 
@@ -109,6 +109,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     stateMachine_->RegisterState(std::make_unique<RabbitBossAttackBuffPreviewState>(this));
     stateMachine_->RegisterState(std::make_unique<RabbitBossAttackBuffState>(this));
     stateMachine_->RegisterState(std::make_unique<RabbitBossStunState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossDeathState>(this));
 
     // ステートマシンを character に追加
     this->SetStateMachine(stateMachine_);
@@ -124,9 +125,6 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
         {11,0,2},
         {20,0,11}
     };
-
-    // 爆弾生成個数をリセットする
-    spawnCount = 0;
 }
 
 void RabbitBossEnemyActor::Update(float deltaTime)
@@ -256,7 +254,6 @@ void RabbitBossEnemyActor::OnTied()
     // スタン状態に入る
     EnterStun();
 }
-
 
 // ランダムに大きい敵に変更する処理
 void RabbitBossEnemyActor::EnlargeRandomEnemies(int count)
@@ -591,8 +588,6 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
 
     std::shuffle(dirs.begin(), dirs.end(), rng);
 
-    // ハートをドロップさせるか
-    bool dropHeart = (spawnCount % 10 == 0);
 
     // 先頭3つだけ使う
     for (int i = 0; i < 3; i++)
@@ -615,6 +610,8 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
             continue; // 生成しない
         }
 
+        DropType type = PopDrop();
+
         // スポーン位置
         DirectX::XMFLOAT3 spawnBombPos = pos;
         spawnBombPos.y += spawnHeight;
@@ -625,7 +622,7 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
             DirectX::XMFLOAT3{ 0,0,0 },
             DirectX::XMFLOAT3{ 1,1,1 });
 
-        if (dropHeart && i == 0)
+        if (type==DropType::Heart)
         {
             auto heart =
                 GetOwnerScene()->GetActorManager()
@@ -642,7 +639,6 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
             bomb->LaunchTo(bombPos);
         }
 
-        spawnCount++;
 
     }
 
@@ -655,4 +651,35 @@ void RabbitBossEnemyActor::ApplyDiveOffset()
     auto pos = GetPosition();
     pos.y = 0.0f + diveOffsetY;
     SetPosition(pos);
+}
+
+// 落とすアイテムを満たす処理
+void RabbitBossEnemyActor::RefillDropBag()
+{
+    dropBag.clear();
+
+    // ９個爆弾
+    for (int i=0;i<9;i++)
+    {
+        dropBag.push_back(DropType::Bomb);
+    }
+
+    // 一つハート
+    dropBag.push_back(DropType::Heart);
+
+    std::shuffle(dropBag.begin(), dropBag.end(), rng);
+}
+
+// アイテム取り出し処理
+RabbitBossEnemyActor::DropType RabbitBossEnemyActor::PopDrop()
+{
+    if (dropBag.empty())
+    {// バッグが空になったら、
+        RefillDropBag();
+    }
+
+    DropType type = dropBag.back();
+    dropBag.pop_back();
+
+    return type;
 }

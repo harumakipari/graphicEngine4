@@ -54,6 +54,9 @@ public:
     // 敵出現を開始する
     void Activate() { isActive = true; }
 
+    // 敵出現を終了する
+    void Dactivate() { isActive = false; }
+
     // 生き残っている敵を全て死亡させる
     void KillAllEnemies();
 private:

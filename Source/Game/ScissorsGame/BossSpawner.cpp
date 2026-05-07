@@ -2,6 +2,7 @@
 #include "BossSpawner.h"
 
 #include "EnemyBase.h"
+#include "RabbitBossEnemy.h"
 #include "Engine/Scene/Scene.h"
 
 void BossSpawner::Initialize(const Transform& transform)
@@ -274,16 +275,22 @@ void BossSpawner::OnDeath(EnemyBase* enemy)
 void BossSpawner::KillAllEnemies()
 {
     int index = 0;
-    for (auto& w : aliveEnemies)
+    auto enemies = GetOwnerScene()->GetActorManager()->GetActorsOfType<EnemyBase>();
+    for (auto& enemy : enemies)
     {
-        if (auto enemy = w.lock())
-        {
-            enemy->ChangeEnemyState(EnemyBase::YarnState::Dead);
-            enemy->CallDeath(false); // Ž€–S‰‰oŠJŽnˆ—
-            // Ž€–S‰‰o‚É’x‰„‚ð“ü‚ê‚é
-            enemy->SetDelayBeforeKnockback(index * 0.08f);
-            index++;
+        if (auto boss = std::dynamic_pointer_cast<RabbitBossEnemyActor>(enemy))
+        {// ƒ{ƒX‚¾‚Á‚½‚çA
+            continue;
         }
+        if (enemy->IsDead())
+        {
+            return;
+        }
+        enemy->ChangeEnemyState(EnemyBase::YarnState::Dead);
+        enemy->CallDeath(false); // Ž€–S‰‰oŠJŽnˆ—
+        // Ž€–S‰‰o‚É’x‰„‚ð“ü‚ê‚é
+        enemy->SetDelayBeforeKnockback(index * 0.08f);
+        index++;
     }
 
     aliveEnemies.clear();

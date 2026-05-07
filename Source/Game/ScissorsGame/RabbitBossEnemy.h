@@ -8,6 +8,12 @@
 
 class RabbitBossEnemyActor :public EnemyBase
 {
+    enum class DropType:uint8_t
+    {
+        Bomb,
+        Heart,
+    };
+
 public:
     explicit RabbitBossEnemyActor(const std::string& actorName) :EnemyBase(actorName) {}
 
@@ -95,6 +101,12 @@ private:
     // Ｙ座標を下げる処理
     void ApplyDiveOffset();
 
+    // 落とすアイテムを満たす処理
+    void RefillDropBag();
+
+    // アイテム取り出し処理
+    DropType PopDrop();
+
 public:
     std::shared_ptr<BoxComponent> collisionBoxComponent; // ボスの当たり判定
     std::shared_ptr<SkeletalMeshComponent> stunModel; // スタン中に表示するモデル
@@ -124,9 +136,9 @@ private:
     float baseY = 0.0f; // 開始位置
 
     bool spawnBomb = false; // 爆弾を発生させるかどうか
-    int spawnCount = 0; // 爆弾の生成個数を数える
 
     std::mt19937 rng{ std::random_device{}() };
 
+    std::vector<DropType> dropBag;  // アイテムを落とす中身のバッグ
 };
 

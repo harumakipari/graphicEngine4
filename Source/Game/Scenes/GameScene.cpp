@@ -226,10 +226,10 @@ void GameScene::Start()
     if (param.contains("stage"))
     {
         std::string stageName = param.at("stage");
-
         stage = StringToStageName(stageName);
     }
 
+    stage = STAGE_NAME::BOSS;
     LoadStage(stage);
 
     auto uiStartActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUIStartActor>("uiStartActor");

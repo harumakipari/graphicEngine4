@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "RabbitBossState.h"
 
+#include "BossSpawner.h"
 #include "RabbitBossEnemy.h"
 #include "ScissorsPlayer1.h"
+#include "Engine/Scene/Scene.h"
 
 
 RabbitBossStateBase::RabbitBossStateBase(RabbitBossEnemyActor* enemy) :State(enemy), enemy(enemy)
@@ -37,7 +39,7 @@ void RabbitBossAttackSelectState::Enter()
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     int select = MathHelper::RandomRange(0, 1);
-    //select = 1;
+    select = 1;
 
     if (select == 0)
     {// ƒ[ƒvUŒ‚—\’›‚Ö‘JˆÚ
@@ -205,6 +207,12 @@ void RabbitBossDeathState::Enter()
     elapsedTime = 0.0f;
     // ƒ{ƒX‚ªŽ€–S‚µ‚½‚çŒÄ‚Ôˆ—  ˆêƒtƒŒ[ƒ€‚Ì‚Ý
     enemy->StartDeathPerform();
+
+    // “G‚ÌoŒ»‚ðI—¹‚³‚¹‚é
+    if (auto bossSpawner=enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<BossSpawner>())
+    {
+        bossSpawner->Dactivate();
+    }
 }
 
 void RabbitBossDeathState::Execute(float deltaTime)
