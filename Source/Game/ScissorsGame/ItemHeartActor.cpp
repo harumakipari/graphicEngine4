@@ -10,7 +10,6 @@ void ItemHeartActor::Initialize(const Transform& transform)
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Item/ItemHeartModel.gltf", false, true);
 
-
     auto boxComponent = this->AddComponent<class BoxComponent>("boxComponent", parentName);
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
     float  mass = 0.0f;
@@ -24,18 +23,63 @@ void ItemHeartActor::Initialize(const Transform& transform)
     boxComponent->SetOnHitCallback(
         [this](CollisionComponent* self, CollisionComponent* other)
         {
-            uint32_t mask = CollisionHelper::ToBit(CollisionLayer::PlayerWeapon) | CollisionHelper::ToBit(CollisionLayer::Player);
-            if (other->GetCollisionLayer() & mask)
+            if (other->GetCollisionLayer() & CollisionHelper::ToBit(CollisionLayer::Player))
             {
                 UseItem();
             }
+            if (other->GetCollisionLayer() & CollisionHelper::ToBit(CollisionLayer::PlayerWeapon))
+            {
+                if (auto player = dynamic_cast<ScissorsPlayer1*>(other->GetOwner()))
+                {
+                    if (player->GetStateMachine()->GetStateName() == "Dash")
+                    {// ダッシュ中なら
+                        UseItem();
+                    }
+                }
+            }
+
         }
     );
+
+    elapsedTime = 0.0f;
+    itemState = ItemState::Preparing;
 }
 
 void ItemHeartActor::Update(float deltaTime)
 {
+    DirectX::XMFLOAT3 pos = GetPosition();
+    elapsedTime += deltaTime;
 
+    switch (itemState)
+    {
+    case ItemState::Falling:
+    {
+        velocity.y -= gravity * deltaTime;
+        pos.x += velocity.x * deltaTime;
+        pos.y += velocity.y * deltaTime;
+        pos.z += velocity.z * deltaTime;
+
+        if (pos.y <= groundY)
+        {
+            pos.y = groundY;
+            itemState = ItemState::Waiting;
+            elapsedTime = 0.0f;
+        }
+        SetPosition(pos);
+    }
+
+    break;
+    case ItemState::Waiting:
+        // 待機時の動き
+        UpdateWaiting(deltaTime);
+        break;
+    case ItemState::Used:
+        if (elapsedTime >= 0.5f)
+        {
+            MarkPendingKill();
+        }
+        break;
+    }
 }
 
 void ItemHeartActor::DrawImGuiDetails()
@@ -46,14 +90,44 @@ void ItemHeartActor::DrawImGuiDetails()
 // アイテムを使用する
 void ItemHeartActor::UseItem()
 {
+    if (itemState == ItemState::Used)
+    {
+        return;
+    }
+
     auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>();
     if (!player)
     {
         return;
     }
-    player->RecoverHp(2);
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/hpUp.wav",0.8f);
 
-    MarkPendingKill();
+    player->RecoverHp(2);
+    itemState = ItemState::Used;
+    elapsedTime = 0.0f;
 }
 
+// アイテム待機中の動き
+void ItemHeartActor::UpdateWaiting(float deltaTime)
+{
 
+}
+
+void ItemHeartActor::LaunchTo(const DirectX::XMFLOAT3& targetPos)
+{
+    auto start = GetPosition();
+
+    DirectX::XMFLOAT3 diff;
+    diff.x = targetPos.x - start.x;
+    diff.y = targetPos.y - start.y;
+    diff.z = targetPos.z - start.z;
+
+    float t = 0.8f;        // ← 落ちる時間
+
+    velocity.x = diff.x / t;
+    velocity.z = diff.z / t;
+
+    velocity.y = (diff.y + 0.5f * gravity * t * t) / t;
+
+    itemState = ItemState::Falling;
+}

@@ -225,7 +225,7 @@ void GameScene::Start()
     {
         stageId = std::stoi(param.at("stageId"));
     }
-    stageId = 5;
+    stageId = 1;
 
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
@@ -267,7 +267,6 @@ void GameScene::Update(float deltaTime)
 
     // スコアシステムの更新処理
     ScoreSystem::Update(deltaTime);
-
 
 
     // マウスカーソルの更新処理
@@ -695,21 +694,29 @@ void GameScene::SetUpActors()
     auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
     bobbin->SetBobbinSize(BobbinActor::BobbinSize::Big);
 #endif // 0
-#if  1
-    Transform bobbinTr(DirectX::XMFLOAT3{ 4.5f,0.0f,19.5f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+#if  0
+    Transform bobbinTr(DirectX::XMFLOAT3{ 6.0f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
-    bobbin->SetBobbinSize(BobbinActor::BobbinSize::Medium);
+    bobbin->SetBobbinSize(BobbinActor::BobbinSize::Big);
 
-    Transform bobbinTr1(DirectX::XMFLOAT3{ 19.5f,0.0f,4.5f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform bobbinTr1(DirectX::XMFLOAT3{ 18.0f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto bobbin1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr1);
-    bobbin1->SetBobbinSize(BobbinActor::BobbinSize::Medium);
+    bobbin1->SetBobbinSize(BobbinActor::BobbinSize::Big);
+
+    //Transform bobbinTr(DirectX::XMFLOAT3{ 4.5f,0.0f,19.5f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    //auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
+    //bobbin->SetBobbinSize(BobbinActor::BobbinSize::Medium);
+
+    //Transform bobbinTr1(DirectX::XMFLOAT3{ 19.5f,0.0f,4.5f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    //auto bobbin1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr1);
+    //bobbin1->SetBobbinSize(BobbinActor::BobbinSize::Medium);
 #endif // 0
 
     //Transform bombTr(DirectX::XMFLOAT3{ 10.5f,0.0f,4.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     //auto bomb = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonBombActor>("BombActor", bombTr);
 
-    Transform bombTr(DirectX::XMFLOAT3{ 10.5f,0.0f,4.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto bomb = this->GetActorManager()->CreateAndRegisterActorWithTransform<ItemHeartActor>("HeartItemActor", bombTr);
+    //Transform bombTr(DirectX::XMFLOAT3{ 10.5f,0.0f,4.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    //auto bomb = this->GetActorManager()->CreateAndRegisterActorWithTransform<ItemHeartActor>("HeartItemActor", bombTr);
 
 #if 0
     Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });

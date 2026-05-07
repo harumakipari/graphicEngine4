@@ -21,13 +21,18 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     std::string parentName = "SkeletonWarriorMeshComponent";
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    skeletalMeshComponent->SetModel("./Data/TeamModels/Player/player.gltf", false, true);
+    skeletalMeshComponent->SetModel("./Data/TeamModels/Player/ScissorsPlayer.gltf", false, true);
+    //skeletalMeshComponent->SetModel("./Data/TeamModels/Player/player.gltf", false, true);
     skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGamePlayerPS";
 
-    //skeletalMeshComponent->SetModel("./Data/TeamModels/Player/ScissorsPlayer.gltf", false, true);
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
+    //controller->AddAnimation("Idle", 0);
+    //controller->AddAnimation("ChargeDash", 1);
+    //controller->AddAnimation("Dash", 2);
+    //controller->AddAnimation("Run", 3);
+
     controller->AddAnimation("Idle", 0);
     controller->AddAnimation("ChargeDash", 1);
     controller->AddAnimation("Dash", 2);
@@ -208,8 +213,9 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 }
                 else
                 {
+                    //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/boss_hit_se.wav");
+
                     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
-                    //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/scissors_attack.wav",1.0f);
 
                     bool isReflected = (currentSegment > 0);    // 反射かどうか
 
@@ -786,9 +792,10 @@ void ScissorsPlayer1::TakeDamage(int damage)
 
 void ScissorsPlayer1::RecoverHp(int recoverHp)
 {
+    Logger::Log(U8("回復前HP:") + std::to_string(hp));
     hp += recoverHp;
     hp = std::min<int>(hp, maxHp);
-    Logger::Log(U8("プレイヤーHPをが回復する HP:") + std::to_string(hp));
+    Logger::Log(U8("プレイヤーHPを回復する HP:") + std::to_string(hp));
     // HPを表示するUIを更新
     UpdateHpUI();
 }

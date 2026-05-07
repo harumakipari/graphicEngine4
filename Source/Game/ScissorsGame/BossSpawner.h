@@ -5,6 +5,7 @@
 
 class EnemyBase;
 
+
 struct SpawnEntry
 {
     YarnEnemyType type;
@@ -20,11 +21,25 @@ struct BossSpawnPoint
     DirectX::XMFLOAT3 position;
     DirectX::XMFLOAT3 direction;
     std::vector<SpawnEntry> table;
+
+    std::vector<SpawnEntry> bag;
+    int bagIndex = 0;
 };
 
 struct BossSpawnPattern
 {
     std::vector<BossSpawnPoint> points;
+};
+
+struct PendingSpawn
+{
+    BossSpawnPoint point;
+    SpawnEntry entry;
+
+    float startTime = 0.0f;
+
+    bool previewed = false;
+    bool spawned = false;
 };
 
 class BossSpawner :public Actor
@@ -60,6 +75,11 @@ private:
     // 出現エフェクトを生成
     void SpawnPreviewEffect(DirectX::XMFLOAT3 pos);
 
+    // 敵の生成の袋を生成する
+    void BuildBag(BossSpawnPoint& point);
+
+    // 袋から取り出す関数
+    SpawnEntry DrawFromBag(BossSpawnPoint& point);
 public:
     std::vector<std::weak_ptr<EnemyBase>> aliveEnemies; //　生き残っている敵
 
@@ -77,4 +97,9 @@ private:
     std::vector<BossSpawnPattern> patterns; // 敵出現
     std::shared_ptr<ParticleComponent> spawnEffectComponent; // 出現エフェクト用コンポーネント
 
+    std::vector<PendingSpawn> pendingSpawns;
+
+    float previewDelay = 0.0f;  // 予告出るまで
+    float spawnDelay = 1.0f;  // 予告→出現まで
+    std::mt19937 rng{ std::random_device{}() };
 };

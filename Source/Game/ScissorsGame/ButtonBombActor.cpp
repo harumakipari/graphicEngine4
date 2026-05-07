@@ -38,7 +38,6 @@ void ButtonBombActor::Initialize(const Transform& transform)
                     Explode();
                 }
             });
-
     }
 
 
@@ -90,8 +89,6 @@ void ButtonBombActor::Update(float deltaTime)
         if (elapsedTime >= explodeDelay)
         {
             Explode();
-            bombState = BombState::Exploded;
-            elapsedTime = 0.0f;
         }
 
         break;
@@ -134,6 +131,7 @@ void ButtonBombActor::Explode()
 
     hasExploded = true;
     bombState = BombState::Exploded;
+    elapsedTime = 0.0f;
 
     skeletalMeshComponent->SetIsVisible(false);
 
@@ -163,7 +161,6 @@ void ButtonBombActor::Explode()
         pos.y = 0.0f;
 
         float distSq = MathHelper::DistanceSq(enemyPos, pos);
-
 
         if (distSq < explodeRange * explodeRange)
         {

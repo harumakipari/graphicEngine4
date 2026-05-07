@@ -6,6 +6,8 @@
 
 void BossSpawner::Initialize(const Transform& transform)
 {
+    std::string parentName = "bossSpawner";
+
     std::vector<SpawnEntry> table =
     {
         { YarnEnemyType::ChasePlayer,   75.0f, 2.0f, false, false },
@@ -33,6 +35,18 @@ void BossSpawner::Initialize(const Transform& transform)
         }
     };
 
+    for (auto& pattern : patterns)
+    {
+        for (auto& p : pattern.points)
+        {
+            BuildBag(p);
+        }
+    }
+
+    // 登場エフェクト用のコンポーネントを追加
+    spawnEffectComponent = this->AddComponent<class ParticleComponent>(parentName);
+    spawnEffectComponent->Load("./Data/Effect/Files/ScissorsGameCloudEffect.json");
+
 }
 
 
@@ -47,32 +61,69 @@ void BossSpawner::Update(float deltaTime)
 
     timer += deltaTime;
 
-    if (timer < interval) return;
-
-    timer = 0.0f;
-
-    auto& pattern = patterns[currentPattern];
-
-    for (auto& p : pattern.points)
+    if (timer >= interval)
     {
-        auto entry = SelectRandomEntry(p.table);
 
-        SpawnEnemy(
-            p.position,
-            entry.type,
-            entry.isBig,
-            entry.speed,
-            p.direction,
-            entry.isTied
-        );
+        timer = 0.0f;
+
+        auto& pattern = patterns[currentPattern];
+
+        for (auto& p : pattern.points)
+        {
+            //auto entry = SelectRandomEntry(p.table);
+            auto entry = DrawFromBag(p);
+
+            PendingSpawn ps;
+            ps.point = p;
+            ps.entry = entry;
+            ps.startTime = 0.0f;
+
+            pendingSpawns.push_back(ps);
+        }
+        // パターン切り替え
+        currentPattern++;
+        if (currentPattern >= patterns.size())
+        {
+            currentPattern = 0;
+        }
     }
 
-    // パターン切り替え
-    currentPattern++;
-    if (currentPattern >= patterns.size())
+
+    // --- 予約されたspawn処理 ---
+    for (auto& s : pendingSpawns)
     {
-        currentPattern = 0;
+        s.startTime += deltaTime;
+
+        // 予告
+        if (!s.previewed && s.startTime >= previewDelay)
+        {
+            SpawnPreviewEffect(s.point.position);
+            s.previewed = true;
+        }
+
+        // 実際の出現
+        if (!s.spawned && s.startTime >= previewDelay + spawnDelay)
+        {
+            SpawnEnemy(
+                s.point.position,
+                s.entry.type,
+                s.entry.isBig,
+                s.entry.speed,
+                s.point.direction,
+                s.entry.isTied
+            );
+
+            s.spawned = true;
+        }
     }
+
+    pendingSpawns.erase(
+        std::remove_if(pendingSpawns.begin(), pendingSpawns.end(),
+            [](const PendingSpawn& s)
+            {
+                return s.spawned;
+            }),
+        pendingSpawns.end());
 }
 
 // 敵の種類を選択する 重み付きのランダム
@@ -236,4 +287,52 @@ void BossSpawner::KillAllEnemies()
     }
 
     aliveEnemies.clear();
+}
+
+// 出現エフェクトを生成
+void BossSpawner::SpawnPreviewEffect(DirectX::XMFLOAT3 pos)
+{
+    if (spawnEffectComponent)
+    {
+        spawnEffectComponent->SetWorldLocationDirect(pos);
+        spawnEffectComponent->Play();
+    }
+}
+
+// 敵の生成の袋を生成する
+void BossSpawner::BuildBag(BossSpawnPoint& point)
+{
+    point.bag.clear();
+
+    const float scale = 1.0f; // ← 小さめ袋（超重要）
+
+    for (auto& e : point.table)
+    {
+        int count = std::max<int>(1, static_cast<int>(e.weight * scale));
+
+        for (int i = 0; i < count; i++)
+        {
+            point.bag.push_back(e);
+        }
+    }
+
+    std::shuffle(point.bag.begin(), point.bag.end(), std::mt19937{ std::random_device{}() });
+    point.bagIndex = 0;
+}
+
+// 袋から取り出す関数
+SpawnEntry BossSpawner::DrawFromBag(BossSpawnPoint& point)
+{
+    if (point.bag.empty())
+    {
+        BuildBag(point);
+    }
+
+    if (point.bagIndex >= point.bag.size())
+    {
+        std::shuffle(point.bag.begin(), point.bag.end(), rng);
+        point.bagIndex = 0;
+    }
+
+    return point.bag[point.bagIndex++];
 }

@@ -4,6 +4,7 @@
 #include "BossSpawner.h"
 #include "ButtonBombActor.h"
 #include "EnemyBase.h"
+#include "ItemHeartActor.h"
 #include "ScissorsPlayer1.h"
 #include "RabbitBossState.h"
 #include "ScissorsGameState.h"
@@ -20,10 +21,13 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/BossEnemy.glb", false, true);
     //skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameBossPS";
 
+    DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
+    // 玉止めの半径を設定する
+    tieableRadius = spawnAttackEnemyRange;
+
     // 当たり判定
     {
         collisionBoxComponent = this->AddComponent<BoxComponent>("boxComponent", parentName);
-        DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
         collisionBoxComponent->SetBoxExtent(size);
         collisionBoxComponent->SetStatic(true);
         collisionBoxComponent->SetMass(0.0f);
@@ -33,7 +37,6 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
         collisionBoxComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
         collisionBoxComponent->SetCollisionOffsetY(size.y * 0.5f);
         collisionBoxComponent->Initialize();
-
 #if 0
         sphereCollisionComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
@@ -51,6 +54,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
         sphereCollisionComponent->Initialize();
 #endif // 0
     }
+
 
     // 回転用コンポーネントを追加
     rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
@@ -110,7 +114,6 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     // 初期ステートを設定
     stateMachine_->ChangeState("Idle");
 
-
     // 出現ポイント
     spawnPoints =
     {
@@ -120,6 +123,9 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
         {11,0,2},
         {20,0,11}
     };
+
+    // 爆弾生成個数をリセットする
+    spawnCount = 0;
 }
 
 void RabbitBossEnemyActor::Update(float deltaTime)
@@ -176,6 +182,7 @@ void RabbitBossEnemyActor::Update(float deltaTime)
 
     // 出現範囲のデバック描画
     DebugRender::DrawSphere(pos, spawnAttackRange, { 1,0,0.5f,1 }, 0, true);
+    DebugRender::DrawSphere(pos, spawnAttackEnemyRange, { 0,1,0.5f,1 }, 0, true);
 }
 
 void RabbitBossEnemyActor::DrawImGuiDetails()
@@ -199,11 +206,10 @@ bool RabbitBossEnemyActor::IsStunned()
 // ダメージ処理計算
 float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext)
 {
-
     float damage = damageContext.baseDamage;
 
     if (damageContext.isBossStunned) // 20ダメージ
-        damage *= 2.0f;
+        damage *= 1.5f;
 
     if (damageContext.killedEnemyBeforeHitCount)    // 
     {
@@ -223,6 +229,15 @@ float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext
 void RabbitBossEnemyActor::SetRenderOpacity(float opacity)
 {
     skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor.w = opacity;
+}
+
+// 被ダメージ処理
+void RabbitBossEnemyActor::TakeDamage(const int damage)
+{
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
+
+    //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/boss_hit_se.wav");
+    hp -= damage;
 }
 
 void RabbitBossEnemyActor::OnTied()
@@ -279,21 +294,76 @@ void RabbitBossEnemyActor::EnlargeRandomEnemies(int count)
 
 void RabbitBossEnemyActor::CreteDamageZone()
 {
-    auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>();
-    if (!player)
+    DirectX::XMFLOAT3 pos = GetPosition();
+    // プレイヤーへのダメージ
     {
-        Logger::Warning(U8("playerがnullptrです！"));
+
+        auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>();
+        if (!player)
+        {
+            Logger::Warning(U8("playerがnullptrです！"));
+        }
+
+        DirectX::XMFLOAT3 playerPos = player->GetPosition();
+        playerPos.y = 0.0f;
+        pos.y = 0.0f;
+
+        float sumRadius = spawnAttackRange + player->radius;
+
+        if (MathHelper::Distance(playerPos, pos) < sumRadius)
+        {
+            player->TakeDamage(3);
+        }
     }
 
-    DirectX::XMFLOAT3 playerPos = player->GetPosition();
-    playerPos.y = 0.0f;
-    DirectX::XMFLOAT3 enemyPos = GetPosition();
-    enemyPos.y = 0.0f;
-
-    if (MathHelper::Distance(playerPos, enemyPos) < spawnAttackRange)
-    {
-        player->TakeDamage(3);
+    // 範囲内の敵への攻撃
+    std::vector<std::shared_ptr<ITieable>> candidates;
+    if (auto bossSpawner = GetOwnerScene()->GetActorManager()->GetActorOfType<BossSpawner>())
+    {// 
+        // 敵を集める
+        for (auto& w : bossSpawner->aliveEnemies)
+        {
+            if (auto e = w.lock())
+            {
+                if (!e->IsDead())
+                {
+                    candidates.push_back(e);
+                }
+            }
+        }
     }
+
+    int index = 0;
+
+    for (auto e : candidates)
+    {
+        auto actor = dynamic_cast<Actor*>(e.get());
+        if (!actor) continue;
+
+        auto enemyPos = actor->GetPosition();
+
+        float dx = enemyPos.x - pos.x;
+        float dz = enemyPos.z - pos.z;
+
+        float distanceSq = dx * dx + dz * dz;
+        float sumRadius = spawnAttackEnemyRange + e->GetRadius();
+        float radiusSq = sumRadius * sumRadius;
+
+        if (distanceSq <= radiusSq)
+        {
+            // 死亡
+            if (auto enemy = dynamic_cast<EnemyBase*>(actor))
+            {
+                enemy->OnTied();
+                enemy->ChangeEnemyState(EnemyBase::YarnState::Dead);
+                enemy->CallDeath(false); // 死亡演出開始処理
+                // 死亡演出に遅延を入れる
+                enemy->SetDelayBeforeKnockback(index * 0.08f);
+                index++;
+            }
+        }
+    }
+
 }
 
 // スタン状態に入る
@@ -312,6 +382,9 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
         return;
     }
 
+
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/drop_bomb1.wav", 1.5f);
+
     auto pos = GetPosition();
     const float spawnHeight = 3.0f;
 
@@ -323,8 +396,15 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
         {-1,0,-1}    // 左後
     };
 
-    for (auto& d : dirs)
+    std::shuffle(dirs.begin(), dirs.end(), rng);
+
+    // ハートをドロップさせるか
+    bool dropHeart = (spawnCount % 10 == 0);
+
+    // 先頭3つだけ使う
+    for (int i = 0; i < 3; i++)
     {
+        auto& d = dirs[i];
         // 距離をランダムにする
         float offset = MathHelper::RandomRange(1.5f, 3.5f);
 
@@ -346,16 +426,31 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
         DirectX::XMFLOAT3 spawnBombPos = pos;
         spawnBombPos.y += spawnHeight;
 
-        Transform bombTr(
+
+        Transform tr(
             spawnBombPos,
             DirectX::XMFLOAT3{ 0,0,0 },
             DirectX::XMFLOAT3{ 1,1,1 });
 
-        auto bombActor =
-            GetOwnerScene()->GetActorManager()
-            ->CreateAndRegisterActorWithTransform<ButtonBombActor>("bombActor", bombTr);
+        if (dropHeart && i == 0)
+        {
+            auto heart =
+                GetOwnerScene()->GetActorManager()
+                ->CreateAndRegisterActorWithTransform<ItemHeartActor>("heart", tr);
 
-        bombActor->LaunchTo(bombPos);
+            heart->LaunchTo(bombPos);
+        }
+        else
+        {
+            auto bomb =
+                GetOwnerScene()->GetActorManager()
+                ->CreateAndRegisterActorWithTransform<ButtonBombActor>("bomb", tr);
+
+            bomb->LaunchTo(bombPos);
+        }
+
+        spawnCount++;
+
     }
 
 

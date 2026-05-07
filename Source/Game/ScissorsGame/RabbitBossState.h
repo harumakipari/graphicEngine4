@@ -43,7 +43,7 @@ public:
 
 private:
     float attackTimer = 0.0f;
-    float attackTimerInterval = 6.0f; // 攻撃までのインターバル
+    float attackTimerInterval = 4.0f; // 攻撃までのインターバル
 };
 
 

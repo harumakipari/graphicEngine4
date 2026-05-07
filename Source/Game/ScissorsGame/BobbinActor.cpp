@@ -168,8 +168,6 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
     }
 
 
-
-
     auto boss = GetOwnerScene()->GetActorManager()->GetActorOfType<RabbitBossEnemyActor>();
     if (boss)
     {// ボスがいたら
@@ -189,14 +187,30 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
         float dz = enemyPos.z - center.z;
 
         float distanceSq = dx * dx + dz * dz;
-        float radiusSq = currentRadius * currentRadius;
+
+        float sumRadius = currentRadius + e->GetRadius();
+        float radiusSq = sumRadius * sumRadius;
 
         if (distanceSq <= radiusSq)
         {
             if (e->IsTied())
             {
+                if (auto boss = dynamic_cast<RabbitBossEnemyActor*>(actor))
+                {// ボスの場合
+#if 0
+                    BossDamageContext bossDamageContext = {};
+                    bossDamageContext.killedEnemyBeforeHitCount = 0;
+                    bossDamageContext.baseDamage = 10.0f;
+                    bossDamageContext.isBossStunned = boss->IsStunned();
+                    float damage = boss->ComputeDamage(bossDamageContext);
+#else
+                    float damage = 0.0f; 
+#endif // 0
+                    Logger::Log(U8("ボビンによる攻撃でボスに大ダメージ：") + std::to_string(damage));
+                    boss->TakeDamage(static_cast<int>(damage));
+                }
                 // すでに玉止めされている → 死亡
-                if (auto enemy = dynamic_cast<EnemyBase*>(actor))
+                else if (auto enemy = dynamic_cast<EnemyBase*>(actor))
                 {
                     enemy->ChangeEnemyState(EnemyBase::YarnState::Dead);
                     enemy->CallDeath(false); // 死亡演出開始処理

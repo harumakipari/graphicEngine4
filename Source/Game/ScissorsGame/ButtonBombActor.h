@@ -49,7 +49,7 @@ private:
 
     // 調整値
     float explodeRange = 2.5f; // 爆発影響範囲
-    float blinkDelay = 2.0f;     // 点滅が始まるまで
-    float explodeDelay = 3.0f;   // 爆発するまで
+    float blinkDelay = 0.3f;     // 点滅が始まるまで
+    float explodeDelay = 0.5f;   // 爆発するまで
 
 };

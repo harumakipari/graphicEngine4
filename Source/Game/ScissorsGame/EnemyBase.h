@@ -18,6 +18,11 @@ public:
     virtual ~ITieable() = default;
     virtual void OnTied() = 0;
     virtual bool IsTied() = 0;
+
+    // ”¼Œa‚ğ•Ô‚·
+    float GetRadius() const { return tieableRadius; }
+protected:
+    float tieableRadius = 1.0f; // ‹Ê~‚ß‚Å‚«‚é‘ÎÛ‚Ì”¼Œa
 };
 
 

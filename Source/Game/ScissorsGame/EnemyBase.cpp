@@ -727,6 +727,9 @@ void EnemyBase::SetUpVisual()
     skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameEnemyPS";
     skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
 
+    // ‹Ê~‚ß‚Ì”¼Œa‚ğİ’è‚·‚é
+    tieableRadius = skeletalMeshComponent->GetModelSize().x;
+
     // “–‚½‚è”»’è‚ğì¬‚·‚é
     CreateCollisionComponent();
 
@@ -806,6 +809,7 @@ void EnemyBase::ChangeSize(EnemyBase::YarnSize newSize)
         return;
     }
 
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_power_up.wav");
     yarnSize = newSize;
 
     // ‹Ê~‚ß‰ğœ

@@ -177,7 +177,10 @@ void RabbitBossStunState::Enter()
 {
     stunTimer = stunTimerInterval;
 
+    // スタンのモデルの見た目をオンにする
     enemy->stunModel->SetIsVisible(true);
+    // 当たり判定を有効にする
+    enemy->collisionBoxComponent->EnableCollision();
 }
 
 void RabbitBossStunState::Execute(float deltaTime)

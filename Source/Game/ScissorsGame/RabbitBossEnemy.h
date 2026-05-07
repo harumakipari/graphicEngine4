@@ -33,7 +33,7 @@ public:
     void SetRenderOpacity(float opacity);
 
     // 被ダメージ処理
-    void TakeDamage(const int damage) { hp -= damage; }
+    void TakeDamage(const int damage);
 
     // ボビンによって玉止めされた時
     void OnTied() override;
@@ -97,6 +97,8 @@ private:
     const float attackTimeInterval = 5.0f; // 攻撃の間隔
     float spawnAttackRange = 4.5f;// 出現時の攻撃範囲
 
+    float spawnAttackEnemyRange = 4.0f;// 出現時の攻撃範囲
+
 
     std::shared_ptr<UIImageComponent> gaugeFrameBackComponent;  // ボスHPゲージのスプライト描画
     std::shared_ptr<UIGaugeComponent> gaugeUi; // ボスHPのゲージUI
@@ -112,5 +114,9 @@ private:
     float baseY = 0.0f; // 開始位置
 
     bool spawnBomb = false; // 爆弾を発生させるかどうか
+    int spawnCount = 0; // 爆弾の生成個数を数える
+
+    std::mt19937 rng{ std::random_device{}() };
+
 };
 
