@@ -23,7 +23,6 @@ void SingleRigidBodyComponent::Initialize(physx::PxPhysics* physics)
     pxActor_ = physics->createRigidDynamic(transform);
     pxActor_->userData = shapeComponent_->GetOwner();    // Actor ‚Ö‚Ìƒ|ƒCƒ“ƒ^
 
-
     {
         //material_->setRestitution(0.0f);
         //material_->setDynamicFriction(1.0f);

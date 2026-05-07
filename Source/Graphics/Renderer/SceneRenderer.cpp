@@ -565,7 +565,6 @@ void SceneRenderer::Draw(ID3D11DeviceContext* immediateContext, const MeshCompon
                     case InterleavedGltfModel::RenderPass::Blend:
                         if (material.data.alphaMode == 2/*BLEND*/)
                         {
-                            RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF);
                             RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
                             passed = true;
                         }

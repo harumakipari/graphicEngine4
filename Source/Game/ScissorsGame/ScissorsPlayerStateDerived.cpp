@@ -239,7 +239,7 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
             traveled = std::min<float>(traveled, remainingDist);
 
             //remainingDist -= traveled;
-            remainingDist = dashDistance * 0.8f;
+            remainingDist = dashDistance/* * 0.8f*/;
 
             if (remainingDist < 0.01f)
             {

@@ -19,8 +19,8 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     std::string parentName = "SkeletonWarriorMeshComponent";
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/BossEnemy.glb", false, true);
-    //skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameBossPS";
+    skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/BossEnemyBlend.glb", false, true);
+    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameBossPS";
 
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
     // ‹Ê~‚ß‚Ì”¼Œa‚ğİ’è‚·‚é

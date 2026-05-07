@@ -434,7 +434,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     gBufferRenderTarget->Deactivate(immediateContext);
 
 
-    //GBufferDecalPass(immediateContext);
+    GBufferDecalPass(immediateContext);
 
 
     DirectX::XMFLOAT4X4 cameraView;
@@ -485,10 +485,17 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     }
 
 
+    ID3D11ShaderResourceView* shaderResourceViews[]
+    {
+        gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],  // normalMap w:objectType
+    };
+    // GBufferのobjectTypeを送る
+    immediateContext->PSSetShaderResources(25, 1, shaderResourceViews);
 
-
+    // フォワードレンダリング
     frameBuffer->Activate(immediateContext, gBufferRenderTarget->depthStencilView);
 
+#if 0
     RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
     RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_OFF);
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_FRONT);
@@ -500,6 +507,20 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     sceneRender.currentRenderPath = RenderPath::Forward;
     sceneRender.RenderBlend(immediateContext, queues.deferredBlend);
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
+#else
+    RenderState::BindBlendState(immediateContext, BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA);
+    RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON); // 今回だけ透明を書き込む
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_FRONT);
+    sceneRender.currentRenderPath = RenderPath::Forward;
+    sceneRender.RenderBlend(immediateContext, queues.deferredBlend);
+    ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
+
+    RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
+    sceneRender.currentRenderPath = RenderPath::Forward;
+    sceneRender.RenderBlend(immediateContext, queues.deferredBlend);
+    ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
+#endif // 0
+
 
 
     // 軌跡を描画する 今回のゲームで追加
@@ -700,6 +721,15 @@ void GameScene::SetUpActors()
 // デカールパス
 void GameScene::GBufferDecalPass(ID3D11DeviceContext* immediateContext)
 {
+    UINT viewportCount{ D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE };
+    D3D11_VIEWPORT cachedViewPorts[D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE];
+    Microsoft::WRL::ComPtr<ID3D11RenderTargetView> cachedRenderTargetView;
+    Microsoft::WRL::ComPtr<ID3D11DepthStencilView> cachedDepthStencilView;
+    viewportCount = D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE;
+    immediateContext->RSGetViewports(&viewportCount, cachedViewPorts);
+    immediateContext->OMGetRenderTargets(1, cachedRenderTargetView.ReleaseAndGetAddressOf(),
+        cachedDepthStencilView.ReleaseAndGetAddressOf());
+
     static constexpr int SceneCBVIndex = 1;
     static constexpr int GBufferSRVIndex = 0;
     static constexpr int SamplerStateIndex[5] = { 0, 1 , 2, 3, 4 };
@@ -747,7 +777,7 @@ void GameScene::GBufferDecalPass(ID3D11DeviceContext* immediateContext)
              gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],
              gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
             gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::PBR_VALUE)],
-            gBufferRenderTarget->depthStencilShaderResourceView,
+            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],
         };
         immediateContext->PSSetShaderResources(GBufferSRVIndex, _countof(shader_resource_views), shader_resource_views);
 
@@ -800,6 +830,11 @@ void GameScene::GBufferDecalPass(ID3D11DeviceContext* immediateContext)
         }
     }
 
+    immediateContext->RSSetViewports(viewportCount, cachedViewPorts);
+    immediateContext->OMSetRenderTargets(1, cachedRenderTargetView.GetAddressOf(), cachedDepthStencilView.Get());
+
+    cachedRenderTargetView.Reset();
+    cachedDepthStencilView.Reset();
 }
 
 // ステージをロードする

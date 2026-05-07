@@ -2,6 +2,7 @@
 #include "imageBasedLighting.hlsli"
 #include "BidirectionalReflectanceDistributionFunction.hlsli"
 #include "Lights.hlsli"
+#include "ModelType.hlsli"
 #include "ShaderFunctions.hlsli"
 
 #define BASE_COLOR_TEXTURE 0 
@@ -11,11 +12,29 @@
 #define OCCLUSION_TEXTURE 4 
 Texture2D<float4> materialTextures[5] : register(t1);
 
+Texture2D<float4> gBufferObjectType : register(t25);
+
 float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 {
+    // スクリーンUVを作成する
+    uint width, height;
+    gBufferObjectType.GetDimensions(width, height);
+
+    float2 screenUV = pin.position.xy / float2(width, height);
+
+    float4 objectTypeData =
+        gBufferObjectType.Sample(samplerStates[POINT], screenUV);
+
+    int objectType = (int) objectTypeData.w;
+
+    if (objectType == 10)
+    {
+        //return float4(0.58f, 0.58f, 0.58f, 1);
+    }
+
     const float GAMMA = 2.2;
     const MaterialConstants m = materials[material];
-    
+
     float4 baseColorFactor = m.pbrMetallicRoughness.baseColorFactor;
     const int baseColorTexture = m.pbrMetallicRoughness.basecolorTexture.index;
     
@@ -85,8 +104,7 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
         N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
     }
 
-  
-#if 1
+#if 0
     // 点光源の処理
     float3 pointDiffuse = 0;
     float3 pointSpecular = 0;
@@ -159,6 +177,8 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
             }
         }
     }
+#endif
+
     // 平行光源の処理
     float3 diffuse = 0;
     float3 specular = 0;
@@ -184,15 +204,14 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
             specular += Li * NoL * BrdfSpecularGgx(f0, f90, alphaRoughness, HoV, NoL, NoV, NoH);
         }
     }
-#endif
     
 
 #if 1   // 画像ベースの照明
     float3 iblDiffuse = IblRadianceLambertian(N, V, roughnessFactor, cDiff, f0) * iblIntensity;
     float3 iblSpecular = IblRadianceGgx(N, V, roughnessFactor, f0) * iblIntensity;
 #endif
-    float3 totalDiffuse = diffuse + pointDiffuse + iblDiffuse;
-    float3 totalSpecular = specular + pointSpecular + iblSpecular;
+    float3 totalDiffuse = diffuse + /*pointDiffuse +*/iblDiffuse;
+    float3 totalSpecular = specular + /*pointSpecular + */iblSpecular;
 
     totalDiffuse = lerp(totalDiffuse, totalDiffuse * occlusionFactor, occlusionStrength);
     totalSpecular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);

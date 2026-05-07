@@ -11,9 +11,9 @@ enum class SRV_SLOT :uint8_t
 {
     SCENE_COLOR = 0,
     COLOR,
-    PBR_VALUE,  // x:metallic y:occlusion z:roughness w:occlusionStrength
-    NORMAL,     // world normal
-    EMISSIVE,      // w 1:skymap 0:objects
+    PBR_VALUE,  // x:metallic y:roughness z:occlusion w:material type
+    NORMAL,     // world normal    w: Object Type
+    EMISSIVE,      // w:Flags
     POSITION,    // world position
 };
 

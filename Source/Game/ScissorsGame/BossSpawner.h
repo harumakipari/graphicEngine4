@@ -42,6 +42,14 @@ struct PendingSpawn
     bool spawned = false;
 };
 
+struct SpawnBagEntry
+{
+    YarnEnemyType type;
+    float speed;
+    bool isBig;
+    bool isRare;
+};
+
 class BossSpawner :public Actor
 {
 public:
@@ -78,6 +86,9 @@ private:
     // 出現エフェクトを生成
     void SpawnPreviewEffect(DirectX::XMFLOAT3 pos);
 
+    // 出現のバッグを生成する
+    void RefillSpawnBag();
+
     // 敵の生成の袋を生成する
     void BuildBag(BossSpawnPoint& point);
 
@@ -101,6 +112,8 @@ private:
     std::shared_ptr<ParticleComponent> spawnEffectComponent; // 出現エフェクト用コンポーネント
 
     std::vector<PendingSpawn> pendingSpawns;
+
+    std::vector<SpawnBagEntry> spawnBag;
 
     float previewDelay = 0.0f;  // 予告出るまで
     float spawnDelay = 1.0f;  // 予告→出現まで

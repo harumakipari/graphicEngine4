@@ -22,9 +22,8 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Player/ScissorsPlayer.gltf", false, true);
-    //skeletalMeshComponent->SetModel("./Data/TeamModels/Player/player.gltf", false, true);
     skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGamePlayerPS";
-
+    skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Player;
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());

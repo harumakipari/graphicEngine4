@@ -96,7 +96,6 @@ private:
     // デカールパス
     void GBufferDecalPass(ID3D11DeviceContext* immediateContext);
 
-
     void SpawnEnemy(
         const XMFLOAT3& pos,
         YarnEnemyType type,bool isBig,
@@ -151,7 +150,6 @@ private:
     Microsoft::WRL::ComPtr<ID3D11VertexShader> geometric_primitive_vertex_shader;
     Microsoft::WRL::ComPtr<ID3D11InputLayout> geometric_primitive_input_layout;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> geometric_primitive_pixel_shader;
-
 
 
 };

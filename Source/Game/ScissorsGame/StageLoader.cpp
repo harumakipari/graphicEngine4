@@ -13,9 +13,9 @@ StageData StageLoader::Load(STAGE_NAME stageId)
             // Wave1：横一列
           {
               {
-                  { {6,0,12}, YarnEnemyType::Static ,0.0f},
+                  { {8,0,12}, YarnEnemyType::Static ,0.0f},
                   { {12,0,12}, YarnEnemyType::Static ,0.0f},
-                  { {18,0,12}, YarnEnemyType::Static ,0.0f},
+                  { {16,0,12}, YarnEnemyType::Static ,0.0f},
               },
 
           },
@@ -23,10 +23,10 @@ StageData StageLoader::Load(STAGE_NAME stageId)
           // Wave2：直線
           {
               {
-                  { {3,0,0}, YarnEnemyType::MoveVertical,0.0f },
-                  { {9,0,0}, YarnEnemyType::MoveVertical,0.0f },
-                  { {15,0,24}, YarnEnemyType::MoveVertical,0.0f },
-                  { {21,0,24}, YarnEnemyType::MoveVertical,0.0f },
+                  { {6,0,0}, YarnEnemyType::MoveVertical,0.0f },
+                  { {10,0,0}, YarnEnemyType::MoveVertical,0.0f },
+                  { {14,0,24}, YarnEnemyType::MoveVertical,0.0f },
+                  { {18,0,24}, YarnEnemyType::MoveVertical,0.0f },
               },
               false,
               -1,
@@ -41,7 +41,7 @@ StageData StageLoader::Load(STAGE_NAME stageId)
               },
                false,
               -1,
-              6.0f,
+              5.0f,
           },
           // Wave4：ミッキー
         {

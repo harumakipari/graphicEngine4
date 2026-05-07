@@ -306,6 +306,55 @@ void BossSpawner::SpawnPreviewEffect(DirectX::XMFLOAT3 pos)
     }
 }
 
+// 出現のバッグを生成する
+void BossSpawner::RefillSpawnBag()
+{
+    spawnBag.clear();
+
+    // 15体 通常追跡
+    for (int i = 0; i < 15; i++)
+    {
+        spawnBag.push_back({
+            YarnEnemyType::ChasePlayer,
+            2.0f,
+            false,
+            false
+            });
+    }
+
+    // 2体 Rescue
+    for (int i = 0; i < 2; i++)
+    {
+        spawnBag.push_back({
+            YarnEnemyType::RescueEnemy,
+            3.0f,
+            false,
+            false
+            });
+    }
+
+    // 2体 Big
+    for (int i = 0; i < 2; i++)
+    {
+        spawnBag.push_back({
+            YarnEnemyType::ChasePlayer,
+            2.0f,
+            true,
+            false
+            });
+    }
+
+    // 1体 ハリネズミ
+    spawnBag.push_back({
+        YarnEnemyType::LongRangeAttack,
+        2.0f,
+        false,
+        false
+        });
+
+    std::shuffle(spawnBag.begin(), spawnBag.end(), rng);
+}
+
 // 敵の生成の袋を生成する
 void BossSpawner::BuildBag(BossSpawnPoint& point)
 {
