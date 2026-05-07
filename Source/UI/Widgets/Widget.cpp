@@ -131,7 +131,21 @@ void UIButtonComponent::Update(float dt)
     }
 
     UpdateVisual();
+
+    if (useHoverScale)
+    {
+        UpdateScale(dt);
+    }
 }
+
+void UIButtonComponent::UpdateScale(float deltaTime)
+{
+    currentScale = std::lerp(currentScale, targetScale, deltaTime * scaleSpeed);
+
+    scale = { currentScale,currentScale };
+
+}
+
 
 void UITextPopup::Update(float dt)
 {

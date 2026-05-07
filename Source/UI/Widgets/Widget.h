@@ -718,7 +718,11 @@ enum class UIButtonState :uint8_t
 class UIButtonComponent : public UIImageComponent
 {
 public:
-    UIButtonComponent(const std::string& filename, const std::string& name) :UIImageComponent(filename, name) {}
+    UIButtonComponent(const std::string& filename, const std::string& name) :UIImageComponent(filename, name)
+    {
+        hoverScale = 1.1f;
+        pressScale = 1.05f;
+    }
 
     UIButtonComponent(const std::string& name) :UIImageComponent(name) {}
 
@@ -732,6 +736,9 @@ public:
     {
         if (onClick) onClick();
     }
+
+    // かざしたときにスケールで大きくするかどうか
+    void SetUseHoverScale(bool useHoverScale) { this->useHoverScale = useHoverScale; }
 
 private:
     bool IsInside(const DirectX::XMFLOAT2& p) const
@@ -751,14 +758,33 @@ private:
     {
         switch (state)
         {
-        case UIButtonState::Normal:  color = CoreColor::White; break;
-        case UIButtonState::Hovered: color = CoreColor(0.8f, 0.8f, 0.8f, 1); break;
-        case UIButtonState::Pressed: color = CoreColor(0.8f, 0.8f, 0.8f, 1); break;
-        case UIButtonState::Selected: color = CoreColor(1.0f, 0.0f, 0.0f, 1); break;
+        case UIButtonState::Normal:
+            color = CoreColor::White;
+            targetScale = normalScale;
+            break;
+        case UIButtonState::Hovered:
+            color = CoreColor(0.8f, 0.8f, 0.8f, 1);
+            targetScale = hoverScale;
+            break;
+        case UIButtonState::Pressed:
+            targetScale = pressScale;
+            color = CoreColor(0.8f, 0.8f, 0.8f, 1);
+            break;
         }
     }
 
+    void UpdateScale(float deltaTime);
+public:
+    float normalScale = 1.0f;
+    float hoverScale = 1.1f;
+    float pressScale = 1.05f;
+    float scaleSpeed = 10.0f; // 補間速度
+
 private:
+    float currentScale = 1.0f;
+    float targetScale = 1.0f;
+    bool useHoverScale = false; // かざしたときにスケールで大きくするかどうか
+
     bool isSelected = false;
 };
 

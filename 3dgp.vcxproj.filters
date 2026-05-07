@@ -627,6 +627,15 @@
     <ClCompile Include="Source\Game\ScissorsGame\BossSpawner.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\ItemHeartActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\ScissorsUiEndActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\ResultScene.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -990,6 +999,9 @@
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsUiTimerActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\RabbitBossState.h" />
     <ClInclude Include="Source\Game\ScissorsGame\BossSpawner.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ItemHeartActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScissorsUiEndActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ResultScene.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -1257,6 +1269,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\ScissorsGameCoinPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ScissorsGameBlinkPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

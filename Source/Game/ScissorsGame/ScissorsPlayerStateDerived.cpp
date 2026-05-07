@@ -588,7 +588,7 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
 
 void ScissorsPlayerDashState::Exit()
 {
-    player->PlayAnimation("Idle", true, true, 0.5f);
+    player->PlayAnimation("Idle", true, true, 0.1f);
     player->characterMovementComponent->ResetSpeed(); // ダッシュが終わったら移動速度をリセットする
 
     player->debugDashCollisionColor = { 1,1,1,0 }; // デバッグ用にダッシュの当たり判定の色を変える　通常は透明で、攻撃中は赤くするなどして使用する

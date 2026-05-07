@@ -29,6 +29,8 @@
 #include "Physics/Physics.h"
 #include "Game/ScissorsGame/ScissorsPlayer1.h"
 #include "Game/ScissorsGame/ScissorsStage.h"
+#include "Game/ScissorsGame/ScissorsUiEndActor.h"
+#include "Game/ScissorsGame/ScissorsUIStartActor.h"
 #include "Game/ScissorsGame/ScissorsUiTimerActor.h"
 #include "Game/ScissorsGame/ScoreUiActor.h"
 #include "Game/ScissorsGame/WaveManagaer.h"
@@ -246,9 +248,14 @@ void GameScene::Start()
         break;
     }
 
+    auto uiStartActor= this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUIStartActor>("uiStartActor");
+
+    auto uiFinishActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiEndActor>("uiEndActor");
+
+
 #if 1
-    auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
-    waveManagerActor->SetWaves(stageId);
+    //auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
+    //waveManagerActor->SetWaves(stageId);
 #endif // 0
     // ƒV[ƒ“‚ªØ‚è‘Ö‚í‚Á‚½‚É
     SceneTransitionManager::Instance().NotifySceneChanged();

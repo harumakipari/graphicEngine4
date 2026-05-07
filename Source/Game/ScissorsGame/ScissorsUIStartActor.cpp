@@ -9,8 +9,8 @@ void ScissorsUIStartActor::Initialize(const Transform& transform)
 {
     auto uiManager = GetOwnerScene()->GetUIManager();
     targetPos = { 1920.0f * 0.5f, 1080.0f * 0.5f };
-    // 
-    readyImageComponent = std::make_shared<UIImageComponent>("./Data/Textures/UI/go.png", "ready_ui");
+
+    readyImageComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/go.png", "ready_ui");
     readyImageComponent->SetWorldPosition({ 0.0f, targetPos.y });
     readyImageComponent->SetVisible(true);
     readyImageComponent->SetScale({ 1.0f, 1.0f });
@@ -19,7 +19,7 @@ void ScissorsUIStartActor::Initialize(const Transform& transform)
     readyImageComponent->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,0.0f });
     uiManager->Add(readyImageComponent);
 
-    goImageComponent = std::make_shared<UIImageComponent>("./Data/Textures/UI/go.png", "go_ui");
+    goImageComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/go.png", "go_ui");
     goImageComponent->SetWorldPosition({ 1920.0f * 0.5f, 1080.0f * 0.5f });
     goImageComponent->SetVisible(true);
     goImageComponent->SetScale({ 1.0f, 1.0f });
@@ -32,7 +32,6 @@ void ScissorsUIStartActor::Initialize(const Transform& transform)
     easingPosition = std::make_shared<EasingRunner>();
     easingGoAlpha = std::make_shared<EasingRunner>();
     easingGoScale = std::make_shared<EasingRunner>();
-
 }
 
 void ScissorsUIStartActor::Update(float deltaTime)

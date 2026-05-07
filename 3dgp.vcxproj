@@ -330,6 +330,7 @@
     <ClCompile Include="Source\Game\ScissorsGame\NeedleEnemyActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\RabbitBossEnemy.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\RabbitBossState.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\ResultScene.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\RibbonWallActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsGameElasticMeshComponent.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsGameEnemyBaseActor.cpp" />
@@ -337,6 +338,7 @@
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsPlayer1.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsPlayerStateDerived.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsStage.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\ScissorsUiEndActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsUIStartActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsUiTimerActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScorePopupActor.cpp" />
@@ -499,6 +501,7 @@
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />
     <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ResultScene.h" />
     <ClInclude Include="Source\Game\Scenes\SampleScene.h" />
     <ClInclude Include="Source\Game\ScissorsGame\BobbinActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\BossSpawner.h" />
@@ -518,6 +521,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameElasticComponent.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameEnemyBaseActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameManager.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScissorsUiEndActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsUIStartActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameState.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayer1.h" />
