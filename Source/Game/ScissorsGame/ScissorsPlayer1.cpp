@@ -34,9 +34,11 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     //controller->AddAnimation("Run", 3);
 
     controller->AddAnimation("Idle", 0);
-    controller->AddAnimation("ChargeDash", 1);
-    controller->AddAnimation("Dash", 2);
-    controller->AddAnimation("Run", 3);
+    controller->AddAnimation("ChargeDash", 1);  // チャージ中
+    controller->AddAnimation("DashStart", 2);   // ダッシュ開始
+    controller->AddAnimation("Run", 3);     // 走り
+    controller->AddAnimation("DashEnd", 4);     // ダッシュ終わり
+    controller->AddAnimation("Dash", 5);    // ダッシュ中
 
     // アニメーションコントローラーを character に追加
     this->SetAnimationController(controller);

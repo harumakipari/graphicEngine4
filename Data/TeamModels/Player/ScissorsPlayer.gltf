@@ -27108,10 +27108,10 @@
   ],
   "images": [
     {
-      "uri": "C:\\Users\\2240225\\Downloads\\staystay.fbm/playerface.png"
+      "uri": "./playerface.png"
     },
     {
-      "uri": "C:\\Users\\2240225\\Downloads\\staystay.fbm/playerbody.png"
+      "uri": "./playerbody.png"
     }
   ],
   "materials": [

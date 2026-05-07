@@ -161,8 +161,11 @@ void ScissorsPlayerAttackingState::Exit()
 
 void ScissorsPlayerChargeDashState::Enter()
 {
-    // ダッシュアニメーションを再生
+    // チャージダッシュアニメーションを再生
     player->PlayAnimation("ChargeDash", false, true, 0.1f);
+
+    // アニメーションの速度を速くする
+    player->GetAnimationController()->SetAnimationRate(2.0f); 
 
     // チャージ音を再生する
     //player->chargeAudioComponent->Play();
@@ -388,6 +391,9 @@ void ScissorsPlayerChargeDashState::Exit()
     // チャージ音を止める
     player->chargeAudioComponent->Stop();
 
+    // アニメーションの速度を元に戻す
+    player->GetAnimationController()->SetAnimationRate(1.0f);
+
     // この次は絶対にダッシュステートに行くので、ここでは何もしない
 
 }
@@ -395,7 +401,7 @@ void ScissorsPlayerChargeDashState::Exit()
 void ScissorsPlayerDashState::Enter()
 {
     // ダッシュアニメーションを再生
-    player->PlayAnimation("Dash", false, true, 0.1f);
+    player->PlayAnimation("Dash", true, true, 0.2f);
 
     startPos = player->GetPosition();
     elapsedTime = 0.0f;
@@ -582,7 +588,7 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
 
 void ScissorsPlayerDashState::Exit()
 {
-    player->PlayAnimation("Idle", true, true, 0.1f);
+    player->PlayAnimation("Idle", true, true, 0.5f);
     player->characterMovementComponent->ResetSpeed(); // ダッシュが終わったら移動速度をリセットする
 
     player->debugDashCollisionColor = { 1,1,1,0 }; // デバッグ用にダッシュの当たり判定の色を変える　通常は透明で、攻撃中は赤くするなどして使用する
@@ -606,7 +612,7 @@ void ScissorsPlayerStunState::Enter()
 {
     stunTimer = 0.0f;
 
-    player->PlayAnimation("Idle", true, true);
+    player->PlayAnimation("Idle", true, true, 0.5f);
     player->characterMovementComponent->SetSpeed(0.0f);
 
     // ここでカメラシェイクやSEなどを入れる
