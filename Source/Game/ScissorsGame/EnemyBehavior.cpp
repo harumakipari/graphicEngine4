@@ -19,6 +19,7 @@ void LinearBehavior::Update(EnemyBase* e, float deltaTime)
     pos.x += moveDirection.x * speed * deltaTime;
     pos.z += moveDirection.z * speed * deltaTime;
 
+
     // ステージ端で反転
     if (pos.x < ScissorsGameState::stageMinX || pos.x > ScissorsGameState::stageMaxX)
     {

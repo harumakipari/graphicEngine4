@@ -767,6 +767,21 @@ DirectX::XMFLOAT3 ScissorsPlayer1::GetLookDirection() const
 // ダメージを受けたときの処理
 void ScissorsPlayer1::TakeDamage(int damage)
 {
+    if (damageCooldownTimer > 0.0f)
+    {// ダメージ後のクールタイムを設定する
+        return;
+    }
+
+    if (knockBackTimer > 0.0f)
+    {// ノックバック後のクールタイムを設定する
+        return;
+    }
+
+    if (postDashInvincibleTimer > 0.0f)
+    {// ダッシュ後のクールタイムを設定する
+        return;
+    }
+
     damageCooldownTimer = damageCooldownInterval; // 無敵時間を設定
 
     blinkTimer = 0.0f;     // 点滅リセット

@@ -212,7 +212,7 @@ StageData StageLoader::Load(int stageId)
 },
         };
         break;
-    case 3: // ハリネズミ敵ステージ
+    case 5: // ハリネズミ敵ステージ
         data.waves =
         {
 #if 1
@@ -371,7 +371,6 @@ StageData StageLoader::Load(int stageId)
         break;
 
     case 4:
-#if 1
         data.waves =
         {
            {
@@ -460,9 +459,8 @@ StageData StageLoader::Load(int stageId)
 
         };
 
-#endif // 0
         break;
-    case 5:
+    case 6: // ボスステージ
         data.waves =
         {
 

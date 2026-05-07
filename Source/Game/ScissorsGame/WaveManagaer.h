@@ -104,4 +104,7 @@ private:
 
     bool hasTriggeredLastSpawn = false;
 
+    bool hasBossStage = false;  // ボスステージかどうか
+    bool hasEndedGame = false;  // ゲームを終了終了条件を満たしているかどうか
+
 };
