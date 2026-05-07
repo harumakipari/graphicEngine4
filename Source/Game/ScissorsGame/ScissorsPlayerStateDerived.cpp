@@ -486,7 +486,7 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
 
 
 #endif // 0
-#if 1
+#if 0
     // “G‚ª‚¢‚é‚©‚Ç‚¤‚©‚Ì”»’è
     {
         XMFLOAT3 prevPos = currentPos;
@@ -538,6 +538,7 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
         segmentDuration = dist / 20.0f;
         segmentElapsed = 0.0f;
 
+#if 1
         // Œü‚«XV
         XMFLOAT3 dir =
         {
@@ -553,6 +554,8 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
             dir.z /= len;
             player->rotationComponent->SetDirection(dir);
         }
+#endif // 0
+
     }
 
 #if 0

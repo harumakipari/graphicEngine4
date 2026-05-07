@@ -4,5 +4,5 @@
 class StageLoader
 {
 public:
-    static StageData Load(int stageId);
+    static StageData Load(STAGE_NAME stageId);
 };

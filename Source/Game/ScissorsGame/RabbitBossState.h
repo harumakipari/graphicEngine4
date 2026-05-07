@@ -182,3 +182,25 @@ private:
     float stunTimer = 0.0f;
     float stunTimerInterval = 5.0f; // 何秒間スタンさせるか
 };
+
+// 死亡オブジェクト
+class RabbitBossDeathState : public RabbitBossStateBase
+{
+public:
+    // コンストラクタ
+    RabbitBossDeathState(RabbitBossEnemyActor* enemy) :RabbitBossStateBase(enemy) {}
+    // デストラクタ
+    virtual ~RabbitBossDeathState() = default;
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステートから出ていくときのメソッド
+    void Exit() override;
+    // ステート名を取得
+    const char* GetName() const override { return "Death"; }
+
+private:
+    float elapsedTime = 0.0f;   // 経過時間
+
+};

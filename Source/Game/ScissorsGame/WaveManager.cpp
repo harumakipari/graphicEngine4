@@ -3,6 +3,7 @@
 #include "BossSpawner.h"
 #include "EnemyBase.h"
 #include "RabbitBossEnemy.h"
+#include "ScissorsGameManager.h"
 #include "StageLoader.h"
 #include "WaveManagaer.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
@@ -20,44 +21,15 @@ void WaveManager::Initialize(const Transform& transform)
     spawnStates.clear();
     waveState = WaveState::Ready;
     startTimer = 0.0f;
-
-#if 0
-    float alignTime = 5.0f;
-
-    auto line = MakeDiagonalLine({ 3,0,3 }, { 0,0,1 }, 5, 2.0f);
-
-    for (int i = 0; i < line.size(); i++)
-    {
-        float randomSpeed = MathHelper::RandomRange(1.0f, 5.0f);
-        float spawnTime = i * 0.5f; // ← バラして出す
-
-        auto spawnPos = CalcAlignedSpawnPos(
-            line[i],        // 最終的に揃う位置
-            { 1,0,0 },        // 移動方向
-            randomSpeed,           // speed
-            spawnTime,
-            alignTime
-        );
-
-
-        // delay = spawnTime にする
-        SpawnEnemy(
-            spawnPos,
-            YarnEnemyType::MoveHorizontal,
-            randomSpeed,
-            { 1,0,0 }
-        );
-    }
-#endif // 0
+    hasBossStage = false;  // ボスステージかどうか
+    hasEndedGame = false;  // ゲームを終了終了条件を満たしているかどうか
 
     // 登場エフェクト用のコンポーネントを追加
     spawnEffectComponent = this->AddComponent<class ParticleComponent>(parentName);
     spawnEffectComponent->Load("./Data/Effect/Files/ScissorsGameCloudEffect.json");
-
-
 }
 
-void WaveManager::SetWaves(int stageId)
+void WaveManager::SetWaves(STAGE_NAME stageId)
 {
 #if 1
     auto stage = StageLoader::Load(stageId);
@@ -76,13 +48,16 @@ void WaveManager::SetWaves(int stageId)
         spawnStates.resize(waves[currentWave].spawns.size());
     }
 
+    // ボスステージかどうか
+    hasBossStage = stage.bossData.hasBoss;
+
     SpawnBossIfNeeded(stage);
 #endif // 0
 }
 
 void WaveManager::Update(float deltaTime)
 {
-  
+
     switch (waveState)
     {
     case WaveState::Ready:
@@ -95,6 +70,14 @@ void WaveManager::Update(float deltaTime)
 
     case WaveState::Spawning:
         UpdateSpawning(deltaTime);
+        break;
+
+    case WaveState::Finished:
+        // 通常ステージ
+        if (!hasBossStage && enemyCount == 0)
+        {
+            RequestGameClear();
+        }
         break;
     }
 
@@ -205,11 +188,11 @@ void WaveManager::UpdateSpawning(float deltaTime)
         }
         else
         {
-                shouldNext = true;
+            shouldNext = true;
         }
     }
 
-    if (allSpawned&&shouldNext)
+    if (allSpawned && shouldNext)
     {
         GoToNextWave();
     }
@@ -389,5 +372,25 @@ void WaveManager::SpawnBossIfNeeded(const StageData& stageData) const
         {
             spawner->KillAllEnemies();
         };
+
+}
+
+
+// ゲーム終了を通知する関数
+void WaveManager::RequestGameClear()
+{
+    if (hasEndedGame)
+        return;
+
+    hasEndedGame = true;
+
+    auto gameManager =
+        GetOwnerScene()->GetActorManager()
+        ->GetActorOfType<ScissorsGameManager>();
+
+    if (gameManager)
+    {
+        gameManager->EndGame();
+    }
 
 }

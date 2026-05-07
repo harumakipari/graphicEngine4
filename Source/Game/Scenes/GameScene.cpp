@@ -190,7 +190,7 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
             hr = CreateVsFromCSO(device, "./Shader/geometricPrimitiveVS.cso", geometric_primitive_vertex_shader.GetAddressOf(), geometric_primitive_input_layout.GetAddressOf(), input_element_desc, ARRAYSIZE(input_element_desc));
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-            hr=CreatePsFromCSO(device, "./Shader/geometricPrimitivePS.cso", geometric_primitive_pixel_shader.GetAddressOf());
+            hr = CreatePsFromCSO(device, "./Shader/geometricPrimitivePS.cso", geometric_primitive_pixel_shader.GetAddressOf());
             _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
             //	gbuffer decalシェーダー
@@ -221,42 +221,22 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 void GameScene::Start()
 {
     auto& param = SceneTransitionManager::Instance().GetParams();
-    int stageId = 1;
+    STAGE_NAME stage = STAGE_NAME::FIRST;
 
-    if (param.contains("stageId"))
+    if (param.contains("stage"))
     {
-        stageId = std::stoi(param.at("stageId"));
-    }
-    stageId = 3;
+        std::string stageName = param.at("stage");
 
-    auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
-    auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
-
-    switch (stageId)
-    {
-    case 5:
-        audioComp->SetSource(L"./Data/Sound/BGM1/boss_bgm.wav");
-        audioComp->SetLoop(true);
-        audioComp->Play();
-        audioComp->SetVolume(0.5f);
-        break;
-    default:
-        audioComp->SetSource(L"./Data/Sound/BGM1/game_bgm.wav");
-        audioComp->SetLoop(true);
-        audioComp->Play();
-        audioComp->SetVolume(0.5f);
-        break;
+        stage = StringToStageName(stageName);
     }
 
-    auto uiStartActor= this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUIStartActor>("uiStartActor");
+    LoadStage(stage);
+
+    auto uiStartActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUIStartActor>("uiStartActor");
 
     auto uiFinishActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiEndActor>("uiEndActor");
 
 
-#if 1
-    auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
-    waveManagerActor->SetWaves(stageId);
-#endif // 0
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
 
@@ -340,9 +320,7 @@ void GameScene::Update(float deltaTime)
             decal_datas.push_back(data);
         }
 #endif // 0
-
     }
-
 
     if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
     {
@@ -697,18 +675,6 @@ void GameScene::SetUpActors()
 
 #endif // 0
 #if  0
-    Transform bobbinTr(DirectX::XMFLOAT3{ 12.0f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
-    bobbin->SetBobbinSize(BobbinActor::BobbinSize::Big);
-#endif // 0
-#if  0
-    Transform bobbinTr(DirectX::XMFLOAT3{ 6.0f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
-    bobbin->SetBobbinSize(BobbinActor::BobbinSize::Big);
-
-    Transform bobbinTr1(DirectX::XMFLOAT3{ 18.0f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto bobbin1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr1);
-    bobbin1->SetBobbinSize(BobbinActor::BobbinSize::Big);
 
     //Transform bobbinTr(DirectX::XMFLOAT3{ 4.5f,0.0f,19.5f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     //auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
@@ -719,72 +685,15 @@ void GameScene::SetUpActors()
     //bobbin1->SetBobbinSize(BobbinActor::BobbinSize::Medium);
 #endif // 0
 
-    //Transform bombTr(DirectX::XMFLOAT3{ 10.5f,0.0f,4.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    //auto bomb = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonBombActor>("BombActor", bombTr);
-
-    //Transform bombTr(DirectX::XMFLOAT3{ 10.5f,0.0f,4.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    //auto bomb = this->GetActorManager()->CreateAndRegisterActorWithTransform<ItemHeartActor>("HeartItemActor", bombTr);
-
-#if 0
-    Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-    auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr);
-
-    Transform coinTr1(DirectX::XMFLOAT3{ 13.5f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-    auto coin1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr1);
-
-    Transform coinTr2(DirectX::XMFLOAT3{ 12.0f,0.0f,13.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-    auto coin2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr2);
-
-    Transform coinTr3(DirectX::XMFLOAT3{ 12.0f,0.0f,10.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-    auto coin3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr3);
-#endif // 0
+    // ゲームマネージャーを生成
     Transform gameManagerTransform(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto gameManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsGameManager>("gameManagerActor", gameManagerTransform);
     gameManagerActor->StartGame();
 
-    Transform timerActorTransform(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto scissorsUiTimeActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiTimerActor>("timeActor", timerActorTransform);
+    //Transform timerActorTransform(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    //auto scissorsUiTimeActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiTimerActor>("timeActor", timerActorTransform);
 
     //SpawnEnemy({ 10.5f,0,5 }, YarnEnemyType::Static,true);
-#if 0
-    SpawnEnemy({ 8,0,5 }, YarnEnemyType::Static);
-    SpawnEnemy({ 10,0,5 }, YarnEnemyType::Static);
-    SpawnEnemy({ 12,0,5 }, YarnEnemyType::Static);
-    SpawnEnemy({ 15,0,5 }, YarnEnemyType::Static);
-    SpawnEnemy({ 18,0,5 }, YarnEnemyType::Static);
-
-
-    SpawnBigEnemy({ 5,0,8 }, YarnEnemyType::Static);
-    SpawnEnemy({ 5,0,10 }, YarnEnemyType::Static);
-    SpawnEnemy({ 5,0,12 }, YarnEnemyType::Static);
-    SpawnEnemy({ 5,0,15 }, YarnEnemyType::Static);
-    SpawnEnemy({ 5,0,18 }, YarnEnemyType::Static);
-
-
-
-    SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveHorizontal);
-    SpawnEnemy({ 10,0,5 }, YarnEnemyType::MoveVertical);
-    //SpawnEnemy({ 0,0,0 }, YarnEnemyType::MoveToCenter);
-    SpawnEnemy({ 0,0,12 }, YarnEnemyType::MoveToCenter);
-    SpawnEnemy({ 12,0,0 }, YarnEnemyType::MoveToCenter);
-    SpawnEnemy({ 12,0,12 }, YarnEnemyType::MoveToCenter);
-    //SpawnEnemy({ 0,0,0 }, YarnEnemyType::WaveHorizontal);
-    //SpawnEnemy({ 12,0,0 }, YarnEnemyType::WaveHorizontal);
-    //SpawnEnemy({ 0,0,12 }, YarnEnemyType::WaveVertical);
-    //SpawnEnemy({ 12,0,0 }, YarnEnemyType::WaveVertical);
-
-    SpawnEnemy({ 6,0,8 }, YarnEnemyType::Static);
-    //SpawnEnemy({ 12,0,12 }, YarnEnemyType::ChasePlayer);
-    //SpawnEnemy({ 12,0,11 }, YarnEnemyType::ChasePlayer);
-    //SpawnEnemy({ 12,0,10 }, YarnEnemyType::ChasePlayer);
-    //SpawnBigEnemy({ 12,0,5 }, YarnEnemyType::ChasePlayer);
-    SpawnEnemy({ 3,0,6 }, YarnEnemyType::Static);
-    SpawnEnemy({ 9,0,6 }, YarnEnemyType::Static);
-    SpawnEnemy({ 0,0,8 }, YarnEnemyType::MoveVertical);
-    SpawnEnemy({ 12,0,11 }, YarnEnemyType::MoveVertical);
-    SpawnBigEnemy({ 4,0,11 }, YarnEnemyType::MoveHorizontal);
-    SpawnBigEnemy({ 8,0,11 }, YarnEnemyType::MoveHorizontal);
-#endif // 1
 
 }
 
@@ -889,11 +798,131 @@ void GameScene::GBufferDecalPass(ID3D11DeviceContext* immediateContext)
                 decal_cube->Render(world, decal.color);
             }
         }
-
-
-
     }
 
+}
+
+// ステージをロードする
+void GameScene::LoadStage(STAGE_NAME stageId)
+{
+#if 1
+    auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
+    waveManagerActor->SetWaves(stageId);
+#endif // 0
+
+    SpawnStageGimmicks(stageId);
+
+    SetupBGM(stageId);
+
+}
+
+// ステージごとのギミック生成
+void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
+{
+    switch (stageId)
+    {
+    case STAGE_NAME::TUTORIAL:
+        break;
+    case STAGE_NAME::FIRST:
+        break;
+    case STAGE_NAME::BOBBIN_FIRST:
+    {
+        Transform bobbinTr(DirectX::XMFLOAT3{ 12.0f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
+        bobbin->SetBobbinSize(BobbinActor::BobbinSize::Big);
+    }
+    break;
+    case STAGE_NAME::REFLECT_WALL:
+    {
+#if 0
+        Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr);
+
+        Transform coinTr1(DirectX::XMFLOAT3{ 13.5f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto coin1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr1);
+
+        Transform coinTr2(DirectX::XMFLOAT3{ 12.0f,0.0f,13.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto coin2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr2);
+
+        Transform coinTr3(DirectX::XMFLOAT3{ 12.0f,0.0f,10.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto coin3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr3);
+#endif // 0
+    }
+    break;
+    case STAGE_NAME::BOBBIN_SECOND:
+        break;
+    case STAGE_NAME::DIFFICULT:
+        break;
+    case STAGE_NAME::BOSS:
+    {
+        Transform bobbinTr(DirectX::XMFLOAT3{ 6.0f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
+        bobbin->SetBobbinSize(BobbinActor::BobbinSize::Big);
+
+        Transform bobbinTr1(DirectX::XMFLOAT3{ 18.0f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+        auto bobbin1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr1);
+        bobbin1->SetBobbinSize(BobbinActor::BobbinSize::Big);
+    }
+    break;
+    }
+
+}
+
+// ステージごとのBGMを設定する
+void GameScene::SetupBGM(STAGE_NAME stageId)
+{
+    auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
+    auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
+
+    switch (stageId)
+    {
+    case STAGE_NAME::TUTORIAL:
+    case STAGE_NAME::FIRST:
+    case STAGE_NAME::BOBBIN_FIRST:
+    case STAGE_NAME::REFLECT_WALL:
+    case STAGE_NAME::BOBBIN_SECOND:
+    case STAGE_NAME::DIFFICULT:
+        audioComp->SetSource(L"./Data/Sound/BGM1/game_bgm.wav");
+        audioComp->SetLoop(true);
+        audioComp->Play();
+        audioComp->SetVolume(0.5f);
+        break;
+    case STAGE_NAME::BOSS:
+        audioComp->SetSource(L"./Data/Sound/BGM1/boss_bgm.wav");
+        audioComp->SetLoop(true);
+        audioComp->Play();
+        audioComp->SetVolume(0.5f);
+        break;
+    }
+
+
+}
+
+// STAGE_NAMEを変換する関数
+STAGE_NAME GameScene::StringToStageName(const std::string& name)
+{
+    if (name == "TUTORIAL")
+        return STAGE_NAME::TUTORIAL;
+
+    if (name == "FIRST")
+        return STAGE_NAME::FIRST;
+
+    if (name == "BOBBIN_FIRST")
+        return STAGE_NAME::BOBBIN_FIRST;
+
+    if (name == "REFLECT_WALL")
+        return STAGE_NAME::REFLECT_WALL;
+
+    if (name == "BOBBIN_SECOND")
+        return STAGE_NAME::BOBBIN_SECOND;
+
+    if (name == "DIFFICULT")
+        return STAGE_NAME::DIFFICULT;
+
+    if (name == "BOSS")
+        return STAGE_NAME::BOSS;
+
+    return STAGE_NAME::FIRST;
 }
 
 
@@ -981,7 +1010,7 @@ void GameScene::SpawnEnemy(
     }
 
     Transform tr(pos, { 0,180,0 }, scale);
-    auto enemy =GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemy", tr);
+    auto enemy = GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemy", tr);
     enemy->SetMoveDirection(dir);
 
     auto size = isBig ? EnemyBase::Big : EnemyBase::Small;

@@ -16,6 +16,7 @@
 #include "Game/Actors/Player/Player.h"
 #include "Game/ScissorsGame/NeedleEnemyActor.h"
 #include "Game/ScissorsGame/ScoreCalculator.h"
+#include "Game/ScissorsGame/StageData.h"
 #include "Game/ScissorsGame/YarnEnemyActor.h"
 
 
@@ -80,6 +81,18 @@ public:
     static inline Scene::Autoenrollment<GameScene> _autoenrollment;
 
 private:
+    // ステージをロードする
+    void LoadStage(STAGE_NAME stageId);
+
+    // ステージごとのギミック生成
+    void SpawnStageGimmicks(STAGE_NAME stageId);
+
+    // ステージごとのBGMを設定する
+    void SetupBGM(STAGE_NAME stageId);
+
+    // STAGE_NAMEを変換する関数
+    STAGE_NAME StringToStageName(const std::string& name);
+
     // デカールパス
     void GBufferDecalPass(ID3D11DeviceContext* immediateContext);
 

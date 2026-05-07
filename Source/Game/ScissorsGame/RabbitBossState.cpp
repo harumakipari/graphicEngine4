@@ -194,6 +194,32 @@ void RabbitBossStunState::Execute(float deltaTime)
 
 void RabbitBossStunState::Exit()
 {
-    enemy->stunModel->SetIsVisible(false);;
+    enemy->stunModel->SetIsVisible(false);
+}
+
+
+// Ž€–S
+void RabbitBossDeathState::Enter()
+{
+    enemy->collisionBoxComponent->DisableCollision();
+    elapsedTime = 0.0f;
+    // ƒ{ƒX‚ªŽ€–S‚µ‚½‚çŒÄ‚Ôˆ—  ˆêƒtƒŒ[ƒ€‚Ì‚Ý
+    enemy->StartDeathPerform();
+}
+
+void RabbitBossDeathState::Execute(float deltaTime)
+{
+    enemy->UpdateDead(deltaTime);
+
+    elapsedTime += deltaTime;
+
+    if (elapsedTime >= 5.0f)
+    {
+        enemy->EndDeathPerform();
+    }
+}
+
+void RabbitBossDeathState::Exit()
+{
 }
 

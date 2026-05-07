@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "StageLoader.h"
 
-StageData StageLoader::Load(int stageId)
+StageData StageLoader::Load(STAGE_NAME stageId)
 {
     StageData data;
 
     switch (stageId)
     {
-    case 1:
+    case STAGE_NAME::FIRST:
 
         data.waves = {
             // Wave1：横一列
@@ -103,7 +103,7 @@ StageData StageLoader::Load(int stageId)
 
         break;
 
-    case 2: // 中央糸巻ステージ
+    case STAGE_NAME::BOBBIN_FIRST: // 中央糸巻ステージ
         data.waves = {
           {
               {
@@ -212,7 +212,7 @@ StageData StageLoader::Load(int stageId)
 },
         };
         break;
-    case 5: // ハリネズミ敵ステージ
+    case STAGE_NAME::DIFFICULT: // ハリネズミ敵ステージ
         data.waves =
         {
 #if 1
@@ -370,211 +370,49 @@ StageData StageLoader::Load(int stageId)
         };
         break;
 
-    case 4:
+    case STAGE_NAME::BOBBIN_SECOND:
         data.waves =
         {
            {
                 // Wave 1
                 {
-                    { { 5,0,5 },  YarnEnemyType::LongRangeAttack, 0.0f,true },
-                    { { 8,0,5 },  YarnEnemyType::ChasePlayer, 0.0f},
-                    { { 10,0,5 }, YarnEnemyType::ChasePlayer, 0.0f ,true},
-                    { { 12,0,5 }, YarnEnemyType::ChasePlayer, 0.0f },
-                    { { 15,0,5 }, YarnEnemyType::WaveHorizontal, 0.0f,true },
-                    { { 18,0,5 }, YarnEnemyType::WaveVertical, 0.0f },
-    #if 0
+                    { { 10.5,0,11 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{-1,0,-1}},
+                    { { 10.5,0,12 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{-1,0,-1}},
+                    { { 12,0,11 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{-1,0,-1}},
 
-                    { {  5,0,8 }, YarnEnemyType::LongRangeAttack, 0.0f },
-                    { { 5,0,10 }, YarnEnemyType::ChasePlayer, 0.0f },
-                    { { 5,0,12 }, YarnEnemyType::WaveHorizontal, 0.0f },
-                    { { 5,0,15 }, YarnEnemyType::WaveVertical, 0.0f },
-                    { { 5,0,18 }, YarnEnemyType::RescueEnemy, 0.0f },
+                    { { 1,0,23 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{0,0,-1}},
+                    { { 2.5,0,23 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{0,0,-1}},
+                    { { 4,0,23 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{0,0,-1}},
 
-                    #endif // 0
                 },
                 false,
-               1,
+               -1,0.0f,true
             },
+           {
+               // Wave 1
+               {
+                   { { 11,0,11 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{-1,0,-1}},
+                   { { 11,0,12 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{-1,0,-1}},
+                   { { 12,0,11 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{-1,0,-1}},
 
-            {
-                // Wave 
-        {
-
-                                            { { 18,0,5 },  YarnEnemyType::Static, 0.0f },
-                            { { 15,0,7 },  YarnEnemyType::Static, 0.3f },
-                            { { 12,0,10 }, YarnEnemyType::RescueEnemy, 0.5f },
-                            { { 10,0,12 }, YarnEnemyType::Static, 0.8f },
-                            { { 7,0,15 }, YarnEnemyType::Static, 1.2f },
-                            { { 5,0,18 }, YarnEnemyType::RescueEnemy, 1.5f },
-
-            #if 0
-                    { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
-                    { { 7,0,7 },  YarnEnemyType::Static, 0.3f },
-                    { { 10,0,10 }, YarnEnemyType::Static, 0.5f },
-                    { { 12,0,12 }, YarnEnemyType::Static, 0.8f },
-                    { { 15,0,15 }, YarnEnemyType::Static, 1.2f },
-                    { { 18,0,18 }, YarnEnemyType::Static, 1.5f },
-
-                    #endif // 0
-                },
-                        false
-                    },
-
-                    {
-                        // Wave 3
-                        {
-                            { {21,0,11}, YarnEnemyType::MoveHorizontal, 1.0f },
-                            { {19,0,12}, YarnEnemyType::MoveHorizontal, 1.5f },
-                            { {21,0,13}, YarnEnemyType::MoveHorizontal, 1.0f },
-                        },
-                        false
-                    },
-                    {
-                        // Wave 
-                        {
-                            { {0,0,4}, YarnEnemyType::MoveHorizontal, 1.0f },
-                            { {1,0,5}, YarnEnemyType::MoveHorizontal, 1.5f },
-                            { {0,0,6}, YarnEnemyType::MoveHorizontal, 1.0f },
-                            //{ { 5,0,5 },  YarnEnemyType::Static, 0.0f },
-                    //{ { 7,0,7 },  YarnEnemyType::Static, 0.3f },
-                    //{ { 10,0,10 }, YarnEnemyType::Static, 0.5f },
-
-                        },
-                        false
-                    },
-
-#if 0
-                                    {
-                // Wave 3
-                {
-                    { {14,0,21}, YarnEnemyType::MoveVertical, 1.0f },
-                    { {16,0,21}, YarnEnemyType::MoveVertical, 1.0f },
-                    { {4,0,0}, YarnEnemyType::MoveVertical, 1.5f },
-                    { {6,0,0}, YarnEnemyType::MoveVertical, 1.5f },
-                },
-                false
-            },
-
-        #endif // 0
-
+               },
+               false,
+              -1,7.0f,true
+           },
         };
 
         break;
-    case 6: // ボスステージ
+    case STAGE_NAME::BOSS: // ボスステージ
         data.waves =
         {
 
         };
 
         data.bossData.hasBoss = true;
-        data.bossData.position = { 10.5f, 0.0f, 12.7f };
+        data.bossData.position = { 12.0f, 0.0f, 12.0f };
         break;
     }
 
     return data;
 }
 
-//
-//// Wave2：少し離す
-//{
-//    {
-//        { {5, 0, 21}, YarnEnemyType::MoveVertical, 2.0f, true },
-//        { {8,0,0}, YarnEnemyType::MoveVertical,2.0f , },
-//        { {12,0,21}, YarnEnemyType::MoveVertical,2.0f, },
-//        { {15,0,0}, YarnEnemyType::MoveVertical,2.0f,true },
-//    },
-//
-//          },
-//
-//    // Wave3：溜めさせる
-//          {
-//              {
-//                  { {5,0,11}, YarnEnemyType::MoveHorizontal,5.0f, },
-//                  { {7,0,12}, YarnEnemyType::MoveHorizontal,5.0f,true },
-//                  { {9,0,10}, YarnEnemyType::MoveHorizontal,5.0f,true },
-//                  { {6,0,9}, YarnEnemyType::MoveHorizontal,5.0f,  },
-//              },
-//
-//          },
-//
-//          // Wave4：急かす
-//          {
-//              {
-//                  { {5,0,5},YarnEnemyType::ChasePlayer ,2.0f,true },
-//                  { {7,0,5}, YarnEnemyType::ChasePlayer,3.0f, },
-//                  { {9,0,5}, YarnEnemyType::ChasePlayer,4.0f, },
-//                  { {6,0,7}, YarnEnemyType::ChasePlayer,5.0f,true },
-//                  { {10,0,10}, YarnEnemyType::ChasePlayer,6.0f,  },
-//              },
-//
-//          },
-//
-//          // Wave 1
-//          {
-//              {
-//              { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
-//              { { 8,0,5 },  YarnEnemyType::WaveVertical, 0.0f,true },
-//              { { 10,0,5 }, YarnEnemyType::Static, 0.0f ,true},
-//              { { 12,0,5 }, YarnEnemyType::Static, 0.0f },
-//              { { 15,0,5 }, YarnEnemyType::WaveHorizontal, 0.0f },
-//              { { 18,0,5 }, YarnEnemyType::WaveVertical, 0.0f },
-//
-//              { {  5,0,8 }, YarnEnemyType::LongRangeAttack, 0.0f },
-//              { { 5,0,10 }, YarnEnemyType::ChasePlayer, 0.0f },
-//              { { 5,0,12 }, YarnEnemyType::WaveHorizontal, 0.0f },
-//              { { 5,0,15 }, YarnEnemyType::WaveVertical, 0.0f },
-//              { { 5,0,18 }, YarnEnemyType::RescueEnemy, 0.0f },
-//
-//          },
-//          false,
-//          },
-//          {
-//              // Wave 2（ちょい圧）
-//      {
-//                  // 左上　から　右下
-//                                          { { 18,0,5 },  YarnEnemyType::Static, 0.0f },
-//                          { { 15,0,7 },  YarnEnemyType::LongRangeAttack, 0.3f },
-//                          { { 12,0,10 }, YarnEnemyType::RescueEnemy, 0.5f },
-//                          { { 10,0,12 }, YarnEnemyType::Static, 0.8f },
-//                          { { 7,0,15 }, YarnEnemyType::Static, 1.2f },
-//                          { { 5,0,18 }, YarnEnemyType::RescueEnemy, 1.5f },
-//
-//                          // 右上　から　左下
-//                  { { 5,0,5 },  YarnEnemyType::Static, 0.0f },
-//                  { { 7,0,7 },  YarnEnemyType::Static, 0.3f },
-//                  { { 10,0,10 }, YarnEnemyType::Static, 0.5f },
-//                  { { 12,0,12 }, YarnEnemyType::Static, 0.8f },
-//                  { { 15,0,15 }, YarnEnemyType::Static, 1.2f },
-//                  { { 18,0,18 }, YarnEnemyType::Static, 1.5f },
-//
-//              },
-//          },
-//                  {
-//                      // Wave 3（追い込み）
-//                      {
-//                          { {21,0,11}, YarnEnemyType::MoveHorizontal, 4.0f },
-//                          { {19,0,12}, YarnEnemyType::MoveHorizontal, 3.5f },
-//                          { {21,0,13}, YarnEnemyType::MoveHorizontal, 4.0f },
-//                      },
-//                      false
-//                  },
-//                  {
-//                      // Wave 3（追い込み）
-//                      {
-//                          { {0,0,4}, YarnEnemyType::MoveHorizontal, 4.0f },
-//                          { {1,0,5}, YarnEnemyType::MoveHorizontal, 3.5f },
-//                          { {0,0,6}, YarnEnemyType::MoveHorizontal, 4.0f },
-//                      },
-//                      false
-//                  },
-//
-//                  {
-//                      // Wave 3（追い込み）
-//                      {
-//                          { {14,0,21}, YarnEnemyType::MoveVertical, 4.0f },
-//                          { {16,0,21}, YarnEnemyType::MoveVertical, 4.0f },
-//                          { {4,0,0}, YarnEnemyType::MoveVertical, 4.5f },
-//                          { {6,0,0}, YarnEnemyType::MoveVertical, 4.5f },
-//                      },
-//                      false,
-//                  }

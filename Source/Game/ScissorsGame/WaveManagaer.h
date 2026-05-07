@@ -22,7 +22,7 @@ public:
     void Initialize(const Transform& transform)override;
 
     // 指定したステージのウェーブを設定
-    void SetWaves(int stageId);
+    void SetWaves(STAGE_NAME stageId);
 
     void Update(float deltaTime)override;
 
@@ -39,6 +39,7 @@ private:
     // 次のwaveに行くときの処理
     void GoToNextWave();
 
+    // 敵を生成する
     void SpawnEnemy(
         const DirectX::XMFLOAT3& pos,
         YarnEnemyType type, bool isBig,
@@ -52,7 +53,6 @@ private:
 
     // 出現エフェクトを生成
     void SpawnPreviewEffect(DirectX::XMFLOAT3 pos);
-
 
     // 敵が死んだときに呼ぶ関数として登録する関数
     void OnDeath(EnemyBase* enemy)
@@ -79,6 +79,8 @@ private:
     // 必要ならボスを生成する
     void SpawnBossIfNeeded(const StageData& stageData) const;
 
+    // ゲーム終了を通知する関数
+    void RequestGameClear();
 public:
     std::vector<std::weak_ptr<EnemyBase>> aliveEnemies; // 生き残っている敵
 

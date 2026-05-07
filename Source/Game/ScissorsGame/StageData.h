@@ -1,6 +1,17 @@
 #pragma once
 #include "EnemyScoreData.h"
 
+enum class STAGE_NAME :int
+{
+    TUTORIAL = 0,
+    FIRST,
+    BOBBIN_FIRST,
+    REFLECT_WALL,
+    BOBBIN_SECOND,
+    DIFFICULT,
+    BOSS,
+};
+
 struct SpawnData
 {
     DirectX::XMFLOAT3 position;
