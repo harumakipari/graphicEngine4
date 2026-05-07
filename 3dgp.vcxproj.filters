@@ -1274,6 +1274,9 @@
     <FxCompile Include="Shader\ScissorsGameBlinkPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\GBufferDecalPrimitivePS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ComputeParticle.hlsli">
@@ -1358,6 +1361,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shader\Trail.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\GBufferDecalConstantBuffer.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shader\GBufferDecalPrimitive.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

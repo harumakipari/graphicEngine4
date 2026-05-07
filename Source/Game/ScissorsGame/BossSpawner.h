@@ -20,7 +20,6 @@ struct BossSpawnPoint
 {
     DirectX::XMFLOAT3 position;
     DirectX::XMFLOAT3 direction;
-    std::vector<SpawnEntry> table;
 
     std::vector<SpawnEntry> bag;
     int bagIndex = 0;
@@ -31,17 +30,6 @@ struct BossSpawnPattern
     std::vector<BossSpawnPoint> points;
 };
 
-struct PendingSpawn
-{
-    BossSpawnPoint point;
-    SpawnEntry entry;
-
-    float startTime = 0.0f;
-
-    bool previewed = false;
-    bool spawned = false;
-};
-
 struct SpawnBagEntry
 {
     YarnEnemyType type;
@@ -49,6 +37,18 @@ struct SpawnBagEntry
     bool isBig;
     bool isRare;
 };
+
+struct PendingSpawn
+{
+    BossSpawnPoint point;
+    SpawnBagEntry entry;
+
+    float startTime = 0.0f;
+
+    bool previewed = false;
+    bool spawned = false;
+};
+
 
 class BossSpawner :public Actor
 {
@@ -63,14 +63,11 @@ public:
     void Activate() { isActive = true; }
 
     // 敵出現を終了する
-    void Dactivate() { isActive = false; }
+    void Deactivate() { isActive = false; }
 
     // 生き残っている敵を全て死亡させる
     void KillAllEnemies();
 private:
-    // 敵の種類を選択する 重み付きのランダム
-    SpawnEntry  SelectRandomEntry(const std::vector<SpawnEntry>& table);
-
     // 敵を出現させる
     void SpawnEnemy(
         const DirectX::XMFLOAT3& pos,
@@ -86,14 +83,12 @@ private:
     // 出現エフェクトを生成
     void SpawnPreviewEffect(DirectX::XMFLOAT3 pos);
 
-    // 出現のバッグを生成する
+    // 敵の生成の袋を生成する
     void RefillSpawnBag();
 
-    // 敵の生成の袋を生成する
-    void BuildBag(BossSpawnPoint& point);
-
     // 袋から取り出す関数
-    SpawnEntry DrawFromBag(BossSpawnPoint& point);
+    SpawnBagEntry PopSpawn();
+
 public:
     std::vector<std::weak_ptr<EnemyBase>> aliveEnemies; //　生き残っている敵
 

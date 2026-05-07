@@ -1,5 +1,6 @@
 #pragma once
 #include "EnemyScoreData.h"
+#include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Components/Controller/ControllerComponent.h"
 #include "Core/Actor.h"
 
@@ -48,6 +49,7 @@ private:
     void SpawnBonusCoinBurst();
 private:
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
+    std::shared_ptr<CoreAudioSourceComponent> chargeAudioComponent;   // ボビンのチャージ音のオーディオコンポーネント
 
     BobbinState bobbinState = BobbinState::Charging;
 
@@ -55,6 +57,9 @@ private:
     std::unordered_set<EnemyBase*> hitEnemies;
     float cooldownTimer = 0.0f;
     float chargeTimer = 0.0f;
+
+    // 最後に当たったダッシュを記録する
+    int lastUsedDashSerial = -1;
 
     // 調整
     float maxRadius = 6.0f; // 最大半径

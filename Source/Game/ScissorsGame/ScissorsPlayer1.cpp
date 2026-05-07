@@ -336,6 +336,9 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     }
     // ‹OÕ‰Šú‰»
     trail.Initialize();
+
+    // ƒ_ƒbƒVƒ…ID‚Ì‰Šú‰»
+    dashSerial = 0;
 }
 
 void ScissorsPlayer1::Update(float deltaTime)
@@ -936,6 +939,7 @@ void ScissorsPlayer1::UseDash()
     Logger::Log("Dash used. Remaining dash count: " + std::to_string(dashCount));
 
 #endif // 0
+    dashSerial++;   
     chargeTime = 0.0f;
 
 }

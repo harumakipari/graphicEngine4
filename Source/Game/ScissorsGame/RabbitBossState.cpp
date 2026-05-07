@@ -39,7 +39,7 @@ void RabbitBossAttackSelectState::Enter()
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     int select = MathHelper::RandomRange(0, 1);
-    select = 1;
+    //select = 1;
 
     if (select == 0)
     {// ƒ[ƒvUŒ‚—\’›‚Ö‘JˆÚ
@@ -211,7 +211,7 @@ void RabbitBossDeathState::Enter()
     // “G‚ÌoŒ»‚ðI—¹‚³‚¹‚é
     if (auto bossSpawner=enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<BossSpawner>())
     {
-        bossSpawner->Dactivate();
+        bossSpawner->Deactivate();
     }
 }
 

@@ -236,7 +236,6 @@ void GameScene::Start()
 
     auto uiFinishActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiEndActor>("uiEndActor");
 
-
     // ƒV[ƒ“‚ªØ‚è‘Ö‚í‚Á‚½‚É
     SceneTransitionManager::Instance().NotifySceneChanged();
 

@@ -88,6 +88,9 @@ public:
     // ダッシュ中の攻撃処理
     void AttackDash(EnemyBase* enemy);
 
+    // ダッシュIDを取得する
+    int GetDashId()  { return dashSerial; }
+
 private:
     // 入力から狙いの情報を取得する
     AimData GetAimData(const MoveIntent& intent, float deltaTime);
@@ -231,4 +234,7 @@ private:
     std::shared_ptr<Sprite> heartHalf;
     std::shared_ptr<Sprite> heartEmpty;
     int maxHp = 10;
+
+    // ダッシュのIDを持つ
+    int dashSerial = 0;
 };

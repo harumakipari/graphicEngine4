@@ -40,11 +40,23 @@ void BobbinActor::Initialize(const Transform& transform)
 
             if (player->GetStateMachine()->GetStateName() == "Dash")
             {// playerが突進中だったら
+                int currentDash = player->GetDashId();
+                if (currentDash == lastUsedDashSerial)
+                    return;
+
+                lastUsedDashSerial = currentDash;
+
                 UseBobbin();
             }
         }
     );
     bobbinState = BobbinState::CoolDown;
+
+    // チャージ音のオーディオコンポーネント
+    chargeAudioComponent = AddComponent<CoreAudioSourceComponent>("chargeAudioComponent", parentName);
+    chargeAudioComponent->SetSource(L"./Data/Sound/SE1/bobbin_charge.wav");
+    chargeAudioComponent->SetVolume(0.0f);
+    chargeAudioComponent->SetLoop(true);
 }
 
 void BobbinActor::Update(float deltaTime)
@@ -58,6 +70,7 @@ void BobbinActor::Update(float deltaTime)
         if (cooldownTimer < 0.0f)
         {
             bobbinState = BobbinState::Charging;
+            chargeAudioComponent->Play();
         }
         break;
     case BobbinState::Charging:
@@ -120,7 +133,15 @@ void BobbinActor::SetBobbinSize(BobbinSize bobbinSize)
 // ボビンを使用する
 void BobbinActor::UseBobbin()
 {
+    if (bobbinState== BobbinState::Fired)
+    {// 
+        return;
+    }
+    // チャージ音を止める
+    chargeAudioComponent->Stop();
     bobbinState = BobbinState::Fired;
+    Logger::Log(U8("糸巻を使用した"));
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/bobbin_use.wav", 1.0f);
 }
 
 // ボビンをリセットする

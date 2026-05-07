@@ -17,7 +17,6 @@ StageData StageLoader::Load(STAGE_NAME stageId)
                   { {12,0,12}, YarnEnemyType::Static ,0.0f},
                   { {16,0,12}, YarnEnemyType::Static ,0.0f},
               },
-
           },
 
           // Wave2：直線
@@ -30,7 +29,7 @@ StageData StageLoader::Load(STAGE_NAME stageId)
               },
               false,
               -1,
-              2.0f,
+              1.0f,
           },
 
           // Wave3：
@@ -46,17 +45,17 @@ StageData StageLoader::Load(STAGE_NAME stageId)
           // Wave4：ミッキー
         {
             {
-                { { 23.5,0,18 }, YarnEnemyType::MoveHorizontal,0.0f,true,2.0f,1.0f,{-1,0,1}},
-                { {21,0,19}, YarnEnemyType::MoveHorizontal,0.0f, false,2.0f,1.0f,{-1,0,0}},
-                { {21,0,17}, YarnEnemyType::MoveHorizontal,0.0f, false,2.0f,1.0f,{-1,0,0}},
+                { { 23.5,0,18 }, YarnEnemyType::MoveLinear,0.0f,false,2.0f,1.0f,{-1,0,0}},
+                { {21,0,19}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,0}},
+                { {21,0,17}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,0}},
 
-                { { 1,0,6 }, YarnEnemyType::MoveHorizontal,0.0f,true,2.0f,1.0f,{1,0,0}},
-                { {0,0,5}, YarnEnemyType::MoveHorizontal,0.0f, false,2.0f,1.0f,{1,0,0}},
-                { {0,0,7}, YarnEnemyType::MoveHorizontal,0.0f, false,2.0f,1.0f,{1,0,0}},
+                { { 1,0,6 }, YarnEnemyType::MoveLinear,0.0f,false,2.0f,1.0f,{1,0,0}},
+                { {0,0,5}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,0}},
+                { {0,0,7}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,0}},
             },
              false,
               -1,
-              8.0f,
+              7.5f,
         },
         // Wave5：波波
     {
@@ -84,13 +83,24 @@ StageData StageLoader::Load(STAGE_NAME stageId)
         },
          false,
               -1,
-              6.0f,
+              5.0f,
         },
         // Wave6：急かす
     {
         {
             { {0,0,12}, YarnEnemyType::RescueEnemy,0.0f,false,3.0f },
             { {23,0,12}, YarnEnemyType::RescueEnemy,0.0f, false,3.0f},
+#if 0
+                            { { 23.5,0,15 }, YarnEnemyType::MoveLinear,0.0f,false,2.0f,1.0f,{-1,0,0}},
+                { {21,0,16}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,0}},
+                { {21,0,14}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,0}},
+
+                { { 1,0,8 }, YarnEnemyType::MoveLinear,0.0f,false,2.0f,1.0f,{1,0,0}},
+                { {0,0,6}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,0}},
+                { {0,0,7}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,0}},
+#endif // 0
+
+
         },
          false,
               -1,

@@ -128,6 +128,8 @@ void ButtonBombActor::Explode()
     {// îöî≠ÇµÇΩÇ±Ç∆Ç™Ç†Ç¡ÇΩÇÁÅA
         return;
     }
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/bomb_explosion.wav", 0.8f);
+
 
     hasExploded = true;
     bombState = BombState::Exploded;

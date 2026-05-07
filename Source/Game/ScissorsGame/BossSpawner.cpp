@@ -9,40 +9,26 @@ void BossSpawner::Initialize(const Transform& transform)
 {
     std::string parentName = "bossSpawner";
 
-    std::vector<SpawnEntry> table =
-    {
-        { YarnEnemyType::ChasePlayer,   75.0f, 2.0f, false, false },
-        { YarnEnemyType::RescueEnemy,   10.0f, 3.0f, false, false }, // ハサミ speed=3
-        { YarnEnemyType::ChasePlayer,   10.0f, 2.0f, true,  false }, // 大きい敵
-        { YarnEnemyType::LongRangeAttack,5.0f, 2.0f, false, false }  // ハリネズミ
-    };
 
     patterns =
     {
         // パターン1
         {
             {
-                { {1,0,1},    { 1,0,-1 }, table },
-                { {23,0,23},  { -1,0,-1 }, table }
+                { {1,0,1},    { 1,0,-1 },  },
+                { {23,0,23},  { -1,0,-1 }, }
             }
         },
 
         // パターン2
         {
             {
-                { {1,0,23},   { 1,0,1 }, table },
-                { {23,0,1},   { -1,0,1 }, table }
+                { {1,0,23},   { 1,0,1 }, },
+                { {23,0,1},   { -1,0,1 }, }
             }
         }
     };
 
-    for (auto& pattern : patterns)
-    {
-        for (auto& p : pattern.points)
-        {
-            BuildBag(p);
-        }
-    }
 
     // 登場エフェクト用のコンポーネントを追加
     spawnEffectComponent = this->AddComponent<class ParticleComponent>(parentName);
@@ -71,8 +57,7 @@ void BossSpawner::Update(float deltaTime)
 
         for (auto& p : pattern.points)
         {
-            //auto entry = SelectRandomEntry(p.table);
-            auto entry = DrawFromBag(p);
+            auto entry = PopSpawn();
 
             PendingSpawn ps;
             ps.point = p;
@@ -111,7 +96,7 @@ void BossSpawner::Update(float deltaTime)
                 s.entry.isBig,
                 s.entry.speed,
                 s.point.direction,
-                s.entry.isTied
+                false
             );
 
             s.spawned = true;
@@ -127,30 +112,7 @@ void BossSpawner::Update(float deltaTime)
         pendingSpawns.end());
 }
 
-// 敵の種類を選択する 重み付きのランダム
-SpawnEntry  BossSpawner::SelectRandomEntry(const std::vector<SpawnEntry>& table)
-{
-    float total = 0.0f;
 
-    for (auto& e : table)
-    {
-        total += e.weight;
-    }
-
-    float r = MathHelper::RandomRange(0.0f, total);
-
-    float accum = 0.0f;
-
-    for (auto& e : table)
-    {
-        accum += e.weight;
-
-        if (r <= accum)
-            return e;
-    }
-
-    return table.back();
-}
 
 // 仮の敵を生成する関数
 void BossSpawner::SpawnEnemy(
@@ -355,40 +317,19 @@ void BossSpawner::RefillSpawnBag()
     std::shuffle(spawnBag.begin(), spawnBag.end(), rng);
 }
 
-// 敵の生成の袋を生成する
-void BossSpawner::BuildBag(BossSpawnPoint& point)
-{
-    point.bag.clear();
-
-    const float scale = 1.0f; // ← 小さめ袋（超重要）
-
-    for (auto& e : point.table)
-    {
-        int count = std::max<int>(1, static_cast<int>(e.weight * scale));
-
-        for (int i = 0; i < count; i++)
-        {
-            point.bag.push_back(e);
-        }
-    }
-
-    std::shuffle(point.bag.begin(), point.bag.end(), std::mt19937{ std::random_device{}() });
-    point.bagIndex = 0;
-}
-
 // 袋から取り出す関数
-SpawnEntry BossSpawner::DrawFromBag(BossSpawnPoint& point)
+SpawnBagEntry BossSpawner::PopSpawn()
 {
-    if (point.bag.empty())
+    if (spawnBag.empty())
     {
-        BuildBag(point);
+        RefillSpawnBag();
     }
 
-    if (point.bagIndex >= point.bag.size())
-    {
-        std::shuffle(point.bag.begin(), point.bag.end(), rng);
-        point.bagIndex = 0;
-    }
+    SpawnBagEntry entry = spawnBag.back();
+    spawnBag.pop_back();
 
-    return point.bag[point.bagIndex++];
+    return entry;
 }
+
+
+
