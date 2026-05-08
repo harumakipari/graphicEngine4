@@ -1002,6 +1002,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\ItemHeartActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsUiEndActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ResultScene.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\DecalData.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

@@ -14,10 +14,13 @@
 
 #include "Game/Actors/Camera/LoadingCamera.h"
 #include "Game/Actors/Player/Player.h"
+#include "Game/ScissorsGame/DecalData.h"
 #include "Game/ScissorsGame/NeedleEnemyActor.h"
 #include "Game/ScissorsGame/ScoreCalculator.h"
 #include "Game/ScissorsGame/StageData.h"
 #include "Game/ScissorsGame/YarnEnemyActor.h"
+
+
 
 
 class GameScene : public SceneBase
@@ -125,15 +128,7 @@ private:
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> color_shader_resource_view;
     };
     std::vector<decal_texture> decal_textures;
-    // デカール用データ
-    struct decal_data
-    {
-        DirectX::XMFLOAT3	translation{ 0, 0, 0 };
-        DirectX::XMFLOAT3	scaling{ 1, 1, 1 };
-        DirectX::XMFLOAT3	rotation{ 0, 0, 0 };
-        DirectX::XMFLOAT4	color{ 1, 1, 1, 1 };
-        int decal_index = -1;
-    };
+
     std::vector<decal_data> decal_datas;
     // デカール用定数バッファ
     struct gbuffer_decal_constants
@@ -143,7 +138,7 @@ private:
     };
     std::shared_ptr<ConstantBuffer<gbuffer_decal_constants>> decalCBuffer;
 
-    // 
+    // デカール用ピクセルシェーダー
     Microsoft::WRL::ComPtr<ID3D11PixelShader> gbuffer_decal_pixel_shader;
 
     // ジオメトリックシェーダー
@@ -151,5 +146,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D11InputLayout> geometric_primitive_input_layout;
     Microsoft::WRL::ComPtr<ID3D11PixelShader> geometric_primitive_pixel_shader;
 
+    float elapsedTime = 0.0f;
+    const float decalRayCastInterval = 1.0f;   // 
 
 };

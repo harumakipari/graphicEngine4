@@ -9,7 +9,7 @@ Texture2D<float4> gbuffer_parameter : register(t3);
 Texture2D<float4> gbuffer_position : register(t4);
 
 //  デカールテクスチャ
-Texture2D<float4> decal_texture : register(t10);
+Texture2D<float4> decal_texture : register(t30);
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
@@ -27,7 +27,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     cube_texture_position.y = cube_texture_position.y * -0.5f + 0.5f;
 
     float2 decal_texcoord = cube_texture_position.xy;
-    float4 color = decal_texture.Sample(samplerStates[LINEAR_BORDER_BLACK], decal_texcoord) * pin.color;
+    float4 color = decal_texture.Sample(samplerStates[LINEAR_CLAMP], decal_texcoord) * pin.color;
     clip(color.a < 0.5f ? -1 : 1);
     return color;
 }

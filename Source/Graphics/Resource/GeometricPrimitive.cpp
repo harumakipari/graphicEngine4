@@ -57,7 +57,7 @@ void GeometricPrimitive::CreateComBuffers(Vertex* vertices, size_t vertexCount,
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 }
 
-void GeometricPrimitive::Render(DirectX::XMFLOAT4X4& world, DirectX::XMFLOAT4& materialColor)
+void GeometricPrimitive::Render(DirectX::XMFLOAT4X4& world, DirectX::XMFLOAT4& materialColor,std::function<void()> callbackFunc)
 {
     ID3D11DeviceContext* immediateContext = Graphics::GetDeviceContext();
     uint32_t stride{ sizeof(Vertex) };
@@ -69,6 +69,11 @@ void GeometricPrimitive::Render(DirectX::XMFLOAT4X4& world, DirectX::XMFLOAT4& m
 
     immediateContext->VSSetShader(vertexShader.Get(), nullptr, 0);
     immediateContext->PSSetShader(pixelShader.Get(), nullptr, 0);
+
+    if (callbackFunc)
+    {// 
+        callbackFunc();
+    }
 
     Constants data{ world,materialColor };
     immediateContext->UpdateSubresource(constantBuffer.Get(), 0, 0, &data, 0, 0);

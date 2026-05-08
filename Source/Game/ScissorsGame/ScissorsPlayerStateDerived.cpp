@@ -2,6 +2,7 @@
 #include "ScissorsPlayerStateDerived.h"
 
 #include "BobbinActor.h"
+#include "DecalData.h"
 #include "EnemyBase.h"
 #include "RabbitBossEnemy.h"
 #include "ScissorsGameEnemyBaseActor.h"
@@ -165,7 +166,7 @@ void ScissorsPlayerChargeDashState::Enter()
     player->PlayAnimation("ChargeDash", false, true, 0.1f);
 
     // アニメーションの速度を速くする
-    player->GetAnimationController()->SetAnimationRate(2.0f); 
+    player->GetAnimationController()->SetAnimationRate(2.0f);
 
     // チャージ音を再生する
     //player->chargeAudioComponent->Play();
@@ -435,6 +436,9 @@ void ScissorsPlayerDashState::Enter()
 
     // 当たり判定の押出を消す
     player->sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::None);
+
+    // デカールを生成する場所を設定する
+    player->lastDecalSpawnPos = player->GetPosition();
 }
 
 void ScissorsPlayerDashState::Execute(float deltaTime)
@@ -445,13 +449,48 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
         player->hitStopTimer -= deltaTime;
         return;
     }
-
-    // 軌跡地点を追加
+    // 現在位置
     XMFLOAT3 currentPos = player->GetPosition();
+#if 0
+    // 軌跡地点を追加
     XMFLOAT3 trailPosition = currentPos;
     trailPosition.y += 0.4f; // 床に被るの防ぐために浮かせる
     player->trail.trailPoints.push_back({ trailPosition, 1.5f });
+#endif // 0
 
+#if 1
+    // デカールの場所を追加
+
+    // 前回生成位置との距離
+    float dist = MathHelper::Distance(currentPos, player->lastDecalSpawnPos);
+
+    if (dist >= player->decalSpawnDistance)
+    {
+        decal_data data{};
+
+        // 少し広げる
+        data.scaling = { 3.0f,3.0f,3.0f };
+
+        // プレイヤー向き
+        //data.rotation = player->GetEulerRotation();
+        data.rotation = { 0.0f,0.0f,0.0f };
+
+        // 床に貼る
+        data.translation =
+        {
+            currentPos.x,
+            1.0f,
+            currentPos.z
+        };
+
+        data.decal_index = 0;
+
+        player->decal_datas.push_back(data);
+
+        // 次の基準位置更新
+        player->lastDecalSpawnPos = currentPos;
+    }
+#endif
 #if 0
     // 星のエフェクトを出す
     player->SpawnStarParticle(currentPos, dir);
@@ -608,6 +647,8 @@ void ScissorsPlayerDashState::Exit()
     // ダッシュ中に倒した敵の数をリセットする
     player->killedEnemyCountInDash = 0;
 
+    // デカールのデータをクリアする
+    player->decal_datas.clear();
 }
 
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "DecalData.h"
 #include "ScoreCalculator.h"
 #include "Trail.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
@@ -76,9 +77,6 @@ public:
     // ポーズの時に呼ぶ関数　これを呼ぶと歩きのSEが止まる
     void OnPause();
 
-    // ダッシュの方向転換をする関数
-    void RedirectDash(const DirectX::XMFLOAT3& newDir);
-
     // 星を生成する
     void SpawnStarParticle(DirectX::XMFLOAT3 pos, XMFLOAT3 playerForward);
 
@@ -89,7 +87,7 @@ public:
     void AttackDash(EnemyBase* enemy);
 
     // ダッシュIDを取得する
-    int GetDashId()  { return dashSerial; }
+    int GetDashId()  const { return dashSerial; }
 
 private:
     // 入力から狙いの情報を取得する
@@ -151,6 +149,13 @@ public:
     int killedEnemyCountInDash = 0;
 
     float dashAttackRange = 1.3f; // ダッシュ攻撃の範囲　dashAttackSphereの半径と同じにする
+
+
+    // デカール関連
+    DirectX::XMFLOAT3 lastDecalSpawnPos = { 0.0f,0.0f,0.0f };  // 最後にデカールを生成した位置
+    float decalSpawnDistance = 3.0f;    // デカールを生成する間隔
+    std::vector<decal_data> decal_datas;
+
 private:
     std::shared_ptr<BoxComponent> dashAttackBox; // ダッシュ攻撃の当たり判定用のSphereComponent
     std::shared_ptr<SphereComponent> scissorsAttackSphere; // ハサミ攻撃の当たり判定用のSphereComponent

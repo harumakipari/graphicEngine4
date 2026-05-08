@@ -63,7 +63,7 @@ public:
         texture2dDesc.Height = height;
         texture2dDesc.MipLevels = 1;
         texture2dDesc.ArraySize = 1;
-        texture2dDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+        texture2dDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
         texture2dDesc.SampleDesc.Count = 1;
         texture2dDesc.SampleDesc.Quality = 0;
         texture2dDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -74,14 +74,14 @@ public:
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
         D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc{};
-        depthStencilViewDesc.Format = DXGI_FORMAT_D32_FLOAT;
+        depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
         depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
         depthStencilViewDesc.Flags = 0;
         hr = device->CreateDepthStencilView(depthStencilBuffer.Get(), &depthStencilViewDesc, &depthStencilView);
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
         D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc{};
-        shaderResourceViewDesc.Format = DXGI_FORMAT_R32_FLOAT;
+        shaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
         shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
         shaderResourceViewDesc.Texture2D.MipLevels = 1;
         hr = device->CreateShaderResourceView(depthStencilBuffer.Get(), &shaderResourceViewDesc, &depthStencilShaderResourceView);

@@ -32,7 +32,7 @@ private:
 public:
     virtual ~GeometricPrimitive() = default;
 
-    void Render(DirectX::XMFLOAT4X4& world,DirectX::XMFLOAT4& materialColor);
+    void Render(DirectX::XMFLOAT4X4& world, DirectX::XMFLOAT4& materialColor, std::function<void()> callbackFunc = nullptr);
 
 protected:
     GeometricPrimitive();
@@ -57,7 +57,7 @@ public:
 class GeometricSphere : public GeometricPrimitive
 {
 public:
-    GeometricSphere( DirectX::XMFLOAT3 center, float radius, uint32_t slices, uint32_t stacks);
+    GeometricSphere(DirectX::XMFLOAT3 center, float radius, uint32_t slices, uint32_t stacks);
     GeometricSphere(float radius, uint32_t slices, uint32_t stacks);
 };
 

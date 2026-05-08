@@ -386,9 +386,9 @@ StageData StageLoader::Load(STAGE_NAME stageId)
            {
                 // Wave 1
                 {
-                    { { 10.5,0,11 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{-1,0,-1}},
-                    { { 10.5,0,12 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{-1,0,-1}},
-                    { { 12,0,11 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{-1,0,-1}},
+                    { { 10.5,0,11 },  YarnEnemyType::MoveLinear, 1.0f,false,2.0f ,1.0f,{-1,0,-1}},
+                    { { 10.5,0,12 },  YarnEnemyType::MoveLinear, 1.0f,false,2.0f ,1.0f,{-1,0,-1}},
+                    { { 12,0,11 },  YarnEnemyType::MoveLinear, 1.0f,false,2.0f ,1.0f,{-1,0,-1}},
 
                     { { 1,0,23 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{0,0,-1}},
                     { { 2.5,0,23 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{0,0,-1}},

@@ -305,7 +305,7 @@ void WaveManager::SpawnEnemy(
     {// ‹ÊŽ~‚ß‚³‚ê‚Ä‚¢‚½‚ç
         enemy->OnTied();
         enemy->SetBasePosition(pos);
-        enemy->Face({ 0,0,1 });
+        enemy->Face({ 0,0,-1 });
     }
 
     enemyCount++;

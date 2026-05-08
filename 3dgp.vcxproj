@@ -501,6 +501,7 @@
     <ClInclude Include="Source\Game\Scenes\LoadingScene.h" />
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />
     <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\DecalData.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ResultScene.h" />
     <ClInclude Include="Source\Game\Scenes\SampleScene.h" />
     <ClInclude Include="Source\Game\ScissorsGame\BobbinActor.h" />
