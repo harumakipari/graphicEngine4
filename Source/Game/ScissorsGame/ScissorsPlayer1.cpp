@@ -181,7 +181,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     bossDamageContext.killedEnemyBeforeHitCount = killedEnemyCountInDash;
                     bossDamageContext.baseDamage = 10.0f;
                     bossDamageContext.isBossStunned = boss->IsStunned();
-                    bossDamageContext.suppressBombSpawn = hitBobbinInThisDash;  
+                    bossDamageContext.suppressBombSpawn = hitBobbinInThisDash;
 
                     float damage = boss->ComputeDamage(bossDamageContext);
                     Logger::Log(U8("ボスにダメージ：") + std::to_string(damage));
@@ -211,7 +211,6 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                         characterMovementComponent->AddImpulse(impulse);
                     }
 #endif // 0
-
                 }
                 else
                 {
@@ -248,14 +247,11 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                         // スロー再生
                         //Time::SetSlow(0.5f, 0.3f);
 
-
                         // ヒットストップ
                         hitStopTimer = hitStopDuration;
-
                         killedEnemyCountInDash++; // ダッシュ中に倒した敵をカウントする
                     }
                 }
-
             }
         );
     }
@@ -276,7 +272,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     // ダッシュの狙いを表示する矢印のUIコンポーネントを追加
     for (int i = 0; i < _countof(arrowComponents); i++)
     {
-        arrowComponents[i] = std::make_unique<UIArrowComponent>("./Data/Textures/ScissorsUI/aaa.png", "dashAimArrow");
+        arrowComponents[i] = std::make_unique<UIArrowComponent>("./Data/Textures/ScissorsUI/Arrow.png", "dashAimArrow");
         arrowComponents[i]->SetWorldPosition({ 0.0f, 0.0f });
         arrowComponents[i]->SetVisible(true);
         arrowComponents[i]->SetSize({ 300.0f, 50.0f });
@@ -312,14 +308,14 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
         for (int i = 0; i < heartCount; i++)
         {
-            float x = 100.0f + i * 160.0f;
-            float y = 50.0f;
+            float x = heartPos.x + i * 120.0f;
+            float y = heartPos.y;
 
             //  枠
             auto frame = std::make_shared<UIImageComponent>("hpFrame");
             frame->SetTexture(heartEmpty);
             frame->SetWorldPosition({ x, y });
-            frame->SetSize({ 150.0f, 150.0f });
+            frame->SetSize({ heartSize, heartSize });
 
             uiManager->Add(frame);
             heartFramesHpUiComponents.push_back(frame);
@@ -328,7 +324,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
             auto fill = std::make_shared<UIImageComponent>("hpFill");
             fill->SetTexture(heartFull);
             fill->SetWorldPosition({ x, y }); // 同じ位置に重ねる
-            fill->SetSize({ 150.0f, 150.0f });
+            fill->SetSize({ heartSize, heartSize });
             fill->zOrder = 2;
 
             uiManager->Add(fill);
@@ -340,6 +336,16 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
     // ダッシュIDの初期化
     dashSerial = 0;
+
+    // 軌跡のモデル
+    for (int i = 0; i <= 10; i++)
+    {
+        auto  trailModel = AddComponent<SkeletalMeshComponent>("trailModel", parentName);
+        trailModel->SetModel("./Data/TeamModels/Player/TrailModel.gltf", false, true);
+        trailModel->SetIsCastShadow(false);
+        //trailModel->SetIsVisible(false);
+        trailModels.push_back(trailModel);
+    }
 }
 
 void ScissorsPlayer1::Update(float deltaTime)
@@ -353,7 +359,6 @@ void ScissorsPlayer1::Update(float deltaTime)
     if (damageCooldownTimer > 0.0f)
     {// ダメージクールダウン中は無敵
         damageCooldownTimer -= deltaTime;
-
 #if 0
         // 点滅処理
         blinkTimer += deltaTime;
@@ -426,7 +431,6 @@ void ScissorsPlayer1::Update(float deltaTime)
     }
 
     XMFLOAT3 pos = GetPosition();
-
 #if 1
     {// ステージ外に出ないようにクランプ
         pos.x = std::clamp(pos.x, ScissorsGameState::stageMinX, ScissorsGameState::stageMaxX);
@@ -459,7 +463,7 @@ void ScissorsPlayer1::Update(float deltaTime)
         // ボタンRelease
         bool buttonReleased = InputSystem::GetInputState("ScissorsAction", InputStateMask::Release);
 
-        //  これでダッシュの方向や溜めの強さを決める
+        // これでダッシュの方向や溜めの強さを決める
         currentAimData = GetAimData(intent, deltaTime);
 
         if (currentAimData.isValid)
@@ -494,9 +498,7 @@ void ScissorsPlayer1::Update(float deltaTime)
                 // ダッシュ溜めトリガー
                 triggerChargeDash = InputSystem::GetInputState("ScissorsAction", InputStateMask::Trigger);
             }
-
             attackTrigger = InputSystem::GetInputState("ScissorsAttack", InputStateMask::Trigger);
-
         }
         else
         {
@@ -533,6 +535,8 @@ void ScissorsPlayer1::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
     Character::DrawImGuiDetails();
+    ImGui::DragFloat(U8("ハートのサイズ"), &heartSize);
+    ImGui::DragFloat2(U8("ハートの場所"), &heartPos.x);
     ImGui::DragFloat(U8("プレイヤーの当たり判定"), &playerRadius);
     ImGui::DragFloat(U8("ダッシュの当たり判定"), &dashAttackRange);
     ImGui::SliderInt(U8("ハサミ攻撃時のダメージ量"), &scissorsDamage, 1, 10);
@@ -556,6 +560,7 @@ ScissorsPlayer1::AimData ScissorsPlayer1::GetAimData(const MoveIntent& intent, f
     aim.isValid = false;
     bool isGamepad = InputSystem::IsGamepadConnected();
     DirectX::XMFLOAT3 playerPos = GetPosition();
+
     // ゲームパッド
     if (isGamepad)
     {
@@ -906,17 +911,21 @@ void ScissorsPlayer1::UpdateHpUI()
             // フル
             heartFillsHpUiComponents[i]->SetTexture(heartFull);
             heartFillsHpUiComponents[i]->SetVisible(true);
+            heartFillsHpUiComponents[i]->SetSize({ heartSize, heartSize });
+
         }
         else if (hp == heartBase + 1)
         {
             // 半分
             heartFillsHpUiComponents[i]->SetTexture(heartHalf);
             heartFillsHpUiComponents[i]->SetVisible(true);
+            heartFillsHpUiComponents[i]->SetSize({ heartSize, heartSize });
         }
         else
         {
             // 空 → 中身を消す（枠だけ残る）
             heartFillsHpUiComponents[i]->SetVisible(false);
+            heartFillsHpUiComponents[i]->SetSize({ heartSize, heartSize });
         }
     }
 }
@@ -940,7 +949,7 @@ void ScissorsPlayer1::UseDash()
     Logger::Log("Dash used. Remaining dash count: " + std::to_string(dashCount));
 
 #endif // 0
-    dashSerial++;   
+    dashSerial++;
     chargeTime = 0.0f;
 
 }

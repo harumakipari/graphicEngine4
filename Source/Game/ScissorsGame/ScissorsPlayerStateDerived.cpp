@@ -461,7 +461,7 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     player->trail.trailPoints.push_back({ trailPosition, 1.5f });
 #endif // 0
 
-#if 1
+#if 0
     // デカールの場所を追加
 
     // 前回生成位置との距離

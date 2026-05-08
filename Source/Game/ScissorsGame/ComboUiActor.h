@@ -12,7 +12,7 @@ public:
 
     void Initialize(const Transform& transform)override;
 
-    void Update(float elapsedTime)override;
+    void Update(float deltaTime)override;
 
     void DrawImGuiDetails() override;
 
@@ -46,4 +46,8 @@ private:
     };
     std::vector<Stamp> stampStructs;
 
+
+    // 表示用コンボ
+    int displayCombo = 0;
+    float comboAppearTimer = 0.0f;
 };

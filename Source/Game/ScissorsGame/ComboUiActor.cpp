@@ -10,6 +10,7 @@ void ComboUiActor::Initialize(const Transform& transform)
 {
     auto uiManager = GetOwnerScene()->GetUIManager();
 
+#if 0
     for (int i = 0; i < 2; i++) // 2桁くらい確保
     {
         auto digit = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/number.png", "ScoreDigit");
@@ -20,6 +21,7 @@ void ComboUiActor::Initialize(const Transform& transform)
         uiManager->Add(digit);
         comboDigits.push_back(digit);
     }
+#endif // 0
 
 #if 0
     stamp = std::make_shared<UIImageComponent>(
@@ -52,7 +54,7 @@ void ComboUiActor::Initialize(const Transform& transform)
     }
 }
 
-void ComboUiActor::Update(float elapsedTime)
+void ComboUiActor::Update(float deltaTime)
 {
     // UIの位置
     DirectX::XMFLOAT3 position = GetPosition();
@@ -85,7 +87,6 @@ void ComboUiActor::Update(float elapsedTime)
     }
 #endif // 0
 
-
     for (auto stamp : stampStructs)
     {
         if (stamp.comboNumberUi)
@@ -95,29 +96,41 @@ void ComboUiActor::Update(float elapsedTime)
             stamp.comboNumberUi->SetVisible(stamp.isVisible);
             stamp.comboNumberUi->SetWorldAngleDegree(stamp.degreeRotation);
         }
-        stamp.scaleEasingRunner->Tick(elapsedTime);
+        stamp.scaleEasingRunner->Tick(deltaTime);
     }
 
 #if 1
+    comboAppearTimer -= deltaTime;
+
+    if (displayCombo < currentCombo)
+    {
+        if (comboAppearTimer <= 0.0f)
+        {
+            displayCombo++;
+
+            AddCombo(displayCombo);
+
+            // 高速連番
+            comboAppearTimer = 0.04f;
+        }
+    }
+
+
+#if 0
     if (currentCombo > prevCombo)
     {// コンボが増えたら
         AddCombo(currentCombo);
-#if 0
-        for (int i = prevCombo + 1; i <= currentCombo; i++)
-        {
-            AddCombo(i);
-        }
-
-#endif // 0
         Logger::Log(U8("コンボが増えた:") + std::to_string(currentCombo));
     }
+
+#endif // 0
 
 #endif // 0
 
     if (currentCombo == 0 && prevCombo != 0)
     {
         Logger::Log(U8("コンボがリセットされた"));
-
+        displayCombo = 0;
         for (int i = 1; i < stampStructs.size(); i++)
         {
             stampStructs[i].isVisible = false;
@@ -150,7 +163,6 @@ void ComboUiActor::DrawImGuiDetails()
     ImGui::DragInt("Combo", &a);
 #endif
 }
-
 
 // スコアを桁ごとに分解する
 void ComboUiActor::UpdateScoreDigits(int combo)
@@ -186,10 +198,8 @@ void ComboUiActor::AddCombo(int combo)
 
     int index = combo;
 
-
     if (combo >= stampStructs.size())
         return;
-
 #if 0
     float fadeInTime = 0.8f;
 
@@ -222,6 +232,12 @@ void ComboUiActor::AddCombo(int combo)
 #else
     float fadeInTime = MathHelper::RandomRange(0.5f, 0.8f);
 
+    // コンボ数でサイズ増加
+    float targetScale = 1.0f + (static_cast<float>(combo) * 0.05f);
+    // 上限を決める
+    targetScale = std::clamp(targetScale, 1.0f, 2.5f);
+
+    float startScale = targetScale + 4.0f;
 
     // フェードイン のスケールを触る
     {
@@ -231,14 +247,14 @@ void ComboUiActor::AddCombo(int combo)
 
         handler.AddEasing(
             TestEaseType::OutExp,
-            5.0f,
-            1.0f,
+            startScale,
+            targetScale,
             fadeInTime
         );
 
-        handler.SetCompletedFunction([this, index]()
+        handler.SetCompletedFunction([this, index, targetScale]()
             {
-                stampStructs[index].comboNumberUi->SetScale({ 1.0f,1.0f });
+                stampStructs[index].comboNumberUi->SetScale({ targetScale,targetScale });
             });
         PropertyAccessor<float> accessor;
 
@@ -253,12 +269,10 @@ void ComboUiActor::AddCombo(int combo)
 
 #endif // 0
 
-
 }
-
 
 // コンボがリセットされる時の表現
 void ComboUiActor::ResetCombo()
 {
-    
+
 }

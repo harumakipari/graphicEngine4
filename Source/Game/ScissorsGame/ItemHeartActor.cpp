@@ -64,6 +64,7 @@ void ItemHeartActor::Update(float deltaTime)
             pos.y = groundY;
             itemState = ItemState::Waiting;
             elapsedTime = 0.0f;
+            basePosition = pos;
         }
         SetPosition(pos);
     }
@@ -74,11 +75,29 @@ void ItemHeartActor::Update(float deltaTime)
         UpdateWaiting(deltaTime);
         break;
     case ItemState::Used:
+    {
+        auto pos = GetPosition();
+
+        // 上に上昇
+        pos.y += deltaTime * 3.0f;
+
+        SetPosition(pos);
+
+        // 徐々に縮小
+        float scale = std::max<float>(0.0f, 1.0f - elapsedTime * 2.0f);
+        SetScale({ scale,scale,scale });
+
+        // 回転
+        auto rot = GetEulerRotation();
+        rot.y += deltaTime * 360.0f;
+        SetEulerRotation(rot);
+
         if (elapsedTime >= 0.5f)
         {
             MarkPendingKill();
         }
-        break;
+    }
+    break;
     }
 }
 
@@ -100,7 +119,7 @@ void ItemHeartActor::UseItem()
     {
         return;
     }
-    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/hpUp.wav",0.8f);
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/hpUp.wav", 0.8f);
 
     player->RecoverHp(2);
     itemState = ItemState::Used;
@@ -110,7 +129,13 @@ void ItemHeartActor::UseItem()
 // アイテム待機中の動き
 void ItemHeartActor::UpdateWaiting(float deltaTime)
 {
+    elapsedTime += deltaTime;
 
+    DirectX::XMFLOAT3 pos = basePosition;
+    // 上下ふわふわ
+    pos.y += sinf(elapsedTime * 3.0f) * 0.25f;
+
+    SetPosition(pos);
 }
 
 void ItemHeartActor::LaunchTo(const DirectX::XMFLOAT3& targetPos)

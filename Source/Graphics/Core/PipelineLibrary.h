@@ -351,6 +351,14 @@ public:
             AddPipeLineState("forwardMaskSkeletalMesh", desc);
         }
 
+        // ScissorsGame OpaqueMarkPS 用 チーム制作で足した(T_T)
+        {
+            hr = CreatePsFromCSO(device, "./Shader/OpaqueMarkPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
+            AddPipeLineState("OpaqueMarkPS", desc);
+        }
+
         // SkeletalMesh deferred Mask 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());

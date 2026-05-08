@@ -39,7 +39,6 @@ void RabbitBossAttackSelectState::Enter()
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     BossAttackType type = PopAttack();
-    type = BossAttackType::Buff;
     switch (type)
     {
     case BossAttackType::Warp:
@@ -112,10 +111,15 @@ void RabbitBossAttackWarpState::Enter()
     enemy->StartDive();
     // 当たり判定を無効にする
     enemy->collisionBoxComponent->DisableCollision();
+
+    // スポーンの見た目を有効にする
+    enemy->bossSpawnMarkModel->SetIsVisible(true);
 }
 
 void RabbitBossAttackWarpState::Execute(float deltaTime)
 {
+    DirectX::XMFLOAT3 pos = enemy->GetPosition();
+
     switch (phase)
     {
     case WarpPhase::Dive:
@@ -130,7 +134,6 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
         if (auto player = enemy->GetPlayer())
         {
             DirectX::XMFLOAT3 playerPos = player->GetPosition();
-            DirectX::XMFLOAT3 pos = enemy->GetPosition();
 
             DirectX::XMFLOAT3 dir;
             dir.x = playerPos.x - pos.x;
@@ -155,6 +158,8 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
         }
         break;
     case WarpPhase::Emerge:
+        // 場所が確定したら大きくしながら回転する
+
         if (enemy->IsFinishedEmerge())
         {
             // 出現ダメージ
@@ -165,12 +170,18 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
         break;
     }
 
+    DirectX::XMFLOAT3 markPos = pos;
+    markPos.y = 0.0f;
+    enemy->bossSpawnMarkModel->SetWorldLocationDirect(markPos);
 }
 
 void RabbitBossAttackWarpState::Exit()
 {
     // 当たり判定を有効にする
     enemy->collisionBoxComponent->EnableCollision();
+
+    // スポーンの見た目を無効にする
+    enemy->bossSpawnMarkModel->SetIsVisible(false);
 }
 
 // バフプレビュー

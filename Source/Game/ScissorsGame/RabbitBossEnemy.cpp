@@ -18,14 +18,24 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 {
     std::string parentName = "SkeletonWarriorMeshComponent";
     Character::Initialize(transform);
+    // ボスの見た目を生成する
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/BossEnemyBlend.glb", false, true);
     skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameBossPS";
+    // ボスの描画順を後にする
+    skeletalMeshComponent->SetPriority(3);
+
+    // ボスの出現位置モデルを生成する
+    bossSpawnMarkModel = AddComponent<SkeletalMeshComponent>("bossSpawnMarkModel",parentName);
+    bossSpawnMarkModel->SetModel("./Data/TeamModels/Marks/BossSpawnMark.gltf", false, true);
+    bossSpawnMarkModel->overrideDeferredPipelineName = "OpaqueMarkPS";
+    bossSpawnMarkModel->SetIsCastShadow(false);
+    bossSpawnMarkModel->SetIsVisible(false);
 
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
     // 玉止めの半径を設定する
     tieableRadius = size.x * 0.4f;
-    spawnAttackEnemyRange = size.x * 0.4f;
+    spawnAttackEnemyRange = size.x * 0.6f;
     // 当たり判定
     {
         collisionBoxComponent = this->AddComponent<BoxComponent>("boxComponent", parentName);
@@ -63,7 +73,6 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     maxHp = 500;
     //maxHp = 100;
     hp = maxHp;
-
 
     // 最初の位置を保存
     startPosition = transform.GetLocation();
@@ -127,6 +136,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     };
 
     endPerform = false;
+
 }
 
 void RabbitBossEnemyActor::Update(float deltaTime)

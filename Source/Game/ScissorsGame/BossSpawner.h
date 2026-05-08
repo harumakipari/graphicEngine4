@@ -96,7 +96,7 @@ private:
     int killCount = 0; // ƒLƒ‹ƒJƒEƒ“ƒg
 
     float timer = 0.0f;
-    float interval = 5.0f; // “G‚ªoŒ»‚·‚éŠÔŠu•b”
+    float interval = 8.0f; // “G‚ªoŒ»‚·‚éŠÔŠu•b”
 
     int maxEnemies = 20;    // “G‚Ì“¯Å‘åoŒ»”
 

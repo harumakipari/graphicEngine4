@@ -12,6 +12,10 @@ void ScissorsStage::Initialize(const Transform& transform)
     staticMeshComponent = AddComponent<StaticMeshComponent>(parentName);
     staticMeshComponent->SetModel("./Data/TeamModels/Stage/ScissorsStage.gltf", false, false);
 
+    // 背景モデル
+    auto backMeshComponent = AddComponent<StaticMeshComponent>("backGroundModel",parentName);
+    backMeshComponent->SetModel("./Data/TeamModels/Stage/BackGroundModels.gltf", false, false);
+
     // 床の当たり判定用のボックスコリジョンコンポーネント
     std::shared_ptr<BoxComponent> boxComponent = this->AddComponent<class BoxComponent>("boxComponent", parentName);
     boxComponent->SetHalfBoxExtent(DirectX::XMFLOAT3(40.0f, 0.2f, 40.0f));

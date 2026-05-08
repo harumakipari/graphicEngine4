@@ -113,6 +113,7 @@ private:
 public:
     std::shared_ptr<BoxComponent> collisionBoxComponent; // ボスの当たり判定
     std::shared_ptr<SkeletalMeshComponent> stunModel; // スタン中に表示するモデル
+    std::shared_ptr<SkeletalMeshComponent> bossSpawnMarkModel; // ボスの出現の場所モデル
 
 private:
     std::vector<DirectX::XMFLOAT3> spawnPoints; // 出現位置

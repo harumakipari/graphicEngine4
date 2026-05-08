@@ -88,6 +88,9 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\MotionBlurPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\OpaqueMarkPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\PostEffectPS.cso</FullPath>
     </ContentFile>
     <ContentFile>

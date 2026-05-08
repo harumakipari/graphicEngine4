@@ -35,12 +35,12 @@ protected:
 private:
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
 
-
     ItemState itemState = ItemState::Preparing;
     float elapsedTime;    // 経過時間
     DirectX::XMFLOAT3 velocity = { 0.0f,0.0f,0.0f };
     float gravity = 4.9f;
     float groundY = 0.0f;   // 地面の基準点
 
+    DirectX::XMFLOAT3 basePosition = { 0.0f,0.0f,0.0f };
 };
 

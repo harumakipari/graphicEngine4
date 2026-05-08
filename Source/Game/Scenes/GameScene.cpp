@@ -71,7 +71,6 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
             }
         }
 
-
         //スカイマップ
         skyMap = std::make_unique<decltype(skyMap)::element_type>(device, L"./Data/Environment/Sky/Night2/skybox.dds");
         fullscreenQuad = std::make_unique<FullScreenQuad>(device);
@@ -134,8 +133,7 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         SetUpActors();
     }
 
-
-    // マウスパー
+    // マウスパ ー
     XMFLOAT2 mouseSize = { 100.0f,100.0f };
 
     mouseCursorPar = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/mousecursor_pa.png", "mousecursor_pa");
@@ -153,7 +151,6 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     mouseCursorPause->SetSize(mouseSize);
     mouseCursorPause->SetPivot({ 0.1f, 0.1f });
     mouseCursorPause->SetVisible(false);
-
 
     // デカール用関連
     {
@@ -212,7 +209,6 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     // スコアシステムの初期化
     ScoreSystem::Reset();
 
-
     return true;
 }
 
@@ -236,7 +232,6 @@ void GameScene::Start()
 
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
-
 }
 
 void GameScene::Update(float deltaTime)
@@ -284,7 +279,6 @@ void GameScene::Update(float deltaTime)
                 mouseCursorGrab->SetVisible(false);
             }
         }
-
         //　デカールテスト
 #if 0
         HitResultWithActor hit = {};

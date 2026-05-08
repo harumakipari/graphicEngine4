@@ -50,6 +50,8 @@ private:
 private:
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
     std::shared_ptr<CoreAudioSourceComponent> chargeAudioComponent;   // ボビンのチャージ音のオーディオコンポーネント
+    std::shared_ptr<SkeletalMeshComponent> bobbinApplyRangeMeshComponent;// 描画用コンポーネントを追加
+    std::shared_ptr<SkeletalMeshComponent> bobbinStringMeshComponent;// 描画用コンポーネントを追加
 
     BobbinState bobbinState = BobbinState::Charging;
 

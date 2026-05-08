@@ -15,11 +15,22 @@ void BobbinActor::Initialize(const Transform& transform)
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Item/BobbinModel.glb", false, true);
 
+    bobbinApplyRangeMeshComponent = AddComponent<SkeletalMeshComponent>("applyRangeModel",parentName);
+    bobbinApplyRangeMeshComponent->SetModel("./Data/TeamModels/Marks/BobbinApplyRange.gltf", false, true);
+    bobbinApplyRangeMeshComponent->overrideDeferredPipelineName = "OpaqueMarkPS";
+    bobbinApplyRangeMeshComponent->SetIsCastShadow(false);
+    //bobbinApplyRangeMeshComponent->SetIsVisible(false);
+
+    bobbinStringMeshComponent = AddComponent<SkeletalMeshComponent>("bobbinStringModel", parentName);
+    bobbinStringMeshComponent->SetModel("./Data/TeamModels/Item/BobbinStringModel.gltf", false, true);
+    bobbinStringMeshComponent->SetIsCastShadow(false);
+    bobbinStringMeshComponent->SetRelativeLocationDirect({ 0.0f,1.45f,0.0f });
+
     DirectX::XMFLOAT3 size = { 1.9f,2.9f,1.9f };
 
     auto boxComponent = this->AddComponent<class BoxComponent>("boxComponent", parentName);
-    //DirectX::XMFLOAT3 size = MathHelper::MultiplyF3XF3(skeletalMeshComponent->GetModelSize(), transform.GetScale());
-    float  mass = 0.0f;
+    // DirectX::XMFLOAT3 size = MathHelper::MultiplyF3XF3(skeletalMeshComponent->GetModelSize(), transform.GetScale());
+    float mass = 0.0f;
     boxComponent->SetBoxExtent(size);
     boxComponent->SetRelativeLocationDirect({ 0.0f,size.y * 0.5f ,0.0f });
     boxComponent->SetMass(mass);
@@ -133,7 +144,7 @@ void BobbinActor::SetBobbinSize(BobbinSize bobbinSize)
 // ボビンを使用する
 void BobbinActor::UseBobbin()
 {
-    if (bobbinState== BobbinState::Fired)
+    if (bobbinState == BobbinState::Fired)
     {// 
         return;
     }
@@ -225,7 +236,7 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
                     bossDamageContext.isBossStunned = boss->IsStunned();
                     float damage = boss->ComputeDamage(bossDamageContext);
 #else
-                    float damage = 0.0f; 
+                    float damage = 0.0f;
 #endif // 0
                     Logger::Log(U8("ボビンによる攻撃でボスに大ダメージ：") + std::to_string(damage));
                     boss->TakeDamage(static_cast<int>(damage));

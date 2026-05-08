@@ -111,6 +111,7 @@ public:
     std::shared_ptr<InputComponent> inputComponent;
     std::shared_ptr<CharacterMovementComponent> characterMovementComponent;
     std::shared_ptr<SphereComponent> sphereComponent; // プレイヤーの当たり判定用のSphereComponent dash時にon/offする
+    std::vector<std::shared_ptr<SkeletalMeshComponent>> trailModels; // プレイヤーの軌跡のモデル
 
     DirectX::XMFLOAT3 targetPos = { 0.0f,0.0f,0.0f }; // ダッシュの移動先
     float hitStopTimer = 0.0f; // ヒットストップのタイマー　攻撃が当たったときに一定時間動きを止めるために使用する
@@ -118,8 +119,6 @@ public:
     std::shared_ptr<UIArrowComponent> arrowComponents[5];
 
     std::shared_ptr<RotationComponent> rotationComponent;
-
-
     std::shared_ptr<CoreAudioSourceComponent> footstepAudioComponent;   // 歩行音のオーディオコンポーネント
     std::shared_ptr<CoreAudioSourceComponent> dashAudioComponent;   // ダッシュ音のオーディオコンポーネント
     std::shared_ptr<CoreAudioSourceComponent> chargeAudioComponent; // チャージ音のオーディオコンポーネント
@@ -129,7 +128,6 @@ public:
 
     bool isStun = false;// スタンするかどうか  あんまり使っていない
     bool hasDamageEnemy = false; // ハサミ攻撃を一体の敵のみに当てるため。
-
 
     // ダッシュ時の到達地点を保存
     std::vector<DirectX::XMFLOAT3> dashPoints;
@@ -149,7 +147,6 @@ public:
     int killedEnemyCountInDash = 0;
 
     float dashAttackRange = 1.3f; // ダッシュ攻撃の範囲　dashAttackSphereの半径と同じにする
-
 
     // デカール関連
     DirectX::XMFLOAT3 lastDecalSpawnPos = { 0.0f,0.0f,0.0f };  // 最後にデカールを生成した位置
@@ -242,6 +239,8 @@ private:
     std::shared_ptr<Sprite> heartHalf;
     std::shared_ptr<Sprite> heartEmpty;
     int maxHp = 10;
+    float heartSize = 110.0f;
+    DirectX::XMFLOAT2 heartPos = { 90.0f,950.0f };
 
     // ダッシュのIDを持つ
     int dashSerial = 0;
