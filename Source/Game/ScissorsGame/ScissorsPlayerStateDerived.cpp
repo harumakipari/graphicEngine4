@@ -482,7 +482,7 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
         data.translation =
         {
             currentPos.x,
-            1.0f,
+            0.0f,
             currentPos.z
         };
 

@@ -48,7 +48,7 @@ private:
     bool hasExploded = false;   // ”š”­‚µ‚½‚©‚Ç‚¤‚©
 
     // ’²®’l
-    float explodeRange = 2.5f; // ”š”­‰e‹¿”ÍˆÍ
+    float explodeRange = 1.5f; // ”š”­‰e‹¿”ÍˆÍ
     float blinkDelay = 0.3f;     // “_–Å‚ªn‚Ü‚é‚Ü‚Å
     float explodeDelay = 0.5f;   // ”š”­‚·‚é‚Ü‚Å
 

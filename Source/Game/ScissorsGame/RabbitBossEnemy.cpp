@@ -24,8 +24,8 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
     // 玉止めの半径を設定する
-    tieableRadius = size.x * 0.5f;
-    spawnAttackEnemyRange = size.x * 0.5f;
+    tieableRadius = size.x * 0.4f;
+    spawnAttackEnemyRange = size.x * 0.4f;
     // 当たり判定
     {
         collisionBoxComponent = this->AddComponent<BoxComponent>("boxComponent", parentName);
@@ -193,7 +193,14 @@ void RabbitBossEnemyActor::Update(float deltaTime)
 void RabbitBossEnemyActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
+    if (ImGui::Button(U8("ボスをスタンさせる")))
+    {
+        
+    }
+    if (ImGui::Button(U8("ボスを倒す")))
+    {
 
+    }
     ImGui::DragFloat2(U8("ゲージのオフセット値"), &gaugeUiOffset.x, 2.0f);
     ImGui::DragFloat2(U8("ゲージフレームのオフセット値"), &gaugeFrameOffset.x, 2.0f);
     ImGui::DragFloat(U8("出現攻撃範囲"), &spawnAttackRange, 0.5f, 0.0f, 10.0f);
@@ -599,7 +606,7 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
     {
         auto& d = dirs[i];
         // 距離をランダムにする
-        float offset = MathHelper::RandomRange(1.5f, 3.5f);
+        float offset = MathHelper::RandomRange(1.5f, 4.5f);
 
         // 爆破位置
         DirectX::XMFLOAT3 bombPos = pos;

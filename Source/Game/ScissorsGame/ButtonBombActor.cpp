@@ -45,7 +45,10 @@ void ButtonBombActor::Initialize(const Transform& transform)
     bombEffectComponent = this->AddComponent<class ParticleComponent>("bombEffect", parentName);
     bombEffectComponent->Load("./Data/Effect/Files/ScissorsGameBombEffect.json");
 
-
+    // 点滅が始まるまでをランダムにする
+    blinkDelay = MathHelper::RandomRange(0.1f, 0.4f);
+    // 爆発するまでをランダムにする
+    explodeDelay = MathHelper::RandomRange(0.2f, 0.5f);
 }
 
 void ButtonBombActor::Update(float deltaTime)
@@ -58,9 +61,9 @@ void ButtonBombActor::Update(float deltaTime)
     case BombState::Falling:
     {
         velocity.y -= gravity * deltaTime;
-        pos.x += velocity.x * deltaTime; 
+        pos.x += velocity.x * deltaTime;
         pos.y += velocity.y * deltaTime;
-        pos.z += velocity.z * deltaTime; 
+        pos.z += velocity.z * deltaTime;
 
         if (pos.y <= groundY)
         {
@@ -93,7 +96,7 @@ void ButtonBombActor::Update(float deltaTime)
 
         break;
     case BombState::Exploded:
-        if (elapsedTime>=0.5f)
+        if (elapsedTime >= 0.5f)
         {
             MarkPendingKill();
         }

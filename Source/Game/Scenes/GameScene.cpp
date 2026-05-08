@@ -747,15 +747,22 @@ void GameScene::GBufferDecalPass(ID3D11DeviceContext* immediateContext)
     D3D11_VIEWPORT scene_viewport{};
     scene_viewport.TopLeftX = 0;
     scene_viewport.TopLeftY = 0;
+#if _DEBUG
     scene_viewport.Width = 1280;// Graphics::GetScreenWidth();
     scene_viewport.Height = 720;    // Graphics::GetScreenHeight();
+#else
+    scene_viewport.Width = Graphics::GetScreenWidth();
+    scene_viewport.Height = Graphics::GetScreenHeight();
+#endif
+
+
     scene_viewport.MinDepth = 0.0f;
     scene_viewport.MaxDepth = 1.0f;
     immediateContext->RSSetViewports(1, &scene_viewport);
 
     RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
 
-    
+
 
     //	ƒfƒJ[ƒ‹‘‚«ž‚Ý
     //for (auto& decal : decal_datas)
@@ -902,7 +909,7 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
         auto bobbin1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr1);
         bobbin1->SetBobbinSize(BobbinActor::BobbinSize::Medium);
     }
-        break;
+    break;
     case STAGE_NAME::DIFFICULT:
         break;
     case STAGE_NAME::BOSS:

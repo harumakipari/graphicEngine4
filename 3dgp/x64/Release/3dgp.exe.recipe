@@ -82,6 +82,9 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GaussianDofBlurVerticalPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GBufferDecalPrimitivePS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\MotionBlurPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
@@ -196,10 +199,19 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\PrimitiveRendererVS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ScissorsGameBlinkPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ScissorsGameBossPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ScissorsGameCoinPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ScissorsGameEnemyPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\ScissorsPlayerPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\SsaoPS.cso</FullPath>
