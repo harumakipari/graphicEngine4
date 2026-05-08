@@ -88,6 +88,9 @@ public:
     // 死亡演出が終了した時に呼ぶ処理
     void EndDeathPerform();
 
+    // 出現している全ての敵を玉止めする関数
+    void ApplyTiedAllEnemy();
+
 private:
     // ダメージが入る場所を生成する
     void CreteDamageZone();
@@ -140,5 +143,7 @@ private:
     std::mt19937 rng{ std::random_device{}() };
 
     std::vector<DropType> dropBag;  // アイテムを落とす中身のバッグ
+
+    bool endPerform = false;
 };
 

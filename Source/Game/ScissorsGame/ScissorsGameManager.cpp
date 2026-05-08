@@ -55,7 +55,6 @@ void ScissorsGameManager::EndGame()
 #else
         const char* types[] = { "0", "1" };
         Scene::_transition("LoadingScene", { std::make_pair("preload", "ResultScene"),{"difficulty", "0"} });
-
 #endif // 0
     }
 

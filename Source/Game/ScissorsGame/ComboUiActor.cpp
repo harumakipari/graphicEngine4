@@ -68,6 +68,7 @@ void ComboUiActor::Update(float elapsedTime)
     }
 
     currentCombo = ScoreSystem::GetCombo();
+#if 0
     UpdateScoreDigits(currentCombo);
 
     float digitSpacing = 90.0f; // 桁の間隔（調整ポイント）
@@ -82,6 +83,7 @@ void ComboUiActor::Update(float elapsedTime)
 
         comboDigits[i]->SetWorldPosition(pos);
     }
+#endif // 0
 
 
     for (auto stamp : stampStructs)

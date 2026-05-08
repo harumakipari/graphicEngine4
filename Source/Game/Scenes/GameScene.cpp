@@ -622,7 +622,7 @@ void GameScene::SetUpActors()
     mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(30), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 20.f, 500.0f);
 
-    Transform cameraTargetTr(DirectX::XMFLOAT3{ 11.992f,10.5f,-9.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ 11.792f,10.5f,-9.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
     mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
 
@@ -665,7 +665,7 @@ void GameScene::SetUpActors()
     auto scoreUiActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScoreUiActor>("scoreUiActor", scoreUiTr);
 
     // コンボ表示アクターを生成
-    Transform comboUiTr(DirectX::XMFLOAT3{ 2.5f,9.3f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
+    Transform comboUiTr(DirectX::XMFLOAT3{ 4.256f,9.3f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
     auto comboUiActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ComboUiActor>("comboUiActor", comboUiTr);
 
 #if 0// ボスを生成　
@@ -754,7 +754,6 @@ void GameScene::GBufferDecalPass(ID3D11DeviceContext* immediateContext)
     scene_viewport.Width = Graphics::GetScreenWidth();
     scene_viewport.Height = Graphics::GetScreenHeight();
 #endif
-
 
     scene_viewport.MinDepth = 0.0f;
     scene_viewport.MaxDepth = 1.0f;

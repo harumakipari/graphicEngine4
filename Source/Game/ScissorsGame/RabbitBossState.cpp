@@ -39,7 +39,7 @@ void RabbitBossAttackSelectState::Enter()
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     BossAttackType type = PopAttack();
-    //type = BossAttackType::Buff;
+    type = BossAttackType::Buff;
     switch (type)
     {
     case BossAttackType::Warp:
@@ -216,6 +216,9 @@ void RabbitBossStunState::Enter()
     enemy->stunModel->SetIsVisible(true);
     // “–‚½‚è”»’è‚ð—LŒø‚É‚·‚é
     enemy->collisionBoxComponent->EnableCollision();
+
+    // ‘S‚Ä‚Ì“G‚Ì‹ÊŽ~‚ß‚·‚é
+    enemy->ApplyTiedAllEnemy();
 }
 
 void RabbitBossStunState::Execute(float deltaTime)
@@ -230,6 +233,9 @@ void RabbitBossStunState::Execute(float deltaTime)
 void RabbitBossStunState::Exit()
 {
     enemy->stunModel->SetIsVisible(false);
+
+    // ‘S‚Ä‚Ì“G‚Ì‹ÊŽ~‚ß‚ðŠO‚·
+
 }
 
 
@@ -250,11 +256,14 @@ void RabbitBossDeathState::Enter()
 
 void RabbitBossDeathState::Execute(float deltaTime)
 {
+    // Ž€–S‚Ì‰‰o‚ð‰½‚©“ü‚ê‚é
     enemy->UpdateDead(deltaTime);
 
     elapsedTime += deltaTime;
 
-    if (elapsedTime >= 5.0f)
+    //const float deadPerformTimeInterval = 5.0f;
+    const float deadPerformTimeInterval = 0.0f;
+    if (elapsedTime >= deadPerformTimeInterval)
     {
         enemy->EndDeathPerform();
     }

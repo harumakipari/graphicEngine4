@@ -125,6 +125,8 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
         {11,0,2},
         {20,0,11}
     };
+
+    endPerform = false;
 }
 
 void RabbitBossEnemyActor::Update(float deltaTime)
@@ -195,11 +197,11 @@ void RabbitBossEnemyActor::DrawImGuiDetails()
 #ifdef USE_IMGUI
     if (ImGui::Button(U8("ボスをスタンさせる")))
     {
-        
+        GetStateMachine()->ChangeState("Stun");
     }
     if (ImGui::Button(U8("ボスを倒す")))
     {
-
+        GetStateMachine()->ChangeState("Death");
     }
     ImGui::DragFloat2(U8("ゲージのオフセット値"), &gaugeUiOffset.x, 2.0f);
     ImGui::DragFloat2(U8("ゲージフレームのオフセット値"), &gaugeFrameOffset.x, 2.0f);
@@ -213,7 +215,6 @@ bool RabbitBossEnemyActor::IsStunned()
 {
     return (GetStateMachine()->GetStateName() == "Stun");
 }
-
 
 // ダメージ処理計算
 float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext)
@@ -488,12 +489,43 @@ void RabbitBossEnemyActor::EndDeathPerform()
         GetOwnerScene()->GetActorManager()
         ->GetActorOfType<ScissorsGameManager>();
 
-    if (gameManager)
+    if (gameManager && !endPerform)
     {
+        endPerform = true;
         gameManager->EndGame();
     }
 }
 
+// 出現している全ての敵を玉止めする関数
+void RabbitBossEnemyActor::ApplyTiedAllEnemy()
+{
+    std::vector<std::shared_ptr<EnemyBase>> candidates;
+
+    if (auto bossSpawner = GetOwnerScene()->GetActorManager()->GetActorOfType<BossSpawner>())
+    {// 
+        // 敵を集める
+        for (auto& w : bossSpawner->aliveEnemies)
+        {
+            if (auto e = w.lock())
+            {
+                if (!e->IsDead())
+                {
+                    candidates.push_back(e);
+                }
+            }
+        }
+    }
+
+
+    for (auto e : candidates)
+    {
+        if (e->IsDead()) // 死亡していたら
+            continue;
+        if (e->IsTied())   // 玉止めされていたら
+            continue;
+        e->OnTied();    // 玉止めする
+    }
+}
 
 void RabbitBossEnemyActor::CreteDamageZone()
 {

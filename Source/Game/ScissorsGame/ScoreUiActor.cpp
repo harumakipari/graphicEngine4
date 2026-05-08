@@ -13,7 +13,7 @@ void ScoreUiActor::Initialize(const Transform& transform)
 
     for (int i = 0; i < 6; i++) // 6桁くらい確保
     {
-        auto digit = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/number.png", "ScoreDigit");
+        auto digit = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/numberWhite.png", "ScoreDigit");
 
         digit->SetSize({ 90, 120 });
         digit->SetPivot({ 0.5f, 0.5f });
@@ -90,7 +90,7 @@ void ScoreUiActor::UpdateScoreDigits(int score) const
 {
     if (score == 0)
     {// スコアが０の時
-        scoreDigits[0]->SetUV({ 0.0f, 0.0f, 192.0f, 247.0f });
+        scoreDigits[0]->SetUV({ 0.0f, 0.0f, 150.0f, 200.0f });
         scoreDigits[0]->SetVisible(true);
 
         for (int i = 1; i < scoreDigits.size(); i++)
@@ -105,7 +105,7 @@ void ScoreUiActor::UpdateScoreDigits(int score) const
         int digit = score % 10;
         score /= 10;
 
-        scoreDigits[i]->SetUV({ 192.0f * digit, 0.0f, 192.0f, 247.0f });
+        scoreDigits[i]->SetUV({ 150.0f * digit, 0.0f, 150.0f, 200.0f });
 
         // スコアがまだあるなら表示
         scoreDigits[i]->SetVisible(true);
