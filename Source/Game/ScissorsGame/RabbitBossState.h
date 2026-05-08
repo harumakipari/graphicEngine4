@@ -1,4 +1,6 @@
 #pragma once
+#include <random>
+
 #include "Game/State/StateBase.h"
 
 class RabbitBossEnemyActor;
@@ -50,6 +52,11 @@ private:
 // 攻撃選択オブジェクト
 class RabbitBossAttackSelectState : public RabbitBossStateBase
 {
+    enum class BossAttackType :uint8_t
+    {
+        Warp,
+        Buff
+    };
 public:
     // コンストラクタ
     RabbitBossAttackSelectState(RabbitBossEnemyActor* enemy) :RabbitBossStateBase(enemy) {}
@@ -65,6 +72,16 @@ public:
     const char* GetName() const override { return "AttackSelect"; }
 
 private:
+    // 攻撃を選ぶバッグを生成する
+    void RefillAttackBag();
+
+    // 攻撃タイプを取り出す
+    BossAttackType PopAttack();
+
+private:
+    std::vector<BossAttackType> attackBag;  // 攻撃タイプのバッグ
+    std::mt19937 rng{ std::random_device{}() };
+
 };
 
 // ワーププレビューオブジェクト

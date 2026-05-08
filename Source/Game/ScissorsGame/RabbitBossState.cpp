@@ -38,16 +38,17 @@ void RabbitBossAttackSelectState::Enter()
 
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
-    int select = MathHelper::RandomRange(0, 1);
-    //select = 1;
+    BossAttackType type = PopAttack();
 
-    if (select == 0)
-    {// ワープ攻撃予兆へ遷移
+    switch (type)
+    {
+    case BossAttackType::Warp:
         enemy->GetStateMachine()->ChangeState("WarpPreview");
-    }
-    else
-    {// バフ攻撃へ遷移
+        break;
+
+    case BossAttackType::Buff:
         enemy->GetStateMachine()->ChangeState("BuffPreview");
+        break;
     }
 }
 
@@ -55,6 +56,38 @@ void RabbitBossAttackSelectState::Exit()
 {
 
 }
+
+// 攻撃を選ぶバッグを生成する
+void RabbitBossAttackSelectState::RefillAttackBag()
+{
+    attackBag.clear();
+
+    // Warp 4個
+    for (int i = 0; i < 4; i++)
+    {
+        attackBag.push_back(BossAttackType::Warp);
+    }
+
+    // Buff 1個
+    attackBag.push_back(BossAttackType::Buff);
+
+    std::shuffle(attackBag.begin(), attackBag.end(), rng);
+}
+
+// 攻撃タイプを取り出す
+RabbitBossAttackSelectState::BossAttackType RabbitBossAttackSelectState::PopAttack()
+{
+    if (attackBag.empty())
+    {
+        RefillAttackBag();
+    }
+
+    BossAttackType type = attackBag.back();
+    attackBag.pop_back();
+
+    return type;
+}
+
 
 // ワーププレビュー
 void RabbitBossAttackWarpPreviewState::Enter()
