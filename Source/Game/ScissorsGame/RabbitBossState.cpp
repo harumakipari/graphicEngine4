@@ -39,7 +39,7 @@ void RabbitBossAttackSelectState::Enter()
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     BossAttackType type = PopAttack();
-
+    type = BossAttackType::Buff;
     switch (type)
     {
     case BossAttackType::Warp:

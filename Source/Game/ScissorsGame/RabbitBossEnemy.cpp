@@ -24,8 +24,8 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
     // 玉止めの半径を設定する
-    tieableRadius = spawnAttackEnemyRange;
-
+    tieableRadius = size.x * 0.5f;
+    spawnAttackEnemyRange = size.x * 0.5f;
     // 当たり判定
     {
         collisionBoxComponent = this->AddComponent<BoxComponent>("boxComponent", parentName);
@@ -61,7 +61,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     rotationComponent->SetDirection({ 0,0,-1 });
     // Hpの初期化
     maxHp = 500;
-    maxHp = 100;
+    //maxHp = 100;
     hp = maxHp;
 
 
@@ -222,8 +222,13 @@ float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext
         damage *= multiple;
     }
 
-    if (!damageContext.isBossStunned)
-    {// ボスがスタン状態じゃなかったら
+    if (!damageContext.suppressBombSpawn)
+    {
+        Logger::Log(U8("ボビンに当たってからのボスへの攻撃"));
+    }
+
+    if (!damageContext.isBossStunned && !damageContext.suppressBombSpawn)
+    {// ボスがスタン状態じゃなかったら かつ　攻撃前にボビンに当たっていなかったら、
         SpawnButtonBombs(); // 爆弾を生成する
     }
 
@@ -622,7 +627,7 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
             DirectX::XMFLOAT3{ 0,0,0 },
             DirectX::XMFLOAT3{ 1,1,1 });
 
-        if (type==DropType::Heart)
+        if (type == DropType::Heart)
         {
             auto heart =
                 GetOwnerScene()->GetActorManager()
@@ -659,7 +664,7 @@ void RabbitBossEnemyActor::RefillDropBag()
     dropBag.clear();
 
     // ９個爆弾
-    for (int i=0;i<9;i++)
+    for (int i = 0; i < 9; i++)
     {
         dropBag.push_back(DropType::Bomb);
     }

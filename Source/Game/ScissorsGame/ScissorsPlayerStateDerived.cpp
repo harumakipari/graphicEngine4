@@ -439,6 +439,9 @@ void ScissorsPlayerDashState::Enter()
 
     // デカールを生成する場所を設定する
     player->lastDecalSpawnPos = player->GetPosition();
+
+    // 今回の突進でボビンに当たったかフラグをリセットする
+    player->hitBobbinInThisDash = false;
 }
 
 void ScissorsPlayerDashState::Execute(float deltaTime)
@@ -519,6 +522,11 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
 
             // ダッシュ停止
             player->GetStateMachine()->ChangeState("Idle");
+
+            if (auto bobbin = dynamic_cast<BobbinActor*>(hit.actor))
+            {// ボビンに当たっていたら
+                player->hitBobbinInThisDash = true; // ボビンに当たったフラグを立てる
+            }
             return;
         }
     }
@@ -649,6 +657,9 @@ void ScissorsPlayerDashState::Exit()
 
     // デカールのデータをクリアする
     player->decal_datas.clear();
+
+    // ボビンに当たったフラグをリセットする
+    player->hitBobbinInThisDash = false;
 }
 
 

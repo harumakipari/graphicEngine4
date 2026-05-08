@@ -156,6 +156,9 @@ public:
     float decalSpawnDistance = 3.0f;    // デカールを生成する間隔
     std::vector<decal_data> decal_datas;
 
+    // 今回の突進でボビンに当たったかどうか
+    bool hitBobbinInThisDash = false;
+
 private:
     std::shared_ptr<BoxComponent> dashAttackBox; // ダッシュ攻撃の当たり判定用のSphereComponent
     std::shared_ptr<SphereComponent> scissorsAttackSphere; // ハサミ攻撃の当たり判定用のSphereComponent

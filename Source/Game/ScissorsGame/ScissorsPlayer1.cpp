@@ -181,6 +181,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     bossDamageContext.killedEnemyBeforeHitCount = killedEnemyCountInDash;
                     bossDamageContext.baseDamage = 10.0f;
                     bossDamageContext.isBossStunned = boss->IsStunned();
+                    bossDamageContext.suppressBombSpawn = hitBobbinInThisDash;  
 
                     float damage = boss->ComputeDamage(bossDamageContext);
                     Logger::Log(U8("ボスにダメージ：") + std::to_string(damage));

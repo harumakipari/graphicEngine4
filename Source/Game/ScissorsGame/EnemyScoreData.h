@@ -30,6 +30,8 @@ struct BossDamageContext
 
     int killedEnemyBeforeHitCount = 0;
     bool isBossStunned = false;
+    bool suppressBombSpawn = false; // ”š’eoŒ»‚ğ—}§‚·‚é‚©‚Ç‚¤‚©
+
 };
 
 // “G‚ª€–S‚µ‚½Œ´ˆö
