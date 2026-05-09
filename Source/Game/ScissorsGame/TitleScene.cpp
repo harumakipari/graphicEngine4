@@ -6,6 +6,7 @@
 #define IMGUI_ENABLE_DOCKING
 #endif
 
+#include "TitleStageActor.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
@@ -122,8 +123,6 @@ void TitleScene::Start()
     audioComp->SetLoop(true);
     audioComp->Play();
     audioComp->SetVolume(0.8f);
-
-
 
 #if 1
 
@@ -482,14 +481,15 @@ void TitleScene::SetUpActors()
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<FixedCamera>("fixedCameraActor", mainCameraTr);
     mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
 
-    Transform cameraTargetTr(DirectX::XMFLOAT3{ 9.7f,10.5f,-9.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ 5.4f,-0.016f,5.053f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
     mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
 
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
-    mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-34.5f));
-    mainCameraComponent->SetFov(DirectX::XMConvertToRadians(30.0f));
-    mainCameraComponent->distance = 10.9f;
+    mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-11.5));
+    mainCameraComponent->SetFov(DirectX::XMConvertToRadians(33.5f));
+    mainCameraComponent->SetYaw(DirectX::XMConvertToRadians(41.0f));
+    mainCameraComponent->distance = 14.477f;
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("タイトルシーンのカメラ設定される。"));
 
@@ -505,7 +505,8 @@ void TitleScene::SetUpActors()
     auto movieCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MovieCamera>("movieCam", movieCameraTr);
     cameraManager->SetMovieCamera(movieCameraActor);
 
-
+    Transform stageTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,170.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto stageActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleStageActor>("titleStageActor", stageTr);
 
 
 }

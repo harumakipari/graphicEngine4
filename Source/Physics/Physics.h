@@ -22,8 +22,8 @@ struct HitResultWithActor
     Actor* actor = nullptr;     // 衝突した相手
     ShapeComponent* component = nullptr;    // 衝突したコンポーネント
     float distance = 0.0f;      // 距離
-    DirectX::XMFLOAT3 hitPoint;     // ヒット距離
-    DirectX::XMFLOAT3 normal;       // 法線
+    DirectX::XMFLOAT3 hitPoint = { 0,0,0 };    // ヒット距離
+    DirectX::XMFLOAT3 normal = { 0,1,0 };    // 法線
 };
 
 

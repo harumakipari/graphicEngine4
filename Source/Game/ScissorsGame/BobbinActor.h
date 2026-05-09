@@ -21,6 +21,7 @@ private:
     {
         CoolDown, // クールダウン
         Charging, //溜め中
+        ChargeEnd, // 溜め終わり
         Fired, // 発動した瞬間
         Executing,
     };
@@ -63,10 +64,14 @@ private:
     // 最後に当たったダッシュを記録する
     int lastUsedDashSerial = -1;
 
+    float applyRangeMaxScale = 1.0f;// 床の広がるスケール
+
     // 調整
     float maxRadius = 6.0f; // 最大半径
     float cooldownInterval = 0.1f;// クールタイム
     float chargeTime = 3.5f; // 何秒でMaxになるか
+
+
 
 };
 

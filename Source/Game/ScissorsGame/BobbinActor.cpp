@@ -15,15 +15,17 @@ void BobbinActor::Initialize(const Transform& transform)
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Item/BobbinModel.glb", false, true);
 
-    bobbinApplyRangeMeshComponent = AddComponent<SkeletalMeshComponent>("applyRangeModel",parentName);
+    bobbinApplyRangeMeshComponent = AddComponent<SkeletalMeshComponent>("applyRangeModel", parentName);
     bobbinApplyRangeMeshComponent->SetModel("./Data/TeamModels/Marks/BobbinApplyRange.gltf", false, true);
     bobbinApplyRangeMeshComponent->overrideDeferredPipelineName = "OpaqueMarkPS";
     bobbinApplyRangeMeshComponent->SetIsCastShadow(false);
+    bobbinApplyRangeMeshComponent->SetRelativeScaleDirect({ 0.0f,0.0f,0.0f });
     //bobbinApplyRangeMeshComponent->SetIsVisible(false);
 
     bobbinStringMeshComponent = AddComponent<SkeletalMeshComponent>("bobbinStringModel", parentName);
     bobbinStringMeshComponent->SetModel("./Data/TeamModels/Item/BobbinStringModel.gltf", false, true);
     bobbinStringMeshComponent->SetIsCastShadow(false);
+    bobbinStringMeshComponent->SetRelativeScaleDirect({ 0.0f,0.0f,0.0f });
     bobbinStringMeshComponent->SetRelativeLocationDirect({ 0.0f,1.45f,0.0f });
 
     DirectX::XMFLOAT3 size = { 1.9f,2.9f,1.9f };
@@ -66,7 +68,7 @@ void BobbinActor::Initialize(const Transform& transform)
     // チャージ音のオーディオコンポーネント
     chargeAudioComponent = AddComponent<CoreAudioSourceComponent>("chargeAudioComponent", parentName);
     chargeAudioComponent->SetSource(L"./Data/Sound/SE1/bobbin_charge.wav");
-    chargeAudioComponent->SetVolume(0.0f);
+    chargeAudioComponent->SetVolume(0.2f);
     chargeAudioComponent->SetLoop(true);
 }
 
@@ -92,6 +94,35 @@ void BobbinActor::Update(float deltaTime)
         t = std::clamp(t, 0.0f, 1.0f);
 
         currentRadius = maxRadius * t;
+
+        // 床の有効範囲のモデルのスケールを大きくする
+        {
+            float scale = applyRangeMaxScale * t;
+            bobbinApplyRangeMeshComponent->SetRelativeScaleDirect({ scale,scale,scale });
+        }
+
+        // ボビンを回転させる
+        {
+            DirectX::XMFLOAT3 rot = skeletalMeshComponent->GetRelativeEulerRotation();
+            rot.y += 360.0f * deltaTime; // 1秒で360度回転
+            skeletalMeshComponent->SetRelativeEulerRotationDirect(rot);
+        }
+        // ボビンの糸のモデルのスケールを大きくする
+        {
+            float scale = std::lerp(0.6f, 1.0f, t);
+            bobbinStringMeshComponent->SetRelativeScaleDirect({ scale,scale,scale });
+        }
+        if (t >= 1.0f)
+        {
+            bobbinState = BobbinState::ChargeEnd;
+            chargeAudioComponent->Stop();
+        }
+    }
+    break;
+    case BobbinState::ChargeEnd:
+    {
+        bobbinApplyRangeMeshComponent->SetRelativeScaleDirect({ applyRangeMaxScale,applyRangeMaxScale,applyRangeMaxScale });
+
     }
     break;
     case BobbinState::Fired:
@@ -127,16 +158,19 @@ void BobbinActor::SetBobbinSize(BobbinSize bobbinSize)
         maxRadius = 3.0f; // 最大半径
         cooldownInterval = 0.1f;// クールタイム
         chargeTime = 3.5f; // 何秒でMaxになるか
+        applyRangeMaxScale = 1.0f;
         break;
     case BobbinSize::Medium:
         maxRadius = 4.5f; // 最大半径
         cooldownInterval = 0.1f;// クールタイム
         chargeTime = 3.5f; // 何秒でMaxになるか
+        applyRangeMaxScale = 1.5f;
         break;
     case BobbinSize::Big:
         maxRadius = 6.0f; // 最大半径
         cooldownInterval = 0.1f;// クールタイム
         chargeTime = 3.5f; // 何秒でMaxになるか
+        applyRangeMaxScale = 2.0f;
         break;
     }
 }
@@ -163,6 +197,8 @@ void BobbinActor::Reset()
     hitEnemies.clear();
     bobbinState = BobbinState::CoolDown;
     cooldownTimer = cooldownInterval;
+    bobbinApplyRangeMeshComponent->SetRelativeScaleDirect({ 0.0f,0.0f,0.0f });
+    bobbinStringMeshComponent->SetRelativeScaleDirect({ 0.0f,0.0f,0.0f });
 }
 
 // 敵を玉止めする

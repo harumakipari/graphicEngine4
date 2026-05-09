@@ -256,19 +256,22 @@ StageData StageLoader::Load(STAGE_NAME stageId)
                                         },false, -1,5.0f
 
                                             },
-       {
-           // Wave 3 ハリネズミ ハサミ
-           {
-               { { 12,0,12},  YarnEnemyType::LongRangeAttack, 0.0f },
-                                 { {1.0f,0,12.0f}, YarnEnemyType::RescueEnemy,0.0f,false,3.0f },
-                  { {23.0f,0,12.0f}, YarnEnemyType::RescueEnemy,0.0f, false,3.0f},
-           },
-               false,
-                  -1,
-                  10.0f,
-                  true
-       },
-                #endif // 0
+#if 0
+                       {
+                // Wave 3 ハリネズミ ハサミ
+                {
+                    { { 12,0,12},  YarnEnemyType::LongRangeAttack, 0.0f },
+                                      { {1.0f,0,12.0f}, YarnEnemyType::RescueEnemy,0.0f,false,3.0f },
+                       { {23.0f,0,12.0f}, YarnEnemyType::RescueEnemy,0.0f, false,3.0f},
+                },
+                    false,
+                       -1,
+                       10.0f,
+                       true
+            },
+
+                     #endif // 0
+                     #endif // 0
               {
                 // Wave ４　波波　ハサミ
                 {
@@ -399,15 +402,66 @@ StageData StageLoader::Load(STAGE_NAME stageId)
                -1,0.0f,true
             },
            {
-               // Wave 1
+               // Wave 2
                {
-                   { { 11,0,11 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{-1,0,-1}},
-                   { { 11,0,12 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{-1,0,-1}},
-                   { { 12,0,11 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{-1,0,-1}},
+                   { { 11.5,0,11 },  YarnEnemyType::MoveLinear, 1.0f,false,2.0f ,1.0f,{1,0,1}},
+                   { { 11.5,0,12 },  YarnEnemyType::MoveLinear, 1.0f,false,2.0f ,1.0f,{1,0,1}},
+                   { { 13,0,11 },  YarnEnemyType::MoveLinear, 1.0f,false,2.0f ,1.0f,{1,0,1}},
+
+                    { { 20,0,1 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{0,0,1}},
+                    { { 21.5,0,1 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{0,0,1}},
+                    { { 23,0,1 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{0,0,1}},
 
                },
                false,
               -1,7.0f,true
+           },
+           {
+               // Wave 3
+               {
+                   { { 12,0,12 },  YarnEnemyType::LongRangeAttack, 0.0f,false,2.0f ,1.0f,{1,0,1}},
+               },
+               false,
+              -1,5.0f,true
+           },
+           {
+               // Wave 4
+        {
+                    { { 2.0,0,23 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{0,0,-1}},
+                    { { 4,0,23 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{0,0,-1}},
+
+                    { { 20,0,1 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{0,0,1}},
+                    { { 22,0,1 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{0,0,1}},
+
+               },
+               false,
+              -1,5.0f,true
+           },
+           {
+               // Wave 5
+        {
+                    { { 1.0,0,13 },  YarnEnemyType::ChasePlayer, 0.0f,false,2.0f ,1.0f,{0,0,-1}},
+                    { { 1.0,0,11 },  YarnEnemyType::ChasePlayer, 0.0f,false,2.0f ,1.0f,{0,0,-1}},
+
+                    { { 23,0,13 },  YarnEnemyType::ChasePlayer, 0.0f,false,2.0f ,1.0f,{0,0,1}},
+                    { { 23,0,11 },  YarnEnemyType::ChasePlayer, 0.0f,false,2.0f ,1.0f,{0,0,1}},
+
+                    { { 12,0,23 },  YarnEnemyType::RescueEnemy, 2.0f,false,3.0f ,1.0f,{0,0,1}},
+                    { { 12,0,1 },  YarnEnemyType::RescueEnemy, 2.0f,false,3.0f ,1.0f,{0,0,1}},
+
+               },
+               false,
+              -1,7.0f,true
+           },
+           {
+               // Wave 6
+               {
+                   { { 12,0,12 },  YarnEnemyType::LongRangeAttack, 0.0f,false,2.0f ,1.0f,{1,0,1}},
+                   { { 1.5f,0,22.5f },  YarnEnemyType::ChasePlayer, 0.0f,true,2.0f ,1.0f,{1,0,1}},
+                   { { 22.5f,0,1.5f },  YarnEnemyType::ChasePlayer, 0.0f,true,2.0f ,1.0f,{1,0,1}},
+               },
+               false,
+              -1,10.0f,true
            },
         };
 
@@ -419,7 +473,7 @@ StageData StageLoader::Load(STAGE_NAME stageId)
         };
 
         data.bossData.hasBoss = true;
-        data.bossData.position = { 12.0f, 0.0f, 12.0f };
+        data.bossData.position = { 12.0f, 0.0f, 18.0f };
         break;
     }
 

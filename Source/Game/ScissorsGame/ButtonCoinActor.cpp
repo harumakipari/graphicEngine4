@@ -178,6 +178,11 @@ void ButtonCoinActor::StartPerform(bool isBonus)
     }
 }
 
+void ButtonCoinActor::Finalize()
+{
+    
+}
+
 // きらきらバースト
 void ButtonCoinActor::SpawnBurst()
 {

@@ -2,6 +2,7 @@
 
 #include "ScissorsPlayer1.h"
 
+#include "BonusUiActor.h"
 #include "ButtonCoinActor.h"
 #include "EnemyBase.h"
 #include "NeedleEnemyActor.h"
@@ -1098,6 +1099,10 @@ void ScissorsPlayer1::SpawnBonusCoinBurst()
     auto pos = GetPosition();
     auto scene = GetOwnerScene();
     int coinCount = 1;
+
+    Transform tr(pos, { 0,0,0 }, { 1.0f,1.0f,1.0f }); // ©­‚µ‘å‚«‚¢
+    auto bonusUiActor = scene->GetActorManager()
+        ->CreateAndRegisterActorWithTransform<BonusUiActor>("bonusCoin", tr);
 
     for (int i = 0; i < coinCount; i++)
     {

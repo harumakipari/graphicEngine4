@@ -25,9 +25,12 @@ public:
 
     void DrawImGuiDetails() override;
 
+    void Finalize()override;
+
     // 演出開始する
     void StartPerform(bool isBonus);
 
+    
 private:
     // きらきらバースト
     void SpawnBurst();

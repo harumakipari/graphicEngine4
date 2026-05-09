@@ -556,6 +556,13 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
 
         if (CollisionFunction::SphereRayCast(prevPos, nextPos, hit, 0.5f, mask))
         {
+            if (hit.distance <= 0.0001f)
+            {
+                // 無視する
+                Logger::Warning(U8("ボスとボビンでレイキャストがおかしくなっています！"));
+                return;
+            }
+
             // ヒット位置に補正
             player->SetPosition({ hit.hitPoint.x,0.0f,hit.hitPoint.z });
 

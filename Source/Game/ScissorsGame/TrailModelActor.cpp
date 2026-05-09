@@ -12,7 +12,11 @@ void TrailModelActor::Initialize(const Transform& transform)
 
 void TrailModelActor::Update(float deltaTime)
 {
-  
+    elapsedTime += deltaTime;
+    if (elapsedTime >= 10.0f)
+    {
+        MarkPendingKill();
+    }
 }
 
 void TrailModelActor::SetDirection(DirectX::XMFLOAT3 dir)

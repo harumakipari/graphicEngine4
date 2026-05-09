@@ -15,7 +15,8 @@ public:
 
 private:
     std::shared_ptr<SkeletalMeshComponent> trailModelMeshComponent;
-    DirectX::XMFLOAT3 eularDegree={0.0f,0.0f,0.0f};
+    DirectX::XMFLOAT3 eulerDegree={0.0f,0.0f,0.0f};
 
+    float elapsedTime = 0.0f;
 };
 
