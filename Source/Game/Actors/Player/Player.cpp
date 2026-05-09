@@ -22,6 +22,7 @@
 #include "Game/Actors/Stage/Stage.h"
 #include "Game/DarkGame/Interactable.h"
 #include "Game/DarkGame/DarkActors/DarkEnemy/GruxEnemy.h"
+#include "Game/ScissorsGame/ScoreCalculator.h"
 #include "Physics/CollisionFunction.h"
 
 void Player::Initialize(const Transform& transform)
@@ -226,6 +227,7 @@ void Player::Update(float elapsedTime)
 
     // これは絶対入れる　アニメーションの更新をしているから
     Character::Update(elapsedTime);
+
 
     // アニメーション時間から攻撃有効フラグ更新
     auto anim = GetAnimationController();

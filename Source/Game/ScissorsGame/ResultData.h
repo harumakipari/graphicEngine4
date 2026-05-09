@@ -1,0 +1,18 @@
+#pragma once
+
+
+struct ResultData
+{
+    // 反射ボーナス
+    int reflectionBonusScore = 0;
+    // ダッシュボーナス
+    int dashBonusScore = 0;
+    // 残っているHP
+    int remainHp = 0;
+    // 最大コンボ数
+    int maxCombo = 0;
+    // 敵を倒したスコア
+    int enemyScore = 0;
+    // 総スコア
+    int totalScore = 0;
+};

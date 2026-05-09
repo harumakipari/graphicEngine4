@@ -2,6 +2,7 @@
 
 #include "EnemyScoreData.h"
 #include "ComboSystem.h"
+#include "ResultData.h"
 
 class ScoreCalculator
 {
@@ -30,6 +31,12 @@ public:
     static void Update(float deltaTime)
     {
         combo.Update(deltaTime);
+
+        // 最大コンボ更新
+        resultData.maxCombo = std::max<int>(resultData.maxCombo, combo.GetComboCount());
+
+        // 総スコア更新
+        resultData.totalScore = totalScore;
     }
 
     static int ProcessHit(const EnemyScoreData& data, bool isKilled)
@@ -39,6 +46,8 @@ public:
         float multiplier = combo.GetMultiplier();
 
         int score = calculator.CalculateScore(data, multiplier, isKilled);
+
+        resultData.enemyScore += score;
 
         totalScore += score;
 
@@ -58,18 +67,53 @@ public:
     // 総スコアを取得する関数
     static int GetTotalScore() { return totalScore; }
 
-    // ボーナススコアを追加する関数
-    static void AddBonusScore(const int score)
+    // 反射ボーナススコアを追加する関数
+    static void AddReflectionBonus(int reflectionBonus)
     {
-        totalScore += score;
-        Logger::Log("Bonus Score: " + std::to_string(score) +
-            " (Total: " + std::to_string(totalScore) + ")");
+        int bonus = reflectionBonus ;
+
+        if (bonus <= 0)
+        {
+            return;
+        }
+
+        totalScore += bonus;
+
+        resultData.reflectionBonusScore += bonus;
+    }
+
+    // ５体ボーナスを追加
+    static void AddDashBonus(int dashBonus)
+    {
+        int bonus = dashBonus;
+
+        if (bonus <= 0)
+        {
+            return;
+        }
+
+        totalScore += bonus;
+
+        resultData.dashBonusScore += bonus;
+    }
+
+    // 残ライフを記録
+    static void AddLifeBonus(const int hp)
+    {
+        resultData.remainHp = hp;
+    }
+
+    // リザルトデータを取得する
+    static const ResultData& GetResultStats()
+    {
+        return resultData;
     }
 
     // 全てをリセットする
     static void Reset()
     {
         totalScore = 0;
+        resultData = {};
         ResetCombo();
     }
 
@@ -77,4 +121,5 @@ private:
     static inline  ComboSystem combo;
     static inline  ScoreCalculator calculator;
     static inline  int totalScore = 0;
+    static inline ResultData resultData = {};
 };

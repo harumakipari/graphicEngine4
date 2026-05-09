@@ -342,6 +342,9 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
 void ScissorsPlayer1::Update(float deltaTime)
 {
+    // ライフボーナスを記録
+    ScoreSystem::AddLifeBonus(hp);
+
     auto scene = GetOwnerScene();
     if (scene->IsPaused())
     {// ポーズ中は入力を受け付けない 歩行音も止める
@@ -1016,13 +1019,13 @@ void ScissorsPlayer1::ResolveReflectedKills()
     int dashBonus = (killedEnemyCountInDash / 5) * 500;
     if (reflectionBonus > 0)
     {// 反射攻撃で死んでいたら
-        ScoreSystem::AddBonusScore(reflectionBonus);
+        ScoreSystem::AddReflectionBonus(reflectionBonus);
         InputSystem::SetVibration(1.0f, 0.2f);
         Logger::Log("ReflectionBonus: " + std::to_string(reflectionBonus));
     }
     if (dashBonus > 0)
     {// 5体以上
-        ScoreSystem::AddBonusScore(dashBonus);
+        ScoreSystem::AddDashBonus(dashBonus);
         SpawnBonusCoinBurst();
         Logger::Log("DashBonus: " + std::to_string(dashBonus));
     }

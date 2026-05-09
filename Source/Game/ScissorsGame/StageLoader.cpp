@@ -475,6 +475,21 @@ StageData StageLoader::Load(STAGE_NAME stageId)
         data.bossData.hasBoss = true;
         data.bossData.position = { 12.0f, 0.0f, 18.0f };
         break;
+    case STAGE_NAME::REFLECT_WALL: // 反射ステージ
+        data.waves =
+        {
+            {
+                // Wave 6
+                {
+                    { { 12,0,12 },  YarnEnemyType::LongRangeAttack, 0.0f,false,2.0f ,1.0f,{1,0,1}},
+                    { { 1.5f,0,22.5f },  YarnEnemyType::ChasePlayer, 0.0f,true,2.0f ,1.0f,{1,0,1}},
+                    { { 22.5f,0,1.5f },  YarnEnemyType::ChasePlayer, 0.0f,true,2.0f ,1.0f,{1,0,1}},
+                },
+                false,
+               -1,10.0f,true
+            },
+        };
+        break;
     }
 
     return data;

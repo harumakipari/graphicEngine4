@@ -300,7 +300,7 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
     int dashBonus = (index / 5) * 500;
     if (dashBonus > 0)
     {// 5ëÃà»è„
-        ScoreSystem::AddBonusScore(dashBonus);
+        ScoreSystem::AddDashBonus(dashBonus);
         SpawnBonusCoinBurst();
         Logger::Log("DashBonus: " + std::to_string(dashBonus));
     }
