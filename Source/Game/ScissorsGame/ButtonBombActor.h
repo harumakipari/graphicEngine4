@@ -12,7 +12,7 @@ class ButtonBombActor :public Actor
         Falling,    // 落下中
         Waiting,    // 地面で待機
         Blinking,   // 点滅
-        Exploded    // 爆発済み
+        Exploded    // 演出のみ爆発済み
     };
 
 public:
@@ -46,6 +46,9 @@ private:
     float gravity = 4.9f;
     float groundY = 0.0f;   // 地面の基準点
     bool hasExploded = false;   // 爆発したかどうか
+
+    // この爆弾で既にプレイヤーへダメージを与えたかどうか
+    bool hasDamagedPlayer = false;
 
     // 調整値
     float explodeRange = 1.5f; // 爆発影響範囲

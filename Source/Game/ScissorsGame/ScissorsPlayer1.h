@@ -27,6 +27,14 @@ class ScissorsPlayer1 :public Character
     };
 
 public:
+    struct TrailPoint
+    {
+        DirectX::XMFLOAT3 position;
+        DirectX::XMFLOAT3 direction;
+        float life;
+    };
+
+public:
     explicit ScissorsPlayer1(const std::string& actorName) :Character(actorName) {}
 
     void Initialize(const Transform& transform)override;
@@ -155,6 +163,8 @@ public:
 
     // 今回の突進でボビンに当たったかどうか
     bool hitBobbinInThisDash = false;
+
+    std::deque<TrailPoint> trailPoints; // トレイルモデルを描画する位置を表示
 
 private:
     std::shared_ptr<BoxComponent> dashAttackBox; // ダッシュ攻撃の当たり判定用のSphereComponent

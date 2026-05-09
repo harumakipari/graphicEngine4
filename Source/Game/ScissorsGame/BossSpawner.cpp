@@ -9,7 +9,6 @@ void BossSpawner::Initialize(const Transform& transform)
 {
     std::string parentName = "bossSpawner";
 
-
     patterns =
     {
         // パターン1
@@ -29,11 +28,9 @@ void BossSpawner::Initialize(const Transform& transform)
         }
     };
 
-
     // 登場エフェクト用のコンポーネントを追加
     spawnEffectComponent = this->AddComponent<class ParticleComponent>(parentName);
     spawnEffectComponent->Load("./Data/Effect/Files/ScissorsGameCloudEffect.json");
-
 }
 
 
@@ -41,8 +38,9 @@ void BossSpawner::Update(float deltaTime)
 {
     if (!isActive) return;
 
-    if (GetAliveEnemyCount() >= maxEnemies)
-    {// 最大数を超えていたら
+    int totalEnemyCount = GetAliveEnemyCount() + static_cast<int>(pendingSpawns.size());
+    if (totalEnemyCount >= maxEnemies)
+    {
         return;
     }
 
@@ -246,7 +244,7 @@ void BossSpawner::KillAllEnemies()
         }
         if (enemy->IsDead())
         {
-            return;
+            continue;
         }
         enemy->ChangeEnemyState(EnemyBase::YarnState::Dead);
         enemy->CallDeath(false); // 死亡演出開始処理
@@ -273,8 +271,8 @@ void BossSpawner::RefillSpawnBag()
 {
     spawnBag.clear();
 
-    // 15体 通常追跡
-    for (int i = 0; i < 15; i++)
+    // 18体 通常追跡
+    for (int i = 0; i < 18; i++)
     {
         spawnBag.push_back({
             YarnEnemyType::ChasePlayer,

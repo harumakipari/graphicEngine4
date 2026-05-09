@@ -18,7 +18,7 @@ void ButtonBombActor::Initialize(const Transform& transform)
     {
         std::shared_ptr<SphereComponent> sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
-        float radius = size.x * 0.5f;
+        float radius = size.x * 0.8f;
         float height = size.y;
         float mass = 60.0f;
         sphereComponent->SetRadius(radius);
@@ -27,15 +27,52 @@ void ButtonBombActor::Initialize(const Transform& transform)
         sphereComponent->SetLayer(CollisionLayer::Bomb);
         sphereComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Trigger);
         sphereComponent->SetResponseToLayer(CollisionLayer::Enemy, CollisionComponent::CollisionResponse::Trigger);
-        sphereComponent->SetCollisionOffsetY(height * 0.5f);
+        //sphereComponent->SetCollisionOffsetY(height * 0.5f);
         sphereComponent->Initialize();
         sphereComponent->SetOnHitCallback(
             [this](CollisionComponent* self, CollisionComponent* other)
             {
-                uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Enemy) | CollisionHelper::ToBit(CollisionLayer::Player);
-                if (other->GetCollisionLayer() & mask)
-                {// 敵かplayerが当たったら、爆発する
+                uint32_t enemyMask = CollisionHelper::ToBit(CollisionLayer::Enemy);
+                uint32_t playerMask = CollisionHelper::ToBit(CollisionLayer::Player);
+
+                // 敵が触れたら爆発
+                if (other->GetCollisionLayer() & enemyMask)
+                {
                     Explode();
+                    return;
+                }
+
+                // プレイヤー
+                if (other->GetCollisionLayer() & playerMask)
+                {
+                    auto player = dynamic_cast<ScissorsPlayer1*>(other->GetOwner());
+
+                    if (!player)
+                        return;
+
+                    // まだ爆発前
+                    if (!hasExploded)
+                    {
+                        Explode();
+
+                        if (!hasDamagedPlayer)
+                        {
+                            hasDamagedPlayer = true;
+                            player->TakeDamage(1);
+                        }
+
+                        return;
+                    }
+
+                    // 爆発後の爆風
+                    if (bombState == BombState::Exploded)
+                    {
+                        if (!hasDamagedPlayer)
+                        {
+                            hasDamagedPlayer = true;
+                            player->TakeDamage(1);
+                        }
+                    }
                 }
             });
     }
@@ -176,6 +213,7 @@ void ButtonBombActor::Explode()
         }
     }
 
+#if 0
     // プレイヤーにもダメージ
     auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>();
     if (player)
@@ -193,6 +231,8 @@ void ButtonBombActor::Explode()
             Logger::Log(U8("爆弾によってプレイヤーにダメージが入った"));
         }
     }
+#endif // 0
+
 }
 
 // ボス位置から爆弾位置まで発射する処理

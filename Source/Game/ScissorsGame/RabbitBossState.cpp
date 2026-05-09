@@ -40,7 +40,7 @@ void RabbitBossAttackSelectState::Enter()
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     BossAttackType type = PopAttack();
-    type = BossAttackType::Warp;
+    //type = BossAttackType::Buff;
     switch (type)
     {
     case BossAttackType::Warp:
@@ -321,8 +321,8 @@ void RabbitBossStunState::Execute(float deltaTime)
 {
     stunTimer -= deltaTime;
     if (stunTimer < 0.0f)
-    {// 待機ステートへ遷移する
-        enemy->GetStateMachine()->ChangeState("Idle");
+    { // 待機を挟まず即ワープ
+        enemy->GetStateMachine()->ChangeState("WarpPreview");
     }
 }
 
