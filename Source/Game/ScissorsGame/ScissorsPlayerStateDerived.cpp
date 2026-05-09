@@ -8,6 +8,7 @@
 #include "ScissorsGameEnemyBaseActor.h"
 #include "Game/Actors/Base/Character.h"
 #include "ScissorsPlayer1.h"
+#include "TrailModelActor.h"
 #include "YarnEnemyActor.h"
 #include "Engine/Utility/Time.h"
 #include "Physics/CollisionFunction.h"
@@ -442,6 +443,9 @@ void ScissorsPlayerDashState::Enter()
 
     // 今回の突進でボビンに当たったかフラグをリセットする
     player->hitBobbinInThisDash = false;
+
+    // トレイルモデルの描画
+    player->lastTrailSpawnPos = player->GetPosition();
 }
 
 void ScissorsPlayerDashState::Execute(float deltaTime)
@@ -494,6 +498,9 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
         player->lastDecalSpawnPos = currentPos;
     }
 #endif
+
+
+
 #if 0
     // 星のエフェクトを出す
     player->SpawnStarParticle(currentPos, dir);
@@ -507,6 +514,38 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     // 補間
     XMFLOAT3 nextPos = MathHelper::Lerp(segmentStart, segmentEnd, t);
     player->SetPosition(nextPos);
+
+
+    // 軌跡追加
+    {
+        float dist = MathHelper::Distance(currentPos, player->lastTrailSpawnPos);
+
+        if (dist >= player->trailSpawnDistance)
+        {
+            ScissorsPlayer1::TrailPoint point{};
+
+            // 移動方向
+            XMFLOAT3 moveDir =
+            {
+                nextPos.x - currentPos.x,
+                0.0f,
+                nextPos.z - currentPos.z
+            };
+
+            moveDir = MathHelper::Normalize(moveDir);
+
+            point.position = currentPos;
+            point.direction = moveDir;
+            point.rotation = player->GetForward();
+            point.life = 0.3f;
+
+            player->lastTrailSpawnPos = currentPos;
+
+            Transform tr{ point.position,{0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f} };
+            auto trailModel = player->GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<TrailModelActor>("trailModel", tr);
+            trailModel->SetDirection(point.direction);
+        }
+    }
 
 #if 1
     // ボスと糸巻がいるかどうかの判定 

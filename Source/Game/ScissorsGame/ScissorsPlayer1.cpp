@@ -337,15 +337,6 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     // ダッシュIDの初期化
     dashSerial = 0;
 
-    // 軌跡のモデル
-    for (int i = 0; i <= 10; i++)
-    {
-        auto  trailModel = AddComponent<SkeletalMeshComponent>("trailModel", parentName);
-        trailModel->SetModel("./Data/TeamModels/Player/TrailModel.gltf", false, true);
-        trailModel->SetIsCastShadow(false);
-        //trailModel->SetIsVisible(false);
-        trailModels.push_back(trailModel);
-    }
 }
 
 void ScissorsPlayer1::Update(float deltaTime)
@@ -410,25 +401,6 @@ void ScissorsPlayer1::Update(float deltaTime)
     }
 
     Character::Update(deltaTime);
-
-    // 軌跡モデルを更新する処理
-    for (size_t i = 0; i < trailPoints.size(); i++)
-    {
-        auto& point = trailPoints[i];
-        auto& model = trailModels[i];
-
-        model->SetWorldLocationDirect(point.position);
-
-        // 向き
-        rotationComponent->SetDirection(point.direction);
-
-        // 表示
-        model->SetIsVisible(true);
-
-        // 透明度
-        float alpha = 1.0f - (float)i / trailModels.size();
-        model->plusAlphaCBuffer->data.cpuColor.w = alpha * 0.5f;
-    }
 
     //　軌跡更新
     trail.UpdateTrail(deltaTime);

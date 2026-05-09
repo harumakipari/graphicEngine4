@@ -636,6 +636,9 @@
     <ClCompile Include="Source\Game\ScissorsGame\ResultScene.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\TrailModelActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1003,6 +1006,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsUiEndActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ResultScene.h" />
     <ClInclude Include="Source\Game\ScissorsGame\DecalData.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\TrailModelActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
