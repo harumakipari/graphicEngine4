@@ -3,6 +3,7 @@
 
 #include "BossSpawner.h"
 #include "RabbitBossEnemy.h"
+#include "ScissorsGameState.h"
 #include "ScissorsPlayer1.h"
 #include "Engine/Scene/Scene.h"
 
@@ -39,6 +40,7 @@ void RabbitBossAttackSelectState::Enter()
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     BossAttackType type = PopAttack();
+    type = BossAttackType::Warp;
     switch (type)
     {
     case BossAttackType::Warp:
@@ -112,13 +114,14 @@ void RabbitBossAttackWarpState::Enter()
     // 当たり判定を無効にする
     enemy->collisionBoxComponent->DisableCollision();
 
-    // スポーンの見た目を有効にする
-    enemy->bossSpawnMarkModel->SetIsVisible(true);
+    // 最初は追尾マークのみ見た目を有効にする
+    enemy->bossSpawnMarkModel->SetIsVisible(false);
 }
 
 void RabbitBossAttackWarpState::Execute(float deltaTime)
 {
     DirectX::XMFLOAT3 pos = enemy->GetPosition();
+    timer += deltaTime;
 
     switch (phase)
     {
@@ -126,11 +129,12 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
         if (enemy->IsFinishedDive())
         {// 潜りが終わったら
             phase = WarpPhase::Chase;
+            enemy->bossChaseMarkModel->SetIsVisible(true);
+            timer = 0.0f;
         }
         break;
     case WarpPhase::Chase:
-        timer += deltaTime;
-
+    {
         if (auto player = enemy->GetPlayer())
         {
             DirectX::XMFLOAT3 playerPos = player->GetPosition();
@@ -147,23 +151,103 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
             pos.x += dir.x * moveSpeed * deltaTime;
             pos.z += dir.z * moveSpeed * deltaTime;
 
+            // 出現範囲の半径
+            float spawnAttackRange = enemy->GetAttackRange();
+
+            float spawnMaxX = ScissorsGameState::stageMaxX - spawnAttackRange;
+            float spawnMaxZ = ScissorsGameState::stageMaxZ - spawnAttackRange;
+
+            float spawnMinX = ScissorsGameState::stageMinX + spawnAttackRange;
+            float spawnMinZ = ScissorsGameState::stageMinZ + spawnAttackRange;
+
+            // ステージ範囲制限
+            pos.x = std::clamp(pos.x, spawnMinX, spawnMaxX);
+            pos.z = std::clamp(pos.z, spawnMinZ, spawnMaxZ);
 
             enemy->SetPosition(pos);
         }
         if (timer > chaseTime)
         {
+            phase = WarpPhase::ChaseEnd;
+            timer = 0.0f;
+        }
+        // 追尾時に回転
+        auto rot = enemy->bossChaseMarkModel->GetRelativeEulerRotation();
+        rot.y += 15.0f * deltaTime;
+        enemy->bossChaseMarkModel->SetRelativeEulerRotationDirect(rot);
+
+        // 追尾マークの鼓動
+        float baseScale = enemy->GetSpawnScale();
+        float pulse = sinf(timer * 5.0f) * 0.2f + baseScale;
+
+        enemy->bossChaseMarkModel->SetRelativeScaleDirect({
+            pulse,
+            pulse,
+            pulse
+            });
+    }
+    break;
+    case WarpPhase::ChaseEnd:
+    {
+        float t = timer / chaseEndTime;
+        t = std::clamp(t, 0.0f, 1.0f);
+
+        float maxScale = enemy->GetSpawnScale();
+        // 縮小
+        float scale = std::lerp(maxScale, 0.0f, t);
+
+        enemy->bossChaseMarkModel->SetRelativeScaleDirect({
+            scale,
+            scale,
+            scale
+            });
+
+        // 回転を加速
+        auto rot = enemy->bossChaseMarkModel->GetRelativeEulerRotation();
+        rot.y += 30.0f * deltaTime;
+        enemy->bossChaseMarkModel->SetRelativeEulerRotationDirect(rot);
+
+        if (timer > chaseEndTime)
+        {
+            enemy->bossChaseMarkModel->SetIsVisible(false);
+
+            // 出現予告へ
+            phase = WarpPhase::Warning;
+            timer = 0.0f;
+
+            // 出現予告開始
+            enemy->bossSpawnMarkModel->SetRelativeScaleDirect({ 0.0f,0.0f,0.0f });
+        }
+    }
+    break;
+    case WarpPhase::Warning:
+    {
+        enemy->bossSpawnMarkModel->SetIsVisible(true);
+        // 場所が確定したら大きくしながら回転する
+        float t = timer / warningTime;
+        t = std::clamp(t, 0.0f, 1.0f);
+        float maxScale = enemy->GetSpawnScale();
+        float scale = std::lerp(0.0f, maxScale, t);
+        enemy->bossSpawnMarkModel->SetRelativeScaleDirect({ scale,scale,scale });
+        // 回転
+        auto rot = enemy->bossSpawnMarkModel->GetRelativeEulerRotation();
+        rot.y += 10.0f * deltaTime;
+        enemy->bossSpawnMarkModel->SetRelativeEulerRotationDirect(rot);
+
+        if (timer > warningTime)
+        {
             phase = WarpPhase::Emerge;
             timer = 0.0f;
             enemy->StartEmerge();
         }
-        break;
+    }
+    break;
     case WarpPhase::Emerge:
-        // 場所が確定したら大きくしながら回転する
 
         if (enemy->IsFinishedEmerge())
         {
             // 出現ダメージ
-           enemy->ApplyLandingDamage(); 
+            enemy->ApplyLandingDamage();
 
             enemy->GetStateMachine()->ChangeState("Idle");
         }
@@ -173,6 +257,7 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
     DirectX::XMFLOAT3 markPos = pos;
     markPos.y = 0.0f;
     enemy->bossSpawnMarkModel->SetWorldLocationDirect(markPos);
+    enemy->bossChaseMarkModel->SetWorldLocationDirect(markPos);
 }
 
 void RabbitBossAttackWarpState::Exit()
@@ -259,7 +344,7 @@ void RabbitBossDeathState::Enter()
     enemy->StartDeathPerform();
 
     // 敵の出現を終了させる
-    if (auto bossSpawner=enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<BossSpawner>())
+    if (auto bossSpawner = enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<BossSpawner>())
     {
         bossSpawner->Deactivate();
     }

@@ -32,6 +32,15 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     bossSpawnMarkModel->SetIsCastShadow(false);
     bossSpawnMarkModel->SetIsVisible(false);
 
+    // ボスの追尾位置モデルを生成する
+    bossChaseMarkModel = AddComponent<SkeletalMeshComponent>("bossChaseMarkModel", parentName);
+    bossChaseMarkModel->SetModel("./Data/TeamModels/Marks/BossChaseMark.gltf", false, true);
+    bossChaseMarkModel->overrideDeferredPipelineName = "OpaqueMarkPS";
+    bossChaseMarkModel->SetIsCastShadow(false);
+    bossChaseMarkModel->SetRelativeScaleDirect({ 1.65f,1.65f,1.65f });
+    bossChaseMarkModel->SetIsVisible(false);
+
+
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
     // 玉止めの半径を設定する
     tieableRadius = size.x * 0.4f;

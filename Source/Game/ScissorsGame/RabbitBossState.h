@@ -111,6 +111,8 @@ class RabbitBossAttackWarpState : public RabbitBossStateBase
     {
         Dive,     // 潜る
         Chase,    // 追尾
+        ChaseEnd, // 追尾終了
+        Warning,  // 警告
         Emerge    // 出現
     };
 
@@ -133,7 +135,9 @@ private:
     float timer = 0.0f;
 
     const float diveTime = 0.5f;
-    const float chaseTime = 3.0f;
+    const float chaseTime = 2.5f;   // 追尾時間
+    const float chaseEndTime = 0.5f;   // 追尾終了演出時間
+    const float warningTime = 1.0f; // 予告時間
 
 };
 

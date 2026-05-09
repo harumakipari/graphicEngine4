@@ -8,7 +8,7 @@
 
 class RabbitBossEnemyActor :public EnemyBase
 {
-    enum class DropType:uint8_t
+    enum class DropType :uint8_t
     {
         Bomb,
         Heart,
@@ -24,7 +24,7 @@ public:
     void DrawImGuiDetails() override;
 
     // スタン状態かどうか
-    bool IsStunned() ;
+    bool IsStunned();
 
     // 
     bool IsTied()  override
@@ -91,6 +91,12 @@ public:
     // 出現している全ての敵を玉止めする関数
     void ApplyTiedAllEnemy();
 
+    // 出現攻撃範囲を取得する
+    float GetAttackRange() { return spawnAttackRange; }
+
+    // 出現範囲のモデルスケールを取得する
+    float GetSpawnScale() { return spawnScaleMax; }
+
 private:
     // ダメージが入る場所を生成する
     void CreteDamageZone();
@@ -114,6 +120,7 @@ public:
     std::shared_ptr<BoxComponent> collisionBoxComponent; // ボスの当たり判定
     std::shared_ptr<SkeletalMeshComponent> stunModel; // スタン中に表示するモデル
     std::shared_ptr<SkeletalMeshComponent> bossSpawnMarkModel; // ボスの出現の場所モデル
+    std::shared_ptr<SkeletalMeshComponent> bossChaseMarkModel; // ボスの追尾の場所モデル
 
 private:
     std::vector<DirectX::XMFLOAT3> spawnPoints; // 出現位置
@@ -128,7 +135,7 @@ private:
 
     std::shared_ptr<UIImageComponent> gaugeFrameBackComponent;  // ボスHPゲージのスプライト描画
     std::shared_ptr<UIGaugeComponent> gaugeUi; // ボスHPのゲージUI
-    DirectX::XMFLOAT2 gaugeUiOffset={-184.0f,-366.0f}; // ゲージのUIオフセット値
+    DirectX::XMFLOAT2 gaugeUiOffset = { -184.0f,-366.0f }; // ゲージのUIオフセット値
     DirectX::XMFLOAT2 gaugeFrameOffset = { 8.0f,0.0f }; // ゲージフレームのオフセット値
 
     float diveOffsetY = 0.0f;
@@ -146,5 +153,7 @@ private:
     std::vector<DropType> dropBag;  // アイテムを落とす中身のバッグ
 
     bool endPerform = false;
+
+    float spawnScaleMax = 1.65f; // 出現マークの大きさ
 };
 
