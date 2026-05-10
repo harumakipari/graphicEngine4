@@ -1,11 +1,12 @@
 #include "pch.h"
-#include "GameScene.h"
+#include "TutorialScene.h"
 #include <profiler.h>
 
 #ifdef USE_IMGUI
 #define IMGUI_ENABLE_DOCKING
 #endif
 
+#include "TutorialActor.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
@@ -44,7 +45,7 @@
 #include "UI/Game/Pause.h"
 
 
-bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
+bool TutorialScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
     HRESULT hr = { S_OK };
 
@@ -152,50 +153,6 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     mouseCursorPause->SetPivot({ 0.1f, 0.1f });
     mouseCursorPause->SetVisible(false);
 
-    // デカール用関連
-    {
-        //	描画用プリミティブ生成
-        decal_cube = std::make_unique<GeometricCube>();
-        //	デカールテクスチャ読み込み
-        D3D11_TEXTURE2D_DESC texture2d_desc;
-        decal_textures.resize(1);
-        hr = LoadTextureFromFile(device, L"./Data/Textures/Decal/gun_holes.png", decal_textures[0].color_shader_resource_view.GetAddressOf(), &texture2d_desc);
-        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-        //	事前に置いておく
-        decal_datas.resize(1);
-
-        decal_datas[0].translation = { 12.0f,0.0f,12.0f };
-        decal_datas[0].rotation.x = DirectX::XM_PIDIV2;
-        decal_datas[0].scaling = { 10, 10, 10 };
-        decal_datas[0].decal_index = 0;
-
-#if 0
-        // 定数バッファを生成する
-        decalCBuffer = std::make_shared<ConstantBuffer<gbuffer_decal_constants>>(device);
-#endif // 0
-
-        // デカール用ピクセルシェーダーを生成する
-        hr = CreatePsFromCSO(device, "./Shader/GBufferDecalPrimitivePS.cso", gbuffer_decal_pixel_shader.ReleaseAndGetAddressOf());
-        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-    }
-
-    // ジオメトリックシェーダー
-    {
-
-        //	ジオメトリプリミティブ用シェーダー準備
-        {
-            D3D11_INPUT_ELEMENT_DESC input_element_desc[]
-            {
-                { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-                { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            };
-            hr = CreateVsFromCSO(device, "./Shader/geometricPrimitiveVS.cso", geometric_primitive_vertex_shader.GetAddressOf(), geometric_primitive_input_layout.GetAddressOf(), input_element_desc, ARRAYSIZE(input_element_desc));
-            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-        }
-
-    }
-
     normalCoin = {
     0.9f, 2.3f,
     0.15f, 15.0f,
@@ -217,29 +174,29 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     return true;
 }
 
-void GameScene::Start()
+void TutorialScene::Start()
 {
-    auto& param = SceneTransitionManager::Instance().GetParams();
-    STAGE_NAME stage = STAGE_NAME::FIRST;
-
-    if (param.contains("stage"))
-    {
-        std::string stageName = param.at("stage");
-        stage = StringToStageName(stageName);
-    }
-
-    stage = STAGE_NAME::DIFFICULT;
+    STAGE_NAME stage = STAGE_NAME::TUTORIAL;
     LoadStage(stage);
 
     auto uiStartActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUIStartActor>("uiStartActor");
 
     auto uiFinishActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiEndActor>("uiEndActor");
 
+    // チュートリアルアクターを生成
+    auto tutorialActor = GetActorManager()->CreateAndRegisterActorWithTransform<TutorialActor>("TutorialActor");
+
+    SceneTransitionManager::Instance().SetOnOpeningFinished([this, tutorialActor]()
+        {
+            tutorialActor->StartTutorial();
+        });
+
+
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
 }
 
-void GameScene::Update(float deltaTime)
+void TutorialScene::Update(float deltaTime)
 {
     using namespace DirectX;
 
@@ -251,22 +208,6 @@ void GameScene::Update(float deltaTime)
 
     // スコアシステムの更新処理
     ScoreSystem::Update(deltaTime);
-
-    // 死亡演出
-    {
-        DirectX::XMFLOAT3 playerPos = player->GetPosition();
-        DirectX::XMFLOAT2 playerUiPos = WorldToUI(playerPos);
-
-        float deathRadius = player->GetDeathRadius();
-        gameSceneCBuffer->data.playerScreenPosition = playerUiPos;
-        gameSceneCBuffer->data.radius = deathRadius;
-#if _DEBUG
-        gameSceneCBuffer->data.screenSize = { 1280.0f,720.0f };
-#else
-        gameSceneCBuffer->data.screenSize = { Graphics::GetScreenWidth(),Graphics::GetScreenHeight() };
-#endif
-
-    }
 
     // マウスカーソルの更新処理
     {
@@ -299,37 +240,6 @@ void GameScene::Update(float deltaTime)
                 mouseCursorGrab->SetVisible(false);
             }
         }
-        //　デカールテスト
-#if 0
-        HitResultWithActor hit = {};
-        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Floor);
-        if (CollisionFunction::RaycastFromMouse(cursor, hit, mask))
-        {
-            ViewConstants viewData = {};
-            if (auto camera = cameraManager->GetRenderCamera(this))
-            {
-                viewData = camera->GetViewConstants();
-            }
-            else
-            {
-                Logger::Error(U8("カメラがない"));
-            }
-
-            DirectX::XMMATRIX camera_world_matrix;
-            camera_world_matrix = DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(&viewData.view));
-            DirectX::XMVECTOR Scale, Rotation, Translation;
-            DirectX::XMMatrixDecompose(&Scale, &Rotation, &Translation, camera_world_matrix);
-            DirectX::XMFLOAT4 rotation;
-            DirectX::XMStoreFloat4(&rotation, Rotation);
-
-            decal_data data;
-            data.scaling.z = 3;	//	適当に引き延ばす
-            data.rotation = MathHelper::ConvertQuaternionToEuler(rotation);
-            data.translation = hit.hitPoint;
-            data.decal_index = 0;
-            decal_datas.push_back(data);
-        }
-#endif // 0
     }
 
     if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
@@ -340,12 +250,12 @@ void GameScene::Update(float deltaTime)
 }
 
 // 定数バッファの更新処理をシーンごとにカスタマイズできるようにするための仮想関数
-void GameScene::UpdateConstants(ID3D11DeviceContext* immediateContext, float deltaTime)
+void TutorialScene::UpdateConstants(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
 
 }
 
-void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
+void TutorialScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 {
     RenderState::BindSamplerStates(immediateContext);
     RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
@@ -446,9 +356,6 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
     RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
     gBufferRenderTarget->Deactivate(immediateContext);
-
-
-    GBufferDecalPass(immediateContext);
 
 
     DirectX::XMFLOAT4X4 cameraView;
@@ -633,7 +540,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 #endif
 }
 
-void GameScene::SetUpActors()
+void TutorialScene::SetUpActors()
 {
     Transform mainCameraTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<FixedCamera>("fixedCameraActor", mainCameraTr);
@@ -676,7 +583,7 @@ void GameScene::SetUpActors()
 
     // ポーズアクターを生成
     auto pauseActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Pause>("pauseActor");
-    pauseActor->SetRetrySceneName("GameScene");
+    pauseActor->SetRetrySceneName("TutorialScene");
 
     // スコア表示アクターを生成
     Transform scoreUiTr(DirectX::XMFLOAT3{ 16.0f,11.6f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
@@ -686,191 +593,18 @@ void GameScene::SetUpActors()
     Transform comboUiTr(DirectX::XMFLOAT3{ 4.256f,9.3f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
     auto comboUiActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ComboUiActor>("comboUiActor", comboUiTr);
 
-#if 0// ボスを生成　
-    Transform bossTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,180.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto rabbitBoss = this->GetActorManager()->CreateAndRegisterActorWithTransform<RabbitBossEnemyActor>("boss", bossTr);
-#endif // 0// ボスを生成　
-
-#if 0// ハリネズミを生成　
-    Transform needleTr(DirectX::XMFLOAT3{ 1.0f,0.0f,5.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    needleEnemyActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<NeedleEnemyActor>("needleEnemy", needleTr);
-    needleEnemyActor->SetMoveDirection({ 1.0f,0.0f,1.0f });
-#endif // 0// ハリネズミを生成　
-#if 0
-    Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("coin", coinTr);
-#endif // 0
-
-#if 0 
-    Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemy", coinTr);
-
-    Transform needleTr(DirectX::XMFLOAT3{ 1.0f,0.0f,5.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto Actor = this->GetActorManager()->CreateAndRegisterActorWithTransform<EnemyBase>("enemy", needleTr);
-
-#endif // 0
-#if  0
-
-    //Transform bobbinTr(DirectX::XMFLOAT3{ 4.5f,0.0f,19.5f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    //auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
-    //bobbin->SetBobbinSize(BobbinActor::BobbinSize::Medium);
-
-    //Transform bobbinTr1(DirectX::XMFLOAT3{ 19.5f,0.0f,4.5f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    //auto bobbin1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr1);
-    //bobbin1->SetBobbinSize(BobbinActor::BobbinSize::Medium);
-#endif // 0
-
     // ゲームマネージャーを生成
     Transform gameManagerTransform(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto gameManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsGameManager>("gameManagerActor", gameManagerTransform);
     gameManagerActor->StartGame();
 
-    //Transform timerActorTransform(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    //auto scissorsUiTimeActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiTimerActor>("timeActor", timerActorTransform);
 
     //SpawnEnemy({ 10.5f,0,5 }, YarnEnemyType::Static,true);
 
 }
 
-// デカールパス
-void GameScene::GBufferDecalPass(ID3D11DeviceContext* immediateContext)
-{
-    UINT viewportCount{ D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE };
-    D3D11_VIEWPORT cachedViewPorts[D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE];
-    Microsoft::WRL::ComPtr<ID3D11RenderTargetView> cachedRenderTargetView;
-    Microsoft::WRL::ComPtr<ID3D11DepthStencilView> cachedDepthStencilView;
-    viewportCount = D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE;
-    immediateContext->RSGetViewports(&viewportCount, cachedViewPorts);
-    immediateContext->OMGetRenderTargets(1, cachedRenderTargetView.ReleaseAndGetAddressOf(),
-        cachedDepthStencilView.ReleaseAndGetAddressOf());
-
-    static constexpr int SceneCBVIndex = 1;
-    static constexpr int GBufferSRVIndex = 0;
-    static constexpr int SamplerStateIndex[5] = { 0, 1 , 2, 3, 4 };
-
-    //	出力先をGBufferに変更
-    {
-        auto rtv = gBufferRenderTarget->renderTargetViews[static_cast<int>(SRV_SLOT::COLOR)];
-
-        immediateContext->OMSetRenderTargets(
-            1,
-            &rtv,
-            gBufferRenderTarget->depthStencilView
-        );
-        //	ステンシルを利用するのでクリア
-        immediateContext->ClearDepthStencilView(gBufferRenderTarget->depthStencilView, D3D11_CLEAR_STENCIL, 0.0f, 0);
-    }
-
-    // ビューポートの設定
-    D3D11_VIEWPORT scene_viewport{};
-    scene_viewport.TopLeftX = 0;
-    scene_viewport.TopLeftY = 0;
-#if _DEBUG
-    scene_viewport.Width = 1280;// Graphics::GetScreenWidth();
-    scene_viewport.Height = 720;    // Graphics::GetScreenHeight();
-#else
-    scene_viewport.Width = Graphics::GetScreenWidth();
-    scene_viewport.Height = Graphics::GetScreenHeight();
-#endif
-
-    scene_viewport.MinDepth = 0.0f;
-    scene_viewport.MaxDepth = 1.0f;
-    immediateContext->RSSetViewports(1, &scene_viewport);
-
-    RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
-
-
-
-    //	デカール書き込み
-    //for (auto& decal : decal_datas)
-    for (auto& decal : player->decal_datas)
-    {
-        //	姿勢生成
-        DirectX::XMMATRIX S = DirectX::XMMatrixScaling(decal.scaling.x, decal.scaling.y, decal.scaling.z);
-        DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(decal.rotation.x, decal.rotation.y, decal.rotation.z);
-        DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(decal.translation.x, decal.translation.y, decal.translation.z);
-        DirectX::XMMATRIX World = S * R * T;
-        DirectX::XMFLOAT4X4 world;
-        DirectX::XMStoreFloat4x4(&world, World);
-
-        DebugRender::DrawBox(decal.translation, decal.scaling, { 1,1,1,1 }, 0, true);
-
-        //	SRVとして他のGBufferを利用するので設定
-        ID3D11ShaderResourceView* shader_resource_views[] =
-        {
-            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],	//	カラーには書き込みを行うので適当にダミーを設定
-             gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::EMISSIVE)],
-             gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::NORMAL)],
-            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::PBR_VALUE)],
-            gBufferRenderTarget->renderTargetShaderResourceViews[static_cast<int>(SRV_SLOT::POSITION)],
-        };
-        immediateContext->PSSetShaderResources(GBufferSRVIndex, _countof(shader_resource_views), shader_resource_views);
-
-        // 必要な情報を設定しておく
-#if 0
-        {
-            static constexpr int GbufferDecalTextureSRVIndex = 30;
-            static constexpr int GbufferDecalTextureCBVIndex = 12;
-            immediateContext->PSSetShaderResources(GbufferDecalTextureSRVIndex, 1, decal_textures[decal.decal_index].color_shader_resource_view.GetAddressOf());
-
-            gbuffer_decal_constants decal_constant;
-            {
-                //	ボックスの向きを保存
-                DirectX::XMStoreFloat4(&decal_constant.decal_direction, R.r[2]);
-                decal_constant.decal_direction.w = 0;
-
-                //	ボックスの空間に変換するための行列
-                DirectX::XMMATRIX V = DirectX::XMMatrixInverse(nullptr, World);
-                DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(1, 1, 0, 1);
-                DirectX::XMStoreFloat4x4(&decal_constant.decal_inverse_transform, V * P);
-            }
-            decalCBuffer->data = decal_constant;
-            decalCBuffer->Activate(immediateContext, GbufferDecalTextureCBVIndex);
-        }
-#endif // 0
-
-
-        {
-            //	頂点シェーダー等の設定
-            immediateContext->VSSetShader(geometric_primitive_vertex_shader.Get(), nullptr, 0);
-            immediateContext->IASetInputLayout(geometric_primitive_input_layout.Get());
-            immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-            //	裏面描画してステンシル値1を書き込む
-            {
-                RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
-                RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::DECAL, 1);
-
-                std::function<void()> callback = ([&]()
-                    {
-                        immediateContext->PSSetShader(nullptr, nullptr, 0);
-                    });
-                DirectX::XMFLOAT4 color = { 1, 1, 1, 1 };
-                decal_cube->Render(world, color, callback);
-            }
-
-            //	表面描画してステンシル値1と比較
-            {
-                RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_FRONT);
-                RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::DECAL, 0);
-                std::function<void()> callback = ([&]()
-                    {
-                        immediateContext->PSSetShader(gbuffer_decal_pixel_shader.Get(), nullptr, 0);
-                    });
-                decal_cube->Render(world, decal.color, callback);
-            }
-        }
-    }
-
-    immediateContext->RSSetViewports(viewportCount, cachedViewPorts);
-    immediateContext->OMSetRenderTargets(1, cachedRenderTargetView.GetAddressOf(), cachedDepthStencilView.Get());
-
-    cachedRenderTargetView.Reset();
-    cachedDepthStencilView.Reset();
-}
-
 // ステージをロードする
-void GameScene::LoadStage(STAGE_NAME stageId)
+void TutorialScene::LoadStage(STAGE_NAME stageId)
 {
 #if 1
     auto waveManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaveManager>("waveManager");
@@ -884,7 +618,7 @@ void GameScene::LoadStage(STAGE_NAME stageId)
 }
 
 // ステージごとのギミック生成
-void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
+void TutorialScene::SpawnStageGimmicks(STAGE_NAME stageId)
 {
     switch (stageId)
     {
@@ -953,7 +687,7 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
 }
 
 // ステージごとのBGMを設定する
-void GameScene::SetupBGM(STAGE_NAME stageId)
+void TutorialScene::SetupBGM(STAGE_NAME stageId)
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
@@ -983,7 +717,7 @@ void GameScene::SetupBGM(STAGE_NAME stageId)
 }
 
 // STAGE_NAMEを変換する関数
-STAGE_NAME GameScene::StringToStageName(const std::string& name)
+STAGE_NAME TutorialScene::StringToStageName(const std::string& name)
 {
     if (name == "TUTORIAL")
         return STAGE_NAME::TUTORIAL;
@@ -1010,14 +744,14 @@ STAGE_NAME GameScene::StringToStageName(const std::string& name)
 }
 
 
-bool GameScene::Uninitialize(ID3D11Device* device)
+bool TutorialScene::Uninitialize(ID3D11Device* device)
 {
     SceneBase::Uninitialize(device);
     Physics::Instance().Finalize();
     return true;
 }
 
-void GameScene::DrawGui()
+void TutorialScene::DrawGui()
 {
 #ifdef USE_IMGUI
     SceneBase::DrawGui();
@@ -1077,7 +811,7 @@ void GameScene::DrawGui()
 }
 
 // 仮の敵を生成する関数
-void GameScene::SpawnEnemy(
+std::shared_ptr<EnemyBase> TutorialScene::SpawnEnemy(
     const XMFLOAT3& pos,
     YarnEnemyType type, bool isBig,
     float speed, const XMFLOAT3& dir)
@@ -1147,5 +881,7 @@ void GameScene::SpawnEnemy(
     }
     enemy->SetSpeed(speed);
     enemy->SetUpVisual();
+
+    return enemy;
 }
 

@@ -233,7 +233,7 @@ StageData StageLoader::Load(STAGE_NAME stageId)
                 },
             },
 
-
+#if 0
             {
                 // Wave 2　ハリネズミ＋追尾4体
         {
@@ -256,7 +256,6 @@ StageData StageLoader::Load(STAGE_NAME stageId)
                                         },false, -1,5.0f
 
                                             },
-#if 0
                        {
                 // Wave 3 ハリネズミ ハサミ
                 {

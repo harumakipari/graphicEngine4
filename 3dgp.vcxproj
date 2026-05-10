@@ -348,6 +348,10 @@
     <ClCompile Include="Source\Game\ScissorsGame\TitleScene.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\TitleStageActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\TrailModelActor.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\TutorialActor.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\TutorialMananger.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\TutorialScene.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\TutorialStep.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\WaveManager.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\YarnEnemyActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\YarnWallActor.cpp" />
@@ -544,6 +548,10 @@
     <ClInclude Include="Source\Game\ScissorsGame\StageLoader.h" />
     <ClInclude Include="Source\Game\ScissorsGame\TitleScene.h" />
     <ClInclude Include="Source\Game\ScissorsGame\Trail.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\TutorialActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\TutorialManager.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\TutorialScene.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\TutorialStep.h" />
     <ClInclude Include="Source\Game\ScissorsGame\WaveManagaer.h" />
     <ClInclude Include="Source\Game\ScissorsGame\YarnEnemyActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\YarnWallActor.h" />

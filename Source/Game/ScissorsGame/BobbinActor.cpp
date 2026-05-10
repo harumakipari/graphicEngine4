@@ -68,7 +68,7 @@ void BobbinActor::Initialize(const Transform& transform)
     // チャージ音のオーディオコンポーネント
     chargeAudioComponent = AddComponent<CoreAudioSourceComponent>("chargeAudioComponent", parentName);
     chargeAudioComponent->SetSource(L"./Data/Sound/SE1/bobbin_charge.wav");
-    chargeAudioComponent->SetVolume(0.2f);
+    chargeAudioComponent->SetVolume(0.5f);
     chargeAudioComponent->SetLoop(true);
 }
 

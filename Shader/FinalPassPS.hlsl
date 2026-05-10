@@ -185,11 +185,11 @@ float4 main(VS_OUT pin) : SV_TARGET
     float dist = length(delta);
 
     // â~äOÇŸÇ«1Ç…Ç»ÇÈ
-    float mask =
-    smoothstep(radius, radius + softness, dist);
+    //float mask =
+    //smoothstep(radius, radius + softness, dist);
 
     // çïÇ÷
-    finalColor.rgb *= (1.0f - mask);
+    //finalColor.rgb *= (1.0f - mask);
 
 
     return finalColor;

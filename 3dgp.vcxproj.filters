@@ -639,6 +639,24 @@
     <ClCompile Include="Source\Game\ScissorsGame\TrailModelActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\BonusUiActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\TitleStageActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\TutorialScene.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\TutorialActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\TutorialMananger.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\TutorialStep.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1007,6 +1025,14 @@
     <ClInclude Include="Source\Game\ScissorsGame\ResultScene.h" />
     <ClInclude Include="Source\Game\ScissorsGame\DecalData.h" />
     <ClInclude Include="Source\Game\ScissorsGame\TrailModelActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\BonusUiActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ResultData.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\TitleBookActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\TitleStageActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\TutorialScene.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\TutorialActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\TutorialStep.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\TutorialManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
