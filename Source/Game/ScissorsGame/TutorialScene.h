@@ -86,7 +86,7 @@ public:
     std::shared_ptr<EnemyBase> SpawnEnemy(
         const XMFLOAT3& pos,
         YarnEnemyType type, bool isBig,
-        float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 });
+        float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 }, bool isTied = false);
 private:
     // ステージをロードする
     void LoadStage(STAGE_NAME stageId);

@@ -9,6 +9,7 @@
 #include "Game/Actors/Base/Character.h"
 #include "ScissorsPlayer1.h"
 #include "TrailModelActor.h"
+#include "TutorialActor.h"
 #include "YarnEnemyActor.h"
 #include "Engine/Utility/Time.h"
 #include "Physics/CollisionFunction.h"
@@ -607,6 +608,17 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
     // セグメント終了
     if (t >= 1.0f)
     {
+        if (auto tutorialActor = player->GetOwnerScene()->GetActorManager()->GetActorOfType<TutorialActor>())
+        {// チュートリアルだったら
+            if (auto currentStep = tutorialActor->GetTutorialManager()->GetCurrentState())
+            {
+                if (currentStep->GetName()=="TutorialStep_DashClothSide")
+                {// 反射を確認するステートで
+                    currentStep->IsUseRedirect(true);
+                }
+            }
+        }
+
         player->currentSegment++;
 
         if (player->currentSegment >= player->fixedDashPoints.size() - 1)
@@ -684,6 +696,9 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
 
 void ScissorsPlayerDashState::Exit()
 {
+    // プレイヤーのダッシュの値をリセット
+    player->currentSegment = 0;
+
     player->PlayAnimation("Idle", true, true, 0.1f);
     player->characterMovementComponent->ResetSpeed(); // ダッシュが終わったら移動速度をリセットする
 
@@ -706,6 +721,9 @@ void ScissorsPlayerDashState::Exit()
 
     // ボビンに当たったフラグをリセットする
     player->hitBobbinInThisDash = false;
+
+
+
 }
 
 

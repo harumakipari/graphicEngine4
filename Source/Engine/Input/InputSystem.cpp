@@ -243,6 +243,8 @@ void InputSystem::Initialize()
 
     inputKeys["RT"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::RightTrigger));
 
+    inputKeys["TutorialOk"].emplace_back(std::make_unique<Mouse>(VK_LBUTTON));  // 左ボタン
+    inputKeys["TutorialOk"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_A));     // A
 
 
     // 今回のゲームで使用する入力キーをここでまとめて登録しておく

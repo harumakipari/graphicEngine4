@@ -13,6 +13,7 @@
 #include "ScissorsGameEnemyBaseActor.h"
 #include "ScissorsGameState.h"
 #include "ScorePopupActor.h"
+#include "TutorialActor.h"
 #include "Engine/Scene/SceneBase.h"
 #include "Engine/Utility/Time.h"
 #include "Physics/CollisionFunction.h"
@@ -52,6 +53,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     stateMachine_->RegisterState(std::make_unique<ScissorsPlayerDashState>(this));
     stateMachine_->RegisterState(std::make_unique<ScissorsPlayerChargeDashState>(this));
     stateMachine_->RegisterState(std::make_unique<ScissorsPlayerStunState>(this));
+    stateMachine_->RegisterState(std::make_unique<ScissorsPlayerDeathState>(this));
 
     // ステートマシンを character に追加
     this->SetStateMachine(stateMachine_);
@@ -158,6 +160,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                 if (stateMachine_->GetStateName() != "Dash")
                     return;
 
+
                 auto enemy = dynamic_cast<EnemyBase*>(other->GetOwner());
                 if (!enemy) return;
 
@@ -220,6 +223,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
 
                     bool isReflected = (currentSegment > 0);    // 反射かどうか
+
 
                     // ヒット処理と倒したかどうかを取得する
                     bool isKilled = enemy->OnHitByDash(isReflected);
@@ -964,6 +968,19 @@ void ScissorsPlayer1::UseDash()
 
 }
 
+// ダッシュ可能かどうかを取得する関数
+bool ScissorsPlayer1::CanDash() const
+{
+    if (auto tutorialActor=GetOwnerScene()->GetActorManager()->GetActorOfType<TutorialActor>())
+    {// チュートリアルだったら
+        if (auto currentStep = tutorialActor->GetTutorialManager()->GetCurrentState())
+        {
+            return currentStep->CanDash();
+        }
+    }
+    return dashCount > 0;
+}
+
 // ダッシュが失敗した時に呼ぶ関数　これを呼ぶとダッシュの残り回数が減らない
 void ScissorsPlayer1::FailDash()
 {
@@ -1035,6 +1052,18 @@ void ScissorsPlayer1::ResolveReflectedKills()
         ScoreSystem::AddReflectionBonus(reflectionBonus);
         InputSystem::SetVibration(1.0f, 0.2f);
         Logger::Log("ReflectionBonus: " + std::to_string(reflectionBonus));
+
+        if (auto tutorialActor = GetOwnerScene()->GetActorManager()->GetActorOfType<TutorialActor>())
+        {// チュートリアルだったら
+            if (auto currentStep = tutorialActor->GetTutorialManager()->GetCurrentState())
+            {
+                if (currentStep->GetName() == "TutorialStep_AttackEnemyRedirect")
+                {// 縫い返りを確認するステートで
+                    currentStep->SetRedirectKillEnemy(true);
+                }
+            }
+        }
+
     }
     if (dashBonus > 0)
     {// 5体以上

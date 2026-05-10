@@ -814,7 +814,7 @@ void TutorialScene::DrawGui()
 std::shared_ptr<EnemyBase> TutorialScene::SpawnEnemy(
     const XMFLOAT3& pos,
     YarnEnemyType type, bool isBig,
-    float speed, const XMFLOAT3& dir)
+    float speed, const XMFLOAT3& dir,bool isTied)
 {
     DirectX::XMFLOAT3 scale = { 1.0f,1.0f,1.0f };
 
@@ -881,6 +881,14 @@ std::shared_ptr<EnemyBase> TutorialScene::SpawnEnemy(
     }
     enemy->SetSpeed(speed);
     enemy->SetUpVisual();
+
+    if (isTied)
+    {// ‹ÊŽ~‚ß‚³‚ê‚Ä‚¢‚½‚ç
+        enemy->OnTied();
+        enemy->SetBasePosition(pos);
+        enemy->Face({ 0,0,-1 });
+    }
+
 
     return enemy;
 }

@@ -72,7 +72,7 @@ public:
     AimData GetAimData() const { return lastValidAimData; }
 
     // ダッシュ可能かどうかを取得する関数
-    bool CanDash() const { return dashCount > 0; }
+    bool CanDash() const;
 
     //　ダッシュを使用時に呼ぶ関数　これを呼ぶとダッシュの残り回数が減る
     void UseDash();
