@@ -13,7 +13,7 @@ TutorialStep::TutorialStep(TutorialActor* actor) :owner(actor)
 {
     auto uiManager = Scene::GetCurrentScene()->GetUIManager();
 
-    XMFLOAT2 mousePos = { 930.0f,270.0f };
+    XMFLOAT2 mousePos = { 870.0f,200.0f };
     XMFLOAT2 mouseSize = { 90.0f,90.0f };
 
     // コントローラー対応用

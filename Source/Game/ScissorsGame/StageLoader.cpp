@@ -225,15 +225,13 @@ StageData StageLoader::Load(STAGE_NAME stageId)
     case STAGE_NAME::DIFFICULT: // ハリネズミ敵ステージ
         data.waves =
         {
-#if 1
                        {
                 // Wave 1 ハリネズミ
                 {
                     { { 12,0,12},  YarnEnemyType::LongRangeAttack, 0.0f },
                 },
             },
-
-#if 0
+#if 1
             {
                 // Wave 2　ハリネズミ＋追尾4体
         {
@@ -256,6 +254,9 @@ StageData StageLoader::Load(STAGE_NAME stageId)
                                         },false, -1,5.0f
 
                                             },
+                     #endif // 0
+
+#if 0
                        {
                 // Wave 3 ハリネズミ ハサミ
                 {
@@ -269,7 +270,6 @@ StageData StageLoader::Load(STAGE_NAME stageId)
                        true
             },
 
-                     #endif // 0
                      #endif // 0
               {
                 // Wave ４　波波　ハサミ

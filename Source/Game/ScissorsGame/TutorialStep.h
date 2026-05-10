@@ -59,7 +59,7 @@ protected:
     std::shared_ptr<UIImageComponent> tutorialMouseClickOffImage;
 
     XMFLOAT2 imagePos = { 330.0f,6.0f };
-    XMFLOAT2 imageSize = { 600.0f,275.0f };
+    XMFLOAT2 imageSize = { 600.0f,250.0f };
 
     float mouseBlinkTimer = 0.0f;
     float mouseBlinkInterval = 0.6f; // êÿÇËë÷Ç¶ä‘äu

@@ -547,14 +547,14 @@ void TutorialScene::SetUpActors()
     mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(30), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 20.f, 500.0f);
 
-    Transform cameraTargetTr(DirectX::XMFLOAT3{ 11.792f,10.5f,-9.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ 11.966f,11.232f,-10.748f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
     mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
 
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
-    mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-31.0f));
+    mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-30.5f));
     mainCameraComponent->SetFov(DirectX::XMConvertToRadians(30.0f));
-    mainCameraComponent->distance = 10.9f;
+    mainCameraComponent->distance = 11.751f;
 
     {
         PROFILE_SCOPE("Create Player");

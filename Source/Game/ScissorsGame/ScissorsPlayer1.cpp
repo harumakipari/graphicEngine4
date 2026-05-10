@@ -357,10 +357,20 @@ void ScissorsPlayer1::Update(float deltaTime)
         return;
     }
 
-    if (hp <= 0 && !startDeathPerform)
-    {// playerが死亡したら
-        GetStateMachine()->ChangeState("Death");
-        startDeathPerform = true;
+    if (auto tutorialActor = GetOwnerScene()->GetActorManager()->GetActorOfType<TutorialActor>())
+    {// チュートリアルだったら
+        if (hp <= 2)
+        {
+            hp = 2;
+        }
+    }
+    else
+    {
+        if (hp <= 0 && !startDeathPerform)
+        {// playerが死亡したら
+            GetStateMachine()->ChangeState("Death");
+            startDeathPerform = true;
+        }
     }
 
     if (damageCooldownTimer > 0.0f)
@@ -971,7 +981,7 @@ void ScissorsPlayer1::UseDash()
 // ダッシュ可能かどうかを取得する関数
 bool ScissorsPlayer1::CanDash() const
 {
-    if (auto tutorialActor=GetOwnerScene()->GetActorManager()->GetActorOfType<TutorialActor>())
+    if (auto tutorialActor = GetOwnerScene()->GetActorManager()->GetActorOfType<TutorialActor>())
     {// チュートリアルだったら
         if (auto currentStep = tutorialActor->GetTutorialManager()->GetCurrentState())
         {
