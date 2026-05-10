@@ -119,6 +119,7 @@ bool ResultScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     Logger::Log(U8("反射ボーナス点") + std::to_string(stats.reflectionBonusScore));
     Logger::Log(U8("複数ボーナス") + std::to_string(stats.dashBonusScore));
     Logger::Log(U8("残りHP") + std::to_string(stats.remainHp));
+    Logger::Log(U8("所要時間") + std::to_string(stats.gameTimer));
 
     return true;
 }

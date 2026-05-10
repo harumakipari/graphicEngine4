@@ -2,6 +2,7 @@
 #include "ScissorsGameManager.h"
 
 #include "ScissorsUiEndActor.h"
+#include "ScoreCalculator.h"
 #include "Engine/Scene/Scene.h"
 
 void ScissorsGameManager::Initialize(const Transform& transform)
@@ -15,22 +16,13 @@ void ScissorsGameManager::Update(float deltaTime)
     if (isGameEnded || !isGameRunning)
         return;
 
-
-
-    remainingTime -= deltaTime;
-    remainingTime = std::max<float>(remainingTime, 0.0f);
-    if (IsTimeUp())
-    {
-        //Logger::Log(U8("ゲームが終わりました"));
-        //EndGame();
-    }
+    gameTimer += deltaTime;
 }
 
 // ゲームのステートをリセットする
 void ScissorsGameManager::Reset()
 {
-    maxTime = 45.0f;    // ここで制限時間を設定
-    remainingTime = maxTime;
+    gameTimer = 0.0f;
     isGameEnded = false;
 
     Logger::Log(U8("ゲームステートをリセットしました。"));
@@ -40,6 +32,9 @@ void ScissorsGameManager::Reset()
 void ScissorsGameManager::EndGame()
 {
     isGameEnded = true;
+
+    // 所要時間を記録する
+    ScoreSystem::RecordGameTime(gameTimer);
 
     // finish の演出を入れる
     if (auto actor = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsUiEndActor>())

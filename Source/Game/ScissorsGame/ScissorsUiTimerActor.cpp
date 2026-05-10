@@ -63,7 +63,7 @@ void ScissorsUiTimerActor::Update(float elapsedTime)
     // Žc‚èŽžŠÔ‚ðŒvŽZ‚·‚é
     if (auto gameManager = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>())
     {
-        remainingTimer = static_cast<int>(gameManager->GetRemainingTime());
+        //remainingTimer = static_cast<int>(gameManager->GetRemainingTime());
     }
 
     int onesNumber = remainingTimer % 10;

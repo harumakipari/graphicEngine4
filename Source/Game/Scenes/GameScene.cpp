@@ -20,6 +20,7 @@
 #include "Game/ScissorsGame/ButtonCoinActor.h"
 #include "Game/ScissorsGame/ComboUiActor.h"
 #include "Game/ScissorsGame/EnemyBase.h"
+#include "Game/ScissorsGame/GameTimerUIActor.h"
 #include "Game/ScissorsGame/ItemHeartActor.h"
 #include "Game/ScissorsGame/NeedleEnemyActor.h"
 #include "Game/ScissorsGame/RabbitBossEnemy.h"
@@ -679,7 +680,7 @@ void GameScene::SetUpActors()
     pauseActor->SetRetrySceneName("GameScene");
 
     // スコア表示アクターを生成
-    Transform scoreUiTr(DirectX::XMFLOAT3{ 16.0f,11.6f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
+    Transform scoreUiTr(DirectX::XMFLOAT3{ 20.0f,11.2f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
     auto scoreUiActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScoreUiActor>("scoreUiActor", scoreUiTr);
 
     // コンボ表示アクターを生成
@@ -943,6 +944,10 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
         Transform bobbinTr(DirectX::XMFLOAT3{ 12.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
         auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
         bobbin->SetBobbinSize(BobbinActor::BobbinSize::Big);
+
+        // タイマー表示アクターを生成
+        Transform timerUiTr(DirectX::XMFLOAT3{ 20.0f,11.6f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
+        auto timerUiActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<GameTimerUiActor>("timerUiActor", timerUiTr);
 
 
 #endif // 0

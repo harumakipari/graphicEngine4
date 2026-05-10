@@ -103,6 +103,12 @@ public:
         resultData.remainHp = hp;
     }
 
+    // 所要時間を記録
+    static void RecordGameTime(const float gameTime)
+    {
+        resultData.gameTimer = gameTime;
+    }
+
     // リザルトデータを取得する
     static const ResultData& GetResultStats()
     {

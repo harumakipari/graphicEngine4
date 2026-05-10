@@ -14,20 +14,11 @@ public:
 
     void Update(float deltaTime)override;
 
-    // 残り時間を取得する
-    float GetRemainingTime() const { return remainingTime; }
-
-    // 設定時間
-    float GetMaxTime() const { return maxTime; }
+    // 所要時間を取得する
+    float GetRequiredTime() const { return gameTimer; }
 
     // ゲームのステートをリセットする
     void Reset();
-
-    // タイムアップ
-    bool IsTimeUp() const
-    {
-        return remainingTime <= 0.0f;
-    }
 
     // ゲーム終了処理
     void EndGame();
@@ -41,8 +32,7 @@ public:
     // ゲームの入力処理状態を取得する
     bool IsGameInputEnabled() const { return gameInputEnabled; }
 private:
-    float maxTime = 0.0f;      // 50秒
-    float remainingTime = 50.0f;
+    float gameTimer = 0.0f; // ゲーム時間
 
     bool isGameEnded = false; // ゲームが終わったかどうか
     bool isGameRunning = false; // ゲーム開始かどうか

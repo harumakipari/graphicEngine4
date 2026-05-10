@@ -15,4 +15,6 @@ struct ResultData
     int enemyScore = 0;
     // 総スコア
     int totalScore = 0;
+    // 所要時間
+    float gameTimer = 0.0f;
 };

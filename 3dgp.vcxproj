@@ -326,6 +326,7 @@
     <ClCompile Include="Source\Game\ScissorsGame\EnemyAttack.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\EnemyBase.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\EnemyBehavior.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\GameTimerUiActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ItemHeartActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\NeedleActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\NeedleEnemyActor.cpp" />
@@ -510,6 +511,7 @@
     <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />
     <ClInclude Include="Source\Game\ScissorsGame\BonusUiActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\DecalData.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\GameTimerUIActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ResultData.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ResultScene.h" />
     <ClInclude Include="Source\Game\Scenes\SampleScene.h" />
