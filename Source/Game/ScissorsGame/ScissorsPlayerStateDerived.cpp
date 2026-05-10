@@ -735,3 +735,25 @@ void ScissorsPlayerStunState::Exit()
     player->characterMovementComponent->ResetSpeed();
     player->isStun = false;
 }
+
+void ScissorsPlayerDeathState::Enter()
+{
+    player->PlayAnimation("DashEnd", true, true, 0.1f);
+    player->characterMovementComponent->SetSpeed(0.0f);
+}
+
+void ScissorsPlayerDeathState::Execute(float deltaTime)
+{
+    elapsedTime += deltaTime;
+
+    float deathRadius = player->GetDeathRadius();
+    deathRadius -= deltaTime * 0.25f;
+
+    deathRadius = std::max<float>(0.0f, deathRadius);
+
+    player->SetDeathRadius(deathRadius);
+}
+
+void ScissorsPlayerDeathState::Exit()
+{
+}

@@ -47,6 +47,9 @@ public:
     // ランダムに大きい敵に変更する処理
     void EnlargeRandomEnemies(int count);
 
+    // ボス出現時にプレイヤーを押し出す
+    void PushPlayerOut();
+
     // 沈み開始する処理
     void StartDive()
     {
@@ -77,6 +80,7 @@ public:
     void ApplyLandingDamage()
     {
         CreteDamageZone();
+        PushPlayerOut();
     }
 
     // ボスが死亡したら呼ぶ処理  一フレームのみ
@@ -96,6 +100,7 @@ public:
 
     // 出現範囲のモデルスケールを取得する
     float GetSpawnScale() { return spawnScaleMax; }
+
 
 private:
     // ダメージが入る場所を生成する

@@ -159,3 +159,24 @@ private:
     float stunDuration = 0.1f; // スタンしている秒数
 };
 
+// 死亡ステートオブジェクト
+class ScissorsPlayerDeathState : public ScissorsPlayerStateBase
+{
+public:
+    // コンストラクタ
+    ScissorsPlayerDeathState(ScissorsPlayer1* player) :ScissorsPlayerStateBase(player) {}
+    // デストラクタ
+    ~ScissorsPlayerDeathState() = default;
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステートから出ていくときのメソッド
+    void Exit() override;
+    // ステート名を取得
+    const char* GetName() const override { return "Death"; }
+
+private:
+    float elapsedTime = 0.0f;
+};
+

@@ -338,6 +338,8 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     // ダッシュIDの初期化
     dashSerial = 0;
 
+    // 死亡演出の初期化
+    startDeathPerform = false;
 }
 
 void ScissorsPlayer1::Update(float deltaTime)
@@ -349,6 +351,12 @@ void ScissorsPlayer1::Update(float deltaTime)
     if (scene->IsPaused())
     {// ポーズ中は入力を受け付けない 歩行音も止める
         return;
+    }
+
+    if (hp <= 0 && !startDeathPerform)
+    {// playerが死亡したら
+        GetStateMachine()->ChangeState("Death");
+        startDeathPerform = true;
     }
 
     if (damageCooldownTimer > 0.0f)
@@ -530,6 +538,11 @@ void ScissorsPlayer1::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
     Character::DrawImGuiDetails();
+    if (ImGui::Button(U8("プレイヤーが死亡する")))
+    {
+        GetStateMachine()->ChangeState("Death");
+    }
+
     ImGui::DragFloat(U8("ハートのサイズ"), &heartSize);
     ImGui::DragFloat2(U8("ハートの場所"), &heartPos.x);
     ImGui::DragFloat(U8("プレイヤーの当たり判定"), &playerRadius);

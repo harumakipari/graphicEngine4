@@ -130,6 +130,7 @@ private:
     std::vector<decal_texture> decal_textures;
 
     std::vector<decal_data> decal_datas;
+#if 0
     // デカール用定数バッファ
     struct gbuffer_decal_constants
     {
@@ -137,6 +138,16 @@ private:
         DirectX::XMFLOAT4 decal_direction;
     };
     std::shared_ptr<ConstantBuffer<gbuffer_decal_constants>> decalCBuffer;
+#else
+    // 
+    struct GameSceneConstants
+    {
+        DirectX::XMFLOAT2 playerScreenPosition={0.0f,0.0f};  //プレイヤーの場所　死亡演出に必要な定数バッファ
+        DirectX::XMFLOAT2 screenSize={1280.0f,720.0f};  //スクリーンサイズ
+        float radius = 0.0f;
+    };
+    std::shared_ptr<ConstantBuffer<GameSceneConstants>> gameSceneCBuffer;
+#endif // 0
 
     // デカール用ピクセルシェーダー
     Microsoft::WRL::ComPtr<ID3D11PixelShader> gbuffer_decal_pixel_shader;

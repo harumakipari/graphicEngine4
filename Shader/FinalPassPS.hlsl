@@ -13,6 +13,15 @@ Texture2D depthTexture : register(t3);
 Texture2D bloomTexture : register(t4);
 Texture2DArray cascadedShadowMaps : register(t5);
 
+cbuffer GAME_SCENE_CONSTANT_BUFFER : register(b12)
+{
+    float2 playerScreenPosition ; //プレイヤーの場所　死亡演出に必要な定数バッファ
+    float2 screenSize; 
+    float radius = 0.0f;
+};
+
+
+
 // texcoord -> ndc 空間に変換
 float4 CalculatedPositionNDC(VS_OUT pin)
 {
@@ -24,6 +33,7 @@ float4 CalculatedPositionNDC(VS_OUT pin)
     positionNdc.w = 1;
     return positionNdc;
 }
+
 
 
 float3 ApplyShadow(inout float3 color, in float4 positionWorldSpace, in float depthViewSpace, in float2 shadowMapDimensions, in float3 randSeed, in float3 normal, in float3 lightDir)
@@ -141,7 +151,6 @@ float4 main(VS_OUT pin) : SV_TARGET
     }
 
 
-
     // ブルーム処理
     if (enableBloom)
     {
@@ -160,6 +169,28 @@ float4 main(VS_OUT pin) : SV_TARGET
         finalColor.rgb = HueSaturation(finalColor.rgb, hueShift, saturation);
         finalColor.rgb = BrightnessContrast(finalColor.rgb, brightness, contrast);
     }
+
+      // UV座標
+    float2 uv = pin.texcoord;
+
+    // UV -> スクリーン座標
+    float2 pixelPos =
+    pin.texcoord * screenSize;
+
+    // プレイヤーとの差
+    float2 delta =
+    pixelPos - playerScreenPosition;
+
+    // 距離
+    float dist = length(delta);
+
+    // 円外ほど1になる
+    float mask =
+    smoothstep(radius, radius + softness, dist);
+
+    // 黒へ
+    finalColor.rgb *= (1.0f - mask);
+
 
     return finalColor;
 }

@@ -327,6 +327,72 @@ void RabbitBossEnemyActor::EnlargeRandomEnemies(int count)
     }
 }
 
+// ボス出現時にプレイヤーを押し出す
+void RabbitBossEnemyActor::PushPlayerOut()
+{
+    auto player = GetPlayer();
+
+    if (!player)
+    {
+        return;
+    }
+
+    XMFLOAT3 bossPos = GetPosition();
+    XMFLOAT3 playerPos = player->GetPosition();
+
+    // ボス→プレイヤー方向
+    XMFLOAT3 dir =
+    {
+        playerPos.x - bossPos.x,
+        0.0f,
+        playerPos.z - bossPos.z
+    };
+
+    float lenSq = dir.x * dir.x + dir.z * dir.z;
+
+    // 真上にいた場合
+    if (lenSq < 0.0001f)
+    {
+        dir = { 1,0,0 };
+    }
+    else
+    {
+        dir = MathHelper::Normalize(dir);
+    }
+
+    // ===== 後ろ方向禁止 =====
+
+    // カメラ前方向
+    XMFLOAT3 forward = { 0,0,1 };
+
+    float dot = dir.x * forward.x + dir.z * forward.z;
+
+    // 後ろ方向なら補正
+    if (dot < 0.0f)
+    {
+        // 左右どちらかへ逃がす
+        if (dir.x >= 0.0f)
+        {
+            dir = { 1,0,0 };
+        }
+        else
+        {
+            dir = { -1,0,0 };
+        }
+    }
+
+    float pushDistance = 3.0f;
+
+    XMFLOAT3 newPos =
+    {
+        bossPos.x + dir.x * pushDistance,
+        playerPos.y,
+        bossPos.z + dir.z * pushDistance
+    };
+
+    player->SetPosition(newPos);
+}
+
 // ボスが死亡したら呼ぶ処理  一フレームのみ
 void RabbitBossEnemyActor::StartDeathPerform()
 {

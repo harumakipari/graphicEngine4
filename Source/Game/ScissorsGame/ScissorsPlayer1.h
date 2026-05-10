@@ -98,6 +98,13 @@ public:
     // ダッシュIDを取得する
     int GetDashId()  const { return dashSerial; }
 
+    // 死亡演出のポストエフェクトの半径を取得する
+    float GetDeathRadius() { return deathRadius; }
+
+    // 死亡演出のポストエフェクトの半径を設定する
+    void SetDeathRadius(float r) { this->deathRadius = r; }
+
+    
 private:
     // 入力から狙いの情報を取得する
     AimData GetAimData(const MoveIntent& intent, float deltaTime);
@@ -255,4 +262,9 @@ private:
 
     // ダッシュのIDを持つ
     int dashSerial = 0;
+
+    // 死亡演出用の変数
+    bool startDeathPerform = false;
+    float deathRadius = 10.0f; // 死亡時のポストエフェクトに使う半径
+
 };

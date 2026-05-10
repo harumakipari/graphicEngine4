@@ -169,8 +169,10 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         decal_datas[0].scaling = { 10, 10, 10 };
         decal_datas[0].decal_index = 0;
 
+#if 0
         // 定数バッファを生成する
         decalCBuffer = std::make_shared<ConstantBuffer<gbuffer_decal_constants>>(device);
+#endif // 0
 
         // デカール用ピクセルシェーダーを生成する
         hr = CreatePsFromCSO(device, "./Shader/GBufferDecalPrimitivePS.cso", gbuffer_decal_pixel_shader.ReleaseAndGetAddressOf());
@@ -209,6 +211,9 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     // スコアシステムの初期化
     ScoreSystem::Reset();
 
+    // シーン定数バッファを生成する
+    gameSceneCBuffer = std::make_shared<ConstantBuffer<GameSceneConstants>>(device);
+
     return true;
 }
 
@@ -223,7 +228,7 @@ void GameScene::Start()
         stage = StringToStageName(stageName);
     }
 
-    stage = STAGE_NAME::REFLECT_WALL;
+    stage = STAGE_NAME::BOSS;
     LoadStage(stage);
 
     auto uiStartActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUIStartActor>("uiStartActor");
@@ -247,6 +252,21 @@ void GameScene::Update(float deltaTime)
     // スコアシステムの更新処理
     ScoreSystem::Update(deltaTime);
 
+    // 死亡演出
+    {
+        DirectX::XMFLOAT3 playerPos = player->GetPosition();
+        DirectX::XMFLOAT2 playerUiPos = WorldToUI(playerPos);
+
+        float deathRadius = player->GetDeathRadius();
+        gameSceneCBuffer->data.playerScreenPosition = playerUiPos;
+        gameSceneCBuffer->data.radius = deathRadius;
+#if _DEBUG
+        gameSceneCBuffer->data.screenSize = { 1280.0f,720.0f };
+#else
+        gameSceneCBuffer->data.screenSize = { Graphics::GetScreenWidth(),Graphics::GetScreenHeight() };
+#endif
+
+    }
 
     // マウスカーソルの更新処理
     {
@@ -382,6 +402,10 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
         sceneCBuffer->Activate(immediateContext, 1);
         shaderCBuffer->Activate(immediateContext, 9);
     }
+
+    // ゲームシーン定数バッファを更新
+    gameSceneCBuffer->Activate(immediateContext, 12);
+
     // シーンからポイントライト集める
     lightManager->CollectPointLightsFromScene(*this);
     lightManager->Apply(immediateContext, 11);
@@ -783,7 +807,7 @@ void GameScene::GBufferDecalPass(ID3D11DeviceContext* immediateContext)
         immediateContext->PSSetShaderResources(GBufferSRVIndex, _countof(shader_resource_views), shader_resource_views);
 
         // 必要な情報を設定しておく
-#if 1
+#if 0
         {
             static constexpr int GbufferDecalTextureSRVIndex = 30;
             static constexpr int GbufferDecalTextureCBVIndex = 12;
