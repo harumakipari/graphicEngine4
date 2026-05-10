@@ -77,6 +77,7 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         fullscreenQuad = std::make_unique<FullScreenQuad>(device);
 
         frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
+        sceneFrameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
         finalBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
         imGuiGizmoBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
 
@@ -214,6 +215,9 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     // シーン定数バッファを生成する
     gameSceneCBuffer = std::make_shared<ConstantBuffer<GameSceneConstants>>(device);
+    // ゲームオーバー用ピクセルシェーダーを生成する
+    hr = CreatePsFromCSO(device, "./Shader/FullScreenGameOverPS.cso", gameOverPs.ReleaseAndGetAddressOf());
+    _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
     return true;
 }
@@ -257,15 +261,20 @@ void GameScene::Update(float deltaTime)
     {
         DirectX::XMFLOAT3 playerPos = player->GetPosition();
         DirectX::XMFLOAT2 playerUiPos = WorldToUI(playerPos);
-
-        float deathRadius = player->GetDeathRadius();
-        gameSceneCBuffer->data.playerScreenPosition = playerUiPos;
+        
+        //float deathRadius = player->GetDeathRadius();
+        float deathRadius =0.25f;
         gameSceneCBuffer->data.radius = deathRadius;
-#if _DEBUG
-        gameSceneCBuffer->data.screenSize = { 1280.0f,720.0f };
-#else
+//#if _DEBUG
+        //gameSceneCBuffer->data.screenSize = { 1280.0f,720.0f };
+//#else
         gameSceneCBuffer->data.screenSize = { Graphics::GetScreenWidth(),Graphics::GetScreenHeight() };
-#endif
+//#endif
+
+        playerUiPos.x /= gameSceneCBuffer->data.screenSize.x;
+        playerUiPos.y /= gameSceneCBuffer->data.screenSize.y;
+
+        gameSceneCBuffer->data.playerScreenPosition = playerUiPos;
 
     }
 
@@ -598,6 +607,9 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     immediateContext->PSSetShaderResources(0, 16, nullSRVs);
 #endif
 
+    sceneFrameBuffer->Clear(immediateContext);
+    sceneFrameBuffer->Activate(immediateContext);
+
     // FINAL_PASS
     {
         RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
@@ -628,6 +640,22 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     if (mouseCursorGrab->IsVisible())
         mouseCursorGrab->Draw(immediateContext);
 
+    sceneFrameBuffer->Deactivate(immediateContext);
+
+
+    // GAME_OVER_PASS
+    {
+        RenderState::BindBlendState(immediateContext, BLEND_STATE::NONE);
+        RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
+        RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_NONE);
+
+        ID3D11ShaderResourceView* shader_resource_views[]
+        {
+              sceneFrameBuffer->shaderResourceViews[0].Get(),//colorMap  
+        };
+        // メインフレームバッファとブルームエフェクトを組み合わせて描画
+        fullscreenQuad->Blit(immediateContext, shader_resource_views, 0, _countof(shader_resource_views), gameOverPs.Get());
+    }
 
 #ifdef USE_IMGUI
     imGuiGizmoBuffer->Deactivate(immediateContext);
@@ -946,9 +974,8 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
         bobbin->SetBobbinSize(BobbinActor::BobbinSize::Big);
 
         // タイマー表示アクターを生成
-        Transform timerUiTr(DirectX::XMFLOAT3{ 20.0f,11.6f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
+        Transform timerUiTr(DirectX::XMFLOAT3{ 20.0f,8.6f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
         auto timerUiActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<GameTimerUiActor>("timerUiActor", timerUiTr);
-
 
 #endif // 0
     }

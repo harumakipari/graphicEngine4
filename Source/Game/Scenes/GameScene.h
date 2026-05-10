@@ -158,6 +158,10 @@ private:
     Microsoft::WRL::ComPtr<ID3D11PixelShader> geometric_primitive_pixel_shader;
 
     float elapsedTime = 0.0f;
-    const float decalRayCastInterval = 1.0f;   // 
+    const float decalRayCastInterval = 1.0f;   //
+
+    std::unique_ptr<FrameBuffer> sceneFrameBuffer; // UIも含めたフレームバッファ
+    Microsoft::WRL::ComPtr<ID3D11PixelShader> gameOverPs;
+
 
 };

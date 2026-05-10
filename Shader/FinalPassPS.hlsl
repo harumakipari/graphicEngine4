@@ -170,27 +170,22 @@ float4 main(VS_OUT pin) : SV_TARGET
         finalColor.rgb = BrightnessContrast(finalColor.rgb, brightness, contrast);
     }
 
-      // UV座標
+#if 0
     float2 uv = pin.texcoord;
 
-    // UV -> スクリーン座標
-    float2 pixelPos =
-    pin.texcoord * screenSize;
+    float2 delta = uv - playerScreenPosition;
 
-    // プレイヤーとの差
-    float2 delta =
-    pixelPos - playerScreenPosition;
+    float aspectX =
+    screenSize.x / screenSize.y;
+    delta.x *= aspectX;
 
-    // 距離
     float dist = length(delta);
+    float softness = 0.08f;
 
-    // 円外ほど1になる
-    //float mask =
-    //smoothstep(radius, radius + softness, dist);
+    float mask =smoothstep(radius, radius + softness, dist);
 
-    // 黒へ
-    //finalColor.rgb *= (1.0f - mask);
-
+    finalColor.rgb *= (1.0f - mask);
+#endif
 
     return finalColor;
 }
