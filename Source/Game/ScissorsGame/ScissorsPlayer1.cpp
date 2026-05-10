@@ -1070,6 +1070,19 @@ void ScissorsPlayer1::ResolveReflectedKills()
         ScoreSystem::AddDashBonus(dashBonus);
         SpawnBonusCoinBurst();
         Logger::Log("DashBonus: " + std::to_string(dashBonus));
+
+        if (auto tutorialActor = GetOwnerScene()->GetActorManager()->GetActorOfType<TutorialActor>())
+        {// チュートリアルだったら
+            if (auto currentStep = tutorialActor->GetTutorialManager()->GetCurrentState())
+            {
+                if (currentStep->GetName() == "TutorialStep_AttackAllEnemy")
+                {// 5体以上を確認するステートで
+                    currentStep->SetBonusKill5Enemy(true);
+                }
+            }
+        }
+
+
     }
 
 

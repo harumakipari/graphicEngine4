@@ -10,6 +10,8 @@
 
 void TutorialActor::Initialize(const Transform& transform)
 {
+    std::string parentName = "TutorialActor";
+
     tutorialManager = std::make_unique<TutorialManager>();
     // 各ステートを登録
     tutorialManager->RegisterState(std::make_unique<TutorialStep_MoveStart>(this));
@@ -25,6 +27,8 @@ void TutorialActor::Initialize(const Transform& transform)
     tutorialManager->RegisterState(std::make_unique<TutorialStep_AttackEnemyRedirect>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_RedirectHighScore>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_AttackAllEnemy>(this));
+    tutorialManager->RegisterState(std::make_unique<TutorialStep_AttackAllBonus>(this));
+    tutorialManager->RegisterState(std::make_unique<TutorialStep_StageClear>(this));
 
     auto uiManager = Scene::GetCurrentScene()->GetUIManager();
     XMFLOAT2 imageSize = { 240.0f,200.0f };
@@ -58,6 +62,11 @@ void TutorialActor::Initialize(const Transform& transform)
     arrowDownComponent->SetVisible(false);
     arrowDownComponent->SetPivot({ 0.5f,0.0f });
     uiManager->Add(arrowDownComponent);
+
+    // 登場エフェクト用のコンポーネントを追加
+    spawnEffectComponent = this->AddComponent<class ParticleComponent>(parentName);
+    spawnEffectComponent->Load("./Data/Effect/Files/ScissorsGameCloudEffect.json");
+
 }
 
 void TutorialActor::Update(float deltaTime)
@@ -73,6 +82,8 @@ void TutorialActor::Update(float deltaTime)
     UpdateShowArrowEnemy(deltaTime);
 
     UpdateSideArrow(deltaTime);
+
+    UpdatePendingTutorialSpawns(deltaTime);
 }
 
 void TutorialActor::DrawImGuiDetails()
@@ -102,7 +113,7 @@ ScissorsPlayer1* TutorialActor::GetPlayer()
 }
 
 // チュートリアルターゲットに登録する
-void TutorialActor::AddTutorialEnemy(const std::shared_ptr<EnemyBase>& enemy)
+void TutorialActor::AddTutorialEnemy(const std::shared_ptr<EnemyBase>& enemy, bool spawnArrowUi)
 {
     if (!enemy)
         return;
@@ -114,15 +125,18 @@ void TutorialActor::AddTutorialEnemy(const std::shared_ptr<EnemyBase>& enemy)
 
     XMFLOAT2 imageSize = { 95.0f,77.0f };
 
-    target.arrowImage =
-        std::make_shared<UIImageComponent>(
-            "./Data/Textures/ScissorsUI/Tutorial/enemy_arrow.png",
-            "enemy_arrow");
+    if (spawnArrowUi)
+    {
+        target.arrowImage =
+            std::make_shared<UIImageComponent>(
+                "./Data/Textures/ScissorsUI/Tutorial/enemy_arrow.png",
+                "enemy_arrow");
 
-    target.arrowImage->SetSize(imageSize);
-    target.arrowImage->SetVisible(true);
+        target.arrowImage->SetSize(imageSize);
+        target.arrowImage->SetVisible(true);
 
-    uiManager->Add(target.arrowImage);
+        uiManager->Add(target.arrowImage);
+    }
 
     tutorialTargets.push_back(target);
 }
@@ -131,12 +145,18 @@ void TutorialActor::AddTutorialEnemy(const std::shared_ptr<EnemyBase>& enemy)
 std::shared_ptr<EnemyBase> TutorialActor::SpawnEnemy(
     const XMFLOAT3& pos,
     YarnEnemyType type, bool isBig,
-    float speed, const XMFLOAT3& dir,bool isTied)
+    float speed, const XMFLOAT3& dir, bool isTied)
 {
     auto scene = GetOwnerScene();
     if (auto tutorialScene = dynamic_cast<TutorialScene*>(scene))
     {
-        return tutorialScene->SpawnEnemy(pos, type, isBig, speed, dir,isTied);
+        enemyCount++;
+        auto enemy = tutorialScene->SpawnEnemy(pos, type, isBig, speed, dir, isTied);
+        enemy->onDeath = ([&]
+            {
+                enemyCount--;
+            });
+        return enemy;
     }
     Logger::Warning(U8("TutorialのSpanwEnemyでnullptrを返しています"));
     return nullptr;
@@ -216,6 +236,64 @@ void TutorialActor::HideArrows()
     arrowDownComponent->SetVisible(false);
 }
 
+// 予約スポーンをする
+void TutorialActor::ReserveSpawnEnemy(const XMFLOAT3& pos,
+    YarnEnemyType type,
+    bool isBig,
+    float speed,
+    const XMFLOAT3& dir,
+    bool isTied, bool isTargetTutorial, bool spawnArrowUi)
+{
+    PendingTutorialSpawn spawn{};
+
+    spawn.position = pos;
+    spawn.type = type;
+    spawn.isBig = isBig;
+    spawn.speed = speed;
+    spawn.direction = dir;
+    spawn.isTied = isTied;
+    spawn.isTargetTutorial = isTargetTutorial;
+    spawn.spawnArrowUi = spawnArrowUi;
+
+    pendingTutorialSpawns.push_back(spawn);
+}
+
+// 生き残っている敵
+int TutorialActor::GetAliveEnemyCount() const
+{
+    int count = 0;
+
+    // 生存中
+    for (auto& target : tutorialTargets)
+    {
+        auto enemy = target.enemy.lock();
+
+        if (!enemy)
+            continue;
+
+        if (enemy->IsDead())
+            continue;
+
+        count++;
+    }
+
+    // 予約中
+    count += static_cast<int>(pendingTutorialSpawns.size());
+
+    return count;
+}
+
+// 出現エフェクトを生成
+void TutorialActor::SpawnPreviewEffect(DirectX::XMFLOAT3 pos)
+{
+    if (spawnEffectComponent)
+    {
+        spawnEffectComponent->SetWorldLocationDirect(pos);
+        spawnEffectComponent->Play();
+    }
+}
+
+
 // 敵の上に出す矢印
 void TutorialActor::UpdateShowArrowEnemy(float deltaTime)
 {
@@ -225,14 +303,20 @@ void TutorialActor::UpdateShowArrowEnemy(float deltaTime)
 
         if (!enemy)
         {
-            target.arrowImage->SetVisible(false);
+            if (target.arrowImage)
+            {
+                target.arrowImage->SetVisible(false);
+            }
             continue;
         }
 
         // 死亡してるなら消す
         if (enemy->IsDead())
         {
-            target.arrowImage->SetVisible(false);
+            if (target.arrowImage)
+            {
+                target.arrowImage->SetVisible(false);
+            }
             continue;
         }
 
@@ -251,10 +335,12 @@ void TutorialActor::UpdateShowArrowEnemy(float deltaTime)
         uiPos.x += arrowOffsetPos.x;
         uiPos.y += arrowOffsetPos.y - floatOffset;
 
-
-        target.arrowImage->SetWorldPosition(uiPos);
-        target.arrowImage->SetPivot({ 0.5f,0.5f });
-        target.arrowImage->SetVisible(true);
+        if (target.arrowImage)
+        {
+            target.arrowImage->SetWorldPosition(uiPos);
+            target.arrowImage->SetPivot({ 0.5f,0.5f });
+            target.arrowImage->SetVisible(true);
+        }
     }
 
 }
@@ -289,4 +375,57 @@ void TutorialActor::UpdateSideArrow(float deltaTime)
     DirectX::XMFLOAT2 downUiPos = WorldToUI(downWall);
     downUiPos.y += floatUpOffset;
     arrowDownComponent->SetWorldPosition(downUiPos);
+}
+
+// 敵の遅延湧きの更新処理
+void TutorialActor::UpdatePendingTutorialSpawns(float deltaTime)
+{
+    constexpr float previewStartTime = 0.5f;
+    constexpr float spawnTime = 1.5f;
+
+    for (auto& s : pendingTutorialSpawns)
+    {
+        s.timer += deltaTime;
+
+        // 予告
+        if (!s.previewed && s.timer >= previewStartTime)
+        {
+            SpawnPreviewEffect(s.position);
+
+            s.previewed = true;
+        }
+
+        // 出現
+        if (!s.spawned &&
+            s.timer >= spawnTime)
+        {
+            auto enemy = SpawnEnemy(
+                s.position,
+                s.type,
+                s.isBig,
+                s.speed,
+                s.direction,
+                s.isTied);
+
+            if (s.isTargetTutorial)
+            {
+                AddTutorialEnemy(enemy, s.spawnArrowUi);
+            }
+
+            s.spawned = true;
+        }
+    }
+
+    pendingTutorialSpawns.erase(
+        std::remove_if(
+            pendingTutorialSpawns.begin(),
+            pendingTutorialSpawns.end(),
+            [](const auto& s)
+            {
+                return s.spawned;
+            }),
+        pendingTutorialSpawns.end());
+
+
+
 }

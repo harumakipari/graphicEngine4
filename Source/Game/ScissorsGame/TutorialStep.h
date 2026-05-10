@@ -35,6 +35,9 @@ public:
     // 跳ね返りで敵を倒したことを通知する
     void SetRedirectKillEnemy(bool isRedirectKillEnemy) { this->isRedirectKillEnemy = isRedirectKillEnemy; }
 
+    // ５体以上で敵を倒したことを通知する
+    void SetBonusKill5Enemy(bool isBonusKill5Enemy) { this->isBonusKill5Enemy = isBonusKill5Enemy; }
+
 protected:
     void UpdateMouseClickBlink(float deltaTime);
 
@@ -64,7 +67,12 @@ protected:
     bool isUpdateMouse = true;
     bool isUseRedirect = false;// 反射したかどうか
     bool isRedirectKillEnemy = false;// 反射で敵を倒したかどうか
+    bool isBonusKill5Enemy = false;// 一回で５体以上倒したかどうか
 
+    std::shared_ptr<Sprite> controlButtonOnImage; // コントローラー対応用
+    std::shared_ptr<Sprite> controlButtonOffImage; // コントローラー対応用
+    std::shared_ptr<Sprite> keyBoardButtonOnImage; // キーボード対応用
+    std::shared_ptr<Sprite> keyBoardButtonOffImage; // キーボード対応用
 };
 
 // チュートリアルステップ : WASD で移動or 左スティックで移動！
@@ -86,6 +94,9 @@ private:
     float elapsedTime = 0.0f;
     bool startWalk = false; // 歩き始めたかどうか
     const float toNextStepInterval = 1.0f; // 次のステップに行くまでの時間
+
+    std::shared_ptr<Sprite> controlTex; // コントローラー対応用
+    std::shared_ptr<Sprite> keyBoardTex; // キーボード対応用
 };
 
 // チュートリアルステップ : // 「左クリック長押しで 方向をきめよう！」　右スティックを傾けて方向を決めよう！
@@ -106,7 +117,11 @@ private:
     std::shared_ptr<UIImageComponent> tutorialImage;
     float elapsedTime = 0.0f;
     bool startDash = false; // ダッシュし始めたかどうか
-    const float toNextStepInterval = 2.0f; // 次のステップに行くまでの時間
+    const float toNextStepInterval = 0.1f; // 次のステップに行くまでの時間
+
+    std::shared_ptr<Sprite> controlTex; // コントローラー対応用
+    std::shared_ptr<Sprite> keyBoardTex; // キーボード対応用
+
 };
 
 // チュートリアルステップ : // 「左クリックを離すと、ぬいダッシュ！」
@@ -128,6 +143,9 @@ private:
     float elapsedTime = 0.0f;
     bool startDash = false; // ダッシュし始めたかどうか
     const float toNextStepInterval = 2.0f; // 次のステップに行くまでの時間
+
+    std::shared_ptr<Sprite> controlTex; // コントローラー対応用
+    std::shared_ptr<Sprite> keyBoardTex; // キーボード対応用
 };
 
 // チュートリアルステップ : // 「敵をぬいとめたよ！」「ぬいとめた敵に もう一度ぬいダッシュ！」
@@ -290,8 +308,13 @@ public:
     virtual const char* GetName() const override { return "TutorialStep_AttackEnemyRedirect"; }
 
 private:
+    // 敵がいなくなったら敵を発生させる
+    void SpawnRedirectEnemies() const;
+
+private:
     std::shared_ptr<UIImageComponent> tutorialImage;
     float elapsedTime = 0.0f;
+    bool waitingRespawn = false;
 };
 
 // チュートリアルステップ : ぬい返りで倒すと高スコア！
@@ -326,6 +349,62 @@ public:
     // ステージから出ていくときのメソッド
     void Exit() override;
     virtual const char* GetName() const override { return "TutorialStep_AttackAllEnemy"; }
+
+private:
+    // 敵を出現させる
+    void SpawnEnemyAt(const DirectX::XMFLOAT3& pos);
+
+    // 敵と指定した位置が近いかどうか
+    bool IsEnemyNearPosition(const XMFLOAT3& pos,float radius);
+
+    // 生成する位置
+    bool FindEmptySpawnPosition(XMFLOAT3& outPos);
+private:
+    std::shared_ptr<UIImageComponent> tutorialImage;
+    float elapsedTime = 0.0f;
+    std::vector<XMFLOAT3> spawnPositions;// 敵を生成する場所
+    bool waitSpawn = false;
+};
+
+// チュートリアルステップ :5体一気に倒すとボーナス！
+class TutorialStep_AttackAllBonus : public TutorialStep
+{
+public:
+    TutorialStep_AttackAllBonus(TutorialActor* actor);
+    virtual ~TutorialStep_AttackAllBonus();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "TutorialStep_AttackAllBonus"; }
+
+    // ダッシュできるかどうか
+    bool CanDash() override { return false; }
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialImage;
+    float elapsedTime = 0.0f;
+};
+
+// チュートリアルステップ :敵をすべて倒すとステージクリア！
+class TutorialStep_StageClear : public TutorialStep
+{
+public:
+    TutorialStep_StageClear(TutorialActor* actor);
+    virtual ~TutorialStep_StageClear();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "TutorialStep_StageClear"; }
+
+    // ダッシュできるかどうか
+    bool CanDash() override { return false; }
+
 
 private:
     std::shared_ptr<UIImageComponent> tutorialImage;

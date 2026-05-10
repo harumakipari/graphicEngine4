@@ -882,6 +882,7 @@ std::shared_ptr<EnemyBase> TutorialScene::SpawnEnemy(
     enemy->SetSpeed(speed);
     enemy->SetUpVisual();
 
+
     if (isTied)
     {// ‹ÊŽ~‚ß‚³‚ê‚Ä‚¢‚½‚ç
         enemy->OnTied();

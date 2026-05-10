@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "TutorialStep.h"
 
+#include "EnemyBase.h"
 #include "ScissorsPlayer1.h"
 #include "Engine/Scene/Scene.h"
 #include "TutorialActor.h"
@@ -15,8 +16,15 @@ TutorialStep::TutorialStep(TutorialActor* actor) :owner(actor)
     XMFLOAT2 mousePos = { 930.0f,270.0f };
     XMFLOAT2 mouseSize = { 90.0f,90.0f };
 
+    // コントローラー対応用
+    controlButtonOnImage = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/A.png");
+    controlButtonOffImage = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/A_off.png");
+    // キーボード対応用
+    keyBoardButtonOnImage = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/mouseClick.png");
+    keyBoardButtonOffImage = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/mouseClick_off.png");
+
     // チュートリアル画像の作成 
-    tutorialMouseClickImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/mouseClick.png", "Tutorial_Mouse_Click");     // マウスのクリック
+    tutorialMouseClickImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tutorial/mouseClick.png", "Tutorial_Mouse_Click");     // マウスのクリック
     tutorialMouseClickImage->SetWorldPosition(mousePos);
     tutorialMouseClickImage->SetSize(mouseSize);
     tutorialMouseClickImage->zOrder = 5;
@@ -24,7 +32,7 @@ TutorialStep::TutorialStep(TutorialActor* actor) :owner(actor)
     uiManager->Add(tutorialMouseClickImage);
 
     // チュートリアル画像の作成 
-    tutorialMouseClickOffImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Tutorial/mouseClick_off.png", "Tutorial_Mouse_Click_Off");     // マウスのクリックオフ
+    tutorialMouseClickOffImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tutorial/mouseClick_off.png", "Tutorial_Mouse_Click_Off");     // マウスのクリックオフ
     tutorialMouseClickOffImage->SetWorldPosition(mousePos);
     tutorialMouseClickOffImage->SetSize(mouseSize);
     tutorialMouseClickOffImage->SetVisible(false);
@@ -33,11 +41,23 @@ TutorialStep::TutorialStep(TutorialActor* actor) :owner(actor)
 
     isUseRedirect = false;
     isRedirectKillEnemy = false;
+    isBonusKill5Enemy = false;
 }
 
 
 void TutorialStep::UpdateMouseClickBlink(float deltaTime)
 {
+    if (InputSystem::IsGamepadConnected())
+    {//　コントローラー対応
+        tutorialMouseClickImage->SetTexture(controlButtonOnImage);
+        tutorialMouseClickOffImage->SetTexture(controlButtonOffImage);
+    }
+    else
+    {
+        tutorialMouseClickImage->SetTexture(keyBoardButtonOnImage);
+        tutorialMouseClickOffImage->SetTexture(keyBoardButtonOffImage);
+    }
+
     if (isUpdateMouse)
     {
         mouseBlinkTimer += deltaTime;
@@ -74,6 +94,12 @@ void TutorialStep::ResetMouseClickBlink()
 TutorialStep_MoveStart::TutorialStep_MoveStart(TutorialActor* actor) :TutorialStep(actor)
 {
     auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+
+    // コントローラー対応用
+    controlTex = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/control_move.png");
+    // キーボード対応用
+    keyBoardTex = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/wasd_move.png");
+
 
     // チュートリアル画像の作成
     //WASDでいどう
@@ -116,6 +142,15 @@ void TutorialStep_MoveStart::Execute(float deltaTime)
     // UIがマウスを使っているならゲーム操作しない
     if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
         return;
+
+    if (InputSystem::IsGamepadConnected())
+    {//　コントローラー対応
+        tutorialImage->SetTexture(controlTex);
+    }
+    else
+    {
+        tutorialImage->SetTexture(keyBoardTex);
+    }
 
 #if 0
     DirectX::XMFLOAT2 cursor;
@@ -175,6 +210,12 @@ TutorialStep_ChargeStart::TutorialStep_ChargeStart(TutorialActor* actor) :Tutori
 {
     auto uiManager = Scene::GetCurrentScene()->GetUIManager();
 
+    // コントローラー対応用
+    controlTex = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/right_stick.png");
+    // キーボード対応用
+    keyBoardTex = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/left_click_press_release.png");
+
+
     // チュートリアル画像の作成
     //「左クリック長押しで 方向をきめよう！」　右スティックを傾けて方向を決めよう！
     tutorialImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tutorial/left_click_press_release.png", "left_click_press_release");
@@ -213,6 +254,16 @@ void TutorialStep_ChargeStart::Execute(float deltaTime)
     // UIがマウスを使っているならゲーム操作しない
     if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
         return;
+
+    if (InputSystem::IsGamepadConnected())
+    {//　コントローラー対応
+        tutorialImage->SetTexture(controlTex);
+    }
+    else
+    {
+        tutorialImage->SetTexture(keyBoardTex);
+    }
+
 
 #if 0
     DirectX::XMFLOAT2 cursor;
@@ -255,6 +306,11 @@ TutorialStep_SpawnStaticEnemy::TutorialStep_SpawnStaticEnemy(TutorialActor* acto
 {
     auto uiManager = Scene::GetCurrentScene()->GetUIManager();
 
+    // コントローラー対応用
+    controlTex = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/right_stick.png");
+    // キーボード対応用
+    keyBoardTex = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/left_click_press_release.png");
+
     // チュートリアル画像の作成
     //「左クリック長押しで 方向をきめよう！」　右スティックを傾けて方向を決めよう！
     tutorialImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tutorial/left_click_press_release.png", "left_click_press_release");
@@ -283,14 +339,9 @@ void TutorialStep_SpawnStaticEnemy::Enter()
     startDash = false; // 歩き始めたかどうか
 
     // 敵を生成する
-    auto enemy1 = owner->SpawnEnemy({ 12,0,12 }, YarnEnemyType::Static, false);
-    owner->AddTutorialEnemy(enemy1);
-
-    auto enemy2 = owner->SpawnEnemy({ 15,0,12 }, YarnEnemyType::Static, false);
-    owner->AddTutorialEnemy(enemy2);
-
-    auto enemy3 = owner->SpawnEnemy({ 9,0,12 }, YarnEnemyType::Static, false);
-    owner->AddTutorialEnemy(enemy3);
+    owner->ReserveSpawnEnemy({ 12,0,12 }, YarnEnemyType::Static, false, 0.0f, { 0,0,0 }, false, true);
+    owner->ReserveSpawnEnemy({ 15,0,12 }, YarnEnemyType::Static, false, 0.0f, { 0,0,0 }, false, true);
+    owner->ReserveSpawnEnemy({ 9,0,12 }, YarnEnemyType::Static, false, 0.0f, { 0,0,0 }, false, true);
 }
 
 // ステートで実行するメソッド
@@ -308,6 +359,16 @@ void TutorialStep_SpawnStaticEnemy::Execute(float deltaTime)
     {
         owner->GetTutorialManager()->ChangeState("TutorialStep_TiedEnemy");
     }
+
+    if (InputSystem::IsGamepadConnected())
+    {//　コントローラー対応
+        tutorialImage->SetTexture(controlTex);
+    }
+    else
+    {
+        tutorialImage->SetTexture(keyBoardTex);
+    }
+
 }
 
 // ステージから出ていくときのメソッド
@@ -477,12 +538,8 @@ void TutorialStep_SpawnMoveEnemy::Enter()
     elapsedTime = 0.0f;
 
     // 敵を生成する
-    auto enemy1 = owner->SpawnEnemy({ 11,0,21 }, YarnEnemyType::MoveLinear, false, 2.0f, { 0,0,-1 });
-    owner->AddTutorialEnemy(enemy1);
-
-    auto enemy2 = owner->SpawnEnemy({ 13,0,21 }, YarnEnemyType::MoveLinear, false, 2.0f, { 0,0,-1 });
-    owner->AddTutorialEnemy(enemy2);
-
+    owner->ReserveSpawnEnemy({ 11,0,21 }, YarnEnemyType::MoveLinear, false, 2.0f, { 0,0,-1 }, false, true);
+    owner->ReserveSpawnEnemy({ 13,0,21 }, YarnEnemyType::MoveLinear, false, 2.0f, { 0,0,-1 }, false, true);
 }
 
 // ステートで実行するメソッド
@@ -749,6 +806,8 @@ void TutorialStep_DashRedirect::Execute(float deltaTime)
     if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
         return;
 
+    UpdateMouseClickBlink(deltaTime);
+
     //  押した瞬間
     if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
     {
@@ -795,14 +854,9 @@ void TutorialStep_AttackEnemyRedirect::Enter()
     tutorialImage->SetVisible(true);
     elapsedTime = 0.0f;
 
-    // 敵を生成する
-    auto enemy1 = owner->SpawnEnemy({ 17,0,22 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true);
-    auto enemy2 = owner->SpawnEnemy({ 19,0,20 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true);
-    auto enemy3 = owner->SpawnEnemy({ 21,0,18 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true);
-    auto enemy4 = owner->SpawnEnemy({ 3,0,6 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true);
-    auto enemy5 = owner->SpawnEnemy({ 5,0,5 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true);
-    auto enemy6 = owner->SpawnEnemy({ 7,0,3 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true);
+    SpawnRedirectEnemies();
 
+    waitingRespawn = false;
 }
 
 // ステートで実行するメソッド
@@ -816,9 +870,29 @@ void TutorialStep_AttackEnemyRedirect::Execute(float deltaTime)
     if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
         return;
 
+#if 1
+    // 敵が全滅したら
+    if (owner->GetEnemyCount() <= 0)
+    {
+        // まだ補充してないなら
+        if (!waitingRespawn)
+        {
+            waitingRespawn = true;
+
+            SpawnRedirectEnemies();
+        }
+    }
+    else
+    {
+        // 敵が存在するなら次の全滅を待つ
+        waitingRespawn = false;
+    }
+#endif // 0
+
     if (isRedirectKillEnemy)
     {// 反射で敵を倒したら
         owner->GetTutorialManager()->ChangeState("TutorialStep_RedirectHighScore");
+        waitingRespawn = true;
     }
 }
 
@@ -828,6 +902,17 @@ void TutorialStep_AttackEnemyRedirect::Exit()
     tutorialImage->SetVisible(false);
 }
 
+// 敵がいなくなったら敵を発生させる
+void TutorialStep_AttackEnemyRedirect::SpawnRedirectEnemies() const
+{
+    // 敵を生成する
+    owner->ReserveSpawnEnemy({ 17,0,22 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, false);
+    owner->ReserveSpawnEnemy({ 19,0,20 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, false);
+    owner->ReserveSpawnEnemy({ 21,0,18 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, false);
+    owner->ReserveSpawnEnemy({ 3,0,6 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, false);
+    owner->ReserveSpawnEnemy({ 5,0,5 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, false);
+    owner->ReserveSpawnEnemy({ 7,0,3 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, false);
+}
 
 // ------------------------------ TutorialStep_RedirectHighScore ------------------------------
 //  ぬい返りで倒すと高スコア！
@@ -876,6 +961,9 @@ void TutorialStep_RedirectHighScore::Execute(float deltaTime)
     if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
         return;
 
+    UpdateMouseClickBlink(deltaTime);
+
+
     //  押した瞬間
     if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
     {
@@ -900,7 +988,7 @@ TutorialStep_AttackAllEnemy::TutorialStep_AttackAllEnemy(TutorialActor* actor) :
     auto uiManager = Scene::GetCurrentScene()->GetUIManager();
 
     // チュートリアル画像の作成
-    //　ぬい返りで敵を倒してみよう！
+    //　まとめて敵を倒してみよう
     tutorialImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tutorial/next_attack_all.png", "next_attack_all");
     tutorialImage->SetWorldPosition(imagePos);
     tutorialImage->SetSize(imageSize);
@@ -924,9 +1012,27 @@ void TutorialStep_AttackAllEnemy::Enter()
     elapsedTime = 0.0f;
 
     // 敵を生成する
-    auto enemy1 = owner->SpawnEnemy({ 12,0,12 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true);
-    auto enemy2 = owner->SpawnEnemy({ 15,0,12 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true);
-    auto enemy3 = owner->SpawnEnemy({ 9,0,12 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true);
+    spawnPositions =
+    {
+        {8,0,11},
+        {9,0,10},
+        {10,0,11},
+        {11,0,10},
+        {12,0,11},
+
+        {13,0,15},
+        {14,0,14},
+        {15,0,15},
+        {16,0,14},
+        {17,0,15},
+    };
+
+    for (auto& pos : spawnPositions)
+    {
+        SpawnEnemyAt(pos);
+    }
+
+    waitSpawn = false;
 }
 
 // ステートで実行するメソッド
@@ -940,7 +1046,31 @@ void TutorialStep_AttackAllEnemy::Execute(float deltaTime)
     if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
         return;
 
+    constexpr int targetEnemyCount = 7;
 
+    int currentCount = owner->GetAliveEnemyCount();
+
+
+    if (currentCount <= targetEnemyCount&&!waitSpawn)
+    {
+        int needSpawn = targetEnemyCount - currentCount;
+
+        for (int i = 0; i < needSpawn; i++)
+        {
+            XMFLOAT3 pos;
+
+            if (FindEmptySpawnPosition(pos))
+            {
+                SpawnEnemyAt(pos);
+            }
+        }
+    }
+
+    if (isBonusKill5Enemy)
+    {
+        owner->GetTutorialManager()->ChangeState("TutorialStep_AttackAllBonus");
+        waitSpawn = true;
+    }
 
 }
 
@@ -950,4 +1080,201 @@ void TutorialStep_AttackAllEnemy::Exit()
     tutorialImage->SetVisible(false);
 }
 
+// 敵を出現させる
+void TutorialStep_AttackAllEnemy::SpawnEnemyAt(const DirectX::XMFLOAT3& pos)
+{
+    owner->ReserveSpawnEnemy(
+        pos,
+        YarnEnemyType::Static,
+        false,
+        2.0f,
+        { 0,0,0 },
+        true,
+        true,false);
+}
+
+// 敵と指定した位置が近いかどうか
+bool TutorialStep_AttackAllEnemy::IsEnemyNearPosition(
+    const XMFLOAT3& pos,
+    float radius)
+{
+    for (auto& target : owner->GetTutorialEnemies())
+    {
+        auto enemy = target.enemy.lock();
+
+        if (!enemy)
+            continue;
+
+        if (enemy->IsDead())
+            continue;
+
+        float dist =
+            MathHelper::Distance(
+                enemy->GetPosition(),
+                pos);
+
+        if (dist < radius)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// 生成する位置
+bool TutorialStep_AttackAllEnemy::FindEmptySpawnPosition(
+    XMFLOAT3& outPos)
+{
+    std::vector<XMFLOAT3> candidates;
+
+    for (auto& pos : spawnPositions)
+    {
+        if (!IsEnemyNearPosition(pos, 2.0f))
+        {
+            candidates.push_back(pos);
+        }
+    }
+
+    if (candidates.empty())
+    {
+        return false;
+    }
+
+    int index =
+        MathHelper::RandomRange(
+            0,
+            static_cast<int>(candidates.size()) - 1);
+
+    outPos = candidates[index];
+
+    return true;
+}
+// ------------------------------ TutorialStep_AttackAllBonus ------------------------------
+//  5体以上倒すと高スコア！
+// コンストラクタ
+TutorialStep_AttackAllBonus::TutorialStep_AttackAllBonus(TutorialActor* actor) :TutorialStep(actor)
+{
+    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+
+    // チュートリアル画像の作成
+    //　5体以上倒すと高スコア！
+    tutorialImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tutorial/attack_all_bonus.png", "attack_all_bonus");
+    tutorialImage->SetWorldPosition(imagePos);
+    tutorialImage->SetSize(imageSize);
+    tutorialImage->SetVisible(false);
+    uiManager->Add(tutorialImage);
+}
+
+// デストラクタ
+TutorialStep_AttackAllBonus::~TutorialStep_AttackAllBonus()
+{
+    if (tutorialImage)
+    {// 削除通知を出す
+        tutorialImage->MarkPendingKill();
+    }
+}
+
+// ステートに入った時のメソッド
+void TutorialStep_AttackAllBonus::Enter()
+{
+    tutorialImage->SetVisible(true);
+
+    elapsedTime = 0.0f;
+
+    ResetMouseClickBlink();
+    ShowMouseClick(true);
+}
+
+// ステートで実行するメソッド
+void TutorialStep_AttackAllBonus::Execute(float deltaTime)
+{
+    // ポーズ中はゲーム入力を一切受け付けない
+    if (Scene::GetCurrentScene()->IsPaused())
+        return;
+
+    // UIがマウスを使っているならゲーム操作しない
+    if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
+        return;
+    UpdateMouseClickBlink(deltaTime);
+
+    //  押した瞬間
+    if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
+    {
+        owner->GetTutorialManager()->ChangeState("TutorialStep_StageClear");
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
+    }
+}
+
+// ステージから出ていくときのメソッド
+void TutorialStep_AttackAllBonus::Exit()
+{
+    tutorialImage->SetVisible(false);
+    ShowMouseClick(false);
+}
+
+// ------------------------------ TutorialStep_StageClear ------------------------------
+//  ステージクリア条件
+// コンストラクタ
+TutorialStep_StageClear::TutorialStep_StageClear(TutorialActor* actor) :TutorialStep(actor)
+{
+    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+
+    // チュートリアル画像の作成
+    //　 ステージクリア条件
+    tutorialImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tutorial/stage_clear.png", "stage_clear");
+    tutorialImage->SetWorldPosition(imagePos);
+    tutorialImage->SetSize(imageSize);
+    tutorialImage->SetVisible(false);
+    uiManager->Add(tutorialImage);
+}
+
+// デストラクタ
+TutorialStep_StageClear::~TutorialStep_StageClear()
+{
+    if (tutorialImage)
+    {// 削除通知を出す
+        tutorialImage->MarkPendingKill();
+    }
+}
+
+// ステートに入った時のメソッド
+void TutorialStep_StageClear::Enter()
+{
+    tutorialImage->SetVisible(true);
+
+    elapsedTime = 0.0f;
+
+    ResetMouseClickBlink();
+    ShowMouseClick(true);
+}
+
+// ステートで実行するメソッド
+void TutorialStep_StageClear::Execute(float deltaTime)
+{
+    // ポーズ中はゲーム入力を一切受け付けない
+    if (Scene::GetCurrentScene()->IsPaused())
+        return;
+
+    // UIがマウスを使っているならゲーム操作しない
+    if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
+        return;
+
+    UpdateMouseClickBlink(deltaTime);
+
+    //  押した瞬間
+    if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
+    {
+        const char* types[] = { "0", "1" };
+        SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
+    }
+}
+
+// ステージから出ていくときのメソッド
+void TutorialStep_StageClear::Exit()
+{
+    tutorialImage->SetVisible(false);
+    ShowMouseClick(false);
+}
 

@@ -4,6 +4,7 @@
 #include "Core/Actor.h"
 #include "UI/Widgets/Widget.h"
 #include "TutorialManager.h"
+#include "Components/Effect/ParticleComponent.h"
 
 class EnemyBase;
 class ScissorsPlayer1;
@@ -34,6 +35,9 @@ struct PendingTutorialSpawn
     bool spawned = false;
 
     bool isTied = false;
+
+    bool isTargetTutorial = false;
+    bool spawnArrowUi = true;
 };
 
 
@@ -55,17 +59,8 @@ public:
     // プレイヤーを取得する
     ScissorsPlayer1* GetPlayer();
 
-    // チュートリアルターゲットに登録する
-    void AddTutorialEnemy(const std::shared_ptr<EnemyBase>& enemy);
-
     // チュートリアルターゲットを取得する
     std::vector<TutorialTargetEnemy> GetTutorialEnemies() { return tutorialTargets; }
-
-    // 敵を生成する
-    std::shared_ptr<EnemyBase> SpawnEnemy(
-        const XMFLOAT3& pos,
-        YarnEnemyType type, bool isBig,
-        float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 }, bool isTied = false);
 
     // 縫い留められた敵がいるかどうか
     bool HasPinnedEnemy() const;
@@ -83,14 +78,40 @@ public:
     void HideArrows();
 
     // 予約スポーンをする
-    void ReserveSpawnEnemy(){}
+    void ReserveSpawnEnemy(const XMFLOAT3& pos,
+        YarnEnemyType type,
+        bool isBig,
+        float speed,
+        const XMFLOAT3& dir,
+        bool isTied, bool isTargetTutorial, bool spawnArrowUi = true);
 
+    // 敵の数を取得する
+    int GetEnemyCount() { return enemyCount; }
+
+    // 生き残っている敵
+    int GetAliveEnemyCount() const;
 private:
     // 敵の上に出す矢印
     void UpdateShowArrowEnemy(float deltaTime);
 
     // 壁際に出す矢印
     void UpdateSideArrow(float deltaTime);
+
+    // 敵を生成する
+    std::shared_ptr<EnemyBase> SpawnEnemy(
+        const XMFLOAT3& pos,
+        YarnEnemyType type, bool isBig,
+        float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 }, bool isTied = false);
+
+    // 敵の遅延湧きの更新処理
+    void UpdatePendingTutorialSpawns(float deltaTime);
+
+    // 出現エフェクトを生成
+    void SpawnPreviewEffect(DirectX::XMFLOAT3 pos);
+
+    // チュートリアルターゲットに登録する
+    void AddTutorialEnemy(const std::shared_ptr<EnemyBase>& enemy, bool spawnArrowUi );
+
 
 private:
     XMFLOAT2 arrowOffsetPos = { 8.0f,40.0f };
@@ -104,6 +125,7 @@ private:
     std::shared_ptr<UIImageComponent> arrowDownComponent;
 
     std::vector<PendingTutorialSpawn> pendingTutorialSpawns;    // チュートリアル遅延湧き
-
+    std::shared_ptr<ParticleComponent> spawnEffectComponent; // 出現エフェクト用コンポーネント
     float elapsedTime = 0.0f;
+    int enemyCount = 0; // 敵の数
 };
