@@ -140,8 +140,9 @@ private:
 
     std::shared_ptr<UIImageComponent> gaugeFrameBackComponent;  // ボスHPゲージのスプライト描画
     std::shared_ptr<UIGaugeComponent> gaugeUi; // ボスHPのゲージUI
-    DirectX::XMFLOAT2 gaugeUiOffset = { -184.0f,-366.0f }; // ゲージのUIオフセット値
-    DirectX::XMFLOAT2 gaugeFrameOffset = { 8.0f,0.0f }; // ゲージフレームのオフセット値
+    //DirectX::XMFLOAT2 gaugeUiOffset = { -184.0f,-366.0f }; // ゲージのUIオフセット値
+    DirectX::XMFLOAT2 gaugeUiOffset = { 720.0f,40.0f }; // ゲージのUIオフセット値
+    DirectX::XMFLOAT2 gaugeFrameOffset = { 4.0f,0.0f }; // ゲージフレームのオフセット値
 
     float diveOffsetY = 0.0f;
     bool isDiving = false;

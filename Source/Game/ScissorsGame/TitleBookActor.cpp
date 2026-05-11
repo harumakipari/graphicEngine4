@@ -9,7 +9,6 @@ void TitleBookActor::Initialize(const Transform& transform)
     bookRightModel = AddComponent<SkeletalMeshComponent>("bookRightModel", parentName);
     bookRightModel->SetModel("./Data/TeamModels/Title/BookRight.gltf", false, false);
 
-
     bookLeftModel = AddComponent<SkeletalMeshComponent>("bookLeftModel",parentName);
     bookLeftModel->SetModel("./Data/TeamModels/Title/BookLeft.gltf", false, false);
     bookLeftModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });

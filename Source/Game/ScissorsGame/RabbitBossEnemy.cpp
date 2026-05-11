@@ -150,7 +150,6 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 
 void RabbitBossEnemyActor::Update(float deltaTime)
 {
-    Character::Update(deltaTime);
 
     DirectX::XMFLOAT3 pos = GetPosition();
 
@@ -159,8 +158,8 @@ void RabbitBossEnemyActor::Update(float deltaTime)
         DirectX::XMFLOAT2 uiPos = WorldToUI(pos);
         float hpGauge = static_cast<float>(hp);
         float hpGaugeMax = static_cast<float>(maxHp);
-        uiPos.x += gaugeUiOffset.x;
-        uiPos.y += gaugeUiOffset.y;
+        uiPos.x = gaugeUiOffset.x;
+        uiPos.y = gaugeUiOffset.y;
         if (gaugeUi)
         {
             gaugeUi->SetValue(hpGauge, hpGaugeMax);
@@ -177,6 +176,16 @@ void RabbitBossEnemyActor::Update(float deltaTime)
     {// éÄñSèàóùÇ÷à⁄çsÇ∑ÇÈ
         GetStateMachine()->ChangeState("Death");
     }
+
+    if (auto gameManager = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>())
+    {
+        if (!gameManager->IsGameInputEnabled())
+        {
+            return;
+        }
+    }
+
+    Character::Update(deltaTime);
 
     // íæÇﬁèàóù
     if (isDiving)

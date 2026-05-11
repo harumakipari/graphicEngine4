@@ -3,6 +3,7 @@
 
 #include "ButtonCoinActor.h"
 #include "ScissorsGameElasticComponent.h"
+#include "ScissorsGameManager.h"
 #include "ScissorsPlayer1.h"
 #include "ScorePopupActor.h"
 #include "Engine/Scene/Scene.h"
@@ -43,6 +44,15 @@ void EnemyBase::Update(float deltaTime)
     {
     case YarnState::Active:
     case YarnState::Tying:
+
+        if (auto gameManager = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>())
+        {
+            if (!gameManager->IsGameInputEnabled())
+            {
+                return;
+            }
+        }
+
         if (behavior)
         {
             behavior->Update(this, deltaTime);
