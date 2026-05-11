@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "RabbitBossState.h"
 
+#include "BobbinActor.h"
 #include "BossSpawner.h"
 #include "RabbitBossEnemy.h"
 #include "ScissorsGameState.h"
@@ -135,6 +136,47 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
         break;
     case WarpPhase::Chase:
     {
+        // -------------------------
+        // ボビン回避
+        // -------------------------
+        if (auto bobbin = enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<BobbinActor>())
+        {
+            DirectX::XMFLOAT3 bobbinPos = bobbin->GetPosition();
+
+            // ボビンサイズ
+            float bobbinRadius = 3.5f;
+
+            float avoidDistance = bobbinRadius;
+
+            DirectX::XMFLOAT3 toPos;
+            toPos.x = pos.x - bobbinPos.x;
+            toPos.z = pos.z - bobbinPos.z;
+            toPos.y = 0.0f;
+
+            float distSq =
+                toPos.x * toPos.x +
+                toPos.z * toPos.z;
+
+            if (distSq < avoidDistance * avoidDistance)
+            {
+                float dist = sqrtf(distSq);
+
+                // 真上防止
+                if (dist < 0.001f)
+                {
+                    toPos = { 1.0f,0.0f,0.0f };
+                    dist = 1.0f;
+                }
+
+                // 正規化
+                toPos.x /= dist;
+                toPos.z /= dist;
+
+                // 押し出し
+                pos.x = bobbinPos.x + toPos.x * avoidDistance;
+                pos.z = bobbinPos.z + toPos.z * avoidDistance;
+            }
+        }
         if (auto player = enemy->GetPlayer())
         {
             DirectX::XMFLOAT3 playerPos = player->GetPosition();

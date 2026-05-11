@@ -103,8 +103,8 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     return;
                 }
 
-                uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Enemy);
-                if (other->GetCollisionLayer() == mask)
+                uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Enemy)| CollisionHelper::ToBit(CollisionLayer::Boss);
+                if (other->GetCollisionLayer() & mask)
                 {
                     if (auto enemy = dynamic_cast <EnemyBase*>(other->GetOwner()))
                     {
@@ -368,15 +368,18 @@ void ScissorsPlayer1::Update(float deltaTime)
     }
     else
     {
+#if 0
         if (hp <= 0 && !startDeathPerform)
         {// player‚ªŽ€–S‚µ‚½‚ç
             GetStateMachine()->ChangeState("Death");
             startDeathPerform = true;
             if (gameManager)
             {
-                gameManager->EndGame(true); 
+                gameManager->EndGame(true);
             }
         }
+
+#endif // 0
     }
 
     if (damageCooldownTimer > 0.0f)

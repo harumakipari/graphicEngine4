@@ -101,7 +101,6 @@ public:
     // 出現範囲のモデルスケールを取得する
     float GetSpawnScale() { return spawnScaleMax; }
 
-
 private:
     // ダメージが入る場所を生成する
     void CreteDamageZone();
