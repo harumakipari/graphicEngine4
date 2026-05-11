@@ -262,14 +262,12 @@ void GameScene::Update(float deltaTime)
         DirectX::XMFLOAT3 playerPos = player->GetPosition();
         DirectX::XMFLOAT2 playerUiPos = WorldToUI(playerPos);
         
-        //float deathRadius = player->GetDeathRadius();
-        float deathRadius =0.25f;
+        float deathRadius = player->GetDeathRadius();
+
+        // 2.0f -> 0.15f -> -0.1f
+        //gameSceneCBuffer->data.radius = gameOverRadius;
         gameSceneCBuffer->data.radius = deathRadius;
-//#if _DEBUG
-        //gameSceneCBuffer->data.screenSize = { 1280.0f,720.0f };
-//#else
         gameSceneCBuffer->data.screenSize = { Graphics::GetScreenWidth(),Graphics::GetScreenHeight() };
-//#endif
 
         playerUiPos.x /= gameSceneCBuffer->data.screenSize.x;
         playerUiPos.y /= gameSceneCBuffer->data.screenSize.y;
@@ -794,6 +792,7 @@ void GameScene::GBufferDecalPass(ID3D11DeviceContext* immediateContext)
     D3D11_VIEWPORT scene_viewport{};
     scene_viewport.TopLeftX = 0;
     scene_viewport.TopLeftY = 0;
+
 #if _DEBUG
     scene_viewport.Width = 1280;// Graphics::GetScreenWidth();
     scene_viewport.Height = 720;    // Graphics::GetScreenHeight();
@@ -1053,7 +1052,14 @@ void GameScene::DrawGui()
 {
 #ifdef USE_IMGUI
     SceneBase::DrawGui();
+
+
     ImGui::Begin(U8("調整"));
+    if (ImGui::TreeNode(U8("ゲームオーバー演出")))
+    {
+        ImGui::DragFloat(U8("半径"), &gameOverRadius, 0.1f, -0.1f, 2.0f);
+        ImGui::TreePop();
+    }
     if (ImGui::TreeNode(U8("敵")))
     {
         ImGui::DragFloat("Distance Dash", &enemyTuning.knockbackDistanceDash, 0.1f, 0.0f, 20.0f);

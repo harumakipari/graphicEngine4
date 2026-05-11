@@ -7,8 +7,11 @@
 
 void SceneTransitionManager::Initialize()
 {
-    transitionEffect = std::make_shared<ScaleTransitionEffect>();
-    transitionEffect->Initialize();
+    scaleTransitionEffect = std::make_shared<ScaleTransitionEffect>();
+    scaleTransitionEffect->Initialize();
+
+    fadeTransitionEffect = std::make_shared<FadeTransitionEffect>();
+    fadeTransitionEffect->Initialize();
 }
 
 const char* ToString(SceneTransitionManager::State s)
@@ -25,49 +28,64 @@ const char* ToString(SceneTransitionManager::State s)
 
 void SceneTransitionManager::RequestTransition(
     const std::string& nextScene,
-    const SceneTransitionParam& param)
+    const SceneTransitionParam& param, TransitionStyle style)
 {
     if (state_ != State::Idle)
     {
         Logger::Warning((ToString(state_)));
         return;
     }
+
+    currentStyle = style;
+
     nextScene_ = nextScene;
-
-    // Effect生成
-    transitionEffect->OnSceneChanged();
-    transitionEffect->Start(TransitionDirection::Close);
-
     this->param = param;
+
+    if (style == TransitionStyle::Scale)
+    {
+        scaleTransitionEffect->OnSceneChanged();
+        scaleTransitionEffect->Start(TransitionDirection::Close);
+    }
+    else
+    {
+        fadeTransitionEffect->OnSceneChanged();
+        fadeTransitionEffect->Start(TransitionDirection::Close);
+    }
     state_ = State::Closing;
 }
 
 void SceneTransitionManager::Update(float deltaTime)
 {
-    if (!transitionEffect)
+    if (!scaleTransitionEffect)
         return;
-
-    transitionEffect->Update(deltaTime);
+    bool finished = false;
+    if (currentStyle == TransitionStyle::Scale)
+    {
+        scaleTransitionEffect->Update(deltaTime);
+        finished = scaleTransitionEffect->IsFinished();
+    }
+    else
+    {
+        fadeTransitionEffect->Update(deltaTime);
+        finished = fadeTransitionEffect->IsFinished();
+    }
 
     switch (state_)
     {
     case State::Closing:
-        if (transitionEffect->IsFinished())
+        if (scaleTransitionEffect->IsFinished())
         {
             state_ = State::ChangingScene;
             Scene::_transition(nextScene_, param);
             Logger::Log(U8("Closion を通った"));
         }
         break;
-
     case State::ChangingScene:
         // 新シーン生成後に呼ばれる想定
         break;
-
     case State::Opening:
-        if (transitionEffect->IsFinished())
+        if (finished)
         {
-            //transitionEffect.reset();
             state_ = State::Idle;
             Logger::Log(U8("Opening を通った"));
 
@@ -76,6 +94,7 @@ void SceneTransitionManager::Update(float deltaTime)
                 onOpeningFinished();
                 onOpeningFinished = nullptr;
             }
+            param.clear();
         }
         break;
     }
@@ -91,9 +110,18 @@ void SceneTransitionManager::NotifySceneChanged()
 {
     if (state_ == State::ChangingScene)
     {
-        param.clear();
-        transitionEffect->OnSceneChanged();
-        transitionEffect->Start(TransitionDirection::Open);
+        if (currentStyle == TransitionStyle::Scale)
+        {
+            scaleTransitionEffect->OnSceneChanged();
+            scaleTransitionEffect->Start(TransitionDirection::Open);
+        }
+        else
+        {
+            fadeTransitionEffect->OnSceneChanged();
+            fadeTransitionEffect->Start(TransitionDirection::Open);
+        }
+
         state_ = State::Opening;
+
     }
 }

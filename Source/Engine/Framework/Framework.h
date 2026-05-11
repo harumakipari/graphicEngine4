@@ -259,4 +259,5 @@ private:
     std::unique_ptr<CoreComputeParticleSystem> particleSystem;
 
     std::shared_ptr<Sprite> back;
+    std::shared_ptr<Sprite> black;
 };

@@ -28,3 +28,24 @@ private:
     bool isFinishTransitionPerform = false;
 };
 
+
+class FadeTransitionEffect
+{
+public:
+    void Initialize();
+
+    void Start(TransitionDirection dir);
+
+    void Update(float deltaTime);
+
+    bool IsFinished() const { return isFinishTransitionPerform; }
+
+    void OnSceneChanged() const;
+private:
+    std::shared_ptr<UISceneChangeComponent> sprite;
+    std::shared_ptr<EasingRunner> easingRunner;
+    float time = 0.0f;
+    float spriteAlpha = 1.0f;
+    bool isFinishTransitionPerform = false;
+};
+

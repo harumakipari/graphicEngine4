@@ -1,6 +1,12 @@
 #pragma once
 #include "TransitionEffect.h"
 
+enum class TransitionStyle : uint8_t
+{
+    Scale,
+    Fade
+};
+
 class SceneTransitionManager
 {
 public:
@@ -16,7 +22,7 @@ public:
 
     void RequestTransition(
         const std::string& nextScene,
-        const SceneTransitionParam& param = {}
+        const SceneTransitionParam& param = {}, TransitionStyle style = TransitionStyle::Scale
     );
 
     void Update(float deltaTime);
@@ -50,5 +56,8 @@ private:
     std::string nextScene_;
     SceneTransitionParam param;
 
-    std::shared_ptr<ScaleTransitionEffect> transitionEffect;
+    TransitionStyle currentStyle = TransitionStyle::Scale;
+
+    std::shared_ptr<FadeTransitionEffect> fadeTransitionEffect;
+    std::shared_ptr<ScaleTransitionEffect> scaleTransitionEffect;
 };

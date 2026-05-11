@@ -4,8 +4,6 @@
 #include "Engine/Audio/CoreAudio.h"
 #include "Engine/Scene/Scene.h"
 
-
-
 void ScissorsUiEndActor::Initialize(const Transform& transform)
 {
     auto uiManager = GetOwnerScene()->GetUIManager();

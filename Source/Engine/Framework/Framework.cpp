@@ -24,9 +24,9 @@
 //コンストラクタ：ウィンドウハンドルを受け取って初期化
 Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fullscreen), windowedStyle(static_cast<DWORD>(GetWindowLongPtrW(hwnd, GWL_STYLE)))
 {
-//#ifndef _DEBUG
+    //#ifndef _DEBUG
     fullscreenMode = true;
-//#endif
+    //#endif
     Graphics::Initialize(hwnd, fullscreenMode);
     InputSystem::Initialize();
     RenderState::Initialize();
@@ -58,12 +58,12 @@ bool Framework::Initialize()
     SceneTransitionManager::Instance().Initialize();
 
     // SCENE_TRANSITION
-   //Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-    Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    //Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    //Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
    // Scene::_boot(device, "ResultScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
      //Scene::_boot(device, "MorphScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "TutorialScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-    //Scene::_boot(device, "GameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    Scene::_boot(device, "GameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "SampleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "PuddingGameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
 
@@ -86,9 +86,9 @@ bool Framework::Initialize()
     ProfileInitialize(&isPaused, Framework::SetPause/*, ImGuiControl::Profiler::DefaultMaxThreads*/);
     ProfileThreadName(0, "Main Thread");
 
-
     //back = std::make_shared<Sprite>(device, L"./Data/Textures/UI/backGround.png");
     back = std::make_shared<Sprite>(device, L"./Data/Textures/UI/Oden_seane_change.png");
+    black = std::make_shared<Sprite>(device, L"./Data/Textures/ScissorsUI/black.png");
 
     return true;
 }
@@ -121,7 +121,6 @@ bool Framework::Update(float deltaTime/*Elapsed seconds from last frame*/)
         ProfileScopedSection_2(0, "SceneUpdate", ImGuiControl::Profiler::Blue);
         skipRendering = Scene::_update(immediateContext, deltaTime);
     }
-
 
 
 #ifdef USE_IMGUI
@@ -189,7 +188,22 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
     }
     else
     {
-         back->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        auto& param = SceneTransitionManager::Instance().GetParams();
+        if (param.contains("fade"))
+        {
+            std::string name = param.at("fade");
+            if (name == "0")
+            {
+                black->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+                Logger::Log(U8("blackを通った"));
+            }
+        }
+        else
+        {
+            back->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+            Logger::Log(U8("backを通った"));
+        }
+
     }
 
 

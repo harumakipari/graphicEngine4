@@ -2,6 +2,7 @@
 #include "LoadingScene.h"
 
 #include "Engine/Framework/Framework.h"
+#include "Game/ScissorsGame/StageData.h"
 
 #ifdef USE_IMGUI
 #define IMGUI_ENABLE_DOCKING
@@ -55,7 +56,20 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
     _async_preload_scene(device, width, height, preload_scene);
 
     //useDeferredRendering = false;
+
     loadingSprite = std::make_shared<Sprite>(device, L"./Data/Textures/UI/Oden_seane_change.png");
+
+    auto& param = SceneTransitionManager::Instance().GetParams();
+    if (param.contains("fade"))
+    {
+        std::string name = param.at("fade");
+        if (name == "0")
+        {
+            loadingSprite = std::make_shared<Sprite>(device, L"./Data/Textures/ScissorsUI/black.png");
+        }
+    }
+
+
 
     return true;
 }

@@ -758,16 +758,67 @@ void ScissorsPlayerDeathState::Enter()
 {
     player->PlayAnimation("DashEnd", true, true, 0.1f);
     player->characterMovementComponent->SetSpeed(0.0f);
+    player->SetDeathRadius(2.0f);
+
+    phase = DeathPhase::ShrinkToCenter;
+
+    waitTimer = 0.0f;
 }
 
 void ScissorsPlayerDeathState::Execute(float deltaTime)
 {
-    elapsedTime += deltaTime;
-
     float deathRadius = player->GetDeathRadius();
-    deathRadius -= deltaTime * 0.25f;
 
-    deathRadius = std::max<float>(0.0f, deathRadius);
+    switch (phase)
+    {
+    case DeathPhase::ShrinkToCenter:
+    {
+        // 2.0 -> 0.15
+        deathRadius -= deltaTime * 0.8f;
+
+        if (deathRadius <= 0.15f)
+        {
+            deathRadius = 0.15f;
+
+            phase = DeathPhase::Wait;
+        }
+
+        break;
+    }
+
+    case DeathPhase::Wait:
+    {
+        waitTimer += deltaTime;
+
+        // ‚¿‚å‚Á‚ÆŽ~‚ß‚é
+        if (waitTimer >= 1.0f)
+        {
+            phase = DeathPhase::CloseFinish;
+        }
+
+        break;
+    }
+
+    case DeathPhase::CloseFinish:
+    {
+        // 0.15 -> -0.1
+        deathRadius -= deltaTime * 0.5f;
+
+        if (deathRadius <= -0.1f)
+        {
+            deathRadius = -0.1f;
+
+            // GameOver‘JˆÚ‚È‚Ç
+            const char* types[] = { "0", "1" };
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("fade","0") },TransitionStyle::Fade);
+            phase = DeathPhase::SceneTransition;
+        }
+
+        break;
+    }
+    case DeathPhase::SceneTransition:
+        break;
+    }
 
     player->SetDeathRadius(deathRadius);
 }

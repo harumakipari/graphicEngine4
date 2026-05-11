@@ -80,7 +80,7 @@ public:
     void ApplyLandingDamage()
     {
         CreteDamageZone();
-        PushPlayerOut();
+        //PushPlayerOut();
     }
 
     // ボスが死亡したら呼ぶ処理  一フレームのみ
@@ -149,6 +149,7 @@ private:
 
     const float maxDiveDepth = -7.0f;
     const float diveSpeed = 5.0f;
+    const float diveEmergeSpeed = 10.0f; //出現のスピード
     float baseY = 0.0f; // 開始位置
 
     bool spawnBomb = false; // 爆弾を発生させるかどうか

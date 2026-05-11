@@ -162,6 +162,13 @@ private:
 // 死亡ステートオブジェクト
 class ScissorsPlayerDeathState : public ScissorsPlayerStateBase
 {
+    enum class DeathPhase:uint8_t
+    {
+        ShrinkToCenter,
+        Wait,
+        CloseFinish,
+        SceneTransition,
+    };
 public:
     // コンストラクタ
     ScissorsPlayerDeathState(ScissorsPlayer1* player) :ScissorsPlayerStateBase(player) {}
@@ -177,6 +184,8 @@ public:
     const char* GetName() const override { return "Death"; }
 
 private:
+    DeathPhase phase = DeathPhase::ShrinkToCenter;
     float elapsedTime = 0.0f;
+    float waitTimer = 0.0f;
 };
 

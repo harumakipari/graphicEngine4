@@ -2,6 +2,8 @@
 
 #include "ScissorsPlayer1.h"
 
+#include <algorithm>
+
 #include "BonusUiActor.h"
 #include "ButtonCoinActor.h"
 #include "EnemyBase.h"
@@ -11,6 +13,7 @@
 #include "ScissorsPlayerStateDerived.h"
 #include "YarnEnemyActor.h"
 #include "ScissorsGameEnemyBaseActor.h"
+#include "ScissorsGameManager.h"
 #include "ScissorsGameState.h"
 #include "ScorePopupActor.h"
 #include "TutorialActor.h"
@@ -308,7 +311,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         heartFull = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/heart_full.png");
         heartHalf = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/heart_half.png");
 
-        hp = maxHp;
+        hp = 1;
         int heartCount = maxHp / 2;
 
         for (int i = 0; i < heartCount; i++)
@@ -357,12 +360,11 @@ void ScissorsPlayer1::Update(float deltaTime)
         return;
     }
 
+    auto gameManager = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>();
+
     if (auto tutorialActor = GetOwnerScene()->GetActorManager()->GetActorOfType<TutorialActor>())
     {// チュートリアルだったら
-        if (hp <= 2)
-        {
-            hp = 2;
-        }
+        hp = std::max<int>(hp, 2);
     }
     else
     {
@@ -370,6 +372,10 @@ void ScissorsPlayer1::Update(float deltaTime)
         {// playerが死亡したら
             GetStateMachine()->ChangeState("Death");
             startDeathPerform = true;
+            if (gameManager)
+            {
+                gameManager->EndGame(true); 
+            }
         }
     }
 
@@ -427,6 +433,15 @@ void ScissorsPlayer1::Update(float deltaTime)
     }
 
     Character::Update(deltaTime);
+
+    if (gameManager)
+    {
+        if (!gameManager->IsGameInputEnabled())
+        {
+            return;
+        }
+    }
+
 
     //　軌跡更新
     trail.UpdateTrail(deltaTime);

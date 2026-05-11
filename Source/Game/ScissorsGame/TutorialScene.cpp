@@ -43,6 +43,7 @@
 #include "Physics/CollisionSystem.h"
 #include "UI/UIManager.h"
 #include "UI/Game/Pause.h"
+#include "UI/Game/SceneTransitionManager.h"
 
 
 bool TutorialScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)

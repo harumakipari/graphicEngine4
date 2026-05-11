@@ -111,7 +111,7 @@ void TitleCamera::Play()
             TestEaseType::OutExp,
             startPitch,
             endPitch,
-            cameraMoveinterval
+            cameraMoveInterval
         );
 
         handler.SetCompletedFunction([this]()
@@ -140,7 +140,7 @@ void TitleCamera::Play()
             TestEaseType::OutExp,
             startYaw,
             endYaw,
-            cameraMoveinterval
+            cameraMoveInterval
         );
 
         handler.SetCompletedFunction([this]()
@@ -161,7 +161,6 @@ void TitleCamera::Play()
 
 void TitleCamera::PlayReverse()
 {
-
     // position ‚Ì easing
     {
         TestEasingHandler handler;
@@ -172,7 +171,7 @@ void TitleCamera::PlayReverse()
             TestEaseType::OutExp,
             endPitch,
             startPitch,
-            cameraMoveinterval
+            cameraMoveInterval
         );
 
         handler.SetCompletedFunction([this]()
@@ -201,7 +200,7 @@ void TitleCamera::PlayReverse()
             TestEaseType::OutExp,
             endYaw,
             startYaw,
-            cameraMoveinterval
+            cameraMoveInterval
         );
 
         handler.SetCompletedFunction([this]()

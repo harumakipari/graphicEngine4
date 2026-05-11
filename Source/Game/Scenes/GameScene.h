@@ -163,5 +163,6 @@ private:
     std::unique_ptr<FrameBuffer> sceneFrameBuffer; // UIも含めたフレームバッファ
     Microsoft::WRL::ComPtr<ID3D11PixelShader> gameOverPs;
 
+    float gameOverRadius = 0.0f;
 
 };

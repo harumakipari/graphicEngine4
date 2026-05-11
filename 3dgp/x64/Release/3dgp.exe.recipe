@@ -76,6 +76,9 @@
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\FinalPS.cso</FullPath>
     </ContentFile>
     <ContentFile>
+      <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\FullScreenGameOverPS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>C:\Users\2240225\Desktop\graphicEngine4\Shader\GaussianDofBlurHorizontalPS.cso</FullPath>
     </ContentFile>
     <ContentFile>

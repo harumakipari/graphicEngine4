@@ -21,7 +21,7 @@ public:
     void Reset();
 
     // ゲーム終了処理
-    void EndGame();
+    void EndGame(bool playerDead=false);
 
     // ゲーム開始処理
     void StartGame();

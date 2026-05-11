@@ -255,7 +255,7 @@ void UIManager::MoveSelection(int dir)
         index = 0;
 
     if (index >= buttons.size())
-        index = buttons.size() - 1;
+        index = static_cast<int>(buttons.size()) - 1;
 
     SetSelected(buttons[index].get());
 }

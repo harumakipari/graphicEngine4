@@ -195,7 +195,7 @@ void RabbitBossEnemyActor::Update(float deltaTime)
     // 出現処理
     if (isEmerging)
     {
-        diveOffsetY += diveSpeed * deltaTime;
+        diveOffsetY += diveEmergeSpeed * deltaTime;
 
         if (diveOffsetY >= 0.0f)
         {
@@ -617,7 +617,6 @@ void RabbitBossEnemyActor::CreteDamageZone()
     DirectX::XMFLOAT3 pos = GetPosition();
     // プレイヤーへのダメージ
     {
-
         auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>();
         if (!player)
         {

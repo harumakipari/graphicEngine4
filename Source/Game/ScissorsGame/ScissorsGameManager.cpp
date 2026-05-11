@@ -29,28 +29,35 @@ void ScissorsGameManager::Reset()
 }
 
 
-void ScissorsGameManager::EndGame()
+void ScissorsGameManager::EndGame(bool playerDead)
 {
     isGameEnded = true;
+
+    // 入力を無効化する
+    gameInputEnabled = false;
 
     // 所要時間を記録する
     ScoreSystem::RecordGameTime(gameTimer);
 
-    // finish の演出を入れる
-    if (auto actor = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsUiEndActor>())
-    {
-        // クリア演出
-        actor->Play();
-    }
-    else
-    {
+
+    if (!playerDead)
+    {// playerが死亡していなかったら、
+        // finish の演出を入れる
+        if (auto actor = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsUiEndActor>())
+        {
+            // クリア演出
+            actor->Play();
+        }
+        else
+        {
 #if 1
-        const char* types[] = { "0", "1" };
-        SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
+            const char* types[] = { "0", "1" };
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
 #else
-        const char* types[] = { "0", "1" };
-        Scene::_transition("LoadingScene", { std::make_pair("preload", "ResultScene"),{"difficulty", "0"} });
+            const char* types[] = { "0", "1" };
+            Scene::_transition("LoadingScene", { std::make_pair("preload", "ResultScene"),{"difficulty", "0"} });
 #endif // 0
+        }
     }
 
 
@@ -60,4 +67,6 @@ void ScissorsGameManager::EndGame()
 void ScissorsGameManager::StartGame()
 {
     isGameRunning = true;
+    // 入力を有効化する
+    gameInputEnabled = true;
 }

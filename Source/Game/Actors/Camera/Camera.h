@@ -303,7 +303,7 @@ private:
     float endPitch = -60.0f;
     float currentPitch = 0.0f;
 
-    constexpr float cameraMoveinterval = 2.0f;
+    float cameraMoveInterval = 2.0f;
 
     
     std::unique_ptr<EasingRunner> easingPitchRunner;
