@@ -12,7 +12,10 @@ public:
     void Update(float deltaTime)override;
 
 private:
-    std::shared_ptr<SkeletalMeshComponent> stageModelComponent;
+    std::shared_ptr<SkeletalMeshComponent> bookLeftModel;
+    std::shared_ptr<SkeletalMeshComponent> bookRightModel;
+
+    std::shared_ptr<SkeletalMeshComponent> patchTutorialModel;
 
 };
 

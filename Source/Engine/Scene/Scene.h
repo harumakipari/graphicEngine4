@@ -160,6 +160,9 @@ public:
 
     // 参照を返す
     SceneSettings& GetSceneSettings()  { return settings; }
+
+    // シーンのライト設定などを設定する
+    void SetSceneSettings(const SceneSettings& settings) { this->settings = settings; }
 private:
     // シーンの更新
     static bool _update(ID3D11DeviceContext* immediateContext, float deltaTime);

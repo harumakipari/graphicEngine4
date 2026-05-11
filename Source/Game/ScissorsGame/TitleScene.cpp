@@ -6,6 +6,7 @@
 #define IMGUI_ENABLE_DOCKING
 #endif
 
+#include "TitleBookActor.h"
 #include "TitleStageActor.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Engine/Input/InputSystem.h"
@@ -25,8 +26,8 @@
 
 bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
 {
-    lightDirection = { 0.722f, -0.38f, -0.0211f, 0.9f };   // 上の窓からの光
-    lightColor = { 1.0f, 0.8f, 1.0f, 2.6f };
+    lightDirection = { -0.65f, -0.38f, -0.0211f, 0.9f };   // 上の窓からの光
+    lightColor = { 1.0f, 1.0f, 1.0f, 4.17f };
     {
         sceneCBuffer = std::make_unique<ConstantBuffer<FrameConstants>>(device);
         shaderCBuffer = std::make_unique<ConstantBuffer<SceneShaderConstants>>(device);
@@ -111,6 +112,74 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
     {
         SetUpActors();
     }
+
+    // シーンのライト設定などを設定する
+    SceneSettings settings = {};
+    settings.cascadedShadowMapConstants =
+    {
+        17.021f,
+        0.136f,
+        true,
+        21.643f
+    };
+    settings.sceneShaderConstants =
+    {
+        0.75f,
+        0.00011f,
+        0.005f,
+        0.0f,
+        -0.028f,
+        0.04f,
+        0.018f,
+        0.16f,
+        4.6f,
+        0.0f,
+        80.0f,
+        1.0f,
+        23.0f,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0.0f,
+        { 1.0f,1.0f,1.0f },
+        0.0f,
+    };
+    settings.sceneLightSaveData.sceneConstants =
+    {
+         { -0.65f, -0.38f, -0.0211f, 0.85f/* w:attenuation Rate */},
+         { 1.0f, 0.8f, 1.0f, 4.17f/*w colorPower*/ },
+         3.412f,
+         1,
+         1,
+         40,
+
+         { 1.0f,1.0f,1.0f },
+         1.466f,
+
+         { 0.977f,0.71f,0.168f },
+         0.0f,
+
+         { 0.422f,0.333f,0.0f },
+         0.0f,
+
+         3.0f,
+         1.0f,
+         0.7f,
+         1.8f,
+
+         1.0f,
+         0.3f,
+         0.78f,
+         0.15f,
+    };
+    this->SetSceneSettings(settings);
 
     return true;
 }
@@ -481,15 +550,15 @@ void TitleScene::SetUpActors()
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<FixedCamera>("fixedCameraActor", mainCameraTr);
     mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
 
-    Transform cameraTargetTr(DirectX::XMFLOAT3{ 5.4f,-0.016f,5.053f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ 2.2f,1.984f,2.753f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
     mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
 
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
-    mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-11.5));
-    mainCameraComponent->SetFov(DirectX::XMConvertToRadians(33.5f));
-    mainCameraComponent->SetYaw(DirectX::XMConvertToRadians(41.0f));
-    mainCameraComponent->distance = 14.477f;
+    mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-11.0f));
+    mainCameraComponent->SetYaw(DirectX::XMConvertToRadians(231.5f));
+    mainCameraComponent->SetFov(DirectX::XMConvertToRadians(24.0f));
+    mainCameraComponent->distance = 8.945f;
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("タイトルシーンのカメラ設定される。"));
 
@@ -505,10 +574,11 @@ void TitleScene::SetUpActors()
     auto movieCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MovieCamera>("movieCam", movieCameraTr);
     cameraManager->SetMovieCamera(movieCameraActor);
 
-    Transform stageTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,170.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform stageTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto stageActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleStageActor>("titleStageActor", stageTr);
 
-
+    Transform bookTr(DirectX::XMFLOAT3{ 0.0f,0.5f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto bookActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleBookActor>("BookActor", bookTr);
 }
 
 

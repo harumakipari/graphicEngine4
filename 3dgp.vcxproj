@@ -346,6 +346,7 @@
     <ClCompile Include="Source\Game\ScissorsGame\ScorePopupActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScoreUiActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\StageLoader.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\TitleBookActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\TitleScene.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\TitleStageActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\TrailModelActor.cpp" />

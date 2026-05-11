@@ -657,6 +657,12 @@
     <ClCompile Include="Source\Game\ScissorsGame\TutorialStep.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\GameTimerUiActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\TitleBookActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1033,6 +1039,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\TutorialActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\TutorialStep.h" />
     <ClInclude Include="Source\Game\ScissorsGame\TutorialManager.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\GameTimerUIActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -1309,6 +1316,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\OpaqueMarkPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FullScreenGameOverPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
