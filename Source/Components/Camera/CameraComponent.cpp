@@ -3,6 +3,7 @@
 
 #include "Core/Actor.h"
 #include "Physics/CollisionFunction.h"
+#include "Game/Actors/Camera/Camera.h"
 #include <json.hpp>
 
 
@@ -33,7 +34,7 @@ const DirectX::XMFLOAT4X4& CameraComponent::GetView()
         XMVectorSet(0, 0, 1, 0),
         q);
 
-    XMVECTOR up = XMVectorSet(0, 1, 0, 0); 
+    XMVECTOR up = XMVectorSet(0, 1, 0, 0);
 
 
 #endif // 0
@@ -103,122 +104,6 @@ ViewConstants CameraComponent::GetViewConstants()
     return vc;
 }
 
-//const DirectX::XMFLOAT4X4& TPSCameraComponent::GetView()
-//{
-//    using namespace DirectX;
-//    if (cameraLock)
-//    {
-//        return view;
-//    }
-//
-//#if 0 // こっち当たり判定を考慮していない。
-//
-//    XMFLOAT3 basePos{ 0,0,0 };
-//    if (!target.expired())
-//    {
-//        basePos = target.lock()->GetComponentWorldTransform().GetLocation();
-//    }
-//    else
-//    {
-//
-//    }
-//    XMVECTOR focus =
-//        XMLoadFloat3(&basePos) +
-//        XMVectorSet(targetOffset.x, targetOffset.y, targetOffset.z, 0);
-//
-//    // yaw/pitch から forward を直接作る
-//    XMVECTOR forward =
-//        XMVector3Normalize(
-//            XMVectorSet(
-//                cosf(pitch) * sinf(yaw),
-//                sinf(pitch),
-//                cosf(pitch) * cosf(yaw),
-//                0
-//            )
-//        );
-//
-//    // カメラ位置
-//    XMVECTOR eye = focus - forward * distance;
-//    DirectX::XMFLOAT3 eye3;
-//    DirectX::XMStoreFloat3(&eye3, eye);
-//    if (auto owner = owner_.lock())
-//    {
-//        owner->SetPosition(eye3);
-//    }
-//
-//    XMStoreFloat4x4(
-//        &view,
-//        XMMatrixLookAtLH(
-//            eye,
-//            focus,
-//            XMVectorSet(0, 1, 0, 0)
-//        )
-//    );
-//
-//    return view;
-//
-//#else
-//    auto targetActor = target.lock();
-//    if (!targetActor)
-//        return view;
-//
-//    // ==========================
-//    // ① pivot（注視点）
-//    // ==========================
-//    XMFLOAT3 targetPos = targetActor->GetOwner()->GetPosition();
-//
-//    XMVECTOR pivot = XMLoadFloat3(&targetPos) +
-//        XMLoadFloat3(&targetOffset);
-//
-//    // ==========================
-//    // ② カメラ理想位置
-//    // ==========================
-//    XMVECTOR forward =
-//        XMVectorSet(
-//            sinf(yaw) * cosf(pitch),
-//            sinf(pitch),
-//            cosf(yaw) * cosf(pitch),
-//            0.0f);
-//
-//    XMVECTOR idealEye = pivot - forward * distance + XMLoadFloat3(&cameraOffset);;
-//
-//    // ==========================
-//    // ③ 衝突補正
-//    // ==========================
-//    XMVECTOR resolvedEye =
-//        ResolveCameraCollision(pivot, idealEye);
-//
-//    // ==========================
-//    // ④ 補間
-//    // ==========================
-//    static XMVECTOR currentEye = resolvedEye;
-//    currentEye = XMVectorLerp(
-//        currentEye,
-//        resolvedEye,
-//        0.15f); // 調整可
-//
-//    XMFLOAT3 eye3;
-//    XMStoreFloat3(&eye3, currentEye);
-//
-//    if (auto owner = owner_.lock())
-//    {
-//        owner->SetPosition(eye3);
-//    }
-//
-//    // ==========================
-//    // ⑤ View行列生成
-//    // ==========================
-//    XMMATRIX V =
-//        XMMatrixLookAtLH(
-//            currentEye,
-//            pivot,
-//            XMVectorSet(0, 1, 0, 0));
-//
-//    XMStoreFloat4x4(&view, V);
-//    return view;
-//#endif // 0
-//
-//}
 
 
 DirectX::XMVECTOR TPSCameraComponent::ResolveCameraCollision(
@@ -491,6 +376,45 @@ void MovieCameraComponent::SaveToJson(const std::string& path)
     file << j.dump(4);
 }
 
+// 最初のフレームを適応する
+void MovieCameraComponent::ApplyFirstFrame()
+{
+    if (keys.empty())
+        return;
+
+    auto target = targetCamera.lock();
+
+    if (!target)
+        return;
+
+    auto& first = keys.front();
+
+    target->SetPosition(first.position);
+    target->SetQuaternionRotation(first.rotation);
+
+    SetFov(first.fov);
+}
+
+
+// 最初のフレームを適応する
+void MovieCameraComponent::ApplyLastFrame()
+{
+    if (keys.empty())
+        return;
+
+    auto target = targetCamera.lock();
+
+    if (!target)
+        return;
+
+    auto& last = keys.back();
+
+    target->SetPosition(last.position);
+    target->SetQuaternionRotation(last.rotation);
+
+    SetFov(last.fov);
+}
+
 void MovieCameraComponent::LoadFromJson(const std::string& path)
 {
     using json = nlohmann::json;
@@ -525,6 +449,31 @@ void MovieCameraComponent::LoadFromJson(const std::string& path)
     }
 }
 
+void MovieCameraComponent::Start(bool reverse)
+{
+    if (keys.size() < 2) return;
+    reversePlay = reverse;
+
+    if (reversePlay)
+        currentIndex = static_cast<int>(keys.size()) - 2;
+    else
+        currentIndex = 0;
+
+    time = 0.f;
+    playing = true;
+    auto target = targetCamera.lock();
+
+    if (target)
+    {
+        target->SetUseMovie(true);
+    }
+    finished = false;
+
+    // 再生中は手動禁止
+    manualControl = false;
+}
+
+
 void MovieCameraComponent::RefreshMovieFiles()
 {
     movieFiles.clear();
@@ -534,6 +483,97 @@ void MovieCameraComponent::RefreshMovieFiles()
         if (entry.path().extension() == ".json")
         {
             movieFiles.push_back(entry.path().filename().string());
+        }
+    }
+}
+
+void MovieCameraComponent::UpdatePath(float dt)
+{
+    bool reachedEnd =
+        (!reversePlay && currentIndex >= keys.size() - 1) ||
+        (reversePlay && currentIndex < 0);
+
+    if (reachedEnd)
+    {
+        playing = false;
+        finished = true;
+
+        auto target = targetCamera.lock();
+
+        if (target)
+        {
+            target->SetUseMovie(false);
+        }
+
+        // ムービー終了後は手動操作OK
+        manualControl = true;
+
+        auto& last = reversePlay
+            ? keys.front()
+            : keys.back();
+
+        GetOwner()->SetPosition(last.position);
+        GetOwner()->SetQuaternionRotation(last.rotation);
+
+
+        fovY = last.fov;
+
+        return;
+    }
+
+    auto& a = reversePlay ? keys[currentIndex + 1] : keys[currentIndex];
+    auto& b = reversePlay ? keys[currentIndex] : keys[currentIndex + 1];
+
+    float duration = std::max<float>(a.duration, 0.01f);
+
+    time += dt;
+    float t = std::clamp(time / duration, 0.f, 1.f);
+    float eased = ApplyEase(t, a.ease);
+
+    // -------- Position --------
+    DirectX::XMFLOAT3 pos;
+    pos.x = a.position.x + (b.position.x - a.position.x) * eased;
+    pos.y = a.position.y + (b.position.y - a.position.y) * eased;
+    pos.z = a.position.z + (b.position.z - a.position.z) * eased;
+    GetOwner()->SetPosition(pos);
+
+    // -------- Rotation (安全版SLerp) --------
+    using namespace DirectX;
+
+    XMVECTOR q1 = XMLoadFloat4(&a.rotation);
+    XMVECTOR q2 = XMLoadFloat4(&b.rotation);
+
+    if (XMVector4Equal(q1, XMVectorZero())) q1 = XMQuaternionIdentity();
+    if (XMVector4Equal(q2, XMVectorZero())) q2 = XMQuaternionIdentity();
+
+    q1 = XMQuaternionNormalize(q1);
+    q2 = XMQuaternionNormalize(q2);
+
+    float dot = XMVectorGetX(XMVector4Dot(q1, q2));
+    if (dot < 0.f) q2 = XMVectorNegate(q2);
+
+    XMVECTOR q = XMQuaternionSlerp(q1, q2, eased);
+
+    XMFLOAT4 rot;
+    XMStoreFloat4(&rot, q);
+    GetOwner()->SetQuaternionRotation(rot);
+
+    // -------- FOV --------
+    fovY = a.fov + (b.fov - a.fov) * eased;
+
+    // -------- 次へ --------
+    if (t >= 1.f)
+    {
+        time = 0.f;
+
+        if (reversePlay)
+        {
+            currentIndex--;
+
+        }
+        else
+        {
+            currentIndex++;
         }
     }
 }

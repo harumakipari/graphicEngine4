@@ -86,3 +86,136 @@ void FixedCamera::Update(float deltaTime)
         tpsController.Update(deltaTime);
 }
 
+void TitleCamera::Update(float deltaTime)
+{
+    easingYawRunner->Tick(deltaTime);
+    easingPitchRunner->Tick(deltaTime);
+    // ControllerXV
+    tpsController.Update(deltaTime);
+
+    mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(currentPitch));
+    mainCameraComponent->SetYaw(DirectX::XMConvertToRadians(currentYaw));
+
+}
+
+void TitleCamera::Play()
+{
+
+    // position ‚Ì easing
+    {
+        TestEasingHandler handler;
+
+        handler.AddWait(0.0f);
+
+        handler.AddEasing(
+            TestEaseType::OutExp,
+            startPitch,
+            endPitch,
+            cameraMoveinterval
+        );
+
+        handler.SetCompletedFunction([this]()
+            {
+                currentPitch =endPitch;
+            });
+        PropertyAccessor<float> accessor;
+
+        accessor.getter = [this]() { return currentPitch; };
+        accessor.setter = [this](float t)
+            {
+                currentPitch = t;
+            };
+
+        easingPitchRunner->StartHandler(handler, accessor);
+    }
+
+
+    // position ‚Ì easing
+    {
+        TestEasingHandler handler;
+
+        handler.AddWait(0.0f);
+
+        handler.AddEasing(
+            TestEaseType::OutExp,
+            startYaw,
+            endYaw,
+            cameraMoveinterval
+        );
+
+        handler.SetCompletedFunction([this]()
+            {
+                currentYaw = endYaw;
+            });
+        PropertyAccessor<float> accessor;
+
+        accessor.getter = [this]() { return currentYaw; };
+        accessor.setter = [this](float t)
+            {
+                currentYaw = t;
+            };
+
+        easingYawRunner->StartHandler(handler, accessor);
+    }
+}
+
+void TitleCamera::PlayReverse()
+{
+
+    // position ‚Ì easing
+    {
+        TestEasingHandler handler;
+
+        handler.AddWait(0.0f);
+
+        handler.AddEasing(
+            TestEaseType::OutExp,
+            endPitch,
+            startPitch,
+            cameraMoveinterval
+        );
+
+        handler.SetCompletedFunction([this]()
+            {
+                currentPitch = startPitch;
+            });
+        PropertyAccessor<float> accessor;
+
+        accessor.getter = [this]() { return currentPitch; };
+        accessor.setter = [this](float t)
+            {
+                currentPitch = t;
+            };
+
+        easingPitchRunner->StartHandler(handler, accessor);
+    }
+
+
+    // position ‚Ì easing
+    {
+        TestEasingHandler handler;
+
+        handler.AddWait(0.0f);
+
+        handler.AddEasing(
+            TestEaseType::OutExp,
+            endYaw,
+            startYaw,
+            cameraMoveinterval
+        );
+
+        handler.SetCompletedFunction([this]()
+            {
+                currentYaw = startYaw;
+            });
+        PropertyAccessor<float> accessor;
+
+        accessor.getter = [this]() { return currentYaw; };
+        accessor.setter = [this](float t)
+            {
+                currentYaw = t;
+            };
+
+        easingYawRunner->StartHandler(handler, accessor);
+    }
+}

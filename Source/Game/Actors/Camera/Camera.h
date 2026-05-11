@@ -205,4 +205,109 @@ private:
     bool didShake = false;
 };
 
+class TitleCamera :public Camera
+{
+public:
+    //引数付きコンストラクタ
+    explicit TitleCamera(const std::string& actorName) :Camera(actorName) {}
+    virtual ~TitleCamera() = default;
+
+    void Initialize(const Transform& transform)override
+    {
+        Camera::Initialize(transform);
+        tpsController.camera =
+            static_cast<TPSCameraComponent*>(mainCameraComponent.get());
+        // FixedCamera ではレイキャストを使わない
+        tpsController.useRaycast = false;
+
+        easingPitchRunner = std::make_unique<EasingRunner>();
+        easingYawRunner = std::make_unique<EasingRunner>();
+
+        startYaw = 231.5f;
+        endYaw = 180.0f;
+
+        startPitch = -11.0f;
+        endPitch = -60.0f;
+
+        currentPitch = startPitch;
+        currentYaw = startYaw;
+    };
+
+    void SetTarget(const std::shared_ptr<SceneComponent>& target)
+    {
+        tpsController.target = target;
+    }
+
+    //更新処理
+    void Update(float deltaTime)override;
+
+    void SetUseMovie(bool use)
+    {
+        useMovie = use;
+    }
+
+    void Shake(float power = 0.02f, float time = 0.2f)
+    {
+        //mainCameraComponent->Shake(power, time);
+    }
+    void DrawImGuiDetails()override
+    {
+#ifdef USE_IMGUI
+        if (ImGui::Button(U8("カメラ動く")))
+        {
+            Play();
+        }
+
+        if (ImGui::Button(U8("カメラ戻る")))
+        {
+            PlayReverse();
+        }
+
+#endif
+    }
+
+    DirectX::XMFLOAT3 CameraForwardXZ() const
+    {
+        float yaw = mainCameraComponent->GetYaw();
+
+        return {
+            sinf(yaw),
+            0.0f,
+            cosf(yaw)
+        };
+    }
+
+    DirectX::XMFLOAT3 CameraRightXZ() const
+    {
+        float yaw = mainCameraComponent->GetYaw();
+
+        return {
+            cosf(yaw),
+            0.0f,
+            -sinf(yaw)
+        };
+    }
+
+    void Play();
+    void PlayReverse();
+private:
+    TPSCameraController tpsController;
+    bool useMovie = false;
+    bool didShake = false;
+
+    float startYaw = 231.5f;
+    float endYaw = 180.0f;
+    float currentYaw = 0.0f;
+
+    float startPitch = -11.0f;
+    float endPitch = -60.0f;
+    float currentPitch = 0.0f;
+
+    constexpr float cameraMoveinterval = 2.0f;
+
+    
+    std::unique_ptr<EasingRunner> easingPitchRunner;
+    std::unique_ptr<EasingRunner> easingYawRunner;
+};
+
 

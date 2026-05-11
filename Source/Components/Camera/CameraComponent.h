@@ -22,6 +22,9 @@
 #include "Engine/Input/InputSystem.h"
 #include "Engine/Scene/SceneSetting.h"
 
+class TitleCamera;
+class Camera;
+
 class CameraComponent :public SceneComponent
 {
 public:
@@ -725,6 +728,12 @@ public:
         EaseType ease = EaseType::EaseInOut;
     };
 
+    void SetTargetCamera(const std::shared_ptr<TitleCamera>& camera)
+    {
+        targetCamera = camera;
+    }
+
+
     float ApplyEase(float t, EaseType type)
     {
         switch (type)
@@ -767,15 +776,29 @@ public:
 
     void Tick(float deltaTime) override
     {
-        if (!useMovieCamera) return;
-        HandleKeyboardInput(deltaTime);
-        HandleMouseInput(deltaTime);
+        if (!useMovieCamera)
+            return;
 
+        // 手動操作
+        if (manualControl)
+        {
+            HandleKeyboardInput(deltaTime);
+            HandleMouseInput(deltaTime);
+        }
+
+        // ムービー再生
         if (playing)
+        {
             UpdatePath(deltaTime);
+        }
     }
 
     void SetIsUseMovie(const bool useMovie) { this->useMovieCamera = useMovie; }
+
+    // 最初のフレームを適応する
+    void ApplyFirstFrame();
+    // 最後のフレームを適応する
+    void ApplyLastFrame();
 
     void SaveToJson(const std::string& path);
 
@@ -809,6 +832,10 @@ public:
         if (ImGui::Button("Play"))
         {
             Start();
+        }
+        if (ImGui::Button("ReversePlay"))
+        {
+            Start(true);
         }
         if (ImGui::Button("Save JSON"))
         {
@@ -876,13 +903,7 @@ public:
     }
 
     // =========================
-    void Start()
-    {
-        if (keys.size() < 2) return;
-        currentIndex = 0;
-        time = 0.f;
-        playing = true;
-    }
+    void Start(bool reverse = false);
 
 private:
     void HandleKeyboardInput(float deltaTime);
@@ -977,69 +998,21 @@ private:
 
 
     // =========================
-    void UpdatePath(float dt)
-    {
-        if (currentIndex >= keys.size() - 1)
-        {
-            playing = false;
-            return;
-        }
-
-        auto& a = keys[currentIndex];
-        auto& b = keys[currentIndex + 1];
-
-        float duration = std::max<float>(a.duration, 0.01f);
-
-        time += dt;
-        float t = std::clamp(time / duration, 0.f, 1.f);
-        float eased = ApplyEase(t, a.ease);
-
-        // -------- Position --------
-        DirectX::XMFLOAT3 pos;
-        pos.x = a.position.x + (b.position.x - a.position.x) * eased;
-        pos.y = a.position.y + (b.position.y - a.position.y) * eased;
-        pos.z = a.position.z + (b.position.z - a.position.z) * eased;
-        GetOwner()->SetPosition(pos);
-
-        // -------- Rotation (安全版SLerp) --------
-        using namespace DirectX;
-
-        XMVECTOR q1 = XMLoadFloat4(&a.rotation);
-        XMVECTOR q2 = XMLoadFloat4(&b.rotation);
-
-        if (XMVector4Equal(q1, XMVectorZero())) q1 = XMQuaternionIdentity();
-        if (XMVector4Equal(q2, XMVectorZero())) q2 = XMQuaternionIdentity();
-
-        q1 = XMQuaternionNormalize(q1);
-        q2 = XMQuaternionNormalize(q2);
-
-        float dot = XMVectorGetX(XMVector4Dot(q1, q2));
-        if (dot < 0.f) q2 = XMVectorNegate(q2);
-
-        XMVECTOR q = XMQuaternionSlerp(q1, q2, eased);
-
-        XMFLOAT4 rot;
-        XMStoreFloat4(&rot, q);
-        GetOwner()->SetQuaternionRotation(rot);
-
-        // -------- FOV --------
-        fovY = a.fov + (b.fov - a.fov) * eased;
-
-        // -------- 次へ --------
-        if (t >= 1.f)
-        {
-            time = 0.f;
-            currentIndex++;
-        }
-    }
+    void UpdatePath(float dt);
 
     bool useMovieCamera = false;
     float moveSpeed = 5.0f;
     float rotateSpeed = 0.001f;
+    bool holdLastFrame = true;  // 最後のフレームを保持する
+    bool finished = false;  // 終わったかどうか
+    bool reversePlay = false;   // 逆再生するかどうか
+    bool manualControl = true;
 
     std::string currentFile = "intro.json";
     std::string basePath = "./Data/Saves/MovieCameras/";
     std::vector<std::string> movieFiles;
+
+    std::weak_ptr<TitleCamera> targetCamera;
 };
 
 #endif //CAMERA_COMPONENT_H

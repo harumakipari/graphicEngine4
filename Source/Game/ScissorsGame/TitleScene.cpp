@@ -547,7 +547,8 @@ void TitleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 void TitleScene::SetUpActors()
 {
     Transform mainCameraTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<FixedCamera>("fixedCameraActor", mainCameraTr);
+    //auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<FixedCamera>("fixedCameraActor", mainCameraTr);
+    auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleCamera>("fixedCameraActor", mainCameraTr);
     mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
 
     Transform cameraTargetTr(DirectX::XMFLOAT3{ 2.2f,1.984f,2.753f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
