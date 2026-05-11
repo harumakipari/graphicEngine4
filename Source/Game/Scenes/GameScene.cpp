@@ -233,7 +233,7 @@ void GameScene::Start()
         stage = StringToStageName(stageName);
     }
 
-    stage = STAGE_NAME::BOSS;
+    stage = STAGE_NAME::BOBBIN_FIRST;
     LoadStage(stage);
 
     auto uiStartActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUIStartActor>("uiStartActor");
@@ -925,22 +925,47 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
         Transform bobbinTr(DirectX::XMFLOAT3{ 12.0f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
         auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
         bobbin->SetBobbinSize(BobbinActor::BobbinSize::Big);
+        bobbin->SetBobbinStateCharge();
     }
     break;
     case STAGE_NAME::REFLECT_WALL:
     {
+        Transform yarnWallTr(DirectX::XMFLOAT3{ 4.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto yarnWall = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr);
+
+        Transform yarnWallTr1(DirectX::XMFLOAT3{ 7.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto yarnWall1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr1);
+
+        Transform yarnWallTr2(DirectX::XMFLOAT3{ 4.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto yarnWall2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr2);
+
+        Transform yarnWallTr3(DirectX::XMFLOAT3{ 7.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto yarnWall3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr3);
+
+        Transform yarnWallTr4(DirectX::XMFLOAT3{ 16.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto yarnWall4 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr4);
+
+        Transform yarnWallTr5(DirectX::XMFLOAT3{ 19.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto yarnWall5 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr5);
+
+        Transform yarnWallTr6(DirectX::XMFLOAT3{ 16.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto yarnWall6 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr6);
+
+        Transform yarnWallTr7(DirectX::XMFLOAT3{ 19.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto yarnWall7 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr7);
+
 #if 0
-        Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-        auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr);
+        Transform yarnWallTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto yarnWall = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr);
 
-        Transform coinTr1(DirectX::XMFLOAT3{ 13.5f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-        auto coin1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr1);
+        Transform yarnWallTr1(DirectX::XMFLOAT3{ 13.5f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto yarnWall1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr1);
 
-        Transform coinTr2(DirectX::XMFLOAT3{ 12.0f,0.0f,13.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-        auto coin2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr2);
+        Transform yarnWallTr2(DirectX::XMFLOAT3{ 12.0f,0.0f,13.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto yarnWall2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr2);
 
-        Transform coinTr3(DirectX::XMFLOAT3{ 12.0f,0.0f,10.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-        auto coin3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", coinTr3);
+        Transform yarnWallTr3(DirectX::XMFLOAT3{ 12.0f,0.0f,10.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+        auto yarnWall3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr3);
 #endif // 0
     }
     break;

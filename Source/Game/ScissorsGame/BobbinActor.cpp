@@ -8,6 +8,7 @@
 #include "ScissorsPlayer1.h"
 #include "WaveManagaer.h"
 #include "Engine/Scene/Scene.h"
+#include "Physics/CollisionFunction.h"
 
 void BobbinActor::Initialize(const Transform& transform)
 {
@@ -70,11 +71,18 @@ void BobbinActor::Initialize(const Transform& transform)
     chargeAudioComponent->SetSource(L"./Data/Sound/SE1/bobbin_charge.wav");
     chargeAudioComponent->SetVolume(0.5f);
     chargeAudioComponent->SetLoop(true);
+
+    useCount = 0;
+    elapsedTime = 0.0f;
+    tutorialElapsedTime = 0.0f;
 }
 
 void BobbinActor::Update(float deltaTime)
 {
+    UpdateShowArrow(deltaTime);
+
     DirectX::XMFLOAT3 center = GetPosition();
+    elapsedTime += deltaTime;
 
     switch (bobbinState)
     {
@@ -122,6 +130,7 @@ void BobbinActor::Update(float deltaTime)
     case BobbinState::ChargeEnd:
     {
         bobbinApplyRangeMeshComponent->SetRelativeScaleDirect({ applyRangeMaxScale,applyRangeMaxScale,applyRangeMaxScale });
+        currentRadius = maxRadius;
 
     }
     break;
@@ -145,6 +154,9 @@ void BobbinActor::DrawImGuiDetails()
     ImGui::DragFloat(U8("広がる最大半径"), &maxRadius, 0.5f);
     ImGui::DragFloat(U8("クールタイム"), &cooldownInterval, 0.5f);
     ImGui::DragFloat(U8("maxになるまでにかかる時間"), &chargeTime, 0.5f);
+    ImGui::DragFloat2(U8("arrowOffset"), &arrowOffsetPos.x, 0.5f);
+    ImGui::DragFloat2(U8("tutorialPos"), &tutorialPos.x, 0.5f);
+    ImGui::DragFloat2(U8("tutorialSize"), &tutorialSize.x, 0.5f);
 
 #endif
 }
@@ -175,6 +187,33 @@ void BobbinActor::SetBobbinSize(BobbinSize bobbinSize)
     }
 }
 
+// 初期状態でボビンをチャージする
+void BobbinActor::SetBobbinStateCharge()
+{
+    bobbinState = BobbinState::ChargeEnd;
+
+    // 矢印コンポーネントを追加
+    XMFLOAT2 imageSize = { 95.0f,77.0f };
+    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+    arrowComponent =
+        std::make_shared<UIImageComponent>(
+            "./Data/Textures/ScissorsUI/Tutorial/enemy_arrow.png",
+            "enemy_arrow");
+    arrowComponent->SetSize(imageSize);
+    arrowComponent->SetVisible(true);
+
+    uiManager->Add(arrowComponent);
+
+    // 説明分のUI
+    tutorialComponent =
+        std::make_shared<UIImageComponent>(
+            "./Data/Textures/ScissorsUI/Tutorial/bobbin_tutorial.png",
+            "enemy_arrow");
+    tutorialComponent->SetSize(tutorialSize);
+    tutorialComponent->SetVisible(false);
+    uiManager->Add(tutorialComponent);
+}
+
 // ボビンを使用する
 void BobbinActor::UseBobbin()
 {
@@ -182,6 +221,7 @@ void BobbinActor::UseBobbin()
     {// 
         return;
     }
+    useCount++;
     // チャージ音を止める
     chargeAudioComponent->Stop();
     bobbinState = BobbinState::Fired;
@@ -256,7 +296,7 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
 
         float distanceSq = dx * dx + dz * dz;
 
-        float sumRadius = currentRadius + e->GetRadius();
+        float sumRadius = currentRadius /*+ e->GetRadius()*/;
         float radiusSq = sumRadius * sumRadius;
 
         if (distanceSq <= radiusSq)
@@ -332,5 +372,56 @@ void BobbinActor::SpawnBonusCoinBurst()
             ->CreateAndRegisterActorWithTransform<ButtonCoinActor>("bonusCoin", tr);
 
         coin->StartPerform(true); //  ボーナス指定
+    }
+}
+
+// ボビンに矢印を出す
+void BobbinActor::UpdateShowArrow(float deltaTime)
+{
+    if (arrowComponent)
+    {
+        // 糸巻が溜まっていなかったらなら消す
+        if (bobbinState != BobbinState::ChargeEnd || useCount >= 2)
+        {
+            arrowComponent->SetVisible(false);
+        }
+        else
+        {
+
+            // 敵位置
+            XMFLOAT3 worldPos = GetPosition();
+
+            // 頭上
+            worldPos.y += 3.0f;
+
+            // UI変換
+            XMFLOAT2 uiPos = WorldToUI(worldPos);
+
+            // ふわふわ
+            float floatOffset = sinf(elapsedTime * 4.0f) * 10.0f;
+
+            uiPos.x += arrowOffsetPos.x;
+            uiPos.y -= arrowOffsetPos.y - floatOffset;
+
+            arrowComponent->SetWorldPosition(uiPos);
+            arrowComponent->SetPivot({ 0.5f,0.5f });
+            arrowComponent->SetVisible(true);
+        }
+    }
+
+    if (tutorialComponent)
+    {
+        if (useCount >= 2)
+        {
+            tutorialComponent->SetVisible(true);
+            tutorialElapsedTime += deltaTime;
+        }
+
+        if (tutorialElapsedTime >= 5.0f)
+        {
+            tutorialComponent->SetVisible(false);
+        }
+        tutorialComponent->SetSize(tutorialSize);
+        tutorialComponent->SetWorldPosition(tutorialPos);
     }
 }

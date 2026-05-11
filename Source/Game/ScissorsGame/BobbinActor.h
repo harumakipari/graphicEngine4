@@ -3,6 +3,7 @@
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Components/Controller/ControllerComponent.h"
 #include "Core/Actor.h"
+#include "UI/Widgets/Widget.h"
 
 class EnemyBase;
 
@@ -36,6 +37,9 @@ public:
 
     // ボビンのサイズを設定する
     void SetBobbinSize(BobbinSize bobbinSize);
+
+    // 初期状態でボビンをチャージする
+    void SetBobbinStateCharge();
 private:
     // ボビンを使用する
     void UseBobbin();
@@ -48,11 +52,17 @@ private:
 
     // ボーナスボタンを生成する
     void SpawnBonusCoinBurst();
+
+    // ボビンに矢印を出す
+    void UpdateShowArrow(float deltaTime);
 private:
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
     std::shared_ptr<CoreAudioSourceComponent> chargeAudioComponent;   // ボビンのチャージ音のオーディオコンポーネント
     std::shared_ptr<SkeletalMeshComponent> bobbinApplyRangeMeshComponent;// 描画用コンポーネントを追加
     std::shared_ptr<SkeletalMeshComponent> bobbinStringMeshComponent;// 描画用コンポーネントを追加
+
+    std::shared_ptr<UIImageComponent> arrowComponent;   // 矢印コンポーネント
+    std::shared_ptr<UIImageComponent> tutorialComponent;   // チュートリアルイメージコンポーネント
 
     BobbinState bobbinState = BobbinState::Charging;
 
@@ -66,12 +76,16 @@ private:
 
     float applyRangeMaxScale = 1.0f;// 床の広がるスケール
 
+    float elapsedTime = 0.0f;   // 経過時間
+    float tutorialElapsedTime = 0.0f; 
+    XMFLOAT2 arrowOffsetPos = { 0.0f,50.0f };
+    int useCount = 0; // 何回糸巻を使用したか
+
     // 調整
     float maxRadius = 6.0f; // 最大半径
     float cooldownInterval = 0.1f;// クールタイム
     float chargeTime = 3.5f; // 何秒でMaxになるか
-
-
-
+    XMFLOAT2 tutorialPos = { 330.0f,6.0f };    // チュートリアル用の説明文の位置
+    XMFLOAT2 tutorialSize = { 480.0f,200.0f }; // チュートリアル用の説明文のサイズ
 };
 
