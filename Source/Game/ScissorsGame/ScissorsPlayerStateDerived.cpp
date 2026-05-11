@@ -222,8 +222,27 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
 
         if (CollisionFunction::SphereRayCast(currentPos, nextTarget, hit, 0.2f, mask))
         {
+            if (hit.distance <= 0.0001f)
+            {
+                Logger::Warning(U8("ボスとボビンでレイキャストがおかしくなっています！"));
+                player->dashPoints.push_back(currentPos);
+                break;
+            }
+
+
+            float normalLenSq =
+                hit.normal.x * hit.normal.x +
+                hit.normal.z * hit.normal.z;
+
+            if (normalLenSq < 0.0001f)
+            {
+                player->dashPoints.push_back(currentPos);
+                break;
+            }
+
             // 壁に当たった地点
             player->dashPoints.push_back(hit.hitPoint);
+
 
 #if 1
             if (auto boss = dynamic_cast<RabbitBossEnemyActor*>(hit.actor))
@@ -307,6 +326,15 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
                 // 反射
                 XMFLOAT3 normal = hit.normal;
 
+                float normalLenSq =
+                    normal.x * normal.x +
+                    normal.z * normal.z;
+
+                if (normalLenSq < 0.0001f)
+                {
+                    break;
+                }
+
 
                 float dot = dashDir.x * normal.x + dashDir.z * normal.z;
 
@@ -326,7 +354,6 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
                     dashDir.x /= len;
                     dashDir.z /= len;
                 }
-                currentPos = hit.hitPoint;
 
                 // 反射後 壁に埋まっているのを直す
                 const float pushOut = 1.0f;
@@ -600,11 +627,22 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
 
 #endif // 1
 
+    XMFLOAT3 move =
+    {
+        nextPos.x - currentPos.x,
+        0.0f,
+        nextPos.z - currentPos.z
+    };
 
+    float lenSq =
+        move.x * move.x +
+        move.z * move.z;
 
-    DirectX::XMFLOAT3 playerDir = MathHelper::Normalize(MathHelper::Subtract(nextPos, currentPos));
-    player->rotationComponent->SetDirection(playerDir);
-
+    if (lenSq > 0.0001f)
+    {
+        XMFLOAT3 playerDir = MathHelper::Normalize(move);
+        player->rotationComponent->SetDirection(playerDir);
+    }
     // セグメント終了
     if (t >= 1.0f)
     {

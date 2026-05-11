@@ -290,6 +290,8 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
         {
             // 出現ダメージ
             enemy->ApplyLandingDamage();
+            // 当たり判定を有効にする
+            enemy->collisionBoxComponent->EnableCollision();
 
             enemy->GetStateMachine()->ChangeState("Idle");
         }
@@ -304,8 +306,6 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
 
 void RabbitBossAttackWarpState::Exit()
 {
-    // 当たり判定を有効にする
-    enemy->collisionBoxComponent->EnableCollision();
 
     // スポーンの見た目を無効にする
     enemy->bossSpawnMarkModel->SetIsVisible(false);
