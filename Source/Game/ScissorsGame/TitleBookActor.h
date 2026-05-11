@@ -15,7 +15,11 @@ public:
     void DrawImGuiDetails() override;
 
     // –{‚ðŠJ‚­
-    void Play();
+    void Play(float interval);
+
+    // –{‚ð•Â‚¶‚é
+    void PlayReverse(float interval);
+
 private:
     std::shared_ptr<SkeletalMeshComponent> bookLeftModel;
     std::shared_ptr<SkeletalMeshComponent> bookRightModel;

@@ -37,21 +37,59 @@ void TitleBookActor::DrawImGuiDetails()
     {
         startEuler = 0.0f;
         endEuler = 180.0f;
-        Play();
+        Play(2.0f);
     }
     if (ImGui::Button(U8("本が開く")))
     {
         startEuler = 180.0f;
         endEuler = 0.0f;
-        Play();
+        Play(2.0f);
     }
 #endif
 }
 
 // 本を開く
-void TitleBookActor::Play()
+void TitleBookActor::Play(float interval)
 {
-    constexpr float interval = 2.0f;
+    startEuler = 180.0f;
+    endEuler = 0.0f;
+
+    
+
+    // position の easing
+    {
+        TestEasingHandler handler;
+
+        handler.AddWait(0.0f);
+
+        handler.AddEasing(
+            TestEaseType::OutExp,
+            startEuler,
+            endEuler,
+            interval
+        );
+
+        handler.SetCompletedFunction([this]()
+            {
+                angle = endEuler;
+            });
+        PropertyAccessor<float> accessor;
+
+        accessor.getter = [this]() { return angle; };
+        accessor.setter = [this](float t)
+            {
+                angle = t;
+            };
+
+        easingRunner->StartHandler(handler, accessor);
+    }
+}
+
+// 本を閉じる
+void TitleBookActor::PlayReverse(float interval)
+{
+    startEuler = 0.0f;
+    endEuler = 180.0f;
 
     // position の easing
     {

@@ -255,12 +255,12 @@ public:
 #ifdef USE_IMGUI
         if (ImGui::Button(U8("ÉJÉÅÉâìÆÇ≠")))
         {
-            Play();
+            Play(2.0f);
         }
 
         if (ImGui::Button(U8("ÉJÉÅÉâñﬂÇÈ")))
         {
-            PlayReverse();
+            PlayReverse(2.0f);
         }
 
 #endif
@@ -288,8 +288,8 @@ public:
         };
     }
 
-    void Play();
-    void PlayReverse();
+    void Play(float interval);
+    void PlayReverse(float interval);
 private:
     TPSCameraController tpsController;
     bool useMovie = false;
@@ -303,7 +303,6 @@ private:
     float endPitch = -60.0f;
     float currentPitch = 0.0f;
 
-    float cameraMoveInterval = 2.0f;
 
     
     std::unique_ptr<EasingRunner> easingPitchRunner;

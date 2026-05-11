@@ -545,16 +545,39 @@ void TitleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
 
 }
 
+// セレクトシーンへ
+void TitleScene::StartToSelect()
+{
+    // メインカメラ
+    mainCameraActor->Play(toSelectInterval);
+    // メインカメラターゲットアクター
+    cameraTargetActor->Play(toSelectInterval);
+    // 本のアクター
+    bookActor->Play(toSelectInterval);
+}
+
+// タイトルシーンへ
+void TitleScene::StartToTitle()
+{
+    // メインカメラ
+    mainCameraActor->PlayReverse(toTitleInterval);
+    // メインカメラターゲットアクター
+    cameraTargetActor->PlayReverse(toTitleInterval);
+    // 本のアクター
+    bookActor->PlayReverse(toTitleInterval);
+}
+
+
 void TitleScene::SetUpActors()
 {
     Transform mainCameraTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     //auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<FixedCamera>("fixedCameraActor", mainCameraTr);
-    auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleCamera>("fixedCameraActor", mainCameraTr);
+    mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleCamera>("fixedCameraActor", mainCameraTr);
     mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
 
     Transform cameraTargetTr(DirectX::XMFLOAT3{ -0.297f,3.197f,2.936f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     //Transform cameraTargetTr(DirectX::XMFLOAT3{ 2.2f,1.984f,2.753f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleCameraTargetActor>("cameraTargetActor", cameraTargetTr);
+    cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleCameraTargetActor>("cameraTargetActor", cameraTargetTr);
     cameraTargetActor->SetTitle(true);
 
     mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
@@ -583,7 +606,7 @@ void TitleScene::SetUpActors()
     auto stageActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleStageActor>("titleStageActor", stageTr);
 
     Transform bookTr(DirectX::XMFLOAT3{ 0.0f,0.5f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto bookActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleBookActor>("BookActor", bookTr);
+    bookActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleBookActor>("BookActor", bookTr);
 }
 
 
@@ -600,6 +623,22 @@ void TitleScene::DrawGui()
 {
 #ifdef USE_IMGUI
     SceneBase::DrawGui();
+
+    ImGui::Begin(U8("調整"));
+
+    ImGui::DragFloat(U8("選択シーンへの間隔時間"), &toSelectInterval,0.1f,0.0f,6.0f);
+    if (ImGui::Button(U8("選択シーンへ")))
+    {
+        StartToSelect();
+    }
+    ImGui::DragFloat(U8("タイトルシーンへ間隔時間"), &toTitleInterval, 0.1f, 0.0f, 6.0f);
+    if (ImGui::Button(U8("タイトルシーンへ")))
+    {
+        StartToTitle();
+    }
+
+
+    ImGui::End();
 #endif
 
 }

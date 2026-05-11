@@ -15,10 +15,10 @@ public:
     void DrawImGuiDetails() override;
 
     // カメラを近づける
-    void Play();
+    void Play(float interval);
 
     // カメラを戻す
-    void PlayReverse();
+    void PlayReverse(float interval);
 
     // タイトル画面に戻る
     void SetTitle(bool isTitle);
@@ -35,6 +35,5 @@ private:
     DirectX::XMFLOAT3 currentPosition = { -0.297f,3.197f,2.936f };
 
     float easingValue = 0.0f;
-    float interval = 2.0f;
 };
 

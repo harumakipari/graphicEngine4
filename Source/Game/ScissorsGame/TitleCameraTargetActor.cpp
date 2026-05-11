@@ -18,17 +18,17 @@ void TitleCameraTargetActor::DrawImGuiDetails()
 #ifdef USE_IMGUI
     if (ImGui::Button(U8("–{‚ª•Â‚¶‚é")))
     {
-        Play();
+        Play(2.0f);
     }
     if (ImGui::Button(U8("–{‚ªŠJ‚­")))
     {
-        PlayReverse();
+        PlayReverse(2.0f);
     }
 #endif
 }
 
 // 
-void TitleCameraTargetActor::Play()
+void TitleCameraTargetActor::Play(float interval)
 {
     easingValue = 0.0f;
     startPosition = titlePosition;
@@ -64,7 +64,7 @@ void TitleCameraTargetActor::Play()
 }
 
 
-void TitleCameraTargetActor::PlayReverse()
+void TitleCameraTargetActor::PlayReverse(float interval)
 {
     easingValue = 0.0f;
     startPosition = selectPosition;

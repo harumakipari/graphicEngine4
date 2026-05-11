@@ -311,7 +311,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         heartFull = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/heart_full.png");
         heartHalf = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/heart_half.png");
 
-        hp = 1;
+        hp = 10;
         int heartCount = maxHp / 2;
 
         for (int i = 0; i < heartCount; i++)

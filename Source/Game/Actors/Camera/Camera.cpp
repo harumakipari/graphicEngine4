@@ -78,8 +78,6 @@ void FixedCamera::Update(float deltaTime)
             }
         }
 #endif // 0
-
-        
     }
 
         // ControllerçXêV
@@ -98,9 +96,8 @@ void TitleCamera::Update(float deltaTime)
 
 }
 
-void TitleCamera::Play()
+void TitleCamera::Play(float interval)
 {
-
     // position ÇÃ easing
     {
         TestEasingHandler handler;
@@ -111,7 +108,7 @@ void TitleCamera::Play()
             TestEaseType::OutExp,
             startPitch,
             endPitch,
-            cameraMoveInterval
+            interval
         );
 
         handler.SetCompletedFunction([this]()
@@ -140,7 +137,7 @@ void TitleCamera::Play()
             TestEaseType::OutExp,
             startYaw,
             endYaw,
-            cameraMoveInterval
+            interval
         );
 
         handler.SetCompletedFunction([this]()
@@ -159,7 +156,7 @@ void TitleCamera::Play()
     }
 }
 
-void TitleCamera::PlayReverse()
+void TitleCamera::PlayReverse(float interval)
 {
     // position ÇÃ easing
     {
@@ -171,7 +168,7 @@ void TitleCamera::PlayReverse()
             TestEaseType::OutExp,
             endPitch,
             startPitch,
-            cameraMoveInterval
+            interval
         );
 
         handler.SetCompletedFunction([this]()
@@ -200,7 +197,7 @@ void TitleCamera::PlayReverse()
             TestEaseType::OutExp,
             endYaw,
             startYaw,
-            cameraMoveInterval
+            interval
         );
 
         handler.SetCompletedFunction([this]()

@@ -17,6 +17,9 @@
 #include "Game/ScissorsGame/YarnEnemyActor.h"
 
 
+class TitleCameraTargetActor;
+class TitleBookActor;
+
 class TitleScene : public SceneBase
 {
 public:
@@ -41,6 +44,18 @@ public:
     static inline Scene::Autoenrollment<TitleScene> _autoenrollment;
 
 private:
-    TPSCameraComponent* mainCameraComponent = nullptr;
+    // セレクトシーンへ
+    void StartToSelect();
 
+    // タイトルシーンへ
+    void StartToTitle();
+
+private:
+    TPSCameraComponent* mainCameraComponent = nullptr;
+    std::shared_ptr<TitleBookActor> bookActor; // 本のアクター
+    std::shared_ptr<TitleCamera> mainCameraActor; // メインカメラのアクター
+    std::shared_ptr<TitleCameraTargetActor> cameraTargetActor; // カメラターゲットのアクター
+
+    float toSelectInterval = 2.5f; // セレクトシーンまでにかかる時間
+    float toTitleInterval = 3.5f; // タイトルシーンまでにかかる時間
 };
