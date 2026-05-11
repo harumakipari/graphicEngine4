@@ -28,6 +28,86 @@ void YarnWallActor::Initialize(const Transform& transform)
 
 void YarnWallActor::Update(float deltaTime)
 {
-    
+    elapsedTime += deltaTime;
+
+    auto pos = GetPosition();
+
+    switch (state)
+    {
+    case WallState::Hidden:
+    {
+        // 出現タイプ
+        if (behavior == WallBehavior::AppearOnce)
+        {
+            if (elapsedTime >= appearTime)
+            {
+                state = WallState::Rising;
+            }
+        }
+    }
+    break;
+
+    case WallState::Rising:
+    {
+        pos.y += moveSpeed * deltaTime;
+
+        if (pos.y >= visibleY)
+        {
+            pos.y = visibleY;
+            state = WallState::Visible;
+        }
+
+        SetPosition(pos);
+    }
+    break;
+
+    case WallState::Visible:
+    {
+        // 隠れるタイプ
+        if (behavior == WallBehavior::HideOnce)
+        {
+            if (elapsedTime >= hideTime)
+            {
+                state = WallState::Lowering;
+            }
+        }
+    }
+    break;
+
+    case WallState::Lowering:
+    {
+        pos.y -= moveSpeed * deltaTime;
+
+        if (pos.y <= hiddenY)
+        {
+            pos.y = hiddenY;
+            state = WallState::Hidden;
+        }
+
+        SetPosition(pos);
+    }
+    break;
+    }
+}
+
+// AppearTimeを設定したあとに呼び出す関数
+void YarnWallActor::SetUp()
+{
+    DirectX::XMFLOAT3 pos = GetPosition();
+    // 最初から隠れているタイプ
+    if (behavior == WallBehavior::AppearOnce)
+    {
+        state = WallState::Hidden;
+
+        pos.y = hiddenY;
+        SetPosition(pos);
+    }
+    else
+    {
+        state = WallState::Visible;
+
+        pos.y = visibleY;
+        SetPosition(pos);
+    }
 }
 
