@@ -27,9 +27,11 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 
     int objectType = (int) objectTypeData.w;
 
+    float3 silhouetteColor = (1, 1, 1);
+
     if (objectType == 10)
     {
-        //return float4(0.58f, 0.58f, 0.58f, 1);
+        silhouetteColor = (0.58f, 0.58f, 0.58f);
     }
 
     const float GAMMA = 2.2;
@@ -222,7 +224,9 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     float3 rim = CalcRimLight(N, V, rimColor.rgb, rimPower) * rimIntensity;
 #endif
     float3 Lo = totalDiffuse + totalSpecular + emissive /*+ rim*/;
-	
+
+    //Lo *= silhouetteColor;
+
     return float4(Lo, cpuColor.a);
 
 

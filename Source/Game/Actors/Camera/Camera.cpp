@@ -3,6 +3,7 @@
 
 #include "Components/Controller/ControllerComponent.h"
 #include "Engine/Scene/SceneBase.h"
+#include "Game/ScissorsGame/BobbinActor.h"
 #include "Game/ScissorsGame/RabbitBossEnemy.h"
 #include "Game/ScissorsGame/ScissorsPlayer1.h"
 #include "Physics/CollisionFunction.h"
@@ -53,35 +54,47 @@ void MainCamera::Update(float deltaTime)
 void FixedCamera::Update(float deltaTime)
 {
     XMFLOAT3 pos = GetPosition();
+    auto boss = GetOwnerScene()->GetActorManager()->GetActorOfType<RabbitBossEnemyActor>();
+
+    bool shouldFade = false;
+
+    uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Boss);
+
+    // Player判定
     auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>();
     if (player)
     {
-        XMFLOAT3 playerPos = player->GetPosition();
         HitResultWithActor hit;
-        uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Boss);
+        XMFLOAT3 playerPos = player->GetPosition();
 
-#if 1
-        auto boss = GetOwnerScene()->GetActorManager()->GetActorOfType<RabbitBossEnemyActor>();
         if (CollisionFunction::SphereRayCast(pos, playerPos, hit, 0.2f, mask))
         {
-            if (boss)
-            {
-                boss->SetRenderOpacity(0.5f);
-            }
-            //Logger::Log(U8("カメラとプレイヤーの間にボスがいる"));
+            shouldFade = true;
         }
-        else
-        {
-            if (boss)
-            {
-                boss->SetRenderOpacity(1.0f);
-            }
-        }
-#endif // 0
     }
 
-        // Controller更新
-        tpsController.Update(deltaTime);
+    // Bobbin判定
+    auto bobbin = GetOwnerScene()->GetActorManager()->GetActorOfType<BobbinActor>();
+    if (bobbin)
+    {
+        HitResultWithActor hit;
+        XMFLOAT3 bobbinPos = bobbin->GetPosition();
+
+        if (CollisionFunction::SphereRayCast(pos, bobbinPos, hit, 0.2f, mask))
+        {
+            shouldFade = true;
+        }
+    }
+
+    // 最後に一回だけ反映
+    if (boss)
+    {
+        boss->SetRenderOpacity(shouldFade ? 0.5f : 1.0f);
+    }
+
+
+    // Controller更新
+    tpsController.Update(deltaTime);
 }
 
 void TitleCamera::Update(float deltaTime)
@@ -113,7 +126,7 @@ void TitleCamera::Play(float interval)
 
         handler.SetCompletedFunction([this]()
             {
-                currentPitch =endPitch;
+                currentPitch = endPitch;
             });
         PropertyAccessor<float> accessor;
 
