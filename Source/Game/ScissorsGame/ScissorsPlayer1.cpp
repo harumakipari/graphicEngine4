@@ -366,6 +366,7 @@ void ScissorsPlayer1::Update(float deltaTime)
     if (auto tutorialActor = GetOwnerScene()->GetActorManager()->GetActorOfType<TutorialActor>())
     {// チュートリアルだったら
         hp = std::max<int>(hp, 2);
+        UpdateHpUI();
     }
     else
     {
@@ -442,6 +443,7 @@ void ScissorsPlayer1::Update(float deltaTime)
     {
         if (!gameManager->IsGameInputEnabled())
         {
+            stateMachine_->ChangeState("Idle");
             characterMovementComponent->SetSpeed(0.0f);
             return;
         }
