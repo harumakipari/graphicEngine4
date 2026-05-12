@@ -93,6 +93,8 @@ public:
     void Exit() override;
     virtual const char* GetName() const override { return "TutorialStep_MoveStart"; }
 
+
+
 private:
     std::shared_ptr<UIImageComponent> tutorialImage;
     float elapsedTime = 0.0f;
@@ -127,6 +129,34 @@ private:
     std::shared_ptr<Sprite> keyBoardTex; // キーボード対応用
 
 };
+
+// チュートリアルステップ : // 「ぬいダッシュのキャンセルは、右クリックを押すとできるよ！」
+class TutorialStep_CancelDash : public TutorialStep
+{
+public:
+    TutorialStep_CancelDash(TutorialActor* actor);
+    virtual ~TutorialStep_CancelDash();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "TutorialStep_CancelDash"; }
+
+    // ダッシュできるかどうか
+    bool CanDash()override { return false; }
+
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialImage;
+    float elapsedTime = 0.0f;
+
+    std::shared_ptr<Sprite> controlTex; // コントローラー対応用
+    std::shared_ptr<Sprite> keyBoardTex; // キーボード対応用
+
+};
+
 
 // チュートリアルステップ : // 「左クリックを離すと、ぬいダッシュ！」
 class TutorialStep_SpawnStaticEnemy : public TutorialStep

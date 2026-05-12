@@ -288,7 +288,7 @@ void TutorialStep_ChargeStart::Execute(float deltaTime)
 
     if (elapsedTime >= toNextStepInterval)
     {// 次のステップに行くまでの時間が経ったら、
-        owner->GetTutorialManager()->ChangeState("TutorialStep_SpawnStaticEnemy");
+        owner->GetTutorialManager()->ChangeState("TutorialStep_CancelDash");
     }
 
 }
@@ -298,6 +298,87 @@ void TutorialStep_ChargeStart::Exit()
 {
     tutorialImage->SetVisible(false);
 }
+
+// ------------------------------ TutorialStep_CancelDash ------------------------------
+//  「ぬいダッシュのキャンセルは、右クリックを押すとできるよ！」
+// コンストラクタ
+TutorialStep_CancelDash::TutorialStep_CancelDash(TutorialActor* actor) :TutorialStep(actor)
+{
+    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+
+    // コントローラー対応用
+    controlTex = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/dash_cancel_control.png");
+    // キーボード対応用
+    keyBoardTex = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/dash_cancel.png");
+
+
+    // チュートリアル画像の作成
+    //　ぬい返りすると 長くダッシュできるよ！
+    tutorialImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tutorial/dash_cancel.png", "dash_cancel");
+    tutorialImage->SetWorldPosition(imagePos);
+    tutorialImage->SetSize(imageSize);
+    tutorialImage->SetVisible(false);
+    uiManager->Add(tutorialImage);
+}
+
+// デストラクタ
+TutorialStep_CancelDash::~TutorialStep_CancelDash()
+{
+    if (tutorialImage)
+    {// 削除通知を出す
+        tutorialImage->MarkPendingKill();
+    }
+}
+
+// ステートに入った時のメソッド
+void TutorialStep_CancelDash::Enter()
+{
+    tutorialImage->SetVisible(true);
+
+    elapsedTime = 0.0f;
+
+    ResetMouseClickBlink();
+    ShowMouseClick(true);
+}
+
+// ステートで実行するメソッド
+void TutorialStep_CancelDash::Execute(float deltaTime)
+{
+    // ポーズ中はゲーム入力を一切受け付けない
+    if (Scene::GetCurrentScene()->IsPaused())
+        return;
+
+    // UIがマウスを使っているならゲーム操作しない
+    if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
+        return;
+
+    if (InputSystem::IsGamepadConnected())
+    {//　コントローラー対応
+        tutorialImage->SetTexture(controlTex);
+    }
+    else
+    {
+        tutorialImage->SetTexture(keyBoardTex);
+    }
+
+    UpdateMouseClickBlink(deltaTime);
+
+
+    //  押した瞬間
+    if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
+    {
+        owner->GetTutorialManager()->ChangeState("TutorialStep_SpawnStaticEnemy");
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
+    }
+}
+
+// ステージから出ていくときのメソッド
+void TutorialStep_CancelDash::Exit()
+{
+    tutorialImage->SetVisible(false);
+    ShowMouseClick(false);
+}
+
 
 // ------------------------------ TutorialStep_SpawnStaticEnemy ------------------------------
 //　「左クリック長押しで 方向をきめよう！」　右スティックを傾けて方向を決めよう！

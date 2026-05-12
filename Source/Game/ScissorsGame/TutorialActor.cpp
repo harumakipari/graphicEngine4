@@ -16,6 +16,7 @@ void TutorialActor::Initialize(const Transform& transform)
     // 各ステートを登録
     tutorialManager->RegisterState(std::make_unique<TutorialStep_MoveStart>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_ChargeStart>(this));
+    tutorialManager->RegisterState(std::make_unique<TutorialStep_CancelDash>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_SpawnStaticEnemy>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_TiedEnemy>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_NiceAttackEnemy>(this));
