@@ -13,7 +13,7 @@ void TrailModelActor::Initialize(const Transform& transform)
 void TrailModelActor::Update(float deltaTime)
 {
     elapsedTime += deltaTime;
-    if (elapsedTime >= 10.0f)
+    if (elapsedTime >= 5.0f)
     {
         MarkPendingKill();
     }

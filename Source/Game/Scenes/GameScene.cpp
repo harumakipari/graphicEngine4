@@ -240,7 +240,7 @@ void GameScene::Start()
         stage = StringToStageName(stageName);
     }
 
-    stage = STAGE_NAME::REFLECT_WALL;
+    stage = STAGE_NAME::BOSS;
     LoadStage(stage);
 
     auto uiStartActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUIStartActor>("uiStartActor");

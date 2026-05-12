@@ -194,7 +194,7 @@ void TitleScene::Start()
     audioComp->Play();
     audioComp->SetVolume(0.8f);
 
-#if 1
+#if 0
 
     // FIRST �̍쐬
     {

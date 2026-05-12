@@ -92,7 +92,6 @@ void FixedCamera::Update(float deltaTime)
         boss->SetRenderOpacity(shouldFade ? 0.5f : 1.0f);
     }
 
-
     // ControllerXV
     tpsController.Update(deltaTime);
 }

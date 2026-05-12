@@ -122,9 +122,9 @@
       "name": "standardSurface1",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.0,
-          0.061776161193847656,
           1.0,
+          0.5637065768241882,
+          0.967993974685669,
           1.0
         ],
         "metallicFactor": 0.0

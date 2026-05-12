@@ -370,7 +370,7 @@ void ScissorsPlayer1::Update(float deltaTime)
     }
     else
     {
-#if 0
+#if 1
         if (hp <= 0 && !startDeathPerform)
         {// player‚ª€–S‚µ‚½‚ç
             GetStateMachine()->ChangeState("Death");
@@ -380,7 +380,6 @@ void ScissorsPlayer1::Update(float deltaTime)
                 gameManager->EndGame(true);
             }
         }
-
 #endif // 0
     }
 
@@ -443,12 +442,11 @@ void ScissorsPlayer1::Update(float deltaTime)
     {
         if (!gameManager->IsGameInputEnabled())
         {
-            stateMachine_->ChangeState("Idle");
+            //stateMachine_->ChangeState("Idle");
             characterMovementComponent->SetSpeed(0.0f);
             return;
         }
     }
-
 
     //@‹OÕXV
     trail.UpdateTrail(deltaTime);
