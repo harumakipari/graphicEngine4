@@ -169,12 +169,7 @@ protected:
 class UIArrowComponent : public UIImageComponent
 {
 public:
-    UIArrowComponent(const std::string& filename, const std::string& name) :UIImageComponent(filename, name)
-    {
-        texture = std::make_shared<Sprite>(Graphics::GetDevice(), std::wstring(filename.begin(), filename.end()).c_str());
-        uv.w = texture->GetTextureSize().x;
-        uv.h = texture->GetTextureSize().y;
-    }
+    UIArrowComponent(const std::string& filename, const std::string& name) ;
 
     UIArrowComponent() = default;
 
@@ -187,6 +182,9 @@ public:
    
 
 private:
+    std::vector<std::shared_ptr<UIImageComponent>> bodyRects;
+    std::shared_ptr<UIImageComponent> head;
+
     DirectX::XMFLOAT3 startPos = { 0,0,0 };
     DirectX::XMFLOAT3 endPos = { 0,0,0 };
 

@@ -35,6 +35,7 @@ void ScissorsGameManager::EndGame(bool playerDead)
 
     // “ü—Í‚ğ–³Œø‰»‚·‚é
     gameInputEnabled = false;
+    Logger::Log(U8("“ü—Í‚ğ–³Œø‰»‚·‚é"));
 
     // Š—vŠÔ‚ğ‹L˜^‚·‚é
     ScoreSystem::RecordGameTime(gameTimer);

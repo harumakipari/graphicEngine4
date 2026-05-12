@@ -151,7 +151,35 @@ void UITextPopup::Update(float dt)
 {
     easingRunner->Tick(dt);
 }
+UIArrowComponent::UIArrowComponent(const std::string& filename, const std::string& name) :UIImageComponent(filename, name)
+{
+    UIImageComponent(filename, name);
+    texture = std::make_shared<Sprite>(Graphics::GetDevice(), std::wstring(filename.begin(), filename.end()).c_str());
+    uv.w = texture->GetTextureSize().x;
+    uv.h = texture->GetTextureSize().y;
 
+    //this->SetVisible(false);
+
+#if 0
+    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+
+    for (int i = 0; i < 10; i++)
+    {
+        auto rect = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/arrow_rect.png", "arrow_rect");
+        rect->SetSize({ 230, 122 });
+        rect->SetPivot({ 0.0f,0.5f });
+        uiManager->Add(rect);
+        bodyRects.push_back(rect);
+    }
+
+    head = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/arrow_triangle.png", "arrow_triangle");
+    head->SetSize({ 58, 68 });
+    head->SetPivot({ 0.0f,0.5f });
+    uiManager->Add(head);
+
+
+#endif // 0
+}
 
 void UIArrowComponent::SetEnd(DirectX::XMFLOAT3 endPos)
 {
@@ -169,8 +197,48 @@ void UIArrowComponent::SetEnd(DirectX::XMFLOAT3 endPos)
 
     //　方向ベクトル
     DirectX::XMFLOAT2 dir = MathHelper::SubtractFloat2(uiTargetPos, uiStartPos);
+    // 正規化
+    if (distance > 0.0001f)
+    {
+        dir.x /= distance;
+        dir.y /= distance;
+    }
+
     float angle = atan2f(dir.y, dir.x);
-    SetWorldAngleDegree(DirectX::XMConvertToDegrees(angle));
+    float degree = XMConvertToDegrees(angle);
+
+#if 0
+    int segmentLength = 230;    // レクトの横の長さ
+    int segmentCount = static_cast<int>(distance / segmentLength);
+    for (int i = 0; i < bodyRects.size(); i++)
+    {
+        if (i < segmentCount)
+        {
+            float offset = i * segmentLength;
+
+            XMFLOAT2 pos =
+            {
+                uiStartPos.x + dir.x * offset,
+                uiStartPos.y + dir.y * offset
+            };
+
+            bodyRects[i]->SetWorldPosition(pos);
+
+            bodyRects[i]->SetWorldAngleDegree(degree);
+
+            bodyRects[i]->SetVisible(true);
+        }
+        else
+        {
+            bodyRects[i]->SetVisible(false);
+        }
+    }
+    head->SetWorldPosition(uiTargetPos);
+    head->SetWorldAngleDegree(degree);
+    head->SetVisible(true);
+#endif
+
+    SetWorldAngleDegree(degree);
 
     SetWorldPosition(uiStartPos);
 }

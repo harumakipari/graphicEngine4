@@ -14,7 +14,8 @@ void YarnWallActor::Initialize(const Transform& transform)
 
 
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
-    size.z += 0.5f;
+    size.z += 1.0f;
+    size.x += 1.5f;
     // ”½ŽË—p‚Ì“–‚½‚è”»’è
     redirectCollisionComponent = this->AddComponent<BoxComponent>("redirectCollisionComponent", parentName);
     redirectCollisionComponent->SetBoxExtent(size);

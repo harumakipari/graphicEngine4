@@ -283,7 +283,8 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
         arrowComponents[i] = std::make_unique<UIArrowComponent>("./Data/Textures/ScissorsUI/Arrow.png", "dashAimArrow");
         arrowComponents[i]->SetWorldPosition({ 0.0f, 0.0f });
         arrowComponents[i]->SetVisible(true);
-        arrowComponents[i]->SetSize({ 300.0f, 50.0f });
+        arrowComponents[i]->SetSize({ 284.0f, 68.0f });
+        //arrowComponents[i]->SetSize({ 300.0f, 50.0f });
         arrowComponents[i]->SetPivot({ 0.0f, 0.5f }); // 矢印の根元をプレイヤーの位置に合わせる
         arrowComponents[i]->SetVisible(false);
         uiManager->Add(arrowComponents[i]);
@@ -441,6 +442,7 @@ void ScissorsPlayer1::Update(float deltaTime)
     {
         if (!gameManager->IsGameInputEnabled())
         {
+            characterMovementComponent->SetSpeed(0.0f);
             return;
         }
     }

@@ -478,14 +478,60 @@ StageData StageLoader::Load(STAGE_NAME stageId)
         data.waves =
         {
             {
-                // Wave 6
-                {
-                    { { 12,0,12 },  YarnEnemyType::LongRangeAttack, 0.0f,false,2.0f ,1.0f,{1,0,1}},
-                    { { 1.5f,0,22.5f },  YarnEnemyType::ChasePlayer, 0.0f,true,2.0f ,1.0f,{1,0,1}},
-                    { { 22.5f,0,1.5f },  YarnEnemyType::ChasePlayer, 0.0f,true,2.0f ,1.0f,{1,0,1}},
+                // Wave 1
+        {
+                    { { 1,0,16 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
+                    { { 1,0,14 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
+
+                    { { 23,0,8 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
+                    { { 23,0,10 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
                 },
                 false,
-               -1,10.0f,true
+               -1,0.0f,true
+            },
+            {
+                // Wave 2
+                {
+                    //{ { 1,0,22 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
+                    { { 1,0,15 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
+                    { { 1,0,11 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
+                    //{ { 1,0,4 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
+
+                    //{ { 23,0,20 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
+                    { { 23,0,13 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
+                    { { 23,0,9 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
+                    //{ { 23,0,2 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
+                },
+                false,
+               -1,7.0f,true
+            },
+            // Wave5ÅFîgîg
+        {
+        {
+                // ç∂è„
+                { {3,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{1,0,-1}},
+                { {3,0,22.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,-1}},
+                { {1.5,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,-1}},
+        
+                // ç∂â∫
+                        { {3,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{1,0,1}},
+                { {3,0,1.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,1}},
+                { {1.5,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,1}},
+        
+                // âEè„
+                        { {21,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{-1,0,-1}},
+                { {21,0,22.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,-1}},
+                { {22.5,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,-1}},
+        
+                // âEâ∫
+                { {21,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{-1,0,1}},
+                { {21,0,1.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,1}},
+                { {22.5,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,1}},
+        
+            },
+             false,
+                  -1,
+                  10.0f,
             },
         };
         break;
