@@ -206,6 +206,17 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     float dashDistance = minDistance + aimData.power * (maxDistance - minDistance);
     float remainingDist = dashDistance;
 
+    if (InputSystem::GetInputState("DashCancel",InputStateMask::Trigger))
+    {// ダッシュチャージキャンセルをする
+        // 全部非表示
+        for (int i = 0; i < _countof(player->arrowComponents); i++)
+        {
+            player->arrowComponents[i]->SetVisible(false);
+        }
+        player->GetStateMachine()->ChangeState("Idle");
+        return;
+    }
+
     // ダッシュの距離
     for (int i = 0; i < 5; i++) // 最大5回反射
     {
@@ -426,10 +437,26 @@ void ScissorsPlayerChargeDashState::Exit()
 
     // この次は絶対にダッシュステートに行くので、ここでは何もしない
 
+
 }
 
 void ScissorsPlayerDashState::Enter()
 {
+    // ダッシュ中に倒した敵の数をリセットする
+    player->killedEnemyCountInDash = 0;
+
+    if (auto tutorialActor = player->GetOwnerScene()->GetActorManager()->GetActorOfType<TutorialActor>())
+    {// チュートリアルだったら
+        if (auto currentStep = tutorialActor->GetTutorialManager()->GetCurrentState())
+        {
+            if (currentStep->GetName() == "TutorialStep_AttackEnemyRedirect" || currentStep->GetName() == "TutorialStep_AttackAllEnemy")
+            {// ダッシュしたかどうかをを確認するステートで
+                currentStep->IsUseDash(false);
+                Logger::Log(U8("ダッシュが開始した"));
+            }
+        }
+    }
+
     // ダッシュアニメーションを再生
     player->PlayAnimation("Dash", true, true, 0.2f);
 
@@ -650,9 +677,13 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
         {// チュートリアルだったら
             if (auto currentStep = tutorialActor->GetTutorialManager()->GetCurrentState())
             {
-                if (currentStep->GetName()=="TutorialStep_DashClothSide")
+
+                if (currentStep->GetName() == "TutorialStep_DashClothSide")
                 {// 反射を確認するステートで
-                    currentStep->IsUseRedirect(true);
+                    if (player->currentSegment > 0)
+                    {
+                        currentStep->IsUseRedirect(true);
+                    }
                 }
             }
         }
@@ -734,6 +765,19 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
 
 void ScissorsPlayerDashState::Exit()
 {
+    if (auto tutorialActor = player->GetOwnerScene()->GetActorManager()->GetActorOfType<TutorialActor>())
+    {// チュートリアルだったら
+        if (auto currentStep = tutorialActor->GetTutorialManager()->GetCurrentState())
+        {
+            if (currentStep->GetName() == "TutorialStep_AttackEnemyRedirect"|| currentStep->GetName() == "TutorialStep_AttackAllEnemy")
+            {// ダッシュしたかどうかをを確認するステートで
+                currentStep->IsUseDash(true);
+                Logger::Log(U8("ダッシュが終了した"));
+            }
+        }
+    }
+
+
     // プレイヤーのダッシュの値をリセット
     player->currentSegment = 0;
 
@@ -751,8 +795,6 @@ void ScissorsPlayerDashState::Exit()
     // ダッシュ後の無敵時間を設定する
     player->postDashInvincibleTimer = player->postDashInvincibleDuration;
 
-    // ダッシュ中に倒した敵の数をリセットする
-    player->killedEnemyCountInDash = 0;
 
     // デカールのデータをクリアする
     player->decal_datas.clear();
@@ -848,7 +890,7 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
 
             // GameOver遷移など
             const char* types[] = { "0", "1" };
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("fade","0") },TransitionStyle::Fade);
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("fade","0") }, TransitionStyle::Fade);
             phase = DeathPhase::SceneTransition;
         }
 

@@ -433,8 +433,8 @@ void TutorialStep_TiedEnemy::Exit()
     // チュートリアル画像の切り替え
     tutorialImage->SetVisible(false);
 
-    // チュートリアルターゲットから外す
-    owner->ClearTutorialTargets();
+    // ここで矢印を非表示にする
+    owner->HideTutorialTargetsArrows();
 }
 
 
@@ -537,6 +537,9 @@ void TutorialStep_SpawnMoveEnemy::Enter()
 
     elapsedTime = 0.0f;
 
+    // チュートリアルターゲットから外す
+    owner->ClearTutorialTargets();
+
     // 敵を生成する
     owner->ReserveSpawnEnemy({ 11,0,21 }, YarnEnemyType::MoveLinear, false, 2.0f, { 0,0,-1 }, false, true);
     owner->ReserveSpawnEnemy({ 13,0,21 }, YarnEnemyType::MoveLinear, false, 2.0f, { 0,0,-1 }, false, true);
@@ -623,7 +626,8 @@ void TutorialStep_TiedMoveEnemy::Exit()
 {
     tutorialImage->SetVisible(false);
 
-    owner->ClearTutorialTargets();
+    // ここで矢印を非表示にする
+    owner->HideTutorialTargetsArrows();
 }
 
 // ------------------------------ TutorialStep_DecreaseHeart ------------------------------
@@ -728,6 +732,8 @@ void TutorialStep_DashClothSide::Enter()
 
     // 矢印を出す
     owner->ShowArrows();
+
+    isUseRedirect = false;
 }
 
 // ステートで実行するメソッド
@@ -854,9 +860,12 @@ void TutorialStep_AttackEnemyRedirect::Enter()
     tutorialImage->SetVisible(true);
     elapsedTime = 0.0f;
 
+    owner->ClearTutorialTargets();
+
     SpawnRedirectEnemies();
 
     waitingRespawn = false;
+    hasPlayerDashed = false;
 }
 
 // ステートで実行するメソッド
@@ -870,7 +879,24 @@ void TutorialStep_AttackEnemyRedirect::Execute(float deltaTime)
     if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
         return;
 
-#if 1
+    auto player = owner->GetPlayer();
+    if (!player)
+        return;
+
+    // 一回ダッシュが終わった
+    // まだ成功してない
+    if (hasPlayerDashed && !isRedirectKillEnemy &&
+        owner->GetPendingSpawnCount() <= 0 &&
+        player->killedEnemyCountInDash > 0)
+    {
+        hasPlayerDashed = false;
+
+        owner->ClearTutorialTargets();
+
+        SpawnRedirectEnemies();
+    }
+
+#if 0
     // 敵が全滅したら
     if (owner->GetEnemyCount() <= 0)
     {
@@ -906,12 +932,12 @@ void TutorialStep_AttackEnemyRedirect::Exit()
 void TutorialStep_AttackEnemyRedirect::SpawnRedirectEnemies() const
 {
     // 敵を生成する
-    owner->ReserveSpawnEnemy({ 17,0,22 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, false);
-    owner->ReserveSpawnEnemy({ 19,0,20 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, false);
-    owner->ReserveSpawnEnemy({ 21,0,18 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, false);
-    owner->ReserveSpawnEnemy({ 3,0,6 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, false);
-    owner->ReserveSpawnEnemy({ 5,0,5 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, false);
-    owner->ReserveSpawnEnemy({ 7,0,3 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, false);
+    owner->ReserveSpawnEnemy({ 15,0,21 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, true, false, 0.0f, 1.0f);
+    owner->ReserveSpawnEnemy({ 18,0,18 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, true, false, 0.0f, 1.0f);
+    owner->ReserveSpawnEnemy({ 21,0,15 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, true, false, 0.0f, 1.0f);
+    owner->ReserveSpawnEnemy({ 3,0,9 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, true, false, 0.0f, 1.0f);
+    owner->ReserveSpawnEnemy({ 6,0,6 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, true, false, 0.0f, 1.0f);
+    owner->ReserveSpawnEnemy({ 9,0,3 }, YarnEnemyType::Static, false, 2.0f, { 0,0,0 }, true, true, false, 0.0f, 1.0f);
 }
 
 // ------------------------------ TutorialStep_RedirectHighScore ------------------------------
@@ -967,7 +993,7 @@ void TutorialStep_RedirectHighScore::Execute(float deltaTime)
     //  押した瞬間
     if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
     {
-        owner->GetTutorialManager()->ChangeState("TutorialStep_AttackAllEnemy");
+        owner->GetTutorialManager()->ChangeState("TutorialStep_RedirectLongDash");
         CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
     }
 }
@@ -978,6 +1004,72 @@ void TutorialStep_RedirectHighScore::Exit()
     tutorialImage->SetVisible(false);
     ShowMouseClick(false);
 }
+
+// ------------------------------ TutorialStep_RedirectLongDash ------------------------------
+//  ぬい返りすると 長くダッシュできるよ！
+// コンストラクタ
+TutorialStep_RedirectLongDash::TutorialStep_RedirectLongDash(TutorialActor* actor) :TutorialStep(actor)
+{
+    auto uiManager = Scene::GetCurrentScene()->GetUIManager();
+
+    // チュートリアル画像の作成
+    //　ぬい返りすると 長くダッシュできるよ！
+    tutorialImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tutorial/redirect_long.png", "redirect_long");
+    tutorialImage->SetWorldPosition(imagePos);
+    tutorialImage->SetSize(imageSize);
+    tutorialImage->SetVisible(false);
+    uiManager->Add(tutorialImage);
+}
+
+// デストラクタ
+TutorialStep_RedirectLongDash::~TutorialStep_RedirectLongDash()
+{
+    if (tutorialImage)
+    {// 削除通知を出す
+        tutorialImage->MarkPendingKill();
+    }
+}
+
+// ステートに入った時のメソッド
+void TutorialStep_RedirectLongDash::Enter()
+{
+    tutorialImage->SetVisible(true);
+
+    elapsedTime = 0.0f;
+
+    ResetMouseClickBlink();
+    ShowMouseClick(true);
+}
+
+// ステートで実行するメソッド
+void TutorialStep_RedirectLongDash::Execute(float deltaTime)
+{
+    // ポーズ中はゲーム入力を一切受け付けない
+    if (Scene::GetCurrentScene()->IsPaused())
+        return;
+
+    // UIがマウスを使っているならゲーム操作しない
+    if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
+        return;
+
+    UpdateMouseClickBlink(deltaTime);
+
+
+    //  押した瞬間
+    if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
+    {
+        owner->GetTutorialManager()->ChangeState("TutorialStep_AttackAllEnemy");
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
+    }
+}
+
+// ステージから出ていくときのメソッド
+void TutorialStep_RedirectLongDash::Exit()
+{
+    tutorialImage->SetVisible(false);
+    ShowMouseClick(false);
+}
+
 
 
 // ------------------------------ TutorialStep_AttackAllEnemy ------------------------------
@@ -1011,20 +1103,21 @@ void TutorialStep_AttackAllEnemy::Enter()
     tutorialImage->SetVisible(true);
     elapsedTime = 0.0f;
 
+    owner->ClearTutorialTargets();
+
     // 敵を生成する
     spawnPositions =
     {
-        {8,0,11},
-        {9,0,10},
-        {10,0,11},
-        {11,0,10},
-        {12,0,11},
-
-        {13,0,15},
-        {14,0,14},
-        {15,0,15},
-        {16,0,14},
-        {17,0,15},
+        {18,0,12},
+        {15,0,12},
+        {12,0,12},
+        {9,0,12},
+        {6,0,12},
+        {12,0,6},
+        {12,0,9},
+        {12,0,9},
+        {12,0,15},
+        {12,0,18},
     };
 
     for (auto& pos : spawnPositions)
@@ -1033,6 +1126,7 @@ void TutorialStep_AttackAllEnemy::Enter()
     }
 
     waitSpawn = false;
+    hasPlayerDashed = false;
 }
 
 // ステートで実行するメソッド
@@ -1046,12 +1140,36 @@ void TutorialStep_AttackAllEnemy::Execute(float deltaTime)
     if (Scene::GetCurrentScene()->GetUIManager()->IsMouseCaptured())
         return;
 
+    auto player = owner->GetPlayer();
+    if (!player)
+    {
+        return;
+    }
+
+
+    if (hasPlayerDashed && !isBonusKill5Enemy && owner->GetPendingSpawnCount() <= 0 && player->killedEnemyCountInDash > 0)
+    {
+        hasPlayerDashed = false;
+
+        owner->ClearTutorialTargets();
+
+
+        for (auto& pos : spawnPositions)
+        {
+            SpawnEnemyAt(pos);
+        }
+    }
+    else
+    {
+        hasPlayerDashed = false;
+    }
+#if 0
     constexpr int targetEnemyCount = 7;
 
     int currentCount = owner->GetAliveEnemyCount();
 
 
-    if (currentCount <= targetEnemyCount&&!waitSpawn)
+    if (currentCount <= targetEnemyCount && !waitSpawn)
     {
         int needSpawn = targetEnemyCount - currentCount;
 
@@ -1065,6 +1183,8 @@ void TutorialStep_AttackAllEnemy::Execute(float deltaTime)
             }
         }
     }
+#endif // 0
+
 
     if (isBonusKill5Enemy)
     {
@@ -1090,7 +1210,7 @@ void TutorialStep_AttackAllEnemy::SpawnEnemyAt(const DirectX::XMFLOAT3& pos)
         2.0f,
         { 0,0,0 },
         true,
-        true,false);
+        true, false);
 }
 
 // 敵と指定した位置が近いかどうか

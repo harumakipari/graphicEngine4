@@ -38,6 +38,10 @@ struct PendingTutorialSpawn
 
     bool isTargetTutorial = false;
     bool spawnArrowUi = true;
+
+    float previewStartTime = 0.5f; // 予告が始まるまでの時間
+    float spawnTime = 1.5f; // 出現までの時間
+
 };
 
 
@@ -71,6 +75,9 @@ public:
     // チュートリアルターゲットをクリアする
     void ClearTutorialTargets();
 
+    // チュートリアルターゲットの矢印を非表示にする
+    void HideTutorialTargetsArrows();
+
     // 矢印を出す
     void ShowArrows();
 
@@ -83,13 +90,19 @@ public:
         bool isBig,
         float speed,
         const XMFLOAT3& dir,
-        bool isTied, bool isTargetTutorial, bool spawnArrowUi = true);
+        bool isTied, bool isTargetTutorial, bool spawnArrowUi = true, float previewTime = 0.5f, float spawnTime = 1.5f);
 
     // 敵の数を取得する
     int GetEnemyCount() { return enemyCount; }
 
     // 生き残っている敵
     int GetAliveEnemyCount() const;
+
+    // 予約している敵の数を取得する
+    int GetPendingSpawnCount() const
+    {
+        return static_cast<int>(pendingTutorialSpawns.size());
+    }
 private:
     // 敵の上に出す矢印
     void UpdateShowArrowEnemy(float deltaTime);
@@ -110,7 +123,7 @@ private:
     void SpawnPreviewEffect(DirectX::XMFLOAT3 pos);
 
     // チュートリアルターゲットに登録する
-    void AddTutorialEnemy(const std::shared_ptr<EnemyBase>& enemy, bool spawnArrowUi );
+    void AddTutorialEnemy(const std::shared_ptr<EnemyBase>& enemy, bool spawnArrowUi);
 
 
 private:
@@ -123,7 +136,6 @@ private:
     std::shared_ptr<UIImageComponent> arrowLeftComponent;
     std::shared_ptr<UIImageComponent> arrowUpComponent;
     std::shared_ptr<UIImageComponent> arrowDownComponent;
-
     std::vector<PendingTutorialSpawn> pendingTutorialSpawns;    // チュートリアル遅延湧き
     std::shared_ptr<ParticleComponent> spawnEffectComponent; // 出現エフェクト用コンポーネント
     float elapsedTime = 0.0f;

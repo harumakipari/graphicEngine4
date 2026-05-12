@@ -54,20 +54,25 @@ private:
 
     std::shared_ptr<SkeletalMeshComponent> patchTutorialModel;
 
-    std::unique_ptr<EasingRunner> easingRunner; 
+    std::unique_ptr<EasingRunner> easingOneRunner;  // 一ページ目のeasing
+    std::unique_ptr<EasingRunner> easingTwoRunner;  // 二ページ目のeasing
 
-    std::unique_ptr<EasingRunner> easingSpinePosRunner; // 背表紙の position
-    std::unique_ptr<EasingRunner> easingSpineAngleRunner; // 背表紙の角度
 
-    float startEuler = 0.0f;
-    float endEuler = 180.0f;
 
-    float startSpineEuler = 0.0f;
-    float endSpineEuler = -90.0f;
+    // 背表紙の角度
+    float openSpineEuler = 0.0f;    
+    float closeSpineEuler = -90.0f;
 
-    float startSpinPosY = 0.0f;
-    float endSpinPosY = -0.2f;
+    // 背表紙の位置
+    float openSpinPosY = 0.0f;
+    float closeSpinPosY = -0.2f;
 
-    float angle = 0.0f;
+
+    float bookOneAlpha = 0.0f; // １ページ目
+    float bookTwoAlpha = 0.0f; // ２ページ目
+
+
+    float openBookAngle = 0.0f;
+    float closeBookAngle = 180.0f;
 };
 

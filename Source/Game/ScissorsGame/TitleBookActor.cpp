@@ -30,8 +30,11 @@ void TitleBookActor::Initialize(const Transform& transform)
     bookSpineModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
     bookSpineModel->SetRelativeLocationDirect({ 0.1f,0.0f,0.0f });
 
-    easingRunner = std::make_unique<EasingRunner>();
+    easingOneRunner = std::make_unique<EasingRunner>();
+    easingTwoRunner = std::make_unique<EasingRunner>();
 
+    bookOneAlpha = 0.0f;
+    bookTwoAlpha = 0.0f;
 
 #if 1
     // 左の本モデル
@@ -65,13 +68,33 @@ void TitleBookActor::Initialize(const Transform& transform)
 
 void TitleBookActor::Update(float deltaTime)
 {
-    easingRunner->Tick(deltaTime);
-    bookLeftModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,angle });
-    //bookSpineModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,angle  });
+    easingOneRunner->Tick(deltaTime);
+    easingTwoRunner->Tick(deltaTime);
 
     //UpdatePage(leftPage);
     //UpdatePage(rightPage);
 
+    // 一ページ目の処理
+    {
+        // 本
+        float bookAngle =std::lerp(closeBookAngle,openBookAngle,bookOneAlpha);
+        bookLeftModel->SetRelativeEulerRotationDirect({0.0f,0.0f,bookAngle});
+        // 背表紙角度
+        float spineAngle =std::lerp(openSpineEuler,closeSpineEuler,bookOneAlpha);
+        bookSpineModel->SetRelativeEulerRotationDirect({0.0f,0.0f,spineAngle});
+        // 背表紙位置
+        float spinePosY =std::lerp(openSpinPosY,closeSpinPosY,bookOneAlpha);
+        bookSpineModel->SetRelativeLocationDirect({0.1f,spinePosY,0.0f});
+    }
+
+    // 二ページ目の処理
+    {
+        // 本
+        //float middleAngle= std::lerp(closeBookAngle, openBookAngle, bookTwoAlpha);
+        //bookMiddleModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,middleAngle });
+
+
+    }
 
 }
 
@@ -80,14 +103,10 @@ void TitleBookActor::DrawImGuiDetails()
 #ifdef USE_IMGUI
     if (ImGui::Button(U8("本が閉じる")))
     {
-        startEuler = 0.0f;
-        endEuler = 180.0f;
-        Play(2.0f);
+        PlayReverse(2.0f);
     }
     if (ImGui::Button(U8("本が開く")))
     {
-        startEuler = 180.0f;
-        endEuler = 0.0f;
         Play(2.0f);
     }
 #endif
@@ -96,6 +115,7 @@ void TitleBookActor::DrawImGuiDetails()
 // 本を開く
 void TitleBookActor::Play(float interval)
 {
+#if 0
     // 本を開く
     startEuler = 180.0f;
     endEuler = 0.0f;
@@ -125,15 +145,48 @@ void TitleBookActor::Play(float interval)
                 angle = t;
             };
 
-        easingRunner->StartHandler(handler, accessor);
+        easingOneRunner->StartHandler(handler, accessor);
     }
+#endif // 0
 
+    TestEasingHandler handler;
+
+    handler.AddWait(0.0f);
+
+    handler.AddEasing(
+        TestEaseType::OutExp,
+        0.0f,
+        1.0f,
+        interval
+    );
+
+    handler.SetCompletedFunction([this]()
+        {
+            bookOneAlpha = 1.0f;
+        });
+
+    PropertyAccessor<float> accessor;
+
+    accessor.getter =
+        [this]()
+        {
+            return bookOneAlpha;
+        };
+
+    accessor.setter =
+        [this](float t)
+        {
+            bookOneAlpha = t;
+        };
+
+    easingOneRunner->StartHandler(handler, accessor);
 
 }
 
 // 本を閉じる
 void TitleBookActor::PlayReverse(float interval)
 {
+#if 0
     startEuler = 0.0f;
     endEuler = 180.0f;
 
@@ -162,8 +215,40 @@ void TitleBookActor::PlayReverse(float interval)
                 angle = t;
             };
 
-        easingRunner->StartHandler(handler, accessor);
+        easingOneRunner->StartHandler(handler, accessor);
     }
+#endif // 0
+    TestEasingHandler handler;
+
+    handler.AddWait(0.0f);
+
+    handler.AddEasing(
+        TestEaseType::OutExp,
+        1.0f,
+        0.0f,
+        interval
+    );
+
+    handler.SetCompletedFunction([this]()
+        {
+            bookOneAlpha = 0.0f;
+        });
+
+    PropertyAccessor<float> accessor;
+
+    accessor.getter =
+        [this]()
+        {
+            return bookOneAlpha;
+        };
+
+    accessor.setter =
+        [this](float t)
+        {
+            bookOneAlpha = t;
+        };
+
+    easingOneRunner->StartHandler(handler, accessor);
 }
 
 // ステージパッチを生成する

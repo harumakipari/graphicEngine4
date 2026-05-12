@@ -38,6 +38,9 @@ public:
     // ５体以上で敵を倒したことを通知する
     void SetBonusKill5Enemy(bool isBonusKill5Enemy) { this->isBonusKill5Enemy = isBonusKill5Enemy; }
 
+    // ダッシュした
+    void IsUseDash(bool hasPlayerDashed) { this->hasPlayerDashed = hasPlayerDashed; }
+
 protected:
     void UpdateMouseClickBlink(float deltaTime);
 
@@ -68,6 +71,7 @@ protected:
     bool isUseRedirect = false;// 反射したかどうか
     bool isRedirectKillEnemy = false;// 反射で敵を倒したかどうか
     bool isBonusKill5Enemy = false;// 一回で５体以上倒したかどうか
+    bool hasPlayerDashed = false;   // ダッシュしたかどうか
 
     std::shared_ptr<Sprite> controlButtonOnImage; // コントローラー対応用
     std::shared_ptr<Sprite> controlButtonOffImage; // コントローラー対応用
@@ -330,6 +334,28 @@ public:
     // ステージから出ていくときのメソッド
     void Exit() override;
     virtual const char* GetName() const override { return "TutorialStep_RedirectHighScore"; }
+
+private:
+    std::shared_ptr<UIImageComponent> tutorialImage;
+    float elapsedTime = 0.0f;
+};
+
+// チュートリアルステップ : ぬい返りすると 長くダッシュできるよ！
+class TutorialStep_RedirectLongDash : public TutorialStep
+{
+public:
+    TutorialStep_RedirectLongDash(TutorialActor* actor);
+    virtual ~TutorialStep_RedirectLongDash();
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステージから出ていくときのメソッド
+    void Exit() override;
+    virtual const char* GetName() const override { return "TutorialStep_RedirectLongDash"; }
+
+    // ダッシュできるかどうか
+    bool CanDash() override { return false; }
 
 private:
     std::shared_ptr<UIImageComponent> tutorialImage;

@@ -26,6 +26,7 @@ void TutorialActor::Initialize(const Transform& transform)
     tutorialManager->RegisterState(std::make_unique<TutorialStep_DashRedirect>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_AttackEnemyRedirect>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_RedirectHighScore>(this));
+    tutorialManager->RegisterState(std::make_unique<TutorialStep_RedirectLongDash>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_AttackAllEnemy>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_AttackAllBonus>(this));
     tutorialManager->RegisterState(std::make_unique<TutorialStep_StageClear>(this));
@@ -205,9 +206,29 @@ void TutorialActor::ClearTutorialTargets()
         {
             target.arrowImage->MarkPendingKill();
         }
+
+        if (auto enemy = target.enemy.lock())
+        {
+            if (!enemy->IsDead())
+            {
+                enemy->MarkPendingKill();
+            }
+        }
     }
 
     tutorialTargets.clear();
+}
+
+// チュートリアルターゲットの矢印を非表示にする
+void TutorialActor::HideTutorialTargetsArrows()
+{
+    for (auto& target : tutorialTargets)
+    {
+        if (target.arrowImage)
+        {
+            target.arrowImage->SetVisible(false);
+        }
+    }
 }
 
 // 矢印を出す
@@ -242,7 +263,8 @@ void TutorialActor::ReserveSpawnEnemy(const XMFLOAT3& pos,
     bool isBig,
     float speed,
     const XMFLOAT3& dir,
-    bool isTied, bool isTargetTutorial, bool spawnArrowUi)
+    bool isTied, bool isTargetTutorial, bool spawnArrowUi,
+    float previewTime, float spawnTime)
 {
     PendingTutorialSpawn spawn{};
 
@@ -254,6 +276,8 @@ void TutorialActor::ReserveSpawnEnemy(const XMFLOAT3& pos,
     spawn.isTied = isTied;
     spawn.isTargetTutorial = isTargetTutorial;
     spawn.spawnArrowUi = spawnArrowUi;
+    spawn.previewStartTime = previewTime;
+    spawn.spawnTime = spawnTime;
 
     pendingTutorialSpawns.push_back(spawn);
 }
@@ -380,15 +404,13 @@ void TutorialActor::UpdateSideArrow(float deltaTime)
 // 敵の遅延湧きの更新処理
 void TutorialActor::UpdatePendingTutorialSpawns(float deltaTime)
 {
-    constexpr float previewStartTime = 0.5f;
-    constexpr float spawnTime = 1.5f;
 
     for (auto& s : pendingTutorialSpawns)
     {
         s.timer += deltaTime;
 
         // 予告
-        if (!s.previewed && s.timer >= previewStartTime)
+        if (!s.previewed && s.timer >= s.previewStartTime)
         {
             SpawnPreviewEffect(s.position);
 
@@ -397,7 +419,7 @@ void TutorialActor::UpdatePendingTutorialSpawns(float deltaTime)
 
         // 出現
         if (!s.spawned &&
-            s.timer >= spawnTime)
+            s.timer >= s.spawnTime)
         {
             auto enemy = SpawnEnemy(
                 s.position,

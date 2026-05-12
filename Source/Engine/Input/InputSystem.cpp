@@ -246,6 +246,12 @@ void InputSystem::Initialize()
     inputKeys["TutorialOk"].emplace_back(std::make_unique<Mouse>(VK_LBUTTON));  // 左ボタン
     inputKeys["TutorialOk"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_A));     // A
 
+    inputKeys["DashCancel"].emplace_back(std::make_unique<Mouse>(VK_RBUTTON));  // 右クリック
+    inputKeys["DashCancel"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::RightTrigger));
+    inputKeys["DashCancel"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_RIGHT_SHOULDER));     // 右
+    inputKeys["DashCancel"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::LeftTrigger));
+    inputKeys["DashCancel"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_LEFT_SHOULDER));     // 左
+
 
     // 今回のゲームで使用する入力キーをここでまとめて登録しておく
     inputKeys["ScissorsAttack"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::RightTrigger));
