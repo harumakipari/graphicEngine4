@@ -11,7 +11,7 @@ void ButtonBombActor::Initialize(const Transform& transform)
 {
     std::string parentName = "SkeletonWarriorMeshComponent";
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    skeletalMeshComponent->SetModel("./Data/TeamModels/Item/BombModel.glb", false, true);
+    skeletalMeshComponent->SetModel("./Data/TeamModels/Item/BombModel.gltf", false, true);
     skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameBlinkPS";
 
     // “–‚½‚è”»’è

@@ -4,7 +4,7 @@
 void TitleBookActor::Initialize(const Transform& transform)
 {
     BookBaseActor::Initialize(transform);
-    SetInitPageState(BookPageState::SecondPage);
+    SetInitPageState(BookPageState::Closed);
 }
 
 void TitleBookActor::Update(float deltaTime)

@@ -4,11 +4,11 @@
 #include "Core/Actor.h"
 #include "BookBaseActor.h"
 
-// タイトル本アクター
-class TitleBookActor :public BookBaseActor
+// リザルト本アクター
+class ResultBookActor :public BookBaseActor
 {
 public:
-    explicit TitleBookActor(const std::string& actorName) :BookBaseActor(actorName) {}
+    explicit ResultBookActor(const std::string& actorName) :BookBaseActor(actorName) {}
 
     void Initialize(const Transform& transform)override;
 
