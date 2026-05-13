@@ -26,6 +26,19 @@ public:
 
     void Update(float deltaTime)override;
 
+    bool AllEnemiesDead() const
+    {
+        return enemyCount == 0;
+    }
+
+    bool TutorialAllEnemiesDead() const
+    {
+        return spawnCount == 0;
+    }
+
+
+    bool IsWaveStarted() { return waveStarted; }
+
 private:
     // 最初の待ち更新処理
     void UpdateReady(float deltaTime);
@@ -46,10 +59,6 @@ private:
         float speed , const DirectX::XMFLOAT3& dir,bool isTied);
 
 
-    bool AllEnemiesDead() const
-    {
-        return enemyCount == 0;
-    }
 
     // 出現エフェクトを生成
     void SpawnPreviewEffect(DirectX::XMFLOAT3 pos);
@@ -57,6 +66,7 @@ private:
     // 敵が死んだときに呼ぶ関数として登録する関数
     void OnDeath(EnemyBase* enemy)
     {
+        spawnCount--;
         enemyCount--;
         killCount++;
 
@@ -93,6 +103,7 @@ private:
     std::vector<SpawnRuntime> spawnStates;
 
     int enemyCount = 0;
+    int spawnCount = 0;
     int killCount = 0; // キルカウント
 
     std::shared_ptr<ParticleComponent> spawnEffectComponent; // 出現エフェクト用コンポーネント
@@ -108,5 +119,5 @@ private:
 
     bool hasBossStage = false;  // ボスステージかどうか
     bool hasEndedGame = false;  // ゲームを終了終了条件を満たしているかどうか
-
+    bool waveStarted = false;
 };

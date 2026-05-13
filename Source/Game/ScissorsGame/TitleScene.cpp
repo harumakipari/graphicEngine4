@@ -39,7 +39,7 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
         {
             lightManager = std::make_unique<LightManager>();
             lightManager->Initialize(device);
-            lightManager->SetDirectionalLight(this,lightDirection, lightColor);
+            lightManager->SetDirectionalLight(this, lightDirection, lightColor);
         }
 
         {
@@ -611,6 +611,11 @@ void TitleScene::SetUpActors()
 
     Transform bookTr(DirectX::XMFLOAT3{ 0.0f,0.5f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     bookActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleBookActor>("BookActor", bookTr);
+    bookActor->onRequestOpenBook = [this]()
+        {
+            StartToSelect();
+        };
+
 }
 
 
@@ -630,7 +635,7 @@ void TitleScene::DrawGui()
 
     ImGui::Begin(U8("調整"));
 
-    ImGui::DragFloat(U8("選択シーンへの間隔時間"), &toSelectInterval,0.1f,0.0f,6.0f);
+    ImGui::DragFloat(U8("選択シーンへの間隔時間"), &toSelectInterval, 0.1f, 0.0f, 6.0f);
     if (ImGui::Button(U8("選択シーンへ")))
     {
         StartToSelect();

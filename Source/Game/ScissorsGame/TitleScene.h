@@ -40,15 +40,15 @@ public:
 
     void SetUpActors()override;
 
+    // タイトルシーンへ
+    void StartToTitle();
+
     //シーンの自動登録
     static inline Scene::Autoenrollment<TitleScene> _autoenrollment;
 
 private:
     // セレクトシーンへ
     void StartToSelect();
-
-    // タイトルシーンへ
-    void StartToTitle();
 
 private:
     TPSCameraComponent* mainCameraComponent = nullptr;

@@ -201,7 +201,7 @@ public:
 
 private:
     float stunTimer = 0.0f;
-    float stunTimerInterval = 5.0f; // 何秒間スタンさせるか
+    float stunTimerInterval = 6.5f; // 何秒間スタンさせるか
 };
 
 // 死亡オブジェクト

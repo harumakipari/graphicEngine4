@@ -63,6 +63,7 @@ private:
 
     std::shared_ptr<UIImageComponent> arrowComponent;   // 矢印コンポーネント
     std::shared_ptr<UIImageComponent> tutorialComponent;   // チュートリアルイメージコンポーネント
+    std::shared_ptr<UIImageComponent> tutorialChargeComponent;   // チュートリアルイメージコンポーネント
 
     BobbinState bobbinState = BobbinState::Charging;
 
@@ -78,6 +79,7 @@ private:
 
     float elapsedTime = 0.0f;   // 経過時間
     float tutorialElapsedTime = 0.0f; 
+    float tutorialChargeElapsedTime = 0.0f; 
     XMFLOAT2 arrowOffsetPos = { 0.0f,50.0f };
     int useCount = 0; // 何回糸巻を使用したか
 

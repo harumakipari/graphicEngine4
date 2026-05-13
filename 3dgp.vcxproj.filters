@@ -675,6 +675,9 @@
     <ClCompile Include="Source\Game\ScissorsGame\ScoreHistoryManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\NumberModelDisplay.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1056,6 +1059,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\BookBaseActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ResultBookActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScoreHistoryManager.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\NumberModelDisplay.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

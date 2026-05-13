@@ -330,6 +330,7 @@
     <ClCompile Include="Source\Game\ScissorsGame\ItemHeartActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\NeedleActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\NeedleEnemyActor.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\NumberModelDisplay.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\RabbitBossEnemy.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\RabbitBossState.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ResultBookActor.cpp" />
@@ -518,6 +519,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\BookBaseActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\DecalData.h" />
     <ClInclude Include="Source\Game\ScissorsGame\GameTimerUIActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\NumberModelDisplay.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ResultBookActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ResultData.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ResultScene.h" />

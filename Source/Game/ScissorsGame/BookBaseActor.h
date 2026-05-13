@@ -2,6 +2,7 @@
 #include "StageData.h"
 #include "Components/Easing/CoreEasingComponent.h"
 #include "Core/Actor.h"
+#include "UI/Widgets/Widget.h"
 
 class BookBaseActor :public Actor
 {
@@ -9,8 +10,11 @@ protected:
     enum class BookPageState : uint8_t
     {
         Closed,        // 閉じてる
+        OpeningBook,
         FirstPage,
-        SecondPage
+        OpeningSecondPage,
+        SecondPage,
+        ClosingBook,
     };
 
     struct StageSelectData  // ステージ選択のデータ
@@ -25,6 +29,21 @@ protected:
     {
         std::string parentName;
         std::vector<StageSelectData> stages;
+    };
+
+    struct BookPageButtons
+    {
+        std::shared_ptr<UIButtonComponent> left;
+        std::shared_ptr<UIButtonComponent> right;
+
+        void SetEnable(bool enable)
+        {
+            left->SetEnable(enable);
+            right->SetEnable(enable);
+
+            left->SetVisible(enable);
+            right->SetVisible(enable);
+        }
     };
 public:
     explicit BookBaseActor(const std::string& actorName) :Actor(actorName) {}
@@ -47,6 +66,8 @@ public:
     // 二ページ目を戻す処理
     void CloseSecondPage(float interval);
 
+    // 一ページ目に表示する矢印ボタンのUIを作成する
+    void SetFirstPageButtonUI(std::string leftArrowTex, std::string rightArrowName);
 protected:
     // 最初の本の状態を設定する
     void SetInitPageState(BookPageState initialState);
@@ -61,18 +82,30 @@ private:
     // ページのパッチの更新処理
     void UpdatePage(BookPage& page);
 
+    // 本を閉じている時の処理
+    void UpdateClosedBook();
+
+public:
+    // 本が押されたことを通知する
+    std::function<void()> onRequestOpenBook;
 
 protected:
     BookPage leftPage;
     BookPage rightPage;
 
     std::string backCoverName;  // 裏表紙の名前
+
+    // UIのボタン
+    BookPageButtons firstButtons;
+    BookPageButtons secondButtons;
 private:
 
     std::shared_ptr<SkeletalMeshComponent> bookLeftModel;
     std::shared_ptr<SkeletalMeshComponent> bookRightModel;
     std::shared_ptr<SkeletalMeshComponent> bookMiddleModel; // 本の真ん中のモデル
     std::shared_ptr<SkeletalMeshComponent> bookSpineModel;  // 背表紙モデル
+
+    std::shared_ptr<BoxComponent> bookSpineCollisionComponent;  // 背表紙の当たり判定
 
 
     std::unique_ptr<EasingRunner> easingOneRunner;  // 一ページ目のeasing

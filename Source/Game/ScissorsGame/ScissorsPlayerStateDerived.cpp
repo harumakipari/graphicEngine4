@@ -236,8 +236,14 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
             if (hit.distance <= 0.0001f)
             {
                 Logger::Warning(U8("ボスとボビンでレイキャストがおかしくなっています！"));
+                // ダッシュの狙いを表示する矢印のUIコンポーネントを非表示にする
+                for (int i = 0; i < _countof(player->arrowComponents); i++)
+                {
+                    player->arrowComponents[i]->SetVisible(false);
+                }
+                player->GetStateMachine()->ChangeState("Idle");
                 player->dashPoints.push_back(currentPos);
-                break;
+                return;
             }
 
 
@@ -890,7 +896,7 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
 
             // GameOver遷移など
             const char* types[] = { "0", "1" };
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("fade","0") }, TransitionStyle::Fade);
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("fade","0"),std::make_pair("fromScene","GameScene") }, TransitionStyle::Fade);
             phase = DeathPhase::SceneTransition;
         }
 

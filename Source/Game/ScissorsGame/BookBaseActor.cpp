@@ -3,6 +3,7 @@
 
 #include <magic_enum.hpp>
 
+#include "TitleScene.h"
 #include "Engine/Audio/CoreAudio.h"
 #include "Physics/CollisionFunction.h"
 #include "UI/Game/SceneTransitionManager.h"
@@ -33,6 +34,12 @@ void BookBaseActor::Initialize(const Transform& transform)
     bookSpineModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
     bookSpineModel->SetRelativeLocationDirect({ 0.1f,0.0f,0.0f });
     bookSpineModel->SetIsCastShadow(false);
+
+    bookSpineCollisionComponent = AddComponent<BoxComponent>("bookSpineCollider", "bookSpineModel");
+    DirectX::XMFLOAT3 size = bookSpineModel->GetModelSize();
+    bookSpineCollisionComponent->SetBoxExtent(size);
+    bookSpineCollisionComponent->SetLayer(CollisionLayer::WorldStatic);
+    bookSpineCollisionComponent->Initialize();
 
     easingOneRunner = std::make_unique<EasingRunner>();
     easingTwoRunner = std::make_unique<EasingRunner>();
@@ -78,6 +85,36 @@ void BookBaseActor::Initialize(const Transform& transform)
         { -3.4f,0.1f,1.7f });
 
 #endif // 0
+    auto uiManager = GetOwnerScene()->GetUIManager();
+    // 一ページ左
+    firstButtons.left = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/title_arrow.png", "title_arrow");
+    firstButtons.left->SetWorldPosition({ 300, 50 });
+    firstButtons.left->SetSize({ 400, 150 });
+    uiManager->Add(firstButtons.left);
+
+    firstButtons.left->onClick = [this]()
+        {
+            auto scene = GetOwnerScene();
+            if (auto titleScene = dynamic_cast<TitleScene*>(scene))
+            {
+                titleScene->StartToTitle();
+            }
+            // 本を閉じる音
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+        };
+
+    // 一ページ右
+    firstButtons.right = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/ranking_arrow.png", "ranking_arrow");
+    firstButtons.right->SetWorldPosition({ 800, 50 });
+    firstButtons.right->SetSize({ 400, 150 });
+    uiManager->Add(firstButtons.right);
+
+    firstButtons.right->onClick = [this]()
+        {
+            OpenSecondPage(2.0f);
+            // ページをめくる音
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+        };
 }
 
 void BookBaseActor::Update(float deltaTime)
@@ -85,11 +122,28 @@ void BookBaseActor::Update(float deltaTime)
     easingOneRunner->Tick(deltaTime);
     easingTwoRunner->Tick(deltaTime);
 
-    if (bookState == BookPageState::FirstPage)
+    switch (bookState)
     {
+    case BookPageState::Closed:
+        UpdateClosedBook();
+        break;
+    case BookPageState::FirstPage:
         UpdatePage(leftPage);
         UpdatePage(rightPage);
+        break;
+    case BookPageState::SecondPage:
+        break;
+    case BookPageState::OpeningBook:
+        bookSpineModel->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
+        break;
+    case BookPageState::OpeningSecondPage:
+        break;
+    case BookPageState::ClosingBook:
+        break;
     }
+
+    firstButtons.SetEnable(bookState == BookPageState::FirstPage);
+
 
     // 一ページ目の処理
     {
@@ -143,6 +197,7 @@ void BookBaseActor::DrawImGuiDetails()
 // 本を開く
 void BookBaseActor::OpenBook(float interval)
 {
+    bookState = BookPageState::OpeningBook;
     TestEasingHandler handler;
 
     handler.AddWait(0.0f);
@@ -180,6 +235,7 @@ void BookBaseActor::OpenBook(float interval)
 // 本を閉じる
 void BookBaseActor::CloseBook(float interval)
 {
+    bookState = BookPageState::ClosingBook;
     if (bookTwoAlpha > 0.001f)
     {// 本が二枚目の時に
 
@@ -256,6 +312,7 @@ void BookBaseActor::CloseBook(float interval)
 // 二ページ目を開く
 void BookBaseActor::OpenSecondPage(float interval)
 {
+    bookState = BookPageState::OpeningSecondPage;
     easingTwoRunner->Clear();
 
     TestEasingHandler handler;
@@ -469,4 +526,47 @@ void BookBaseActor::UpdatePage(BookPage& page)
                 L"./Data/Sound/SE/push_button.wav");
         }
     }
+}
+
+// 本を閉じている時の処理
+void BookBaseActor::UpdateClosedBook()
+{
+    DirectX::XMFLOAT2 cursor;
+
+    if (!InputSystem::GetMousePositionUI(cursor))
+        return;
+
+    HitResultWithActor result;
+
+    bool hit = CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic));
+
+    bool hitBook = hit && result.component == bookSpineCollisionComponent.get();
+
+    if (hitBook)
+    {
+        bookSpineModel->SetRelativeScaleDirect(
+            { 1.05f,1.05f,1.05f });
+    }
+    else
+    {
+        bookSpineModel->SetRelativeScaleDirect(
+            { 1.0f,1.0f,1.0f });
+    }
+
+    if (hitBook &&
+        InputSystem::GetInputState(
+            "MouseLeft",
+            InputStateMask::Trigger))
+    {
+        if (onRequestOpenBook)
+        {
+            onRequestOpenBook();
+        }
+    }
+}
+
+// 一ページ目に表示する矢印ボタンのUIを作成する
+void BookBaseActor::SetFirstPageButtonUI(std::string leftArrowTex, std::string rightArrowName)
+{
+
 }

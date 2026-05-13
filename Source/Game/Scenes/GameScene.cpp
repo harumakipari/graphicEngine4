@@ -240,7 +240,7 @@ void GameScene::Start()
         stage = StringToStageName(stageName);
     }
 
-    //stage = STAGE_NAME::BOBBIN_FIRST;
+    stage = STAGE_NAME::BOBBIN_FIRST;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(stage);

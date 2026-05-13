@@ -3,6 +3,7 @@
 #include "Components/Easing/CoreEasingComponent.h"
 #include "Core/Actor.h"
 #include "BookBaseActor.h"
+#include "NumberModelDisplay.h"
 
 // タイトル本アクター
 class TitleBookActor :public BookBaseActor
@@ -15,5 +16,10 @@ public:
     void Update(float deltaTime)override;
 
     void DrawImGuiDetails() override;
+
+private:
+    NumberDisplay firstStageHighScoreDisplay;   
+    NumberDisplay bossStageHighScoreDisplay;   
+
 };
 

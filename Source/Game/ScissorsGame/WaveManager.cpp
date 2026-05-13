@@ -23,6 +23,7 @@ void WaveManager::Initialize(const Transform& transform)
     startTimer = 0.0f;
     hasBossStage = false;  // ボスステージかどうか
     hasEndedGame = false;  // ゲームを終了終了条件を満たしているかどうか
+    waveStarted = false;
 
     // 登場エフェクト用のコンポーネントを追加
     spawnEffectComponent = this->AddComponent<class ParticleComponent>(parentName);
@@ -137,7 +138,6 @@ void WaveManager::UpdateSpawning(float deltaTime)
         return;
 
     auto& wave = waves[currentWave];
-
     timer += deltaTime;
 
     // --- spawn処理 ---
@@ -158,6 +158,9 @@ void WaveManager::UpdateSpawning(float deltaTime)
             state.spawned = true;
         }
     }
+
+    waveStarted = true;
+
 
     // --- 全spawn確認 ---
     bool allSpawned = true;
@@ -339,6 +342,7 @@ void WaveManager::SpawnPreviewEffect(DirectX::XMFLOAT3 pos)
         spawnEffectComponent->SetWorldLocationDirect(pos);
         spawnEffectComponent->Play();
     }
+    spawnCount++;
 }
 
 // ステージ全体の最後のWaveの、最後の1体

@@ -212,6 +212,15 @@ void BobbinActor::SetBobbinStateCharge()
     tutorialComponent->SetSize(tutorialSize);
     tutorialComponent->SetVisible(false);
     uiManager->Add(tutorialComponent);
+
+    // 説明分のUI
+    tutorialChargeComponent =
+        std::make_shared<UIImageComponent>(
+            "./Data/Textures/ScissorsUI/Tutorial/bobbin_chance.png",
+            "enemy_arrow");
+    tutorialChargeComponent->SetSize(tutorialSize);
+    tutorialChargeComponent->SetVisible(false);
+    uiManager->Add(tutorialChargeComponent);
 }
 
 // ボビンを使用する
@@ -409,9 +418,29 @@ void BobbinActor::UpdateShowArrow(float deltaTime)
         }
     }
 
+    if (tutorialChargeComponent)
+    {
+        // 糸巻をチャージ中に出す
+        if (bobbinState == BobbinState::Charging)
+        {
+            tutorialChargeComponent->SetVisible(true);
+            tutorialChargeElapsedTime += deltaTime;
+        }
+        if (tutorialChargeElapsedTime >= 3.0f)
+        {
+            tutorialChargeComponent->SetVisible(false);
+        }
+        tutorialChargeComponent->SetSize(tutorialSize);
+        tutorialChargeComponent->SetWorldPosition(tutorialPos);
+    }
+
     if (tutorialComponent)
     {
-        if (useCount >= 2)
+        auto waveManager = GetOwnerScene()
+            ->GetActorManager()
+            ->GetActorOfType<WaveManager>();
+
+        if (waveManager && waveManager->IsWaveStarted() && waveManager->TutorialAllEnemiesDead())
         {
             tutorialComponent->SetVisible(true);
             tutorialElapsedTime += deltaTime;
