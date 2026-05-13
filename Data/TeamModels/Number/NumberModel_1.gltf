@@ -15,7 +15,7 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"NumberModel_0",
+			"name":"NumberModel_1",
 			"rotation":[
 				-0.70710688829422,
 				0,
@@ -41,7 +41,7 @@
 			"pbrMetallicRoughness":{
 				"baseColorFactor":[
 					1,
-					0,
+					0.7413126826286316,
 					0,
 					1
 				],
@@ -69,15 +69,15 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":218,
+			"count":98,
 			"max":[
-				0.40384215116500854,
-				0.5444437861442566,
+				0.2720376253128052,
+				0.5382106900215149,
 				0.09999993443489075
 			],
 			"min":[
-				-0.40384215116500854,
-				-0.5444434881210327,
+				-0.2720375657081604,
+				-0.5382104516029358,
 				-5.960464477539063e-08
 			],
 			"type":"VEC3"
@@ -85,52 +85,52 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":218,
+			"count":98,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":218,
+			"count":98,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":624,
+			"count":240,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":2616,
+			"byteLength":1176,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":2616,
-			"byteOffset":2616,
+			"byteLength":1176,
+			"byteOffset":1176,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1744,
-			"byteOffset":5232,
+			"byteLength":784,
+			"byteOffset":2352,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1248,
-			"byteOffset":6976,
+			"byteLength":480,
+			"byteOffset":3136,
 			"target":34963
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":8224,
-			"uri":"NumberModel_0.bin"
+			"byteLength":3616,
+			"uri":"NumberModel_1.bin"
 		}
 	]
 }
