@@ -6,11 +6,20 @@
 // タイトルステージモデルアクター
 class TitleBookActor :public Actor
 {
+    enum class BookState : uint8_t
+    {
+        Closed,        // 閉じてる
+        FirstOpened,   // 表紙だけ開いてる
+        SecondOpened,  // さらに1ページめくった
+        Transition     // 演出中
+    };
+
     struct StageSelectData  // ステージ選択のデータ
     {
         STAGE_NAME stage;
         std::shared_ptr<SkeletalMeshComponent> model;
         std::shared_ptr<BoxComponent> collider;
+        DirectX::XMFLOAT3 offsetPos; // 最初のオフセットデータ
     };
     struct BookPage // 本のページ
     {
@@ -28,10 +37,16 @@ public:
     void DrawImGuiDetails() override;
 
     // 本を開く
-    void Play(float interval);
+    void OpenBook(float interval);
 
-    // 本を閉じる
-    void PlayReverse(float interval);
+    // 本を閉じる処理
+    void CloseBook(float interval);
+
+    // 二ページ目を開く処理
+    void OpenSecondPage(float interval);
+
+    // 二ページ目を戻す処理
+    void CloseSecondPage(float interval);
 
 private:
     // ステージパッチを生成する
@@ -67,12 +82,25 @@ private:
     float openSpinPosY = 0.0f;
     float closeSpinPosY = -0.2f;
 
-
     float bookOneAlpha = 0.0f; // １ページ目
     float bookTwoAlpha = 0.0f; // ２ページ目
 
-
     float openBookAngle = 0.0f;
     float closeBookAngle = 180.0f;
+
+    // 真ん中のページを開くときの角度
+    float openFirstPageAngle = 0.0f;
+    float closeFirstPageAngle = -180.0f;
+    // 真ん中のページを開くときのワッペンの位置
+    float openPatchPosY = 0.0f;
+    float closePatchPosY = -0.2f;
+
+    BookState bookState = BookState::Closed;    // 本の状態
+
+    // 調整
+    float firstRate = 0.2f; // 本を閉じる時の最初のページの割合
+    float secondRate = 0.8f;   // 本を閉じる時の二枚目のページの割合
+
+
 };
 

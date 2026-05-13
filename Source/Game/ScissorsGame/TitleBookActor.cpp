@@ -71,84 +71,64 @@ void TitleBookActor::Update(float deltaTime)
     easingOneRunner->Tick(deltaTime);
     easingTwoRunner->Tick(deltaTime);
 
-    //UpdatePage(leftPage);
-    //UpdatePage(rightPage);
+    if (bookState == BookState::FirstOpened)
+    {
+        UpdatePage(leftPage);
+        UpdatePage(rightPage);
+    }
 
     // 一ページ目の処理
     {
         // 本
-        float bookAngle =std::lerp(closeBookAngle,openBookAngle,bookOneAlpha);
-        bookLeftModel->SetRelativeEulerRotationDirect({0.0f,0.0f,bookAngle});
+        float bookAngle = std::lerp(closeBookAngle, openBookAngle, bookOneAlpha);
+        bookLeftModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,bookAngle });
         // 背表紙角度
-        float spineAngle =std::lerp(openSpineEuler,closeSpineEuler,bookOneAlpha);
-        bookSpineModel->SetRelativeEulerRotationDirect({0.0f,0.0f,spineAngle});
+        float spineAngle = std::lerp(openSpineEuler, closeSpineEuler, bookOneAlpha);
+        bookSpineModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,spineAngle });
         // 背表紙位置
-        float spinePosY =std::lerp(openSpinPosY,closeSpinPosY,bookOneAlpha);
-        bookSpineModel->SetRelativeLocationDirect({0.1f,spinePosY,0.0f});
+        float spinePosY = std::lerp(openSpinPosY, closeSpinPosY, bookOneAlpha);
+        bookSpineModel->SetRelativeLocationDirect({ 0.1f,spinePosY,0.0f });
     }
 
     // 二ページ目の処理
     {
         // 本
-        //float middleAngle= std::lerp(closeBookAngle, openBookAngle, bookTwoAlpha);
-        //bookMiddleModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,middleAngle });
-
-
+        float middleAngle = std::lerp(openFirstPageAngle, closeFirstPageAngle, bookTwoAlpha);
+        bookMiddleModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,middleAngle });
+        for (auto& stage : leftPage.stages)
+        {// 左ページのワッペン
+            // ワッペンの位置を下げる
+            float patchOffsetY = std::lerp(openPatchPosY, closePatchPosY, bookTwoAlpha);
+            stage.model->SetRelativeLocationDirect({ stage.offsetPos.x,patchOffsetY, stage.offsetPos.z });
+        }
     }
-
 }
 
 void TitleBookActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
-    if (ImGui::Button(U8("本が閉じる")))
-    {
-        PlayReverse(2.0f);
-    }
     if (ImGui::Button(U8("本が開く")))
     {
-        Play(2.0f);
+        OpenBook(2.0f);
+    }
+    if (ImGui::Button(U8("一ページ目をめくる")))
+    {
+        OpenSecondPage(2.0f);
+    }
+    if (ImGui::Button(U8("一ページ目を戻す")))
+    {
+        CloseSecondPage(2.0f);
+    }
+    if (ImGui::Button(U8("本が閉じる")))
+    {
+        CloseBook(2.0f);
     }
 #endif
 }
 
 // 本を開く
-void TitleBookActor::Play(float interval)
+void TitleBookActor::OpenBook(float interval)
 {
-#if 0
-    // 本を開く
-    startEuler = 180.0f;
-    endEuler = 0.0f;
-
-    // book の角度 の easing
-    {
-        TestEasingHandler handler;
-
-        handler.AddWait(0.0f);
-
-        handler.AddEasing(
-            TestEaseType::OutExp,
-            startEuler,
-            endEuler,
-            interval
-        );
-
-        handler.SetCompletedFunction([this]()
-            {
-                angle = endEuler;
-            });
-        PropertyAccessor<float> accessor;
-
-        accessor.getter = [this]() { return angle; };
-        accessor.setter = [this](float t)
-            {
-                angle = t;
-            };
-
-        easingOneRunner->StartHandler(handler, accessor);
-    }
-#endif // 0
-
     TestEasingHandler handler;
 
     handler.AddWait(0.0f);
@@ -163,6 +143,7 @@ void TitleBookActor::Play(float interval)
     handler.SetCompletedFunction([this]()
         {
             bookOneAlpha = 1.0f;
+            bookState = BookState::FirstOpened;
         });
 
     PropertyAccessor<float> accessor;
@@ -180,44 +161,50 @@ void TitleBookActor::Play(float interval)
         };
 
     easingOneRunner->StartHandler(handler, accessor);
-
 }
 
 // 本を閉じる
-void TitleBookActor::PlayReverse(float interval)
+void TitleBookActor::CloseBook(float interval)
 {
-#if 0
-    startEuler = 0.0f;
-    endEuler = 180.0f;
+    if (bookState == BookState::SecondOpened)
+    {// 本が二枚目の時に
 
-    // position の easing
-    {
-        TestEasingHandler handler;
+        CloseSecondPage(interval * firstRate);
+        TestEasingHandler waitHandler;
+        waitHandler.AddWait(interval * firstRate);
 
-        handler.AddWait(0.0f);
-
-        handler.AddEasing(
+        waitHandler.AddEasing(
             TestEaseType::OutExp,
-            startEuler,
-            endEuler,
-            interval
+            1.0f,
+            0.0f,
+            interval * secondRate
         );
 
-        handler.SetCompletedFunction([this]()
+        waitHandler.SetCompletedFunction([this]()
             {
-                angle = endEuler;
+                bookOneAlpha = 0.0f;
+                bookState = BookState::Closed;
             });
+
         PropertyAccessor<float> accessor;
 
-        accessor.getter = [this]() { return angle; };
-        accessor.setter = [this](float t)
+        accessor.getter =
+            [this]()
             {
-                angle = t;
+                return bookOneAlpha;
             };
 
-        easingOneRunner->StartHandler(handler, accessor);
+        accessor.setter =
+            [this](float t)
+            {
+                bookOneAlpha = t;
+            };
+
+        easingOneRunner->StartHandler(waitHandler, accessor);
+
+        return;
     }
-#endif // 0
+
     TestEasingHandler handler;
 
     handler.AddWait(0.0f);
@@ -232,6 +219,7 @@ void TitleBookActor::PlayReverse(float interval)
     handler.SetCompletedFunction([this]()
         {
             bookOneAlpha = 0.0f;
+            bookState = BookState::Closed;
         });
 
     PropertyAccessor<float> accessor;
@@ -251,6 +239,81 @@ void TitleBookActor::PlayReverse(float interval)
     easingOneRunner->StartHandler(handler, accessor);
 }
 
+// 二ページ目を開く
+void TitleBookActor::OpenSecondPage(float interval)
+{
+    bookState = BookState::Transition;
+
+    TestEasingHandler handler;
+
+    handler.AddWait(0.0f);
+
+    handler.AddEasing(
+        TestEaseType::OutExp,
+        0.0f,
+        1.0f,
+        interval
+    );
+
+    handler.SetCompletedFunction([this]()
+        {
+            bookTwoAlpha = 1.0f;
+            bookState = BookState::SecondOpened;
+        });
+
+    PropertyAccessor<float> accessor;
+
+    accessor.getter =
+        [this]()
+        {
+            return bookTwoAlpha;
+        };
+
+    accessor.setter =
+        [this](float t)
+        {
+            bookTwoAlpha = t;
+        };
+
+    easingTwoRunner->StartHandler(handler, accessor);
+}
+
+// 二ページ目を戻す処理
+void TitleBookActor::CloseSecondPage(float interval)
+{
+    bookState = BookState::Transition;
+
+    TestEasingHandler handler;
+
+    handler.AddEasing(
+        TestEaseType::OutExp,
+        1.0f,
+        0.0f,
+        interval
+    );
+
+    handler.SetCompletedFunction([this]()
+        {
+            bookTwoAlpha = 0.0f;
+            bookState = BookState::FirstOpened;
+        });
+
+    PropertyAccessor<float> accessor;
+
+    accessor.getter =
+        [this]()
+        {
+            return bookTwoAlpha;
+        };
+
+    accessor.setter =
+        [this](float t)
+        {
+            bookTwoAlpha = t;
+        };
+
+    easingTwoRunner->StartHandler(handler, accessor);
+}
 // ステージパッチを生成する
 void TitleBookActor::CreateStagePatch(TitleBookActor::BookPage& page, STAGE_NAME stage, const char* modelPath, const DirectX::XMFLOAT3& pos)
 {
@@ -282,9 +345,9 @@ void TitleBookActor::CreateStagePatch(TitleBookActor::BookPage& page, STAGE_NAME
         {
             stage,
             model,
-            box
+            box,
+            pos
         });
-
 }
 
 // ページのパッチの更新処理

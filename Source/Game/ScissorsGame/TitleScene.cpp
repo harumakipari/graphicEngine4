@@ -553,7 +553,7 @@ void TitleScene::StartToSelect()
     // メインカメラターゲットアクター
     cameraTargetActor->Play(toSelectInterval);
     // 本のアクター
-    bookActor->Play(toSelectInterval);
+    bookActor->OpenBook(toSelectInterval);
 }
 
 // タイトルシーンへ
@@ -564,7 +564,7 @@ void TitleScene::StartToTitle()
     // メインカメラターゲットアクター
     cameraTargetActor->PlayReverse(toTitleInterval);
     // 本のアクター
-    bookActor->PlayReverse(toTitleInterval);
+    bookActor->CloseBook(toTitleInterval);
 }
 
 
