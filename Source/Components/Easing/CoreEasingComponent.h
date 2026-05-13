@@ -101,6 +101,11 @@ public:
 			handlers.end());
 	}
 
+	void Clear()
+	{
+		handlers.clear();
+	}
+
 	bool IsFinished() const { return handlers.empty(); }
 
 private:

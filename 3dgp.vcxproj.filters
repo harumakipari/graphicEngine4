@@ -660,10 +660,13 @@
     <ClCompile Include="Source\Game\ScissorsGame\GameTimerUiActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\TitleBookActor.cpp">
+    <ClCompile Include="Source\Game\ScissorsGame\BookBaseActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\ScissorsGame\TitleCameraTargetActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\TitleBookActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1044,6 +1047,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\TutorialManager.h" />
     <ClInclude Include="Source\Game\ScissorsGame\GameTimerUIActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\TitleCameraTargetActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\BookBaseActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

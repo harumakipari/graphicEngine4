@@ -346,6 +346,7 @@
     <ClCompile Include="Source\Game\ScissorsGame\ScorePopupActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScoreUiActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\StageLoader.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\BookBaseActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\TitleBookActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\TitleCameraTargetActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\TitleScene.cpp" />
@@ -512,6 +513,7 @@
     <ClInclude Include="Source\Game\Scenes\MorphScene.h" />
     <ClInclude Include="Source\Game\Scenes\PuddingGameScene.h" />
     <ClInclude Include="Source\Game\ScissorsGame\BonusUiActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\BookBaseActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\DecalData.h" />
     <ClInclude Include="Source\Game\ScissorsGame\GameTimerUIActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ResultData.h" />
