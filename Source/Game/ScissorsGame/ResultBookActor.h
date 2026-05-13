@@ -4,6 +4,20 @@
 #include "Core/Actor.h"
 #include "BookBaseActor.h"
 
+// 数字のクラス
+struct DigitSlot
+{
+    std::array<std::shared_ptr<SkeletalMeshComponent>, 10> numbers;
+
+    void SetDigit(int value)
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            numbers[i]->SetIsVisible(i == value);
+        }
+    }
+};
+
 // リザルト本アクター
 class ResultBookActor :public BookBaseActor
 {
@@ -18,7 +32,9 @@ public:
 
 private:
 
-    DirectX::XMFLOAT3 scoreRelaticePosition={0.0f,0.0f,0.f};
+    DirectX::XMFLOAT3 scoreRelativePosition = { 0.0f,0.0f,0.f };
+
+    std::vector<DigitSlot> scoreDigits;
 
     std::shared_ptr<SkeletalMeshComponent> numberModel;
 

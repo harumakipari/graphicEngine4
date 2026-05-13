@@ -124,6 +124,8 @@ bool ResultScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     Logger::Log(U8("残りHP") + std::to_string(stats.remainHp));
     Logger::Log(U8("所要時間") + std::to_string(stats.gameTimer));
 
+    // ランキングなどをロードする
+    ScoreHistoryManager::Load();
     // スコアを記録する
     ScoreHistoryManager::Submit(stats.stageName, stats.totalScore);
     // Top5を取得する

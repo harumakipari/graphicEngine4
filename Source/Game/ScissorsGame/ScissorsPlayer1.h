@@ -161,7 +161,7 @@ public:
     // １dash中に敵を倒した数
     int killedEnemyCountInDash = 0;
 
-    float dashAttackRange = 1.3f; // ダッシュ攻撃の範囲　dashAttackSphereの半径と同じにする
+    float dashAttackRange = 1.7f; // ダッシュ攻撃の範囲　dashAttackSphereの半径と同じにする
 
     // デカール関連
     DirectX::XMFLOAT3 lastDecalSpawnPos = { 0.0f,0.0f,0.0f };  // 最後にデカールを生成した位置

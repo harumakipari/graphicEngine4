@@ -6,6 +6,7 @@
 #define IMGUI_ENABLE_DOCKING
 #endif
 
+#include "ScoreHistoryManager.h"
 #include "TitleBookActor.h"
 #include "TitleCameraTargetActor.h"
 #include "TitleStageActor.h"
@@ -181,6 +182,9 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
          0.15f,
     };
     this->SetSceneSettings(settings);
+
+    // ランキングなどをロードする
+    ScoreHistoryManager::Load();
 
     return true;
 }
