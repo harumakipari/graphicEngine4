@@ -12,7 +12,9 @@ void BookBaseActor::Initialize(const Transform& transform)
     std::string parentName = "TitleBookActor";
     auto rootComponent = AddComponent<SceneComponent>(parentName);
 
-    bookRightModel = AddComponent<SkeletalMeshComponent>("bookRightModel", parentName);
+    // 裏表紙を追加
+    backCoverName = "bookRightModel";
+    bookRightModel = AddComponent<SkeletalMeshComponent>(backCoverName, parentName);
     bookRightModel->SetModel("./Data/TeamModels/Title/BookRight.gltf", false, false);
 
     bookLeftModel = AddComponent<SkeletalMeshComponent>("bookLeftModel", parentName);
@@ -107,7 +109,6 @@ void BookBaseActor::Update(float deltaTime)
         // 本
         float middleAngle = std::lerp(openFirstPageAngle, closeFirstPageAngle, bookTwoAlpha);
         bookMiddleModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,middleAngle });
-        Logger::Log("bookTwoAlpha"+std::to_string(bookTwoAlpha));
         for (auto& stage : leftPage.stages)
         {// 左ページのワッペン
             // ワッペンの位置を下げる

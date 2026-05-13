@@ -62,9 +62,12 @@ private:
     void UpdatePage(BookPage& page);
 
 
-private:
+protected:
     BookPage leftPage;
     BookPage rightPage;
+
+    std::string backCoverName;  // — •\Ž†‚Ì–¼‘O
+private:
 
     std::shared_ptr<SkeletalMeshComponent> bookLeftModel;
     std::shared_ptr<SkeletalMeshComponent> bookRightModel;

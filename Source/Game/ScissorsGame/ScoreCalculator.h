@@ -115,6 +115,13 @@ public:
         return resultData;
     }
 
+    // 遊んでいるステージを設定する
+    static void RecordStageName(const STAGE_NAME stageName)
+    {
+        resultData.stageName = stageName;
+    }
+
+
     // 全てをリセットする
     static void Reset()
     {

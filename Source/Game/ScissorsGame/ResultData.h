@@ -1,4 +1,5 @@
 #pragma once
+#include "StageData.h"
 
 
 struct ResultData
@@ -17,4 +18,6 @@ struct ResultData
     int totalScore = 0;
     // 所要時間
     float gameTimer = 0.0f;
+    // 遊んだステージ名
+    STAGE_NAME stageName = STAGE_NAME::TUTORIAL;
 };

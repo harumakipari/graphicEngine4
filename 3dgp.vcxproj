@@ -344,6 +344,7 @@
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsUiEndActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsUIStartActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScissorsUiTimerActor.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\ScoreHistoryManager.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScorePopupActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScoreUiActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\StageLoader.cpp" />
@@ -539,6 +540,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameElasticComponent.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameEnemyBaseActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameManager.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\ScoreHistoryManager.h" />
     <ClInclude Include="Source\Game\ScissorsGame\TitleBookActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\TitleCameraTargetActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\TitleStageActor.h" />

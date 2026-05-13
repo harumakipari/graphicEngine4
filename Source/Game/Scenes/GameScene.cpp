@@ -241,6 +241,10 @@ void GameScene::Start()
     }
 
     //stage = STAGE_NAME::BOBBIN_FIRST;
+
+    // 遊ぶステージ名を記録する
+    ScoreSystem::RecordStageName(stage);
+    // ステージデータをロードする
     LoadStage(stage);
 
     auto uiStartActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUIStartActor>("uiStartActor");

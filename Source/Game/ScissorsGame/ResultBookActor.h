@@ -15,5 +15,12 @@ public:
     void Update(float deltaTime)override;
 
     void DrawImGuiDetails() override;
+
+private:
+
+    DirectX::XMFLOAT3 scoreRelaticePosition={0.0f,0.0f,0.f};
+
+    std::shared_ptr<SkeletalMeshComponent> numberModel;
+
 };
 

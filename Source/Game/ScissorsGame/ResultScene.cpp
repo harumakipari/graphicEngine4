@@ -8,6 +8,7 @@
 
 
 #include "ResultBookActor.h"
+#include "ScoreHistoryManager.h"
 #include "TitleStageActor.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Engine/Input/InputSystem.h"
@@ -122,6 +123,11 @@ bool ResultScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     Logger::Log(U8("複数ボーナス") + std::to_string(stats.dashBonusScore));
     Logger::Log(U8("残りHP") + std::to_string(stats.remainHp));
     Logger::Log(U8("所要時間") + std::to_string(stats.gameTimer));
+
+    // スコアを記録する
+    ScoreHistoryManager::Submit(stats.stageName, stats.totalScore);
+    // Top5を取得する
+    std::vector<ScoreHistoryManager::Entry> ranking = ScoreHistoryManager::GetTop5(stats.stageName);
 
     return true;
 }
@@ -461,7 +467,7 @@ void ResultScene::SetUpActors()
     auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<FixedCamera>("fixedCameraActor", mainCameraTr);
     mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
 
-    Transform cameraTargetTr(DirectX::XMFLOAT3{ -0.297f,3.197f,2.936f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ 0.0f,2.8f,2.536f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     //Transform cameraTargetTr(DirectX::XMFLOAT3{ 2.2f,1.984f,2.753f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
     //cameraTargetActor->SetTitle(true);
