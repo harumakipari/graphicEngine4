@@ -91,6 +91,10 @@ void UIButtonComponent::Update(float dt)
     {// ゲームパッドをつないでいたら
         // マウス処理しない（重要）
         UpdateVisual();
+        if (useHoverScale)
+        {
+            UpdateScale(dt);
+        }
         return;
     }
 

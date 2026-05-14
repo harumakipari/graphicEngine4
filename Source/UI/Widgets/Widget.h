@@ -768,6 +768,10 @@ private:
             targetScale = pressScale;
             color = CoreColor(0.8f, 0.8f, 0.8f, 1);
             break;
+        case UIButtonState::Selected:
+            color = CoreColor(0.8f, 0.8f, 0.8f, 1);
+            targetScale = hoverScale;
+            break;
         }
     }
 
