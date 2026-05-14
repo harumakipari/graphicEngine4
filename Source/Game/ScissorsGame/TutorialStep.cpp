@@ -1467,7 +1467,7 @@ void TutorialStep_StageClear::Execute(float deltaTime)
     if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
     {
         const char* types[] = { "0", "1" };
-        SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) });
+        SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) ,std::make_pair("fromScene", "TutorialScene") });
         CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
     }
 }

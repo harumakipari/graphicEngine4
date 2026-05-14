@@ -43,6 +43,15 @@ void BookBaseActor::Update(float deltaTime)
         break;
     }
 
+    if (bookState != BookPageState::FirstPage)
+    {
+        if (startAButton)
+        {
+            startAButton->SetVisible(false);
+        }
+    }
+
+
     firstButtons.SetEnable(bookState == BookPageState::FirstPage);
     secondButtons.SetEnable(bookState == BookPageState::SecondPage);
 
@@ -578,54 +587,7 @@ void BookBaseActor::UpdateClosedBook()
     }
 }
 
-// コントローラー対応の処理
-void BookBaseActor::HandlePadInput()
-{
-    bool pushA = InputSystem::GetInputState("GamePadA", InputStateMask::Trigger);
 
-    bool pushR = InputSystem::GetInputState("BookRight", InputStateMask::Trigger);
-    bool pushL = InputSystem::GetInputState("BookLeft", InputStateMask::Trigger);
-
-    switch (bookState)
-    {
-    case BookPageState::Closed:
-        if (pushA)
-        {
-            auto scene = GetOwnerScene();
-            if (auto titleScene = dynamic_cast<TitleScene*>(scene))
-            {
-                titleScene->StartToSelect();
-            }
-        }
-        break;
-    case BookPageState::FirstPage:
-        if (pushL)
-        {
-            auto scene = GetOwnerScene();
-            if (auto titleScene = dynamic_cast<TitleScene*>(scene))
-            {
-                titleScene->StartToTitle();
-            }
-        }
-        if (pushR)
-        {
-            // 二ページ目を開く
-            OpenSecondPage(2.0f);
-        }
-        break;
-    case BookPageState::SecondPage:
-        if (pushL)
-        {
-            // 一ページ目に戻る
-            CloseSecondPage(2.0f);
-        }
-        //if (pushR)
-        //{
-        //    OpenSecondPage(2.0f);
-        //}
-        break;
-    }
-}
 
 // コントローラー対応用ステージ選択の処理
 void BookBaseActor::HandlePadStageSelection(float deltaTime)
@@ -726,6 +688,7 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
     // =========================
     // AボタンUI更新
     // =========================
+
     if (InputSystem::IsGamepadConnected() && !selectableStages.empty())
     {
         auto selectedStage = selectableStages[selectedStageIndex];
@@ -746,15 +709,17 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
         // 3D→UI変換
         DirectX::XMFLOAT2 screenPos = WorldToUI(pos);
 
-        startAButton->SetWorldPosition({screenPos.x,screenPos.y});
+        startAButton->SetWorldPosition({ screenPos.x,screenPos.y });
     }
     else
     {
         startAButton->SetVisible(false);
     }
+
+
 #endif // 0
 
-    if (InputSystem::GetInputState("GamePadA",InputStateMask::Trigger))
+    if (InputSystem::GetInputState("GamePadA", InputStateMask::Trigger))
     {
         if (!selectableStages.empty())
         {

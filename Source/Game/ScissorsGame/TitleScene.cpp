@@ -115,6 +115,22 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
         SetUpActors();
     }
 
+    auto& param = SceneTransitionManager::Instance().GetParams();
+
+
+    if (param.contains("fromScene"))
+    {// どこのシーンからきて
+        std::string fromScene = param.at("fromScene");
+
+        Logger::Log("fromScene" + fromScene);
+        if (fromScene == "TutorialScene")
+        {
+            StartToSelect();
+        }
+
+    }
+
+
     // シーンのライト設定などを設定する
     SceneSettings settings = {};
     settings.cascadedShadowMapConstants =

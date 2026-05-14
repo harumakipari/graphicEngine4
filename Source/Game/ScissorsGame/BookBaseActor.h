@@ -37,6 +37,14 @@ protected:
         std::shared_ptr<UIButtonComponent> left;
         std::shared_ptr<UIButtonComponent> right;
 
+        // ゲームパッド画像
+        std::shared_ptr<Sprite> gamePadLeft;
+        std::shared_ptr<Sprite> gamePadRight;
+
+        // キーボード画像
+        std::shared_ptr<Sprite> keyboardLeft;
+        std::shared_ptr<Sprite> keyboardRight;
+
         void SetEnable(bool enable)
         {
             if (left)
@@ -49,6 +57,36 @@ protected:
             {
                 right->SetEnable(enable);
                 right->SetVisible(enable);
+            }
+        }
+
+        // 入力デバイスで画像切り替え
+        void UpdateInputTexture()
+        {
+            bool gamePad = InputSystem::IsGamepadConnected();
+
+            if (left)
+            {
+                if (gamePad)
+                {
+                    left->SetTexture(gamePadLeft);
+                }
+                else
+                {
+                    left->SetTexture(keyboardLeft);
+                }
+            }
+
+            if (right)
+            {
+                if (gamePad)
+                {
+                    right->SetTexture(gamePadRight);
+                }
+                else
+                {
+                    right->SetTexture(keyboardRight);
+                }
             }
         }
     };
@@ -73,12 +111,17 @@ public:
     // 二ページ目を戻す処理
     void CloseSecondPage(float interval);
 
+
 protected:
     // 最初の本の状態を設定する
     void SetInitPageState(BookPageState initialState);
 
     // モデルを生成する
     void CreateBookModel(const std::string& backCoverModelName, const std::string& middleModelName);
+
+    // コントローラー対応の本が開く処理
+    virtual void HandlePadInput() = 0;
+
 private:
     // ステージパッチを生成する
     void CreateStagePatch(BookPage& page,
@@ -92,8 +135,6 @@ private:
     // 本を閉じている時の処理
     void UpdateClosedBook();
 
-    // コントローラー対応の本が開く処理
-    void HandlePadInput();
 
     // コントローラー対応用ステージ選択の処理
     void HandlePadStageSelection(float deltaTime);
@@ -114,6 +155,9 @@ protected:
     // UIのボタン
     BookPageButtons firstButtons;
     BookPageButtons secondButtons;
+
+
+
 
     BookPageState bookState = BookPageState::Closed;    // 本の状態
 
@@ -168,5 +212,5 @@ private:
     // 調整
     float firstRate = 0.2f; // 本を閉じる時の最初のページの割合
     float secondRate = 0.8f;   // 本を閉じる時の二枚目のページの割合
-    DirectX::XMFLOAT3 patchAButtonOffset = { -0.5f,0.0f,0.5f, };    
+    DirectX::XMFLOAT3 patchAButtonOffset = { -0.5f,0.0f,0.5f, };
 };

@@ -18,6 +18,10 @@ public:
 
     void DrawImGuiDetails() override;
 
+protected:
+    // コントローラー対応の本が開く処理
+    void HandlePadInput() override;
+
 private:
     // 矢印ボタンのUIを作成する
     void CreateButtonArrow();
@@ -34,6 +38,9 @@ private:
 
     NumberDisplay ranking1Display;  // ランキング
     NumberDisplay ranking2Display;  // ランキング
+    NumberDisplay ranking3Display;  // ランキング
+    NumberDisplay ranking4Display;  // ランキング
+    NumberDisplay ranking5Display;  // ランキング
 
 
     std::shared_ptr<SkeletalMeshComponent> numberModel;

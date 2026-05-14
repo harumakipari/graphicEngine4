@@ -99,6 +99,62 @@ void TitleBookActor::DrawImGuiDetails()
     BookBaseActor::DrawImGuiDetails();
 }
 
+// コントローラー対応の本が開く処理
+void TitleBookActor::HandlePadInput()
+{
+    bool pushA = InputSystem::GetInputState("GamePadA", InputStateMask::Trigger);
+
+    bool pushR = InputSystem::GetInputState("BookRight", InputStateMask::Trigger);
+    bool pushL = InputSystem::GetInputState("BookLeft", InputStateMask::Trigger);
+
+    switch (bookState)
+    {
+    case BookPageState::Closed:
+        if (pushA)
+        {
+            auto scene = GetOwnerScene();
+            if (auto titleScene = dynamic_cast<TitleScene*>(scene))
+            {
+                titleScene->StartToSelect();
+            }
+        }
+        break;
+    case BookPageState::FirstPage:
+        if (pushL)
+        {
+            auto scene = GetOwnerScene();
+            if (auto titleScene = dynamic_cast<TitleScene*>(scene))
+            {
+                titleScene->StartToTitle();
+            }
+        }
+        if (pushR)
+        {
+            // 二ページ目を開く
+            OpenSecondPage(2.0f);
+        }
+        break;
+    case BookPageState::SecondPage:
+        if (pushL)
+        {
+            // 一ページ目に戻る
+            CloseSecondPage(2.0f);
+        }
+#if 0   // Aボタン表示のバグあり
+        if (pushR)
+        {
+            // タイトルシーンへ戻る
+            auto scene = GetOwnerScene();
+            if (auto titleScene = dynamic_cast<TitleScene*>(scene))
+            {
+                titleScene->StartToTitle();
+            }
+        }
+#endif
+        break;
+    }
+}
+
 // 矢印ボタンのUIを作成する
 void TitleBookActor::CreateButtonArrow()
 {
@@ -146,4 +202,24 @@ void TitleBookActor::CreateButtonArrow()
             // ページをめくる音
             //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
         };
+
+#if 0   // Aボタン表示のバグあり
+    // 二ページ目右
+    secondButtons.right = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/title_arrow_right.png", "title_arrow_right");
+    secondButtons.right->SetWorldPosition({ 1000, 800 });
+    secondButtons.right->SetSize({ 400, 150 });
+    uiManager->Add(secondButtons.right);
+
+    secondButtons.right->onClick = [this]()
+        {
+            // 本を閉じる音
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            auto scene = GetOwnerScene();
+            if (auto titleScene = dynamic_cast<TitleScene*>(scene))
+            {
+                titleScene->StartToTitle();
+            }
+        };
+
+#endif // 0
 }
