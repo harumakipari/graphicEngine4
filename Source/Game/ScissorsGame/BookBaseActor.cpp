@@ -518,7 +518,7 @@ void BookBaseActor::UpdatePage(BookPage& page)
                             "stage",
                             std::string(
                                 magic_enum::enum_name(stage.stage))
-                        }
+                        },{std::make_pair("fromScene","SelectScene")}
                     });
 
             }

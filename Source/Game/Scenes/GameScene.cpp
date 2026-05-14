@@ -240,7 +240,7 @@ void GameScene::Start()
         stage = StringToStageName(stageName);
     }
 
-    stage = STAGE_NAME::REFLECT_WALL;
+    //stage = STAGE_NAME::REFLECT_WALL;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(stage);

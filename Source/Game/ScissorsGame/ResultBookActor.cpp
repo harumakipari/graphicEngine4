@@ -69,6 +69,13 @@ void ResultBookActor::Initialize(const Transform& transform)
 
     // ニューレコード
 
+
+
+    // 裏表紙のページ
+    // ランキング
+    {
+        
+    }
 #if 0
 
     //  一の位

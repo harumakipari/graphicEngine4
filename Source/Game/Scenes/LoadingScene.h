@@ -24,55 +24,28 @@
 
 class LoadingScene : public SceneBase
 {
-    std::unique_ptr<Sprite> hit_space_key;
+    enum class TipsCategory :uint8_t
+    {
+        Gameplay,      // 操作説明
+        StageHint,     // ステージ攻略
+        EnemyLore,     // 敵の世界観
+        WorldLore,     // 全体世界観
+        Funny,         // どうでもいい雑学
+    };
 
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shaders[8];
-    std::unique_ptr<FullScreenQuad> bit_block_transfer;
-    std::string preload_scene;
+    struct TipsData
+    {
+        TipsCategory category;  // カテゴリー
+        std::string stage; // ステージ名
+        std::vector<std::wstring> textures; //テクスチャの名前
+    };
 
 
-    std::unique_ptr<Sprite> splash;
+    std::string preload_scene;// 次のシーンの名前
 
 
     void SetUpActors() override;
 
-
-    // shaderToy
-    //std::unique_ptr<ShaderToy> shaderToy;
-
-    //std::unique_ptr<RenderState> renderingState;
-
-    struct constants
-    {
-        float time = 0;
-        float width;
-        float height;
-        //NOISE
-        float seedScale = 5.0f;
-    };
-
-    std::unique_ptr<ConstantBuffer<constants>> cbuffer;
-    //前のシーン
-    std::unique_ptr<ID3D11ShaderResourceView> preSceneTexture;
-
-    // ShaderToy で追加
-    std::unique_ptr<FullScreenQuad> shaderToyTransfer; // ShadowToy用の
-    std::unique_ptr<FrameBuffer> shaderToyFrameBuffer; // ShadowToy用の
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> shaderToyPS;
-
-    struct ShaderToyCB
-    {
-        DirectX::XMFLOAT4 iResolution;
-        DirectX::XMFLOAT4 iMouse;
-        DirectX::XMFLOAT4 iChannelResolution[4];
-        float iTime;
-        float iFrame;
-        float iPad0;
-        float iPad1;
-    };
-    ShaderToyCB shaderToyConstant;
-    std::unique_ptr<ConstantBuffer<ShaderToyCB>> shaderToyCBuffer;
-    
 
 public:
     size_t type = 1;
@@ -93,8 +66,20 @@ public:
     static inline Scene::Autoenrollment<LoadingScene> _autoenrollment;
 
 private:
+    // チップスのカテゴリーを決定する
+    TipsCategory DecideTipsCategory(const std::string& fromScene, const std::string& toScene);
+
+    // チップスデータ登録
+    void SetTipsData();
+
+    // チップステクスチャを適応する
+    void ApplyTipsTextures();
+private:
     std::shared_ptr<UISceneChangeComponent> sprite = nullptr;
     std::shared_ptr<UIImageComponent> backImage;
+    std::shared_ptr<UIImageComponent> chipsImage;
+
+    std::vector<TipsData> tipsDatabase;// チップスデータ
 
     std::shared_ptr<MainCamera> mainCameraActor = nullptr;
 
@@ -107,5 +92,6 @@ private:
     std::shared_ptr<Sprite> loadingSprite;
 
     SceneRenderer sceneRender;
+    float loadingTime = 1.5f;   // ロードにかかる時間
 
 };
