@@ -94,7 +94,7 @@ void LoadingScene::Start()
     backImage->SetSize({ 1920, 1080 });
 
 
-    std::shared_ptr<Sprite> chipSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tips/scissors_operate.png");
+    std::shared_ptr<Sprite> chipSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png");
 
     chipsImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tips/operate_1.png", "chipsImage");
     chipsImage->SetSize({ 440, 132 });

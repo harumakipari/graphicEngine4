@@ -19,6 +19,10 @@ public:
     void DrawImGuiDetails() override;
 
 private:
+    // 矢印ボタンのUIを作成する
+    void CreateButtonArrow();
+
+private:
     DirectX::XMFLOAT3 scoreRelativePosition = { 0.0f,0.0f,0.f };
 
     NumberDisplay totalScoreDisplay;    // トータルスコア
@@ -27,6 +31,10 @@ private:
     NumberDisplay redirectDisplay;  // 反射ボーナス
     NumberDisplay gatherDisplay;  // まとめボーナス
     NumberDisplay timerDisplay;  // 秒数ボーナス
+
+    NumberDisplay ranking1Display;  // ランキング
+    NumberDisplay ranking2Display;  // ランキング
+
 
     std::shared_ptr<SkeletalMeshComponent> numberModel;
 

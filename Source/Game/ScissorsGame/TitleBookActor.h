@@ -18,6 +18,10 @@ public:
     void DrawImGuiDetails() override;
 
 private:
+    // UI‚Ì–îˆóƒ{ƒ^ƒ“‚ğ¶¬‚·‚é
+    void CreateButtonArrow();
+
+private:
     NumberDisplay firstStageHighScoreDisplay;   
     NumberDisplay bossStageHighScoreDisplay;   
 

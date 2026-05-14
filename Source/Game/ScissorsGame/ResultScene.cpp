@@ -143,7 +143,7 @@ void ResultScene::Start()
     audioComp->Play();
     audioComp->SetVolume(0.8f);
 
-#if 1
+#if 0
     // タイトルへ戻るボタンを生成
     {
         backToTitleButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/Result/back_to_title.png", "backToTitleButton");

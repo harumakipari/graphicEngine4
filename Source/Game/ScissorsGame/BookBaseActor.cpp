@@ -3,10 +3,8 @@
 
 #include <magic_enum.hpp>
 
-#include "TitleScene.h"
 #include "Engine/Audio/CoreAudio.h"
 #include "Physics/CollisionFunction.h"
-#include "UI/Game/SceneTransitionManager.h"
 
 void BookBaseActor::Initialize(const Transform& transform)
 {
@@ -85,36 +83,7 @@ void BookBaseActor::Initialize(const Transform& transform)
         { -3.4f,0.1f,1.7f });
 
 #endif // 0
-    auto uiManager = GetOwnerScene()->GetUIManager();
-    // 一ページ左
-    firstButtons.left = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/title_arrow.png", "title_arrow");
-    firstButtons.left->SetWorldPosition({ 300, 50 });
-    firstButtons.left->SetSize({ 400, 150 });
-    uiManager->Add(firstButtons.left);
 
-    firstButtons.left->onClick = [this]()
-        {
-            auto scene = GetOwnerScene();
-            if (auto titleScene = dynamic_cast<TitleScene*>(scene))
-            {
-                titleScene->StartToTitle();
-            }
-            // 本を閉じる音
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
-        };
-
-    // 一ページ右
-    firstButtons.right = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/ranking_arrow.png", "ranking_arrow");
-    firstButtons.right->SetWorldPosition({ 800, 50 });
-    firstButtons.right->SetSize({ 400, 150 });
-    uiManager->Add(firstButtons.right);
-
-    firstButtons.right->onClick = [this]()
-        {
-            OpenSecondPage(2.0f);
-            // ページをめくる音
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
-        };
 }
 
 void BookBaseActor::Update(float deltaTime)
@@ -143,6 +112,7 @@ void BookBaseActor::Update(float deltaTime)
     }
 
     firstButtons.SetEnable(bookState == BookPageState::FirstPage);
+    secondButtons.SetEnable(bookState == BookPageState::SecondPage);
 
 
     // 一ページ目の処理
@@ -352,6 +322,8 @@ void BookBaseActor::OpenSecondPage(float interval)
 // 二ページ目を戻す処理
 void BookBaseActor::CloseSecondPage(float interval)
 {
+    bookState = BookPageState::ReturningFirstPage;
+
     easingTwoRunner->Clear();
 
     TestEasingHandler handler;

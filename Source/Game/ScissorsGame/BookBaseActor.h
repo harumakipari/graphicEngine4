@@ -10,11 +10,12 @@ protected:
     enum class BookPageState : uint8_t
     {
         Closed,        // 閉じてる
-        OpeningBook,
-        FirstPage,
-        OpeningSecondPage,
-        SecondPage,
-        ClosingBook,
+        OpeningBook,    // 本を空けている途中
+        FirstPage,  // 一ページ目が開いている
+        OpeningSecondPage,  // 二ページ目を空けている途中
+        SecondPage, // 二ページ目が空いている
+        ReturningFirstPage,    // 一ページ目へ戻っている途中
+        ClosingBook,   // 本を閉じている途中
     };
 
     struct StageSelectData  // ステージ選択のデータ
@@ -38,11 +39,17 @@ protected:
 
         void SetEnable(bool enable)
         {
-            left->SetEnable(enable);
-            right->SetEnable(enable);
+            if (left)
+            {
+                left->SetEnable(enable);
+                left->SetVisible(enable);
+            }
 
-            left->SetVisible(enable);
-            right->SetVisible(enable);
+            if (right)
+            {
+                right->SetEnable(enable);
+                right->SetVisible(enable);
+            }
         }
     };
 public:
