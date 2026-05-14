@@ -74,7 +74,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         std::string scoreParentName = "redirect_number_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, rightName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,0.5f });
+        scoreRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,0.7f });
         scoreRoot->SetRelativeScaleDirect({ subNumberSize,subNumberSize,subNumberSize });
         redirectDisplay.Initialize(
             this,
@@ -91,7 +91,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         std::string scoreParentName = "gather_number_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, rightName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,1.0f });
+        scoreRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,1.3f });
         scoreRoot->SetRelativeScaleDirect({ subNumberSize,subNumberSize,subNumberSize });
         gatherDisplay.Initialize(
             this,
@@ -323,6 +323,12 @@ void ResultBookActor::CreateButtonArrow()
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") });
         };
 
+    // ゲームパッドの画像を設定する
+    firstButtons.gamePadLeft = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/title_arrow_control.png");
+    // キーボードの画像を設定する
+    firstButtons.keyboardLeft = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/title_arrow.png");
+
+
     // 一ページ右
     firstButtons.right = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/result_arrow.png", "result_arrow");
     firstButtons.right->SetWorldPosition({ 1000, 800 });
@@ -335,6 +341,12 @@ void ResultBookActor::CreateButtonArrow()
             // ページをめくる音
             //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
         };
+
+    // ゲームパッドの画像を設定する
+    firstButtons.gamePadRight = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/result_arrow_control.png");
+    // キーボードの画像を設定する
+    firstButtons.keyboardRight = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/result_arrow.png");
+
 
     // 二ページ目左
     secondButtons.left = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/stage_select_arrow.png", "stage_select_arrow");
@@ -349,6 +361,12 @@ void ResultBookActor::CreateButtonArrow()
             // ページをめくる音
             //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
         };
+
+    // ゲームパッドの画像を設定する
+    secondButtons.gamePadLeft = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/stage_select_arrow_control.png");
+    // キーボードの画像を設定する
+    secondButtons.keyboardLeft = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/stage_select_arrow.png");
+
 
     // 二ページ目右
     secondButtons.right = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/title_arrow_right.png", "title_arrow_right");

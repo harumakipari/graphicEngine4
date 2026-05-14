@@ -212,7 +212,7 @@ void TitleScene::Start()
     audioComp->SetSource(L"./Data/Sound/BGM1/title_bgm.wav");
     audioComp->SetLoop(true);
     audioComp->Play();
-    audioComp->SetVolume(0.8f);
+    audioComp->SetVolume(0.5f);
 
 #if 0
 

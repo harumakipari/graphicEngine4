@@ -154,6 +154,8 @@ void WaveManager::UpdateSpawning(float deltaTime)
 
         if (!state.spawned && timer >= s.delay + s.spawnDelay)
         {
+            // “G‚ªo‚Ä‚­‚é‰¹
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_spawn1.wav", 1.0f);
             SpawnEnemy(s.position, s.type, s.isBig, s.speed, s.dir, s.isTied);
             state.spawned = true;
         }

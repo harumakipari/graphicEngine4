@@ -69,11 +69,17 @@ protected:
             {
                 if (gamePad)
                 {
-                    left->SetTexture(gamePadLeft);
+                    if (gamePadLeft)
+                    {
+                        left->SetTexture(gamePadLeft);
+                    }
                 }
                 else
                 {
-                    left->SetTexture(keyboardLeft);
+                    if (keyboardLeft)
+                    {
+                        left->SetTexture(keyboardLeft);
+                    }
                 }
             }
 
@@ -81,11 +87,17 @@ protected:
             {
                 if (gamePad)
                 {
-                    right->SetTexture(gamePadRight);
+                    if (gamePadRight)
+                    {
+                        right->SetTexture(gamePadRight);
+                    }
                 }
                 else
                 {
-                    right->SetTexture(keyboardRight);
+                    if (keyboardRight)
+                    {
+                        right->SetTexture(keyboardRight);
+                    }
                 }
             }
         }

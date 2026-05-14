@@ -176,6 +176,12 @@ void TitleBookActor::CreateButtonArrow()
             }
         };
 
+    // ゲームパッドの画像を設定する
+    firstButtons.gamePadLeft = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/title_arrow_control.png");
+    // キーボードの画像を設定する
+    firstButtons.keyboardLeft = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/title_arrow.png");
+
+
     // 一ページ右
     firstButtons.right = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/ranking_arrow.png", "ranking_arrow");
     firstButtons.right->SetWorldPosition({ 1000, 800 });
@@ -188,6 +194,12 @@ void TitleBookActor::CreateButtonArrow()
             // ページをめくる音
             //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
         };
+    // ゲームパッドの画像を設定する
+    firstButtons.gamePadRight = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/ranking_arrow_control.png");
+    // キーボードの画像を設定する
+    firstButtons.keyboardRight = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/ranking_arrow.png");
+
+
 
     // 二ページ目左
     secondButtons.left = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/stage_select_arrow.png", "stage_select_arrow");
@@ -202,6 +214,12 @@ void TitleBookActor::CreateButtonArrow()
             // ページをめくる音
             //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
         };
+    // ゲームパッドの画像を設定する
+    secondButtons.gamePadLeft = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/stage_select_arrow_control.png");
+    // キーボードの画像を設定する
+    secondButtons.keyboardLeft = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/stage_select_arrow.png");
+
+
 
 #if 0   // Aボタン表示のバグあり
     // 二ページ目右

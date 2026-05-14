@@ -51,10 +51,12 @@ void BookBaseActor::Update(float deltaTime)
         }
     }
 
-
+    // 矢印UIの表示非表示
     firstButtons.SetEnable(bookState == BookPageState::FirstPage);
     secondButtons.SetEnable(bookState == BookPageState::SecondPage);
-
+    // 矢印UIのコントローラー接続によるテクスチャの切り替え
+    firstButtons.UpdateInputTexture();
+    secondButtons.UpdateInputTexture();
 
     // 一ページ目の処理
     {
@@ -109,6 +111,9 @@ void BookBaseActor::DrawImGuiDetails()
 // 本を開く
 void BookBaseActor::OpenBook(float interval)
 {
+    // 本を閉じる音
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/open_book.wav", 1.5f);
+
     bookState = BookPageState::OpeningBook;
     TestEasingHandler handler;
 
@@ -147,6 +152,9 @@ void BookBaseActor::OpenBook(float interval)
 // 本を閉じる
 void BookBaseActor::CloseBook(float interval)
 {
+    // 本を閉じる音
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/close_book.wav", 1.5f);
+
     bookState = BookPageState::ClosingBook;
     if (bookTwoAlpha > 0.001f)
     {// 本が二枚目の時に
@@ -224,6 +232,9 @@ void BookBaseActor::CloseBook(float interval)
 // 二ページ目を開く
 void BookBaseActor::OpenSecondPage(float interval)
 {
+    // ページをめくる音
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/page.wav", 1.5f);
+
     bookState = BookPageState::OpeningSecondPage;
     easingTwoRunner->Clear();
 
@@ -264,6 +275,9 @@ void BookBaseActor::OpenSecondPage(float interval)
 // 二ページ目を戻す処理
 void BookBaseActor::CloseSecondPage(float interval)
 {
+    // ページをめくる音
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/page.wav", 1.5f);
+
     bookState = BookPageState::ReturningFirstPage;
 
     easingTwoRunner->Clear();
@@ -544,8 +558,9 @@ void BookBaseActor::UpdatePage(BookPage& page)
                     });
 
             }
-            CoreAudio::PlayOneShot(
-                L"./Data/Sound/SE/push_button.wav");
+            // ステージ決定音
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/decide_stage.wav");
         }
     }
 }
@@ -759,8 +774,9 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
                     });
             }
 
-            CoreAudio::PlayOneShot(
-                L"./Data/Sound/SE/push_button.wav");
+            // ステージ決定音
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/decide_stage.wav",1.5f);
         }
     }
 
@@ -773,6 +789,9 @@ void BookBaseActor::MoveSelection(int dir)
         return;
 
     selectedStageIndex += dir;
+
+    // コントローラー選択切り替え音
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/stage_select_control.wav");
 
     const int count = static_cast<int>(selectableStages.size());
 
