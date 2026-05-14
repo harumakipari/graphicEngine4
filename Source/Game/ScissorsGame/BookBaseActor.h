@@ -73,8 +73,6 @@ public:
     // 二ページ目を戻す処理
     void CloseSecondPage(float interval);
 
-    // 一ページ目に表示する矢印ボタンのUIを作成する
-    void SetFirstPageButtonUI(std::string leftArrowTex, std::string rightArrowName);
 protected:
     // 最初の本の状態を設定する
     void SetInitPageState(BookPageState initialState);
@@ -91,6 +89,9 @@ private:
 
     // 本を閉じている時の処理
     void UpdateClosedBook();
+
+    // コントローラー対応の処理
+    void HandlePadInput();
 
 public:
     // 本が押されたことを通知する

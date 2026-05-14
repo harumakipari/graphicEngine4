@@ -3,6 +3,7 @@
 
 #include <magic_enum.hpp>
 
+#include "TitleScene.h"
 #include "Engine/Audio/CoreAudio.h"
 #include "Physics/CollisionFunction.h"
 
@@ -88,6 +89,9 @@ void BookBaseActor::Initialize(const Transform& transform)
 
 void BookBaseActor::Update(float deltaTime)
 {
+    // コントローラー対応処理
+    HandlePadInput();
+
     easingOneRunner->Tick(deltaTime);
     easingTwoRunner->Tick(deltaTime);
 
@@ -537,8 +541,51 @@ void BookBaseActor::UpdateClosedBook()
     }
 }
 
-// 一ページ目に表示する矢印ボタンのUIを作成する
-void BookBaseActor::SetFirstPageButtonUI(std::string leftArrowTex, std::string rightArrowName)
+// コントローラー対応の処理
+void BookBaseActor::HandlePadInput()
 {
+    bool pushA = InputSystem::GetInputState("GamePadA", InputStateMask::Trigger);
 
+    bool pushR = InputSystem::GetInputState("Right", InputStateMask::Trigger);
+    bool pushL = InputSystem::GetInputState("Left", InputStateMask::Trigger);
+
+    switch (bookState)
+    {
+    case BookPageState::Closed:
+        if (pushA)
+        {
+            auto scene = GetOwnerScene();
+            if (auto titleScene = dynamic_cast<TitleScene*>(scene))
+            {
+                titleScene->StartToSelect();
+            }
+        }
+        break;
+    case BookPageState::FirstPage:
+        if (pushL)
+        {
+            auto scene = GetOwnerScene();
+            if (auto titleScene = dynamic_cast<TitleScene*>(scene))
+            {
+                titleScene->StartToTitle();
+            }
+        }
+        if (pushR)
+        {
+            // 二ページ目を開く
+            OpenSecondPage(2.0f);
+        }
+        break;
+    case BookPageState::SecondPage:
+        if (pushL)
+        {
+            // 一ページ目に戻る
+            CloseSecondPage(2.0f);
+        }
+        //if (pushR)
+        //{
+        //    OpenSecondPage(2.0f);
+        //}
+        break;
+    }
 }

@@ -43,12 +43,13 @@ public:
     // タイトルシーンへ
     void StartToTitle();
 
+    // セレクトシーンへ
+    void StartToSelect();
+
     //シーンの自動登録
     static inline Scene::Autoenrollment<TitleScene> _autoenrollment;
 
 private:
-    // セレクトシーンへ
-    void StartToSelect();
 
 private:
     TPSCameraComponent* mainCameraComponent = nullptr;
