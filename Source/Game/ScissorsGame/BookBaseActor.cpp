@@ -93,6 +93,7 @@ void BookBaseActor::DrawImGuiDetails()
     {
         CloseBook(2.0f);
     }
+    ImGui::DragFloat3(U8("ワッペンのオフセット"), &patchAButtonOffset.x);
 #endif
 }
 
@@ -315,9 +316,9 @@ void BookBaseActor::SetInitPageState(BookPageState initialState)
 void BookBaseActor::CreateBookModel(const std::string& backCoverModelName, const std::string& middleModelName)
 {
     // 裏表紙のモデル名
-   this-> backCoverModelName = backCoverModelName;
+    this->backCoverModelName = backCoverModelName;
     // 真ん中のモデル名
-   this-> middleModelName = middleModelName;
+    this->middleModelName = middleModelName;
 
 
     std::string parentName = "TitleBookActor";
@@ -721,55 +722,82 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
         }
     }
 
-#if 0
+#if 1
     // =========================
-// AボタンUI更新
-// =========================
-    if (InputSystem::IsGamepadConnected() &&
-        !selectableStages.empty())
+    // AボタンUI更新
+    // =========================
+    if (InputSystem::IsGamepadConnected() && !selectableStages.empty())
     {
-        auto selectedStage =
-            selectableStages[selectedStageIndex];
+        auto selectedStage = selectableStages[selectedStageIndex];
 
-        stageAButton->SetVisible(true);
+        startAButton->SetVisible(true);
 
         // ワッペン位置取得
-        auto world =
-            selectedStage->model->GetWorldLocation();
+        auto world = selectedStage->model->GetComponentLocation();
 
-        // ちょっと右上に表示
-        DirectX::XMFLOAT3 offset =
-        {
-            0.5f,
-            0.8f,
-            0.0f
-        };
 
         DirectX::XMFLOAT3 pos =
         {
-            world.x + offset.x,
-            world.y + offset.y,
-            world.z + offset.z
+            world.x + patchAButtonOffset.x,
+            world.y + patchAButtonOffset.y,
+            world.z + patchAButtonOffset.z
         };
 
         // 3D→UI変換
-        DirectX::XMFLOAT2 screenPos;
+        DirectX::XMFLOAT2 screenPos = WorldToUI(pos);
 
-        if (GetOwnerScene()->WorldToScreen(pos, screenPos))
-        {
-            stageAButton->SetWorldPosition(
-                {
-                    screenPos.x,
-                    screenPos.y
-                });
-        }
+        startAButton->SetWorldPosition({screenPos.x,screenPos.y});
     }
     else
     {
-        stageAButton->SetVisible(false);
+        startAButton->SetVisible(false);
     }
 #endif // 0
 
+    if (InputSystem::GetInputState("GamePadA",InputStateMask::Trigger))
+    {
+        if (!selectableStages.empty())
+        {
+            auto stage =
+                selectableStages[selectedStageIndex];
+
+            Logger::Log(u8"ステージ選択");
+
+            if (stage->stage == STAGE_NAME::TUTORIAL)
+            {
+                SceneTransitionManager::Instance().RequestTransition(
+                    "LoadingScene",
+                    {
+                        {"preload", "TutorialScene"},
+                        {
+                            "stage",
+                            std::string(
+                                magic_enum::enum_name(stage->stage))
+                        }
+                    });
+            }
+            else
+            {
+                SceneTransitionManager::Instance().RequestTransition(
+                    "LoadingScene",
+                    {
+                        {"preload", "GameScene"},
+                        {
+                            "stage",
+                            std::string(
+                                magic_enum::enum_name(stage->stage))
+                        },
+                        {
+                            "fromScene",
+                            "SelectScene"
+                        }
+                    });
+            }
+
+            CoreAudio::PlayOneShot(
+                L"./Data/Sound/SE/push_button.wav");
+        }
+    }
 
 }
 

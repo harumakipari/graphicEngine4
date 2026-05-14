@@ -35,7 +35,7 @@ protected:
     struct BookPageButtons
     {
         std::shared_ptr<UIButtonComponent> left;
-        std::shared_ptr<UIButtonComponent> right; 
+        std::shared_ptr<UIButtonComponent> right;
 
         void SetEnable(bool enable)
         {
@@ -168,4 +168,5 @@ private:
     // 調整
     float firstRate = 0.2f; // 本を閉じる時の最初のページの割合
     float secondRate = 0.8f;   // 本を閉じる時の二枚目のページの割合
+    DirectX::XMFLOAT3 patchAButtonOffset = { -0.5f,0.0f,0.5f, };    
 };
