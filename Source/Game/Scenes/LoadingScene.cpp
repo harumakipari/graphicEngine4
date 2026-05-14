@@ -124,7 +124,7 @@ void LoadingScene::Update(float deltaTime)
     loadingTime -= deltaTime;
 
 
-    if (_has_finished_preloading() /*&& loadingTime <= 0.0f*/)
+    if (_has_finished_preloading() && loadingTime <= 0.0f)
     {
         _transition(preload_scene, {});
     }
@@ -144,10 +144,13 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime
     {
         //shaderToyCBuffer->Activate(immediateContext, 7);
     }
-    //loadingSprite->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     //SceneBase::Render(immediateContext, deltaTime);
     backImage->Draw(immediateContext);
     chipsImage->Draw(immediateContext);
+    if (loadingSprite)
+    {
+        loadingSprite->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    }
 }
 
 

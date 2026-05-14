@@ -9,81 +9,8 @@
 
 void BookBaseActor::Initialize(const Transform& transform)
 {
-    std::string parentName = "TitleBookActor";
-    auto rootComponent = AddComponent<SceneComponent>(parentName);
-
-    // 裏表紙を追加
-    backCoverName = "bookRightModel";
-    bookRightModel = AddComponent<SkeletalMeshComponent>(backCoverName, parentName);
-    bookRightModel->SetModel("./Data/TeamModels/Title/BookRight.gltf", false, false);
-
-    bookLeftModel = AddComponent<SkeletalMeshComponent>("bookLeftModel", parentName);
-    bookLeftModel->SetModel("./Data/TeamModels/Title/BookLeft.gltf", false, false);
-    bookLeftModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-
-    // 真ん中モデルを追加
-    bookMiddleModel = AddComponent<SkeletalMeshComponent>("bookMiddleModel", parentName);
-    bookMiddleModel->SetModel("./Data/TeamModels/Title/BookMiddle.gltf", false, false);
-    bookMiddleModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-    bookMiddleModel->SetIsCastShadow(false);
-
-    // 背表紙モデル
-    bookSpineModel = AddComponent<SkeletalMeshComponent>("bookSpineModel", parentName);
-    bookSpineModel->SetModel("./Data/TeamModels/Title/BookSpineModel.gltf", false, false);
-    bookSpineModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-    bookSpineModel->SetRelativeLocationDirect({ 0.1f,0.0f,0.0f });
-    bookSpineModel->SetIsCastShadow(false);
-
-    bookSpineCollisionComponent = AddComponent<BoxComponent>("bookSpineCollider", "bookSpineModel");
-    DirectX::XMFLOAT3 size = bookSpineModel->GetModelSize();
-    bookSpineCollisionComponent->SetBoxExtent(size);
-    bookSpineCollisionComponent->SetLayer(CollisionLayer::WorldStatic);
-    bookSpineCollisionComponent->Initialize();
-
-    easingOneRunner = std::make_unique<EasingRunner>();
-    easingTwoRunner = std::make_unique<EasingRunner>();
-
-    bookOneAlpha = 0.0f;
-    bookTwoAlpha = 0.0f;
-
-#if 1
-    // 左の本モデル
-    leftPage.parentName = "bookLeftModel";
-    // 一枚目の開く時の右の本モデル
-    rightPage.parentName = "bookMiddleModel";    // 真ん中のページ
-
-    CreateStagePatch(
-        leftPage,
-        STAGE_NAME::TUTORIAL,
-        "./Data/TeamModels/Title/patchModelTutorial.gltf",
-        { 3.3f,0.0f,-1.5f });
-
-    CreateStagePatch(
-        leftPage,
-        STAGE_NAME::FIRST,
-        "./Data/TeamModels/Title/patchModelFirst.gltf",
-        { 1.3f,0.0f,-0.1f });
-
-    CreateStagePatch(
-        leftPage,
-        STAGE_NAME::BOBBIN_FIRST,
-        "./Data/TeamModels/Title/patchModelBobbinFirst.gltf",
-        { 2.9f,0.0f,1.7f });
-
-    CreateStagePatch(
-        rightPage,
-        STAGE_NAME::DIFFICULT,
-        "./Data/TeamModels/Title/patchModelDifficult.gltf",
-        { -1.3f,0.1f,-1.6f });
 
 
-    CreateStagePatch(
-        rightPage,
-        STAGE_NAME::BOSS,
-        "./Data/TeamModels/Title/patchModelBoss.gltf",
-        { -3.4f,0.1f,1.7f });
-
-#endif // 0
 
 }
 
@@ -103,6 +30,7 @@ void BookBaseActor::Update(float deltaTime)
     case BookPageState::FirstPage:
         UpdatePage(leftPage);
         UpdatePage(rightPage);
+        HandlePadStageSelection(deltaTime);
         break;
     case BookPageState::SecondPage:
         break;
@@ -141,7 +69,7 @@ void BookBaseActor::Update(float deltaTime)
         {// 左ページのワッペン
             // ワッペンの位置を下げる
             float patchOffsetY = std::lerp(openPatchPosY, closePatchPosY, bookTwoAlpha);
-            stage.model->SetRelativeLocationDirect({ stage.offsetPos.x,patchOffsetY, stage.offsetPos.z });
+            stage->model->SetRelativeLocationDirect({ stage->offsetPos.x,patchOffsetY, stage->offsetPos.z });
         }
     }
 }
@@ -383,6 +311,105 @@ void BookBaseActor::SetInitPageState(BookPageState initialState)
     }
 }
 
+// モデルを生成する
+void BookBaseActor::CreateBookModel(const std::string& backCoverModelName, const std::string& middleModelName)
+{
+    // 裏表紙のモデル名
+   this-> backCoverModelName = backCoverModelName;
+    // 真ん中のモデル名
+   this-> middleModelName = middleModelName;
+
+
+    std::string parentName = "TitleBookActor";
+    auto rootComponent = AddComponent<SceneComponent>(parentName);
+
+    // 裏表紙を追加
+    backCoverName = "bookRightModel";
+    bookRightModel = AddComponent<SkeletalMeshComponent>(backCoverName, parentName);
+    bookRightModel->SetModel(backCoverModelName, false, false);
+
+    // 表紙モデルを追加
+    bookLeftModel = AddComponent<SkeletalMeshComponent>("bookLeftModel", parentName);
+    bookLeftModel->SetModel("./Data/TeamModels/Title/BookLeft.gltf", false, false);
+    bookLeftModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+    bookLeftModel->SetIsCastShadow(false);
+
+    // 真ん中モデルを追加
+    bookMiddleModel = AddComponent<SkeletalMeshComponent>("bookMiddleModel", parentName);
+    bookMiddleModel->SetModel(middleModelName, false, false);
+    bookMiddleModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+    bookMiddleModel->SetIsCastShadow(false);
+
+    // 背表紙モデル
+    bookSpineModel = AddComponent<SkeletalMeshComponent>("bookSpineModel", parentName);
+    bookSpineModel->SetModel("./Data/TeamModels/Title/BookSpineModel.gltf", false, false);
+    bookSpineModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+    bookSpineModel->SetRelativeLocationDirect({ 0.1f,0.0f,0.0f });
+    bookSpineModel->SetIsCastShadow(false);
+
+    bookSpineCollisionComponent = AddComponent<BoxComponent>("bookSpineCollider", "bookSpineModel");
+    DirectX::XMFLOAT3 size = bookSpineModel->GetModelSize();
+    bookSpineCollisionComponent->SetBoxExtent(size);
+    bookSpineCollisionComponent->SetLayer(CollisionLayer::WorldStatic);
+    bookSpineCollisionComponent->Initialize();
+
+    easingOneRunner = std::make_unique<EasingRunner>();
+    easingTwoRunner = std::make_unique<EasingRunner>();
+
+    bookOneAlpha = 0.0f;
+    bookTwoAlpha = 0.0f;
+
+#if 1
+    // 左の本モデル
+    leftPage.parentName = "bookLeftModel";
+    // 一枚目の開く時の右の本モデル
+    rightPage.parentName = "bookMiddleModel";    // 真ん中のページ
+
+    CreateStagePatch(
+        leftPage,
+        STAGE_NAME::TUTORIAL,
+        "./Data/TeamModels/Title/patchModelTutorial.gltf",
+        { 3.3f,0.0f,-1.5f });
+
+    CreateStagePatch(
+        leftPage,
+        STAGE_NAME::FIRST,
+        "./Data/TeamModels/Title/patchModelFirst.gltf",
+        { 1.3f,0.0f,-0.1f });
+
+    CreateStagePatch(
+        leftPage,
+        STAGE_NAME::BOBBIN_FIRST,
+        "./Data/TeamModels/Title/patchModelBobbinFirst.gltf",
+        { 2.9f,0.0f,1.7f });
+
+    CreateStagePatch(
+        rightPage,
+        STAGE_NAME::DIFFICULT,
+        "./Data/TeamModels/Title/patchModelDifficult.gltf",
+        { -1.3f,0.1f,-1.6f });
+
+
+    CreateStagePatch(
+        rightPage,
+        STAGE_NAME::BOSS,
+        "./Data/TeamModels/Title/patchModelBoss.gltf",
+        { -3.4f,0.1f,1.7f });
+
+#endif // 0
+
+    selectedStageIndex = 0;
+
+    // AボタンのUIを生成する
+    auto uiManager = GetOwnerScene()->GetUIManager();
+    startAButton = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/A.png", "A");
+    startAButton->SetWorldPosition({ 880, 920 });
+    startAButton->SetSize({ 80, 80 });
+    startAButton->SetPivot({ 0.5f,0.5f });
+    startAButton->SetVisible(false);
+    uiManager->Add(startAButton);
+}
+
 // ステージパッチを生成する
 void BookBaseActor::CreateStagePatch(BookPage& page, STAGE_NAME stage, const char* modelPath, const DirectX::XMFLOAT3& pos)
 {
@@ -411,13 +438,17 @@ void BookBaseActor::CreateStagePatch(BookPage& page, STAGE_NAME stage, const cha
     box->SetLayer(CollisionLayer::WorldStatic);
     box->Initialize();
 
-    page.stages.push_back(
-        {
-            stage,
-            model,
-            box,
-            pos
-        });
+    auto stageData =
+        std::make_shared<StageSelectData>();
+
+    stageData->stage = stage;
+    stageData->model = model;
+    stageData->collider = box;
+    stageData->offsetPos = pos;
+
+    page.stages.push_back(stageData);
+
+    selectableStages.push_back(stageData);
 }
 
 // ページのパッチの更新処理
@@ -428,6 +459,11 @@ void BookBaseActor::UpdatePage(BookPage& page)
     // マウスが画面外
     if (!InputSystem::GetMousePositionUI(cursor))
         return;
+
+    if (InputSystem::IsGamepadConnected())
+    {// ゲームパッドが繋がれていたら
+        return;
+    }
 
     HitResultWithActor result;
 
@@ -441,12 +477,12 @@ void BookBaseActor::UpdatePage(BookPage& page)
     {
         bool hitThis =
             hit &&
-            result.component == stage.collider.get();
+            result.component == stage->collider.get();
 
         // ホバー演出
         if (hitThis)
         {
-            stage.model->SetRelativeScaleDirect(
+            stage->model->SetRelativeScaleDirect(
                 {
                     1.1f,
                     1.1f,
@@ -455,7 +491,7 @@ void BookBaseActor::UpdatePage(BookPage& page)
         }
         else
         {
-            stage.model->SetRelativeScaleDirect(
+            stage->model->SetRelativeScaleDirect(
                 {
                     1.0f,
                     1.0f,
@@ -471,7 +507,7 @@ void BookBaseActor::UpdatePage(BookPage& page)
         {
             Logger::Log(u8"ステージ選択");
 
-            if (stage.stage == STAGE_NAME::TUTORIAL)
+            if (stage->stage == STAGE_NAME::TUTORIAL)
             {// チュートリアルを選択した時のみ
                 SceneTransitionManager::Instance().RequestTransition(
                     "LoadingScene",
@@ -480,7 +516,7 @@ void BookBaseActor::UpdatePage(BookPage& page)
                         {
                             "stage",
                             std::string(
-                                magic_enum::enum_name(stage.stage))
+                                magic_enum::enum_name(stage->stage))
                         }
                     });
             }
@@ -493,7 +529,7 @@ void BookBaseActor::UpdatePage(BookPage& page)
                         {
                             "stage",
                             std::string(
-                                magic_enum::enum_name(stage.stage))
+                                magic_enum::enum_name(stage->stage))
                         },{std::make_pair("fromScene","SelectScene")}
                     });
 
@@ -546,8 +582,8 @@ void BookBaseActor::HandlePadInput()
 {
     bool pushA = InputSystem::GetInputState("GamePadA", InputStateMask::Trigger);
 
-    bool pushR = InputSystem::GetInputState("Right", InputStateMask::Trigger);
-    bool pushL = InputSystem::GetInputState("Left", InputStateMask::Trigger);
+    bool pushR = InputSystem::GetInputState("BookRight", InputStateMask::Trigger);
+    bool pushL = InputSystem::GetInputState("BookLeft", InputStateMask::Trigger);
 
     switch (bookState)
     {
@@ -587,5 +623,121 @@ void BookBaseActor::HandlePadInput()
         //    OpenSecondPage(2.0f);
         //}
         break;
+    }
+}
+
+// コントローラー対応用ステージ選択の処理
+void BookBaseActor::HandlePadStageSelection(float deltaTime)
+{
+    static float stickDelay = 0.0f;
+    stickDelay -= deltaTime;
+
+    bool moved = false;
+
+    // =========================
+    // D-Pad入力（優先・1回だけ）
+    // =========================
+    if (InputSystem::GetInputState("UIUp", InputStateMask::Trigger))
+    {
+        MoveSelection(-1);
+        stickDelay = 0.2f;
+        moved = true;
+    }
+    else if (InputSystem::GetInputState("UIDown", InputStateMask::Trigger))
+    {
+        MoveSelection(1);
+        stickDelay = 0.2f;
+        moved = true;
+    }
+
+    // =========================
+    // スティック入力（D-Pad優先）
+    // =========================
+    if (!moved && stickDelay <= 0.0f)
+    {
+        auto stick = InputSystem::GetLeftStick();
+
+        if (stick.y > 0.6f)
+        {
+            MoveSelection(-1);
+            stickDelay = 0.2f;
+        }
+        else if (stick.y < -0.6f)
+        {
+            MoveSelection(1);
+            stickDelay = 0.2f;
+        }
+    }
+
+    for (auto& stage : leftPage.stages)
+    {
+        bool selectedByPad =
+            !selectableStages.empty() &&
+            selectableStages[selectedStageIndex] == stage;
+
+        if (selectedByPad)
+        {
+            stage->model->SetRelativeScaleDirect(
+                {
+                    1.1f,
+                    1.1f,
+                    1.1f
+                });
+        }
+        else
+        {
+            stage->model->SetRelativeScaleDirect(
+                {
+                    1.0f,
+                    1.0f,
+                    1.0f
+                });
+        }
+
+    }
+    for (auto& stage : rightPage.stages)
+    {
+        bool selectedByPad =
+            !selectableStages.empty() &&
+            selectableStages[selectedStageIndex] == stage;
+
+        if (selectedByPad)
+        {
+            stage->model->SetRelativeScaleDirect(
+                {
+                    1.1f,
+                    1.1f,
+                    1.1f
+                });
+        }
+        else
+        {
+            stage->model->SetRelativeScaleDirect(
+                {
+                    1.0f,
+                    1.0f,
+                    1.0f
+                });
+        }
+    }
+}
+
+// コントローラー対応時に選択切り替え処理
+void BookBaseActor::MoveSelection(int dir)
+{
+    if (selectableStages.empty())
+        return;
+
+    selectedStageIndex += dir;
+
+    const int count = static_cast<int>(selectableStages.size());
+
+    if (selectedStageIndex >= count)
+    {
+        selectedStageIndex = 0;
+    }
+    if (selectedStageIndex < 0)
+    {
+        selectedStageIndex = count - 1;
     }
 }

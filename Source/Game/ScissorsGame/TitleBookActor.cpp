@@ -8,6 +8,9 @@
 void TitleBookActor::Initialize(const Transform& transform)
 {
     BookBaseActor::Initialize(transform);
+
+    CreateBookModel("./Data/TeamModels/Title/BookRightTitle.gltf", "./Data/TeamModels/Title/BookMiddleTitle.gltf");
+
     SetInitPageState(BookPageState::Closed);
 
     // ハイスコアの数字を乗せるページの親　左側
@@ -48,14 +51,41 @@ void TitleBookActor::Initialize(const Transform& transform)
 
     // 矢印ボタンのUIを作成する
     CreateButtonArrow();
+
+    // AボタンのUIを生成する
+    auto uiManager = GetOwnerScene()->GetUIManager();
+    controlAButton = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/A.png", "A");
+    controlAButton->SetWorldPosition({ 880, 920 });
+    controlAButton->SetSize({ 80, 80 });
+    controlAButton->SetPivot({ 0.5f,0.5f });
+    controlAButton->SetVisible(false);
+    uiManager->Add(controlAButton);
+
 }
 
 void TitleBookActor::Update(float deltaTime)
 {
     BookBaseActor::Update(deltaTime);
+
+    if (bookState == BookPageState::Closed)
+    {// 本が閉じている時に
+        if (InputSystem::IsGamepadConnected())
+        {// ゲームパッドが繋がれていたら
+            controlAButton->SetVisible(true);
+        }
+        else
+        {
+            controlAButton->SetVisible(false);
+        }
+    }
+    else
+    {
+        controlAButton->SetVisible(false);
+    }
+
     // ハイスコアを取得する
     // ステージ１
-    int firstHighScore=ScoreHistoryManager::GetHighScore(STAGE_NAME::FIRST);
+    int firstHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::FIRST);
     firstStageHighScoreDisplay.SetValue(firstHighScore);
 
     // ボス戦

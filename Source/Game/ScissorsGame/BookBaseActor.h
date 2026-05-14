@@ -29,13 +29,13 @@ protected:
     struct BookPage // 本のページ
     {
         std::string parentName;
-        std::vector<StageSelectData> stages;
+        std::vector<std::shared_ptr<StageSelectData>> stages;
     };
 
     struct BookPageButtons
     {
         std::shared_ptr<UIButtonComponent> left;
-        std::shared_ptr<UIButtonComponent> right;
+        std::shared_ptr<UIButtonComponent> right; 
 
         void SetEnable(bool enable)
         {
@@ -77,6 +77,8 @@ protected:
     // 最初の本の状態を設定する
     void SetInitPageState(BookPageState initialState);
 
+    // モデルを生成する
+    void CreateBookModel(const std::string& backCoverModelName, const std::string& middleModelName);
 private:
     // ステージパッチを生成する
     void CreateStagePatch(BookPage& page,
@@ -90,8 +92,14 @@ private:
     // 本を閉じている時の処理
     void UpdateClosedBook();
 
-    // コントローラー対応の処理
+    // コントローラー対応の本が開く処理
     void HandlePadInput();
+
+    // コントローラー対応用ステージ選択の処理
+    void HandlePadStageSelection(float deltaTime);
+
+    // コントローラー対応時に選択切り替え処理
+    void MoveSelection(int dir);
 
 public:
     // 本が押されたことを通知する
@@ -106,6 +114,13 @@ protected:
     // UIのボタン
     BookPageButtons firstButtons;
     BookPageButtons secondButtons;
+
+    BookPageState bookState = BookPageState::Closed;    // 本の状態
+
+    // コントローラー対応時に使用するステージごとの配列
+    std::vector<std::shared_ptr<StageSelectData>> selectableStages;
+    int selectedStageIndex = 0;
+
 private:
 
     std::shared_ptr<SkeletalMeshComponent> bookLeftModel;
@@ -142,7 +157,13 @@ private:
     float openPatchPosY = 0.0f;
     float closePatchPosY = -0.2f;
 
-    BookPageState bookState = BookPageState::Closed;    // 本の状態
+    std::shared_ptr<UIImageComponent> startAButton;   // ワッペンの近くにAボタンを表示する
+
+    // 裏表紙のモデル名
+    std::string backCoverModelName = "./Data/TeamModels/Title/BookRight.gltf";
+    // 真ん中のモデル名
+    std::string middleModelName = "./Data/TeamModels/Title/BookMiddle.gltf";
+
 
     // 調整
     float firstRate = 0.2f; // 本を閉じる時の最初のページの割合

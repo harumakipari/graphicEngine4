@@ -25,5 +25,6 @@ private:
     NumberDisplay firstStageHighScoreDisplay;   
     NumberDisplay bossStageHighScoreDisplay;   
 
+    std::shared_ptr<UIImageComponent> controlAButton;   // Aƒ{ƒ^ƒ“‚ð•\Ž¦‚·‚é
 };
 

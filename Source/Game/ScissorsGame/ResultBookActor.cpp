@@ -9,6 +9,9 @@
 void ResultBookActor::Initialize(const Transform& transform)
 {
     BookBaseActor::Initialize(transform);
+
+    CreateBookModel("./Data/TeamModels/Title/BookRight.gltf", "./Data/TeamModels/Title/BookMiddle.gltf");
+
     SetInitPageState(BookPageState::SecondPage);
 
     // スコアの数字を乗せるページの親
@@ -95,7 +98,7 @@ void ResultBookActor::Initialize(const Transform& transform)
             0.7f, true);
     }
     // ランキング 2
-    { 
+    {
         std::string scoreParentName = "ranking2_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
@@ -148,7 +151,7 @@ void ResultBookActor::Update(float deltaTime)
 
     // ランキングを取得する
     std::vector<ScoreHistoryManager::Entry> ranking = ScoreHistoryManager::GetTop5(stats.stageName);
-    int top1= ranking[0].score;
+    int top1 = ranking[0].score;
     ranking1Display.SetValue(top1);
     int top2 = ranking[1].score;
     ranking2Display.SetValue(top2);

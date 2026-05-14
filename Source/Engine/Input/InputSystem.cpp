@@ -244,10 +244,10 @@ void InputSystem::Initialize()
     //inputKeys["LB"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_LEFT_SHOULDER));     // ç∂
     //inputKeys["LT"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::LeftTrigger));
 
-    inputKeys["Right"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_RIGHT_SHOULDER));     // âE
-    inputKeys["Right"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::RightTrigger));
-    inputKeys["Left"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_LEFT_SHOULDER));     // ç∂
-    inputKeys["Left"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::LeftTrigger));
+    inputKeys["BookRight"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_RIGHT_SHOULDER));     // âE
+    inputKeys["BookRight"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::RightTrigger));
+    inputKeys["BookLeft"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_LEFT_SHOULDER));     // ç∂
+    inputKeys["BookLeft"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::LeftTrigger));
 
 
 

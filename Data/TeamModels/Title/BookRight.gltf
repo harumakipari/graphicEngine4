@@ -8,31 +8,40 @@
 		{
 			"name":"Scene",
 			"nodes":[
-				0
+				2
 			]
 		}
 	],
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"BookRight",
-			"scale":[
-				6.461100101470947,
-				6.461100101470947,
-				6.461100101470947
-			]
+			"name":"BookRight.001"
+		},
+		{
+			"mesh":1,
+			"name":"paper"
+		},
+		{
+			"children":[
+				0,
+				1
+			],
+			"name":"BookRight"
 		}
 	],
 	"materials":[
 		{
-			"name":"lambert3",
+			"name":"m_BookRight",
 			"pbrMetallicRoughness":{
 				"baseColorFactor":[
-					0.4000000059604645,
-					0.4000000059604645,
-					0.4000000059604645,
+					0.800000011920929,
+					0.800000011920929,
+					0.800000011920929,
 					1
 				],
+				"baseColorTexture":{
+					"index":0
+				},
 				"metallicFactor":0
 			}
 		}
@@ -51,73 +60,164 @@
 					"material":0
 				}
 			]
+		},
+		{
+			"name":"Mesh_1",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":4,
+						"NORMAL":5,
+						"TEXCOORD_0":6
+					},
+					"indices":7,
+					"material":0
+				}
+			]
+		}
+	],
+	"textures":[
+		{
+			"sampler":0,
+			"source":0
+		}
+	],
+	"images":[
+		{
+			"mimeType":"image/png",
+			"name":"BookRight",
+			"uri":"BookRight.png"
 		}
 	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":82,
+			"count":51,
 			"max":[
-				0.7022411823272705,
-				-7.450580596923828e-09,
-				0.4347504675388336
+				4.554257392883301,
+				0,
+				2.8078768253326416
 			],
 			"min":[
-				2.9802322387695312e-08,
-				-0.0751994177699089,
-				-0.4347504675388336
+				-0.00012549757957458496,
+				-0.5239354372024536,
+				-2.8078768253326416
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":82,
+			"count":51,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":82,
+			"count":51,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":240,
+			"count":84,
+			"type":"SCALAR"
+		},
+		{
+			"bufferView":4,
+			"componentType":5126,
+			"count":20,
+			"max":[
+				4.480894088745117,
+				1.0745081947328117e-17,
+				2.756730318069458
+			],
+			"min":[
+				0.12149703502655029,
+				-0.5,
+				-2.756730318069458
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":5,
+			"componentType":5126,
+			"count":20,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":6,
+			"componentType":5126,
+			"count":20,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":7,
+			"componentType":5123,
+			"count":36,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":984,
+			"byteLength":612,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":984,
-			"byteOffset":984,
+			"byteLength":612,
+			"byteOffset":612,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":656,
-			"byteOffset":1968,
+			"byteLength":408,
+			"byteOffset":1224,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":480,
-			"byteOffset":2624,
+			"byteLength":168,
+			"byteOffset":1632,
 			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":240,
+			"byteOffset":1800,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":240,
+			"byteOffset":2040,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":160,
+			"byteOffset":2280,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":72,
+			"byteOffset":2440,
+			"target":34963
+		}
+	],
+	"samplers":[
+		{
+			"magFilter":9729,
+			"minFilter":9987
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":3104,
+			"byteLength":2512,
 			"uri":"BookRight.bin"
 		}
 	]
