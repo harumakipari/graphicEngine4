@@ -1,19 +1,28 @@
 {
     "BOBBIN_FIRST": [
         {
+            "score": 8980
+        },
+        {
             "score": 8180
         },
         {
             "score": 8120
         },
         {
-            "score": 0
+            "score": 7990
         },
         {
-            "score": 0
+            "score": 7680
         }
     ],
     "BOSS": [
+        {
+            "score": 6260
+        },
+        {
+            "score": 2900
+        },
         {
             "score": 2850
         },

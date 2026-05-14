@@ -240,7 +240,7 @@ void GameScene::Start()
         stage = StringToStageName(stageName);
     }
 
-    //stage = STAGE_NAME::REFLECT_WALL;
+    stage = STAGE_NAME::BOBBIN_FIRST;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(stage);
@@ -943,47 +943,47 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
             //yarnWall->SetHideTime(20.0f);
             yarnWall->SetUp();
 
-        //    Transform yarnWallTr1(DirectX::XMFLOAT3{ 7.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-        //    auto yarnWall1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr1);
-        //    yarnWall1->SetBehavior(WallBehavior::HideOnce);
-        //    yarnWall1->SetHideTime(20.0f);
-        //    yarnWall1->SetUp();
+            //    Transform yarnWallTr1(DirectX::XMFLOAT3{ 7.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            //    auto yarnWall1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr1);
+            //    yarnWall1->SetBehavior(WallBehavior::HideOnce);
+            //    yarnWall1->SetHideTime(20.0f);
+            //    yarnWall1->SetUp();
 
-        //    Transform yarnWallTr2(DirectX::XMFLOAT3{ 4.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-        //    auto yarnWall2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr2);
-        //    yarnWall2->SetBehavior(WallBehavior::HideOnce);
-        //    yarnWall2->SetHideTime(20.0f);
-        //    yarnWall2->SetUp();
+            //    Transform yarnWallTr2(DirectX::XMFLOAT3{ 4.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            //    auto yarnWall2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr2);
+            //    yarnWall2->SetBehavior(WallBehavior::HideOnce);
+            //    yarnWall2->SetHideTime(20.0f);
+            //    yarnWall2->SetUp();
 
-        //    Transform yarnWallTr3(DirectX::XMFLOAT3{ 7.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-        //    auto yarnWall3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr3);
-        //    yarnWall3->SetBehavior(WallBehavior::HideOnce);
-        //    yarnWall3->SetHideTime(20.0f);
-        //    yarnWall3->SetUp();
+            //    Transform yarnWallTr3(DirectX::XMFLOAT3{ 7.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            //    auto yarnWall3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr3);
+            //    yarnWall3->SetBehavior(WallBehavior::HideOnce);
+            //    yarnWall3->SetHideTime(20.0f);
+            //    yarnWall3->SetUp();
 
-        //    Transform yarnWallTr4(DirectX::XMFLOAT3{ 16.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-        //    auto yarnWall4 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr4);
-        //    yarnWall4->SetBehavior(WallBehavior::HideOnce);
-        //    yarnWall4->SetHideTime(20.0f);
-        //    yarnWall4->SetUp();
+            //    Transform yarnWallTr4(DirectX::XMFLOAT3{ 16.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            //    auto yarnWall4 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr4);
+            //    yarnWall4->SetBehavior(WallBehavior::HideOnce);
+            //    yarnWall4->SetHideTime(20.0f);
+            //    yarnWall4->SetUp();
 
-        //    Transform yarnWallTr5(DirectX::XMFLOAT3{ 19.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-        //    auto yarnWall5 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr5);
-        //    yarnWall5->SetBehavior(WallBehavior::HideOnce);
-        //    yarnWall5->SetHideTime(20.0f);
-        //    yarnWall5->SetUp();
+            //    Transform yarnWallTr5(DirectX::XMFLOAT3{ 19.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            //    auto yarnWall5 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr5);
+            //    yarnWall5->SetBehavior(WallBehavior::HideOnce);
+            //    yarnWall5->SetHideTime(20.0f);
+            //    yarnWall5->SetUp();
 
-        //    Transform yarnWallTr6(DirectX::XMFLOAT3{ 16.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-        //    auto yarnWall6 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr6);
-        //    yarnWall6->SetBehavior(WallBehavior::HideOnce);
-        //    yarnWall6->SetHideTime(20.0f);
-        //    yarnWall6->SetUp();
+            //    Transform yarnWallTr6(DirectX::XMFLOAT3{ 16.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            //    auto yarnWall6 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr6);
+            //    yarnWall6->SetBehavior(WallBehavior::HideOnce);
+            //    yarnWall6->SetHideTime(20.0f);
+            //    yarnWall6->SetUp();
 
-        //    Transform yarnWallTr7(DirectX::XMFLOAT3{ 19.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-        //    auto yarnWall7 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr7);
-        //    yarnWall7->SetBehavior(WallBehavior::HideOnce);
-        //    yarnWall7->SetHideTime(20.0f);
-        //    yarnWall7->SetUp();
+            //    Transform yarnWallTr7(DirectX::XMFLOAT3{ 19.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            //    auto yarnWall7 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr7);
+            //    yarnWall7->SetBehavior(WallBehavior::HideOnce);
+            //    yarnWall7->SetHideTime(20.0f);
+            //    yarnWall7->SetUp();
         }
 
 #if 1

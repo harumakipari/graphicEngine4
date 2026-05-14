@@ -127,9 +127,9 @@
       "name": "M_ScissorsStage",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
+          1.0,
+          0.9999899864196777,
+          0.9999899864196777,
           1.0
         ],
         "baseColorTexture": {

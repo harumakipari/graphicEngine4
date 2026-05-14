@@ -192,6 +192,9 @@ void BobbinActor::SetBobbinStateCharge()
 {
     bobbinState = BobbinState::ChargeEnd;
 
+    // 糸巻モデルを最大にしておく
+    bobbinStringMeshComponent->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
+
     // 矢印コンポーネントを追加
     XMFLOAT2 imageSize = { 95.0f,77.0f };
     auto uiManager = Scene::GetCurrentScene()->GetUIManager();
@@ -203,6 +206,15 @@ void BobbinActor::SetBobbinStateCharge()
     arrowComponent->SetVisible(true);
 
     uiManager->Add(arrowComponent);
+
+    // 説明分のUI
+    tutorialFirstComponent =
+        std::make_shared<UIImageComponent>(
+            "./Data/Textures/ScissorsUI/Tutorial/bobbin_first.png",
+            "enemy_arrow");
+    tutorialFirstComponent->SetSize(tutorialSize);
+    tutorialFirstComponent->SetVisible(false);
+    uiManager->Add(tutorialFirstComponent);
 
     // 説明分のUI
     tutorialComponent =
@@ -416,6 +428,21 @@ void BobbinActor::UpdateShowArrow(float deltaTime)
             arrowComponent->SetPivot({ 0.5f,0.5f });
             arrowComponent->SetVisible(true);
         }
+    }
+
+    if (tutorialFirstComponent)
+    {
+        // 糸巻が溜まっていなかったらなら消す
+        if (bobbinState == BobbinState::ChargeEnd && useCount < 1)
+        {
+            tutorialFirstComponent->SetVisible(true);
+        }
+        else
+        {
+            tutorialFirstComponent->SetVisible(false);
+        }
+        tutorialFirstComponent->SetSize(tutorialSize);
+        tutorialFirstComponent->SetWorldPosition(tutorialPos);
     }
 
     if (tutorialChargeComponent)

@@ -20,7 +20,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     Character::Initialize(transform);
     // ボスの見た目を生成する
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/BossEnemyBlend.glb", false, true);
+    skeletalMeshComponent->SetModel("./Data/TeamModels/Enemy/BossEnemy.gltf", false, true);
     skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameBossPS";
     // ボスの描画順を後にする
     skeletalMeshComponent->SetPriority(3);

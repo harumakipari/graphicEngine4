@@ -720,6 +720,57 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
                 });
         }
     }
+
+#if 0
+    // =========================
+// AボタンUI更新
+// =========================
+    if (InputSystem::IsGamepadConnected() &&
+        !selectableStages.empty())
+    {
+        auto selectedStage =
+            selectableStages[selectedStageIndex];
+
+        stageAButton->SetVisible(true);
+
+        // ワッペン位置取得
+        auto world =
+            selectedStage->model->GetWorldLocation();
+
+        // ちょっと右上に表示
+        DirectX::XMFLOAT3 offset =
+        {
+            0.5f,
+            0.8f,
+            0.0f
+        };
+
+        DirectX::XMFLOAT3 pos =
+        {
+            world.x + offset.x,
+            world.y + offset.y,
+            world.z + offset.z
+        };
+
+        // 3D→UI変換
+        DirectX::XMFLOAT2 screenPos;
+
+        if (GetOwnerScene()->WorldToScreen(pos, screenPos))
+        {
+            stageAButton->SetWorldPosition(
+                {
+                    screenPos.x,
+                    screenPos.y
+                });
+        }
+    }
+    else
+    {
+        stageAButton->SetVisible(false);
+    }
+#endif // 0
+
+
 }
 
 // コントローラー対応時に選択切り替え処理
