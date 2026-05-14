@@ -2,8 +2,8 @@
 #include "StageData.h"
 #include "Core/Actor.h"
 
-#include "YarnEnemyActor.h"
 #include "Components/Effect/ParticleComponent.h"
+#include "EnemyBase.h"
 
 
 class WaveManager :public Actor
@@ -36,9 +36,11 @@ public:
         return spawnCount == 0;
     }
 
-
+    // ボビンのチュートリアルで使用するwaveが始まったかどうか
     bool IsWaveStarted() { return waveStarted; }
 
+    // 今のwaveを取得する
+    int GetCurrentWave() { return currentWave; }
 private:
     // 最初の待ち更新処理
     void UpdateReady(float deltaTime);

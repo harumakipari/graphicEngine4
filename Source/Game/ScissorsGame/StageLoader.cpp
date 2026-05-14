@@ -510,24 +510,24 @@ StageData StageLoader::Load(STAGE_NAME stageId)
         {
         {
                 // ç∂è„
-                { {3,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{1,0,-1}},
-                { {3,0,22.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,-1}},
-                { {1.5,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,-1}},
+                { {3,0,21}, YarnEnemyType::MoveLinear,0.0f,false,2.0f ,1.0f,{1,0,-1}},
+                { {3,0,22.5}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,-1}},
+                { {1.5,0,21}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,-1}},
         
                 // ç∂â∫
-                        { {3,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{1,0,1}},
-                { {3,0,1.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,1}},
-                { {1.5,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,1}},
+                        { {3,0,3}, YarnEnemyType::MoveLinear,0.0f,false,2.0f ,1.0f,{1,0,1}},
+                { {3,0,1.5}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,1}},
+                { {1.5,0,3}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,1}},
         
                 // âEè„
-                        { {21,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{-1,0,-1}},
-                { {21,0,22.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,-1}},
-                { {22.5,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,-1}},
+                        { {21,0,21}, YarnEnemyType::MoveLinear,0.0f,false,2.0f ,1.0f,{-1,0,-1}},
+                { {21,0,22.5}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,-1}},
+                { {22.5,0,21}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,-1}},
         
                 // âEâ∫
-                { {21,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{-1,0,1}},
-                { {21,0,1.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,1}},
-                { {22.5,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,1}},
+                { {21,0,3}, YarnEnemyType::MoveLinear,0.0f,false,2.0f ,1.0f,{-1,0,1}},
+                { {21,0,1.5}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,1}},
+                { {22.5,0,3}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,1}},
         
             },
              false,

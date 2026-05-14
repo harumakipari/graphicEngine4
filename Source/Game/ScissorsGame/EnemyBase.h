@@ -256,6 +256,8 @@ protected:
     YarnState state = YarnState::Active;
     YarnSize yarnSize = YarnSize::Small;
 
+    // ç≈å„Ç…îΩéÀÇµÇΩï«
+    CollisionComponent* lastRedirectWall = nullptr;
 
 private:
     bool startKnockback = false;// êÅÇ¡îÚÇ‘Ç©Ç«Ç§Ç©

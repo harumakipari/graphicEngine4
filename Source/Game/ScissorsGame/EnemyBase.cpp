@@ -40,6 +40,26 @@ void EnemyBase::Update(float deltaTime)
         UpdateSizeChanging(deltaTime);
     }
 
+    if (lastRedirectWall)
+    {
+        DirectX::XMFLOAT3 pos = GetPosition();
+        if (auto wallActor = lastRedirectWall->GetOwner())
+        {
+            DirectX::XMFLOAT3 wallPos = wallActor->GetPosition();
+            float dx = pos.x - wallPos.x;
+            float dz = pos.z - wallPos.z;
+
+            float distSq = dx * dx + dz * dz;
+
+            if (distSq > 4.0f) 
+            {// —£‚ê‚½‚çA”½ŽË‰Â”\‚É‚·‚é
+                lastRedirectWall = nullptr;
+            }
+
+        }
+
+    }
+
     switch (state)
     {
     case YarnState::Active:
@@ -437,6 +457,13 @@ void EnemyBase::CreateCollisionComponent()
             uint32_t mask = /*CollisionHelper::ToBit(CollisionLayer::Bobbin) |*/ CollisionHelper::ToBit(CollisionLayer::EnemyRedirect);
             if (!(other->GetCollisionLayer() & mask))
                 return;
+
+            if (lastRedirectWall == other)
+            {// “¯‚¶•Ç‚È‚ç
+                return; // –³Ž‹‚ð‚·‚é
+            }
+
+            lastRedirectWall = other;
 
             auto dir = GetMoveDirection();
 

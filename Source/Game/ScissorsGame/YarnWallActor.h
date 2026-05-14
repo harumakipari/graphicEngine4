@@ -38,6 +38,12 @@ public:
     // 何秒後に消える
     void SetHideTime(float time) { hideTime = time; }
 
+
+    void SetTriggerWave(int wave)
+    {
+        triggerWave = wave;
+    }
+
 private:
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent; // 描画コンポーネント
     std::shared_ptr<BoxComponent> redirectCollisionComponent;// 反射コンポーネント
@@ -54,5 +60,8 @@ private:
 
     float hiddenY = -10.0f;
     float visibleY = 0.0f;
+
+    int triggerWave = -1; // トリガーとなるwaveの数値
+    bool triggered = false;
 };
 

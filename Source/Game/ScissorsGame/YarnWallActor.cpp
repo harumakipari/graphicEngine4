@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "YarnWallActor.h"
 
+#include "Engine/Scene/Scene.h"
 #include "Game/Actors/Base/Character.h"
+#include "WaveManagaer.h"
 
 
 void YarnWallActor::Initialize(const Transform& transform)
@@ -23,7 +25,6 @@ void YarnWallActor::Initialize(const Transform& transform)
     redirectCollisionComponent->SetCollisionOffsetY(0.3f);
     redirectCollisionComponent->SetLayer(CollisionLayer::EnemyRedirect);
     redirectCollisionComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
-
     redirectCollisionComponent->Initialize();
 }
 
@@ -32,11 +33,30 @@ void YarnWallActor::Update(float deltaTime)
     elapsedTime += deltaTime;
 
     auto pos = GetPosition();
+    auto waveManager = GetOwnerScene()->GetActorManager()->GetActorOfType<WaveManager>();
+
+    if (waveManager && !triggered)
+    {
+        if (waveManager->GetCurrentWave() >= triggerWave)
+        {
+            triggered = true;
+
+            if (behavior == WallBehavior::AppearOnce)
+            {
+                state = WallState::Rising;
+            }
+            else if (behavior == WallBehavior::HideOnce)
+            {
+                state = WallState::Lowering;
+            }
+        }
+    }
 
     switch (state)
     {
     case WallState::Hidden:
     {
+#if 0
         // 出現タイプ
         if (behavior == WallBehavior::AppearOnce)
         {
@@ -45,6 +65,7 @@ void YarnWallActor::Update(float deltaTime)
                 state = WallState::Rising;
             }
         }
+#endif // 0
     }
     break;
 
@@ -59,6 +80,7 @@ void YarnWallActor::Update(float deltaTime)
         }
 
         SetPosition(pos);
+
     }
     break;
 
@@ -67,10 +89,12 @@ void YarnWallActor::Update(float deltaTime)
         // 隠れるタイプ
         if (behavior == WallBehavior::HideOnce)
         {
+#if 0
             if (elapsedTime >= hideTime)
             {
                 state = WallState::Lowering;
             }
+#endif // 0
         }
     }
     break;
