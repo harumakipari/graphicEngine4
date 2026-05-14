@@ -71,24 +71,28 @@ void NumberDisplay::Initialize(Actor* owner, const std::string& parentName, cons
     }
 }
 
-void NumberDisplay::SetValue(int value)
+void NumberDisplay::SetValue(int value,int minDigits)
 {
     currentValue = value;
 
     int temp = value;
     int digitCount = 0;
 
+    // Œ…”‚ğ”‚¦‚é
     do
     {
         digitCount++;
         temp /= 10;
     } while (temp > 0);
 
+    // Å’áŒ…”•ÛØ
+    digitCount = std::max<int>(digitCount, minDigits);
+
     for (int i = 0; i < digits.size(); i++)
     {
         int digit = value % 10;
 
-        bool visible = i < digitCount;
+        bool visible = isVisible && i < digitCount;
 
         digits[i].SetDigit(digit, visible);
 

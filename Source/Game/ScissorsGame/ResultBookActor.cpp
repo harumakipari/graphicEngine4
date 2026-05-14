@@ -103,9 +103,35 @@ void ResultBookActor::Initialize(const Transform& transform)
     }
 
 
-    // クリアタイム
+    // クリアタイム　分
     {
-        
+        std::string scoreParentName = "minute_number_parent";
+        auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, rightName);
+        scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+        scoreRoot->SetRelativeLocationDirect({ -1.0f,-0.1f,1.88f });
+        scoreRoot->SetRelativeScaleDirect({ subNumberSize,subNumberSize,subNumberSize });
+        minuteDisplay.Initialize(
+            this,
+            scoreParentName,
+            "minute",
+            { -0.0f, -0.0f, -0.0f },
+            2,
+            0.7f, false);
+    }
+    // 秒
+    {
+        std::string scoreParentName = "second_number_parent";
+        auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, rightName);
+        scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+        scoreRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,1.88f });
+        scoreRoot->SetRelativeScaleDirect({ subNumberSize,subNumberSize,subNumberSize });
+        secondDisplay.Initialize(
+            this,
+            scoreParentName,
+            "second",
+            { -0.0f, -0.0f, -0.0f },
+            2,
+            0.7f, false);
     }
 
     // ニューレコード
@@ -225,15 +251,19 @@ void ResultBookActor::Update(float deltaTime)
 #if 1
     totalScoreDisplay.SetValue(97777);
     comboDisplay.SetValue(20);
-    heartDisplay.SetValue(1500);
-    gatherDisplay.SetValue(1500);
-    redirectDisplay.SetValue(1500);
+    heartDisplay.SetValue(100);
+    gatherDisplay.SetValue(150);
+    redirectDisplay.SetValue(150);
 
-    ranking1Display.SetValue(99000);
-    ranking2Display.SetValue(95176);
-    ranking3Display.SetValue(15176);
+    ranking1Display.SetValue(900);
+    ranking2Display.SetValue(9176);
+    ranking3Display.SetValue(1176);
     ranking4Display.SetValue(51176);
     ranking5Display.SetValue(51176);
+
+
+    minuteDisplay.SetValue(1);
+    secondDisplay.SetValue(5, 2);
 
 #else
 
@@ -249,6 +279,19 @@ void ResultBookActor::Update(float deltaTime)
     heartDisplay.SetValue(stats.remainHp * 150);
 
     // 反射ボーナスを表示する
+    redirectDisplay.SetValue(stats.reflectionBonusScore);
+
+    // まとめぬいボーナスを追加する
+    gatherDisplay.SetValue(stats.dashBonusScore);
+
+    // 時間を表示する
+    int totalSeconds = static_cast<int>(stats.gameTimer);
+    int minutes = totalSeconds / 60;
+    int seconds = totalSeconds % 60;
+
+    minuteDisplay.SetValue(minutes, 2);
+    secondDisplay.SetValue(seconds, 2);
+
 
     // ランキングを取得する
     std::vector<ScoreHistoryManager::Entry> ranking = ScoreHistoryManager::GetTop5(stats.stageName);
@@ -262,6 +305,7 @@ void ResultBookActor::Update(float deltaTime)
     ranking4Display.SetValue(top4);
     int top5 = ranking[3].score;
     ranking5Display.SetValue(top5);
+
 #endif
 }
 

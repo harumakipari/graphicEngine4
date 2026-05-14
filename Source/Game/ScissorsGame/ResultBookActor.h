@@ -34,7 +34,8 @@ private:
     NumberDisplay heartDisplay;    // HPボーナス
     NumberDisplay redirectDisplay;  // 反射ボーナス
     NumberDisplay gatherDisplay;  // まとめボーナス
-    NumberDisplay timerDisplay;  // 秒数ボーナス
+    NumberDisplay secondDisplay;  // 秒数
+    NumberDisplay minuteDisplay;  // 分数
 
     NumberDisplay ranking1Display;  // ランキング
     NumberDisplay ranking2Display;  // ランキング

@@ -20,8 +20,8 @@ struct NumberDisplay
     // コンポーネントの親の名前、コンポーネント名、
     void Initialize(Actor* owner, const std::string& parentName, const std::string& baseName, const DirectX::XMFLOAT3& startPos, int maxDigits, float spacing, bool isBackCover);
 
-    // 数値を表示する
-    void SetValue(int value);
+    // 数値を表示する 最低何桁表示するか
+    void SetValue(int value, int minDigits = 1);
 
 
     void SetVisible(bool visible);
