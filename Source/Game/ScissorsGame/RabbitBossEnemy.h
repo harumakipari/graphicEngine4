@@ -2,6 +2,7 @@
 #include "Core/Actor.h"
 #include "EnemyBase.h"
 #include "EnemyScoreData.h"
+#include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Components/Controller/ControllerComponent.h"
 #include "UI/Widgets/Widget.h"
 
@@ -128,7 +129,12 @@ public:
     std::shared_ptr<SkeletalMeshComponent> stunModel; // スタン中に表示するモデル
     std::shared_ptr<SkeletalMeshComponent> bossSpawnMarkModel; // ボスの出現の場所モデル
     std::shared_ptr<SkeletalMeshComponent> bossChaseMarkModel; // ボスの追尾の場所モデル
+    std::shared_ptr<CoreAudioSourceComponent> bossStunAudioComponent;// ボスの混乱音コンポーネント
 
+    // 再スタン防止タイマー
+    float stunCooldownTimer = 0.0f;
+    // 再スタン防止時間
+    float stunCooldownDuration = 3.0f;
 private:
     std::vector<DirectX::XMFLOAT3> spawnPoints; // 出現位置
 
@@ -143,7 +149,7 @@ private:
     std::shared_ptr<UIImageComponent> gaugeFrameBackComponent;  // ボスHPゲージのスプライト描画
     std::shared_ptr<UIGaugeComponent> gaugeUi; // ボスHPのゲージUI
     DirectX::XMFLOAT2 gaugeUiOffset = { 0.0f,0.0f }; // ゲージのUIオフセット値
-    DirectX::XMFLOAT2 gaugeFrameOffset = { -2.0f,0.0f }; // ゲージフレームのオフセット値
+    DirectX::XMFLOAT2 gaugeFrameOffset = { 6.0f,0.0f }; // ゲージフレームのオフセット値
     DirectX::XMFLOAT2 gaugeUiPos = { 506.0f,34.0f };   // ゲージのposition
 
     float diveOffsetY = 0.0f;
@@ -164,5 +170,9 @@ private:
     bool endPerform = false;
 
     float spawnScaleMax = 1.65f; // 出現マークの大きさ
+
+    CoreColor green = { 0.886f,1.0f,0.098f,1.0f };
+    CoreColor orange = { 1.0f,0.5f,0.0f,1.0f };
+    CoreColor red = { 1.0f,0.1f,0.1f,1.0f };
 };
 

@@ -39,8 +39,8 @@ private:
     float elapsedTime;    // 経過時間
     DirectX::XMFLOAT3 velocity = { 0.0f,0.0f,0.0f };
     float gravity = 4.9f;
-    float groundY = 0.0f;   // 地面の基準点
+    float groundY = 0.5f;   // 地面の基準点
 
-    DirectX::XMFLOAT3 basePosition = { 0.0f,0.0f,0.0f };
+    DirectX::XMFLOAT3 basePosition = { 0.0f,0.5f,0.0f };
 };
 

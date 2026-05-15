@@ -14,6 +14,19 @@
 #include "Engine/Scene/Scene.h"
 #include "Physics/CollisionFunction.h"
 
+static CoreColor LerpColor(const CoreColor& a, const CoreColor& b, float t)
+{
+    t = std::clamp(t, 0.0f, 1.0f);
+
+    return
+    {
+        a.r + (b.r - a.r) * t,
+        a.g + (b.g - a.g) * t,
+        a.b + (b.b - a.b) * t,
+        a.a + (b.a - a.a) * t
+    };
+}
+
 void RabbitBossEnemyActor::Initialize(const Transform& transform)
 {
     std::string parentName = "SkeletonWarriorMeshComponent";
@@ -121,7 +134,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     // ボスのHPのUI
     {
         auto uiManager = GetOwnerScene()->GetUIManager();
-        DirectX::XMFLOAT2 gaugeSize = { 902.0f,84.0f };
+        DirectX::XMFLOAT2 gaugeSize = { 852.0f,84.0f };
 
         // ボスのHPゲージのフレームスプライト描画コンポーネントを追加
         gaugeFrameBackComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/bar_back.png", "bar_back_ui");
@@ -137,7 +150,8 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
         gaugeUi->SetWorldPosition({ 50, 300 });
         gaugeUi->zOrder = 15;
         gaugeUi->SetColor(CoreColor::White);
-        gaugeUi->SetSize(gaugeSize);
+        gaugeUi->SetSize({861,84});
+        gaugeUi->SetGaugeFillSize(gaugeSize);
 
         uiManager->Add(gaugeUi);
     }
@@ -161,24 +175,77 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 
     endPerform = false;
 
+    // ボスの混乱音コンポーネント
+    bossStunAudioComponent = AddComponent<CoreAudioSourceComponent>("bossStunAudioComponent", parentName);
+    bossStunAudioComponent->SetSource(L"./Data/Sound/SE1/boss_stun.wav");
+    bossStunAudioComponent->SetVolume(0.5f);
+    bossStunAudioComponent->SetLoop(true);
 }
 
 void RabbitBossEnemyActor::Update(float deltaTime)
 {
     DirectX::XMFLOAT3 pos = GetPosition();
 
+    // スタンのクールタイム処理
+    {
+        if (stunCooldownTimer > 0.0f)
+        {
+            stunCooldownTimer -= deltaTime;
+        }
+    }
+
+
     // HPバーの処理
     {
         float hpGauge = static_cast<float>(hp);
         float hpGaugeMax = static_cast<float>(maxHp);
+
+        float hpRate = hpGauge / hpGaugeMax;
+
+        CoreColor gaugeColor;
+
+#if 0
+        // 緑
+        if (hpRate > 0.6f)
+        {
+            gaugeColor = { 0.886f,1.0f,0.098f,1.0f };
+        }
+        // オレンジ
+        else if (hpRate > 0.3f)
+        {
+            gaugeColor = { 1.0f,0.5f,0.0f,1.0f };
+        }
+        // 赤
+        else
+        {
+            gaugeColor = { 1.0f,0.1f,0.1f,1.0f };
+        }
+#else
+        if (hpRate > 0.5f)
+        {
+            // 緑 → オレンジ
+            float t = (1.0f - hpRate) / 0.5f;
+
+            gaugeColor = LerpColor(green, orange, t);
+        }
+        else
+        {
+            // オレンジ → 赤
+            float t = (0.5f - hpRate) / 0.5f;
+
+            gaugeColor = LerpColor(orange, red, t);
+        }
+#endif // 1
+
         if (gaugeUi)
         {
             gaugeUi->SetValue(hpGauge, hpGaugeMax);
             gaugeUi->SetWorldPosition({ gaugeUiPos.x, gaugeUiPos.y });
             //gaugeUi->SetColor({ color.x,color.y,color.z,color.w });
             gaugeUi->SetGaugeOffset(gaugeFrameOffset);
-           ;
-            gaugeFrameBackComponent->SetWorldPosition({ gaugeUiPos.x + gaugeUiOffset.x, gaugeUiPos.y + gaugeUiOffset.y });
+            // ゲージの中身の色を設定する
+            gaugeUi->SetGaugeFillColor(gaugeColor);
+            gaugeFrameBackComponent->SetWorldPosition({ gaugeUiPos.x + gaugeFrameOffset.x, gaugeUiPos.y + gaugeFrameOffset.y });
         }
     }
 
@@ -308,6 +375,13 @@ void RabbitBossEnemyActor::OnTied()
     {// ワープ中は 
         return;// スタンしない
     }
+
+    // 再スタン防止中
+    if (stunCooldownTimer > 0.0f)
+    {
+        return;
+    }
+
     // スタン状態に入る
     EnterStun();
 }

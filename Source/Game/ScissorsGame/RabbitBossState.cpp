@@ -42,7 +42,7 @@ void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     BossAttackType type = PopAttack();
     //type = BossAttackType::Buff;
-#if 0
+#if 1
     switch (type)
     {
     case BossAttackType::Warp:
@@ -111,7 +111,8 @@ void RabbitBossAttackWarpPreviewState::Execute(float deltaTime)
 
 void RabbitBossAttackWarpPreviewState::Exit()
 {
-
+    // 沈みのSEを再生する
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/boss_warp_start.wav", 1.5f);
 }
 
 // ワープ
@@ -293,6 +294,10 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
             enemy->PlayAnimation("WarpEnd", false, true, 0.5f);
             enemy->SetAnimationRate(1.f);
 
+            // 出現のSEを再生する
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/boss_warp_end.wav", 0.6f);
+
+
         }
     }
     break;
@@ -368,6 +373,14 @@ void RabbitBossStunState::Enter()
 
     // 全ての敵の玉止めする
     enemy->ApplyTiedAllEnemy();
+
+    // スタンのアニメーション
+    enemy->SetAnimationRate(1.5f);
+    enemy->PlayAnimation("Stan", false, true, 0.1f);
+
+    // スタン時の音を再生する
+    enemy->bossStunAudioComponent->Play();
+
 }
 
 void RabbitBossStunState::Execute(float deltaTime)
@@ -383,7 +396,14 @@ void RabbitBossStunState::Exit()
 {
     enemy->stunModel->SetIsVisible(false);
 
-    // 全ての敵の玉止めを外す
+    // アニメーションの倍率を戻す
+    enemy->SetAnimationRate(1.0f);
+
+    // スタン時の音を止める
+    enemy->bossStunAudioComponent->Stop();
+
+    // 再スタン防止開始
+    enemy->stunCooldownTimer = enemy->stunCooldownDuration;
 }
 
 

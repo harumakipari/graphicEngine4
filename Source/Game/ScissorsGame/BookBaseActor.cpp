@@ -454,7 +454,7 @@ void BookBaseActor::CreateStagePatch(BookPage& page, STAGE_NAME stage, const cha
     model->SetModel(modelPath, false, false);
     model->SetRelativeLocationDirect(pos);
     model->SetIsCastShadow(false);
-    //model->overrideDeferredPipelineName = "ScissorsGamePlayerPS";
+    model->overrideDeferredPipelineName = "GameModelColorFilterPS";
 
 
     auto box =
@@ -510,8 +510,12 @@ void BookBaseActor::UpdatePage(const BookPage& page)
     {
         if (!stage->isUnlocked)
         {
+            //stage->model->plusAlphaCBuffer->data.  (
             continue;
         }
+
+
+
 
         bool hitThis =
             hit &&

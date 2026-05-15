@@ -804,9 +804,15 @@ public:
         frameTexture = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/square.png");
     }
 
+    // ゲージの中身の色を設定する
+    void SetGaugeFillColor(const CoreColor color)
+    {
+        gaugeFillColor = color;
+    }
+
     void Draw(ID3D11DeviceContext* immediateContext) override
     {
-        XMFLOAT2 drawSize = size;
+        XMFLOAT2 drawSize = gaugeFillSize;
 
         if (horizontal)
             drawSize.x *= value;
@@ -818,7 +824,7 @@ public:
             texture.get(),
             { worldPosition.x + gaugeOffset.x,worldPosition.y + gaugeOffset.y },
             drawSize,
-            color,
+            gaugeFillColor,
             uv,
             worldAngle,
             pivot,
@@ -832,7 +838,7 @@ public:
             worldPosition,
             size,
             gaugeFrameColor,
-            uv,
+            { uv.x,uv.y,size.x,size.y },
             worldAngle,
             pivot,
             scale
@@ -857,6 +863,8 @@ public:
         this->gaugeOffset = offset;
     }
 
+    void SetGaugeFillSize(DirectX::XMFLOAT2 gaugeFillSize) { this->gaugeFillSize = gaugeFillSize; }
+
     bool horizontal = true;
 
 private:
@@ -864,6 +872,8 @@ private:
     std::shared_ptr<Sprite>  frameTexture;  //　枠のテクスチャ
     XMFLOAT2 gaugeOffset = { 0.0f,0.0f }; // ゲージの中身のオフセット
     CoreColor gaugeFrameColor = CoreColor::White; // ゲージのフレームの色
+    CoreColor gaugeFillColor = CoreColor::White;
+    XMFLOAT2 gaugeFillSize ={0.0f,0.0f};    // ゲージの中身のサイズ
 };
 
 class UISceneChangeComponent : public UICoreComponent

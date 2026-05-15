@@ -342,7 +342,7 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
                     bossDamageContext.isBossStunned = boss->IsStunned();
                     float damage = boss->ComputeDamage(bossDamageContext);
 #else
-                    float damage = 0.0f;
+                    float damage =30.0f;
 #endif // 0
                     Logger::Log(U8("ボビンによる攻撃でボスに大ダメージ：") + std::to_string(damage));
                     boss->TakeDamage(static_cast<int>(damage));

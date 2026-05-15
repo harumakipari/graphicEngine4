@@ -133,7 +133,7 @@ void ItemHeartActor::UpdateWaiting(float deltaTime)
 
     DirectX::XMFLOAT3 pos = basePosition;
     // è„â∫Ç”ÇÌÇ”ÇÌ
-    pos.y += sinf(elapsedTime * 3.0f) * 0.25f;
+    pos.y += sinf(elapsedTime * 3.0f) * 0.15f;
 
     SetPosition(pos);
 }
