@@ -6,6 +6,7 @@
 #define IMGUI_ENABLE_DOCKING
 #endif
 
+#include "SaveDataManager.h"
 #include "ScoreHistoryManager.h"
 #include "TitleBookActor.h"
 #include "TitleCameraTargetActor.h"
@@ -111,9 +112,6 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
     {
         Physics::Instance().Initialize();
     }
-    {
-        SetUpActors();
-    }
 
     auto& param = SceneTransitionManager::Instance().GetParams();
 
@@ -129,7 +127,6 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
         }
 
     }
-
 
     // シーンのライト設定などを設定する
     SceneSettings settings = {};
@@ -201,6 +198,14 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
 
     // ランキングなどをロードする
     ScoreHistoryManager::Load();
+
+    // ゲームクリアデータをロードする
+    SaveDataManager::Instance().Initialize();
+
+    {
+        SetUpActors();
+    }
+
 
     return true;
 }

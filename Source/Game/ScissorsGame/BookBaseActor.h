@@ -24,6 +24,8 @@ protected:
         std::shared_ptr<SkeletalMeshComponent> model;
         std::shared_ptr<BoxComponent> collider;
         DirectX::XMFLOAT3 offsetPos; // 最初のオフセットデータ
+
+        bool isUnlocked = false;    // ステージ開放されているかどうか
     };
 
     struct BookPage // 本のページ
@@ -123,6 +125,8 @@ public:
     // 二ページ目を戻す処理
     void CloseSecondPage(float interval);
 
+    // ステージ開放判定関数
+    bool IsStageUnlocked(STAGE_NAME stage);
 
 protected:
     // 最初の本の状態を設定する
@@ -142,7 +146,7 @@ private:
         const DirectX::XMFLOAT3& pos);
 
     // ページのパッチの更新処理
-    void UpdatePage(BookPage& page);
+    void UpdatePage(const BookPage& page);
 
     // 本を閉じている時の処理
     void UpdateClosedBook();

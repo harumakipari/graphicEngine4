@@ -83,7 +83,7 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
         // GBUFFER
         gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
-        hr = CreatePsFromCSO(device, "./Shader/DeferredLightingPS.cso", deferredPs.ReleaseAndGetAddressOf());
+        hr = CreatePsFromCSO(device, "./Shader/DeferredLightingDefaultPS.cso", deferredPs.ReleaseAndGetAddressOf());
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
         hr = CreatePsFromCSO(device, "./Shader/FinalPassPS.cso", finalPs.ReleaseAndGetAddressOf());
@@ -184,7 +184,6 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
     // ジオメトリックシェーダー
     {
-
         //	ジオメトリプリミティブ用シェーダー準備
         {
             D3D11_INPUT_ELEMENT_DESC input_element_desc[]
@@ -240,7 +239,7 @@ void GameScene::Start()
         stage = StringToStageName(stageName);
     }
 
-    stage = STAGE_NAME::BOBBIN_FIRST;
+    stage = STAGE_NAME::BOSS;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(stage);
@@ -596,7 +595,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
-        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);

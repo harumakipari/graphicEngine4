@@ -2,6 +2,7 @@
 #include "TutorialStep.h"
 
 #include "EnemyBase.h"
+#include "SaveDataManager.h"
 #include "ScissorsPlayer1.h"
 #include "Engine/Scene/Scene.h"
 #include "TutorialActor.h"
@@ -1466,6 +1467,8 @@ void TutorialStep_StageClear::Execute(float deltaTime)
     //  押した瞬間
     if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
     {
+        // チュートリアルをクリアしたことを保存する
+        SaveDataManager::Instance().SetStageClear(STAGE_NAME::TUTORIAL, true);
         const char* types[] = { "0", "1" };
         SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) ,std::make_pair("fromScene", "TutorialScene") });
         CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);

@@ -3,6 +3,7 @@
 
 #include <magic_enum.hpp>
 
+#include "SaveDataManager.h"
 #include "TitleScene.h"
 #include "Engine/Audio/CoreAudio.h"
 #include "Physics/CollisionFunction.h"
@@ -30,6 +31,7 @@ void BookBaseActor::Update(float deltaTime)
     case BookPageState::FirstPage:
         UpdatePage(leftPage);
         UpdatePage(rightPage);
+
         HandlePadStageSelection(deltaTime);
         break;
     case BookPageState::SecondPage:
@@ -314,6 +316,7 @@ void BookBaseActor::CloseSecondPage(float interval)
     easingTwoRunner->StartHandler(handler, accessor);
 }
 
+
 // 最初の本の状態を設定する
 void BookBaseActor::SetInitPageState(BookPageState initialState)
 {
@@ -469,14 +472,18 @@ void BookBaseActor::CreateStagePatch(BookPage& page, STAGE_NAME stage, const cha
     stageData->model = model;
     stageData->collider = box;
     stageData->offsetPos = pos;
+    stageData->isUnlocked = SaveDataManager::Instance().IsStageUnlocked(stage);
 
     page.stages.push_back(stageData);
 
-    selectableStages.push_back(stageData);
+    if (stageData->isUnlocked)
+    {
+        selectableStages.push_back(stageData);
+    }
 }
 
 // ページのパッチの更新処理
-void BookBaseActor::UpdatePage(BookPage& page)
+void BookBaseActor::UpdatePage(const BookPage& page)
 {
     DirectX::XMFLOAT2 cursor;
 
@@ -499,6 +506,11 @@ void BookBaseActor::UpdatePage(BookPage& page)
 
     for (auto& stage : page.stages)
     {
+        if (!stage->isUnlocked)
+        {
+            continue;
+        }
+
         bool hitThis =
             hit &&
             result.component == stage->collider.get();
@@ -607,6 +619,11 @@ void BookBaseActor::UpdateClosedBook()
 // コントローラー対応用ステージ選択の処理
 void BookBaseActor::HandlePadStageSelection(float deltaTime)
 {
+    if (!InputSystem::IsGamepadConnected())
+    {// ゲームパッドが繋がれていなかったら、
+        return;
+    }
+
     static float stickDelay = 0.0f;
     stickDelay -= deltaTime;
 
@@ -776,7 +793,7 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
 
             // ステージ決定音
             //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/decide_stage.wav",1.5f);
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/decide_stage.wav", 1.5f);
         }
     }
 

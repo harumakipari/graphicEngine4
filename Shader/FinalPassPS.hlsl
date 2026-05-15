@@ -187,5 +187,10 @@ float4 main(VS_OUT pin) : SV_TARGET
     finalColor.rgb *= (1.0f - mask);
 #endif
 
+    // ƒŠƒjƒA‹óŠÔ‚©‚çsRGB‹óŠÔ
+    const float GAMMA = 2.2;
+    finalColor.rgb = pow(color.rgb, 1.0 / GAMMA);
+
+
     return finalColor;
 }

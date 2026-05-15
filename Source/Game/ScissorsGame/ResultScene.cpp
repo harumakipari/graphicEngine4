@@ -8,6 +8,7 @@
 
 
 #include "ResultBookActor.h"
+#include "SaveDataManager.h"
 #include "ScoreHistoryManager.h"
 #include "TitleStageActor.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
@@ -111,9 +112,6 @@ bool ResultScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     {
         Physics::Instance().Initialize();
     }
-    {
-        SetUpActors();
-    }
 
     const ResultData& stats = ScoreSystem::GetResultStats();
 
@@ -124,12 +122,26 @@ bool ResultScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     Logger::Log(U8("残りHP") + std::to_string(stats.remainHp));
     Logger::Log(U8("所要時間") + std::to_string(stats.gameTimer));
 
+    if (stats.remainHp > 0)
+    {// HPが0以上だったら
+        // ステージクリア
+        SaveDataManager::Instance().SetStageClear(stats.stageName, true);
+    }
+
     // ランキングなどをロードする
     ScoreHistoryManager::Load();
+
+    // ゲームクリアデータをロードする
+    SaveDataManager::Instance().Initialize();
+
     // スコアを記録する
     ScoreHistoryManager::Submit(stats.stageName, stats.totalScore);
     // Top5を取得する
     std::vector<ScoreHistoryManager::Entry> ranking = ScoreHistoryManager::GetTop5(stats.stageName);
+
+    {
+        SetUpActors();
+    }
 
     return true;
 }

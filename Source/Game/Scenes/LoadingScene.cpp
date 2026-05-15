@@ -58,7 +58,7 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
     SetTipsData();
 
 
-    loadingTime = 3.0f;   // ロードにかかる時間
+    loadingTime = 2.5f;   // ロードにかかる時間
     return true;
 }
 

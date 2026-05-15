@@ -348,6 +348,7 @@
     <ClCompile Include="Source\Game\ScissorsGame\ScoreHistoryManager.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScorePopupActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\ScoreUiActor.cpp" />
+    <ClCompile Include="Source\Game\ScissorsGame\SaveDataManager.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\StageLoader.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\BookBaseActor.cpp" />
     <ClCompile Include="Source\Game\ScissorsGame\TitleBookActor.cpp" />
@@ -539,6 +540,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\NeedleEnemyActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\RabbitBossEnemy.h" />
     <ClInclude Include="Source\Game\ScissorsGame\RibbonWallActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\SaveDataManager.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameElasticComponent.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameEnemyBaseActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameManager.h" />
