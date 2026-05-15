@@ -38,11 +38,12 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     //controller->AddAnimation("Run", 3);
 
     controller->AddAnimation("Idle", 0);
-    controller->AddAnimation("ChargeDash", 1);  // チャージ中
-    controller->AddAnimation("DashStart", 2);   // ダッシュ開始
-    controller->AddAnimation("Run", 3);     // 走り
-    controller->AddAnimation("DashEnd", 4);     // ダッシュ終わり
-    controller->AddAnimation("Dash", 5);    // ダッシュ中
+    controller->AddAnimation("Run", 1);     // 走り
+    controller->AddAnimation("Dash", 2);    // ダッシュ中
+    controller->AddAnimation("ChargeDash", 3);  // チャージ中
+    controller->AddAnimation("PreDown", 4);    // 倒れる前
+    controller->AddAnimation("Down", 5);    // 倒れる
+
 
     // アニメーションコントローラーを character に追加
     this->SetAnimationController(controller);

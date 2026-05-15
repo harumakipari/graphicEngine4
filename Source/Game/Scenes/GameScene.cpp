@@ -1063,7 +1063,7 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
         bobbin->SetBobbinSize(BobbinActor::BobbinSize::Big);
 
         // タイマー表示アクターを生成
-        Transform timerUiTr(DirectX::XMFLOAT3{ 20.0f,8.6f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
+        Transform timerUiTr(DirectX::XMFLOAT3{ 19.9f,8.7f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
         auto timerUiActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<GameTimerUiActor>("timerUiActor", timerUiTr);
 
 #endif // 0

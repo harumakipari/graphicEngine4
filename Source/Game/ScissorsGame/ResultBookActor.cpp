@@ -137,6 +137,7 @@ void ResultBookActor::Initialize(const Transform& transform)
     // ニューレコード
 
 
+
     // 裏表紙のページ
     // ランキング 1
     {
@@ -223,7 +224,6 @@ void ResultBookActor::Initialize(const Transform& transform)
 
 
 #if 0
-
     //  一の位
     numberModel = AddComponent<SkeletalMeshComponent>("numberModel", scoreParentName);
     numberModel->SetModel("./Data/TeamModels/Number/NumberModel_3.gltf", false, false);
@@ -247,8 +247,7 @@ void ResultBookActor::Update(float deltaTime)
 {
     BookBaseActor::Update(deltaTime);
 
-
-#if 1
+#if 0
     totalScoreDisplay.SetValue(97777);
     comboDisplay.SetValue(20);
     heartDisplay.SetValue(100);
@@ -291,6 +290,11 @@ void ResultBookActor::Update(float deltaTime)
 
     minuteDisplay.SetValue(minutes, 2);
     secondDisplay.SetValue(seconds, 2);
+
+
+    // ハイスコアだったら、メダルを表示する
+    //ScoreHistoryManager::IsNewRecord()
+
 
 
     // ランキングを取得する

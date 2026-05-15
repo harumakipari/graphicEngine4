@@ -454,6 +454,8 @@ void BookBaseActor::CreateStagePatch(BookPage& page, STAGE_NAME stage, const cha
     model->SetModel(modelPath, false, false);
     model->SetRelativeLocationDirect(pos);
     model->SetIsCastShadow(false);
+    //model->overrideDeferredPipelineName = "ScissorsGamePlayerPS";
+
 
     auto box =
         AddComponent<BoxComponent>(

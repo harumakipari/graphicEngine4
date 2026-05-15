@@ -170,9 +170,9 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     totalDiffuse = lerp(totalDiffuse, totalDiffuse * occlusionFactor, occlusionStrength);
     totalSpecular = lerp(totalSpecular, totalSpecular * occlusionFactor, occlusionStrength);
 
-    float3 emissive = emissiveFactor;
+    float3 emissive = emissiveFactor*10.0f;
 
-    //float3 Lo = totalDiffuse + totalSpecular + emissive;
+    float3 Lo = totalDiffuse + totalSpecular + emissive;
 	
     //return float4(Lo, baseColorFactor.a);
     return float4(baseColorFactor);

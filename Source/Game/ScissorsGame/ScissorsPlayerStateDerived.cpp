@@ -839,15 +839,24 @@ void ScissorsPlayerStunState::Exit()
 
 void ScissorsPlayerDeathState::Enter()
 {
-
-    player->PlayAnimation("DashEnd", true, true, 0.1f);
+    player->PlayAnimation("PreDown", false, true, 0.1f);
     player->characterMovementComponent->SetSpeed(0.0f);
+    // ‰æ–Ê‚ð•¢‚¤‚Ì‚ðˆÃ‚­‚·‚é
     player->SetDeathRadius(2.0f);
     // ŽüˆÍ‚Ì“G‚ð”ñ•\Ž¦‚É‚·‚é
     player->HideNearByRadius(5.0f);
+    // ƒvƒŒƒCƒ„[‚ÌŒü‚«‚ðÝ’è‚·‚é
     player->rotationComponent->SetDirection({ 0,0,-1 });
-
+    // 
     phase = DeathPhase::ShrinkToCenter;
+
+    elapsedTime = 0.0f;
+
+    startRadius = 2.0f;
+    targetRadius = 0.15f;
+
+    // ‰½•bŠÔ‚Å‰~‚ªk¬‚·‚é‚©
+    duration = 1.0f;
 
     waitTimer = 0.0f;
 }
@@ -860,6 +869,7 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
     {
     case DeathPhase::ShrinkToCenter:
     {
+#if 0
         // 2.0 -> 0.15
         deathRadius -= deltaTime * 0.8f;
 
@@ -868,7 +878,29 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
             deathRadius = 0.15f;
 
             phase = DeathPhase::Wait;
+            player->PlayAnimation("Down", false, true, 0.1f);
         }
+#else
+        elapsedTime += deltaTime;
+
+        float t = elapsedTime / duration;
+
+        t = std::clamp(t, 0.0f, 1.0f);
+
+        deathRadius =
+            std::lerp(startRadius, targetRadius, t);
+
+        player->SetDeathRadius(deathRadius);
+
+        if (t >= 1.0f)
+        {
+            phase = DeathPhase::Wait;
+
+            waitTimer = 0.0f;
+
+            player->PlayAnimation("Down", false, true, 0.1f);
+        }
+#endif // 0
 
         break;
     }
@@ -878,9 +910,17 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
         waitTimer += deltaTime;
 
         // ‚¿‚å‚Á‚ÆŽ~‚ß‚é
-        if (waitTimer >= 1.0f)
+        if (waitTimer >= 0.5f)
         {
             phase = DeathPhase::CloseFinish;
+
+            elapsedTime = 0.0f;
+
+            startRadius = 0.15f;
+            targetRadius = -0.1f;
+
+            // •Â‚¶Ø‚é•b”
+            duration = 0.4f;
         }
 
         break;
@@ -888,6 +928,7 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
 
     case DeathPhase::CloseFinish:
     {
+#if 0
         // 0.15 -> -0.1
         deathRadius -= deltaTime * 0.5f;
 
@@ -900,6 +941,34 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("fade","0"),std::make_pair("fromScene","GameScene") }, TransitionStyle::Fade);
             phase = DeathPhase::SceneTransition;
         }
+#else
+        elapsedTime += deltaTime;
+
+        float t = elapsedTime / duration;
+
+        t = std::clamp(t, 0.0f, 1.0f);
+            deathRadius =
+            std::lerp(startRadius, targetRadius, t);
+
+        player->SetDeathRadius(deathRadius);
+
+        if (t >= 1.0f)
+        {
+            SceneTransitionManager::Instance().RequestTransition(
+                "LoadingScene",
+                {
+                    std::make_pair("preload", "ResultScene"),
+                    std::make_pair("fade","0"),
+                    std::make_pair("fromScene","GameScene")
+                },
+                TransitionStyle::Fade
+            );
+
+            phase = DeathPhase::SceneTransition;
+        }
+
+
+#endif // 0
 
         break;
     }

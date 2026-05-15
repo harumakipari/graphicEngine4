@@ -9,6 +9,22 @@ void ScoreHistoryManager::Submit(STAGE_NAME stage, int score)
 {
     auto& list = rankings[stage];
 
+    // 同じスコアが既に存在するなら追加しない
+    auto it = std::find_if(
+        list.begin(),
+        list.end(),
+        [score](const Entry& entry)
+        {
+            return entry.score == score;
+        });
+
+    if (it != list.end())
+    {
+        return;
+    }
+
+
+
     list.push_back({ score });
 
     std::sort(list.begin(), list.end(),
@@ -114,7 +130,16 @@ STAGE_NAME ScoreHistoryManager::StringToStageName(const std::string& name)
 // 新記録かどうか
 bool ScoreHistoryManager::IsNewRecord(STAGE_NAME stage, int score)
 {
-    return false;
+    auto it = rankings.find(stage);
+
+    // まだ記録が無いなら新記録
+    if (it == rankings.end() || it->second.empty())
+    {
+        return true;
+    }
+
+    // 現在の1位より高ければ新記録
+    return score >= it->second.front().score;
 }
 
 // データをjsonに保存する

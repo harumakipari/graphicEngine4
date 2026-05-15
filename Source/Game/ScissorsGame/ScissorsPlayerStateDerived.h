@@ -187,5 +187,10 @@ private:
     DeathPhase phase = DeathPhase::ShrinkToCenter;
     float elapsedTime = 0.0f;
     float waitTimer = 0.0f;
+
+    // ”¼ŒaƒAƒjƒ—p
+    float startRadius = 0.0f;
+    float targetRadius = 0.0f;
+    float duration = 1.0f;
 };
 

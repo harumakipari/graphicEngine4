@@ -23,4 +23,9 @@ private:
     std::vector<std::shared_ptr<UIImageComponent>> timerDigits;
 
     std::shared_ptr<UIImageComponent> timerFrameImage;
+    // ”z’u
+    float spacing = 33.0f;
+    DirectX::XMFLOAT2 numberSize = { 35.0f,49.0f };
+    DirectX::XMFLOAT2 minuteSpacing = { -24.0f,0.0f };
+    DirectX::XMFLOAT2 secondSpacing = { -27.0f,19.0f };
 };
