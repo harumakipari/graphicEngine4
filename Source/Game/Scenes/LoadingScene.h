@@ -90,6 +90,7 @@ private:
     DirectX::XMFLOAT3 cameraTarget = { 0.0f,0.0f,0.0f };
 
     std::shared_ptr<Sprite> loadingSprite;
+    std::shared_ptr<Sprite> gameOverSprite;
 
     SceneRenderer sceneRender;
     float loadingTime = 1.5f;   // ƒ[ƒh‚É‚©‚©‚éŠÔ

@@ -116,17 +116,7 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
     auto& param = SceneTransitionManager::Instance().GetParams();
 
 
-    if (param.contains("fromScene"))
-    {// どこのシーンからきて
-        std::string fromScene = param.at("fromScene");
 
-        Logger::Log("fromScene" + fromScene);
-        if (fromScene == "TutorialScene")
-        {
-            StartToSelect();
-        }
-
-    }
 
     // シーンのライト設定などを設定する
     SceneSettings settings = {};
@@ -206,6 +196,17 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
         SetUpActors();
     }
 
+    if (param.contains("fromScene"))
+    {// どこのシーンからきて
+        std::string fromScene = param.at("fromScene");
+
+        Logger::Log("fromScene" + fromScene);
+        if (fromScene == "TutorialScene")
+        {// チュートリアルシーンから戻ってきていたら、
+            StartSelectScene();// 選択シーンから開始する
+        }
+
+    }
 
     return true;
 }
@@ -580,6 +581,18 @@ void TitleScene::StartToSelect()
     // 本のアクター
     bookActor->OpenBook(toSelectInterval);
 }
+
+// セレクトシーンから開始する
+void TitleScene::StartSelectScene()
+{
+    // メインカメラ
+    mainCameraActor->Play(0.0f);
+    // メインカメラターゲットアクター
+    cameraTargetActor->Play(0.0f);
+    // 本のアクター
+    bookActor->OpenBook(0.0f);
+}
+
 
 // タイトルシーンへ
 void TitleScene::StartToTitle()

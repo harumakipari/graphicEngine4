@@ -49,6 +49,9 @@ public:
     //シーンの自動登録
     static inline Scene::Autoenrollment<TitleScene> _autoenrollment;
 
+    // セレクトシーンから開始する
+    void StartSelectScene();
+
 private:
 
 private:

@@ -42,15 +42,16 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
     preload_scene = props.at("preload");
     _async_preload_scene(device, width, height, preload_scene);
 
-    loadingSprite = std::make_shared<Sprite>(device, L"./Data/Textures/UI/Oden_seane_change.png");
+    //loadingSprite = std::make_shared<Sprite>(device, L"./Data/Textures/UI/Oden_seane_change.png");
 
     auto& param = SceneTransitionManager::Instance().GetParams();
     if (param.contains("fade"))
-    {
+    {// ゲームオーバーだったら
         std::string name = param.at("fade");
         if (name == "0")
         {
             loadingSprite = std::make_shared<Sprite>(device, L"./Data/Textures/ScissorsUI/black.png");
+            gameOverSprite =std::make_shared<Sprite>(device, L"./Data/Textures/ScissorsUI/gameOver.png");
         }
     }
 
@@ -150,6 +151,7 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime
     if (loadingSprite)
     {
         loadingSprite->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        gameOverSprite->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     }
 }
 
