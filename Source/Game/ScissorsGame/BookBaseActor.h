@@ -27,6 +27,7 @@ protected:
 
         bool isUnlocked = false;    // ステージ開放されているかどうか
         bool wasHovered = false;    // 前回マウスがステージにかざされていたかどうか
+        bool wasLockedHovered = false;  //ロック時に音マウスがステージにかかっているかどうか
     };
 
     struct BookPage // 本のページ

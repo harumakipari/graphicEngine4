@@ -28,6 +28,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Player/ScissorsPlayer.gltf", false, true);
     skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGamePlayerPS";
+    //skeletalMeshComponent->overrideDeferredPipelineName = "GameModelColorFilterPS";
     skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Player;
 
     // アニメーションコントローラーを作成

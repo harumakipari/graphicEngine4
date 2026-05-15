@@ -508,18 +508,30 @@ void BookBaseActor::UpdatePage(const BookPage& page)
 
     for (auto& stage : page.stages)
     {
-        if (!stage->isUnlocked)
-        {
-            //stage->model->plusAlphaCBuffer->data.  (
-            continue;
-        }
-
-
-
-
         bool hitThis =
             hit &&
             result.component == stage->collider.get();
+
+
+        if (!stage->isUnlocked)
+        {
+            stage->model->plusAlphaCBuffer->data.saturation = -0.87f;// 彩度を落とす
+            bool hoverEnter =
+                hitThis &&
+                !stage->wasLockedHovered;
+
+            if (hoverEnter)
+            {
+                CoreAudio::PlayOneShot(
+                    L"./Data/Sound/SE1/cancel.wav");
+            }
+
+            stage->wasLockedHovered = hitThis;
+            continue;
+        }
+
+        stage->model->plusAlphaCBuffer->data.saturation = 0.f;// 彩度を戻す
+
 
 
         // ホバー開始を検出
