@@ -104,10 +104,10 @@ private:
 
     void SpawnEnemy(
         const XMFLOAT3& pos,
-        YarnEnemyType type,bool isBig,
+        YarnEnemyType type, bool isBig,
         float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 });
 
-    
+
 public:
     EnemyTuning enemyTuning = {}; // 敵の調整用
     CoinTuning normalCoin = {}; // コインの調整用
@@ -147,9 +147,10 @@ private:
     // 
     struct GameSceneConstants
     {
-        DirectX::XMFLOAT2 playerScreenPosition={0.0f,0.0f};  //プレイヤーの場所　死亡演出に必要な定数バッファ
-        DirectX::XMFLOAT2 screenSize={1280.0f,720.0f};  //スクリーンサイズ
+        DirectX::XMFLOAT2 playerScreenPosition = { 0.0f,0.0f };  //プレイヤーの場所　死亡演出に必要な定数バッファ
+        DirectX::XMFLOAT2 screenSize = { 1280.0f,720.0f };  //スクリーンサイズ
         float radius = 0.0f;
+        DirectX::XMFLOAT3 gameOverColor = { 0.965f,0.588f,0.475f };
     };
     std::shared_ptr<ConstantBuffer<GameSceneConstants>> gameSceneCBuffer;
 #endif // 0

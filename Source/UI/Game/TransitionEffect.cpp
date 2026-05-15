@@ -163,9 +163,9 @@ void FadeTransitionEffect::Update(float deltaTime)
 {
     easingRunner->Tick(deltaTime);
       sprite->SetColor({
-                0.0f,
-                0.0f,
-                0.0f,
+                1.0f,
+                1.0f,
+                1.0f,
                 spriteAlpha
                 });
 }

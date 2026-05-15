@@ -33,11 +33,13 @@ float4 main(VS_OUT pin) : SV_TARGET
     delta.x *= aspectX;
 
     float dist = length(delta);
-    float softness = 0.08f;
+    float softness = 0.0f;
 
     float mask = smoothstep(radius, radius + softness, dist);
 
-    color.rgb *= (1.0f - mask);
+
+    color.rgb = lerp(color.rgb, gameOverColor, mask);
+    //color.rgb *= (1.0f - mask);
 
     return color;
 }

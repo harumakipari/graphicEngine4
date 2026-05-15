@@ -925,7 +925,6 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
 
         break;
     }
-
     case DeathPhase::CloseFinish:
     {
 #if 0

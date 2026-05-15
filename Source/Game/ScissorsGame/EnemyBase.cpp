@@ -516,6 +516,12 @@ void EnemyBase::ReleasedTied()
 // Ž€–S’†‚ÌXVˆ—
 void EnemyBase::UpdateDead(float deltaTime)
 {
+
+    if (powerUpMarkMeshComponent)
+    {
+        powerUpMarkMeshComponent->SetIsVisible(false);
+    }
+
     if (waitBeforeKnockback)
     {
         delayTimer += deltaTime;

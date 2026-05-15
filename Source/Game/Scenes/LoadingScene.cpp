@@ -44,6 +44,13 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
 
     //loadingSprite = std::make_shared<Sprite>(device, L"./Data/Textures/UI/Oden_seane_change.png");
 
+
+    // チップスデータを設定する
+    SetTipsData();
+
+
+    loadingTime = 2.5f;   // ロードにかかる時間
+
     auto& param = SceneTransitionManager::Instance().GetParams();
     if (param.contains("fade"))
     {// ゲームオーバーだったら
@@ -51,15 +58,11 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
         if (name == "0")
         {
             loadingSprite = std::make_shared<Sprite>(device, L"./Data/Textures/ScissorsUI/black.png");
-            gameOverSprite =std::make_shared<Sprite>(device, L"./Data/Textures/ScissorsUI/gameOver.png");
+            //gameOverSprite =std::make_shared<Sprite>(device, L"./Data/Textures/ScissorsUI/gameOver.png");
+            loadingTime = 0.0f;
         }
     }
 
-    // チップスデータを設定する
-    SetTipsData();
-
-
-    loadingTime = 2.5f;   // ロードにかかる時間
     return true;
 }
 
@@ -151,7 +154,7 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime
     if (loadingSprite)
     {
         loadingSprite->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        gameOverSprite->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        //gameOverSprite->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     }
 }
 
