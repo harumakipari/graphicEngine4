@@ -58,6 +58,15 @@ void WaveManager::SetWaves(STAGE_NAME stageId)
 
 void WaveManager::Update(float deltaTime)
 {
+    if (auto gameManagerActor = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>())
+    {
+        if (!gameManagerActor->IsGameInputEnabled())
+        {// ゲームが開始するまでは
+            return;// 敵を生成しない
+        }
+    }
+
+
 
     switch (waveState)
     {
@@ -140,6 +149,10 @@ void WaveManager::UpdateSpawning(float deltaTime)
     auto& wave = waves[currentWave];
     timer += deltaTime;
 
+
+    bool playPreviewSE = false; // 出現エフェクトの音声再生フラグ
+    bool playSpawnSE = false;   // 出現の音声再生フラグ
+
     // --- spawn処理 ---
     for (int i = 0; i < wave.spawns.size(); i++)
     {
@@ -150,16 +163,28 @@ void WaveManager::UpdateSpawning(float deltaTime)
         {
             SpawnPreviewEffect(s.position);
             state.previewed = true;
+            playPreviewSE = true;
         }
 
         if (!state.spawned && timer >= s.delay + s.spawnDelay)
         {
-            // 敵が出てくる音
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_spawn1.wav", 1.0f);
             SpawnEnemy(s.position, s.type, s.isBig, s.speed, s.dir, s.isTied);
             state.spawned = true;
+            playSpawnSE = true;
         }
     }
+
+    if (playPreviewSE)
+    {
+        // 敵の出現エフェクトの音
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_spawn.wav", 1.0f);
+    }
+    if (playSpawnSE)
+    {
+        // 敵が出てくる音
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_spawn1.wav", 1.0f);
+    }
+    
 
     waveStarted = true;
 

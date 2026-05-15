@@ -515,9 +515,13 @@ void BookBaseActor::UpdatePage(const BookPage& page)
             hit &&
             result.component == stage->collider.get();
 
+
         // ホバー演出
         if (hitThis)
         {
+            // 新しくかざされた時に音を出す
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/stage_select_control.wav");
+
             stage->model->SetRelativeScaleDirect(
                 {
                     1.1f,

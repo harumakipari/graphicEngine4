@@ -449,6 +449,11 @@ void InputSystem::Update(float deltaTime)
 
 bool InputSystem::GetInputState(const std::string& action, InputStateMask state, DeviceFlags flag)
 {
+    if (!inputEnabled)
+    {// “ü—Í‚ª–³Œø‚¾‚Á‚½‚çA
+        return false;
+    }
+
     auto it = inputKeys.find(action);
     if (it != inputKeys.end())
     {

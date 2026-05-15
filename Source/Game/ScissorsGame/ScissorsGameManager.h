@@ -30,7 +30,11 @@ public:
     void SetGameInputEnabled(bool enabled) { gameInputEnabled = enabled; }
 
     // ƒQ[ƒ€‚Ì“ü—Íˆ—ó‘Ô‚ğæ“¾‚·‚é
-    bool IsGameInputEnabled() const { return gameInputEnabled; }
+    bool IsGameInputEnabled() const
+    {
+        int i = 0;
+        return gameInputEnabled;
+    }
 private:
     float gameTimer = 0.0f; // ƒQ[ƒ€ŠÔ
 

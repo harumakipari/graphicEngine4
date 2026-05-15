@@ -438,21 +438,36 @@ void ScissorsPlayer1::Update(float deltaTime)
 
     Character::Update(deltaTime);
 
-    if (gameManager)
-    {
-        if (!gameManager->IsGameInputEnabled())
-        {
-            //stateMachine_->ChangeState("Idle");
-            characterMovementComponent->SetSpeed(0.0f);
-            return;
-        }
-    }
+    //if (gameManager)
+    //{
+    //    if (!gameManager->IsGameInputEnabled())
+    //    {
+    //        //stateMachine_->ChangeState("Idle");
+    //        characterMovementComponent->SetSpeed(0.0f);
+    //        return;
+    //    }
+    //}
 
     //　軌跡更新
     trail.UpdateTrail(deltaTime);
 
     // 入力に基づいて移動と回転を更新
     auto intent = inputComponent->GetIntent();
+
+    if (auto gameManagerActor = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>())
+    {
+        if (!gameManagerActor->IsGameInputEnabled())
+        {
+            stateMachine_->ChangeState("Idle");
+            intent = {};
+        }
+        else
+        {
+            
+        }
+    }
+
+   
 
     // 左スティック入力
     float stickX = intent.leftMove.x;

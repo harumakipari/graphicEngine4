@@ -300,6 +300,26 @@ public:
         vibrationTimer = duration;
     }
 
+    // 入力を有効化・無効化する
+    static void SetInputEnabled(bool enabled)
+    {
+        inputEnabled = enabled;
+        if (inputEnabled)
+        {
+            Logger::Log(U8("入力を有効化した"));
+        }
+        else
+        {
+            Logger::Log(U8("入力を無効化した"));
+        }
+    }
+
+    // 入力可能かどうか
+    static bool IsInputEnabled()
+    {
+        return inputEnabled;
+    }
+
 private:
 
     // カーソルの表示非表示を変更
@@ -351,6 +371,7 @@ private:
     static inline float vibrationDuration = 0.0f; // 振動の総時間
     static inline float vibrationPower = 0.0f; // 振動の強さ（0.0f～1.0f）
 
+    static inline bool inputEnabled = true; // 入力することができるかどうか
 };
 
 #endif // INPUT_SYSTEM_H

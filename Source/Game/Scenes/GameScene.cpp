@@ -239,7 +239,7 @@ void GameScene::Start()
         stage = StringToStageName(stageName);
     }
 
-    stage = STAGE_NAME::BOSS;
+    //stage = STAGE_NAME::BOSS;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(stage);
@@ -249,6 +249,15 @@ void GameScene::Start()
     auto uiStartActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUIStartActor>("uiStartActor");
 
     auto uiFinishActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiEndActor>("uiEndActor");
+
+    SceneTransitionManager::Instance().SetOnOpeningFinished([this, uiStartActor]()
+        {
+            uiStartActor->PlayReady([this]()
+                {
+                    OnGameStart();
+                });
+        });
+
 
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
@@ -754,7 +763,7 @@ void GameScene::SetUpActors()
     // ゲームマネージャーを生成
     Transform gameManagerTransform(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto gameManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsGameManager>("gameManagerActor", gameManagerTransform);
-    gameManagerActor->StartGame();
+    gameManagerActor->SetGameInputEnabled(false);
 
     //Transform timerActorTransform(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     //auto scissorsUiTimeActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiTimerActor>("timeActor", timerActorTransform);
@@ -915,6 +924,16 @@ void GameScene::LoadStage(STAGE_NAME stageId)
 
 }
 
+// ゲーム開始処理
+void GameScene::OnGameStart()
+{
+    audioBgmComponent->Play();
+    if (auto gameManagerActor = GetActorManager()->GetActorOfType<ScissorsGameManager>())
+    {
+        gameManagerActor->StartGame();
+    }
+}
+
 // ステージごとのギミック生成
 void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
 {
@@ -1058,7 +1077,7 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
 void GameScene::SetupBGM(STAGE_NAME stageId)
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
-    auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
+    audioBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
 
     switch (stageId)
     {
@@ -1068,16 +1087,14 @@ void GameScene::SetupBGM(STAGE_NAME stageId)
     case STAGE_NAME::REFLECT_WALL:
     case STAGE_NAME::BOBBIN_SECOND:
     case STAGE_NAME::DIFFICULT:
-        audioComp->SetSource(L"./Data/Sound/BGM1/game_bgm.wav");
-        audioComp->SetLoop(true);
-        audioComp->Play();
-        audioComp->SetVolume(0.5f);
+        audioBgmComponent->SetSource(L"./Data/Sound/BGM1/game_bgm.wav");
+        audioBgmComponent->SetLoop(true);
+        audioBgmComponent->SetVolume(0.5f);
         break;
     case STAGE_NAME::BOSS:
-        audioComp->SetSource(L"./Data/Sound/BGM1/boss_bgm.wav");
-        audioComp->SetLoop(true);
-        audioComp->Play();
-        audioComp->SetVolume(0.5f);
+        audioBgmComponent->SetSource(L"./Data/Sound/BGM1/boss_bgm.wav");
+        audioBgmComponent->SetLoop(true);
+        audioBgmComponent->SetVolume(0.5f);
         break;
     }
 

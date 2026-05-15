@@ -84,6 +84,9 @@ public:
     static inline Scene::Autoenrollment<GameScene> _autoenrollment;
 
 private:
+    // ゲーム開始処理
+    void OnGameStart();
+
     // ステージをロードする
     void LoadStage(STAGE_NAME stageId);
 
@@ -104,7 +107,7 @@ private:
         YarnEnemyType type,bool isBig,
         float speed = 2.0f, const XMFLOAT3& dir = { 1,0,0 });
 
-
+    
 public:
     EnemyTuning enemyTuning = {}; // 敵の調整用
     CoinTuning normalCoin = {}; // コインの調整用
@@ -119,6 +122,8 @@ private:
     std::shared_ptr<UIImageComponent> mouseCursorPar;   // マウスパー
     std::shared_ptr<UIImageComponent> mouseCursorGrab;  // マウス掴み
     std::shared_ptr<UIImageComponent> mouseCursorPause; // マウス　ポーズ
+
+    std::shared_ptr<CoreAudioSourceComponent> audioBgmComponent; // BGMコンポーネント
 
     // デカール用
     std::unique_ptr<GeometricCube> decal_cube;// デバック用のキューブ

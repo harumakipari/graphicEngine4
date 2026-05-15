@@ -36,6 +36,9 @@ void SceneTransitionManager::RequestTransition(
         return;
     }
 
+    // “ü—Í‚ð–³Œø‰»‚·‚é
+    InputSystem::SetInputEnabled(false);
+
     currentStyle = style;
 
     nextScene_ = nextScene;
@@ -88,6 +91,11 @@ void SceneTransitionManager::Update(float deltaTime)
         {
             state_ = State::Idle;
             Logger::Log(U8("Opening ‚ð’Ê‚Á‚½"));
+
+            // “ü—Í‚ð—LŒø‰»‚·‚é
+            InputSystem::SetInputEnabled(true);
+
+
 
             if (onOpeningFinished)
             {

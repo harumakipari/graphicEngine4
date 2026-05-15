@@ -5,6 +5,7 @@
 #include "ButtonCoinActor.h"
 #include "EnemyBase.h"
 #include "RabbitBossEnemy.h"
+#include "ScissorsGameManager.h"
 #include "ScissorsPlayer1.h"
 #include "WaveManagaer.h"
 #include "Engine/Scene/Scene.h"
@@ -79,6 +80,14 @@ void BobbinActor::Initialize(const Transform& transform)
 
 void BobbinActor::Update(float deltaTime)
 {
+    if (auto gameManagerActor = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>())
+    {
+        if (!gameManagerActor->IsGameInputEnabled())
+        {
+            return; 
+        }
+    }
+
     UpdateShowArrow(deltaTime);
 
     DirectX::XMFLOAT3 center = GetPosition();
