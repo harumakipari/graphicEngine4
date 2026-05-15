@@ -226,7 +226,7 @@ void GameScene::Start()
     {
         PROFILE_SCOPE("Create Player");
         Transform playerTr(DirectX::XMFLOAT3{ 12.0f,0.0f,3.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-        //Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 0.01f,0.01f,0.01f });
+         //Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 0.01f,0.01f,0.01f });
         player = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsPlayer1>("player", playerTr);
     }
 
@@ -239,7 +239,7 @@ void GameScene::Start()
         stage = StringToStageName(stageName);
     }
 
-    //stage = STAGE_NAME::BOSS;
+    stage = STAGE_NAME::BOSS;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(stage);

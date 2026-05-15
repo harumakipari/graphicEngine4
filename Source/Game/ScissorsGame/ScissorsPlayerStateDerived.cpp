@@ -783,7 +783,6 @@ void ScissorsPlayerDashState::Exit()
         }
     }
 
-
     // プレイヤーのダッシュの値をリセット
     player->currentSegment = 0;
 
@@ -801,13 +800,11 @@ void ScissorsPlayerDashState::Exit()
     // ダッシュ後の無敵時間を設定する
     player->postDashInvincibleTimer = player->postDashInvincibleDuration;
 
-
     // デカールのデータをクリアする
     player->decal_datas.clear();
 
     // ボビンに当たったフラグをリセットする
     player->hitBobbinInThisDash = false;
-
 
 
 }

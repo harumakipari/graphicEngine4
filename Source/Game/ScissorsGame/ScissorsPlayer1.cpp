@@ -458,7 +458,10 @@ void ScissorsPlayer1::Update(float deltaTime)
     {
         if (!gameManagerActor->IsGameInputEnabled())
         {
+            if (!startDeathPerform)
+            {
             stateMachine_->ChangeState("Idle");
+            }
             intent = {};
         }
         else

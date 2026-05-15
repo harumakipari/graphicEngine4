@@ -98,7 +98,6 @@ GBUFFER_PS_OUT main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace)
     color.rgb = HueSaturation(color.rgb, modelHueShift, modelSaturation);
     color.rgb = BrightnessContrast(color.rgb,modelBrightness, contrast);
 
-
     pout.albedo = float4(color, baseColorFactor.a);
 #endif
 
