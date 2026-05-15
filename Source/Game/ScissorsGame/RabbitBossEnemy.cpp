@@ -28,6 +28,10 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
     controller->AddAnimation("Idle", 0);
+    controller->AddAnimation("WarpEnd", 1);
+    controller->AddAnimation("WarpStart", 2);
+    controller->AddAnimation("Win", 3);
+    controller->AddAnimation("Stan", 4);
     // アニメーションコントローラーを character に追加
     this->SetAnimationController(controller);
     PlayAnimation("Idle");
@@ -42,6 +46,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     stateMachine_->RegisterState(std::make_unique<RabbitBossAttackBuffState>(this));
     stateMachine_->RegisterState(std::make_unique<RabbitBossStunState>(this));
     stateMachine_->RegisterState(std::make_unique<RabbitBossDeathState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossWinState>(this));
 
     // ステートマシンを character に追加
     this->SetStateMachine(stateMachine_);
@@ -116,7 +121,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     // ボスのHPのUI
     {
         auto uiManager = GetOwnerScene()->GetUIManager();
-        DirectX::XMFLOAT2 gaugeSize = { 400.0f,50.0f };
+        DirectX::XMFLOAT2 gaugeSize = { 902.0f,84.0f };
 
         // ボスのHPゲージのフレームスプライト描画コンポーネントを追加
         gaugeFrameBackComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/bar_back.png", "bar_back_ui");
@@ -131,6 +136,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
         gaugeUi = std::make_shared<UIGaugeComponent>("./Data/Textures/ScissorsUI/bar_line.png", "./Data/Textures/ScissorsUI/bar.png", "bossGauge");
         gaugeUi->SetWorldPosition({ 50, 300 });
         gaugeUi->zOrder = 15;
+        gaugeUi->SetColor(CoreColor::White);
         gaugeUi->SetSize(gaugeSize);
 
         uiManager->Add(gaugeUi);
@@ -159,24 +165,20 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 
 void RabbitBossEnemyActor::Update(float deltaTime)
 {
-
     DirectX::XMFLOAT3 pos = GetPosition();
 
     // HPバーの処理
     {
-        DirectX::XMFLOAT2 uiPos = WorldToUI(pos);
         float hpGauge = static_cast<float>(hp);
         float hpGaugeMax = static_cast<float>(maxHp);
-        uiPos.x = gaugeUiOffset.x;
-        uiPos.y = gaugeUiOffset.y;
         if (gaugeUi)
         {
             gaugeUi->SetValue(hpGauge, hpGaugeMax);
-            gaugeUi->SetWorldPosition({ uiPos.x, uiPos.y });
+            gaugeUi->SetWorldPosition({ gaugeUiPos.x, gaugeUiPos.y });
             //gaugeUi->SetColor({ color.x,color.y,color.z,color.w });
             gaugeUi->SetGaugeOffset(gaugeFrameOffset);
-
-            gaugeFrameBackComponent->SetWorldPosition({ uiPos.x, uiPos.y });
+           ;
+            gaugeFrameBackComponent->SetWorldPosition({ gaugeUiPos.x + gaugeUiOffset.x, gaugeUiPos.y + gaugeUiOffset.y });
         }
     }
 
@@ -232,6 +234,10 @@ void RabbitBossEnemyActor::Update(float deltaTime)
 void RabbitBossEnemyActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
+    if (ImGui::Button(U8("ボスが勝つ")))
+    {
+        GetStateMachine()->ChangeState("Win");
+    }
     if (ImGui::Button(U8("ボスをスタンさせる")))
     {
         GetStateMachine()->ChangeState("Stun");
@@ -243,6 +249,7 @@ void RabbitBossEnemyActor::DrawImGuiDetails()
     ImGui::DragFloat2(U8("ゲージのオフセット値"), &gaugeUiOffset.x, 2.0f);
     ImGui::DragFloat2(U8("ゲージフレームのオフセット値"), &gaugeFrameOffset.x, 2.0f);
     ImGui::DragFloat(U8("出現攻撃範囲"), &spawnAttackRange, 0.5f, 0.0f, 10.0f);
+    ImGui::DragFloat2(U8("ゲージのUIのposition"), &gaugeUiPos.x, 2.0f);
 
 #endif
 }

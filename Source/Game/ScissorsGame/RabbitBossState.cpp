@@ -42,6 +42,7 @@ void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     BossAttackType type = PopAttack();
     //type = BossAttackType::Buff;
+#if 0
     switch (type)
     {
     case BossAttackType::Warp:
@@ -52,6 +53,7 @@ void RabbitBossAttackSelectState::Execute(float deltaTime)
         enemy->GetStateMachine()->ChangeState("BuffPreview");
         break;
     }
+#endif // 0
 }
 
 void RabbitBossAttackSelectState::Exit()
@@ -94,11 +96,17 @@ RabbitBossAttackSelectState::BossAttackType RabbitBossAttackSelectState::PopAtta
 // ワーププレビュー
 void RabbitBossAttackWarpPreviewState::Enter()
 {
+    enemy->PlayAnimation("WarpStart", false, true, 0.1f);
+    elapsedTime = 0.0f;
 }
 
 void RabbitBossAttackWarpPreviewState::Execute(float deltaTime)
 {
-    enemy->GetStateMachine()->ChangeState("Warp");
+    elapsedTime += deltaTime;
+    if (elapsedTime > 0.9f)
+    {
+        enemy->GetStateMachine()->ChangeState("Warp");
+    }
 }
 
 void RabbitBossAttackWarpPreviewState::Exit()
@@ -117,6 +125,7 @@ void RabbitBossAttackWarpState::Enter()
 
     // 最初は追尾マークのみ見た目を有効にする
     enemy->bossSpawnMarkModel->SetIsVisible(false);
+
 }
 
 void RabbitBossAttackWarpState::Execute(float deltaTime)
@@ -281,6 +290,9 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
             phase = WarpPhase::Emerge;
             timer = 0.0f;
             enemy->StartEmerge();
+            enemy->PlayAnimation("WarpEnd", false, true, 0.5f);
+            enemy->SetAnimationRate(1.f);
+
         }
     }
     break;
@@ -306,7 +318,6 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
 
 void RabbitBossAttackWarpState::Exit()
 {
-
     // スポーンの見た目を無効にする
     enemy->bossSpawnMarkModel->SetIsVisible(false);
 }
@@ -373,7 +384,6 @@ void RabbitBossStunState::Exit()
     enemy->stunModel->SetIsVisible(false);
 
     // 全ての敵の玉止めを外す
-
 }
 
 
@@ -408,6 +418,40 @@ void RabbitBossDeathState::Execute(float deltaTime)
 }
 
 void RabbitBossDeathState::Exit()
+{
+}
+
+// 勝利オブジェクト
+void RabbitBossWinState::Enter()
+{
+    enemy->collisionBoxComponent->DisableCollision();
+    elapsedTime = 0.0f;
+
+    // 敵の出現を終了させる
+    if (auto bossSpawner = enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<BossSpawner>())
+    {
+        bossSpawner->Deactivate();
+    }
+
+    enemy->PlayAnimation("Win", true, true, 0.5f);
+}
+
+void RabbitBossWinState::Execute(float deltaTime)
+{
+    // 勝利の演出を何か入れる
+    enemy->UpdateWin(deltaTime);
+
+    elapsedTime += deltaTime;
+
+    //const float deadPerformTimeInterval = 5.0f;
+    const float deadPerformTimeInterval = 1.0f;
+    if (elapsedTime >= deadPerformTimeInterval)
+    {
+        enemy->EndDeathPerform();
+    }
+}
+
+void RabbitBossWinState::Exit()
 {
 }
 

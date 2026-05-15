@@ -92,6 +92,9 @@ public:
     // 死亡演出が終了した時に呼ぶ処理
     void EndDeathPerform();
 
+    //　勝利時に呼ぶ更新処理
+    void UpdateWin(float deltaTime) {}
+
     // 出現している全ての敵を玉止めする関数
     void ApplyTiedAllEnemy();
 
@@ -139,9 +142,9 @@ private:
 
     std::shared_ptr<UIImageComponent> gaugeFrameBackComponent;  // ボスHPゲージのスプライト描画
     std::shared_ptr<UIGaugeComponent> gaugeUi; // ボスHPのゲージUI
-    //DirectX::XMFLOAT2 gaugeUiOffset = { -184.0f,-366.0f }; // ゲージのUIオフセット値
-    DirectX::XMFLOAT2 gaugeUiOffset = { 720.0f,40.0f }; // ゲージのUIオフセット値
-    DirectX::XMFLOAT2 gaugeFrameOffset = { 4.0f,0.0f }; // ゲージフレームのオフセット値
+    DirectX::XMFLOAT2 gaugeUiOffset = { 0.0f,0.0f }; // ゲージのUIオフセット値
+    DirectX::XMFLOAT2 gaugeFrameOffset = { -2.0f,0.0f }; // ゲージフレームのオフセット値
+    DirectX::XMFLOAT2 gaugeUiPos = { 506.0f,34.0f };   // ゲージのposition
 
     float diveOffsetY = 0.0f;
     bool isDiving = false;

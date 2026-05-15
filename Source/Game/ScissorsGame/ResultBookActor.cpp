@@ -265,7 +265,6 @@ void ResultBookActor::Update(float deltaTime)
     secondDisplay.SetValue(5, 2);
 
 #else
-
     // スコアを表示する
     const ResultData& stats = ScoreSystem::GetResultStats();
     int score = stats.totalScore;
@@ -288,27 +287,28 @@ void ResultBookActor::Update(float deltaTime)
     int minutes = totalSeconds / 60;
     int seconds = totalSeconds % 60;
 
-    minuteDisplay.SetValue(minutes, 2);
+    minuteDisplay.SetValue(minutes);
     secondDisplay.SetValue(seconds, 2);
 
 
     // ハイスコアだったら、メダルを表示する
     //ScoreHistoryManager::IsNewRecord()
 
-
-
     // ランキングを取得する
     std::vector<ScoreHistoryManager::Entry> ranking = ScoreHistoryManager::GetTop5(stats.stageName);
-    int top1 = ranking[0].score;
-    ranking1Display.SetValue(top1);
-    int top2 = ranking[1].score;
-    ranking2Display.SetValue(top2);
-    int top3 = ranking[2].score;
-    ranking3Display.SetValue(top3);
-    int top4 = ranking[3].score;
-    ranking4Display.SetValue(top4);
-    int top5 = ranking[3].score;
-    ranking5Display.SetValue(top5);
+    // 5件分必ず表示（足りないところは0）
+    int scores[5] = { 0, 0, 0, 0, 0 };
+
+    for (size_t i = 0; i < ranking.size() && i < 5; i++)
+    {
+        scores[i] = ranking[i].score;
+    }
+
+    ranking1Display.SetValue(scores[0]);
+    ranking2Display.SetValue(scores[1]);
+    ranking3Display.SetValue(scores[2]);
+    ranking4Display.SetValue(scores[3]);
+    ranking5Display.SetValue(scores[4]);
 
 #endif
 }

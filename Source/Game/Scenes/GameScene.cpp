@@ -231,20 +231,20 @@ void GameScene::Start()
     }
 
     auto& param = SceneTransitionManager::Instance().GetParams();
-    STAGE_NAME stage = STAGE_NAME::FIRST;
+    currentStageName = STAGE_NAME::FIRST;
 
     if (param.contains("stage"))
     {
         std::string stageName = param.at("stage");
-        stage = StringToStageName(stageName);
+        currentStageName = StringToStageName(stageName);
     }
 
-    stage = STAGE_NAME::REFLECT_WALL;
+    currentStageName = STAGE_NAME::BOSS;
 
     // 遊ぶステージ名を記録する
-    ScoreSystem::RecordStageName(stage);
+    ScoreSystem::RecordStageName(currentStageName);
     // ステージデータをロードする
-    LoadStage(stage);
+    LoadStage(currentStageName);
 
     auto uiStartActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUIStartActor>("uiStartActor");
 
@@ -277,6 +277,7 @@ void GameScene::Update(float deltaTime)
     ScoreSystem::Update(deltaTime);
 
     // 死亡演出
+    if (currentStageName==STAGE_NAME::BOSS)
     {
         DirectX::XMFLOAT3 playerPos = player->GetPosition();
         DirectX::XMFLOAT2 playerUiPos = WorldToUI(playerPos);
@@ -292,7 +293,23 @@ void GameScene::Update(float deltaTime)
         playerUiPos.y /= gameSceneCBuffer->data.screenSize.y;
 
         gameSceneCBuffer->data.playerScreenPosition = playerUiPos;
+    }
+    else 
+    {
+        DirectX::XMFLOAT3 playerPos = player->GetPosition();
+        DirectX::XMFLOAT2 playerUiPos = WorldToUI(playerPos);
 
+        float deathRadius = player->GetDeathRadius();
+
+        // 2.0f -> 0.15f -> -0.1f
+        //gameSceneCBuffer->data.radius = gameOverRadius;
+        gameSceneCBuffer->data.radius = deathRadius;
+        gameSceneCBuffer->data.screenSize = { Graphics::GetScreenWidth(),Graphics::GetScreenHeight() };
+
+        playerUiPos.x /= gameSceneCBuffer->data.screenSize.x;
+        playerUiPos.y /= gameSceneCBuffer->data.screenSize.y;
+
+        gameSceneCBuffer->data.playerScreenPosition = playerUiPos;
     }
 
     // マウスカーソルの更新処理

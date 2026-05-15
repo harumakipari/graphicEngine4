@@ -863,7 +863,7 @@ private:
     float value = 1.0f;  // 0.0f ~ 1.0f
     std::shared_ptr<Sprite>  frameTexture;  //　枠のテクスチャ
     XMFLOAT2 gaugeOffset = { 0.0f,0.0f }; // ゲージの中身のオフセット
-    CoreColor gaugeFrameColor = CoreColor::Black; // ゲージのフレームの色
+    CoreColor gaugeFrameColor = CoreColor::White; // ゲージのフレームの色
 };
 
 class UISceneChangeComponent : public UICoreComponent

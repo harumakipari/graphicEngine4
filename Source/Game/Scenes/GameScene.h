@@ -62,6 +62,19 @@ public:
         std::string modelPath = "./Data/TeamModels/Item/NormalButtonCoin.glb";
     };
 
+    struct DeathEffectParam
+    {
+        float startRadius = 2.0f;
+        float targetRadius = 0.15f;
+
+        float shrinkDuration = 1.0f;
+        float waitTime = 0.5f;
+
+        float closeTargetRadius = -0.1f;
+        float closeDuration = 0.4f;
+
+    };
+
 public:
     bool Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props) override;
 
@@ -169,6 +182,6 @@ private:
     std::unique_ptr<FrameBuffer> sceneFrameBuffer; // UIも含めたフレームバッファ
     Microsoft::WRL::ComPtr<ID3D11PixelShader> gameOverPs;
 
+    STAGE_NAME currentStageName = STAGE_NAME::FIRST;    // 今遊んでいるステージ名
     float gameOverRadius = 0.0f;
-
 };

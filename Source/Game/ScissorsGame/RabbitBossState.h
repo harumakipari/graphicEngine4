@@ -102,6 +102,7 @@ public:
     const char* GetName() const override { return "WarpPreview"; }
 
 private:
+    float elapsedTime = 0.0f;
 };
 
 // ワープオブジェクト
@@ -224,4 +225,25 @@ public:
 private:
     float elapsedTime = 0.0f;   // 経過時間
 
+};
+
+// 勝利オブジェクト
+class RabbitBossWinState : public RabbitBossStateBase
+{
+public:
+    // コンストラクタ
+    RabbitBossWinState(RabbitBossEnemyActor* enemy) :RabbitBossStateBase(enemy) {}
+    // デストラクタ
+    virtual ~RabbitBossWinState() = default;
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステートから出ていくときのメソッド
+    void Exit() override;
+    // ステート名を取得
+    const char* GetName() const override { return "Win"; }
+
+private:
+    float elapsedTime = 0.0f;   // 経過時間
 };
