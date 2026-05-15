@@ -22,6 +22,13 @@ void EnemyBase::Initialize(const Transform& transform)
     // 最初の位置を保存
     startPosition = transform.GetLocation();
 
+    // ボスの出現位置モデルを生成する
+    powerUpMarkMeshComponent = AddComponent<SkeletalMeshComponent>("powerUpMeshComponent", parentName);
+    powerUpMarkMeshComponent->SetModel("./Data/TeamModels/Marks/BossSpawnMark.gltf", false, true);
+    powerUpMarkMeshComponent->overrideDeferredPipelineName = "OpaqueMarkPS";
+    powerUpMarkMeshComponent->SetIsCastShadow(false);
+    powerUpMarkMeshComponent->SetIsVisible(false);
+
     // 倒したときのスコア
     scoreData = { 100,0 };
 
@@ -307,6 +314,9 @@ void EnemyBase::UpdateTiedVisual()
 // サイズ変更演出更新処理
 void EnemyBase::UpdateSizeChanging(float deltaTime)
 {
+    // パワーアップのモデルを表示
+    powerUpMarkMeshComponent->SetIsVisible(true);
+
     sizeChangeTimer += deltaTime;
 
     // 点滅
@@ -330,6 +340,8 @@ void EnemyBase::UpdateSizeChanging(float deltaTime)
     if (sizeChangeTimer >= sizeChangeDuration)
     {
         isSizeChanging = false;
+
+        powerUpMarkMeshComponent->SetIsVisible(false);
 
         // 色戻す
         skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };

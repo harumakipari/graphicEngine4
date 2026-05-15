@@ -242,6 +242,8 @@ protected:
     std::shared_ptr<RotationComponent> rotationComponent; // 回転のコンポーネント
     std::shared_ptr<SphereComponent> sphereCollisionComponent; // 当たり判定のコンポーネント
 
+    std::shared_ptr<SkeletalMeshComponent> powerUpMarkMeshComponent;    // 敵が強化される時に出現する描画コンポーネントを追加
+
     // 移動のパラメータ
     DirectX::XMFLOAT3 moveDirection = { 1.0f, 0.0f, 0.0f }; // 線形移動の方向
     float speed = 2.0f; // 線形移動の速度
