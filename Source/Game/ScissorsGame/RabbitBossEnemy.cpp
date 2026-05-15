@@ -25,6 +25,30 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     // ボスの描画順を後にする
     skeletalMeshComponent->SetPriority(3);
 
+    // アニメーションコントローラーを作成
+    auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
+    controller->AddAnimation("Idle", 0);
+    // アニメーションコントローラーを character に追加
+    this->SetAnimationController(controller);
+    PlayAnimation("Idle");
+
+    // ステートマシンを作成
+    stateMachine_ = std::make_shared<StateMachine>();
+    stateMachine_->RegisterState(std::make_unique<RabbitBossIdleState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackSelectState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackWarpPreviewState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackWarpState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackBuffPreviewState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackBuffState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossStunState>(this));
+    stateMachine_->RegisterState(std::make_unique<RabbitBossDeathState>(this));
+
+    // ステートマシンを character に追加
+    this->SetStateMachine(stateMachine_);
+    // 初期ステートを設定
+    stateMachine_->ChangeState("Idle");
+
+
     // ボスの出現位置モデルを生成する
     bossSpawnMarkModel = AddComponent<SkeletalMeshComponent>("bossSpawnMarkModel",parentName);
     bossSpawnMarkModel->SetModel("./Data/TeamModels/Marks/BossSpawnMark.gltf", false, true);
@@ -118,21 +142,6 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     stunModel->SetIsCastShadow(false);
     stunModel->SetIsVisible(false);
 
-    // ステートマシンを作成
-    stateMachine_ = std::make_shared<StateMachine>();
-    stateMachine_->RegisterState(std::make_unique<RabbitBossIdleState>(this));
-    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackSelectState>(this));
-    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackWarpPreviewState>(this));
-    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackWarpState>(this));
-    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackBuffPreviewState>(this));
-    stateMachine_->RegisterState(std::make_unique<RabbitBossAttackBuffState>(this));
-    stateMachine_->RegisterState(std::make_unique<RabbitBossStunState>(this));
-    stateMachine_->RegisterState(std::make_unique<RabbitBossDeathState>(this));
-
-    // ステートマシンを character に追加
-    this->SetStateMachine(stateMachine_);
-    // 初期ステートを設定
-    stateMachine_->ChangeState("Idle");
 
     // 出現ポイント
     spawnPoints =

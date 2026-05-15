@@ -95,6 +95,9 @@ public:
     // ダッシュ中の攻撃処理
     void AttackDash(EnemyBase* enemy);
 
+    // 周囲の敵を非表示
+    void HideNearByRadius(float radius);
+
     // ダッシュIDを取得する
     int GetDashId()  const { return dashSerial; }
 

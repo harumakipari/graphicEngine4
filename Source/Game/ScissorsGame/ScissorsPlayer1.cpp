@@ -103,7 +103,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                     return;
                 }
 
-                uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Enemy)| CollisionHelper::ToBit(CollisionLayer::Boss);
+                uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Enemy) | CollisionHelper::ToBit(CollisionLayer::Boss);
                 if (other->GetCollisionLayer() & mask)
                 {
                     if (auto enemy = dynamic_cast <EnemyBase*>(other->GetOwner()))
@@ -460,17 +460,17 @@ void ScissorsPlayer1::Update(float deltaTime)
         {
             if (!startDeathPerform)
             {
-            stateMachine_->ChangeState("Idle");
+                stateMachine_->ChangeState("Idle");
             }
             intent = {};
         }
         else
         {
-            
+
         }
     }
 
-   
+
 
     // 左スティック入力
     float stickX = intent.leftMove.x;
@@ -1181,6 +1181,39 @@ void ScissorsPlayer1::AttackDash(EnemyBase* enemy)
             hitStopTimer = hitStopDuration;
         }
     }
+}
+
+
+// 周囲の敵を非表示
+void ScissorsPlayer1::HideNearByRadius(float radius)
+{
+    auto actorManager = GetOwnerScene()->GetActorManager();
+    if (!actorManager)
+        return;
+
+#if 1
+    XMFLOAT3 playerPos = GetPosition();
+
+    auto enemies = actorManager->GetActorsOfType<EnemyBase>();
+
+    for (auto& enemy : enemies)
+    {
+        if (!enemy || enemy->IsDead())
+        {
+            continue;
+        }
+
+        XMFLOAT3 enemyPos = enemy->GetPosition();
+
+        float distanceSq = MathHelper::DistanceSq(enemyPos, playerPos);
+
+        if (distanceSq < radius * radius)
+        {
+            enemy->skeletalMeshComponent->SetIsVisible(false);
+            enemy->skeletalMeshComponent->SetIsCastShadow(false);
+        }
+    }
+#endif // 0
 }
 
 // 星を生成する

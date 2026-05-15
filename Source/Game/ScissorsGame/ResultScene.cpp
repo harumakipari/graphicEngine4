@@ -7,6 +7,7 @@
 #endif
 
 
+#include "HighScoreMedalActor.h"
 #include "ResultBookActor.h"
 #include "SaveDataManager.h"
 #include "ScoreHistoryManager.h"
@@ -513,6 +514,10 @@ void ResultScene::SetUpActors()
 
     Transform bookTr(DirectX::XMFLOAT3{ 0.0f,0.5f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto bookActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ResultBookActor>("BookActor", bookTr);
+
+    Transform medalTr(DirectX::XMFLOAT3{ 0.41f,0.705f,-2.173f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto medalActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<HighScoreMedalActor>("medalActor", medalTr);
+
 }
 
 

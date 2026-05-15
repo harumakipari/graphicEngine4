@@ -839,9 +839,13 @@ void ScissorsPlayerStunState::Exit()
 
 void ScissorsPlayerDeathState::Enter()
 {
+
     player->PlayAnimation("DashEnd", true, true, 0.1f);
     player->characterMovementComponent->SetSpeed(0.0f);
     player->SetDeathRadius(2.0f);
+    // ŽüˆÍ‚Ì“G‚ð”ñ•\Ž¦‚É‚·‚é
+    player->HideNearByRadius(5.0f);
+    player->rotationComponent->SetDirection({ 0,0,-1 });
 
     phase = DeathPhase::ShrinkToCenter;
 

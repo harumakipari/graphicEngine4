@@ -235,9 +235,9 @@ public:
 
     bool pendingDeath = false;  // 死亡処理の演出に遅延を入れるかどうか
 
+    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
 protected:
     DirectX::XMFLOAT3 startPosition = { 0.0f,0.0f,0.0f };   // 敵の出現の開始位置　波うちの時に基準とする
-    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
     std::vector<std::shared_ptr<SkeletalMeshComponent>> tiedMeshes;// 玉止め用のモデル
     std::shared_ptr<RotationComponent> rotationComponent; // 回転のコンポーネント
     std::shared_ptr<SphereComponent> sphereCollisionComponent; // 当たり判定のコンポーネント

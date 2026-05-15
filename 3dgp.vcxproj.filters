@@ -681,6 +681,9 @@
     <ClCompile Include="Source\Game\ScissorsGame\SaveDataManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\HighScoreMedalActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1064,6 +1067,7 @@
     <ClInclude Include="Source\Game\ScissorsGame\ScoreHistoryManager.h" />
     <ClInclude Include="Source\Game\ScissorsGame\NumberModelDisplay.h" />
     <ClInclude Include="Source\Game\ScissorsGame\SaveDataManager.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\HighScoreMedalActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -1343,6 +1347,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shader\FullScreenGameOverPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GameModelColorFilterPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
