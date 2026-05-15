@@ -26,6 +26,7 @@ protected:
         DirectX::XMFLOAT3 offsetPos; // 最初のオフセットデータ
 
         bool isUnlocked = false;    // ステージ開放されているかどうか
+        bool wasHovered = false;    // 前回マウスがステージにかざされていたかどうか
     };
 
     struct BookPage // 本のページ
@@ -224,6 +225,7 @@ private:
     // 真ん中のモデル名
     std::string middleModelName = "./Data/TeamModels/Title/BookMiddle.gltf";
 
+    bool wasHovered = false;    // 前回マウスをかざしていたかどうか
 
     // 調整
     float firstRate = 0.2f; // 本を閉じる時の最初のページの割合

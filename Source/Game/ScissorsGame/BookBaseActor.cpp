@@ -516,11 +516,21 @@ void BookBaseActor::UpdatePage(const BookPage& page)
             result.component == stage->collider.get();
 
 
+        // ホバー開始を検出
+        bool hoverEnter = hitThis && !stage->wasHovered;
+
+        if (hoverEnter)
+        {
+            // 新しくかざされた時に音を出す
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/stage_select_control.wav");
+        }
+
+        stage->wasHovered = hitThis;
+
         // ホバー演出
         if (hitThis)
         {
-            // 新しくかざされた時に音を出す
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/stage_select_control.wav");
+            
 
             stage->model->SetRelativeScaleDirect(
                 {
@@ -594,6 +604,18 @@ void BookBaseActor::UpdateClosedBook()
     bool hit = CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic));
 
     bool hitBook = hit && result.component == bookSpineCollisionComponent.get();
+
+    // ホバー開始
+    bool hoverEnter = hitBook && !wasHovered;
+
+    if (hoverEnter)
+    {
+        // 新しくかざされた時に音を出す
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/stage_select_control.wav");
+    }
+
+    // 状態を保存
+    wasHovered = hitBook;
 
     if (hitBook)
     {

@@ -93,9 +93,10 @@ public:
         if (ImGui::TreeNode((name_ + "  model").c_str()))
         {
             ImGui::Checkbox("isVisible", &isVisible_);
-            ImGui::SliderFloat("hueShift", &plusAlphaCBuffer->data.hueShift, 0.0f, +360.0f);
-            ImGui::SliderFloat("saturation", &plusAlphaCBuffer->data.saturation, 0.1f, +5.0f);
-            ImGui::SliderFloat("brightness", &plusAlphaCBuffer->data.brightness, 0.1f, +5.0f);
+            ImGui::SliderFloat(U8("色相調整"), &plusAlphaCBuffer->data.hueShift, -1.0f, +1.0);
+            ImGui::SliderFloat(U8("彩度調整"), &plusAlphaCBuffer->data.saturation, -1.0f, +1.0);
+            ImGui::SliderFloat(U8("明度調整"), &plusAlphaCBuffer->data.brightness, -1.0f, +1.0);
+            ImGui::SliderFloat(U8("コントラスト調整"), &plusAlphaCBuffer->data.contrast, -1.0f, +1.0);
             ImGui::SliderFloat("dissolve", &dissolve, 0.0f, 1.0f);
             ImGui::ColorEdit4("cpuColor", &plusAlphaCBuffer->data.cpuColor.x);
             ImGui::SliderFloat("emissionPower", &plusAlphaCBuffer->data.emissionPower, 0.0f, 50.0f);
@@ -139,14 +140,15 @@ public:
     {
         DirectX::XMFLOAT4 cpuColor; // 色をCPU側で指定する用　（ダメージ当たったときとか）
 
-        float hueShift = 0.0f;	// 色相調整
-        float saturation = 1.0f;	// 彩度調整
-        float brightness = 1.0f;	// 明度調整
+        float hueShift = 0.0f;	// 色相調整 -1 から 1 （-1 は負方向の 180 度、0 は変更なし、1 は正方向の 180 度）
+        float saturation = 0.0f;	// 彩度調整（-1は濃灰、0は変化なし、1は最大彩度）
+        float brightness = 0.0f;	// 明度調整（-1 は完全な黒、0 は変化なし、1 は完全な白）
         float   dissolve;   // ディゾルブ用
 
         DirectX::XMFLOAT4 morphWeights = { 0.0f,0.0f,0.0f,0.0f };  // モーフモデルに使用する weight 0.0f ~ 1.0f
 
-        float emissionPower; // 自己発光の強さ
+        float contrast = 0.0f;  // コントラスト調整（-1は完全な灰色、0は変化なし、1は最大コントラスト）
+        float emissionPower;    // 自己発光の強さ
         float flashValue = 0.0f; //　白くフラッシュする値
         ObjectType objectType = ObjectType::Default; // オブジェクトの種類
     };
