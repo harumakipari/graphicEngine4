@@ -161,6 +161,7 @@ public:
 
 private:
     float elapsedTime = 0.0f;
+    int enemyBuffCount = 2; // ステージ上のどれくらいの数の敵を強化させるか
 };
 
 // バフオブジェクト
@@ -181,7 +182,8 @@ public:
     const char* GetName() const override { return "Buff"; }
 
 private:
-    int enemyBuffCount = 2; // ステージ上のどれくらいの数の敵を強化させるか
+    float elapsedTime = 0.0f;
+
 };
 
 // スタンオブジェクト

@@ -139,6 +139,7 @@ public:
     std::shared_ptr<SkeletalMeshComponent> bossSpawnMarkModel; // ボスの出現の場所モデル
     std::shared_ptr<SkeletalMeshComponent> bossChaseMarkModel; // ボスの追尾の場所モデル
     std::shared_ptr<CoreAudioSourceComponent> bossStunAudioComponent;// ボスの混乱音コンポーネント
+    std::shared_ptr<CoreAudioSourceComponent> bossPreBuffAudioComponent;// ボスの敵強化音コンポーネント
 
     // 再スタン防止タイマー
     float stunCooldownTimer = 0.0f;

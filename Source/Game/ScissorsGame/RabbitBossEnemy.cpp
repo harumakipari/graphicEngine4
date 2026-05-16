@@ -40,13 +40,14 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
-    controller->AddAnimation("Idle", 4);
-    controller->AddAnimation("WarpEnd", 5);
-    controller->AddAnimation("WarpStart", 6);
-    controller->AddAnimation("Win", 3);
-    controller->AddAnimation("Stan", 2);
+    controller->AddAnimation("Idle", 5);
+    controller->AddAnimation("WarpEnd", 6);
+    controller->AddAnimation("WarpStart", 7);
+    controller->AddAnimation("Win", 4);
+    controller->AddAnimation("Stan", 3);
     controller->AddAnimation("Knockback", 0);
-    controller->AddAnimation("Buff", 1);
+    controller->AddAnimation("PreBuff", 1);
+    controller->AddAnimation("Buff", 2);
     // アニメーションコントローラーを character に追加
     this->SetAnimationController(controller);
     PlayAnimation("Idle");
@@ -68,7 +69,6 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     // 初期ステートを設定
     stateMachine_->ChangeState("Idle");
 
-
     // ボスの出現位置モデルを生成する
     bossSpawnMarkModel = AddComponent<SkeletalMeshComponent>("bossSpawnMarkModel", parentName);
     bossSpawnMarkModel->SetModel("./Data/TeamModels/Marks/BossSpawnMark.gltf", false, true);
@@ -83,7 +83,6 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     bossChaseMarkModel->SetIsCastShadow(false);
     bossChaseMarkModel->SetRelativeScaleDirect({ 1.65f,1.65f,1.65f });
     bossChaseMarkModel->SetIsVisible(false);
-
 
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
     // 玉止めの半径を設定する
@@ -179,9 +178,15 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 
     // ボスの混乱音コンポーネント
     bossStunAudioComponent = AddComponent<CoreAudioSourceComponent>("bossStunAudioComponent", parentName);
-    bossStunAudioComponent->SetSource(L"./Data/Sound/SE1/boss_stun.wav");
-    bossStunAudioComponent->SetVolume(0.5f);
+    bossStunAudioComponent->SetSource(L"./Data/Sound/SE1/boss_stun1.wav");
+    bossStunAudioComponent->SetVolume(0.8f);
     bossStunAudioComponent->SetLoop(true);
+
+    // ボスの敵強化音コンポーネント
+    bossPreBuffAudioComponent = AddComponent<CoreAudioSourceComponent>("bossPreBuffAudioComponent", parentName);
+    bossPreBuffAudioComponent->SetSource(L"./Data/Sound/SE1/boss_pre_buff.wav");
+    bossPreBuffAudioComponent->SetVolume(2.5f);
+    bossPreBuffAudioComponent->SetLoop(true);
 }
 
 void RabbitBossEnemyActor::Update(float deltaTime)

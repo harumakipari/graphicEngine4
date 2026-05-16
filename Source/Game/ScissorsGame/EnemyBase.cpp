@@ -321,17 +321,29 @@ void EnemyBase::UpdateTiedVisual()
 // サイズ変更演出更新処理
 void EnemyBase::UpdateSizeChanging(float deltaTime)
 {
+
+    sizeChangeTimer += deltaTime;
+
     // パワーアップのモデルを表示
     if (powerUpArrowMarkMeshComponent)
     {
         powerUpArrowMarkMeshComponent->SetIsVisible(true);
+        // 回転
+        auto rot = powerUpArrowMarkMeshComponent->GetRelativeEulerRotation();
+        rot.y +=600.0f * deltaTime;
+        powerUpArrowMarkMeshComponent->SetRelativeEulerRotationDirect(
+            { 0.0f, rot.y, 0.0f });
     }
     if (powerUpMarkMeshComponent)
     {
         powerUpMarkMeshComponent->SetIsVisible(true);
+        // 回転
+        auto rot = powerUpMarkMeshComponent->GetRelativeEulerRotation();
+        rot.y +=-60.0f * deltaTime;
+        powerUpMarkMeshComponent->SetRelativeEulerRotationDirect(
+            { 0.0f, rot.y, 0.0f });
     }
 
-    sizeChangeTimer += deltaTime;
 
     // 点滅
     blinkTimer += deltaTime;
@@ -907,8 +919,8 @@ void EnemyBase::ChangeSize(EnemyBase::YarnSize newSize)
     {// 死亡していたら
         return;
     }
-
-    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_power_up.wav");
+    // パワーアップを知らせる音を鳴らす
+    //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_power_up.wav");
     yarnSize = newSize;
 
     // 玉止め解除

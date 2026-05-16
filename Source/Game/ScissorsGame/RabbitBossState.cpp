@@ -41,7 +41,7 @@ void RabbitBossAttackSelectState::Enter()
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     BossAttackType type = PopAttack();
-    //type = BossAttackType::Buff;
+    type = BossAttackType::Buff;
 #if 1
     switch (type)
     {
@@ -130,7 +130,6 @@ void RabbitBossAttackWarpState::Enter()
 
     // 最初は追尾マークのみ見た目を有効にする
     enemy->bossSpawnMarkModel->SetIsVisible(false);
-
 }
 
 void RabbitBossAttackWarpState::Execute(float deltaTime)
@@ -334,13 +333,22 @@ void RabbitBossAttackWarpState::Exit()
 // バフプレビュー
 void RabbitBossAttackBuffPreviewState::Enter()
 {
-    enemy->PlayAnimation("Buff", false, true, 0.1f);
+    // バフを掛ける前の音を再生する
+    enemy->bossPreBuffAudioComponent->Play();
+
+    enemy->SetAnimationRate(0.5f);
+    enemy->PlayAnimation("PreBuff", false, true, 0.1f);
+
+    // バフをかける敵をランダムに選ぶ
+    enemy->EnlargeRandomEnemies(enemyBuffCount);
+    // 経過時間をリセットする
+    elapsedTime = 0.0f;
 }
 
 void RabbitBossAttackBuffPreviewState::Execute(float deltaTime)
 {
     elapsedTime += deltaTime;
-    if (elapsedTime >= 1.3f)
+    if (elapsedTime >= 2.0f)
     {
         enemy->GetStateMachine()->ChangeState("Buff");
     }
@@ -348,19 +356,30 @@ void RabbitBossAttackBuffPreviewState::Execute(float deltaTime)
 
 void RabbitBossAttackBuffPreviewState::Exit()
 {
-
+    enemy->bossPreBuffAudioComponent->Stop();
 }
 
 // バフ
 void RabbitBossAttackBuffState::Enter()
 {
+    // 経過時間をリセットする
+    elapsedTime = 0.0f;
+
+    enemy->SetAnimationRate(1.0f);
+    enemy->PlayAnimation("Buff", false, true, 0.1f);
+
+    // パワーアップを知らせる音を鳴らす
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_power_up.wav",0.8f);
 }
 
 void RabbitBossAttackBuffState::Execute(float deltaTime)
 {
-    enemy->EnlargeRandomEnemies(enemyBuffCount);
-
-    enemy->GetStateMachine()->ChangeState("Idle");
+    elapsedTime += deltaTime;
+    if (elapsedTime >= 1.0f)
+    {
+        enemy->PlayAnimation("Idle", true, true, 0.5f);
+        enemy->GetStateMachine()->ChangeState("Idle");
+    }
 }
 
 void RabbitBossAttackBuffState::Exit()
@@ -500,10 +519,9 @@ void RabbitBossWinState::Execute(float deltaTime)
 
         float radius = std::lerp(startRadius, targetRadius, t);
 
-        Logger::Log(U8("ゲームオーバー半径")+std::to_string(radius));
+        Logger::Log(U8("ゲームオーバー半径") + std::to_string(radius));
 
         enemy->SetDeathRadius(radius);
-
 
         // 勝利の演出を何か入れる
         enemy->UpdateWin(deltaTime);
@@ -619,13 +637,6 @@ void RabbitBossWinState::Execute(float deltaTime)
         break;
     }
 
-
-    ////const float deadPerformTimeInterval = 5.0f;
-    //const float deadPerformTimeInterval = 1.0f;
-    //if (elapsedTime >= deadPerformTimeInterval)
-    //{// ゲーム終了通知
-    //    enemy->EndDeathPerform(true);// 引数にプレイヤーが死亡したかどうか
-    //}
 }
 
 void RabbitBossWinState::Exit()
