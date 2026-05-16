@@ -118,7 +118,17 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                         {// 敵が玉止めされていたら
                             return;
                         }
+
                     }
+
+                    if (auto boss = dynamic_cast<RabbitBossEnemyActor*>(other->GetOwner()))
+                    {
+                        if (boss->GetStateMachine()->GetStateName() == "Stun")
+                        {// ボスがスタンしているときはダメージを受けない
+                            return;
+                        }
+                    }
+
                     debugPlayerCollisionColor = { 1.0f,0.0f,0.0f,1.0f };
                     TakeDamage(2);
 #if 0
@@ -1205,7 +1215,7 @@ void ScissorsPlayer1::HideNearByRadius(float radius)
             continue;
         }
 
-        if (auto boss=std::dynamic_pointer_cast<RabbitBossEnemyActor>(enemy))
+        if (auto boss = std::dynamic_pointer_cast<RabbitBossEnemyActor>(enemy))
         {// ボスだったら
             continue;
         }

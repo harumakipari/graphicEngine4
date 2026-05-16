@@ -211,6 +211,16 @@ private:
 // 死亡オブジェクト
 class RabbitBossDeathState : public RabbitBossStateBase
 {
+    enum class DeathPhase :uint8_t
+    {
+        StartSlow,
+        KnockBack,
+        CameraMove,
+        Stun,
+        Tear,
+        Finish,
+    };
+
 public:
     // コンストラクタ
     RabbitBossDeathState(RabbitBossEnemyActor* enemy) :RabbitBossStateBase(enemy) {}
@@ -226,6 +236,8 @@ public:
     const char* GetName() const override { return "Death"; }
 
 private:
+    DeathPhase phase = DeathPhase::StartSlow;
+    float cameraLerpT = 0.0f;
     float elapsedTime = 0.0f;   // 経過時間
 
 };

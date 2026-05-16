@@ -10,8 +10,8 @@ void ScissorsStage::Initialize(const Transform& transform)
     std::string parentName = "ScissorsStage";
 
     staticMeshComponent = AddComponent<StaticMeshComponent>(parentName);
-    staticMeshComponent->SetModel("./Data/TeamModels/Stage/ScissorsStage.gltf", false, false);
-    //staticMeshComponent->SetModel("./Data/TeamModels/Stage/TestStage.glb", false, false);
+    //staticMeshComponent->SetModel("./Data/TeamModels/Stage/ScissorsStage.gltf", false, false);
+    staticMeshComponent->SetModel("./Data/TeamModels/Stage/TestStage.glb", false, false);
 
     // ”wŒiƒ‚ƒfƒ‹
     auto backMeshComponent = AddComponent<StaticMeshComponent>("backGroundModel",parentName);

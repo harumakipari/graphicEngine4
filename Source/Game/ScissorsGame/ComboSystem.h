@@ -3,15 +3,18 @@
 class ComboSystem
 {
 public:
-    void Update(float deltaTime)
+    void Update(float deltaTime, bool isDashing)
     {
         if (comboCount <= 0) return;
 
-        comboTimer -= deltaTime;
-
-        if (comboTimer <= 0.0f)
+        if (!isDashing)
         {
-            Reset();
+            comboTimer -= deltaTime;
+
+            if (comboTimer <= 0.0f)
+            {
+                Reset();
+            }
         }
     }
 

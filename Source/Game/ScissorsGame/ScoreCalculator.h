@@ -28,9 +28,9 @@ public:
 class ScoreSystem
 {
 public:
-    static void Update(float deltaTime)
+    static void Update(float deltaTime,bool isDashing)
     {
-        combo.Update(deltaTime);
+        combo.Update(deltaTime,isDashing);
 
         // 最大コンボ更新
         resultData.maxCombo = std::max<int>(resultData.maxCombo, combo.GetComboCount());

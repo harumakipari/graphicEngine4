@@ -40,6 +40,9 @@ public:
 
     // 初期状態でボビンをチャージする
     void SetBobbinStateCharge();
+
+    // ボビンの見た目を非表示にする
+    void HideBobbinVisual();
 private:
     // ボビンを使用する
     void UseBobbin();

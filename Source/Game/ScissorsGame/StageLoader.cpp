@@ -13,9 +13,14 @@ StageData StageLoader::Load(STAGE_NAME stageId)
             // Wave1：横一列
           {
               {
-                  { {8,0,12}, YarnEnemyType::Static ,0.0f},
+                  { {12,0,10}, YarnEnemyType::Static ,0.0f},
                   { {12,0,12}, YarnEnemyType::Static ,0.0f},
-                  { {16,0,12}, YarnEnemyType::Static ,0.0f},
+                  { {12,0,14}, YarnEnemyType::Static ,0.0f},
+                  { {12,0,16}, YarnEnemyType::Static ,0.0f},
+                  { {12,0,18}, YarnEnemyType::Static ,0.0f},
+                  //{ {8,0,12}, YarnEnemyType::Static ,0.0f},
+                  //{ {12,0,12}, YarnEnemyType::Static ,0.0f},
+                  //{ {16,0,12}, YarnEnemyType::Static ,0.0f},
               },
           },
 
@@ -151,31 +156,31 @@ StageData StageLoader::Load(STAGE_NAME stageId)
                     false,-1,5.0f,false
 
                     },
-                    // Wave3：ミッキー 追いかける
-            {
-                {
-                    // 左　
-                    { { 1,0,12 }, YarnEnemyType::ChasePlayer,0.0f,false,2.0f,1.0f,{1,0,0}},
-                    { {0,0,13}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{1,0,0}},
-                    { {0,0,11}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{1,0,0}},
+            // Wave3：ミッキー 追いかける
+    {
+        {
+            // 左　
+            { { 1,0,12 }, YarnEnemyType::ChasePlayer,0.0f,false,2.0f,1.0f,{1,0,0}},
+            { {0,0,13}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{1,0,0}},
+            { {0,0,11}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{1,0,0}},
 
-                    // 右
-                    { {23,0,12 }, YarnEnemyType::ChasePlayer,0.0f,false,2.0f,1.0f,{-1,0,0}},
-                    { {24,0,13}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{-1,0,0}},
-                    { {24,0,11}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{-1,0,0}},
+            // 右
+            { {23,0,12 }, YarnEnemyType::ChasePlayer,0.0f,false,2.0f,1.0f,{-1,0,0}},
+            { {24,0,13}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{-1,0,0}},
+            { {24,0,11}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{-1,0,0}},
 
-                    // 上
-            { { 12,0,23 }, YarnEnemyType::ChasePlayer,0.0f,false,2.0f,1.0f,{1,0,0}},
-            { {11,0,24}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{1,0,0}},
-            { {13,0,24}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{1,0,0}},
+            // 上
+    { { 12,0,23 }, YarnEnemyType::ChasePlayer,0.0f,false,2.0f,1.0f,{1,0,0}},
+    { {11,0,24}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{1,0,0}},
+    { {13,0,24}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{1,0,0}},
 
-            // 下
-            { { 12,0,1 }, YarnEnemyType::ChasePlayer,0.0f,false,2.0f,1.0f,{1,0,0}},
-            { {11,0,0}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{1,0,0}},
-            { {13,0,0}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{1,0,0}},
+    // 下
+    { { 12,0,1 }, YarnEnemyType::ChasePlayer,0.0f,false,2.0f,1.0f,{1,0,0}},
+    { {11,0,0}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{1,0,0}},
+    { {13,0,0}, YarnEnemyType::ChasePlayer,0.0f, false,2.0f,1.0f,{1,0,0}},
 
-                },
-                false,-1,8.0f,
+        },
+        false,-1,8.0f,
 
 
 },
@@ -481,6 +486,10 @@ StageData StageLoader::Load(STAGE_NAME stageId)
             {
                 // Wave 1
         {
+                    //                    { { 12,0,21 },  YarnEnemyType::Static, 0.0f,false,2.0f ,1.0f,{1,0,0}},
+                    //{ { 12,0,3 },  YarnEnemyType::Static, 0.0f,false,2.0f ,1.0f,{1,0,0}},
+
+
                     { { 1,0,16 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
                     { { 1,0,14 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
 
@@ -493,47 +502,93 @@ StageData StageLoader::Load(STAGE_NAME stageId)
             {
                 // Wave 2
                 {
-                    //{ { 1,0,22 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
+
+
                     { { 1,0,15 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
                     { { 1,0,11 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
-                    //{ { 1,0,4 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
 
-                    //{ { 23,0,20 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
                     { { 23,0,13 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
                     { { 23,0,9 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
-                    //{ { 23,0,2 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
+                },
+                true,
+               -1,7.0f,true
+            },
+            {
+                // Wave 2
+        {
+                },
+                false,
+               -1,3.0f,false
+            },
+
+            {
+                // Wave 3
+        {
+                    { { 16,0,1 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{0,0,1}},
+                    { { 14,0,1 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{0,0,1}},
+
+                    { { 8,0,23 },  YarnEnemyType::MoveLinear, 1.0f,false,2.0f ,1.0f,{0,0,-1}},
+                    { { 10,0,23 },  YarnEnemyType::MoveLinear, 1.0f,false,2.0f ,1.0f,{0,0,-1}},
+                },
+                false,
+               -1,0.5f,true
+            },
+            {
+                // Wave 5
+                {
+                    { { 15,0,1 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{0,0,1}},
+                    { { 11,0,1 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{0,0,1}},
+
+                    { { 13,0,23 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{0,0,-1}},
+                    { { 9,0,23 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{0,0,-1}},
                 },
                 false,
                -1,7.0f,true
             },
+            {
+                // Wave 3
+        {
+                    { { 16,0,1 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{0,0,1}},
+                    { { 14,0,1 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{0,0,1}},
+
+                    { { 8,0,23 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{0,0,-1}},
+                    { { 10,0,23 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{0,0,-1}},
+                },
+                false,
+               -1,4.0f,true
+            },
+
+#if 0
             // Wave5：波波
+                        {
         {
-        {
-                // 左上
-                { {3,0,21}, YarnEnemyType::MoveLinear,0.0f,false,2.0f ,1.0f,{1,0,-1}},
-                { {3,0,22.5}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,-1}},
-                { {1.5,0,21}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,-1}},
-        
-                // 左下
-                        { {3,0,3}, YarnEnemyType::MoveLinear,0.0f,false,2.0f ,1.0f,{1,0,1}},
-                { {3,0,1.5}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,1}},
-                { {1.5,0,3}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,1}},
-        
-                // 右上
-                        { {21,0,21}, YarnEnemyType::MoveLinear,0.0f,false,2.0f ,1.0f,{-1,0,-1}},
-                { {21,0,22.5}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,-1}},
-                { {22.5,0,21}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,-1}},
-        
-                // 右下
-                { {21,0,3}, YarnEnemyType::MoveLinear,0.0f,false,2.0f ,1.0f,{-1,0,1}},
-                { {21,0,1.5}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,1}},
-                { {22.5,0,3}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,1}},
-        
-            },
-             false,
-                  -1,
-                  10.0f,
-            },
+                                // 左上
+                                { {3,0,21}, YarnEnemyType::MoveLinear,0.0f,false,2.0f ,1.0f,{1,0,-1}},
+                                { {3,0,22.5}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,-1}},
+                                { {1.5,0,21}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,-1}},
+
+                                // 左下
+                                        { {3,0,3}, YarnEnemyType::MoveLinear,0.0f,false,2.0f ,1.0f,{1,0,1}},
+                                { {3,0,1.5}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,1}},
+                                { {1.5,0,3}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,1}},
+
+                                // 右上
+                                        { {21,0,21}, YarnEnemyType::MoveLinear,0.0f,false,2.0f ,1.0f,{-1,0,-1}},
+                                { {21,0,22.5}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,-1}},
+                                { {22.5,0,21}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,-1}},
+
+                                // 右下
+                                { {21,0,3}, YarnEnemyType::MoveLinear,0.0f,false,2.0f ,1.0f,{-1,0,1}},
+                                { {21,0,1.5}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,1}},
+                                { {22.5,0,3}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,1}},
+
+                            },
+                             false,
+                                  -1,
+                                  10.0f,
+                            },
+                                #endif // 0
+
         };
         break;
     }

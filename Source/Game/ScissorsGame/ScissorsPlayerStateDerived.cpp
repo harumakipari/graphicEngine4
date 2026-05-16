@@ -231,10 +231,22 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
         uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Wall) | CollisionHelper::ToBit(CollisionLayer::EnemyRedirect)
             | CollisionHelper::ToBit(CollisionLayer::Boss) | CollisionHelper::ToBit(CollisionLayer::Bobbin);
 
-        if (CollisionFunction::SphereRayCast(currentPos, nextTarget, hit, 0.2f, mask))
+        XMFLOAT3 origin =
         {
-            if (hit.distance <= 0.0001f)
+            currentPos.x + dashDir.x * 0.05f,
+            currentPos.y + 0.1f,
+            currentPos.z + dashDir.z * 0.05f
+        };
+
+        if (CollisionFunction::SphereRayCast(origin, nextTarget, hit, 0.2f, mask))
+        {
+            float normalLenSq =
+                hit.normal.x * hit.normal.x +
+                hit.normal.z * hit.normal.z;
+
+            if (hit.distance <= 0.000001f)
             {
+#if 0
                 Logger::Warning(U8("ボスとボビンでレイキャストがおかしくなっています！"));
                 // ダッシュの狙いを表示する矢印のUIコンポーネントを非表示にする
                 for (int i = 0; i < _countof(player->arrowComponents); i++)
@@ -244,12 +256,33 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
                 player->GetStateMachine()->ChangeState("Idle");
                 player->dashPoints.push_back(currentPos);
                 return;
+#else
+                // 法線があるなら内部ヒット扱い
+                if (normalLenSq > 0.0001f)
+                {
+                    currentPos =
+                    {
+                        currentPos.x + hit.normal.x * 0.2f,
+                        currentPos.y,
+                        currentPos.z + hit.normal.z * 0.2f
+                    };
+
+                    continue;
+                }
+
+                Logger::Warning(U8("ボスとボビンでレイキャストがおかしくなっています！"));
+
+                for (int i = 0; i < _countof(player->arrowComponents); i++)
+                {
+                    player->arrowComponents[i]->SetVisible(false);
+                }
+
+                player->GetStateMachine()->ChangeState("Idle");
+                player->dashPoints.push_back(currentPos);
+                return;
             }
 
-
-            float normalLenSq =
-                hit.normal.x * hit.normal.x +
-                hit.normal.z * hit.normal.z;
+#endif // 0
 
             if (normalLenSq < 0.0001f)
             {
@@ -278,7 +311,7 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
             traveled = std::min<float>(traveled, remainingDist);
 
             //remainingDist -= traveled;
-            remainingDist = dashDistance/* * 0.8f*/;
+            remainingDist = dashDistance * 0.9f;
 
             if (remainingDist < 0.01f)
             {
@@ -329,7 +362,7 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
                 }
 
                 //  進行方向に押し出す（ここ重要）
-                const float pushOut = 1.0f;
+                const float pushOut = 2.0f;
 
                 currentPos =
                 {
@@ -373,7 +406,7 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
                 }
 
                 // 反射後 壁に埋まっているのを直す
-                const float pushOut = 1.0f;
+                const float pushOut = 2.0f;
 
                 currentPos =
                 {

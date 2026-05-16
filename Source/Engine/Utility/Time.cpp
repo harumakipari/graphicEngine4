@@ -92,6 +92,15 @@ void Time::Tick() // 毎フレーム呼び出す。
 			}
 		}
 	}
+	//else
+	//{
+	//	timeScale = std::lerp(timeScale, 1.0f, 0.2f);
+
+	//	if (fabs(timeScale - 1.0f) < 0.01f)
+	//	{
+	//		timeScale = 1.0f;
+	//	}
+	//}
 }
 
 float Time::TimeStamp() const  // in seconds

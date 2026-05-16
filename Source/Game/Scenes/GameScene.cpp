@@ -239,7 +239,7 @@ void GameScene::Start()
         currentStageName = StringToStageName(stageName);
     }
 
-    currentStageName = STAGE_NAME::BOSS;
+    currentStageName = STAGE_NAME::REFLECT_WALL;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(currentStageName);
@@ -273,8 +273,12 @@ void GameScene::Update(float deltaTime)
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
 
+
+    // ダッシュしているかどうか
+    bool playerIsDashing = (player->GetStateMachine()->GetStateName() == "Dash");
+
     // スコアシステムの更新処理
-    ScoreSystem::Update(deltaTime);
+    ScoreSystem::Update(deltaTime, playerIsDashing);
 
     // 死亡演出
     if (currentStageName == STAGE_NAME::BOSS)
@@ -629,7 +633,7 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
-        //Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
+        Physics::Instance().Render(cameraView, cameraProjection, { lightDirection.x,lightDirection.y,lightDirection.z });
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
         DebugRender::Render(immediateContext);
         RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::WIREFRAME_CULL_NONE);
@@ -943,9 +947,14 @@ void GameScene::LoadStage(STAGE_NAME stageId)
     waveManagerActor->SetWaves(stageId);
 #endif // 0
 
+    // ステージギミックの生成
     SpawnStageGimmicks(stageId);
 
+    // BGMのセットアップ
     SetupBGM(stageId);
+
+    // プレイヤーの初期位置セット
+    SetupPlayerPos(stageId);
 
 }
 
@@ -979,82 +988,194 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
     case STAGE_NAME::REFLECT_WALL:
     {
         {
+            Transform yarnWallTr(DirectX::XMFLOAT3{ 10.5f,0.0f,3.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr);
+            yarnWall->SetBehavior(WallBehavior::HideOnce);
+            yarnWall->SetTriggerWave(3);
+            yarnWall->SetUp();
+            //Transform yarnWallTr(DirectX::XMFLOAT3{ 12.0f,0.0f,3.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            //auto yarnWall = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr);
+            //yarnWall->SetBehavior(WallBehavior::HideOnce);
+            //yarnWall->SetTriggerWave(3);
+            //yarnWall->SetUp();
+
+            Transform yarnWallTr1(DirectX::XMFLOAT3{ 13.5f,0.0f,3.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr1);
+            yarnWall1->SetBehavior(WallBehavior::HideOnce);
+            yarnWall1->SetTriggerWave(3);
+            yarnWall1->SetUp();
+
+            Transform yarnWallTr2(DirectX::XMFLOAT3{ 10.5f,0.0f,21.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr2);
+            yarnWall2->SetBehavior(WallBehavior::HideOnce);
+            yarnWall2->SetTriggerWave(3);
+            yarnWall2->SetUp();
+            //Transform yarnWallTr2(DirectX::XMFLOAT3{ 12.0f,0.0f,21.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            //auto yarnWall2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr2);
+            //yarnWall2->SetBehavior(WallBehavior::HideOnce);
+            //yarnWall2->SetTriggerWave(3);
+
+            Transform yarnWallTr3(DirectX::XMFLOAT3{ 13.5f,0.0f,21.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr3);
+            yarnWall3->SetBehavior(WallBehavior::HideOnce);
+            yarnWall3->SetTriggerWave(3);
+            yarnWall3->SetUp();
+
+        }
+
+
+        {
             Transform yarnWallTr(DirectX::XMFLOAT3{ 4.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
             auto yarnWall = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr);
             yarnWall->SetBehavior(WallBehavior::HideOnce);
             yarnWall->SetTriggerWave(3);
-            //yarnWall->SetHideTime(20.0f);
             yarnWall->SetUp();
 
-            //    Transform yarnWallTr1(DirectX::XMFLOAT3{ 7.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-            //    auto yarnWall1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr1);
-            //    yarnWall1->SetBehavior(WallBehavior::HideOnce);
-            //    yarnWall1->SetHideTime(20.0f);
-            //    yarnWall1->SetUp();
+            Transform yarnWallTr1(DirectX::XMFLOAT3{ 7.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr1);
+            yarnWall1->SetBehavior(WallBehavior::HideOnce);
+            yarnWall1->SetTriggerWave(3);
+            yarnWall1->SetUp();
 
-            //    Transform yarnWallTr2(DirectX::XMFLOAT3{ 4.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-            //    auto yarnWall2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr2);
-            //    yarnWall2->SetBehavior(WallBehavior::HideOnce);
-            //    yarnWall2->SetHideTime(20.0f);
-            //    yarnWall2->SetUp();
+            Transform yarnWallTr2(DirectX::XMFLOAT3{ 4.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr2);
+            yarnWall2->SetBehavior(WallBehavior::HideOnce);
+            yarnWall2->SetTriggerWave(3);
+            yarnWall2->SetUp();
 
-            //    Transform yarnWallTr3(DirectX::XMFLOAT3{ 7.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-            //    auto yarnWall3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr3);
-            //    yarnWall3->SetBehavior(WallBehavior::HideOnce);
-            //    yarnWall3->SetHideTime(20.0f);
-            //    yarnWall3->SetUp();
+            Transform yarnWallTr3(DirectX::XMFLOAT3{ 7.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr3);
+            yarnWall3->SetBehavior(WallBehavior::HideOnce);
+            yarnWall3->SetTriggerWave(3);
+            yarnWall3->SetUp();
 
-            //    Transform yarnWallTr4(DirectX::XMFLOAT3{ 16.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-            //    auto yarnWall4 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr4);
-            //    yarnWall4->SetBehavior(WallBehavior::HideOnce);
-            //    yarnWall4->SetHideTime(20.0f);
-            //    yarnWall4->SetUp();
+            Transform yarnWallTr4(DirectX::XMFLOAT3{ 16.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall4 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr4);
+            yarnWall4->SetBehavior(WallBehavior::HideOnce);
+            yarnWall4->SetTriggerWave(3);
+            yarnWall4->SetUp();
 
-            //    Transform yarnWallTr5(DirectX::XMFLOAT3{ 19.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-            //    auto yarnWall5 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr5);
-            //    yarnWall5->SetBehavior(WallBehavior::HideOnce);
-            //    yarnWall5->SetHideTime(20.0f);
-            //    yarnWall5->SetUp();
+            Transform yarnWallTr5(DirectX::XMFLOAT3{ 19.5f,0.0f,6.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall5 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr5);
+            yarnWall5->SetBehavior(WallBehavior::HideOnce);
+            yarnWall5->SetTriggerWave(3);
+            yarnWall5->SetUp();
 
-            //    Transform yarnWallTr6(DirectX::XMFLOAT3{ 16.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-            //    auto yarnWall6 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr6);
-            //    yarnWall6->SetBehavior(WallBehavior::HideOnce);
-            //    yarnWall6->SetHideTime(20.0f);
-            //    yarnWall6->SetUp();
+            Transform yarnWallTr6(DirectX::XMFLOAT3{ 16.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall6 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr6);
+            yarnWall6->SetBehavior(WallBehavior::HideOnce);
+            yarnWall6->SetTriggerWave(3);
+            yarnWall6->SetUp();
 
-            //    Transform yarnWallTr7(DirectX::XMFLOAT3{ 19.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-            //    auto yarnWall7 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr7);
-            //    yarnWall7->SetBehavior(WallBehavior::HideOnce);
-            //    yarnWall7->SetHideTime(20.0f);
-            //    yarnWall7->SetUp();
+            Transform yarnWallTr7(DirectX::XMFLOAT3{ 19.5f,0.0f,18.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall7 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr7);
+            yarnWall7->SetBehavior(WallBehavior::HideOnce);
+            yarnWall7->SetTriggerWave(3);
+            yarnWall7->SetUp();
         }
 
-#if 1
+        {
+            Transform yarnWallTr(DirectX::XMFLOAT3{ 6.0f,0.0f,4.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr);
+            yarnWall->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall->SetTriggerWave(3);
+            yarnWall->SetUp();
+
+            Transform yarnWallTr1(DirectX::XMFLOAT3{ 6.0f,0.0f,7.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr1);
+            yarnWall1->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall1->SetTriggerWave(3);
+            yarnWall1->SetUp();
+
+            Transform yarnWallTr2(DirectX::XMFLOAT3{ 18.0f,0.0f,4.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr2);
+            yarnWall2->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall2->SetTriggerWave(3);
+            yarnWall2->SetUp();
+
+            Transform yarnWallTr3(DirectX::XMFLOAT3{ 18.0f,0.0f,7.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr3);
+            yarnWall3->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall3->SetTriggerWave(3);
+            yarnWall3->SetUp();
+
+            Transform yarnWallTr4(DirectX::XMFLOAT3{ 6.0f,0.0f,16.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall4 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr4);
+            yarnWall4->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall4->SetTriggerWave(3);
+            yarnWall4->SetUp();
+
+            Transform yarnWallTr5(DirectX::XMFLOAT3{ 6.0f,0.0f,19.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall5 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr5);
+            yarnWall5->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall5->SetTriggerWave(3);
+            yarnWall5->SetUp();
+
+            Transform yarnWallTr6(DirectX::XMFLOAT3{ 18.0f,0.0f,16.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall6 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr6);
+            yarnWall6->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall6->SetTriggerWave(3);
+            yarnWall6->SetUp();
+
+            Transform yarnWallTr7(DirectX::XMFLOAT3{ 18.0f,0.0f,19.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall7 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr7);
+            yarnWall7->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall7->SetTriggerWave(3);
+            yarnWall7->SetUp();
+        }
+
+        {
+            Transform yarnWallTr(DirectX::XMFLOAT3{ 2.5f,0.0f,10.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr);
+            yarnWall->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall->SetTriggerWave(3);
+            yarnWall->SetUp();
+
+            Transform yarnWallTr1(DirectX::XMFLOAT3{ 2.5f,0.0f,13.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr1);
+            yarnWall1->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall1->SetTriggerWave(3);
+            yarnWall1->SetUp();
+
+            Transform yarnWallTr2(DirectX::XMFLOAT3{ 21.5f,0.0f,10.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr2);
+            yarnWall2->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall2->SetTriggerWave(3);
+            yarnWall2->SetUp();
+
+            Transform yarnWallTr3(DirectX::XMFLOAT3{ 21.5f,0.0f,13.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr3);
+            yarnWall3->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall3->SetTriggerWave(3);
+            yarnWall3->SetUp();
+
+        }
+
+#if 0
         {
             Transform yarnWallTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
             auto yarnWall = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr);
             yarnWall->SetBehavior(WallBehavior::AppearOnce);
-            //yarnWall->SetAppearTime(20.0f);
             yarnWall->SetTriggerWave(3);
             yarnWall->SetUp();
 
-            //Transform yarnWallTr1(DirectX::XMFLOAT3{ 13.5f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-            //auto yarnWall1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr1);
-            //yarnWall1->SetBehavior(WallBehavior::AppearOnce);
-            //yarnWall1->SetAppearTime(20.0f);
-            //yarnWall1->SetUp();
+            Transform yarnWallTr1(DirectX::XMFLOAT3{ 13.5f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr1);
+            yarnWall1->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall1->SetTriggerWave(3);
+            yarnWall1->SetUp();
 
-            //Transform yarnWallTr2(DirectX::XMFLOAT3{ 12.0f,0.0f,13.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-            //auto yarnWall2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr2);
-            //yarnWall2->SetBehavior(WallBehavior::AppearOnce);
-            //yarnWall2->SetAppearTime(20.0f);
-            //yarnWall2->SetUp();
+            Transform yarnWallTr2(DirectX::XMFLOAT3{ 12.0f,0.0f,13.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr2);
+            yarnWall2->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall2->SetTriggerWave(3);
+            yarnWall2->SetUp();
 
-            //Transform yarnWallTr3(DirectX::XMFLOAT3{ 12.0f,0.0f,10.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
-            //auto yarnWall3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr3);
-            //yarnWall3->SetBehavior(WallBehavior::AppearOnce);
-            //yarnWall3->SetAppearTime(20.0f);
-            //yarnWall3->SetUp();
+            Transform yarnWallTr3(DirectX::XMFLOAT3{ 12.0f,0.0f,10.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            auto yarnWall3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr3);
+            yarnWall3->SetBehavior(WallBehavior::AppearOnce);
+            yarnWall3->SetTriggerWave(3);
+            yarnWall3->SetUp();
         }
 #endif // 0
     }
@@ -1097,6 +1218,25 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
     }
 
 }
+
+// ステージごとのプレイヤーの場所を設定する
+void GameScene::SetupPlayerPos(STAGE_NAME stageId)
+{
+    switch (stageId)
+    {
+    case STAGE_NAME::TUTORIAL:
+    case STAGE_NAME::FIRST:
+    case STAGE_NAME::BOBBIN_FIRST:
+    case STAGE_NAME::REFLECT_WALL:
+        player->SetPosition({ 12.0f,0.0,12.0f });
+        break;
+    case STAGE_NAME::BOBBIN_SECOND:
+    case STAGE_NAME::DIFFICULT:
+    case STAGE_NAME::BOSS:
+        break;
+    }
+}
+
 
 // ステージごとのBGMを設定する
 void GameScene::SetupBGM(STAGE_NAME stageId)

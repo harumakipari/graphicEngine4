@@ -264,7 +264,13 @@ void RabbitBossEnemyActor::Update(float deltaTime)
 
     if (auto gameManager = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>())
     {
-        if (!gameManager->IsGameInputEnabled() && GetStateMachine()->GetStateName() != "Win")
+        auto state = GetStateMachine()->GetStateName();
+
+        const bool isSpecialState =
+            state == "Win" ||
+            state == "Death";
+
+        if (!gameManager->IsGameInputEnabled() && !isSpecialState)
         {
             return;
         }

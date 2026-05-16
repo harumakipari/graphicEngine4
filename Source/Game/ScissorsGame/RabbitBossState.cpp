@@ -7,6 +7,7 @@
 #include "ScissorsGameState.h"
 #include "ScissorsPlayer1.h"
 #include "Engine/Scene/Scene.h"
+#include "Engine/Utility/Time.h"
 
 
 RabbitBossStateBase::RabbitBossStateBase(RabbitBossEnemyActor* enemy) :State(enemy), enemy(enemy)
@@ -369,7 +370,7 @@ void RabbitBossAttackBuffState::Enter()
     enemy->PlayAnimation("Buff", false, true, 0.1f);
 
     // パワーアップを知らせる音を鳴らす
-    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_power_up.wav",0.8f);
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_power_up.wav", 0.8f);
 }
 
 void RabbitBossAttackBuffState::Execute(float deltaTime)
@@ -437,8 +438,10 @@ void RabbitBossStunState::Exit()
 void RabbitBossDeathState::Enter()
 {
     enemy->collisionBoxComponent->DisableCollision();
+
     elapsedTime = 0.0f;
-    // ボスが死亡したら呼ぶ処理  一フレームのみ
+
+    // ボスが死亡したら呼ぶ処理  一フレームのみ 敵全員死亡の演出を開始する
     enemy->StartDeathPerform();
 
     // 敵の出現を終了させる
@@ -447,24 +450,83 @@ void RabbitBossDeathState::Enter()
         bossSpawner->Deactivate();
     }
 
-    enemy->PlayAnimation("Stun", false, true, 0.1f);
+    {// ここで経過時間を停止する
+        enemy->EndDeathPerform(true);// 引数にFinishUIを出さないかどうか
+    }
+    // スロー開始
+    Time::SetSlow(0.3f, 1.5f);
+
+    enemy->PlayAnimation("KnockBack", false, true, 0.1f);
+
+    phase = DeathPhase::KnockBack;
 }
 
 void RabbitBossDeathState::Execute(float deltaTime)
 {
+    elapsedTime += deltaTime;
     // 死亡の演出を何か入れる
     enemy->UpdateDead(deltaTime);
 
-    elapsedTime += deltaTime;
 
-
-    //const float deadPerformTimeInterval = 5.0f;
-    const float deadPerformTimeInterval = 0.0f;
-    if (elapsedTime >= deadPerformTimeInterval)
+    switch (phase)
     {
-        enemy->EndDeathPerform(false);// 引数にプレイヤーが死亡したかどうか
+    case DeathPhase::StartSlow:
+        if (elapsedTime > 0.f)
+        {
+            phase = DeathPhase::KnockBack;
+            cameraLerpT = 0.0f;
+        }
+        break;
+
+    case DeathPhase::KnockBack:
+        if (!enemy->GetAnimationController()->IsPlayAnimation())
+        {
+            phase = DeathPhase::CameraMove;
+        }
+        break;
+
+    case DeathPhase::CameraMove:
+    {
+        cameraLerpT += Time::UnscaledDeltaTime() * 0.5f;
+
+        //enemy->GetSceneCamera()->LerpToTarget(
+        //    enemy->GetPosition(),
+        //    cameraLerpT
+        //);
+
+        if (cameraLerpT >= 1.0f)
+        {
+            phase = DeathPhase::Stun;
+            //enemy->PlayAnimation("Stun", false, true, 0.1f);
+            // スタンのアニメーション
+            enemy->SetAnimationRate(1.5f);
+            enemy->PlayAnimation("Stan", false, true, 0.1f);
+
+        }
+        break;
+    }
+
+    case DeathPhase::Stun:
+        if (!enemy->GetAnimationController()->IsPlayAnimation())
+        {
+            phase = DeathPhase::Tear;
+            //enemy->SpawnTearEffect();
+        }
+        break;
+
+    case DeathPhase::Tear:
+        if (elapsedTime > 3.0f)
+        {
+            phase = DeathPhase::Finish;
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("fromScene","GameScene") });
+        }
+        break;
+
+    case DeathPhase::Finish:
+        break;
     }
 }
+
 
 void RabbitBossDeathState::Exit()
 {
@@ -497,13 +559,17 @@ void RabbitBossWinState::Enter()
         bossSpawner->Deactivate();
     }
 
-    //enemy->PlayAnimation("Win", true, true, 0.5f);
-
     // ここで時間を停止する
     enemy->EndDeathPerform(true);// 引数にプレイヤーが死亡したかどうか
 
     // 周りにあるモデルを非表示にする
     enemy->HideAroundModel();
+
+    // ボビンの見た目を非表示にする
+    if (auto bobbin = enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<BobbinActor>())
+    {
+        bobbin->HideBobbinVisual();
+    }
 }
 
 void RabbitBossWinState::Execute(float deltaTime)

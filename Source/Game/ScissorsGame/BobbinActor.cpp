@@ -244,6 +244,22 @@ void BobbinActor::SetBobbinStateCharge()
     uiManager->Add(tutorialChargeComponent);
 }
 
+// ボビンの見た目を非表示にする
+void BobbinActor::HideBobbinVisual()
+{
+    // 描画用コンポーネントを非表示にする
+    skeletalMeshComponent->SetIsVisible(false);
+    skeletalMeshComponent->SetIsCastShadow(false);
+    // ボビンのチャージ音のオーディオコンポーネントを止める
+    chargeAudioComponent->Stop();
+
+    bobbinApplyRangeMeshComponent->SetIsVisible(false);
+    bobbinApplyRangeMeshComponent->SetIsCastShadow(false);
+
+    bobbinStringMeshComponent->SetIsVisible(false);
+    bobbinStringMeshComponent->SetIsCastShadow(false);
+}
+
 // ボビンを使用する
 void BobbinActor::UseBobbin()
 {

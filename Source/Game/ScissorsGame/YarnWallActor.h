@@ -56,7 +56,7 @@ private:
     float appearTime = 0.0f;
     float hideTime = -1.0f;
 
-    float moveSpeed = 5.0f;
+    float moveSpeed = 6.0f;
 
     float hiddenY = -10.0f;
     float visibleY = 0.0f;

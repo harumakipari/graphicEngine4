@@ -126,6 +126,10 @@ void YarnWallActor::SetUp()
 
         pos.y = hiddenY;
         SetPosition(pos);
+
+        //skeletalMeshComponent->SetIsVisible(false);
+        //redirectCollisionComponent->DisableCollision();
+
     }
     else
     {
@@ -133,6 +137,10 @@ void YarnWallActor::SetUp()
 
         pos.y = visibleY;
         SetPosition(pos);
+
+        //skeletalMeshComponent->SetIsVisible(true);
+        //redirectCollisionComponent->EnableCollision();
+
     }
 }
 

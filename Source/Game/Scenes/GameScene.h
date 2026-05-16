@@ -106,6 +106,9 @@ private:
     // ステージごとのギミック生成
     void SpawnStageGimmicks(STAGE_NAME stageId);
 
+    // ステージごとのプレイヤーの場所を設定する
+    void SetupPlayerPos(STAGE_NAME stageId);
+
     // ステージごとのBGMを設定する
     void SetupBGM(STAGE_NAME stageId);
 
