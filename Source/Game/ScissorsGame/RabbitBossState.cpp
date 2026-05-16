@@ -41,7 +41,7 @@ void RabbitBossAttackSelectState::Enter()
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     BossAttackType type = PopAttack();
-    type = BossAttackType::Buff;
+    //type = BossAttackType::Buff;
 #if 1
     switch (type)
     {
@@ -98,6 +98,7 @@ void RabbitBossAttackWarpPreviewState::Enter()
 {
     enemy->PlayAnimation("WarpStart", false, true, 0.1f);
     elapsedTime = 0.0f;
+
 }
 
 void RabbitBossAttackWarpPreviewState::Execute(float deltaTime)
@@ -118,6 +119,9 @@ void RabbitBossAttackWarpPreviewState::Exit()
 // ワープ
 void RabbitBossAttackWarpState::Enter()
 {
+    // 地面の下に潜り始める
+    enemy->isUnderGround = true;
+
     phase = WarpPhase::Dive;
     timer = 0.0f;
     enemy->StartDive();
@@ -293,6 +297,8 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
             enemy->StartEmerge();
             enemy->PlayAnimation("WarpEnd", false, true, 0.5f);
             enemy->SetAnimationRate(1.f);
+            // 地面の下に潜り終えた
+            enemy->isUnderGround = false;
 
             // 出現のSEを再生する
             CoreAudio::PlayOneShot(L"./Data/Sound/SE1/boss_warp_end.wav", 0.6f);
@@ -432,11 +438,12 @@ void RabbitBossDeathState::Execute(float deltaTime)
 
     elapsedTime += deltaTime;
 
+
     //const float deadPerformTimeInterval = 5.0f;
     const float deadPerformTimeInterval = 0.0f;
     if (elapsedTime >= deadPerformTimeInterval)
     {
-        enemy->EndDeathPerform();
+        enemy->EndDeathPerform(false);// 引数にプレイヤーが死亡したかどうか
     }
 }
 
@@ -448,7 +455,22 @@ void RabbitBossDeathState::Exit()
 void RabbitBossWinState::Enter()
 {
     enemy->collisionBoxComponent->DisableCollision();
+
+    phase = BossWinPhase::WaitCircleShrink;
+
+    // 地中にいるかを判断
+    requireEmerge = enemy->isUnderGround;
+
+    // 半径を設定
+    startRadius = 1.2f;
+
+    // 収縮までにかかる時間を設定
+    duration = 1.5f;
     elapsedTime = 0.0f;
+
+    //　ボスの位置でゲームオーバーの半径を決定
+    float z = enemy->GetPosition().z;
+    targetRadius = (z > 12.0f) ? 0.25f : 0.3f;
 
     // 敵の出現を終了させる
     if (auto bossSpawner = enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<BossSpawner>())
@@ -456,22 +478,154 @@ void RabbitBossWinState::Enter()
         bossSpawner->Deactivate();
     }
 
-    enemy->PlayAnimation("Win", true, true, 0.5f);
+    //enemy->PlayAnimation("Win", true, true, 0.5f);
+
+    // ここで時間を停止する
+    enemy->EndDeathPerform(true);// 引数にプレイヤーが死亡したかどうか
+
+    // 周りにあるモデルを非表示にする
+    enemy->HideAroundModel();
 }
 
 void RabbitBossWinState::Execute(float deltaTime)
 {
-    // 勝利の演出を何か入れる
-    enemy->UpdateWin(deltaTime);
-
-    elapsedTime += deltaTime;
-
-    //const float deadPerformTimeInterval = 5.0f;
-    const float deadPerformTimeInterval = 1.0f;
-    if (elapsedTime >= deadPerformTimeInterval)
+    switch (phase)
     {
-        enemy->EndDeathPerform();
+    case BossWinPhase::WaitCircleShrink:
+    {
+        elapsedTime += deltaTime;
+        float t = elapsedTime / duration;
+
+        t = std::clamp(t, 0.0f, 1.0f);
+
+        float radius = std::lerp(startRadius, targetRadius, t);
+
+        Logger::Log(U8("ゲームオーバー半径")+std::to_string(radius));
+
+        enemy->SetDeathRadius(radius);
+
+
+        // 勝利の演出を何か入れる
+        enemy->UpdateWin(deltaTime);
+
+        if (t >= 1.0f)
+        {
+            if (requireEmerge)
+            {
+                phase = BossWinPhase::Emerge;
+
+                enemy->StartEmerge();
+
+                enemy->PlayAnimation(
+                    "WarpEnd",
+                    false,
+                    true,
+                    0.5f
+                );
+
+                enemy->SetAnimationRate(1.f);
+
+                CoreAudio::PlayOneShot(
+                    L"./Data/Sound/SE1/boss_warp_end.wav",
+                    0.6f
+                );
+            }
+            else
+            {
+                phase = BossWinPhase::WinAnimation;
+
+                elapsedTime = 0.0f;
+
+                enemy->PlayAnimation(
+                    "Win",
+                    true,
+                    true,
+                    0.5f
+                );
+            }
+        }
+
+        break;
     }
+    case BossWinPhase::Emerge:
+    {
+        if (enemy->IsFinishedEmerge())
+        {
+            phase = BossWinPhase::WinAnimation;
+
+            elapsedTime = 0.0f;
+
+            enemy->PlayAnimation(
+                "Win",
+                true,
+                true,
+                0.5f
+            );
+        }
+    }
+    break;
+    case BossWinPhase::WinAnimation:
+    {
+        enemy->UpdateWin(deltaTime);
+
+        elapsedTime += deltaTime;
+        const float winTime = 1.5f; // 何秒待つか
+
+        if (elapsedTime >= winTime)
+        {
+            phase = BossWinPhase::CloseCircle;
+
+            elapsedTime = 0.0f;
+            // シーン遷移のための半径を設定する
+            startRadius = enemy->GetDeathRadius();
+            targetRadius = -0.1f;
+            duration = 0.4f;
+        }
+
+        break;
+    }
+    case BossWinPhase::CloseCircle:
+    {
+
+        elapsedTime += deltaTime;
+
+        float t = elapsedTime / duration;
+
+        t = std::clamp(t, 0.0f, 1.0f);
+
+        float radius =
+            std::lerp(startRadius, targetRadius, t);
+
+        enemy->SetDeathRadius(radius);
+
+        enemy->UpdateWin(deltaTime);
+
+        if (t >= 1.0f)
+        {
+            SceneTransitionManager::Instance().RequestTransition(
+                "LoadingScene",
+                {
+                    std::make_pair("preload", "ResultScene"),
+                    std::make_pair("fade","0"),
+                    std::make_pair("fromScene","GameScene")
+                },
+                TransitionStyle::Fade
+            );
+            phase = BossWinPhase::End;
+        }
+        break;
+    }
+    case BossWinPhase::End:
+        break;
+    }
+
+
+    ////const float deadPerformTimeInterval = 5.0f;
+    //const float deadPerformTimeInterval = 1.0f;
+    //if (elapsedTime >= deadPerformTimeInterval)
+    //{// ゲーム終了通知
+    //    enemy->EndDeathPerform(true);// 引数にプレイヤーが死亡したかどうか
+    //}
 }
 
 void RabbitBossWinState::Exit()

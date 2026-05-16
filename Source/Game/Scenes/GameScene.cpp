@@ -283,12 +283,12 @@ void GameScene::Update(float deltaTime)
         {
             DirectX::XMFLOAT3 bossPos = boss->GetPosition();
 
-            bossPos.y += gameOverTargetPosY;
+            bossPos.y = 0.5f;
 
             DirectX::XMFLOAT2 bossUiPos = WorldToUI(bossPos);
 
-            //float deathRadius = player->GetDeathRadius();
-            float deathRadius = gameOverRadius;
+            float deathRadius = boss->GetDeathRadius();
+            //float deathRadius = gameOverRadius;
 
             // 2.0f -> 0.25f -> -0.1f
             gameSceneCBuffer->data.radius = deathRadius;

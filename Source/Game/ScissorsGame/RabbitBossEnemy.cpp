@@ -259,13 +259,16 @@ void RabbitBossEnemyActor::Update(float deltaTime)
 
     if (auto gameManager = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>())
     {
-        if (!gameManager->IsGameInputEnabled())
+        if (!gameManager->IsGameInputEnabled() && GetStateMachine()->GetStateName() != "Win")
         {
             return;
         }
     }
 
+
     Character::Update(deltaTime);
+
+
 
     // 沈む処理
     if (isDiving)
@@ -671,7 +674,7 @@ void RabbitBossEnemyActor::UpdateDead(float deltaTime)
 }
 
 // 死亡演出が終了した時に呼ぶ処理
-void RabbitBossEnemyActor::EndDeathPerform()
+void RabbitBossEnemyActor::EndDeathPerform(bool playerDeath)
 {
     // 終了通知を入れる
     auto gameManager =
@@ -681,7 +684,7 @@ void RabbitBossEnemyActor::EndDeathPerform()
     if (gameManager && !endPerform)
     {
         endPerform = true;
-        gameManager->EndGame();
+        gameManager->EndGame(playerDeath);
     }
 }
 
@@ -715,6 +718,21 @@ void RabbitBossEnemyActor::ApplyTiedAllEnemy()
         e->OnTied();    // 玉止めする
     }
 }
+
+// ボスの周りのモデルを非表示にする処理
+void RabbitBossEnemyActor::HideAroundModel()
+{
+    // スタン中に表示するモデル
+    stunModel->SetIsCastShadow(false);
+    stunModel->SetIsVisible(false);
+    // ボスの出現の場所モデル
+    bossSpawnMarkModel->SetIsCastShadow(false);
+    bossSpawnMarkModel->SetIsVisible(false);
+    // ボスの追尾の場所モデル
+    bossChaseMarkModel->SetIsCastShadow(false);
+    bossChaseMarkModel->SetIsVisible(false);
+}
+
 
 void RabbitBossEnemyActor::CreteDamageZone()
 {

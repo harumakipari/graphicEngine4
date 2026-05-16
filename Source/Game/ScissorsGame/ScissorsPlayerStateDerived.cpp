@@ -859,6 +859,13 @@ void ScissorsPlayerDeathState::Enter()
     duration = 1.0f;
 
     waitTimer = 0.0f;
+
+
+    // ボス戦時ならボスのステートを変更する
+    if (auto boss=player->GetOwnerScene()->GetActorManager()->GetActorOfType<RabbitBossEnemyActor>())
+    {
+        boss->GetStateMachine()->ChangeState("Win");
+    }
 }
 
 void ScissorsPlayerDeathState::Execute(float deltaTime)

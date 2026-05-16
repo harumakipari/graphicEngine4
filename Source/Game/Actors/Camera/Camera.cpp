@@ -86,9 +86,15 @@ void FixedCamera::Update(float deltaTime)
         }
     }
 
+
     // ÅŒã‚Éˆê‰ñ‚¾‚¯”½‰f
     if (boss)
     {
+        if (boss->GetStateMachine()->GetStateName() == "Win")
+        {// Ÿ—˜Žž‚Í”¼“§–¾‚É‚µ‚È‚¢
+            shouldFade = false;
+        }
+
         boss->SetRenderOpacity(shouldFade ? 0.5f : 1.0f);
     }
 

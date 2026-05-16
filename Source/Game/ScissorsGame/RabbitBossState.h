@@ -231,6 +231,15 @@ private:
 // 勝利オブジェクト
 class RabbitBossWinState : public RabbitBossStateBase
 {
+    enum class BossWinPhase :uint8_t
+    {
+        WaitCircleShrink,
+        Emerge,
+        WinAnimation,
+        CloseCircle,
+        End
+    };
+
 public:
     // コンストラクタ
     RabbitBossWinState(RabbitBossEnemyActor* enemy) :RabbitBossStateBase(enemy) {}
@@ -247,4 +256,9 @@ public:
 
 private:
     float elapsedTime = 0.0f;   // 経過時間
+    BossWinPhase phase = BossWinPhase::WaitCircleShrink;
+    bool requireEmerge = false; // 地面から出てくる必要があるか
+    float startRadius = 0.0f;
+    float targetRadius = 0.0f;
+    float duration = 0.0f;
 };

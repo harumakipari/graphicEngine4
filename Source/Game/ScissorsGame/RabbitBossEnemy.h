@@ -91,7 +91,7 @@ public:
     void UpdateDead(float deltaTime);
 
     // 死亡演出が終了した時に呼ぶ処理
-    void EndDeathPerform();
+    void EndDeathPerform(bool playerDeath);
 
     //　勝利時に呼ぶ更新処理
     void UpdateWin(float deltaTime) {}
@@ -99,11 +99,20 @@ public:
     // 出現している全ての敵を玉止めする関数
     void ApplyTiedAllEnemy();
 
+    // ボスの周りのモデルを非表示にする処理
+    void HideAroundModel();
+
     // 出現攻撃範囲を取得する
     float GetAttackRange() { return spawnAttackRange; }
 
     // 出現範囲のモデルスケールを取得する
     float GetSpawnScale() { return spawnScaleMax; }
+
+    // 死亡演出のポストエフェクトの半径を設定する
+    void SetDeathRadius(float r) { this->deathRadius = r; }
+
+    // 死亡演出のポストエフェクトの半径を取得する
+    float GetDeathRadius() { return deathRadius; }
 
 private:
     // ダメージが入る場所を生成する
@@ -135,6 +144,10 @@ public:
     float stunCooldownTimer = 0.0f;
     // 再スタン防止時間
     float stunCooldownDuration = 3.0f;
+
+    // Win時に地面の下にいるかを確認する
+    bool isUnderGround = false; // 地面に潜る攻撃を開始しているかどうか
+
 private:
     std::vector<DirectX::XMFLOAT3> spawnPoints; // 出現位置
 
@@ -174,5 +187,7 @@ private:
     CoreColor green = { 0.886f,1.0f,0.098f,1.0f };
     CoreColor orange = { 1.0f,0.5f,0.0f,1.0f };
     CoreColor red = { 1.0f,0.1f,0.1f,1.0f };
+
+    float deathRadius = 10.0f; // 死亡時のポストエフェクトに使う半径
 };
 
