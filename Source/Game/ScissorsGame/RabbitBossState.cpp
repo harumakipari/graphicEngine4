@@ -3,6 +3,7 @@
 
 #include "BobbinActor.h"
 #include "BossSpawner.h"
+#include "GameCameraTargetActor.h"
 #include "RabbitBossEnemy.h"
 #include "ScissorsGameState.h"
 #include "ScissorsPlayer1.h"
@@ -488,7 +489,7 @@ void RabbitBossDeathState::Enter()
 
 void RabbitBossDeathState::Execute(float deltaTime)
 {
-    elapsedTime += deltaTime;
+    elapsedTime += Time::UnscaledDeltaTime();
     // 死亡の演出を何か入れる
     enemy->UpdateDead(deltaTime);
 
@@ -509,22 +510,20 @@ void RabbitBossDeathState::Execute(float deltaTime)
         if (!enemy->GetAnimationController()->IsPlayAnimation())
         {
             phase = DeathPhase::CameraMove;
+            elapsedTime = 0.0f;
+            // カメラをラープする
+            if (auto cameraTarget = enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<GameCameraTargetActor>())
+            {
+                cameraTarget->Play(cameraMoveInterval);
+            }
         }
         break;
 
     case DeathPhase::CameraMove:
     {
-        cameraLerpT += Time::UnscaledDeltaTime() * 0.5f;
-
-        //enemy->GetSceneCamera()->LerpToTarget(
-        //    enemy->GetPosition(),
-        //    cameraLerpT
-        //);
-
-        if (cameraLerpT >= 0.0f)
+        if (elapsedTime >= cameraMoveInterval)
         {
             phase = DeathPhase::Stun;
-            //enemy->PlayAnimation("Stun", false, true, 0.1f);
             // スタンのアニメーション
             enemy->SetAnimationRate(1.5f);
             enemy->PlayAnimation("Stan", false, true, 0.1f);
@@ -542,7 +541,7 @@ void RabbitBossDeathState::Execute(float deltaTime)
         break;
 
     case DeathPhase::Tear:
-        if (elapsedTime > 3.0f)
+        if (elapsedTime > 1.5f)
         {
             phase = DeathPhase::Finish;
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("fromScene","GameScene") });

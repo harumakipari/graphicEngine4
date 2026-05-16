@@ -237,9 +237,8 @@ public:
 
 private:
     DeathPhase phase = DeathPhase::StartSlow;
-    float cameraLerpT = 0.0f;
     float elapsedTime = 0.0f;   // 経過時間
-
+    float cameraMoveInterval = 2.0f; // カメラ移動の時間
 };
 
 // 勝利オブジェクト

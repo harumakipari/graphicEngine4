@@ -94,6 +94,11 @@ void FixedCamera::Update(float deltaTime)
         {// Ÿ—˜Žž‚Í”¼“§–¾‚É‚µ‚È‚¢
             shouldFade = false;
         }
+        if (boss->GetStateMachine()->GetStateName() == "Death")
+        {// ”s–kŽž‚Í”¼“§–¾‚É‚µ‚È‚¢
+            shouldFade = false;
+        }
+
 
         boss->SetRenderOpacity(shouldFade ? 0.5f : 1.0f);
     }

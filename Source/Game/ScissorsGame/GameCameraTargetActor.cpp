@@ -15,6 +15,7 @@ void GameCameraTargetActor::Update(float deltaTime)
 {
     easingRunner->Tick(deltaTime);
     currentPosition = MathHelper::Lerp(startPosition, endPosition, easingValue);
+    //currentPosition = MathHelper::Add(currentPosition, bossOffSetPos);
     SetPosition(currentPosition);
 
 }
@@ -26,6 +27,7 @@ void GameCameraTargetActor::DrawImGuiDetails()
     {
         Play(2.0f);
     }
+    ImGui::DragFloat3(U8("カメラのオフセット"), &bossOffSetPos.x);
 #endif
 }
 
@@ -38,7 +40,8 @@ void GameCameraTargetActor::Play(float interval)
     {
         endPosition = boss->GetPosition();
     }
-    endPosition.y = 0.5f; // 少し上にずらす
+    endPosition = MathHelper::Add(endPosition, bossOffSetPos);
+
 
     // position の easing
     {

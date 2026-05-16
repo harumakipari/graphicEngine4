@@ -26,5 +26,7 @@ private:
     DirectX::XMFLOAT3 endPosition = { -0.297f,3.197f,2.936f };
     DirectX::XMFLOAT3 currentPosition = { -0.297f,3.197f,2.936f };
 
+    DirectX::XMFLOAT3 bossOffSetPos = { 0.0f,3.5f,-5.0f };
+
 };
 

@@ -100,7 +100,7 @@ void LoadingScene::Start()
 
     std::shared_ptr<Sprite> chipSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png");
 
-    chipsImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tips/operate_1.png", "chipsImage");
+    chipsImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tips/player_lore.png", "chipsImage");
     chipsImage->SetSize({ 440, 132 });
     chipsImage->SetWorldPosition({ 20, 880 });
     chipsImage->SetTexture(chipSprite);

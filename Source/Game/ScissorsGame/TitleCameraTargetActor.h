@@ -34,6 +34,7 @@ private:
 
     DirectX::XMFLOAT3 currentPosition = { -0.297f,3.197f,2.936f };
 
+
     float easingValue = 0.0f;
 };
 
