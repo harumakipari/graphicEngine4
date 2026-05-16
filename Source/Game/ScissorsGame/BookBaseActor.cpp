@@ -426,9 +426,15 @@ void BookBaseActor::CreateBookModel(const std::string& backCoverModelName, const
 
     CreateStagePatch(
         rightPage,
+        STAGE_NAME::REFLECT_WALL,
+        "./Data/TeamModels/Title/patchModelReflectWall.gltf",
+        { -3.2f,0.1f,-1.6f });
+
+    CreateStagePatch(
+        rightPage,
         STAGE_NAME::DIFFICULT,
         "./Data/TeamModels/Title/patchModelDifficult.gltf",
-        { -1.3f,0.1f,-1.6f });
+        { -1.3f,0.1f,-0.1f });
 
 
     CreateStagePatch(

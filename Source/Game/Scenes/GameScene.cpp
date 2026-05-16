@@ -20,6 +20,7 @@
 #include "Game/ScissorsGame/ButtonCoinActor.h"
 #include "Game/ScissorsGame/ComboUiActor.h"
 #include "Game/ScissorsGame/EnemyBase.h"
+#include "Game/ScissorsGame/GameCameraTargetActor.h"
 #include "Game/ScissorsGame/GameTimerUIActor.h"
 #include "Game/ScissorsGame/ItemHeartActor.h"
 #include "Game/ScissorsGame/NeedleEnemyActor.h"
@@ -239,7 +240,7 @@ void GameScene::Start()
         currentStageName = StringToStageName(stageName);
     }
 
-    currentStageName = STAGE_NAME::BOSS;
+    //currentStageName = STAGE_NAME::REFLECT_WALL;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(currentStageName);
@@ -716,7 +717,7 @@ void GameScene::SetUpActors()
     mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(30), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 20.f, 500.0f);
 
     Transform cameraTargetTr(DirectX::XMFLOAT3{ 11.792f,10.5f,-9.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
+    auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<GameCameraTargetActor>("cameraTargetActor", cameraTargetTr);
     mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
 
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
@@ -971,11 +972,20 @@ void GameScene::OnGameStart()
 // ステージごとのギミック生成
 void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
 {
+    if (stageId != STAGE_NAME::TUTORIAL)
+    {// チュートリアル以外なら
+        // タイマー表示アクターを生成
+        Transform timerUiTr(DirectX::XMFLOAT3{ 19.9f,8.7f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
+        auto timerUiActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<GameTimerUiActor>("timerUiActor", timerUiTr);
+    }
+
+
     switch (stageId)
     {
     case STAGE_NAME::TUTORIAL:
         break;
     case STAGE_NAME::FIRST:
+
         break;
     case STAGE_NAME::BOBBIN_FIRST:
     {
@@ -984,6 +994,7 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
         bobbin->SetBobbinSize(BobbinActor::BobbinSize::Big);
         bobbin->SetBobbinStateCharge();
     }
+
     break;
     case STAGE_NAME::REFLECT_WALL:
     {
@@ -1208,9 +1219,6 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
         auto bobbin = this->GetActorManager()->CreateAndRegisterActorWithTransform<BobbinActor>("BobbinActor", bobbinTr);
         bobbin->SetBobbinSize(BobbinActor::BobbinSize::BossBobbin);
 
-        // タイマー表示アクターを生成
-        Transform timerUiTr(DirectX::XMFLOAT3{ 19.9f,8.7f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.f,1.f });
-        auto timerUiActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<GameTimerUiActor>("timerUiActor", timerUiTr);
 
 #endif // 0
     }
@@ -1226,7 +1234,9 @@ void GameScene::SetupPlayerPos(STAGE_NAME stageId)
     {
     case STAGE_NAME::TUTORIAL:
     case STAGE_NAME::FIRST:
+        player->SetPosition({ 12.0f,0.0,7.0f });
     case STAGE_NAME::BOBBIN_FIRST:
+        break;
     case STAGE_NAME::REFLECT_WALL:
         player->SetPosition({ 12.0f,0.0,12.0f });
         break;

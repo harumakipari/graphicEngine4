@@ -26,11 +26,10 @@ class LoadingScene : public SceneBase
 {
     enum class TipsCategory :uint8_t
     {
-        Gameplay,      // 操作説明
-        StageHint,     // ステージ攻略
-        EnemyLore,     // 敵の世界観
-        WorldLore,     // 全体世界観
-        Funny,         // どうでもいい雑学
+        StageStart,     // セレクト → ゲーム
+        Retry,          // ゲーム → ゲーム
+        Result,         // ゲーム → リザルト
+        ReturnTitle,    // リザルト → タイトル
     };
 
     struct TipsData
@@ -38,6 +37,9 @@ class LoadingScene : public SceneBase
         TipsCategory category;  // カテゴリー
         std::string stage; // ステージ名
         std::vector<std::wstring> textures; //テクスチャの名前
+
+        bool gamePadOnly = false;
+        bool keyboardOnly = false;
     };
 
 

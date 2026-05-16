@@ -1,6 +1,12 @@
 {
     "BOBBIN_FIRST": [
         {
+            "score": 9710
+        },
+        {
+            "score": 9490
+        },
+        {
             "score": 9180
         },
         {
@@ -8,12 +14,11 @@
         },
         {
             "score": 8180
-        },
+        }
+    ],
+    "BOBBIN_SECOND": [
         {
-            "score": 8120
-        },
-        {
-            "score": 7990
+            "score": 4390
         }
     ],
     "BOSS": [
@@ -47,10 +52,13 @@
             "score": 10730
         },
         {
-            "score": 9935
+            "score": 10580
         }
     ],
     "FIRST": [
+        {
+            "score": 7920
+        },
         {
             "score": 7830
         },
@@ -58,13 +66,10 @@
             "score": 7340
         },
         {
+            "score": 6740
+        },
+        {
             "score": 6500
-        },
-        {
-            "score": 6320
-        },
-        {
-            "score": 6260
         }
     ],
     "REFLECT_WALL": [
@@ -75,13 +80,13 @@
             "score": 4520
         },
         {
+            "score": 4450
+        },
+        {
             "score": 4180
         },
         {
             "score": 3850
-        },
-        {
-            "score": 3630
         }
     ],
     "TUTORIAL": [

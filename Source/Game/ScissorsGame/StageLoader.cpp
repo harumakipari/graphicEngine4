@@ -50,12 +50,12 @@ StageData StageLoader::Load(STAGE_NAME stageId)
           // Wave4：ミッキー
         {
             {
-                { { 23.5,0,18 }, YarnEnemyType::MoveLinear,0.0f,false,2.0f,1.0f,{-1,0,0}},
-                { {21,0,19}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,0}},
+                { { 23.5,0,16 }, YarnEnemyType::MoveLinear,0.0f,false,2.0f,1.0f,{-1,0,0}},
+                { {21,0,15}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,0}},
                 { {21,0,17}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,0}},
 
-                { { 1,0,6 }, YarnEnemyType::MoveLinear,0.0f,false,2.0f,1.0f,{1,0,0}},
-                { {0,0,5}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,0}},
+                { { 1,0,8 }, YarnEnemyType::MoveLinear,0.0f,false,2.0f,1.0f,{1,0,0}},
+                { {0,0,9}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,0}},
                 { {0,0,7}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,0}},
             },
              false,
@@ -90,11 +90,13 @@ StageData StageLoader::Load(STAGE_NAME stageId)
               -1,
               5.0f,
         },
+       
         // Wave6：急かす
     {
         {
-            { {0,0,12}, YarnEnemyType::RescueEnemy,0.0f,false,3.0f },
-            { {23,0,12}, YarnEnemyType::RescueEnemy,0.0f, false,3.0f},
+                  { {12,0,12}, YarnEnemyType::Static ,0.0f},
+            { {0,0,12}, YarnEnemyType::RescueEnemy,2.0f,false,3.0f },
+            { {23,0,12}, YarnEnemyType::RescueEnemy,2.0f, false,3.0f},
 #if 0
                             { { 23.5,0,15 }, YarnEnemyType::MoveLinear,0.0f,false,2.0f,1.0f,{-1,0,0}},
                 { {21,0,16}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,0}},
@@ -109,7 +111,7 @@ StageData StageLoader::Load(STAGE_NAME stageId)
         },
          false,
               -1,
-              5.0f,
+              3.0f,
     },
 
 
@@ -534,7 +536,7 @@ StageData StageLoader::Load(STAGE_NAME stageId)
         {
                 },
                 false,
-               -1,3.0f,false
+               -1,2.0f,false
             },
 
             {

@@ -469,11 +469,21 @@ void RabbitBossDeathState::Enter()
         enemy->EndDeathPerform(true);// 引数にFinishUIを出さないかどうか
     }
     // スロー開始
-    Time::SetSlow(0.3f, 1.5f);
+    Time::timeScale = 0.5f;
 
     enemy->PlayAnimation("KnockBack", false, true, 0.1f);
 
-    phase = DeathPhase::KnockBack;
+    phase = DeathPhase::StartSlow;
+
+    // 周りにあるモデルを非表示にする
+    enemy->HideAroundModel();
+
+    // ボビンの見た目を非表示にする
+    if (auto bobbin = enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<BobbinActor>())
+    {
+        bobbin->HideBobbinVisual();
+    }
+
 }
 
 void RabbitBossDeathState::Execute(float deltaTime)
@@ -486,10 +496,12 @@ void RabbitBossDeathState::Execute(float deltaTime)
     switch (phase)
     {
     case DeathPhase::StartSlow:
-        if (elapsedTime > 0.f)
+        if (elapsedTime > 0.8f)
         {
             phase = DeathPhase::KnockBack;
-            cameraLerpT = 0.0f;
+            // スロー開始
+            Time::timeScale = 1.0f;
+
         }
         break;
 
@@ -509,7 +521,7 @@ void RabbitBossDeathState::Execute(float deltaTime)
         //    cameraLerpT
         //);
 
-        if (cameraLerpT >= 1.0f)
+        if (cameraLerpT >= 0.0f)
         {
             phase = DeathPhase::Stun;
             //enemy->PlayAnimation("Stun", false, true, 0.1f);
@@ -645,7 +657,7 @@ void RabbitBossWinState::Execute(float deltaTime)
                 );
                 // ボスの笑い後のSEを再生する
                 CoreAudio::PlayOneShot(
-                    L"./Data/Sound/SE1/boss_win_laugh.wav",
+                    L"./Data/Sound/SE1/boss_laugh.wav",
                     0.8f
                 );
             }
@@ -669,7 +681,7 @@ void RabbitBossWinState::Execute(float deltaTime)
             );
             // ボスの笑い後のSEを再生する
             CoreAudio::PlayOneShot(
-                L"./Data/Sound/SE1/boss_win_laugh.wav",
+                L"./Data/Sound/SE1/boss_laugh.wav",
                 0.8f
             );
         }
