@@ -177,12 +177,12 @@ void WaveManager::UpdateSpawning(float deltaTime)
     if (playPreviewSE)
     {
         // 敵の出現エフェクトの音
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_spawn.wav", 1.0f);
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_spawn.wav", 0.5f);
     }
     if (playSpawnSE)
     {
         // 敵が出てくる音
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_spawn1.wav", 1.0f);
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_spawn1.wav", 0.5f);
     }
     
 

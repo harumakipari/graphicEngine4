@@ -281,7 +281,7 @@ StageData StageLoader::Load(STAGE_NAME stageId)
                 // Wave ４　波波　ハサミ
                 {
                       // 右下
-                      { { 18,0,2},  YarnEnemyType::WaveMoveBehavior, 0.0f ,false,2.0f ,1.0f,{0,0,1}},
+                      { { 18,0,2},  YarnEnemyType::WaveMoveBehavior, 0.f ,false,2.0f ,1.0f,{0,0,1}},
                       { { 19,0,1},  YarnEnemyType::WaveMoveBehavior, 0.0f ,false,2.0f ,1.0f,{0,0,1}},
                       { { 17,0,1},  YarnEnemyType::WaveMoveBehavior, 0.0f ,false,2.0f ,1.0f,{0,0,1}},
 
@@ -296,7 +296,7 @@ StageData StageLoader::Load(STAGE_NAME stageId)
                   },
                   false,
                   -1,
-                  10.0f,
+                  7.0f,
                   true
               },
 
@@ -305,19 +305,32 @@ StageData StageLoader::Load(STAGE_NAME stageId)
         {
                       {
 
-                        { { 6.0,0,15.0},  YarnEnemyType::Static, .0f ,false,2.0f ,1.0f,{0,0,1},true},
-                       {{10.0,0,15.0},  YarnEnemyType::Static,0.0f + 0.2f ,false,2.0f ,1.0f,{0,0,1},true},
-                       {{12.0,0,18.0},  YarnEnemyType::Static,0.0f + 0.4f ,false,2.0f ,1.0f,{0,0,1},true},
-                       {{14.0,0,15.0},  YarnEnemyType::Static,0.0f + 0.6f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{18.0,0,15.0},  YarnEnemyType::Static,0.0f + 0.8f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{16.0,0,12.0},  YarnEnemyType::Static,0.0f + 1.0f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{18.0,0,9.0},  YarnEnemyType::Static, 0.0f + 1.2f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{14.0,0,9.0},  YarnEnemyType::Static, 0.0f + 1.4f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{12.0,0,6.0},  YarnEnemyType::Static, 0.0f + 1.6f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{10.0,0,9.0},  YarnEnemyType::Static, 0.0f + 1.8f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{6.0,0,9.0},  YarnEnemyType::Static, 0.0f + 2.0f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{8.0,0,12.0},  YarnEnemyType::Static, 0.0f + 2.2f ,false,2.0f ,1.0f,{0,0,1},true },
-                       {{12.0,0,12.0},  YarnEnemyType::Static, 0.0f + 2.4f ,true,2.0f ,1.0f,{0,0,1},true },
+                        { { 6.0,0,11.0},  YarnEnemyType::Static, .0f ,false,2.0f ,1.0f,{0,0,1},true},
+                       {{10.0,0,11.0},  YarnEnemyType::Static,0.0f + 0.3f ,false,2.0f ,1.0f,{0,0,1},true},
+                       {{12.0,0,12.0},  YarnEnemyType::Static,0.0f  ,false,2.0f ,1.0f,{0,0,1},true},
+                       {{14.0,0,11.0},  YarnEnemyType::Static,0.0f + 0.3f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{18.0,0,11.0},  YarnEnemyType::Static,0.0f  ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{16.0,0,8.0},  YarnEnemyType::Static,0.0f + 0.3f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{18.0,0,5.0},  YarnEnemyType::Static, 0.0f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{14.0,0,5.0},  YarnEnemyType::Static, 0.0f + 0.3f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{12.0,0,2.0},  YarnEnemyType::Static, 0.0f  ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{10.0,0,5.0},  YarnEnemyType::Static, 0.0f + 0.3f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{6.0,0,5.0},  YarnEnemyType::Static, 0.0f  ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{8.0,0,8.0},  YarnEnemyType::Static, 0.0f + 0.3f ,false,2.0f ,1.0f,{0,0,1},true },
+                       {{12.0,0,8.0},  YarnEnemyType::Static, 0.0f + 0.6f ,true,2.0f ,1.0f,{0,0,1},true },
+                       // { { 6.0,0,15.0},  YarnEnemyType::Static, .0f ,false,2.0f ,1.0f,{0,0,1},true},
+                       //{{10.0,0,15.0},  YarnEnemyType::Static,0.0f + 0.2f ,false,2.0f ,1.0f,{0,0,1},true},
+                       //{{12.0,0,18.0},  YarnEnemyType::Static,0.0f + 0.4f ,false,2.0f ,1.0f,{0,0,1},true},
+                       //{{14.0,0,15.0},  YarnEnemyType::Static,0.0f + 0.6f ,false,2.0f ,1.0f,{0,0,1},true },
+                       //{{18.0,0,15.0},  YarnEnemyType::Static,0.0f + 0.8f ,false,2.0f ,1.0f,{0,0,1},true },
+                       //{{16.0,0,12.0},  YarnEnemyType::Static,0.0f + 1.0f ,false,2.0f ,1.0f,{0,0,1},true },
+                       //{{18.0,0,9.0},  YarnEnemyType::Static, 0.0f + 1.2f ,false,2.0f ,1.0f,{0,0,1},true },
+                       //{{14.0,0,9.0},  YarnEnemyType::Static, 0.0f + 1.4f ,false,2.0f ,1.0f,{0,0,1},true },
+                       //{{12.0,0,6.0},  YarnEnemyType::Static, 0.0f + 1.6f ,false,2.0f ,1.0f,{0,0,1},true },
+                       //{{10.0,0,9.0},  YarnEnemyType::Static, 0.0f + 1.8f ,false,2.0f ,1.0f,{0,0,1},true },
+                       //{{6.0,0,9.0},  YarnEnemyType::Static, 0.0f + 2.0f ,false,2.0f ,1.0f,{0,0,1},true },
+                       //{{8.0,0,12.0},  YarnEnemyType::Static, 0.0f + 2.2f ,false,2.0f ,1.0f,{0,0,1},true },
+                       //{{12.0,0,12.0},  YarnEnemyType::Static, 0.0f + 2.4f ,true,2.0f ,1.0f,{0,0,1},true },
 
     },   false,
                   -1,
@@ -325,27 +338,30 @@ StageData StageLoader::Load(STAGE_NAME stageId)
                   true
         },
             // Wave 6 ハリネズミ　大直線４　　ハサミ
-            {
+#if 0
+                            {
                 {
                    { { 12,0,12},  YarnEnemyType::LongRangeAttack, 0.0f },
 
-                   // 大きい
-                  { { 4.5,0,4.5},  YarnEnemyType::MoveLinear, 0.0f ,true,2.0f,1.0f,{1.0,0.0,1.0}},
-                  { { 4.5,0,19.5},  YarnEnemyType::MoveLinear, 0.0f ,true,2.0f,1.0f,{1.0,0.0,-1.0}},
-                  { { 19.5,0,19.5},  YarnEnemyType::MoveLinear, 0.0f ,true,2.0f,1.0f,{-1.0,0.0,-1.0}},
-                  { { 19.5,0,4.5},  YarnEnemyType::MoveLinear, 0.0f ,true,2.0f,1.0f,{-1.0,0.0,1.0}},
+                   // // 大きい
+                   //{ { 4.5,0,4.5},  YarnEnemyType::MoveLinear, 0.0f ,false,2.0f,1.0f,{1.0,0.0,1.0}},
+                   //{ { 4.5,0,19.5},  YarnEnemyType::MoveLinear, 0.0f ,false,2.0f,1.0f,{1.0,0.0,-1.0}},
+                   //{ { 19.5,0,19.5},  YarnEnemyType::MoveLinear, 0.0f ,false,2.0f,1.0f,{-1.0,0.0,-1.0}},
+                   //{ { 19.5,0,4.5},  YarnEnemyType::MoveLinear, 0.0f ,false,2.0f,1.0f,{-1.0,0.0,1.0}},
 
-                  // ハサミ
-                   // 右上
-              { {22.5f,0,22.5f}, YarnEnemyType::RescueEnemy,1.0f,false,3.0f },
-              // 左下
-          { {1.5f,0,1.5f}, YarnEnemyType::RescueEnemy,1.0f, false,3.0f},
+                   // ハサミ
+                    // 右上
+               { {22.5f,0,22.5f}, YarnEnemyType::RescueEnemy,1.0f,false,3.0f },
+               // 左下
+           { {1.5f,0,1.5f}, YarnEnemyType::RescueEnemy,1.0f, false,3.0f},
 
-          }, false,
-                -1,
-                15.0f,
-                true
-      },
+           }, false,
+                 -1,
+                 15.0f,
+                 true
+       },
+
+                 #endif // 0
             // Wave 7 ハリネズミ　追尾
     {
         {
