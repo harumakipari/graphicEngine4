@@ -41,7 +41,7 @@ void RabbitBossAttackSelectState::Enter()
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     BossAttackType type = PopAttack();
-    //type = BossAttackType::Buff;
+    type = BossAttackType::Buff;
 #if 1
     switch (type)
     {
@@ -296,8 +296,6 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
 
             // 出現のSEを再生する
             CoreAudio::PlayOneShot(L"./Data/Sound/SE1/boss_warp_end.wav", 0.6f);
-
-
         }
     }
     break;
@@ -330,12 +328,16 @@ void RabbitBossAttackWarpState::Exit()
 // バフプレビュー
 void RabbitBossAttackBuffPreviewState::Enter()
 {
-
+    enemy->PlayAnimation("Buff", false, true, 0.1f);
 }
 
 void RabbitBossAttackBuffPreviewState::Execute(float deltaTime)
 {
-    enemy->GetStateMachine()->ChangeState("Buff");
+    elapsedTime += deltaTime;
+    if (elapsedTime >= 1.3f)
+    {
+        enemy->GetStateMachine()->ChangeState("Buff");
+    }
 }
 
 void RabbitBossAttackBuffPreviewState::Exit()
@@ -346,7 +348,6 @@ void RabbitBossAttackBuffPreviewState::Exit()
 // バフ
 void RabbitBossAttackBuffState::Enter()
 {
-
 }
 
 void RabbitBossAttackBuffState::Execute(float deltaTime)
@@ -420,6 +421,8 @@ void RabbitBossDeathState::Enter()
     {
         bossSpawner->Deactivate();
     }
+
+    enemy->PlayAnimation("Stun", false, true, 0.1f);
 }
 
 void RabbitBossDeathState::Execute(float deltaTime)

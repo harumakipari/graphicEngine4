@@ -130,6 +130,7 @@ public:
     // ステージ開放判定関数
     bool IsStageUnlocked(STAGE_NAME stage);
 
+
 protected:
     // 最初の本の状態を設定する
     void SetInitPageState(BookPageState initialState);
@@ -160,6 +161,8 @@ private:
     // コントローラー対応時に選択切り替え処理
     void MoveSelection(int dir);
 
+    // ロック中のワッペンの彩度を下げる
+    void UpdateStageVisual(const std::shared_ptr<StageSelectData>& stage);
 public:
     // 本が押されたことを通知する
     std::function<void()> onRequestOpenBook;

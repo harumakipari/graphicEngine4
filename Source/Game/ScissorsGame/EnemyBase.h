@@ -151,6 +151,9 @@ public:
     // サイズを変更演出を開始する
     void StartChangeSize(YarnSize newSize);
 
+    // 描画を消す
+    void HideEnemyVisual();
+
     // ステートを変更する
     void ChangeEnemyState(const YarnState state) { this->state = state; }
 
@@ -235,14 +238,15 @@ public:
 
     bool pendingDeath = false;  // 死亡処理の演出に遅延を入れるかどうか
 
-    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
 protected:
     DirectX::XMFLOAT3 startPosition = { 0.0f,0.0f,0.0f };   // 敵の出現の開始位置　波うちの時に基準とする
     std::vector<std::shared_ptr<SkeletalMeshComponent>> tiedMeshes;// 玉止め用のモデル
     std::shared_ptr<RotationComponent> rotationComponent; // 回転のコンポーネント
     std::shared_ptr<SphereComponent> sphereCollisionComponent; // 当たり判定のコンポーネント
+    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
 
     std::shared_ptr<SkeletalMeshComponent> powerUpMarkMeshComponent;    // 敵が強化される時に出現する描画コンポーネントを追加
+    std::shared_ptr<SkeletalMeshComponent> powerUpArrowMarkMeshComponent;    // 敵が強化される時に出現する描画コンポーネントを追加
 
     // 移動のパラメータ
     DirectX::XMFLOAT3 moveDirection = { 1.0f, 0.0f, 0.0f }; // 線形移動の方向

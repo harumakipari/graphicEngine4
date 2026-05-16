@@ -226,7 +226,7 @@ void GameScene::Start()
     {
         PROFILE_SCOPE("Create Player");
         Transform playerTr(DirectX::XMFLOAT3{ 12.0f,0.0f,3.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-         //Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 0.01f,0.01f,0.01f });
+        //Transform playerTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 0.01f,0.01f,0.01f });
         player = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsPlayer1>("player", playerTr);
     }
 
@@ -277,24 +277,32 @@ void GameScene::Update(float deltaTime)
     ScoreSystem::Update(deltaTime);
 
     // 死亡演出
-    if (currentStageName==STAGE_NAME::BOSS)
+    if (currentStageName == STAGE_NAME::BOSS)
     {
-        DirectX::XMFLOAT3 playerPos = player->GetPosition();
-        DirectX::XMFLOAT2 playerUiPos = WorldToUI(playerPos);
+        if (auto boss = GetActorManager()->GetActorOfType<RabbitBossEnemyActor>())
+        {
+            DirectX::XMFLOAT3 bossPos = boss->GetPosition();
 
-        float deathRadius = player->GetDeathRadius();
+            bossPos.y += gameOverTargetPosY;
 
-        // 2.0f -> 0.15f -> -0.1f
-        //gameSceneCBuffer->data.radius = gameOverRadius;
-        gameSceneCBuffer->data.radius = deathRadius;
-        gameSceneCBuffer->data.screenSize = { Graphics::GetScreenWidth(),Graphics::GetScreenHeight() };
+            DirectX::XMFLOAT2 bossUiPos = WorldToUI(bossPos);
 
-        playerUiPos.x /= gameSceneCBuffer->data.screenSize.x;
-        playerUiPos.y /= gameSceneCBuffer->data.screenSize.y;
+            //float deathRadius = player->GetDeathRadius();
+            float deathRadius = gameOverRadius;
 
-        gameSceneCBuffer->data.playerScreenPosition = playerUiPos;
+            // 2.0f -> 0.25f -> -0.1f
+            gameSceneCBuffer->data.radius = deathRadius;
+            gameSceneCBuffer->data.screenSize = { Graphics::GetScreenWidth(),Graphics::GetScreenHeight() };
+
+            //bossUiPos.y += gameOverTargetPosY;
+
+            bossUiPos.x /= gameSceneCBuffer->data.screenSize.x;
+            bossUiPos.y /= gameSceneCBuffer->data.screenSize.y;
+
+            gameSceneCBuffer->data.playerScreenPosition = bossUiPos;
+        }
     }
-    else 
+    else
     {
         DirectX::XMFLOAT3 playerPos = player->GetPosition();
         DirectX::XMFLOAT2 playerUiPos = WorldToUI(playerPos);
@@ -1163,6 +1171,7 @@ void GameScene::DrawGui()
     if (ImGui::TreeNode(U8("ゲームオーバー演出")))
     {
         ImGui::DragFloat(U8("半径"), &gameOverRadius, 0.1f, -0.1f, 2.0f);
+        ImGui::DragFloat(U8("円の中心の調整値Y"), &gameOverTargetPosY, 0.5f);
         ImGui::TreePop();
     }
     if (ImGui::TreeNode(U8("敵")))

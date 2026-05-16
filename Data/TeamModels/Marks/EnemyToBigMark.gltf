@@ -1,0 +1,211 @@
+{
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 21,
+      "max": [
+        1.6346266269683838,
+        1.9073486612342094e-07,
+        1.6346267461776733
+      ],
+      "min": [
+        -1.6346272230148315,
+        0.0,
+        -1.6346275806427002
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 21,
+      "max": [
+        1.1668402777331721e-07,
+        1.0,
+        1.1668405619502664e-07
+      ],
+      "min": [
+        -1.1668405619502664e-07,
+        1.0,
+        -1.1668400645703514e-07
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 21,
+      "max": [
+        -1.0,
+        1.1668403487874457e-07,
+        2.3444399630534463e-06,
+        -1.0
+      ],
+      "min": [
+        -1.0,
+        -1.16684063300454e-07,
+        -2.921098712249659e-06,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 21,
+      "max": [
+        0.6570277214050293,
+        0.7305159568786621
+      ],
+      "min": [
+        0.34416332840919495,
+        0.41765153408050537
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5125,
+      "count": 60,
+      "max": [
+        20
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 252,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 252,
+      "byteOffset": 252,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 336,
+      "byteOffset": 504,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 168,
+      "byteOffset": 840,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 240,
+      "byteOffset": 1008,
+      "target": 34963
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1248,
+      "uri": "data:application/octet-stream;base64,w0WpPwAAAADA93W/mpkZtc3MTDQAAAAA4/3GPwAAAAAnUAG/o/d1PwAAAADHRam/A1ABPwAAAADn/ca/AAAAAAAAAAB6O9G/GlABvwAAAADn/ca/oPd1vwAAAADHRam/x0WpvwAAAACa93W/4/3GvwAAAAAnUAG/dzvRvwAAAAAAAAAA4/3GvwAAAAAAUAE/x0WpvwAAAACa93U/oPd1vwAAAADARak/GlABvwAAAADg/cY/AAAAAAAAAABzO9E/A1ABPwAAAADg/cY/kPd1PwAAAAC6Rak/ukWpPwAAAACa93U/3f3GPwAAAAAAUAE/cjvRPwAAAAAAAAAAdQziMwAAgD/ZWmazdAziMwAAgD/ZWmazdAziMwAAgD/ZWmazkmSzMwAAgD+8ZLOz01pmMwAAgD98DOKz6b+eMgAAgD+1k/qzzr+esgAAgD+2k/qz/FpmswAAgD90DOKzuWSzswAAgD+tZLOzdAziswAAgD8MW2azvZP6swAAgD/Ev56yvZP6swAAgD/zv54yiAziswAAgD/TWmYzsGSzswAAgD+8ZLMzA1tmswAAgD94DOIz1L+esgAAgD+9k/oz7r+eMgAAgD+6k/ozJVtmMwAAgD91DOIzrmSzMwAAgD/AZLMzfwziMwAAgD/+WmYzuZP6MwAAgD8JwJ4yAACAv3sM4jMrzUo1AACAvwAAgL96DOIzK81KNQAAgL8AAIC/egziMyvNSjUAAIC/AACAv4dkszOaE361AACAvwAAgL/UWmYzCsbFMgAAgL8AAIC/B8CeMllO9DQAAIC/AACAv47AnrIYCES2AACAvwAAgL/kWmaz25RWNQAAgL8AAIC/nWSzsyxVHTYAAIC/AACAv34M4rPYjLi1AACAvwAAgL++k/qzx4/MtAAAgL8AAIC/vJP6s7qPzLQAAIC/AACAv4QM4rMqShe1AACAvwAAgL+wZLOzk6H1sQAAgL8AAIC/21pmszAZt7UAAIC/AACAv+2/nrI1nsw0AACAvwAAgL8HwJ4yV57MtAAAgL8AAIC/GFtmMzJw9DQAAIC/AACAv7NkszOII+a0AACAvwAAgL99DOIzURVsNAAAgL8AAIC/upP6M6aPzLQAAIC/EIK/Pmba9j4IJwA/J/cSP7MhtD4flwY/LjrRPlAi5T4Ejuc+9MHZPggnAD9s1tU+DocMP/jB2T74sBc/UiLlPgiNID9s2vY+Nj0mPyCXBj/4Mig/KPcSPzQ9Jj8uVx8/CI0gPxiBKj/3sBc/J10zPw6HDD9UDTk/BicAPxgDOz8Djuc+VA05Py460T4lXTM/E4K/PheBKj+4IbQ+LFcfPy02sD4m9xI/AAAAAAEAAAACAAAAAwAAAAEAAAAAAAAABAAAAAEAAAADAAAABQAAAAEAAAAEAAAABgAAAAEAAAAFAAAABwAAAAEAAAAGAAAACAAAAAEAAAAHAAAACQAAAAEAAAAIAAAACgAAAAEAAAAJAAAACwAAAAEAAAAKAAAADAAAAAEAAAALAAAADQAAAAEAAAAMAAAADgAAAAEAAAANAAAADwAAAAEAAAAOAAAAEAAAAAEAAAAPAAAAEQAAAAEAAAAQAAAAEgAAAAEAAAARAAAAEwAAAAEAAAASAAAAFAAAAAEAAAATAAAAAgAAAAEAAAAUAAAA"
+    }
+  ],
+  "images": [
+    {
+      "uri": "M_EnemyToBigArrowMark_BaseColor.png"
+    },
+    {
+      "uri": "M_EnemyToBigArrowMark_Opacity.png"
+    }
+  ],
+  "materials": [
+    {
+      "alphaMode": "BLEND",
+      "name": "M_EnemyToBigArrowMark",
+      "normalTexture": {
+        "index": 1
+      },
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1.0,
+          0.9999899864196777,
+          0.9999899864196777,
+          1.0
+        ],
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "EnemyToBigMark",
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "samplers": [
+    {
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    }
+  ]
+}

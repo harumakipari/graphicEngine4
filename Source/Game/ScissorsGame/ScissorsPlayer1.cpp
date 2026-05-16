@@ -1205,14 +1205,18 @@ void ScissorsPlayer1::HideNearByRadius(float radius)
             continue;
         }
 
+        if (auto boss=std::dynamic_pointer_cast<RabbitBossEnemyActor>(enemy))
+        {// ƒ{ƒX‚¾‚Á‚½‚ç
+            continue;
+        }
+
         XMFLOAT3 enemyPos = enemy->GetPosition();
 
         float distanceSq = MathHelper::DistanceSq(enemyPos, playerPos);
 
         if (distanceSq < radius * radius)
         {
-            enemy->skeletalMeshComponent->SetIsVisible(false);
-            enemy->skeletalMeshComponent->SetIsCastShadow(false);
+            enemy->HideEnemyVisual();
         }
     }
 #endif // 0

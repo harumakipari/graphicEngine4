@@ -40,11 +40,13 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
-    controller->AddAnimation("Idle", 0);
-    controller->AddAnimation("WarpEnd", 1);
-    controller->AddAnimation("WarpStart", 2);
+    controller->AddAnimation("Idle", 4);
+    controller->AddAnimation("WarpEnd", 5);
+    controller->AddAnimation("WarpStart", 6);
     controller->AddAnimation("Win", 3);
-    controller->AddAnimation("Stan", 4);
+    controller->AddAnimation("Stan", 2);
+    controller->AddAnimation("Knockback", 0);
+    controller->AddAnimation("Buff", 1);
     // アニメーションコントローラーを character に追加
     this->SetAnimationController(controller);
     PlayAnimation("Idle");
@@ -68,7 +70,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 
 
     // ボスの出現位置モデルを生成する
-    bossSpawnMarkModel = AddComponent<SkeletalMeshComponent>("bossSpawnMarkModel",parentName);
+    bossSpawnMarkModel = AddComponent<SkeletalMeshComponent>("bossSpawnMarkModel", parentName);
     bossSpawnMarkModel->SetModel("./Data/TeamModels/Marks/BossSpawnMark.gltf", false, true);
     bossSpawnMarkModel->overrideDeferredPipelineName = "OpaqueMarkPS";
     bossSpawnMarkModel->SetIsCastShadow(false);
@@ -150,7 +152,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
         gaugeUi->SetWorldPosition({ 50, 300 });
         gaugeUi->zOrder = 15;
         gaugeUi->SetColor(CoreColor::White);
-        gaugeUi->SetSize({861,84});
+        gaugeUi->SetSize({ 861,84 });
         gaugeUi->SetGaugeFillSize(gaugeSize);
 
         uiManager->Add(gaugeUi);
@@ -364,7 +366,10 @@ void RabbitBossEnemyActor::SetRenderOpacity(float opacity)
 void RabbitBossEnemyActor::TakeDamage(const int damage)
 {
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
-
+    if (stateMachine_->GetStateName() == "Idle")
+    {// スタン状態じゃなかったら
+        PlayAnimation("Knockback", false, true, 0.1f);
+    }
     //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/boss_hit_se.wav");
     hp -= damage;
 }

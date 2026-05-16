@@ -183,5 +183,6 @@ private:
     Microsoft::WRL::ComPtr<ID3D11PixelShader> gameOverPs;
 
     STAGE_NAME currentStageName = STAGE_NAME::FIRST;    // 今遊んでいるステージ名
-    float gameOverRadius = 0.0f;
+    float gameOverRadius = 0.0f;// ゲームオーバー時の半径の調整
+    float gameOverTargetPosY = 2.5f;    // ゲームオーバー時のボスの高さの調整
 };

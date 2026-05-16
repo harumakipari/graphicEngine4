@@ -160,6 +160,7 @@ public:
     const char* GetName() const override { return "BuffPreview"; }
 
 private:
+    float elapsedTime = 0.0f;
 };
 
 // バフオブジェクト

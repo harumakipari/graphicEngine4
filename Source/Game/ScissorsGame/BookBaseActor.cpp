@@ -23,6 +23,17 @@ void BookBaseActor::Update(float deltaTime)
     easingOneRunner->Tick(deltaTime);
     easingTwoRunner->Tick(deltaTime);
 
+    // ロック中のワッペンの彩度を下げる
+    for (auto& stage : leftPage.stages)
+    {
+        UpdateStageVisual(stage);
+    }
+    for (auto& stage : rightPage.stages)
+    {
+        UpdateStageVisual(stage);
+    }
+
+
     switch (bookState)
     {
     case BookPageState::Closed:
@@ -515,7 +526,7 @@ void BookBaseActor::UpdatePage(const BookPage& page)
 
         if (!stage->isUnlocked)
         {
-            stage->model->plusAlphaCBuffer->data.saturation = -0.87f;// 彩度を落とす
+            //stage->model->plusAlphaCBuffer->data.saturation = -0.87f;// 彩度を落とす
             bool hoverEnter =
                 hitThis &&
                 !stage->wasLockedHovered;
@@ -530,7 +541,7 @@ void BookBaseActor::UpdatePage(const BookPage& page)
             continue;
         }
 
-        stage->model->plusAlphaCBuffer->data.saturation = 0.f;// 彩度を戻す
+        //stage->model->plusAlphaCBuffer->data.saturation = 0.f;// 彩度を戻す
 
 
 
@@ -863,5 +874,19 @@ void BookBaseActor::MoveSelection(int dir)
     if (selectedStageIndex < 0)
     {
         selectedStageIndex = count - 1;
+    }
+}
+
+// ロック中のワッペンの彩度を下げる
+void BookBaseActor::UpdateStageVisual(const std::shared_ptr<StageSelectData>& stage)
+{
+    if (!stage->isUnlocked)
+    {
+        stage->model->plusAlphaCBuffer->data.saturation = -0.87f;
+        stage->model->SetRelativeScaleDirect({ 1,1,1 });
+    }
+    else
+    {
+        stage->model->plusAlphaCBuffer->data.saturation = 0.0f;
     }
 }

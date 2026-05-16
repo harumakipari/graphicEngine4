@@ -22,12 +22,19 @@ void EnemyBase::Initialize(const Transform& transform)
     // 最初の位置を保存
     startPosition = transform.GetLocation();
 
-    // ボスの出現位置モデルを生成する
+    // 敵が強化される時に出現するモデルを生成する
     powerUpMarkMeshComponent = AddComponent<SkeletalMeshComponent>("powerUpMeshComponent", parentName);
-    powerUpMarkMeshComponent->SetModel("./Data/TeamModels/Marks/BossSpawnMark.gltf", false, true);
+    powerUpMarkMeshComponent->SetModel("./Data/TeamModels/Marks/EnemyToBigMark.gltf", false, true);
     powerUpMarkMeshComponent->overrideDeferredPipelineName = "OpaqueMarkPS";
     powerUpMarkMeshComponent->SetIsCastShadow(false);
     powerUpMarkMeshComponent->SetIsVisible(false);
+
+    // 敵が強化される時に出現するモデルを生成する
+    powerUpArrowMarkMeshComponent = AddComponent<SkeletalMeshComponent>("powerUpArrowMeshComponent", parentName);
+    powerUpArrowMarkMeshComponent->SetModel("./Data/TeamModels/Marks/EnemyToBigArrowMark.gltf", false, true);
+    powerUpArrowMarkMeshComponent->overrideDeferredPipelineName = "OpaqueMarkPS";
+    powerUpArrowMarkMeshComponent->SetIsCastShadow(false);
+    powerUpArrowMarkMeshComponent->SetIsVisible(false);
 
     // 倒したときのスコア
     scoreData = { 100,0 };
@@ -58,7 +65,7 @@ void EnemyBase::Update(float deltaTime)
 
             float distSq = dx * dx + dz * dz;
 
-            if (distSq > 4.0f) 
+            if (distSq > 4.0f)
             {// 離れたら、反射可能にする
                 lastRedirectWall = nullptr;
             }
@@ -315,7 +322,14 @@ void EnemyBase::UpdateTiedVisual()
 void EnemyBase::UpdateSizeChanging(float deltaTime)
 {
     // パワーアップのモデルを表示
-    powerUpMarkMeshComponent->SetIsVisible(true);
+    if (powerUpArrowMarkMeshComponent)
+    {
+        powerUpArrowMarkMeshComponent->SetIsVisible(true);
+    }
+    if (powerUpMarkMeshComponent)
+    {
+        powerUpMarkMeshComponent->SetIsVisible(true);
+    }
 
     sizeChangeTimer += deltaTime;
 
@@ -342,6 +356,8 @@ void EnemyBase::UpdateSizeChanging(float deltaTime)
         isSizeChanging = false;
 
         powerUpMarkMeshComponent->SetIsVisible(false);
+        powerUpArrowMarkMeshComponent->SetIsVisible(false);
+
 
         // 色戻す
         skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1,1,1,1 };
@@ -521,6 +537,11 @@ void EnemyBase::UpdateDead(float deltaTime)
     {
         powerUpMarkMeshComponent->SetIsVisible(false);
     }
+    if (powerUpArrowMarkMeshComponent)
+    {
+        powerUpArrowMarkMeshComponent->SetIsVisible(false);
+    }
+
 
     if (waitBeforeKnockback)
     {
@@ -636,6 +657,10 @@ void EnemyBase::CallDeath(bool hitByReflected)
         onDeath();
     }
 
+    //
+    powerUpMarkMeshComponent->SetIsVisible(false);
+    powerUpArrowMarkMeshComponent->SetIsVisible(false);
+
     // エフェクトを発生させる
     SpawnHitEffect(hitByReflected);
 
@@ -697,6 +722,25 @@ void EnemyBase::StartChangeSize(YarnSize newSize)
     blinkOn = false;
 
     pendingSize = newSize;
+}
+
+// 描画を消す
+void EnemyBase::HideEnemyVisual()
+{
+    // 見た目のモデルの描画を消す
+    skeletalMeshComponent->SetIsCastShadow(false);
+    skeletalMeshComponent->SetIsVisible(false);
+    // 玉止めモデルの描画を消す
+    for (auto tiedMesh:tiedMeshes)
+    {
+        tiedMesh->SetIsVisible(false);
+        tiedMesh->SetIsCastShadow(false);
+    }
+    // 強化のモデルの描画を消す
+    powerUpMarkMeshComponent->SetIsVisible(false);
+    powerUpMarkMeshComponent->SetIsCastShadow(false);
+    powerUpArrowMarkMeshComponent->SetIsVisible(false);
+    powerUpArrowMarkMeshComponent->SetIsCastShadow(false);
 }
 
 // コインを生成する
