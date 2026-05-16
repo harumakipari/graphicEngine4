@@ -330,7 +330,7 @@ void EnemyBase::UpdateSizeChanging(float deltaTime)
         powerUpArrowMarkMeshComponent->SetIsVisible(true);
         // ‰ñ“]
         auto rot = powerUpArrowMarkMeshComponent->GetRelativeEulerRotation();
-        rot.y +=600.0f * deltaTime;
+        rot.y +=60.0f * deltaTime;
         powerUpArrowMarkMeshComponent->SetRelativeEulerRotationDirect(
             { 0.0f, rot.y, 0.0f });
     }

@@ -42,7 +42,7 @@ void RabbitBossAttackSelectState::Enter()
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     BossAttackType type = PopAttack();
-    type = BossAttackType::Buff;
+    //type = BossAttackType::Buff;
 #if 1
     switch (type)
     {
@@ -68,14 +68,16 @@ void RabbitBossAttackSelectState::RefillAttackBag()
     attackBag.clear();
 
     // Warp 4個
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 6; i++)
     {
         attackBag.push_back(BossAttackType::Warp);
     }
 
     // Buff 1個
-    attackBag.push_back(BossAttackType::Buff);
-
+    for (int i = 0; i < 4; i++)
+    {
+        attackBag.push_back(BossAttackType::Buff);
+    }
     std::shuffle(attackBag.begin(), attackBag.end(), rng);
 }
 
@@ -408,6 +410,12 @@ void RabbitBossStunState::Enter()
     // スタン時の音を再生する
     enemy->bossStunAudioComponent->Play();
 
+    // 敵の出現を終了させる
+    if (auto bossSpawner = enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<BossSpawner>())
+    {
+        bossSpawner->Deactivate();
+    }
+
 }
 
 void RabbitBossStunState::Execute(float deltaTime)
@@ -431,6 +439,13 @@ void RabbitBossStunState::Exit()
 
     // 再スタン防止開始
     enemy->stunCooldownTimer = enemy->stunCooldownDuration;
+
+    // 敵の出現を開始する
+    if (auto bossSpawner = enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<BossSpawner>())
+    {
+        bossSpawner->Activate();
+    }
+
 }
 
 
@@ -574,6 +589,7 @@ void RabbitBossWinState::Enter()
 
 void RabbitBossWinState::Execute(float deltaTime)
 {
+
     switch (phase)
     {
     case BossWinPhase::WaitCircleShrink:
@@ -584,8 +600,8 @@ void RabbitBossWinState::Execute(float deltaTime)
         t = std::clamp(t, 0.0f, 1.0f);
 
         float radius = std::lerp(startRadius, targetRadius, t);
+        //Logger::Log(U8("ゲームオーバー半径") + std::to_string(radius));
 
-        Logger::Log(U8("ゲームオーバー半径") + std::to_string(radius));
 
         enemy->SetDeathRadius(radius);
 
@@ -620,11 +636,17 @@ void RabbitBossWinState::Execute(float deltaTime)
 
                 elapsedTime = 0.0f;
 
+                // 勝利のアニメーション
                 enemy->PlayAnimation(
                     "Win",
                     true,
                     true,
                     0.5f
+                );
+                // ボスの笑い後のSEを再生する
+                CoreAudio::PlayOneShot(
+                    L"./Data/Sound/SE1/boss_win_laugh.wav",
+                    0.8f
                 );
             }
         }
@@ -644,6 +666,11 @@ void RabbitBossWinState::Execute(float deltaTime)
                 true,
                 true,
                 0.5f
+            );
+            // ボスの笑い後のSEを再生する
+            CoreAudio::PlayOneShot(
+                L"./Data/Sound/SE1/boss_win_laugh.wav",
+                0.8f
             );
         }
     }
@@ -679,6 +706,7 @@ void RabbitBossWinState::Execute(float deltaTime)
 
         float radius =
             std::lerp(startRadius, targetRadius, t);
+        //Logger::Log(U8("ゲームオーバー半径") + std::to_string(radius));
 
         enemy->SetDeathRadius(radius);
 
@@ -686,6 +714,7 @@ void RabbitBossWinState::Execute(float deltaTime)
 
         if (t >= 1.0f)
         {
+            //Logger::Log(U8("シーン遷移"));
             SceneTransitionManager::Instance().RequestTransition(
                 "LoadingScene",
                 {

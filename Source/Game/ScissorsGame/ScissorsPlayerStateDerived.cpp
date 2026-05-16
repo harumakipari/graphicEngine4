@@ -8,6 +8,7 @@
 #include "ScissorsGameEnemyBaseActor.h"
 #include "Game/Actors/Base/Character.h"
 #include "ScissorsPlayer1.h"
+#include "ScoreHistoryManager.h"
 #include "TrailModelActor.h"
 #include "TutorialActor.h"
 #include "YarnEnemyActor.h"
@@ -206,7 +207,7 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     float dashDistance = minDistance + aimData.power * (maxDistance - minDistance);
     float remainingDist = dashDistance;
 
-    if (InputSystem::GetInputState("DashCancel",InputStateMask::Trigger))
+    if (InputSystem::GetInputState("DashCancel", InputStateMask::Trigger))
     {// ダッシュチャージキャンセルをする
         // 全部非表示
         for (int i = 0; i < _countof(player->arrowComponents); i++)
@@ -808,7 +809,7 @@ void ScissorsPlayerDashState::Exit()
     {// チュートリアルだったら
         if (auto currentStep = tutorialActor->GetTutorialManager()->GetCurrentState())
         {
-            if (currentStep->GetName() == "TutorialStep_AttackEnemyRedirect"|| currentStep->GetName() == "TutorialStep_AttackAllEnemy")
+            if (currentStep->GetName() == "TutorialStep_AttackEnemyRedirect" || currentStep->GetName() == "TutorialStep_AttackAllEnemy")
             {// ダッシュしたかどうかをを確認するステートで
                 currentStep->IsUseDash(true);
                 Logger::Log(U8("ダッシュが終了した"));
@@ -895,7 +896,7 @@ void ScissorsPlayerDeathState::Enter()
 
 
     // ボス戦時ならボスのステートを変更する
-    if (auto boss=player->GetOwnerScene()->GetActorManager()->GetActorOfType<RabbitBossEnemyActor>())
+    if (auto boss = player->GetOwnerScene()->GetActorManager()->GetActorOfType<RabbitBossEnemyActor>())
     {
         boss->GetStateMachine()->ChangeState("Win");
     }
@@ -986,24 +987,28 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
         float t = elapsedTime / duration;
 
         t = std::clamp(t, 0.0f, 1.0f);
-            deathRadius =
+        deathRadius =
             std::lerp(startRadius, targetRadius, t);
 
         player->SetDeathRadius(deathRadius);
 
         if (t >= 1.0f)
         {
-            SceneTransitionManager::Instance().RequestTransition(
-                "LoadingScene",
-                {
-                    std::make_pair("preload", "ResultScene"),
-                    std::make_pair("fade","0"),
-                    std::make_pair("fromScene","GameScene")
-                },
-                TransitionStyle::Fade
-            );
+            auto stats = ScoreSystem::GetResultStats();
+            if (stats.stageName != STAGE_NAME::BOSS)
+            {// ボス戦じゃなかったら
+                SceneTransitionManager::Instance().RequestTransition(
+                    "LoadingScene",
+                    {
+                        std::make_pair("preload", "ResultScene"),
+                        std::make_pair("fade","0"),
+                        std::make_pair("fromScene","GameScene")
+                    },
+                    TransitionStyle::Fade
+                );
 
-            phase = DeathPhase::SceneTransition;
+                phase = DeathPhase::SceneTransition;
+            }
         }
 
 

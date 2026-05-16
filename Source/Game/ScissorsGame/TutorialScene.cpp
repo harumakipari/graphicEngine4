@@ -207,8 +207,11 @@ void TutorialScene::Update(float deltaTime)
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
 
+    // ダッシュしているかどうか
+    bool playerIsDashing = (player->GetStateMachine()->GetStateName() == "Dash");
+
     // スコアシステムの更新処理
-    ScoreSystem::Update(deltaTime);
+    ScoreSystem::Update(deltaTime, playerIsDashing);
 
     // マウスカーソルの更新処理
     {

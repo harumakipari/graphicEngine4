@@ -42,6 +42,26 @@ void CoreAudioSourceComponent::Tick(float deltaTime)
 		return;
 	}
 
+	// 追加：システムポーズ検知
+	if (CoreAudio::GetSystemPaused())
+	{
+		// 初回だけPause
+		if (!wasSystemPaused)
+		{
+			Pause();
+			wasSystemPaused = true;
+		}
+		return;
+	}
+
+	// ポーズ解除された瞬間だけResume
+	if (wasSystemPaused)
+	{
+		Resume();
+		wasSystemPaused = false;
+	}
+
+
 	//音源が3D音源として扱わない場合は何もしない
 	if (!use3DAudio) return;
 

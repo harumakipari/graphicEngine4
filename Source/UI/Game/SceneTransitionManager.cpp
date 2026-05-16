@@ -2,6 +2,7 @@
 #include "SceneTransitionManager.h"
 
 #include "TransitionEffect.h"
+#include "Engine/Audio/CoreAudio.h"
 #include "Engine/Scene/Scene.h"
 
 
@@ -38,6 +39,10 @@ void SceneTransitionManager::RequestTransition(
 
     // “ü—Í‚ğ–³Œø‰»‚·‚é
     InputSystem::SetInputEnabled(false);
+
+    // ‰¹‚ÌÄ¶‚ğ–³Œø‚É‚·‚é
+    CoreAudio::SetMutedBySystem(true);
+    CoreAudio::SetSystemPaused(true);
 
     currentStyle = style;
 
@@ -95,6 +100,9 @@ void SceneTransitionManager::Update(float deltaTime)
             // “ü—Í‚ğ—LŒø‰»‚·‚é
             InputSystem::SetInputEnabled(true);
 
+            // ‰¹‚ÌÄ¶‚ğ—LŒø‚É‚·‚é
+            CoreAudio::SetMutedBySystem(false);
+            CoreAudio::SetSystemPaused(false);
 
 
             if (onOpeningFinished)

@@ -15,6 +15,7 @@ public:
         Small,
         Medium,
         Big,
+        BossBobbin, // ボス戦で出てくるボビン
     };
 
 private:

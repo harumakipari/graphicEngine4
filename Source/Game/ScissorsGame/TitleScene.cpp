@@ -189,8 +189,6 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
     // ランキングなどをロードする
     ScoreHistoryManager::Load();
 
-    // ゲームクリアデータをロードする
-    SaveDataManager::Instance().Initialize();
 
     {
         SetUpActors();
@@ -590,7 +588,7 @@ void TitleScene::StartSelectScene()
     // メインカメラターゲットアクター
     cameraTargetActor->Play(0.0f);
     // 本のアクター
-    bookActor->OpenBook(0.0f);
+    bookActor->OpenBook(0.0f, false);
 }
 
 

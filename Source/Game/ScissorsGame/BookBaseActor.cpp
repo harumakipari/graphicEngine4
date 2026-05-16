@@ -122,10 +122,13 @@ void BookBaseActor::DrawImGuiDetails()
 }
 
 // 本を開く
-void BookBaseActor::OpenBook(float interval)
+void BookBaseActor::OpenBook(float interval, bool playSe)
 {
-    // 本を閉じる音
+    // 本を開ける音
+    if (playSe)
+    {
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/open_book.wav", 1.5f);
+    }
 
     bookState = BookPageState::OpeningBook;
     TestEasingHandler handler;
@@ -585,6 +588,9 @@ void BookBaseActor::UpdatePage(const BookPage& page)
                 InputStateMask::Trigger))
         {
             Logger::Log(u8"ステージ選択");
+            // ステージ決定音
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/decide_stage.wav");
 
             if (stage->stage == STAGE_NAME::TUTORIAL)
             {// チュートリアルを選択した時のみ
@@ -613,9 +619,6 @@ void BookBaseActor::UpdatePage(const BookPage& page)
                     });
 
             }
-            // ステージ決定音
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/decide_stage.wav");
         }
     }
 }
@@ -812,6 +815,9 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
         {
             auto stage =
                 selectableStages[selectedStageIndex];
+            // ステージ決定音
+            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/decide_stage.wav", 1.5f);
 
             Logger::Log(u8"ステージ選択");
 
@@ -846,9 +852,6 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
                     });
             }
 
-            // ステージ決定音
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/decide_stage.wav", 1.5f);
         }
     }
 

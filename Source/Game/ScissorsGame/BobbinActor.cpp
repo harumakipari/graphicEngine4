@@ -193,6 +193,14 @@ void BobbinActor::SetBobbinSize(BobbinSize bobbinSize)
         chargeTime = 3.5f; // 何秒でMaxになるか
         applyRangeMaxScale = 2.0f;
         break;
+    case BobbinSize::BossBobbin:
+        maxRadius = 7.5f; // 最大半径
+        cooldownInterval = 0.1f;// クールタイム
+        chargeTime = 3.5f; // 何秒でMaxになるか
+        applyRangeMaxScale = 2.5f;
+        break;
+
+        break;
     }
 }
 

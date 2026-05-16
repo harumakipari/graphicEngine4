@@ -176,4 +176,5 @@ private:
 
 private:
     float m_LastSamplesPlayed = 0.0f;
+    bool wasSystemPaused = false;   // システムによる一時停止状態を記録するフラグ
 };

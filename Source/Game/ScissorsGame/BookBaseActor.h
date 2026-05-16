@@ -116,7 +116,7 @@ public:
     void DrawImGuiDetails() override;
 
     // –{‚ğŠJ‚­
-    void OpenBook(float interval);
+    void OpenBook(float interval, bool playSe = true);
 
     // –{‚ğ•Â‚¶‚éˆ—
     void CloseBook(float interval);

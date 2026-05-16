@@ -105,6 +105,8 @@ void SaveDataManager::Save()
 // ƒ[ƒh
 void SaveDataManager::Load()
 {
+    saveData.clearedStages.clear();
+
     std::ifstream file(savePath);
 
     if (!file.is_open())

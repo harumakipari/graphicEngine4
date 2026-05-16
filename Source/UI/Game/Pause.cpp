@@ -192,6 +192,9 @@ void Pause::Update(float deltaTime)
             img->SetEnable(false);
         }
 
+        // 音の再生を有効にする
+        CoreAudio::SetSystemPaused(false);
+
         Time::timeScale = 1.0f;
         GetOwnerScene()->SetPaused(false);
         state = PauseState::Playing;
@@ -225,6 +228,10 @@ void Pause::OpenPause()
 
     Time::timeScale = 0.0f;
 
+    // 音の再生を無効にする
+    CoreAudio::SetSystemPaused(true);
+
+
     // player の歩行音のために呼ぶ関数  (T_T)
     if (auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>())
     {
@@ -244,6 +251,8 @@ void Pause::ClosePause()
     {// カウントダウンが何回も起こるのを防ぐため
         return;
     }
+
+
 
     //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
     pausePanel->SetVisible(false);

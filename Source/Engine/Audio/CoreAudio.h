@@ -92,6 +92,44 @@ public:
 	/** @brief デストラクタ。リソースを解放します。*/
 	virtual ~CoreAudio();
 
+    // システム全体のミュート設定（緊急で追加）
+	static void SetMutedBySystem(bool enabled)
+	{
+		isMutedBySystem = enabled;
+		if (isMutedBySystem)
+		{
+			Logger::Log(U8("音声を無効化した"));
+		}
+		else
+		{
+			Logger::Log(U8("音声を有効化した"));
+		}
+	}
+
+	static bool GetMutedBySystem()
+	{
+		return isMutedBySystem;
+	}
+
+    // システム全体のミュート設定（緊急で追加）
+	static void SetSystemPaused(bool enabled)
+	{
+		isSystemPaused = enabled;
+		if (isSystemPaused)
+		{
+			Logger::Log(U8("ポーズのため音声を無効化した"));
+		}
+		else
+		{
+			Logger::Log(U8("ポーズのため音声を有効化した"));
+		}
+	}
+
+	static bool GetSystemPaused()
+	{
+		return isSystemPaused;
+	}
+
 public:
 
 	/**
@@ -114,11 +152,16 @@ public:
 		audioSources.clear();
 		erases.clear();
 	}
+
+
 private:
 	/** @brief アクティブな一時ソース群。*/
 	static inline std::vector<std::shared_ptr<CoreStandaloneAudioSource>> audioSources;
 	/** @brief 破棄予定の一時ソース群。*/
 	static inline std::vector<std::shared_ptr<CoreStandaloneAudioSource>> erases;
+
+	static inline bool isMutedBySystem = false;	// 緊急で追加
+	static inline bool isSystemPaused = false;	// 緊急で追加
 
 private:
 	friend class CoreAudioSourceComponent;

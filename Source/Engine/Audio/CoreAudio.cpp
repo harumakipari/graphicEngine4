@@ -190,6 +190,8 @@ std::shared_ptr<CoreAudio::CoreAudioBuffer> CoreAudio::CoreAudioBuffer::GetResou
 
 void CoreAudio::PlayOneShot(const wchar_t* filePath, float volume)
 {
+	if (isMutedBySystem)	// ƒ~ƒ…[ƒg‚¾‚Á‚½‚ç
+		return;
 	std::shared_ptr<CoreStandaloneAudioSource> source = std::make_shared<CoreStandaloneAudioSource>(filePath);
 	source->SetVolume(volume);
 	source->Play();

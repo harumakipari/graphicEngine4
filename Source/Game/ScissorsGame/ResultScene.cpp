@@ -132,8 +132,6 @@ bool ResultScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     // ランキングなどをロードする
     ScoreHistoryManager::Load();
 
-    // ゲームクリアデータをロードする
-    SaveDataManager::Instance().Initialize();
 
     // スコアを記録する
     ScoreHistoryManager::Submit(stats.stageName, stats.totalScore);
