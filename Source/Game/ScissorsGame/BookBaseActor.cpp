@@ -4,6 +4,7 @@
 #include <magic_enum.hpp>
 
 #include "SaveDataManager.h"
+#include "ScoreCalculator.h"
 #include "TitleScene.h"
 #include "Engine/Audio/CoreAudio.h"
 #include "Physics/CollisionFunction.h"
@@ -544,18 +545,15 @@ void BookBaseActor::UpdatePage(const BookPage& page)
 
         if (!stage->isUnlocked)
         {
-            //stage->model->plusAlphaCBuffer->data.saturation = -0.87f;// 彩度を落とす
-            bool hoverEnter =
-                hitThis &&
-                !stage->wasLockedHovered;
-
-            if (hoverEnter)
-            {
-                CoreAudio::PlayOneShot(
-                    L"./Data/Sound/SE1/cancel.wav");
-            }
-
+            // ロック中はホバー音なし
             stage->wasLockedHovered = hitThis;
+
+            // クリックしたときだけ鳴らす
+            if (hitThis &&
+                InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
+            {
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE1/cancel.wav");
+            }
             continue;
         }
 
@@ -609,6 +607,9 @@ void BookBaseActor::UpdatePage(const BookPage& page)
 
             if (stage->stage == STAGE_NAME::TUTORIAL)
             {// チュートリアルを選択した時のみ
+                // 遊ぶステージ名を記録する
+                ScoreSystem::RecordStageName(stage->stage);
+
                 SceneTransitionManager::Instance().RequestTransition(
                     "LoadingScene",
                     {
@@ -617,11 +618,15 @@ void BookBaseActor::UpdatePage(const BookPage& page)
                             "stage",
                             std::string(
                                 magic_enum::enum_name(stage->stage))
-                        }
+                        },
+                        {"fromScene","StageSelect"},
                     });
             }
             else
             {
+                // 遊ぶステージ名を記録する
+                ScoreSystem::RecordStageName(stage->stage);
+
                 SceneTransitionManager::Instance().RequestTransition(
                     "LoadingScene",
                     {
@@ -630,7 +635,8 @@ void BookBaseActor::UpdatePage(const BookPage& page)
                             "stage",
                             std::string(
                                 magic_enum::enum_name(stage->stage))
-                        },{std::make_pair("fromScene","SelectScene")}
+                        },
+                        {"fromScene","StageSelect"},
                     });
 
             }

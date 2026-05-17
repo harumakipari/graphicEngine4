@@ -19,6 +19,7 @@
 #include "Graphics/Core/RenderState.h"
 #include "Engine/Input/InputSystem.h"
 #include "Core/ActorManager.h"
+#include "Game/ScissorsGame/ScoreCalculator.h"
 
 
 bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, const std::unordered_map<std::string, std::string>& props)
@@ -172,6 +173,11 @@ LoadingScene::TipsCategory LoadingScene::DecideTipsCategory(const std::string& f
         return TipsCategory::StageStart;
     }
 
+    if (fromScene == "StageSelect" && toScene == "TutorialScene")
+    {// ステージ選択からゲームシーン
+        return TipsCategory::StageStart;
+    }
+
     if (fromScene == "GameScene" && toScene == "ResultScene")
     {// ゲームシーンからリザルトへ
         return TipsCategory::Result;
@@ -187,7 +193,22 @@ LoadingScene::TipsCategory LoadingScene::DecideTipsCategory(const std::string& f
         return TipsCategory::Retry;
     }
 
-    return TipsCategory::Result;
+    if (fromScene == "GameScene" && toScene == "TitleScene")
+    {// ゲームシーンからゲームシーン
+        return TipsCategory::ReturnTitle;
+    }
+
+    if (fromScene == "GameScene" && toScene == "TutorialScene")
+    {// ゲームシーンからゲームシーン
+        return TipsCategory::Retry;
+    }
+
+    if (fromScene == "TutorialScene" && toScene == "TitleScene")
+    {// ステージ選択からタイトルシーン
+        return TipsCategory::ReturnTitle;
+    }
+
+    return TipsCategory::ReturnTitle;
 }
 
 // チップスデータ登録
@@ -339,6 +360,19 @@ void LoadingScene::SetTipsData()
         },
         {
             TipsCategory::ReturnTitle,
+                "TUTORIAL",
+            {
+                 L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
+                 L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
+                 L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
+                 L"./Data/Textures/ScissorsUI/Tips/game_hint_1.png",
+                 L"./Data/Textures/ScissorsUI/Tips/game_hint_2.png",
+                 L"./Data/Textures/ScissorsUI/Tips/needle_hint_1.png",
+            }
+        },
+
+        {
+            TipsCategory::ReturnTitle,
                 "FIRST",
             {
                  L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
@@ -453,7 +487,6 @@ void LoadingScene::ApplyTipsTextures()
     auto& param = SceneTransitionManager::Instance().GetParams();
 
     std::string fromScene;
-    std::string stage;
 
     bool usingGamepad = InputSystem::IsGamepadConnected();
 
@@ -464,6 +497,10 @@ void LoadingScene::ApplyTipsTextures()
         Logger::Log("fromScene" + fromScene);
 
     }
+
+
+    auto stats = ScoreSystem::GetResultStats();
+    std::string stage = std::string(magic_enum::enum_name(stats.stageName));
 
     if (param.contains("stage"))
     {// 何のステージを遊ぶかor遊んだか
@@ -519,7 +556,7 @@ void LoadingScene::ApplyTipsTextures()
     }
 
     // ランダム
-    int index = MathHelper::RandomRange(0, static_cast<int>(candidates.size()));
+    int index = MathHelper::RandomRange(0, (static_cast<int>(candidates.size())-1));
 
     // テクスチャを生成
     auto sprite = std::make_shared<Sprite>(Graphics::GetDevice(), candidates[index].c_str());

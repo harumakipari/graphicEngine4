@@ -17,7 +17,8 @@ void HighScoreMedalActor::Update(float elapsedTime)
 
 void HighScoreMedalActor::DrawImGuiDetails()
 {
-    
+#ifdef USE_IMGUI
+#endif
 }
 
 // I—¹‚Ìˆ—

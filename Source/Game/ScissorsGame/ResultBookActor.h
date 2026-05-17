@@ -32,6 +32,7 @@ class ResultBookActor :public BookBaseActor
 
         AddTotalScore,
 
+        PreShowRanking,
         ShowRanking,
 
         Complete,
@@ -93,20 +94,12 @@ private:
     float addInterval = 0.02f;
     float addTimer = 0.0f;
     int currentTotalScore = 0;  // 現在のトータルスコア
-
-    int comboScore = 0;
-    int heartScore = 0;
-    int redirectScore = 0;
-    int gatherScore = 0;
-    int timeBonusScore = 0;
-    int finalScore = 0;
-    bool scoreCommitted = false;
-
+    int startScore = 0; // スコア加算開始時のスコア
+    
     ResultPhase resultPhase = ResultPhase::Wait;    // 結果表示のフェーズ
     float phaseTimer = 0.0f;
 
-
-    float preShowScoreInterval = 3.0f;   // スコアを出す前の待ち時間
+    float preShowScoreInterval = 0.3f;   // スコアを出す前の待ち時間
     bool phaseInitialized = false; //Phase開始時1回だけ処理
 };
 

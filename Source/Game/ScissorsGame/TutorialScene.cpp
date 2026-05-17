@@ -180,7 +180,12 @@ bool TutorialScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, 
 void TutorialScene::Start()
 {
     STAGE_NAME stage = STAGE_NAME::TUTORIAL;
+
+    // 遊ぶステージ名を記録する
+    ScoreSystem::RecordStageName(stage);
+
     LoadStage(stage);
+
 
     auto uiStartActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUIStartActor>("uiStartActor");
 
@@ -194,14 +199,15 @@ void TutorialScene::Start()
             tutorialActor->StartTutorial();
         });
 
+#if 1
     // シーンのライト設定などを設定する
     SceneSettings settings = {};
     settings.cascadedShadowMapConstants =
     {
-        17.021f,
-        0.136f,
+        58.624f,
+        0.0f,
         true,
-        21.643f
+        1.0f
     };
     settings.sceneShaderConstants =
     {
@@ -211,8 +217,8 @@ void TutorialScene::Start()
         0.0f,
         -0.028f,
         0.04f,
-        0.018f,
-        0.16f,
+        -0.01f,
+        0.12f,
         4.6f,
         0.0f,
         80.0f,
@@ -234,7 +240,7 @@ void TutorialScene::Start()
     };
     settings.sceneLightSaveData.sceneConstants =
     {
-         { -0.65f, -0.38f, -0.0211f, 0.85f/* w:attenuation Rate */},
+         { 0.59f, -0.63f, 0.66f, 0.85f },
          { 1.0f, 1.0f, 1.0f, 4.17f/*w colorPower*/ },
          3.412f,
          1,
@@ -261,6 +267,8 @@ void TutorialScene::Start()
          0.15f,
     };
     this->SetSceneSettings(settings);
+
+#endif // 1
 
 
     // シーンが切り替わった時に

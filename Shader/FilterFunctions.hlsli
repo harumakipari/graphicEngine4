@@ -150,6 +150,11 @@ float3 JodieReinhardToneMap(float3 c)
     return lerp(c / (l + 1.0), tc, tc);
 }
 
+float3 JodieReinhardGameToneMap(float3 c)
+{
+    return c / (c + 1.0);
+}
+
 
 // 定数バッファ側で渡す予定の補正値
 // rgb.x -> 赤の強調カーブ

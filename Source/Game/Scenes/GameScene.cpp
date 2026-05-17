@@ -219,73 +219,7 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     hr = CreatePsFromCSO(device, "./Shader/FullScreenGameOverPS.cso", gameOverPs.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-    // シーンのライト設定などを設定する
-    SceneSettings settings = {};
-    settings.cascadedShadowMapConstants =
-    {
-        17.021f,
-        0.136f,
-        true,
-        21.643f
-    };
-    settings.sceneShaderConstants =
-    {
-        0.75f,
-        0.00011f,
-        0.005f,
-        0.0f,
-        -0.028f,
-        0.04f,
-        0.018f,
-        0.16f,
-        4.6f,
-        0.0f,
-        80.0f,
-        1.0f,
-        23.0f,
-        0,
-        1,
-        0,
-        1,
-        1,
-        1,
-        1,
-        1,
-        0,
-        0,
-        0.0f,
-        { 1.0f,1.0f,1.0f },
-        0.0f,
-    };
-    settings.sceneLightSaveData.sceneConstants =
-    {
-         { -0.65f, -0.38f, -0.0211f, 0.85f/* w:attenuation Rate */},
-         { 1.0f, 0.8f, 1.0f, 4.17f/*w colorPower*/ },
-         3.412f,
-         1,
-         1,
-         40,
 
-         { 1.0f,1.0f,1.0f },
-         1.466f,
-
-         { 0.977f,0.71f,0.168f },
-         0.0f,
-
-         { 0.422f,0.333f,0.0f },
-         0.0f,
-
-         3.0f,
-         1.0f,
-         0.7f,
-         1.8f,
-
-         1.0f,
-         0.3f,
-         0.78f,
-         0.15f,
-    };
-    this->SetSceneSettings(settings);
 
     return true;
 }
@@ -326,6 +260,77 @@ void GameScene::Start()
                     OnGameStart();
                 });
         });
+#if 1
+    // シーンのライト設定などを設定する
+    SceneSettings settings = {};
+    settings.cascadedShadowMapConstants =
+    {
+        58.624f,
+        0.0f,
+        true,
+        1.0f
+    };
+    settings.sceneShaderConstants =
+    {
+        0.75f,
+        0.00011f,
+        0.005f,
+        0.0f,
+        -0.028f,
+        0.04f,
+        -0.01f,
+        0.12f,
+        4.6f,
+        0.0f,
+        80.0f,
+        1.0f,
+        23.0f,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0.0f,
+        { 1.0f,1.0f,1.0f },
+        0.0f,
+    };
+    settings.sceneLightSaveData.sceneConstants =
+    {
+         { 0.59f, -0.63f, 0.66f, 0.85f },
+         { 1.0f, 1.0f, 1.0f, 4.17f/*w colorPower*/ },
+         3.412f,
+         1,
+         1,
+         40,
+
+         { 1.0f,1.0f,1.0f },
+         1.466f,
+
+         { 0.977f,0.71f,0.168f },
+         0.0f,
+
+         { 0.422f,0.333f,0.0f },
+         0.0f,
+
+         3.0f,
+         1.0f,
+         0.7f,
+         1.8f,
+
+         1.0f,
+         0.3f,
+         0.78f,
+         0.15f,
+    };
+    this->SetSceneSettings(settings);
+
+#endif // 1
+
 
 
     // シーンが切り替わった時に

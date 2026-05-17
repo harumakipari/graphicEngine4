@@ -15,6 +15,27 @@ void ResultBookActor::Initialize(const Transform& transform)
 
     SetInitPageState(BookPageState::SecondPage);
 
+    // UIを作成
+    auto uiManager = GetOwnerScene()->GetUIManager();
+
+    DirectX::XMFLOAT2 timerBonusUiPos = { 300.0f,500.0f };
+    DirectX::XMFLOAT2 timerBonusUiSize = { 300.0f,250.0f };
+
+    // タイムをクリアしたか
+    timeClearImage = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/time_bonus_clear.png", "time_bonus_clear");
+    timeClearImage->SetWorldPosition(timerBonusUiPos);
+    timeClearImage->SetSize(timerBonusUiSize);
+    timeClearImage->SetPivot({ 0.5f,0.5f });
+    uiManager->Add(timeClearImage);
+
+    // タイムをクリアしたか
+    remainClearImage = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/time_remain_clear.png", "time_remain_clear");
+    remainClearImage->SetWorldPosition(timerBonusUiPos);
+    remainClearImage->SetSize(timerBonusUiSize);
+    remainClearImage->SetPivot({ 0.5f,0.5f });
+    uiManager->Add(remainClearImage);
+
+
     // スコアの数字を乗せるページの親
     std::string rightName = rightPage.parentName;
 
@@ -281,6 +302,11 @@ void ResultBookActor::Update(float deltaTime)
     gatherDisplay.Update(deltaTime);  // まとめボーナス
     secondDisplay.Update(deltaTime);  // 秒数
     minuteDisplay.Update(deltaTime);  // 分数
+    ranking1Display.Update(deltaTime);
+    ranking2Display.Update(deltaTime);
+    ranking3Display.Update(deltaTime);
+    ranking4Display.Update(deltaTime);
+    ranking5Display.Update(deltaTime);
 
 
 #if 0
@@ -464,7 +490,7 @@ void ResultBookActor::Update(float deltaTime)
         break;
 
     case ResultPhase::ShowEnemyScore:
-        if (phaseTimer >= 0.5f)
+        if (phaseTimer >= preShowScoreInterval)
         {
             phaseTimer = 0.0f;
             resultPhase = ResultPhase::ShowCombo;
@@ -479,7 +505,7 @@ void ResultBookActor::Update(float deltaTime)
             comboDisplay.SetVisible(true); // コンボ数
             CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_show_score.wav", 1.0f);
         }
-        if (phaseTimer >= 0.5f)
+        if (phaseTimer >= preShowScoreInterval)
         {
             phaseInitialized = false;
             phaseTimer = 0.0f;
@@ -503,7 +529,7 @@ void ResultBookActor::Update(float deltaTime)
             currentTotalScore = addTargetScore;
         }
 
-        if (phaseTimer >= 0.5f)
+        if (phaseTimer >= preShowScoreInterval)
         {
             phaseInitialized = false;
             phaseTimer = 0.0f;
@@ -526,7 +552,7 @@ void ResultBookActor::Update(float deltaTime)
             addTargetScore = currentTotalScore + redirectScore;
             currentTotalScore = addTargetScore;
         }
-        if (phaseTimer >= 0.5f)
+        if (phaseTimer >= preShowScoreInterval)
         {
             phaseInitialized = false;
             phaseTimer = 0.0f;
@@ -539,7 +565,7 @@ void ResultBookActor::Update(float deltaTime)
             phaseInitialized = true;
 
             int gatherBonus = stats.dashBonusScore;
-            gatherBonus = 500;
+            gatherBonus = 550;
 
             gatherDisplay.SetValue(gatherBonus);
             gatherDisplay.SetVisible(true);
@@ -549,7 +575,7 @@ void ResultBookActor::Update(float deltaTime)
             addTargetScore = currentTotalScore + gatherBonus;
             currentTotalScore = addTargetScore;
         }
-        if (phaseTimer >= 0.5f)
+        if (phaseTimer >= preShowScoreInterval)
         {
             phaseInitialized = false;
             phaseTimer = 0.0f;
@@ -579,7 +605,7 @@ void ResultBookActor::Update(float deltaTime)
             // SE
             CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_show_score.wav", 1.0f);
         }
-        if (phaseTimer >= 0.5f)
+        if (phaseTimer >= preShowScoreInterval)
         {
             phaseInitialized = false;
             phaseTimer = 0.0f;
@@ -587,34 +613,81 @@ void ResultBookActor::Update(float deltaTime)
             addTimer = 0.0f;
             // スコアカウントアップのSEを再生する
             scoreCountUpAudioComponent->Play();
+            startScore = displayedTotalScore;
         }
         break;
     case ResultPhase::AddTotalScore:
-        addTimer += deltaTime;
+    {
+        const float duration = 2.0f;
 
-        if (addTimer >= addInterval)
+        phaseTimer += deltaTime;
+
+        float rate = std::clamp(phaseTimer / duration, 0.0f, 1.0f);
+
+        int rawScore = static_cast<int>(
+            std::lerp(startScore, addTargetScore, rate)
+            );
+
+        // 100刻みで表示
+        displayedTotalScore = (rawScore / 100) * 100;
+
+        if (rate >= 1.0f)
         {
-            addTimer = 0.0f;
+            displayedTotalScore = addTargetScore;
+            currentTotalScore = addTargetScore;
 
-            displayedTotalScore += addStep;
+            phaseInitialized = false;
+            phaseTimer = 0.0f;
 
-            if (displayedTotalScore >= addTargetScore)
-            {
-                displayedTotalScore = addTargetScore;
+            resultPhase = ResultPhase::PreShowRanking;
 
-                currentTotalScore = displayedTotalScore;
-
-                phaseInitialized = false;
-
-                phaseTimer = 0.0f;
-
-                resultPhase = ResultPhase::ShowRanking;
-                // スコアカウントアップのSEを止める
-                scoreCountUpAudioComponent->Stop();
-            }
+            scoreCountUpAudioComponent->Stop();
         }
 
+        break;
+    }
+    case ResultPhase::PreShowRanking:
+        if (phaseTimer >= preShowScoreInterval)
+        {
+            phaseInitialized = false;
+            phaseTimer = 0.0f;
+            resultPhase = ResultPhase::ShowRanking;
+        }
+        break;
+
     case ResultPhase::ShowRanking:
+        if (!phaseInitialized)
+        {
+            phaseInitialized = true;
+
+            // ランキングを取得する
+            std::vector<ScoreHistoryManager::Entry> ranking = ScoreHistoryManager::GetTop5(stats.stageName);
+            // 5件分必ず表示（足りないところは0）
+            int scores[5] = { 0, 0, 0, 0, 0 };
+
+            for (size_t i = 0; i < ranking.size() && i < 5; i++)
+            {
+                scores[i] = ranking[i].score;
+            }
+
+            ranking1Display.SetValue(scores[0]);
+            ranking1Display.SetVisible(true);
+
+            ranking2Display.SetValue(scores[1]);
+            ranking2Display.SetVisible(true);
+
+            ranking3Display.SetValue(scores[2]);
+            ranking3Display.SetVisible(true);
+
+            ranking4Display.SetValue(scores[3]);
+            ranking4Display.SetVisible(true);
+
+            ranking5Display.SetValue(scores[4]);
+            ranking5Display.SetVisible(true);
+
+            // SE
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_show_score.wav", 1.0f);
+        }
         break;
     case ResultPhase::Complete:
         break;
@@ -701,11 +774,16 @@ void ResultBookActor::StartShowEnemyScore()
 // 矢印ボタンのUIを作成する
 void ResultBookActor::CreateButtonArrow()
 {
+    DirectX::XMFLOAT2 uiLeftPos = { 12, 875 };
+    DirectX::XMFLOAT2 uiRightPos = { 1650, 875 };
+    DirectX::XMFLOAT2 uiArrowSize = { 250, 150 };
+
+
     auto uiManager = GetOwnerScene()->GetUIManager();
     // 一ページ左
     firstButtons.left = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/title_arrow.png", "title_arrow");
-    firstButtons.left->SetWorldPosition({ 300, 800 });
-    firstButtons.left->SetSize({ 400, 150 });
+    firstButtons.left->SetWorldPosition(uiLeftPos);
+    firstButtons.left->SetSize(uiArrowSize);
     uiManager->Add(firstButtons.left);
 
     firstButtons.left->onClick = [this]()
@@ -723,8 +801,8 @@ void ResultBookActor::CreateButtonArrow()
 
     // 一ページ右
     firstButtons.right = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/result_arrow.png", "result_arrow");
-    firstButtons.right->SetWorldPosition({ 1000, 800 });
-    firstButtons.right->SetSize({ 400, 150 });
+    firstButtons.right->SetWorldPosition(uiRightPos);
+    firstButtons.right->SetSize(uiArrowSize);
     uiManager->Add(firstButtons.right);
 
     firstButtons.right->onClick = [this]()
@@ -740,8 +818,8 @@ void ResultBookActor::CreateButtonArrow()
 
     // 二ページ目左
     secondButtons.left = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/stage_select_arrow.png", "stage_select_arrow");
-    secondButtons.left->SetWorldPosition({ 300, 800 });
-    secondButtons.left->SetSize({ 400, 150 });
+    secondButtons.left->SetWorldPosition(uiLeftPos);
+    secondButtons.left->SetSize(uiArrowSize);
     uiManager->Add(secondButtons.left);
 
     secondButtons.left->onClick = [this]()
@@ -758,8 +836,8 @@ void ResultBookActor::CreateButtonArrow()
 
     // 二ページ目右
     secondButtons.right = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/title_arrow_right.png", "title_arrow_right");
-    secondButtons.right->SetWorldPosition({ 1000, 800 });
-    secondButtons.right->SetSize({ 400, 150 });
+    secondButtons.right->SetWorldPosition(uiRightPos);
+    secondButtons.right->SetSize(uiArrowSize);
     uiManager->Add(secondButtons.right);
 
     secondButtons.right->onClick = [this]()

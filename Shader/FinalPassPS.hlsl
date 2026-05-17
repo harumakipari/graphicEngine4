@@ -163,12 +163,17 @@ float4 main(VS_OUT pin) : SV_TARGET
     if (enableToneMapping == 1)
     {
         // トーンマップは共通にする
-        finalColor.rgb = JodieReinhardToneMap(finalColor.rgb);
+        //finalColor.rgb = JodieReinhardGameToneMap(finalColor.rgb);
 
 	    // 色相、彩度、明度、コントラストを調整する。
         finalColor.rgb = HueSaturation(finalColor.rgb, hueShift, saturation);
         finalColor.rgb = BrightnessContrast(finalColor.rgb, brightness, contrast);
+
+        // 色の調整をする
+        finalColor.rgb = RGBColorMap(finalColor.rgb, colorMapRGB);
+        finalColor.rgb = ToneCurve(finalColor.rgb, toneMappingValue);
     }
+
 
 #if 0
     float2 uv = pin.texcoord;
@@ -188,8 +193,8 @@ float4 main(VS_OUT pin) : SV_TARGET
 #endif
 
     //// リニア空間からsRGB空間
-    //const float GAMMA = 2.2;
-    //finalColor.rgb = pow(finalColor.rgb, 1.0 / GAMMA);
+    const float GAMMA = 2.2;
+    finalColor.rgb = pow(finalColor.rgb, 1.0 / GAMMA);
 
 
     return finalColor;
