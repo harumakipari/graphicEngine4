@@ -95,6 +95,7 @@ void NumberDisplay::Update(float deltaTime)
 void NumberDisplay::SetValue(int value, int minDigits, bool popTrigger)
 {
     currentValue = value;
+    currentMinDigits = minDigits;
     this->popTrigger = popTrigger;
     popScale = popTrigger ? popStrength : 1.0f;
 
@@ -127,5 +128,5 @@ void NumberDisplay::SetVisible(bool visible)
 {
     isVisible = visible;
 
-    SetValue(currentValue);
+    SetValue(currentValue, currentMinDigits);
 }

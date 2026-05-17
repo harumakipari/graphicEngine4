@@ -270,4 +270,7 @@ private:
     bool startDeathPerform = false;
     float deathRadius = 10.0f; // 死亡時のポストエフェクトに使う半径
 
+
+    // 勝利演出用の変数
+    bool startWinPerform = false; 
 };

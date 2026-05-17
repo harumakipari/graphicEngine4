@@ -502,14 +502,16 @@ void LoadingScene::ApplyTipsTextures()
 
 
     auto stats = ScoreSystem::GetResultStats();
-    std::string stage = std::string(magic_enum::enum_name(stats.stageName));
-
+    std::string stage;
     if (param.contains("stage"))
     {// 何のステージを遊ぶかor遊んだか
         stage = param.at("stage");
 
         Logger::Log("stage" + stage);
     }
+
+    stage = std::string(magic_enum::enum_name(stats.stageName));
+
 
     // 次にどこのシーンに行くか
     Logger::Log("to NextScene" + preload_scene);
@@ -557,8 +559,21 @@ void LoadingScene::ApplyTipsTextures()
         return;
     }
 
+    int index = 0;
     // ランダム
-    int index = MathHelper::RandomRange(0, (static_cast<int>(candidates.size())-1));
+    if (candidates.size() == 1)
+    {
+        index = 0;
+    }
+    else
+    {
+        index = MathHelper::RandomRange(0, (static_cast<int>(candidates.size()) - 1));
+    }
+
+    Logger::Log("usingGamepad = " + std::to_string(usingGamepad));
+    Logger::Log("category = " + std::to_string((int)category));
+    Logger::Log("stage = " + stage);
+    Logger::Log("candidate size = " + std::to_string(candidates.size()));
 
     // テクスチャを生成
     auto sprite = std::make_shared<Sprite>(Graphics::GetDevice(), candidates[index].c_str());

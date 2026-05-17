@@ -1026,3 +1026,20 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
 void ScissorsPlayerDeathState::Exit()
 {
 }
+
+
+void ScissorsPlayerWinState::Enter()
+{
+    player->PlayAnimation("Idle", true, true, 0.5f);
+    player->characterMovementComponent->SetSpeed(0.0f);
+
+
+}
+
+void ScissorsPlayerWinState::Execute(float deltaTime)
+{
+}
+
+void ScissorsPlayerWinState::Exit()
+{
+}

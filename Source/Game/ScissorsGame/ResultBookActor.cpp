@@ -597,10 +597,11 @@ void ResultBookActor::Update(float deltaTime)
             int minutes = totalSeconds / 60;
             int seconds = totalSeconds % 60;
 
-            minuteDisplay.SetValue(minutes);
+
             minuteDisplay.SetVisible(true);
-            secondDisplay.SetValue(seconds, 2);
+            minuteDisplay.SetValue(minutes);
             secondDisplay.SetVisible(true);
+            secondDisplay.SetValue(seconds, 2);
 
             int timerBonus = ScoreSystem::CalculateTimeClearBonus();
             Logger::Log(U8("タイムボーナス：") + std::to_string(timerBonus));

@@ -38,4 +38,6 @@ private:
     bool popTrigger = false;
     float popSpeed = 12.0f;
     float popStrength = 1.3f;
+
+    int currentMinDigits = 0;
 };

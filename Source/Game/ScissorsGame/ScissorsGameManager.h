@@ -35,6 +35,10 @@ public:
         int i = 0;
         return gameInputEnabled;
     }
+
+    bool GetGameStart() { return isGameRunning; }
+
+    bool GetGameEnd()const {return isGameEnded;}
 private:
     float gameTimer = 0.0f; // ƒQ[ƒ€ŠÔ
 

@@ -59,6 +59,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     stateMachine_->RegisterState(std::make_unique<ScissorsPlayerChargeDashState>(this));
     stateMachine_->RegisterState(std::make_unique<ScissorsPlayerStunState>(this));
     stateMachine_->RegisterState(std::make_unique<ScissorsPlayerDeathState>(this));
+    stateMachine_->RegisterState(std::make_unique<ScissorsPlayerWinState>(this));
 
     // ステートマシンを character に追加
     this->SetStateMachine(stateMachine_);
@@ -360,6 +361,9 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
 
     // 死亡演出の初期化
     startDeathPerform = false;
+
+    // 勝利演出の初期化
+    startWinPerform = false;
 }
 
 void ScissorsPlayer1::Update(float deltaTime)
@@ -468,11 +472,12 @@ void ScissorsPlayer1::Update(float deltaTime)
 
     if (auto gameManagerActor = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>())
     {
-        if (!gameManagerActor->IsGameInputEnabled())
+        if (!gameManagerActor->IsGameInputEnabled() && gameManager->GetGameStart())
         {
-            if (!startDeathPerform)
+            if (!startDeathPerform && !startWinPerform)
             {
-                stateMachine_->ChangeState("Idle");
+                startWinPerform = true;
+                stateMachine_->ChangeState("Win");
             }
             intent = {};
         }

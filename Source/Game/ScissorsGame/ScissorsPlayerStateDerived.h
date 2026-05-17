@@ -194,3 +194,20 @@ private:
     float duration = 1.0f;
 };
 
+// 勝利ステートオブジェクト
+class ScissorsPlayerWinState : public ScissorsPlayerStateBase
+{
+public:
+    // コンストラクタ
+    ScissorsPlayerWinState(ScissorsPlayer1* player) :ScissorsPlayerStateBase(player) {}
+    // デストラクタ
+    virtual ~ScissorsPlayerWinState() = default;
+    // ステートに入った時のメソッド
+    void Enter() override;
+    // ステートで実行するメソッド
+    void Execute(float deltaTime) override;
+    // ステートから出ていくときのメソッド
+    void Exit() override;
+    // ステート名を取得
+    const char* GetName() const override { return "Win"; }
+};
