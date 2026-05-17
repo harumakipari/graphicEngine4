@@ -7,6 +7,7 @@
 #include "RabbitBossEnemy.h"
 #include "ScissorsGameManager.h"
 #include "ScissorsPlayer1.h"
+#include "ScissorsUIStartActor.h"
 #include "WaveManagaer.h"
 #include "Engine/Scene/Scene.h"
 #include "Physics/CollisionFunction.h"
@@ -76,6 +77,8 @@ void BobbinActor::Initialize(const Transform& transform)
     useCount = 0;
     elapsedTime = 0.0f;
     tutorialElapsedTime = 0.0f;
+    gameStart = false;
+
 }
 
 void BobbinActor::Update(float deltaTime)
@@ -506,9 +509,23 @@ void BobbinActor::UpdateShowArrow(float deltaTime)
             tutorialElapsedTime += deltaTime;
         }
 
-        if (tutorialElapsedTime >= 5.0f)
+        if (tutorialElapsedTime >= 4.5f)
         {
             tutorialComponent->SetVisible(false);
+            if (!gameStart)
+            {
+                gameStart = true;
+                auto gameManager = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>();
+                if (gameManager)
+                {
+                    gameManager->StartTimer();
+                }
+                auto uiStartActor = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsUIStartActor>();
+                if (uiStartActor)
+                {
+                    uiStartActor->PlayReady();
+                }
+            }
         }
         tutorialComponent->SetSize(tutorialSize);
         tutorialComponent->SetWorldPosition(tutorialPos);

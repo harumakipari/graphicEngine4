@@ -242,7 +242,7 @@ void GameScene::Start()
         currentStageName = StringToStageName(stageName);
     }
 
-    //currentStageName = STAGE_NAME::BOSS;
+    currentStageName = STAGE_NAME::BOBBIN_FIRST;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(currentStageName);
@@ -250,13 +250,25 @@ void GameScene::Start()
     LoadStage(currentStageName);
 
     auto uiStartActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUIStartActor>("uiStartActor");
+    uiStartActor->SetTexture(currentStageName);
 
     auto uiFinishActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiEndActor>("uiEndActor");
 
     SceneTransitionManager::Instance().SetOnOpeningFinished([this, uiStartActor]()
         {
+            if (currentStageName == STAGE_NAME::BOBBIN_FIRST)
+            {// ボビンステージはチュートリアルを終わってから時間測定を始めたいから、ここでは呼ばない。
+                if (auto gameManagerActor = GetActorManager()->GetActorOfType<ScissorsGameManager>())
+                {
+                    gameManagerActor->StartGame();
+                }
+                audioBgmComponent->Play();
+                return;
+            }
+
             uiStartActor->PlayReady([this]()
                 {
+
                     OnGameStart();
                 });
         });
@@ -1044,6 +1056,7 @@ void GameScene::OnGameStart()
     if (auto gameManagerActor = GetActorManager()->GetActorOfType<ScissorsGameManager>())
     {
         gameManagerActor->StartGame();
+        gameManagerActor->StartTimer();
     }
 }
 

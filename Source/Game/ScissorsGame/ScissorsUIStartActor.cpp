@@ -7,10 +7,36 @@
 
 void ScissorsUIStartActor::Initialize(const Transform& transform)
 {
-    auto uiManager = GetOwnerScene()->GetUIManager();
     targetPos = { 1920.0f * 0.5f, 1080.0f * 0.5f };
 
-    readyImageComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/stage_first_start.png", "ready_ui");
+
+    easingAlpha = std::make_shared<EasingRunner>();
+    easingPosition = std::make_shared<EasingRunner>();
+    easingGoAlpha = std::make_shared<EasingRunner>();
+    easingGoScale = std::make_shared<EasingRunner>();
+}
+
+
+// テクスチャをステージに応じて切り替える
+void ScissorsUIStartActor::SetTexture(STAGE_NAME stageName)
+{
+    auto uiManager = GetOwnerScene()->GetUIManager();
+
+    std::unordered_map<STAGE_NAME, std::string> stageTimeTable =
+    {
+        { STAGE_NAME::TUTORIAL,    "./Data/Textures/ScissorsUI/stage_first_start.png" },   // チュートリアルはボーナス無しでもOK
+        { STAGE_NAME::FIRST,         "./Data/Textures/ScissorsUI/stage_first_start.png" },
+        { STAGE_NAME::BOBBIN_FIRST,  "./Data/Textures/ScissorsUI/stage_bobbin_start.png" },
+        { STAGE_NAME::REFLECT_WALL,  "./Data/Textures/ScissorsUI/stage_redirect_start.png" },
+        { STAGE_NAME::BOBBIN_SECOND, "./Data/Textures/ScissorsUI/stage_first_start.png"} ,
+        { STAGE_NAME::DIFFICULT,     "./Data/Textures/ScissorsUI/stage_difficult_start.png" },
+        { STAGE_NAME::BOSS,          "./Data/Textures/ScissorsUI/stage_boss_start.png" },
+    };
+
+
+    std::string textureName = stageTimeTable[stageName];
+
+    readyImageComponent = std::make_shared<UIImageComponent>(textureName, "ready_ui");
     readyImageComponent->SetWorldPosition({ 0.0f, targetPos.y });
     readyImageComponent->SetVisible(true);
     readyImageComponent->SetScale({ 1.0f, 1.0f });
@@ -19,7 +45,7 @@ void ScissorsUIStartActor::Initialize(const Transform& transform)
     readyImageComponent->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,0.0f });
     uiManager->Add(readyImageComponent);
 
-    goImageComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/stage_first_start.png", "go_ui");
+    goImageComponent = std::make_shared<UIImageComponent>(textureName, "go_ui");
     goImageComponent->SetWorldPosition({ 1920.0f * 0.5f, 1080.0f * 0.5f });
     goImageComponent->SetVisible(true);
     goImageComponent->SetScale({ 1.0f, 1.0f });
@@ -28,10 +54,6 @@ void ScissorsUIStartActor::Initialize(const Transform& transform)
     goImageComponent->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,0.0f });
     uiManager->Add(goImageComponent);
 
-    easingAlpha = std::make_shared<EasingRunner>();
-    easingPosition = std::make_shared<EasingRunner>();
-    easingGoAlpha = std::make_shared<EasingRunner>();
-    easingGoScale = std::make_shared<EasingRunner>();
 }
 
 void ScissorsUIStartActor::Update(float deltaTime)

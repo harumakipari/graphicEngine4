@@ -67,7 +67,13 @@ void ScissorsGameManager::EndGame(bool playerDead)
 // ゲーム開始処理
 void ScissorsGameManager::StartGame()
 {
-    isGameRunning = true;
     // 入力を有効化する
     gameInputEnabled = true;
+}
+
+
+// ゲーム測定開始処理
+void ScissorsGameManager::StartTimer()
+{
+    isGameRunning = true;
 }

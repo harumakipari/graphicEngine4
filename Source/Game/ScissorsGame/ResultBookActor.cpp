@@ -476,6 +476,7 @@ void ResultBookActor::Update(float deltaTime)
 
         displayedTotalScore = stats.enemyScore;
         currentTotalScore = stats.enemyScore;
+        Logger::Log(U8("enemyScore:") + std::to_string(stats.enemyScore));
 #ifdef _DEBUG
         //displayedTotalScore = 1500;
         //currentTotalScore = 1500;

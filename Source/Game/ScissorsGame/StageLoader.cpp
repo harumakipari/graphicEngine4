@@ -24,7 +24,7 @@ StageData StageLoader::Load(STAGE_NAME stageId)
               },
           },
 
-#if 0
+#if 1
           // Wave2：直線
 {
     {
@@ -158,7 +158,7 @@ StageData StageLoader::Load(STAGE_NAME stageId)
                     { {22.5,0,3}, YarnEnemyType::MoveLinear,1.0f, false,2.0f,1.0f,{-1,0,1}},
 
                     },
-                    false,-1,5.0f,false
+                    false,-1,6.0f,false
 
                     },
             // Wave3：ミッキー 追いかける

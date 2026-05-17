@@ -94,5 +94,7 @@ private:
     float chargeTime = 3.5f; // 何秒でMaxになるか
     XMFLOAT2 tutorialPos = { 390.0f,140.0f };    // チュートリアル用の説明文の位置
     XMFLOAT2 tutorialSize = { 480.0f,200.0f }; // チュートリアル用の説明文のサイズ
+
+    bool gameStart = false;
 };
 

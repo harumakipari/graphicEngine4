@@ -1,4 +1,5 @@
 #pragma once
+#include "StageData.h"
 #include "Core/Actor.h"
 #include "UI/Widgets/Widget.h"
 
@@ -20,7 +21,9 @@ public:
     // 演出開始
     void PlayReady(const std::function<void()>& onFinished = nullptr);
 
-    
+    // テクスチャをステージに応じて切り替える
+    void SetTexture(STAGE_NAME stageName);
+
 private:
     void PlayGo();
 

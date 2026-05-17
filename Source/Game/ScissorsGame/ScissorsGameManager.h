@@ -23,8 +23,12 @@ public:
     // ゲーム終了処理
     void EndGame(bool playerDead=false);
 
-    // ゲーム開始処理
+    // ゲーム開始処理　
     void StartGame();
+
+    // ゲーム測定開始処理
+    void StartTimer();
+
 
     // ゲームの入力処理状態を設定する
     void SetGameInputEnabled(bool enabled) { gameInputEnabled = enabled; }

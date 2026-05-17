@@ -187,8 +187,6 @@ void TutorialScene::Start()
     LoadStage(stage);
 
 
-    auto uiStartActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUIStartActor>("uiStartActor");
-
     auto uiFinishActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiEndActor>("uiEndActor");
 
     // チュートリアルアクターを生成
@@ -679,7 +677,7 @@ void TutorialScene::SetUpActors()
     Transform gameManagerTransform(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto gameManagerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsGameManager>("gameManagerActor", gameManagerTransform);
     gameManagerActor->StartGame();
-
+    gameManagerActor->StartTimer();
 
     //SpawnEnemy({ 10.5f,0,5 }, YarnEnemyType::Static,true);
 
