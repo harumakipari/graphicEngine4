@@ -41,6 +41,8 @@ void EnemyBase::Initialize(const Transform& transform)
 
     state = YarnState::Active;
     SetBehavior(std::make_unique<StaticBehavior>());
+
+    killByReflected = false; // 反射攻撃で倒されたかどうか
 }
 
 void EnemyBase::Update(float deltaTime)
@@ -330,7 +332,7 @@ void EnemyBase::UpdateSizeChanging(float deltaTime)
         powerUpArrowMarkMeshComponent->SetIsVisible(true);
         // 回転
         auto rot = powerUpArrowMarkMeshComponent->GetRelativeEulerRotation();
-        rot.y +=60.0f * deltaTime;
+        rot.y += 60.0f * deltaTime;
         powerUpArrowMarkMeshComponent->SetRelativeEulerRotationDirect(
             { 0.0f, rot.y, 0.0f });
     }
@@ -339,7 +341,7 @@ void EnemyBase::UpdateSizeChanging(float deltaTime)
         powerUpMarkMeshComponent->SetIsVisible(true);
         // 回転
         auto rot = powerUpMarkMeshComponent->GetRelativeEulerRotation();
-        rot.y +=-60.0f * deltaTime;
+        rot.y += -60.0f * deltaTime;
         powerUpMarkMeshComponent->SetRelativeEulerRotationDirect(
             { 0.0f, rot.y, 0.0f });
     }
@@ -613,15 +615,12 @@ void EnemyBase::UpdateDead(float deltaTime)
             // 高さでコイン出す
             if (pos.y > knockback.startPos.y + knockback.height * 0.8f && !createCoin)
             {
-
-                SpawnCoin(pos);
+                SpawnCoin(pos, killByReflected);
                 createCoin = true;
             }
             // 終了
             if (t >= 1.0f)
             {
-
-
                 MarkPendingKill(); // 死亡処理はエフェクトが終わってからにする予定
                 isKnockbackActive = false;
             }
@@ -670,8 +669,14 @@ void EnemyBase::CallDeath(bool hitByReflected)
     }
 
     //
-    powerUpMarkMeshComponent->SetIsVisible(false);
+    if (powerUpArrowMarkMeshComponent)
+    {
     powerUpArrowMarkMeshComponent->SetIsVisible(false);
+    }
+    if (powerUpMarkMeshComponent)
+    {
+    powerUpMarkMeshComponent->SetIsVisible(false);
+    }
 
     // エフェクトを発生させる
     SpawnHitEffect(hitByReflected);
@@ -721,6 +726,9 @@ void EnemyBase::CallDeath(bool hitByReflected)
 
     // コインフラグをオフにしておく
     createCoin = false;
+
+    // 反射攻撃で倒されたかどうかのフラグをセット
+    killByReflected = hitByReflected;
 }
 
 // サイズを変更演出を開始する
@@ -743,7 +751,7 @@ void EnemyBase::HideEnemyVisual()
     skeletalMeshComponent->SetIsCastShadow(false);
     skeletalMeshComponent->SetIsVisible(false);
     // 玉止めモデルの描画を消す
-    for (auto tiedMesh:tiedMeshes)
+    for (auto tiedMesh : tiedMeshes)
     {
         tiedMesh->SetIsVisible(false);
         tiedMesh->SetIsCastShadow(false);
@@ -756,12 +764,13 @@ void EnemyBase::HideEnemyVisual()
 }
 
 // コインを生成する
-void EnemyBase::SpawnCoin(DirectX::XMFLOAT3 pos)
+void EnemyBase::SpawnCoin(DirectX::XMFLOAT3 pos, bool isBonus)
 {
+    //pos.y = 1.5f;
     // コインを生成する
     Transform coinTr(pos, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = GetOwnerScene()->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("coin", coinTr);
-    coin->StartPerform(false);
+    coin->StartPerform(isBonus);
 }
 
 

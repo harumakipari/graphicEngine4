@@ -172,13 +172,15 @@ public:
         this->basePosition = basePosition;
     }
 
+    // 死亡中の更新処理
+    void UpdateDead(float deltaTime);
 
 private:
     // 敵のサイズを変更する
     void ChangeSize(YarnSize newSize);
 
     // コインを生成する
-    void SpawnCoin(DirectX::XMFLOAT3 pos);
+    void SpawnCoin(DirectX::XMFLOAT3 pos, bool isBonus = false);
 
     // ヒットエフェクトを生成する
     void SpawnHitEffect(bool hitByReflected);
@@ -186,8 +188,6 @@ private:
     // 玉止めされている時の更新処理
     void UpdateTied(float deltaTime);
 
-    // 死亡中の更新処理
-    void UpdateDead(float deltaTime);
 
     // 玉止め表示更新処理
     void UpdateTiedVisual();
@@ -331,5 +331,7 @@ private:
     float blinkInterval = 0.1f;
     bool blinkOn = false;
     YarnSize pendingSize;
+
+    bool killByReflected = false; // 反射攻撃で倒されたかどうか
 
 };

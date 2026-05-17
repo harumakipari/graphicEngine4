@@ -481,9 +481,10 @@ void ScissorsPlayer1::Update(float deltaTime)
             }
             intent = {};
         }
-        else
+        else if (!gameManager->GetGameStart() && ScoreSystem::GetResultStats().stageName != STAGE_NAME::BOBBIN_FIRST)
         {
-
+            stateMachine_->ChangeState("Idle");
+            intent = {};
         }
     }
 
@@ -1111,7 +1112,11 @@ void ScissorsPlayer1::ResolveReflectedKills()
     // 反射ボーナス
     int reflectionBonus = reflectedKillCount * 80;
     // ダッシュボーナス
-    int dashBonus = (killedEnemyCountInDash / 5) * 500;
+    int dashBonus = 0;
+    if (killedEnemyCountInDash>=5)
+    {
+        dashBonus = killedEnemyCountInDash * 100;
+    }
     if (reflectionBonus > 0)
     {// 反射攻撃で死んでいたら
         ScoreSystem::AddReflectionBonus(reflectionBonus);
@@ -1260,9 +1265,9 @@ void ScissorsPlayer1::SpawnBonusCoinBurst()
     auto scene = GetOwnerScene();
     int coinCount = 1;
 
-    Transform tr(pos, { 0,0,0 }, { 1.0f,1.0f,1.0f }); // ←少し大きい
-    auto bonusUiActor = scene->GetActorManager()
-        ->CreateAndRegisterActorWithTransform<BonusUiActor>("bonusCoin", tr);
+    //Transform tr(pos, { 0,0,0 }, { 1.0f,1.0f,1.0f }); // ←少し大きい
+    //auto bonusUiActor = scene->GetActorManager()
+    //    ->CreateAndRegisterActorWithTransform<BonusUiActor>("bonusCoin", tr);
 
     for (int i = 0; i < coinCount; i++)
     {
@@ -1281,7 +1286,6 @@ void ScissorsPlayer1::SpawnBonusCoinBurst()
 
         auto coin = scene->GetActorManager()
             ->CreateAndRegisterActorWithTransform<ButtonCoinActor>("bonusCoin", tr);
-
         coin->StartPerform(true); //  ボーナス指定
     }
 }

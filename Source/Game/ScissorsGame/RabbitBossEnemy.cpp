@@ -574,115 +574,6 @@ void RabbitBossEnemyActor::StartDeathPerform()
 
 }
 
-//　死亡時に呼ぶ更新処理
-void RabbitBossEnemyActor::UpdateDead(float deltaTime)
-{
-#if 0
-    if (waitBeforeKnockback)
-    {
-        delayTimer += deltaTime;
-
-        if (delayTimer >= delayBeforeKnockback)
-        {
-            waitBeforeKnockback = false;
-            startKnockback = true; // ←ここで発火
-            InputSystem::SetVibration(0.5f, 0.1f);
-        }
-    }
-
-    if (startKnockback)
-    {// 死亡したら
-        // 上へ吹っ飛ぶ処理
-        if (isKnockbackActive)
-        {
-            if (!popupScore)
-            {
-                // スコアデータを取得する
-                auto data = GetScoreData();
-                auto pos = GetPosition();
-                // スコア処理　足されたスコアを取得する コンボ加算
-                int addScore = ScoreSystem::ProcessHit(data, true);
-                SpawnScorePopup(pos, addScore);
-                popupScore = true;
-            }
-
-            if (knockback.elapsedTime < 0.05f)
-            {
-                // 少しだけ強制的に前に押す
-                XMFLOAT3 pos = GetPosition();
-                pos.x += (knockback.targetPos.x - knockback.startPos.x) * 0.1f;
-                pos.z += (knockback.targetPos.z - knockback.startPos.z) * 0.1f;
-                SetPosition(pos);
-            }
-
-            knockback.elapsedTime += deltaTime;
-
-            float t = knockback.elapsedTime / knockback.duration;
-            t = std::clamp(t, 0.0f, 1.0f);
-            float easedT = 1.0f - powf(1.0f - t, 5.0f);
-
-            // 線形補間（XZ）
-            XMFLOAT3 pos;
-            pos.x = std::lerp(knockback.startPos.x, knockback.targetPos.x, easedT);
-            pos.z = std::lerp(knockback.startPos.z, knockback.targetPos.z, easedT);
-
-            // 放物線（Y）
-            float yT = powf(t, 0.7f); // 最初から上がる
-            float height = 4.0f * knockback.height * yT * (1.0f - yT);
-            pos.y = knockback.startPos.y + height;
-
-            SetPosition(pos);
-
-            // 高さでコイン出す
-            if (pos.y > knockback.startPos.y + knockback.height * 0.8f && !createCoin)
-            {
-
-                SpawnCoin(pos);
-                createCoin = true;
-            }
-            // 終了
-            if (t >= 1.0f)
-            {
-
-
-                MarkPendingKill(); // 死亡処理はエフェクトが終わってからにする予定
-                isKnockbackActive = false;
-            }
-        }
-        // 白くフラッシュする処理
-        {
-            hitFlashTimer += deltaTime;
-#if 0
-            float t = (1.0f - hitFlashTimer / hitFlashDuration);
-            t = std::clamp(t, 0.0f, 1.0f);
-#else
-            float t = hitFlashTimer / hitFlashDuration;
-            t = std::clamp(t, 0.0f, 1.0f);
-
-            // 急激に減衰
-            t = powf(1.0f - t, 7.0f);
-#endif // 0
-
-            skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = t;
-
-            if (t >= 1.0f)
-            {
-                skeletalMeshComponent->SetIsVisible(false);
-            }
-        }
-    }
-    else
-    {
-        // 常に白くする
-        skeletalMeshComponent->plusAlphaCBuffer->data.flashValue = 1.0f;
-        // 発光強めると分かりやすい
-        skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 2.0f;
-        // 
-        tieCount = GetNeedTiedCount();
-    }
-#endif // 0
-
-}
 
 // 死亡演出が終了した時に呼ぶ処理
 void RabbitBossEnemyActor::EndDeathPerform(bool playerDeath)
@@ -828,11 +719,11 @@ void RabbitBossEnemyActor::EnterStun()
 // 爆弾を生成する
 void RabbitBossEnemyActor::SpawnButtonBombs()
 {
-    spawnBomb = !spawnBomb;
-    if (!spawnBomb)
-    {
-        return;
-    }
+    //spawnBomb = !spawnBomb;
+    //if (!spawnBomb)
+    //{
+    //    return;
+    //}
 
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/drop_bomb1.wav", 1.5f);
 

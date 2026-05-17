@@ -173,12 +173,56 @@ public:
         return (remain > 0.0f) ? remain : 0.0f;
     }
 
+    // 任意のスコアを追加
+    static void AddScore(int score)
+    {
+        if (score <= 0)
+        {
+            return;
+        }
+
+        totalScore += score;
+
+        resultData.enemyScore += score;
+    }
+
     // 全てをリセットする
     static void Reset()
     {
         totalScore = 0;
         resultData = {};
         ResetCombo();
+    }
+
+    // ボス撃破時間ボーナス
+    static int CalculateBossTimeBonus(float clearTime)
+    {
+        // 1分以内
+        if (clearTime <= 60.0f)
+        {
+            return 10000;
+        }
+
+        // 1分30秒以内
+        if (clearTime <= 90.0f)
+        {
+            return 7500;
+        }
+
+        // 1分45秒以内
+        if (clearTime <= 105.0f)
+        {
+            return 6000;
+        }
+
+        // 2分以内
+        if (clearTime <= 120.0f)
+        {
+            return 4000;
+        }
+
+        // それ以降
+        return 2000;
     }
 public:
     static inline std::unordered_map<STAGE_NAME, StageTimeData> stageTimeTable =

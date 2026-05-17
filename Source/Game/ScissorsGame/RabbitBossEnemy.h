@@ -87,9 +87,6 @@ public:
     // ボスが死亡したら呼ぶ処理  一フレームのみ
     void StartDeathPerform();
 
-    //　死亡時に呼ぶ更新処理
-    void UpdateDead(float deltaTime);
-
     // 死亡演出が終了した時に呼ぶ処理
     void EndDeathPerform(bool playerDeath);
 

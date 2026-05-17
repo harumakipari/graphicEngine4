@@ -205,9 +205,9 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     "./Data/TeamModels/Item/NormalButtonCoin.glb" };
 
     bonusCoin = {
-    0.7f, 5.8f,
-    0.05f, 30.0f,
-    25, 80.0f, 800.0f,
+    1.0f, 3.5f,
+    0.45f, 30.0f,
+    25, 200.0f, 800.0f,
     "./Data/TeamModels/Item/BonusButtonCoin.glb" };
 
     // スコアシステムの初期化
@@ -242,7 +242,7 @@ void GameScene::Start()
         currentStageName = StringToStageName(stageName);
     }
 
-    currentStageName = STAGE_NAME::BOBBIN_FIRST;
+    currentStageName = STAGE_NAME::BOSS;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(currentStageName);
@@ -856,7 +856,7 @@ void GameScene::SetUpActors()
     needleEnemyActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<NeedleEnemyActor>("needleEnemy", needleTr);
     needleEnemyActor->SetMoveDirection({ 1.0f,0.0f,1.0f });
 #endif // 0// ハリネズミを生成　
-#if 0
+#if 1
     Transform coinTr(DirectX::XMFLOAT3{ 10.5f,0.0f,12.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto coin = this->GetActorManager()->CreateAndRegisterActorWithTransform<ButtonCoinActor>("coin", coinTr);
 #endif // 0

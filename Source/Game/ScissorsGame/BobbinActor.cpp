@@ -197,7 +197,7 @@ void BobbinActor::SetBobbinSize(BobbinSize bobbinSize)
         applyRangeMaxScale = 2.0f;
         break;
     case BobbinSize::BossBobbin:
-        maxRadius = 7.5f; // 最大半径
+        maxRadius = 8.0f; // 最大半径
         cooldownInterval = 0.1f;// クールタイム
         chargeTime = 3.5f; // 何秒でMaxになるか
         applyRangeMaxScale = 2.5f;
@@ -392,16 +392,21 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
         }
     }
 
-
-    // 複数ボーナス
-    int dashBonus = (index / 5) * 500;
-    if (dashBonus > 0)
-    {// 5体以上
-        ScoreSystem::AddDashBonus(dashBonus);
-        SpawnBonusCoinBurst();
-        Logger::Log("DashBonus: " + std::to_string(dashBonus));
+    int dashBonus = 0;
+    // 5体以上なら
+    if (index >= 5)
+    {
+        dashBonus = index * 100;
     }
 
+    if (dashBonus > 0)
+    {
+        ScoreSystem::AddDashBonus(dashBonus);
+
+        SpawnBonusCoinBurst();
+
+        Logger::Log("DashBonus: " + std::to_string(dashBonus));
+    }
 
 }
 

@@ -5,6 +5,7 @@
 #include "BossSpawner.h"
 #include "GameCameraTargetActor.h"
 #include "RabbitBossEnemy.h"
+#include "ScissorsGameManager.h"
 #include "ScissorsGameState.h"
 #include "ScissorsPlayer1.h"
 #include "Engine/Scene/Scene.h"
@@ -447,6 +448,7 @@ void RabbitBossStunState::Exit()
         bossSpawner->Activate();
     }
 
+
 }
 
 
@@ -469,6 +471,21 @@ void RabbitBossDeathState::Enter()
     {// ここで経過時間を停止する
         enemy->EndDeathPerform(true);// 引数にFinishUIを出さないかどうか
     }
+
+    // ボス撃破タイムボーナス
+    if (auto gameManager =
+        enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>())
+    {
+        float clearTime = gameManager->GetRequiredTime();
+
+        int bonus = ScoreSystem::CalculateBossTimeBonus(clearTime);
+
+        ScoreSystem::AddScore(bonus);
+
+        Logger::Log("Boss Time Bonus : " + std::to_string(bonus));
+    }
+
+
     // スロー開始
     Time::timeScale = 0.5f;
 
@@ -485,14 +502,19 @@ void RabbitBossDeathState::Enter()
         bobbin->HideBobbinVisual();
     }
 
+    
+
+    //enemy->ChangeEnemyState(EnemyBase::YarnState::Dead);
+    //enemy->CallDeath(false);
+
 }
 
 void RabbitBossDeathState::Execute(float deltaTime)
 {
     elapsedTime += Time::UnscaledDeltaTime();
-    // 死亡の演出を何か入れる
-    enemy->UpdateDead(deltaTime);
-
+    //// 死亡の演出を何か入れる
+    //enemy->UpdateDead(deltaTime);
+    
 
     switch (phase)
     {
