@@ -167,7 +167,8 @@ public:
 
         const StageTimeData& config = it->second;
 
-        float remain = config.targetTime - resultData.gameTimer;
+        // どれだけ超過したか
+        float remain = resultData.gameTimer - config.targetTime;
 
         return (remain > 0.0f) ? remain : 0.0f;
     }
@@ -183,7 +184,7 @@ public:
     static inline std::unordered_map<STAGE_NAME, StageTimeData> stageTimeTable =
     {
         { STAGE_NAME::TUTORIAL,      { 999.0f, 0 } },   // チュートリアルはボーナス無しでもOK
-        { STAGE_NAME::FIRST,         { 50.0f,  0 } },
+        { STAGE_NAME::FIRST,         { 5.0f,  0 } },
         { STAGE_NAME::BOBBIN_FIRST,  { 60.0f,  0 } },
         { STAGE_NAME::REFLECT_WALL,  { 55.0f,  0 } },
         { STAGE_NAME::BOBBIN_SECOND, { 990.0f,  0 } },

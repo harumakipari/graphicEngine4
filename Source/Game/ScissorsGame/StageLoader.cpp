@@ -24,79 +24,80 @@ StageData StageLoader::Load(STAGE_NAME stageId)
               },
           },
 
+#if 0
           // Wave2：直線
-          {
-              {
-                  { {6,0,0}, YarnEnemyType::MoveVertical,0.0f },
-                  { {10,0,0}, YarnEnemyType::MoveVertical,0.0f },
-                  { {14,0,24}, YarnEnemyType::MoveVertical,0.0f },
-                  { {18,0,24}, YarnEnemyType::MoveVertical,0.0f },
-              },
-              false,
-              -1,
-              1.0f,
-          },
-
-          // Wave3：
-          {
-              {
-                  { {0,0,23.5}, YarnEnemyType::RescueEnemy,0.0f,false,3.0f },
-                  { {23.5,0,23.5}, YarnEnemyType::RescueEnemy,0.0f, false,3.0f},
-              },
-               false,
-              -1,
-              5.0f,
-          },
-          // Wave4：ミッキー
-        {
-            {
-                { { 23.5,0,16 }, YarnEnemyType::MoveLinear,0.0f,false,2.0f,1.0f,{-1,0,0}},
-                { {21,0,15}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,0}},
-                { {21,0,17}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,0}},
-
-                { { 1,0,8 }, YarnEnemyType::MoveLinear,0.0f,false,2.0f,1.0f,{1,0,0}},
-                { {0,0,9}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,0}},
-                { {0,0,7}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,0}},
-            },
-             false,
-              -1,
-              7.5f,
-        },
-        // Wave5：波波
+{
     {
+        { {6,0,0}, YarnEnemyType::MoveVertical,0.0f },
+        { {10,0,0}, YarnEnemyType::MoveVertical,0.0f },
+        { {14,0,24}, YarnEnemyType::MoveVertical,0.0f },
+        { {18,0,24}, YarnEnemyType::MoveVertical,0.0f },
+    },
+    false,
+    -1,
+    1.0f,
+},
+
+// Wave3：
+{
     {
-            // 左上
-            { {3,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{1,0,-1}},
-            { {3,0,22.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,-1}},
-            { {1.5,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,-1}},
-
-            // 左下
-                    { {3,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{1,0,1}},
-            { {3,0,1.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,1}},
-            { {1.5,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,1}},
-
-            // 右上
-                    { {21,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{-1,0,-1}},
-            { {21,0,22.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,-1}},
-            { {22.5,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,-1}},
-
-            // 右下
-            { {21,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{-1,0,1}},
-            { {21,0,1.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,1}},
-            { {22.5,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,1}},
-
-        },
-         false,
-              -1,
-              5.0f,
-        },
-       
-        // Wave6：急かす
+        { {0,0,23.5}, YarnEnemyType::RescueEnemy,0.0f,false,3.0f },
+        { {23.5,0,23.5}, YarnEnemyType::RescueEnemy,0.0f, false,3.0f},
+    },
+     false,
+    -1,
+    5.0f,
+},
+// Wave4：ミッキー
+{
     {
-        {
-                  { {12,0,12}, YarnEnemyType::Static ,0.0f},
-            { {0,0,12}, YarnEnemyType::RescueEnemy,2.0f,false,3.0f },
-            { {23,0,12}, YarnEnemyType::RescueEnemy,2.0f, false,3.0f},
+        { { 23.5,0,16 }, YarnEnemyType::MoveLinear,0.0f,false,2.0f,1.0f,{-1,0,0}},
+        { {21,0,15}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,0}},
+        { {21,0,17}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,0}},
+
+        { { 1,0,8 }, YarnEnemyType::MoveLinear,0.0f,false,2.0f,1.0f,{1,0,0}},
+        { {0,0,9}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,0}},
+        { {0,0,7}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{1,0,0}},
+    },
+     false,
+      -1,
+      7.5f,
+},
+// Wave5：波波
+{
+{
+        // 左上
+        { {3,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{1,0,-1}},
+        { {3,0,22.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,-1}},
+        { {1.5,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,-1}},
+
+        // 左下
+                { {3,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{1,0,1}},
+        { {3,0,1.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,1}},
+        { {1.5,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{1,0,1}},
+
+        // 右上
+                { {21,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{-1,0,-1}},
+        { {21,0,22.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,-1}},
+        { {22.5,0,21}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,-1}},
+
+        // 右下
+        { {21,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f,false,2.0f ,1.0f,{-1,0,1}},
+        { {21,0,1.5}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,1}},
+        { {22.5,0,3}, YarnEnemyType::WaveMoveBehavior,0.0f, false,2.0f,1.0f,{-1,0,1}},
+
+    },
+     false,
+          -1,
+          5.0f,
+    },
+
+    // Wave6：急かす
+{
+    {
+              { {12,0,12}, YarnEnemyType::Static ,0.0f},
+        { {0,0,12}, YarnEnemyType::RescueEnemy,2.0f,false,3.0f },
+        { {23,0,12}, YarnEnemyType::RescueEnemy,2.0f, false,3.0f},
 #if 0
                             { { 23.5,0,15 }, YarnEnemyType::MoveLinear,0.0f,false,2.0f,1.0f,{-1,0,0}},
                 { {21,0,16}, YarnEnemyType::MoveLinear,0.0f, false,2.0f,1.0f,{-1,0,0}},
@@ -113,6 +114,8 @@ StageData StageLoader::Load(STAGE_NAME stageId)
               -1,
               3.0f,
     },
+
+                #endif // 0
 
 
         };

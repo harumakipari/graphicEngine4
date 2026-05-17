@@ -116,13 +116,6 @@ bool ResultScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
 
     const ResultData& stats = ScoreSystem::GetResultStats();
 
-    Logger::Log(U8("総スコア") + std::to_string(stats.totalScore));
-    Logger::Log(U8("最大コンボ数") + std::to_string(stats.maxCombo));
-    Logger::Log(U8("反射ボーナス点") + std::to_string(stats.reflectionBonusScore));
-    Logger::Log(U8("複数ボーナス") + std::to_string(stats.dashBonusScore));
-    Logger::Log(U8("残りHP") + std::to_string(stats.remainHp));
-    Logger::Log(U8("所要時間") + std::to_string(stats.gameTimer));
-
     if (stats.remainHp > 0)
     {// HPが0以上だったら
         // ステージクリア
@@ -133,8 +126,6 @@ bool ResultScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     ScoreHistoryManager::Load();
 
 
-    // スコアを記録する
-    ScoreHistoryManager::Submit(stats.stageName, stats.totalScore);
     // Top5を取得する
     std::vector<ScoreHistoryManager::Entry> ranking = ScoreHistoryManager::GetTop5(stats.stageName);
 

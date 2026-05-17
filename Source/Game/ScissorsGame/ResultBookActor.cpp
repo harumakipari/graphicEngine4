@@ -350,8 +350,6 @@ void ResultBookActor::Update(float deltaTime)
     currentScale = std::lerp(startScale, endScale, medalValue);
     medalSkeletalMeshComponent->SetRelativeScaleDirect({ currentScale,currentScale,currentScale });
 
-    // 新記録かどうか
-    isNewRecord = ScoreHistoryManager::IsNewRecord(stats.stageName, stats.totalScore);
 
     // タイムをクリアしたか
     timeClearImage->SetWorldPosition(timerBonusUiPos);
@@ -640,8 +638,6 @@ void ResultBookActor::Update(float deltaTime)
     {
         const float duration = 2.0f;
 
-        phaseTimer += deltaTime;
-
         float rate = std::clamp(phaseTimer / duration, 0.0f, 1.0f);
 
         int rawScore = static_cast<int>(
@@ -672,6 +668,16 @@ void ResultBookActor::Update(float deltaTime)
             phaseInitialized = false;
             phaseTimer = 0.0f;
             resultPhase = ResultPhase::ShowRanking;
+
+            Logger::Log(U8("総スコア") + std::to_string(currentTotalScore));
+            Logger::Log(U8("最大コンボ数") + std::to_string(stats.maxCombo));
+            Logger::Log(U8("反射ボーナス点") + std::to_string(stats.reflectionBonusScore));
+            Logger::Log(U8("複数ボーナス") + std::to_string(stats.dashBonusScore));
+            Logger::Log(U8("残りHP") + std::to_string(stats.remainHp));
+            Logger::Log(U8("所要時間") + std::to_string(stats.gameTimer));
+            // スコアを記録する
+            ScoreHistoryManager::Submit(stats.stageName, currentTotalScore);
+
         }
         break;
 
@@ -721,6 +727,10 @@ void ResultBookActor::Update(float deltaTime)
             phaseInitialized = false;
             phaseTimer = 0.0f;
             resultPhase = ResultPhase::HighScore;
+
+            // 新記録かどうか
+            isNewRecord = ScoreHistoryManager::IsNewRecord(stats.stageName,currentTotalScore);
+
         }
         break;
     case ResultPhase::HighScore:
