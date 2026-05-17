@@ -12,6 +12,8 @@
 void BookBaseActor::Initialize(const Transform& transform)
 {
     parentName = "BookBaseActor";
+    //矢印UIを表示する
+    showSecondPageButtonArrow = true;
 }
 
 void BookBaseActor::Update(float deltaTime)
@@ -68,7 +70,14 @@ void BookBaseActor::Update(float deltaTime)
 
     // 矢印UIの表示非表示
     firstButtons.SetEnable(bookState == BookPageState::FirstPage);
-    secondButtons.SetEnable(bookState == BookPageState::SecondPage);
+    if (showSecondPageButtonArrow)
+    {
+        secondButtons.SetEnable(bookState == BookPageState::SecondPage);
+    }
+    else
+    {
+        secondButtons.SetEnable(false);
+    }
     // 矢印UIのコントローラー接続によるテクスチャの切り替え
     firstButtons.UpdateInputTexture();
     secondButtons.UpdateInputTexture();

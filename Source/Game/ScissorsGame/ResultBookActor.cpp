@@ -57,6 +57,17 @@ void ResultBookActor::Initialize(const Transform& transform)
     // スコアの数字を乗せるページの親
     std::string rightName = rightPage.parentName;
 
+    // ハイスコアメダル
+    {
+        medalSkeletalMeshComponent = AddComponent<SkeletalMeshComponent>("medalMeshComponent", rightName);
+        medalSkeletalMeshComponent->SetModel("./Data/TeamModels/Title/HighScoreMedalModel.gltf", false, true);
+        medalSkeletalMeshComponent->SetIsCastShadow(false);
+        medalSkeletalMeshComponent->SetRelativeLocationDirect({ -0.4f,-0.2f,-2.2f });
+        medalSkeletalMeshComponent->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+        medalSkeletalMeshComponent->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
+        medalSkeletalMeshComponent->SetIsVisible(false);
+    }
+
     // スコアの数字モデル　
     {
         std::string scoreParentName = "score_number_parent";
@@ -303,8 +314,15 @@ void ResultBookActor::Initialize(const Transform& transform)
     scoreCountUpAudioComponent->SetVolume(1.0f);
     scoreCountUpAudioComponent->SetLoop(true);
 
+    // メダル用初期化
+    easingRunner = std::make_unique<EasingRunner>();
+    medalValue = 0.0f;
 
+    // 新記録かどうか
     isNewRecord = false;
+
+    // 二枚目の矢印UIは最初は表示しない
+    showSecondPageButtonArrow = false;
 }
 
 void ResultBookActor::Update(float deltaTime)
@@ -327,6 +345,11 @@ void ResultBookActor::Update(float deltaTime)
     ranking4Display.Update(deltaTime);
     ranking5Display.Update(deltaTime);
 
+    // メダルのスケールを更新
+    easingRunner->Tick(deltaTime);
+    currentScale = std::lerp(startScale, endScale, medalValue);
+    medalSkeletalMeshComponent->SetRelativeScaleDirect({ currentScale,currentScale,currentScale });
+
     // 新記録かどうか
     isNewRecord = ScoreHistoryManager::IsNewRecord(stats.stageName, stats.totalScore);
 
@@ -339,8 +362,10 @@ void ResultBookActor::Update(float deltaTime)
     remainClearImage->SetSize(timerBonusUiSize);
 
     float remain = ScoreSystem::GetRemainTimeToClear();
-    if (resultPhase >= ResultPhase::AddTimeBonus&& ScoreSystem::IsTimeClear())
+    if (resultPhase >= ResultPhase::AddTimeBonus && !ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage)
     {
+        remainClearImage->SetVisible(true);
+
 #ifdef _DEBUG
         remain = 90.0f;
 #endif // _DEBUG
@@ -364,11 +389,22 @@ void ResultBookActor::Update(float deltaTime)
     }
     else
     {
+        remainClearImage->SetVisible(false);
         for (int i = 0; i < 4; i++)
         {
             timerDigits[i]->SetVisible(false);
         }
     }
+
+    if (resultPhase >= ResultPhase::AddTimeBonus && ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage)
+    {
+        timeClearImage->SetVisible(true);
+    }
+    else
+    {
+        timeClearImage->SetVisible(false);
+    }
+    
 
 #if 0
     totalScoreDisplay.SetValue(97777);
@@ -569,7 +605,7 @@ void ResultBookActor::Update(float deltaTime)
             secondDisplay.SetVisible(true);
 
             int timerBonus = ScoreSystem::CalculateTimeClearBonus();
-            Logger::Log(U8("タイムボーナス：") + std::to_string(timerBonus) );
+            Logger::Log(U8("タイムボーナス：") + std::to_string(timerBonus));
 
             //timerBonus = 1000;
             addTargetScore = currentTotalScore + timerBonus;
@@ -578,11 +614,11 @@ void ResultBookActor::Update(float deltaTime)
             if (ScoreSystem::IsTimeClear())
             {// 目標タイムをクリアした
                 Logger::Log(U8("目標タイムをクリアした"));
-                timeClearImage->SetVisible(true);   // 「CLEAR!」
+                //timeClearImage->SetVisible(true);   // 「CLEAR!」
             }
             else
             {
-                remainClearImage->SetVisible(true);
+                //remainClearImage->SetVisible(true);
                 Logger::Log(U8("あと ") + std::to_string(remain) + U8(" 秒でクリア"));
             }
 
@@ -640,6 +676,9 @@ void ResultBookActor::Update(float deltaTime)
         break;
 
     case ResultPhase::ShowRanking:
+        // 二ページ目の矢印UIを表示する
+        showSecondPageButtonArrow = true;
+
         if (!phaseInitialized)
         {
             phaseInitialized = true;
@@ -687,10 +726,15 @@ void ResultBookActor::Update(float deltaTime)
     case ResultPhase::HighScore:
         if (isNewRecord)
         {
+#if 0
             if (auto medal = GetOwnerScene()->GetActorManager()->GetActorOfType<HighScoreMedalActor>())
             {
                 medal->Play();
             }
+#else
+            MedalPlay();
+#endif // 0
+
         }
         resultPhase = ResultPhase::Complete;
         break;
@@ -908,4 +952,50 @@ void ResultBookActor::UpdateTimerDigits(int totalSeconds)
 
         timerDigits[i]->SetVisible(visible);
     }
+}
+
+// 矢印ボタンUIを表示する
+void ResultBookActor::ShowButtonArrow()
+{
+    
+}
+
+// 演出開始
+void ResultBookActor::MedalPlay()
+{
+    medalSkeletalMeshComponent->SetIsVisible(true);
+    //  メダルのSEを再生
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_high_score_budge.wav", 1.5f);
+
+    TestEasingHandler handler;
+
+    handler.AddWait(0.0f);
+
+    handler.AddEasing(
+        TestEaseType::OutExp,
+        0.0f,
+        1.0f,
+        interval
+    );
+
+    handler.SetCompletedFunction([this]()
+        {
+            medalValue = 1.0f;
+        });
+
+    PropertyAccessor<float> accessor;
+
+    accessor.getter =
+        [this]()
+        {
+            return medalValue;
+        };
+
+    accessor.setter =
+        [this](float t)
+        {
+            medalValue = t;
+        };
+
+    easingRunner->StartHandler(handler, accessor);
 }

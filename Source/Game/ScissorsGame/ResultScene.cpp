@@ -142,7 +142,24 @@ bool ResultScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
         SetUpActors();
     }
 
+    // マウスパ ー
+    XMFLOAT2 mouseSize = { 100.0f,100.0f };
 
+    mouseCursorPar = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/mousecursor_pa.png", "mousecursor_pa");
+    mouseCursorPar->SetSize(mouseSize);
+    mouseCursorPar->SetPivot({ 0.6f, 0.5f });
+    mouseCursorPar->SetVisible(false);
+    // マウス掴み
+    mouseCursorGrab = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/mousecursor_gu.png", "mousecursor_gu");
+    mouseCursorGrab->SetSize(mouseSize);
+    mouseCursorGrab->SetPivot({ 0.6f, 0.5f });
+    mouseCursorGrab->SetVisible(false);
+
+    // マウス　ポーズ
+    mouseCursorPause = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/mousecursor_pose.png", "mousecursor_pose");
+    mouseCursorPause->SetSize(mouseSize);
+    mouseCursorPause->SetPivot({ 0.1f, 0.1f });
+    mouseCursorPause->SetVisible(false);
 
     return true;
 }
@@ -306,12 +323,37 @@ void ResultScene::Update(float deltaTime)
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
 
-
-    if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
+    // マウスカーソルの更新処理
     {
-        const char* types[] = { "0", "1" };
+        DirectX::XMFLOAT2 cursor;
+        // ビューポート外だったら、入力しない
+        InputSystem::GetMousePositionUI(cursor);
 
-        SceneTransitionManager::Instance().RequestTransition("GameScene");
+        mouseCursorPar->SetWorldPosition(cursor);
+        mouseCursorGrab->SetWorldPosition(cursor);
+        mouseCursorPause->SetWorldPosition(cursor);
+        // ポーズ中はゲーム入力を一切受け付けない
+        if (Scene::GetCurrentScene()->IsPaused())
+        {
+            mouseCursorPause->SetVisible(true);
+
+            mouseCursorGrab->SetVisible(false);
+            mouseCursorPar->SetVisible(false);
+        }
+        else
+        {
+            mouseCursorPause->SetVisible(false);
+            if (InputSystem::GetInputState("MouseLeft"))
+            {
+                mouseCursorGrab->SetVisible(true);
+                mouseCursorPar->SetVisible(false);
+            }
+            else
+            {
+                mouseCursorPar->SetVisible(true);
+                mouseCursorGrab->SetVisible(false);
+            }
+        }
     }
 }
 
@@ -547,6 +589,22 @@ void ResultScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     // UIの描画
     Draw(immediateContext);
 
+    // マウスカーソルの描画
+    if (!InputSystem::IsGamepadConnected())
+    {// コントローラーが接続されていないときだけマウスカーソル描画
+        if (mouseCursorPar->IsVisible())
+            mouseCursorPar->Draw(immediateContext);
+        if (mouseCursorPause->IsVisible())
+            mouseCursorPause->Draw(immediateContext);
+        if (mouseCursorGrab->IsVisible())
+            mouseCursorGrab->Draw(immediateContext);
+        InputSystem::SetCursolVisible(false);
+    }
+    else
+    {
+        InputSystem::SetCursolVisible(true);
+    }
+
 #ifdef USE_IMGUI
     imGuiGizmoBuffer->Deactivate(immediateContext);
 #endif
@@ -589,8 +647,8 @@ void ResultScene::SetUpActors()
     Transform stageTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto stageActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleStageActor>("titleStageActor", stageTr);
 
-    Transform medalTr(DirectX::XMFLOAT3{ 0.41f,0.705f,-2.173f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto medalActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<HighScoreMedalActor>("medalActor", medalTr);
+    //Transform medalTr(DirectX::XMFLOAT3{ 0.41f,0.705f,-2.173f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    //auto medalActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<HighScoreMedalActor>("medalActor", medalTr);
 
 }
 

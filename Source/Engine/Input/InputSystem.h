@@ -320,8 +320,6 @@ public:
         return inputEnabled;
     }
 
-private:
-
     // カーソルの表示非表示を変更
     static void SetCursolVisible(bool visible)
     {
@@ -333,6 +331,10 @@ private:
             count = ShowCursor(visible);
         } while ((visible && count < 0) || (!visible && count >= 0));
     }
+
+
+private:
+
 
 public:
     // ゲームパッドが接続されているか

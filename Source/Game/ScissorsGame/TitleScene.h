@@ -62,4 +62,9 @@ private:
 
     float toSelectInterval = 2.5f; // セレクトシーンまでにかかる時間
     float toTitleInterval = 3.5f; // タイトルシーンまでにかかる時間
+
+    std::shared_ptr<UIImageComponent> mouseCursorPar;   // マウスパー
+    std::shared_ptr<UIImageComponent> mouseCursorGrab;  // マウス掴み
+    std::shared_ptr<UIImageComponent> mouseCursorPause; // マウス　ポーズ
+
 };

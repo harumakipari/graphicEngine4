@@ -185,6 +185,9 @@ protected:
     std::vector<std::shared_ptr<StageSelectData>> selectableStages;
     int selectedStageIndex = 0;
 
+    bool showSecondPageButtonArrow = true; //矢印UIを表示するかどうか
+
+
 private:
 
     std::shared_ptr<SkeletalMeshComponent> bookLeftModel;
@@ -229,6 +232,7 @@ private:
     std::string middleModelName = "./Data/TeamModels/Title/BookMiddle.gltf";
 
     bool wasHovered = false;    // 前回マウスをかざしていたかどうか
+
 
     // 調整
     float firstRate = 0.2f; // 本を閉じる時の最初のページの割合

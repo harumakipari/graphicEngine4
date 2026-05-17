@@ -462,11 +462,6 @@ void GameScene::Update(float deltaTime)
 #endif // 0
     }
 
-    if (InputSystem::GetInputState("Space", InputStateMask::Trigger))
-    {
-        const char* types[] = { "0", "1" };
-        SceneTransitionManager::Instance().RequestTransition("SampleScene");
-    }
 }
 
 // 定数バッファの更新処理をシーンごとにカスタマイズできるようにするための仮想関数
@@ -753,12 +748,20 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     Draw(immediateContext);
 
     // マウスカーソルの描画
-    if (mouseCursorPar->IsVisible())
-        mouseCursorPar->Draw(immediateContext);
-    if (mouseCursorPause->IsVisible())
-        mouseCursorPause->Draw(immediateContext);
-    if (mouseCursorGrab->IsVisible())
-        mouseCursorGrab->Draw(immediateContext);
+    if (!InputSystem::IsGamepadConnected())
+    {// コントローラーが接続されていないときだけマウスカーソル描画
+        if (mouseCursorPar->IsVisible())
+            mouseCursorPar->Draw(immediateContext);
+        if (mouseCursorPause->IsVisible())
+            mouseCursorPause->Draw(immediateContext);
+        if (mouseCursorGrab->IsVisible())
+            mouseCursorGrab->Draw(immediateContext);
+        InputSystem::SetCursolVisible(false);
+    }
+    else
+    {
+        InputSystem::SetCursolVisible(true);
+    }
 
     sceneFrameBuffer->Deactivate(immediateContext);
 

@@ -46,4 +46,7 @@ private:
     std::shared_ptr<UIButtonComponent> backToTitleButton;   // タイトルへ戻る
     std::shared_ptr<UIButtonComponent> retryButton; // ステージ選択へ戻る
 
+    std::shared_ptr<UIImageComponent> mouseCursorPar;   // マウスパー
+    std::shared_ptr<UIImageComponent> mouseCursorGrab;  // マウス掴み
+    std::shared_ptr<UIImageComponent> mouseCursorPause; // マウス　ポーズ
 };

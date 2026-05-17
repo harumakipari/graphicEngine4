@@ -64,8 +64,18 @@ private:
     // 目標タイムまでのタイマー表示を更新
     void UpdateTimerDigits(int totalSeconds);
 
+    // 演出開始
+    void MedalPlay();
+
+    // 矢印ボタンUIを表示する
+    void ShowButtonArrow();
+
 private:
+    std::unique_ptr<EasingRunner> easingRunner;  // メダル用のeasingComponent
+
     std::shared_ptr<CoreAudioSourceComponent> scoreCountUpAudioComponent;   // スコアカウントアップ音のオーディオコンポーネント
+
+    std::shared_ptr<SkeletalMeshComponent> medalSkeletalMeshComponent;  // メダル表示用
 
     std::shared_ptr<UIImageComponent> timeClearImage; // 目標タイムクリア時の画像
     std::shared_ptr<UIImageComponent> remainClearImage; // 目標タイムを達成できなかったときの画像
@@ -115,5 +125,16 @@ private:
     DirectX::XMFLOAT2 secondSpacing = { -27.0f,19.0f };
 
     bool isNewRecord = false; //新記録かどうか
+
+
+    // メダル演出用
+    float startScale = 3.0f;
+    float endScale = 1.0f;
+
+    float currentScale = 1.0f;
+
+    float medalValue = 0.0f;
+    float interval = 0.5f; // メダルが移動する時間
+
 };
 
