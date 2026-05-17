@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ResultBookActor.h"
 
+#include "HighScoreMedalActor.h"
 #include "ScoreCalculator.h"
 #include "ScoreHistoryManager.h"
 #include "Engine/Audio/CoreAudio.h"
@@ -16,26 +17,43 @@ void ResultBookActor::Initialize(const Transform& transform)
     SetInitPageState(BookPageState::SecondPage);
 
     // UIを作成
-    auto uiManager = GetOwnerScene()->GetUIManager();
+    {
+        auto uiManager = GetOwnerScene()->GetUIManager();
+        // タイムをクリアしたか
+        timeClearImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/time_bonus_clear.png", "time_bonus_clear");
+        timeClearImage->SetWorldPosition(timerBonusUiPos);
+        timeClearImage->SetSize(timerBonusUiSize);
+        timeClearImage->SetVisible(false);
+        timeClearImage->SetPivot({ 0.5f,0.5f });
+        uiManager->Add(timeClearImage);
 
-    DirectX::XMFLOAT2 timerBonusUiPos = { 300.0f,500.0f };
-    DirectX::XMFLOAT2 timerBonusUiSize = { 300.0f,250.0f };
+        // タイムをクリアしたか
+        remainClearImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/time_remain_clear.png", "time_remain_clear");
+        remainClearImage->SetWorldPosition(timerBonusUiPos);
+        remainClearImage->SetSize(timerBonusUiSize);
+        remainClearImage->SetVisible(false);
+        remainClearImage->SetPivot({ 0.5f,0.5f });
+        uiManager->Add(remainClearImage);
 
-    // タイムをクリアしたか
-    timeClearImage = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/time_bonus_clear.png", "time_bonus_clear");
-    timeClearImage->SetWorldPosition(timerBonusUiPos);
-    timeClearImage->SetSize(timerBonusUiSize);
-    timeClearImage->SetPivot({ 0.5f,0.5f });
-    uiManager->Add(timeClearImage);
+        // MM:SS の4桁
+        for (int i = 0; i < 4; i++)
+        {
+            auto digit = std::make_shared<UIImageComponent>(
+                "./Data/Textures/ScissorsUI/numberWhite.png",
+                "TimerDigit"
+            );
 
-    // タイムをクリアしたか
-    remainClearImage = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/time_remain_clear.png", "time_remain_clear");
-    remainClearImage->SetWorldPosition(timerBonusUiPos);
-    remainClearImage->SetSize(timerBonusUiSize);
-    remainClearImage->SetPivot({ 0.5f,0.5f });
-    uiManager->Add(remainClearImage);
+            digit->SetSize({ 45, 60 });
+            digit->SetPivot({ 0.5f, 0.5f });
+            digit->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,1.0f });
+            digit->zOrder = 2;
 
+            uiManager->Add(digit);
 
+            timerDigits.push_back(digit);
+        }
+
+    }
     // スコアの数字を乗せるページの親
     std::string rightName = rightPage.parentName;
 
@@ -155,8 +173,6 @@ void ResultBookActor::Initialize(const Transform& transform)
             2,
             0.7f, false);
     }
-
-    // ニューレコード
 
 
 
@@ -286,6 +302,9 @@ void ResultBookActor::Initialize(const Transform& transform)
     scoreCountUpAudioComponent->SetSource(L"./Data/Sound/SE1/result_score_count_up.wav");
     scoreCountUpAudioComponent->SetVolume(1.0f);
     scoreCountUpAudioComponent->SetLoop(true);
+
+
+    isNewRecord = false;
 }
 
 void ResultBookActor::Update(float deltaTime)
@@ -308,6 +327,48 @@ void ResultBookActor::Update(float deltaTime)
     ranking4Display.Update(deltaTime);
     ranking5Display.Update(deltaTime);
 
+    // 新記録かどうか
+    isNewRecord = ScoreHistoryManager::IsNewRecord(stats.stageName, stats.totalScore);
+
+    // タイムをクリアしたか
+    timeClearImage->SetWorldPosition(timerBonusUiPos);
+    timeClearImage->SetSize(timerBonusUiSize);
+
+    // タイムをクリアしたか
+    remainClearImage->SetWorldPosition(timerBonusUiPos);
+    remainClearImage->SetSize(timerBonusUiSize);
+
+    float remain = ScoreSystem::GetRemainTimeToClear();
+    if (resultPhase >= ResultPhase::AddTimeBonus&& ScoreSystem::IsTimeClear())
+    {
+#ifdef _DEBUG
+        remain = 90.0f;
+#endif // _DEBUG
+        // 秒に変換
+        int totalSeconds = static_cast<int>(remain);
+        UpdateTimerDigits(totalSeconds);
+
+        // MM:SS
+        // [0][1] : [2][3]
+        timerDigits[0]->SetWorldPosition({ timerBonusUiPos.x - spacing * 2.0f + minuteSpacing.x, timerBonusUiPos.y + minuteSpacing.y });
+        timerDigits[1]->SetWorldPosition({ timerBonusUiPos.x - spacing * 1.0f + minuteSpacing.x, timerBonusUiPos.y + minuteSpacing.y });
+
+        timerDigits[2]->SetWorldPosition({ timerBonusUiPos.x + spacing * 1.0f + secondSpacing.x, timerBonusUiPos.y + secondSpacing.y });
+        timerDigits[3]->SetWorldPosition({ timerBonusUiPos.x + spacing * 2.0f + secondSpacing.x, timerBonusUiPos.y + secondSpacing.y });
+
+        for (int i = 0; i < 4; i++)
+        {
+            timerDigits[i]->SetSize(numberSize);
+            //timerDigits[i]->SetColor(DirectX::XMFLOAT4{ 0.471f,0.455f,0.498f,1.0f });
+        }
+    }
+    else
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            timerDigits[i]->SetVisible(false);
+        }
+    }
 
 #if 0
     totalScoreDisplay.SetValue(97777);
@@ -375,117 +436,16 @@ void ResultBookActor::Update(float deltaTime)
 #endif
 
 
-#if 0
-    switch (resultPhase)
-    {
-    case ResultPhase::Wait:
-        displayedTotalScore = 1500;
-        currentTotalScore = 1500;
-        phaseTimer = 0.0f;
-        break;
-
-    case ResultPhase::ShowEnemyScore:
-        if (phaseTimer >= 0.5f)
-        {
-            phaseTimer = 0.0f;
-            resultPhase = ResultPhase::ShowCombo;
-        }
-        break;
-    case ResultPhase::ShowCombo:
-        if (!phaseInitialized)
-        {
-            phaseInitialized = true;
-            comboDisplay.SetValue(20);
-            comboDisplay.SetVisible(true); // コンボ数
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_show_score.wav", 1.0f);
-        }
-        //comboDisplay.SetValue(stats.maxCombo);
-        if (phaseTimer >= 0.5f)
-        {
-            phaseInitialized = false;
-            phaseTimer = 0.0f;
-            resultPhase = ResultPhase::ShowHeart;
-        }
-
-        break;
-    case ResultPhase::ShowHeart:
-        if (!phaseInitialized)
-        {
-            phaseInitialized = true;
-
-            heartDisplay.SetValue(1500);
-            heartDisplay.SetVisible(true);
-            // SE
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_show_score.wav", 1.0f);
-
-            addTargetScore = currentTotalScore + 1500;
-        }
-
-        if (phaseTimer >= 0.5f)
-        {
-            phaseInitialized = false;
-
-            phaseTimer = 0.0f;
-
-            resultPhase = ResultPhase::AddHeart;
-            // スコアカウントアップのSEを再生する
-            scoreCountUpAudioComponent->Play();
-        }
-        break;
-    case ResultPhase::AddHeart:
-        addTimer += deltaTime;
-
-        if (addTimer >= addInterval)
-        {
-            addTimer = 0.0f;
-
-            displayedTotalScore += addStep;
-
-            if (displayedTotalScore >= addTargetScore)
-            {
-                displayedTotalScore = addTargetScore;
-
-                currentTotalScore = displayedTotalScore;
-
-                phaseInitialized = false;
-
-                phaseTimer = 0.0f;
-
-                resultPhase = ResultPhase::ShowRedirect;
-                // スコアカウントアップのSEを止める
-                scoreCountUpAudioComponent->Stop();
-
-            }
-        }
-
-        break;
-    case ResultPhase::ShowRedirect:
-        break;
-    case ResultPhase::AddRedirect:
-        break;
-    case ResultPhase::ShowGather:
-        break;
-    case ResultPhase::AddGather:
-        break;
-    case ResultPhase::ShowTimeBonus:
-        break;
-    case ResultPhase::AddTimeBonus:
-        break;
-    case ResultPhase::ShowRanking:
-        break;
-    case ResultPhase::Complete:
-        break;
-    }
-#else
     switch (resultPhase)
     {
     case ResultPhase::Wait:
 
         displayedTotalScore = stats.enemyScore;
         currentTotalScore = stats.enemyScore;
-
+#ifdef _DEBUG
         displayedTotalScore = 1500;
         currentTotalScore = 1500;
+#endif // _DEBUG
         phaseTimer = 0.0f;
         break;
 
@@ -518,7 +478,10 @@ void ResultBookActor::Update(float deltaTime)
             phaseInitialized = true;
 
             int heartBonus = stats.remainHp * 150;
+#ifdef _DEBUG
             heartBonus = 1500;
+#endif // _DEBUG
+
 
             heartDisplay.SetValue(heartBonus);
             heartDisplay.SetVisible(true);
@@ -542,7 +505,11 @@ void ResultBookActor::Update(float deltaTime)
             phaseInitialized = true;
 
             int redirectScore = stats.reflectionBonusScore;
+
+#ifdef _DEBUG
             redirectScore = 2500;
+#endif // _DEBUG
+
 
             redirectDisplay.SetValue(redirectScore);
             redirectDisplay.SetVisible(true);
@@ -565,7 +532,11 @@ void ResultBookActor::Update(float deltaTime)
             phaseInitialized = true;
 
             int gatherBonus = stats.dashBonusScore;
+
+#ifdef _DEBUG
             gatherBonus = 550;
+#endif // _DEBUG
+
 
             gatherDisplay.SetValue(gatherBonus);
             gatherDisplay.SetVisible(true);
@@ -598,9 +569,22 @@ void ResultBookActor::Update(float deltaTime)
             secondDisplay.SetVisible(true);
 
             int timerBonus = ScoreSystem::CalculateTimeClearBonus();
-            timerBonus = 1000;
+            Logger::Log(U8("タイムボーナス：") + std::to_string(timerBonus) );
+
+            //timerBonus = 1000;
             addTargetScore = currentTotalScore + timerBonus;
             currentTotalScore = addTargetScore;
+
+            if (ScoreSystem::IsTimeClear())
+            {// 目標タイムをクリアした
+                Logger::Log(U8("目標タイムをクリアした"));
+                timeClearImage->SetVisible(true);   // 「CLEAR!」
+            }
+            else
+            {
+                remainClearImage->SetVisible(true);
+                Logger::Log(U8("あと ") + std::to_string(remain) + U8(" 秒でクリア"));
+            }
 
             // SE
             CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_show_score.wav", 1.0f);
@@ -687,12 +671,32 @@ void ResultBookActor::Update(float deltaTime)
 
             // SE
             CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_show_score.wav", 1.0f);
+
+            resultPhase = ResultPhase::PreHighScore;
+            phaseTimer = 0.0f;
         }
+        break;
+    case ResultPhase::PreHighScore:
+        if (phaseTimer >= preShowScoreInterval)
+        {
+            phaseInitialized = false;
+            phaseTimer = 0.0f;
+            resultPhase = ResultPhase::HighScore;
+        }
+        break;
+    case ResultPhase::HighScore:
+        if (isNewRecord)
+        {
+            if (auto medal = GetOwnerScene()->GetActorManager()->GetActorOfType<HighScoreMedalActor>())
+            {
+                medal->Play();
+            }
+        }
+        resultPhase = ResultPhase::Complete;
         break;
     case ResultPhase::Complete:
         break;
     }
-#endif // 0
 }
 
 
@@ -761,6 +765,13 @@ void ResultBookActor::DrawImGuiDetails()
     }
     ImGui::DragFloat(U8("本を開く前の時間"), &preShowScoreInterval, 0.1f, 0.0f, 5.0f);
     ImGui::DragInt(U8("加算スピード"), &addStep, 10, 0, 1000);
+    ImGui::DragFloat2(U8("タイマーボーナスUIの位置"), &timerBonusUiPos.x, 10.0f);
+    ImGui::DragFloat2(U8("タイマーボーナスUIのサイズ"), &timerBonusUiSize.x, 5.0f);
+    ImGui::DragFloat(U8("数字の間"), &spacing);
+    ImGui::DragFloat2(U8("数字の幅"), &numberSize.x);
+    ImGui::DragFloat2(U8("分の間"), &minuteSpacing.x);
+    ImGui::DragFloat2(U8("秒の間"), &secondSpacing.x);
+
 
 #endif
 }
@@ -850,12 +861,51 @@ void ResultBookActor::CreateButtonArrow()
 
 }
 
-// 敵撃破スコア表示
-void ResultBookActor::ShowEnemyScore()
+// 目標タイムまでのタイマー表示を更新
+void ResultBookActor::UpdateTimerDigits(int totalSeconds)
 {
-    // スコアを表示する
-    const ResultData& stats = ScoreSystem::GetResultStats();
-    int score = stats.totalScore;
-    totalScoreDisplay.SetValue(stats.enemyScore);
-    totalScoreDisplay.SetVisible(true);
+    int minutes = totalSeconds / 60;
+    int seconds = totalSeconds % 60;
+
+    int minuteTens = minutes / 10;
+    int minuteOnes = minutes % 10;
+
+    int secondTens = seconds / 10;
+    int secondOnes = seconds % 10;
+
+    int numbers[4] =
+    {
+        minuteTens,
+        minuteOnes,
+        secondTens,
+        secondOnes
+    };
+
+    for (int i = 0; i < 4; i++)
+    {
+        int digit = numbers[i];
+
+        timerDigits[i]->SetUV({
+            150.0f * digit,
+            0.0f,
+            150.0f,
+            200.0f
+            });
+
+        bool visible = true;
+
+        // 分の十の位
+        if (i == 0 && digit == 0)
+        {
+            visible = false;
+        }
+
+        // 秒の十の位
+        if (i == 2 && digit == 0)
+        {
+            visible = false;
+        }
+
+        timerDigits[i]->SetVisible(visible);
+    }
 }

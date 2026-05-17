@@ -28,6 +28,8 @@ public:
      */
     void Tick(float deltaTime) override;
 
+    void SetIsBgm(const bool isBgm) { this->isBgm = isBgm; }
+
     /**
      * @brief ソース（音声ファイル）を設定します。
      * @param filePath ファイルパス。
@@ -177,4 +179,5 @@ private:
 private:
     float m_LastSamplesPlayed = 0.0f;
     bool wasSystemPaused = false;   // システムによる一時停止状態を記録するフラグ
+    bool isBgm = false; // BGMの場合はポーズなどで音を一時停止しないためのフラグ
 };

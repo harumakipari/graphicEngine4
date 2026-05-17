@@ -155,6 +155,7 @@ void ResultScene::Start()
     audioComp->SetLoop(true);
     audioComp->Play();
     audioComp->SetVolume(0.8f);
+    audioComp->SetIsBgm(true);
 
 #if 0
     // タイトルへ戻るボタンを生成

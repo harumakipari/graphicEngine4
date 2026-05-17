@@ -35,6 +35,8 @@ class ResultBookActor :public BookBaseActor
         PreShowRanking,
         ShowRanking,
 
+        PreHighScore,
+        HighScore,
         Complete,
     };
 
@@ -59,8 +61,8 @@ private:
     // 矢印ボタンのUIを作成する
     void CreateButtonArrow();
 
-    // 敵撃破スコア表示
-    void ShowEnemyScore();
+    // 目標タイムまでのタイマー表示を更新
+    void UpdateTimerDigits(int totalSeconds);
 
 private:
     std::shared_ptr<CoreAudioSourceComponent> scoreCountUpAudioComponent;   // スコアカウントアップ音のオーディオコンポーネント
@@ -84,6 +86,7 @@ private:
     NumberDisplay ranking4Display;  // ランキング
     NumberDisplay ranking5Display;  // ランキング
 
+    std::vector<std::shared_ptr<UIImageComponent>> timerDigits; // 残り時間を表示
 
     std::shared_ptr<SkeletalMeshComponent> numberModel;
 
@@ -101,5 +104,16 @@ private:
 
     float preShowScoreInterval = 0.3f;   // スコアを出す前の待ち時間
     bool phaseInitialized = false; //Phase開始時1回だけ処理
+
+    DirectX::XMFLOAT2 timerBonusUiPos = { 160.0f,700.0f };  // タイムボーナスのUIの位置
+    DirectX::XMFLOAT2 timerBonusUiSize = { 300.0f,250.0f }; // タイムボーナスのUIのサイズ
+
+    // 配置
+    float spacing = 33.0f;
+    DirectX::XMFLOAT2 numberSize = { 35.0f,49.0f };
+    DirectX::XMFLOAT2 minuteSpacing = { -24.0f,0.0f };
+    DirectX::XMFLOAT2 secondSpacing = { -27.0f,19.0f };
+
+    bool isNewRecord = false; //新記録かどうか
 };
 

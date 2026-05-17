@@ -1,5 +1,7 @@
 #pragma once
 
+#include <magic_enum.hpp>
+
 #include "EnemyScoreData.h"
 #include "ComboSystem.h"
 #include "ResultData.h"
@@ -28,9 +30,9 @@ public:
 class ScoreSystem
 {
 public:
-    static void Update(float deltaTime,bool isDashing)
+    static void Update(float deltaTime, bool isDashing)
     {
-        combo.Update(deltaTime,isDashing);
+        combo.Update(deltaTime, isDashing);
 
         // 最大コンボ更新
         resultData.maxCombo = std::max<int>(resultData.maxCombo, combo.GetComboCount());
@@ -70,7 +72,7 @@ public:
     // 反射ボーナススコアを追加する関数
     static void AddReflectionBonus(int reflectionBonus)
     {
-        int bonus = reflectionBonus ;
+        int bonus = reflectionBonus;
 
         if (bonus <= 0)
         {
@@ -130,6 +132,8 @@ public:
             return 0;
 
         const StageTimeData& config = it->second;
+
+        Logger::Log(std::string(magic_enum::enum_name(resultData.stageName)) + U8("目標時間：") + std::to_string(config.targetTime));
 
         // 目標タイム以内ならボーナス
         if (resultData.gameTimer <= config.targetTime)

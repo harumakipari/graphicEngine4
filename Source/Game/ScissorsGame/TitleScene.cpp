@@ -145,6 +145,7 @@ void TitleScene::Start()
     audioComp->SetLoop(true);
     audioComp->Play();
     audioComp->SetVolume(0.5f);
+    audioComp->SetIsBgm(true);
 
 #if 0
 

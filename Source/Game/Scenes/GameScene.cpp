@@ -242,7 +242,7 @@ void GameScene::Start()
         currentStageName = StringToStageName(stageName);
     }
 
-    currentStageName = STAGE_NAME::BOSS;
+    //currentStageName = STAGE_NAME::BOSS;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(currentStageName);
@@ -1326,7 +1326,6 @@ void GameScene::SetupBGM(STAGE_NAME stageId)
 {
     auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
     audioBgmComponent = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
-
     switch (stageId)
     {
     case STAGE_NAME::TUTORIAL:
@@ -1336,17 +1335,14 @@ void GameScene::SetupBGM(STAGE_NAME stageId)
     case STAGE_NAME::BOBBIN_SECOND:
     case STAGE_NAME::DIFFICULT:
         audioBgmComponent->SetSource(L"./Data/Sound/BGM1/game_bgm.wav");
-        audioBgmComponent->SetLoop(true);
-        audioBgmComponent->SetVolume(0.5f);
         break;
     case STAGE_NAME::BOSS:
         audioBgmComponent->SetSource(L"./Data/Sound/BGM1/boss_bgm.wav");
-        audioBgmComponent->SetLoop(true);
-        audioBgmComponent->SetVolume(0.5f);
         break;
     }
-
-
+    audioBgmComponent->SetIsBgm(true);
+    audioBgmComponent->SetLoop(true);
+    audioBgmComponent->SetVolume(0.5f);
 }
 
 // STAGE_NAMEを変換する関数
