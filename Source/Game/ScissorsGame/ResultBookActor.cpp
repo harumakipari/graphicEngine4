@@ -367,7 +367,7 @@ void ResultBookActor::Update(float deltaTime)
         remainClearImage->SetVisible(true);
 
 #ifdef _DEBUG
-        remain = 90.0f;
+        //remain = 90.0f;
 #endif // _DEBUG
         // •b‚É•ÏŠ·
         int totalSeconds = static_cast<int>(remain);
@@ -479,8 +479,8 @@ void ResultBookActor::Update(float deltaTime)
         displayedTotalScore = stats.enemyScore;
         currentTotalScore = stats.enemyScore;
 #ifdef _DEBUG
-        displayedTotalScore = 1500;
-        currentTotalScore = 1500;
+        //displayedTotalScore = 1500;
+        //currentTotalScore = 1500;
 #endif // _DEBUG
         phaseTimer = 0.0f;
         break;
@@ -515,7 +515,7 @@ void ResultBookActor::Update(float deltaTime)
 
             int heartBonus = stats.remainHp * 150;
 #ifdef _DEBUG
-            heartBonus = 1500;
+            //heartBonus = 1500;
 #endif // _DEBUG
 
 
@@ -543,7 +543,7 @@ void ResultBookActor::Update(float deltaTime)
             int redirectScore = stats.reflectionBonusScore;
 
 #ifdef _DEBUG
-            redirectScore = 2500;
+            //redirectScore = 2500;
 #endif // _DEBUG
 
 
@@ -570,7 +570,7 @@ void ResultBookActor::Update(float deltaTime)
             int gatherBonus = stats.dashBonusScore;
 
 #ifdef _DEBUG
-            gatherBonus = 550;
+            //gatherBonus = 550;
 #endif // _DEBUG
 
 

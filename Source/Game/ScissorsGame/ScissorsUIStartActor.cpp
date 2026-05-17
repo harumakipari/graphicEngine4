@@ -10,7 +10,7 @@ void ScissorsUIStartActor::Initialize(const Transform& transform)
     auto uiManager = GetOwnerScene()->GetUIManager();
     targetPos = { 1920.0f * 0.5f, 1080.0f * 0.5f };
 
-    readyImageComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/go.png", "ready_ui");
+    readyImageComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/stage_first_start.png", "ready_ui");
     readyImageComponent->SetWorldPosition({ 0.0f, targetPos.y });
     readyImageComponent->SetVisible(true);
     readyImageComponent->SetScale({ 1.0f, 1.0f });
@@ -19,7 +19,7 @@ void ScissorsUIStartActor::Initialize(const Transform& transform)
     readyImageComponent->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,0.0f });
     uiManager->Add(readyImageComponent);
 
-    goImageComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/go.png", "go_ui");
+    goImageComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/stage_first_start.png", "go_ui");
     goImageComponent->SetWorldPosition({ 1920.0f * 0.5f, 1080.0f * 0.5f });
     goImageComponent->SetVisible(true);
     goImageComponent->SetScale({ 1.0f, 1.0f });
@@ -59,6 +59,7 @@ void ScissorsUIStartActor::DrawImGuiDetails()
     {
         PlayGo();
     }
+    ImGui::DragFloat(U8("ready‚Ægo‚ÌŠÔ‚ÌŽžŠÔ"), &waitInterval, 0.05f, 0.1f, 1.0f);
 #endif
 };
 
@@ -88,6 +89,8 @@ void ScissorsUIStartActor::PlayReady(const std::function<void()>& onFinished)
             fadeOutTime
         );
 
+        handler.AddWait(waitInterval);
+
         handler.SetCompletedFunction([this]()
             {
                 readyImageComponent->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,1.0f });
@@ -114,6 +117,9 @@ void ScissorsUIStartActor::PlayReady(const std::function<void()>& onFinished)
             targetPos.x,
             fadeInTime
         );
+
+        handler.AddWait(waitInterval);
+
 
         handler.SetCompletedFunction([this]()
             {

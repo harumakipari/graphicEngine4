@@ -511,8 +511,8 @@ StageData StageLoader::Load(STAGE_NAME stageId)
                     { { 1,0,16 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
                     { { 1,0,14 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
 
-                    { { 23,0,8 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
                     { { 23,0,10 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
+                    { { 23,0,12 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
                 },
                 false,
                -1,0.0f,true
@@ -526,7 +526,7 @@ StageData StageLoader::Load(STAGE_NAME stageId)
                     { { 1,0,11 },  YarnEnemyType::MoveLinear, 0.0f,false,2.0f ,1.0f,{1,0,0}},
 
                     { { 23,0,13 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
-                    { { 23,0,9 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
+                    { { 23,0,10 },  YarnEnemyType::MoveLinear, 0.5f,false,2.0f ,1.0f,{-1,0,0}},
                 },
                 true,
                -1,7.0f,true

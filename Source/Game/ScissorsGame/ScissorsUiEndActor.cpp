@@ -130,7 +130,7 @@ void ScissorsUiEndActor::Play()
                 // I‚í‚Á‚½‚çƒV[ƒ“‘JˆÚ
 #if 1
                 const char* types[] = { "0", "1" };
-                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("type", types[rand() % 2]) });
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("type", types[rand() % 2])  ,std::make_pair("fromScene", "GameScene") });
 #else
                 const char* types[] = { "0", "1" };
                 Scene::_transition("LoadingScene", { std::make_pair("preload", "ResultScene"),{"difficulty", "0"} });

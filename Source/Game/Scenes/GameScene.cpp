@@ -756,7 +756,9 @@ void GameScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             mouseCursorPause->Draw(immediateContext);
         if (mouseCursorGrab->IsVisible())
             mouseCursorGrab->Draw(immediateContext);
+#if _DEBUG
         InputSystem::SetCursolVisible(false);
+#endif
     }
     else
     {

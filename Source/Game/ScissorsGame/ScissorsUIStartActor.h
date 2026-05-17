@@ -20,6 +20,7 @@ public:
     // ‰‰oŠJn
     void PlayReady(const std::function<void()>& onFinished = nullptr);
 
+    
 private:
     void PlayGo();
 
@@ -45,4 +46,6 @@ private:
     float fadeOutTime = 0.3f;
 
     XMFLOAT2 targetPos = { 0.0f,0.0f };
+
+    float waitInterval = 0.8f; // ready ‚Æ go ‚ÌŠÔ‚Ì‘Ò‚¿ŠÔ
 };
