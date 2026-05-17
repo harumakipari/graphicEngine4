@@ -11,7 +11,7 @@ void DigitSlot::SetDigit(int value, bool enable)
     }
 }
 
-void DigitSlot::SetParent(const std::string& parentName, Actor* owner, const std::string& baseName, const DirectX::XMFLOAT3& offset,bool isBackCover)
+void DigitSlot::SetParent(const std::string& parentName, Actor* owner, const std::string& baseName, const DirectX::XMFLOAT3& offset, bool isBackCover)
 {
     for (int i = 0; i < 10; i++)
     {
@@ -27,7 +27,7 @@ void DigitSlot::SetParent(const std::string& parentName, Actor* owner, const std
         }
         else
         {
-        numbers[i]->SetRelativeEulerRotationDirect({ 0.0f,0.0f,180.0f });
+            numbers[i]->SetRelativeEulerRotationDirect({ 0.0f,0.0f,180.0f });
         }
         numbers[i]->SetIsCastShadow(false);
         numbers[i]->SetIsVisible(false);
@@ -35,13 +35,19 @@ void DigitSlot::SetParent(const std::string& parentName, Actor* owner, const std
 }
 
 // コンポーネントの親の名前、コンポーネント名、
-void NumberDisplay::Initialize(Actor* owner, const std::string& parentName, const std::string& baseName, const DirectX::XMFLOAT3& startPos, int maxDigits, float spacing,bool isBackCover)
+void NumberDisplay::Initialize(Actor* owner, const std::string& parentName, const std::string& baseName, const DirectX::XMFLOAT3& startPos, int maxDigits, float spacing, bool isBackCover)
 {
+    root = std::dynamic_pointer_cast<SceneComponent>(owner->FindComponentByName(parentName));
     digits.resize(maxDigits);
+
+    if (root)
+    {
+        baseScale = root->GetRelativeScale();
+    }
 
     for (int i = 0; i < maxDigits; i++)
     {
-        DirectX::XMFLOAT3 offset={0.0f,0.0f,0.0f};
+        DirectX::XMFLOAT3 offset = { 0.0f,0.0f,0.0f };
         if (isBackCover)
         {
             offset =
@@ -60,20 +66,37 @@ void NumberDisplay::Initialize(Actor* owner, const std::string& parentName, cons
                 startPos.z
             };
         }
-       
+
 
         digits[i].SetParent(
             parentName,
             owner,
             baseName + "_" + std::to_string(i),
-            offset,isBackCover
+            offset, isBackCover
         );
     }
 }
 
-void NumberDisplay::SetValue(int value,int minDigits)
+void NumberDisplay::Update(float deltaTime)
+{
+    popScale = 1.0f + (popScale - 1.0f) * 0.85f;
+    if (root)
+    {
+        float finalScale = popScale;
+
+        root->SetRelativeScaleDirect({
+            baseScale.x * finalScale,
+            baseScale.y * finalScale,
+            baseScale.z * finalScale
+            });
+    }
+}
+
+void NumberDisplay::SetValue(int value, int minDigits, bool popTrigger)
 {
     currentValue = value;
+    this->popTrigger = popTrigger;
+    popScale = popTrigger ? popStrength : 1.0f;
 
     int temp = value;
     int digitCount = 0;

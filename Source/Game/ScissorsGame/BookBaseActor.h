@@ -116,13 +116,13 @@ public:
     void DrawImGuiDetails() override;
 
     // 本を開く
-    void OpenBook(float interval, bool playSe = true);
+    void OpenBook(float interval, bool playSe = true, std::function<void()> completed = nullptr);
 
     // 本を閉じる処理
     void CloseBook(float interval);
 
     // 二ページ目を開く処理
-    void OpenSecondPage(float interval);
+    void OpenSecondPage(float interval, std::function<void()> completed = nullptr);
 
     // 二ページ目を戻す処理
     void CloseSecondPage(float interval);
@@ -177,8 +177,7 @@ protected:
     BookPageButtons firstButtons;
     BookPageButtons secondButtons;
 
-
-
+    std::string parentName = "BookBaseActor";
 
     BookPageState bookState = BookPageState::Closed;    // 本の状態
 

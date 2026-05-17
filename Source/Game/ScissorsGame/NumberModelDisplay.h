@@ -15,13 +15,17 @@ struct DigitSlot
 // 数値のクラス
 struct NumberDisplay
 {
+    std::shared_ptr<SceneComponent> root;
+
     std::vector<DigitSlot> digits;
 
     // コンポーネントの親の名前、コンポーネント名、
     void Initialize(Actor* owner, const std::string& parentName, const std::string& baseName, const DirectX::XMFLOAT3& startPos, int maxDigits, float spacing, bool isBackCover);
 
+    void Update(float deltaTime);
+
     // 数値を表示する 最低何桁表示するか
-    void SetValue(int value, int minDigits = 1);
+    void SetValue(int value, int minDigits = 1, bool popTrigger = true);
 
 
     void SetVisible(bool visible);
@@ -29,4 +33,9 @@ struct NumberDisplay
 private:
     bool isVisible = true;
     int currentValue = 0;
+    DirectX::XMFLOAT3 baseScale = { 1.0f,1.0f,1.0f };
+    float popScale = 1.0f;
+    bool popTrigger = false;
+    float popSpeed = 12.0f;
+    float popStrength = 1.3f;
 };

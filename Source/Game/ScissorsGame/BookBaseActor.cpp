@@ -10,9 +10,7 @@
 
 void BookBaseActor::Initialize(const Transform& transform)
 {
-
-
-
+    parentName = "BookBaseActor";
 }
 
 void BookBaseActor::Update(float deltaTime)
@@ -33,6 +31,10 @@ void BookBaseActor::Update(float deltaTime)
         UpdateStageVisual(stage);
     }
 
+    if (!InputSystem::IsGamepadConnected())
+    {
+        startAButton->SetVisible(false);
+    }
 
     switch (bookState)
     {
@@ -42,7 +44,6 @@ void BookBaseActor::Update(float deltaTime)
     case BookPageState::FirstPage:
         UpdatePage(leftPage);
         UpdatePage(rightPage);
-
         HandlePadStageSelection(deltaTime);
         break;
     case BookPageState::SecondPage:
@@ -122,12 +123,12 @@ void BookBaseActor::DrawImGuiDetails()
 }
 
 // 本を開く
-void BookBaseActor::OpenBook(float interval, bool playSe)
+void BookBaseActor::OpenBook(float interval, bool playSe, std::function<void()> completed)
 {
     // 本を開ける音
     if (playSe)
     {
-    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/open_book.wav", 1.5f);
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/open_book.wav", 1.5f);
     }
 
     bookState = BookPageState::OpeningBook;
@@ -142,10 +143,15 @@ void BookBaseActor::OpenBook(float interval, bool playSe)
         interval
     );
 
-    handler.SetCompletedFunction([this]()
+    handler.SetCompletedFunction([this, completed]()
         {
             bookOneAlpha = 1.0f;
             bookState = BookPageState::FirstPage;
+            if (completed)
+            {
+                completed();
+            }
+
         });
 
     PropertyAccessor<float> accessor;
@@ -246,7 +252,7 @@ void BookBaseActor::CloseBook(float interval)
 }
 
 // 二ページ目を開く
-void BookBaseActor::OpenSecondPage(float interval)
+void BookBaseActor::OpenSecondPage(float interval, std::function<void()> completed)
 {
     // ページをめくる音
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/page.wav", 1.5f);
@@ -265,10 +271,14 @@ void BookBaseActor::OpenSecondPage(float interval)
         interval
     );
 
-    handler.SetCompletedFunction([this]()
+    handler.SetCompletedFunction([this, completed]()
         {
             bookTwoAlpha = 1.0f;
             bookState = BookPageState::SecondPage;
+            if (completed)
+            {
+                completed();
+            }
         });
 
     PropertyAccessor<float> accessor;
@@ -361,7 +371,6 @@ void BookBaseActor::CreateBookModel(const std::string& backCoverModelName, const
     this->middleModelName = middleModelName;
 
 
-    std::string parentName = "TitleBookActor";
     auto rootComponent = AddComponent<SceneComponent>(parentName);
 
     // 裏表紙を追加
@@ -568,7 +577,7 @@ void BookBaseActor::UpdatePage(const BookPage& page)
         // ホバー演出
         if (hitThis)
         {
-            
+
 
             stage->model->SetRelativeScaleDirect(
                 {

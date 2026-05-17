@@ -3,6 +3,7 @@
 
 #include "ScoreCalculator.h"
 #include "ScoreHistoryManager.h"
+#include "Engine/Audio/CoreAudio.h"
 #include "Engine/Scene/Scene.h"
 #include "UI/Game/SceneTransitionManager.h"
 
@@ -223,6 +224,21 @@ void ResultBookActor::Initialize(const Transform& transform)
     }
 
 
+    //totalScoreDisplay.SetVisible(false);    // トータルスコア
+    comboDisplay.SetVisible(false); // コンボ数
+    heartDisplay.SetVisible(false);    // HPボーナス
+    redirectDisplay.SetVisible(false);  // 反射ボーナス
+    gatherDisplay.SetVisible(false);  // まとめボーナス
+    secondDisplay.SetVisible(false);  // 秒数
+    minuteDisplay.SetVisible(false);  // 分数
+
+    ranking1Display.SetVisible(false);  // ランキング
+    ranking2Display.SetVisible(false);  // ランキング
+    ranking3Display.SetVisible(false);  // ランキング
+    ranking4Display.SetVisible(false);  // ランキング
+    ranking5Display.SetVisible(false);  // ランキング
+
+
 #if 0
     //  一の位
     numberModel = AddComponent<SkeletalMeshComponent>("numberModel", scoreParentName);
@@ -241,11 +257,31 @@ void ResultBookActor::Initialize(const Transform& transform)
 
     // 矢印ボタンのUIを作成する
     CreateButtonArrow();
+
+    phaseTimer = 0.0f;
+
+    // スコアカウントアップ音のオーディオコンポーネント
+    scoreCountUpAudioComponent = AddComponent<CoreAudioSourceComponent>("chargeAudioComponent", parentName);
+    scoreCountUpAudioComponent->SetSource(L"./Data/Sound/SE1/result_score_count_up.wav");
+    scoreCountUpAudioComponent->SetVolume(1.0f);
+    scoreCountUpAudioComponent->SetLoop(true);
 }
 
 void ResultBookActor::Update(float deltaTime)
 {
     BookBaseActor::Update(deltaTime);
+    // スコアを表示する
+    const ResultData& stats = ScoreSystem::GetResultStats();
+    totalScoreDisplay.SetValue(displayedTotalScore);
+    phaseTimer += deltaTime;
+
+    comboDisplay.Update(deltaTime); // コンボ数
+    heartDisplay.Update(deltaTime);    // HPボーナス
+    redirectDisplay.Update(deltaTime);  // 反射ボーナス
+    gatherDisplay.Update(deltaTime);  // まとめボーナス
+    secondDisplay.Update(deltaTime);  // 秒数
+    minuteDisplay.Update(deltaTime);  // 分数
+
 
 #if 0
     totalScoreDisplay.SetValue(97777);
@@ -265,8 +301,7 @@ void ResultBookActor::Update(float deltaTime)
     secondDisplay.SetValue(5, 2);
 
 #else
-    // スコアを表示する
-    const ResultData& stats = ScoreSystem::GetResultStats();
+#if 0
     int score = stats.totalScore;
     totalScoreDisplay.SetValue(score);
 
@@ -310,8 +345,283 @@ void ResultBookActor::Update(float deltaTime)
     ranking4Display.SetValue(scores[3]);
     ranking5Display.SetValue(scores[4]);
 
+#endif // 0
 #endif
+
+
+#if 0
+    switch (resultPhase)
+    {
+    case ResultPhase::Wait:
+        displayedTotalScore = 1500;
+        currentTotalScore = 1500;
+        phaseTimer = 0.0f;
+        break;
+
+    case ResultPhase::ShowEnemyScore:
+        if (phaseTimer >= 0.5f)
+        {
+            phaseTimer = 0.0f;
+            resultPhase = ResultPhase::ShowCombo;
+        }
+        break;
+    case ResultPhase::ShowCombo:
+        if (!phaseInitialized)
+        {
+            phaseInitialized = true;
+            comboDisplay.SetValue(20);
+            comboDisplay.SetVisible(true); // コンボ数
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_show_score.wav", 1.0f);
+        }
+        //comboDisplay.SetValue(stats.maxCombo);
+        if (phaseTimer >= 0.5f)
+        {
+            phaseInitialized = false;
+            phaseTimer = 0.0f;
+            resultPhase = ResultPhase::ShowHeart;
+        }
+
+        break;
+    case ResultPhase::ShowHeart:
+        if (!phaseInitialized)
+        {
+            phaseInitialized = true;
+
+            heartDisplay.SetValue(1500);
+            heartDisplay.SetVisible(true);
+            // SE
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_show_score.wav", 1.0f);
+
+            addTargetScore = currentTotalScore + 1500;
+        }
+
+        if (phaseTimer >= 0.5f)
+        {
+            phaseInitialized = false;
+
+            phaseTimer = 0.0f;
+
+            resultPhase = ResultPhase::AddHeart;
+            // スコアカウントアップのSEを再生する
+            scoreCountUpAudioComponent->Play();
+        }
+        break;
+    case ResultPhase::AddHeart:
+        addTimer += deltaTime;
+
+        if (addTimer >= addInterval)
+        {
+            addTimer = 0.0f;
+
+            displayedTotalScore += addStep;
+
+            if (displayedTotalScore >= addTargetScore)
+            {
+                displayedTotalScore = addTargetScore;
+
+                currentTotalScore = displayedTotalScore;
+
+                phaseInitialized = false;
+
+                phaseTimer = 0.0f;
+
+                resultPhase = ResultPhase::ShowRedirect;
+                // スコアカウントアップのSEを止める
+                scoreCountUpAudioComponent->Stop();
+
+            }
+        }
+
+        break;
+    case ResultPhase::ShowRedirect:
+        break;
+    case ResultPhase::AddRedirect:
+        break;
+    case ResultPhase::ShowGather:
+        break;
+    case ResultPhase::AddGather:
+        break;
+    case ResultPhase::ShowTimeBonus:
+        break;
+    case ResultPhase::AddTimeBonus:
+        break;
+    case ResultPhase::ShowRanking:
+        break;
+    case ResultPhase::Complete:
+        break;
+    }
+#else
+    switch (resultPhase)
+    {
+    case ResultPhase::Wait:
+
+        displayedTotalScore = stats.enemyScore;
+        currentTotalScore = stats.enemyScore;
+
+        displayedTotalScore = 1500;
+        currentTotalScore = 1500;
+        phaseTimer = 0.0f;
+        break;
+
+    case ResultPhase::ShowEnemyScore:
+        if (phaseTimer >= 0.5f)
+        {
+            phaseTimer = 0.0f;
+            resultPhase = ResultPhase::ShowCombo;
+        }
+        break;
+    case ResultPhase::ShowCombo:
+        if (!phaseInitialized)
+        {
+            phaseInitialized = true;
+            int comboCount = stats.maxCombo;
+            comboDisplay.SetValue(comboCount);
+            comboDisplay.SetVisible(true); // コンボ数
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_show_score.wav", 1.0f);
+        }
+        if (phaseTimer >= 0.5f)
+        {
+            phaseInitialized = false;
+            phaseTimer = 0.0f;
+            resultPhase = ResultPhase::ShowHeart;
+        }
+        break;
+    case ResultPhase::ShowHeart:
+        if (!phaseInitialized)
+        {
+            phaseInitialized = true;
+
+            int heartBonus = stats.remainHp * 150;
+            heartBonus = 1500;
+
+            heartDisplay.SetValue(heartBonus);
+            heartDisplay.SetVisible(true);
+            // SE
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_show_score.wav", 1.0f);
+
+            addTargetScore = currentTotalScore + heartBonus;
+            currentTotalScore = addTargetScore;
+        }
+
+        if (phaseTimer >= 0.5f)
+        {
+            phaseInitialized = false;
+            phaseTimer = 0.0f;
+            resultPhase = ResultPhase::ShowRedirect;
+        }
+        break;
+    case ResultPhase::ShowRedirect:
+        if (!phaseInitialized)
+        {
+            phaseInitialized = true;
+
+            int redirectScore = stats.reflectionBonusScore;
+            redirectScore = 2500;
+
+            redirectDisplay.SetValue(redirectScore);
+            redirectDisplay.SetVisible(true);
+            // SE
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_show_score.wav", 1.0f);
+
+            addTargetScore = currentTotalScore + redirectScore;
+            currentTotalScore = addTargetScore;
+        }
+        if (phaseTimer >= 0.5f)
+        {
+            phaseInitialized = false;
+            phaseTimer = 0.0f;
+            resultPhase = ResultPhase::ShowGather;
+        }
+        break;
+    case ResultPhase::ShowGather:
+        if (!phaseInitialized)
+        {
+            phaseInitialized = true;
+
+            int gatherBonus = stats.dashBonusScore;
+            gatherBonus = 500;
+
+            gatherDisplay.SetValue(gatherBonus);
+            gatherDisplay.SetVisible(true);
+            // SE
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_show_score.wav", 1.0f);
+
+            addTargetScore = currentTotalScore + gatherBonus;
+            currentTotalScore = addTargetScore;
+        }
+        if (phaseTimer >= 0.5f)
+        {
+            phaseInitialized = false;
+            phaseTimer = 0.0f;
+            resultPhase = ResultPhase::ShowTimeBonus;
+        }
+        break;
+    case ResultPhase::ShowTimeBonus:
+        if (!phaseInitialized)
+        {
+            phaseInitialized = true;
+
+            // 時間を表示する
+            int totalSeconds = static_cast<int>(stats.gameTimer);
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
+
+            minuteDisplay.SetValue(minutes);
+            minuteDisplay.SetVisible(true);
+            secondDisplay.SetValue(seconds, 2);
+            secondDisplay.SetVisible(true);
+
+            int timerBonus = ScoreSystem::CalculateTimeClearBonus();
+            timerBonus = 1000;
+            addTargetScore = currentTotalScore + timerBonus;
+            currentTotalScore = addTargetScore;
+
+            // SE
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_show_score.wav", 1.0f);
+        }
+        if (phaseTimer >= 0.5f)
+        {
+            phaseInitialized = false;
+            phaseTimer = 0.0f;
+            resultPhase = ResultPhase::AddTotalScore;
+            addTimer = 0.0f;
+            // スコアカウントアップのSEを再生する
+            scoreCountUpAudioComponent->Play();
+        }
+        break;
+    case ResultPhase::AddTotalScore:
+        addTimer += deltaTime;
+
+        if (addTimer >= addInterval)
+        {
+            addTimer = 0.0f;
+
+            displayedTotalScore += addStep;
+
+            if (displayedTotalScore >= addTargetScore)
+            {
+                displayedTotalScore = addTargetScore;
+
+                currentTotalScore = displayedTotalScore;
+
+                phaseInitialized = false;
+
+                phaseTimer = 0.0f;
+
+                resultPhase = ResultPhase::ShowRanking;
+                // スコアカウントアップのSEを止める
+                scoreCountUpAudioComponent->Stop();
+            }
+        }
+
+    case ResultPhase::ShowRanking:
+        break;
+    case ResultPhase::Complete:
+        break;
+    }
+#endif // 0
 }
+
 
 // コントローラー対応の本が開く処理
 void ResultBookActor::HandlePadInput()
@@ -326,6 +636,7 @@ void ResultBookActor::HandlePadInput()
     case BookPageState::FirstPage:
         if (pushL)
         {
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
             // タイトルへシーン遷移する
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") });
         }
@@ -343,6 +654,7 @@ void ResultBookActor::HandlePadInput()
         }
         if (pushR)
         {
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
             // タイトルへシーン遷移する
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") });
         }
@@ -352,7 +664,38 @@ void ResultBookActor::HandlePadInput()
 
 void ResultBookActor::DrawImGuiDetails()
 {
+#ifdef USE_IMGUI
     BookBaseActor::DrawImGuiDetails();
+    if (ImGui::Button(U8("ステートを最初に戻す")))
+    {
+        resultPhase = ResultPhase::ShowEnemyScore;
+        phaseTimer = 0.0f;
+        displayedTotalScore = 0;
+        addTargetScore = 0;
+        currentTotalScore = 0;
+
+        comboDisplay.SetVisible(false);
+        heartDisplay.SetVisible(false);
+        redirectDisplay.SetVisible(false);
+        gatherDisplay.SetVisible(false);
+
+        ranking1Display.SetVisible(false);
+        ranking2Display.SetVisible(false);
+        ranking3Display.SetVisible(false);
+        ranking4Display.SetVisible(false);
+        ranking5Display.SetVisible(false);
+
+    }
+    ImGui::DragFloat(U8("本を開く前の時間"), &preShowScoreInterval, 0.1f, 0.0f, 5.0f);
+    ImGui::DragInt(U8("加算スピード"), &addStep, 10, 0, 1000);
+
+#endif
+}
+
+// シーン遷移が完了したらスコア表示開始
+void ResultBookActor::StartShowEnemyScore()
+{
+    resultPhase = ResultPhase::ShowEnemyScore;
 }
 
 // 矢印ボタンのUIを作成する
@@ -367,6 +710,7 @@ void ResultBookActor::CreateButtonArrow()
 
     firstButtons.left->onClick = [this]()
         {
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
             // タイトルへシーン遷移する
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") });
         };
@@ -386,8 +730,6 @@ void ResultBookActor::CreateButtonArrow()
     firstButtons.right->onClick = [this]()
         {
             OpenSecondPage(2.0f);
-            // ページをめくる音
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
         };
 
     // ゲームパッドの画像を設定する
@@ -406,8 +748,6 @@ void ResultBookActor::CreateButtonArrow()
         {
             // 一ページ目に戻る
             CloseSecondPage(2.0f);
-            // ページをめくる音
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
         };
 
     // ゲームパッドの画像を設定する
@@ -424,9 +764,20 @@ void ResultBookActor::CreateButtonArrow()
 
     secondButtons.right->onClick = [this]()
         {
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
             // タイトルへシーン遷移する
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") });
         };
 
 
+}
+
+// 敵撃破スコア表示
+void ResultBookActor::ShowEnemyScore()
+{
+    // スコアを表示する
+    const ResultData& stats = ScoreSystem::GetResultStats();
+    int score = stats.totalScore;
+    totalScoreDisplay.SetValue(stats.enemyScore);
+    totalScoreDisplay.SetVisible(true);
 }

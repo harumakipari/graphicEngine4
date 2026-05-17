@@ -12,6 +12,12 @@ enum class STAGE_NAME :int
     BOSS,
 };
 
+struct StageTimeData
+{
+    float targetTime = 60.0f;
+    int timeBonusRate = 10; // 秒あたりのボーナスポイント
+};
+
 struct SpawnData
 {
     DirectX::XMFLOAT3 position;

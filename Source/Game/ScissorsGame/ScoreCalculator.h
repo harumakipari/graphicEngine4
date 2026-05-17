@@ -121,6 +121,52 @@ public:
         resultData.stageName = stageName;
     }
 
+    // タイムクリアボーナスを計算する関数
+    static int CalculateTimeClearBonus()
+    {
+        auto it = stageTimeTable.find(resultData.stageName);
+
+        if (it == stageTimeTable.end())
+            return 0;
+
+        const StageTimeData& config = it->second;
+
+        // 目標タイム以内ならボーナス
+        if (resultData.gameTimer <= config.targetTime)
+        {
+            return 1000;
+        }
+
+        return 0;
+    }
+
+    // タイムクリアかどうかを判定する関数
+    static bool IsTimeClear()
+    {
+        auto it = stageTimeTable.find(resultData.stageName);
+
+        if (it == stageTimeTable.end())
+            return false;
+
+        const StageTimeData& config = it->second;
+
+        return resultData.gameTimer <= config.targetTime;
+    }
+
+    // クリアまでの残り時間を取得する関数
+    static float GetRemainTimeToClear()
+    {
+        auto it = stageTimeTable.find(resultData.stageName);
+
+        if (it == stageTimeTable.end())
+            return 0.0f;
+
+        const StageTimeData& config = it->second;
+
+        float remain = config.targetTime - resultData.gameTimer;
+
+        return (remain > 0.0f) ? remain : 0.0f;
+    }
 
     // 全てをリセットする
     static void Reset()
@@ -129,6 +175,18 @@ public:
         resultData = {};
         ResetCombo();
     }
+public:
+    static inline std::unordered_map<STAGE_NAME, StageTimeData> stageTimeTable =
+    {
+        { STAGE_NAME::TUTORIAL,      { 999.0f, 0 } },   // チュートリアルはボーナス無しでもOK
+        { STAGE_NAME::FIRST,         { 50.0f,  0 } },
+        { STAGE_NAME::BOBBIN_FIRST,  { 60.0f,  0 } },
+        { STAGE_NAME::REFLECT_WALL,  { 55.0f,  0 } },
+        { STAGE_NAME::BOBBIN_SECOND, { 990.0f,  0 } },
+        { STAGE_NAME::DIFFICULT,     { 80.0f,  0 } },
+        { STAGE_NAME::BOSS,          { 105.0f, 0 } },
+    };
+
 
 private:
     static inline  ComboSystem combo;

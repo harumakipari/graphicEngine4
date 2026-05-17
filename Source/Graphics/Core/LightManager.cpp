@@ -220,6 +220,8 @@ void LightManager::Update(float deltaTime)
     auto& lightData = Scene::GetCurrentScene()->GetSceneSettings().sceneLightSaveData;
     auto& light = lightData.sceneConstants;
 
+
+
     auto& sharedLights = lightData.sharedLights;
 
     // 応急処置
@@ -331,6 +333,8 @@ void LightManager::DrawGui()
 {
 #ifdef USE_IMGUI
     auto& lightData = Scene::GetCurrentScene()->GetSceneSettings().sceneLightSaveData;
+
+
     auto& light = lightData.sceneConstants;
     CheckboxInt(U8("平行光源 有効"), &light.directionalLightEnable);
     ImGui::DragFloat3(U8("ライト方向"), &light.lightDirection.x, 0.01f, -1.0f, 1.0f, "%.8f");
