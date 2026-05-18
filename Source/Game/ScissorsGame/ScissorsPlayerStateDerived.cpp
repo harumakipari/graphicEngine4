@@ -1032,8 +1032,7 @@ void ScissorsPlayerWinState::Enter()
 {
     player->PlayAnimation("Idle", true, true, 0.5f);
     player->characterMovementComponent->SetSpeed(0.0f);
-
-
+    player->rotationComponent->SetDirection({ 0,0,-1 });
 }
 
 void ScissorsPlayerWinState::Execute(float deltaTime)

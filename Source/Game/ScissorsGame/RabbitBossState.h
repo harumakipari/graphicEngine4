@@ -239,6 +239,14 @@ private:
     DeathPhase phase = DeathPhase::StartSlow;
     float elapsedTime = 0.0f;   // 経過時間
     float cameraMoveInterval = 2.0f; // カメラ移動の時間
+
+    int bossBonus = 0;  // ボスのスコア
+    bool spawnedFinalCoins = false; // コインを生成するフラグ
+
+    float coinSpawnTimer = 0.0f;
+    int spawnedCoinCount = 0;
+    int maxCoinCount = 50;
+
 };
 
 // 勝利オブジェクト

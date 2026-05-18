@@ -123,7 +123,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     rotationComponent->SetDirection({ 0,0,-1 });
     // Hp‚Ì‰Šú‰»
     maxHp = 500;
-    //maxHp = 100;
+    maxHp = 10;
     hp = maxHp;
 
     // Å‰‚ÌˆÊ’u‚ð•Û‘¶

@@ -478,13 +478,9 @@ void RabbitBossDeathState::Enter()
     {
         float clearTime = gameManager->GetRequiredTime();
 
-        int bonus = ScoreSystem::CalculateBossTimeBonus(clearTime);
+        bossBonus = ScoreSystem::CalculateBossTimeBonus(clearTime);
 
-        ScoreSystem::AddScore(bonus);
-
-        Logger::Log("Boss Time Bonus : " + std::to_string(bonus));
     }
-
 
     // スロー開始
     Time::timeScale = 0.5f;
@@ -502,8 +498,7 @@ void RabbitBossDeathState::Enter()
         bobbin->HideBobbinVisual();
     }
 
-    
-
+    spawnedFinalCoins = false;
     //enemy->ChangeEnemyState(EnemyBase::YarnState::Dead);
     //enemy->CallDeath(false);
 
@@ -513,14 +508,13 @@ void RabbitBossDeathState::Execute(float deltaTime)
 {
     elapsedTime += Time::UnscaledDeltaTime();
     //// 死亡の演出を何か入れる
-    
+
 
     switch (phase)
     {
     case DeathPhase::StartSlow:
-        enemy->UpdateDead(deltaTime);
-
-        if (elapsedTime > 0.8f)
+        //enemy->UpdateDead(deltaTime);
+        if (elapsedTime > 1.5f)
         {
             phase = DeathPhase::KnockBack;
             // スロー開始
@@ -564,11 +558,105 @@ void RabbitBossDeathState::Execute(float deltaTime)
         break;
 
     case DeathPhase::Tear:
+    {
+#if 1
+        if (!spawnedFinalCoins)
+        {
+            spawnedFinalCoins = true;
+
+            // スコアを加算
+            ScoreSystem::AddScore(bossBonus);
+            Logger::Log("Boss Time Bonus : " + std::to_string(bossBonus));
+
+            // コイン大量生成
+            constexpr int coinCount = 50;
+
+            DirectX::XMFLOAT3 center = enemy->GetPosition();
+
+            for (int i = 0; i < coinCount; ++i)
+            {
+                DirectX::XMFLOAT3 offset =
+                {
+                    MathHelper::RandomRange(-5.0f, 5.0f),
+                    MathHelper::RandomRange(0.5f, 4.0f),
+                    MathHelper::RandomRange(-5.0f, 5.0f)
+                };
+
+                DirectX::XMFLOAT3 spawnPos =
+                {
+                    center.x + offset.x,
+                    center.y + offset.y,
+                    center.z + offset.z
+                };
+
+                //enemy->SpawnCoin(spawnPos, true);
+            }
+
+
+        }
+#else
+        coinSpawnTimer += Time::UnscaledDeltaTime();
+
+        constexpr float spawnInterval = 0.03f;
+
+        if (coinSpawnTimer >= spawnInterval && spawnedCoinCount < maxCoinCount)
+        {
+            coinSpawnTimer = 0.0f;
+
+            // 一回に複数出す
+            constexpr int burstCount = 3;
+
+            for (int j = 0; j < burstCount; ++j)
+            {
+                if (spawnedCoinCount >= maxCoinCount)
+                {
+                    break;
+                }
+
+                float t = spawnedCoinCount / static_cast<float>(maxCoinCount);
+
+                // 円状
+                float angle = DirectX::XM_2PI * t;
+
+                // 半径
+                float radius = MathHelper::RandomRange(1.5f, 4.0f);
+
+                DirectX::XMFLOAT3 offset =
+                {
+                    cosf(angle) * radius +
+                    MathHelper::RandomRange(-0.5f, 0.5f),
+
+                    MathHelper::RandomRange(1.0f, 3.0f),
+
+                    sinf(angle) * radius +
+                    MathHelper::RandomRange(-0.5f, 0.5f)
+                };
+
+                DirectX::XMFLOAT3 center = enemy->GetPosition();
+
+                DirectX::XMFLOAT3 spawnPos =
+                {
+                    center.x + offset.x,
+                    center.y + offset.y,
+                    center.z + offset.z
+                };
+
+                // Bonus混ぜる
+                bool isBonus = (spawnedCoinCount % 5 == 0);
+
+                enemy->SpawnCoin(spawnPos, isBonus);
+
+                spawnedCoinCount++;
+            }
+        }
+#endif // 0
+
         if (elapsedTime > 1.5f)
         {
             phase = DeathPhase::Finish;
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("fromScene","GameScene") });
         }
+    }
         break;
 
     case DeathPhase::Finish:

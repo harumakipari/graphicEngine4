@@ -97,14 +97,14 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     }
     
     const int normalTexture = m.normalTexture.index;
-    if (normalTexture > -1)
-    {
-        float4 sampled = materialTextures[NORMAL_TEXTURE].Sample(samplerStates[LINEAR], pin.texcoord);
-        float3 normalFactor = sampled.xyz;
-        normalFactor = (normalFactor * 2.0) - 1.0;
-        normalFactor = normalize(normalFactor * float3(m.normalTexture.scale, m.normalTexture.scale, 1.0));
-        N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
-    }
+    //if (normalTexture > -1)
+    //{
+    //    float4 sampled = materialTextures[NORMAL_TEXTURE].Sample(samplerStates[LINEAR], pin.texcoord);
+    //    float3 normalFactor = sampled.xyz;
+    //    normalFactor = (normalFactor * 2.0) - 1.0;
+    //    normalFactor = normalize(normalFactor * float3(m.normalTexture.scale, m.normalTexture.scale, 1.0));
+    //    N = normalize((normalFactor.x * T) + (normalFactor.y * B) + (normalFactor.z * N));
+    //}
 
 #if 0
     // 点光源の処理
@@ -226,14 +226,35 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     float3 Lo = totalDiffuse + totalSpecular + emissive /*+ rim*/;
 
 
-    //フラッシュ
-    Lo = lerp(Lo, float3(1, 1, 1), flashValue);
 
-    // ここで白く発光する処理
-    Lo.rgb += flashValue * emissionPower;
+    //Dissolve
+    float maskValue = materialTextures[NORMAL_TEXTURE].Sample(samplerStates[ANISOTROPIC], pin.texcoord).x;
+
+    ; //　ここをアニメーションさせると良い
+
+    float dissolve = saturate((modelDissolve - 0.5) * 2.0);
+
+    float modelAlpha = 0.0f;
+
+    modelAlpha = step(dissolve, maskValue);
+//#if 1
+//#else
+//    float edge = 0.02f; // フェード幅
+//    modelAlpha = smoothstep(dissolve - edge, dissolve + edge, maskValue);
+//#endif
+
+    float cpuColorA = cpuColor.a;
+
+    cpuColorA *= modelAlpha;
+
+    ////フラッシュ
+    //Lo = lerp(Lo, float3(1, 1, 1), flashValue);
+
+    //// ここで白く発光する処理
+    //Lo.rgb += flashValue * emissionPower;
 
 
-    return float4(Lo, cpuColor.a);
+    return float4(Lo, cpuColorA);
 
 
 

@@ -62,7 +62,7 @@ void TitleBookActor::Initialize(const Transform& transform)
             "redirect_score",
             { -0.0f, -0.0f, -0.0f },
             5,
-            0.7f, false);
+            0.7f, true);
     }
 
     // ステージ4　親を生成する
@@ -70,7 +70,7 @@ void TitleBookActor::Initialize(const Transform& transform)
         std::string scoreParentName = "high_difficult_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -4.0f,0.0f,-1.5f });
+        scoreRoot->SetRelativeLocationDirect({ -3.2f,0.0f,0.1f });
 
         difficultStageHighScoreDisplay.Initialize(
             this,
@@ -78,7 +78,7 @@ void TitleBookActor::Initialize(const Transform& transform)
             "difficult_score",
             { -0.0f, -0.0f, -0.0f },
             5,
-            0.7f, false);
+            0.7f, true);
     }
 
     // ボスステージハイスコア
@@ -86,7 +86,7 @@ void TitleBookActor::Initialize(const Transform& transform)
         std::string scoreParentName = "high_boss_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -4.0f,0.0f,-1.5f });
+        scoreRoot->SetRelativeLocationDirect({ -4.0f,0.0f,1.7f });
 
         bossStageHighScoreDisplay.Initialize(
             this,

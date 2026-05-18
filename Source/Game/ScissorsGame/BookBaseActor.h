@@ -130,6 +130,8 @@ public:
     // ステージ開放判定関数
     bool IsStageUnlocked(STAGE_NAME stage);
 
+    // ステージの開放状態を更新する
+    void RefreshStageUnlock();
 
 protected:
     // 最初の本の状態を設定する
@@ -140,6 +142,7 @@ protected:
 
     // コントローラー対応の本が開く処理
     virtual void HandlePadInput() = 0;
+
 
 private:
     // ステージパッチを生成する

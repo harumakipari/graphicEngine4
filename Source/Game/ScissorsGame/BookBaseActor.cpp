@@ -350,6 +350,32 @@ void BookBaseActor::CloseSecondPage(float interval)
     easingTwoRunner->StartHandler(handler, accessor);
 }
 
+// ステージの開放状態を更新する
+void BookBaseActor::RefreshStageUnlock()
+{
+    selectableStages.clear();
+
+    for (auto& stage : leftPage.stages)
+    {
+        stage->isUnlocked =
+            SaveDataManager::Instance().IsStageUnlocked(stage->stage);
+
+        if (stage->isUnlocked)
+        {
+            selectableStages.push_back(stage);
+        }
+    }
+    for (auto& stage : rightPage.stages)
+    {
+        stage->isUnlocked =
+            SaveDataManager::Instance().IsStageUnlocked(stage->stage);
+
+        if (stage->isUnlocked)
+        {
+            selectableStages.push_back(stage);
+        }
+    }
+}
 
 // 最初の本の状態を設定する
 void BookBaseActor::SetInitPageState(BookPageState initialState)

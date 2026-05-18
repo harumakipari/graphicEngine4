@@ -66,7 +66,7 @@ cbuffer PLUS_ALPHA_CONSTANT_BUFFER : register(b5)
     float modelHueShift; // 色相調整
     float modelSaturation; // 彩度調整
     float modelBrightness; // 明度調整
-    float dissolve; // ディゾルブ用
+    float modelDissolve; // ディゾルブ用
 
     float4 morphWeights;
 

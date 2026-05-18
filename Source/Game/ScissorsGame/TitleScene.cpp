@@ -740,6 +740,17 @@ void TitleScene::DrawGui()
     {
         StartToTitle();
     }
+    if (ImGui::Button(U8("ステージ開放をリセット")))
+    {
+        SaveDataManager::Instance().Reset();
+        bookActor->RefreshStageUnlock();
+        
+    }
+    if (ImGui::Button(U8("ステージ開放を全開放")))
+    {
+        SaveDataManager::Instance().UnlockAllStage();
+        bookActor->RefreshStageUnlock();
+    }
 
 
     ImGui::End();

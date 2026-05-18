@@ -175,19 +175,18 @@ public:
     // 死亡中の更新処理
     void UpdateDead(float deltaTime);
 
+    // コインを生成する
+    void SpawnCoin(DirectX::XMFLOAT3 pos, bool isBonus = false);
+
 private:
     // 敵のサイズを変更する
     void ChangeSize(YarnSize newSize);
-
-    // コインを生成する
-    void SpawnCoin(DirectX::XMFLOAT3 pos, bool isBonus = false);
 
     // ヒットエフェクトを生成する
     void SpawnHitEffect(bool hitByReflected);
 
     // 玉止めされている時の更新処理
     void UpdateTied(float deltaTime);
-
 
     // 玉止め表示更新処理
     void UpdateTiedVisual();
