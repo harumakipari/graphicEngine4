@@ -153,8 +153,18 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
         gaugeUi->SetColor(CoreColor::White);
         gaugeUi->SetSize({ 861,84 });
         gaugeUi->SetGaugeFillSize(gaugeSize);
-
         uiManager->Add(gaugeUi);
+
+        // ボスアイコンの描画コンポーネントを追加
+        DirectX::XMFLOAT2 iconSize = { 170.0f,170.0f };
+        bossIconComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/icon_boss.png", "icon_boss");
+        bossIconComponent->SetWorldPosition({ 67, 965 });
+        bossIconComponent->SetScale({ 1.0f, 1.0f });
+        bossIconComponent->SetSize(iconSize);
+        bossIconComponent->zOrder = 20;
+        bossIconComponent->SetPivot({ 1.0f,0.5f });
+        uiManager->Add(bossIconComponent);
+
     }
 
     // スタンモデルを生成
@@ -253,6 +263,8 @@ void RabbitBossEnemyActor::Update(float deltaTime)
             // ゲージの中身の色を設定する
             gaugeUi->SetGaugeFillColor(gaugeColor);
             gaugeFrameBackComponent->SetWorldPosition({ gaugeUiPos.x + gaugeFrameOffset.x, gaugeUiPos.y + gaugeFrameOffset.y });
+            bossIconComponent->SetWorldPosition({ gaugeUiPos.x + bossIconOffset.x, gaugeUiPos.y + bossIconOffset.y });
+            bossIconComponent->SetSize({ bossIconSize });
         }
     }
 
@@ -333,6 +345,8 @@ void RabbitBossEnemyActor::DrawImGuiDetails()
     ImGui::DragFloat2(U8("ゲージフレームのオフセット値"), &gaugeFrameOffset.x, 2.0f);
     ImGui::DragFloat(U8("出現攻撃範囲"), &spawnAttackRange, 0.5f, 0.0f, 10.0f);
     ImGui::DragFloat2(U8("ゲージのUIのposition"), &gaugeUiPos.x, 2.0f);
+    ImGui::DragFloat2(U8("ボスのアイコンのサイズ"), &bossIconSize.x, 2.0f);
+    ImGui::DragFloat2(U8("ボスのアイコンのオフセット"), &bossIconOffset.x, 2.0f);
 
 #endif
 }
@@ -593,7 +607,7 @@ void RabbitBossEnemyActor::EndDeathPerform(bool playerDeath)
 // 周囲の敵を非表示
 void RabbitBossEnemyActor::HideNearByRadius(float radius)
 {
-    
+
 }
 
 // 出現している全ての敵を玉止めする関数
