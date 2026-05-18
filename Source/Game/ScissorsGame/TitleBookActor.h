@@ -28,6 +28,9 @@ private:
 
 private:
     NumberDisplay firstStageHighScoreDisplay;   
+    NumberDisplay bobbinStageHighScoreDisplay;   
+    NumberDisplay redirectStageHighScoreDisplay;   
+    NumberDisplay difficultStageHighScoreDisplay;   
     NumberDisplay bossStageHighScoreDisplay;   
 
     std::shared_ptr<UIImageComponent> controlAButton;   // Aƒ{ƒ^ƒ“‚ð•\Ž¦‚·‚é

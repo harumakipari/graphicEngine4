@@ -780,16 +780,19 @@ void ResultBookActor::HandlePadInput()
         }
         break;
     case BookPageState::SecondPage:
-        if (pushL)
-        {
-            // 一ページ目に戻る
-            CloseSecondPage(2.0f);
-        }
-        if (pushR)
-        {
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
-            // タイトルへシーン遷移する
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") });
+        if (showSecondPageButtonArrow)
+        {// 矢印が表示されている時だけ、入力を受け付ける
+            if (pushL)
+            {
+                // 一ページ目に戻る
+                CloseSecondPage(2.0f);
+            }
+            if (pushR)
+            {
+                CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
+                // タイトルへシーン遷移する
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") });
+            }
         }
         break;
     }

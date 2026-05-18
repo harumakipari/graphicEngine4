@@ -32,7 +32,55 @@ void TitleBookActor::Initialize(const Transform& transform)
             0.7f, false);
     }
 
+    // ステージ2　親を生成する
+    {
+        std::string scoreParentName = "high_bobbin_parent";
+        auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, middleName);
+        scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+        scoreRoot->SetRelativeLocationDirect({ -0.5f,-0.1f,1.1f });
+
+        bobbinStageHighScoreDisplay.Initialize(
+            this,
+            scoreParentName,
+            "bobbin_score",
+            { -0.0f, -0.0f, -0.0f },
+            5,
+            0.7f, false);
+    }
+
     // 裏表紙のページ
+    // ステージ3　親を生成する
+    {
+        std::string scoreParentName = "high_redirect_parent";
+        auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
+        scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+        scoreRoot->SetRelativeLocationDirect({ -4.0f,0.0f,-1.5f });
+
+        redirectStageHighScoreDisplay.Initialize(
+            this,
+            scoreParentName,
+            "redirect_score",
+            { -0.0f, -0.0f, -0.0f },
+            5,
+            0.7f, false);
+    }
+
+    // ステージ4　親を生成する
+    {
+        std::string scoreParentName = "high_difficult_parent";
+        auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
+        scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+        scoreRoot->SetRelativeLocationDirect({ -4.0f,0.0f,-1.5f });
+
+        difficultStageHighScoreDisplay.Initialize(
+            this,
+            scoreParentName,
+            "difficult_score",
+            { -0.0f, -0.0f, -0.0f },
+            5,
+            0.7f, false);
+    }
+
     // ボスステージハイスコア
     {
         std::string scoreParentName = "high_boss_parent";
@@ -60,7 +108,6 @@ void TitleBookActor::Initialize(const Transform& transform)
     controlAButton->SetPivot({ 0.5f,0.5f });
     controlAButton->SetVisible(false);
     uiManager->Add(controlAButton);
-
 }
 
 void TitleBookActor::Update(float deltaTime)
@@ -87,6 +134,19 @@ void TitleBookActor::Update(float deltaTime)
     // ステージ１
     int firstHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::FIRST);
     firstStageHighScoreDisplay.SetValue(firstHighScore);
+
+    // ステージ2
+    int bobbinHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::BOBBIN_FIRST);
+    bobbinStageHighScoreDisplay.SetValue(bobbinHighScore);
+
+    // 裏表紙
+    // ステージ3
+    int redirectHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::REFLECT_WALL);
+    redirectStageHighScoreDisplay.SetValue(redirectHighScore);
+
+    // ステージ4
+    int difficultHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::DIFFICULT);
+    difficultStageHighScoreDisplay.SetValue(difficultHighScore);
 
     // ボス戦
     int bossHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::BOSS);
@@ -159,10 +219,15 @@ void TitleBookActor::HandlePadInput()
 void TitleBookActor::CreateButtonArrow()
 {
     auto uiManager = GetOwnerScene()->GetUIManager();
+
+    DirectX::XMFLOAT2 uiLeftPos = { 12, 875 };
+    DirectX::XMFLOAT2 uiRightPos = { 1650, 875 };
+    DirectX::XMFLOAT2 uiArrowSize = { 250, 150 };
+
     // 一ページ左
     firstButtons.left = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/title_arrow.png", "title_arrow");
-    firstButtons.left->SetWorldPosition({ 300, 800 });
-    firstButtons.left->SetSize({ 400, 150 });
+    firstButtons.left->SetWorldPosition(uiLeftPos);
+    firstButtons.left->SetSize(uiArrowSize);
     uiManager->Add(firstButtons.left);
 
     firstButtons.left->onClick = [this]()
@@ -181,11 +246,10 @@ void TitleBookActor::CreateButtonArrow()
     // キーボードの画像を設定する
     firstButtons.keyboardLeft = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/title_arrow.png");
 
-
     // 一ページ右
     firstButtons.right = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/ranking_arrow.png", "ranking_arrow");
-    firstButtons.right->SetWorldPosition({ 1000, 800 });
-    firstButtons.right->SetSize({ 400, 150 });
+    firstButtons.right->SetWorldPosition(uiRightPos);
+    firstButtons.right->SetSize(uiArrowSize);
     uiManager->Add(firstButtons.right);
 
     firstButtons.right->onClick = [this]()
@@ -199,12 +263,10 @@ void TitleBookActor::CreateButtonArrow()
     // キーボードの画像を設定する
     firstButtons.keyboardRight = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/ranking_arrow.png");
 
-
-
     // 二ページ目左
     secondButtons.left = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/stage_select_arrow.png", "stage_select_arrow");
-    secondButtons.left->SetWorldPosition({ 300, 800 });
-    secondButtons.left->SetSize({ 400, 150 });
+    secondButtons.left->SetWorldPosition(uiLeftPos);
+    secondButtons.left->SetSize(uiArrowSize);
     uiManager->Add(secondButtons.left);
 
     secondButtons.left->onClick = [this]()

@@ -330,7 +330,6 @@ void TitleScene::Start()
 
     // ƒV[ƒ“‚ªØ‚è‘Ö‚í‚Á‚½Žž‚É
     SceneTransitionManager::Instance().NotifySceneChanged();
-
 }
 
 void TitleScene::Update(float deltaTime)
@@ -617,7 +616,7 @@ void TitleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             mouseCursorPause->Draw(immediateContext);
         if (mouseCursorGrab->IsVisible())
             mouseCursorGrab->Draw(immediateContext);
-#if _DEBUG
+#ifndef _DEBUG
         InputSystem::SetCursolVisible(false);
 #endif
 

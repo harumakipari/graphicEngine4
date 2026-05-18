@@ -225,7 +225,13 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 #endif
     float3 Lo = totalDiffuse + totalSpecular + emissive /*+ rim*/;
 
-    //Lo *= silhouetteColor;
+
+    //ƒtƒ‰ƒbƒVƒ…
+    Lo = lerp(Lo, float3(1, 1, 1), flashValue);
+
+    // ‚±‚±‚Å”’‚­”­Œõ‚·‚éˆ—
+    Lo.rgb += flashValue * emissionPower;
+
 
     return float4(Lo, cpuColor.a);
 

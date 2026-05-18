@@ -513,12 +513,13 @@ void RabbitBossDeathState::Execute(float deltaTime)
 {
     elapsedTime += Time::UnscaledDeltaTime();
     //// Ž€–S‚Ì‰‰o‚ð‰½‚©“ü‚ê‚é
-    //enemy->UpdateDead(deltaTime);
     
 
     switch (phase)
     {
     case DeathPhase::StartSlow:
+        enemy->UpdateDead(deltaTime);
+
         if (elapsedTime > 0.8f)
         {
             phase = DeathPhase::KnockBack;
