@@ -52,9 +52,9 @@ void TitleBookActor::Initialize(const Transform& transform)
     // ステージ3　親を生成する
     {
         std::string scoreParentName = "high_redirect_parent";
-        auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
-        scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -4.0f,0.0f,-1.5f });
+        scoreRedirectRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
+        scoreRedirectRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+        scoreRedirectRoot->SetRelativeLocationDirect({ -4.0f,0.0f,-1.5f });
 
         redirectStageHighScoreDisplay.Initialize(
             this,
@@ -68,9 +68,9 @@ void TitleBookActor::Initialize(const Transform& transform)
     // ステージ4　親を生成する
     {
         std::string scoreParentName = "high_difficult_parent";
-        auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
-        scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -3.2f,0.0f,0.1f });
+        scoreDifficultRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
+        scoreDifficultRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+        scoreDifficultRoot->SetRelativeLocationDirect({ -3.2f,0.0f,0.1f });
 
         difficultStageHighScoreDisplay.Initialize(
             this,
@@ -84,9 +84,9 @@ void TitleBookActor::Initialize(const Transform& transform)
     // ボスステージハイスコア
     {
         std::string scoreParentName = "high_boss_parent";
-        auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
-        scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -4.0f,0.0f,1.7f });
+        scoreBossRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
+        scoreBossRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+        scoreBossRoot->SetRelativeLocationDirect({ -4.0f,0.0f,1.7f });
 
         bossStageHighScoreDisplay.Initialize(
             this,
@@ -155,6 +155,15 @@ void TitleBookActor::Update(float deltaTime)
     // ボス戦
     int bossHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::BOSS);
     bossStageHighScoreDisplay.SetValue(bossHighScore);
+
+    //　一ページ目の処理
+    for (auto& stage : leftPage.stages)
+    {// 左ページのワッペン
+        // ワッペンの位置を下げる
+        float patchOffsetY = std::lerp(0.0f, -0.1f, bookTwoAlpha);
+        stage->model->SetRelativeLocationDirect({ stage->offsetPos.x,patchOffsetY, stage->offsetPos.z });
+    }
+
 
 }
 

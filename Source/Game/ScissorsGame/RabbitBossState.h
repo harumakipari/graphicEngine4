@@ -250,6 +250,7 @@ private:
     int spawnedCoinCount = 0;
     int maxCoinCount = 50;
 
+    float tearInterval = 1.0f;  // 涙がおちるまでの時間
 };
 
 // 勝利オブジェクト

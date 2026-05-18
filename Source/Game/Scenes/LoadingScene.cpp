@@ -49,7 +49,7 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
     SetTipsData();
 
 
-    loadingTime = 2.5f;   // ロードにかかる時間
+    loadingTime = 4.5f;   // ロードにかかる時間
 
     auto& param = SceneTransitionManager::Instance().GetParams();
     if (param.contains("fade"))

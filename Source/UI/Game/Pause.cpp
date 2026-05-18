@@ -95,7 +95,14 @@ void Pause::Initialize(const Transform& transform)
             Time::timeScale = 1.0f;
 
             const char* types[] = { "0", "1" };
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", retrySceneName), std::make_pair("type", types[rand() % 2]),  std::make_pair("fromScene","GameScene") });
+            auto stats = ScoreSystem::GetResultStats();
+            auto stage = stats.stageName;
+
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", retrySceneName), std::make_pair("type", types[rand() % 2]),  std::make_pair("fromScene","GameScene") ,{
+                            "stage",
+                            std::string(
+                                magic_enum::enum_name(stage))
+                        }, });
 
             // Scene::_transition("LoadingScene", { std::make_pair("preload",retrySceneName), std::make_pair("type", types[rand() % 2]) });
 

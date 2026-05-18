@@ -943,6 +943,7 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
 
             waitTimer = 0.0f;
 
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/player_death.wav");
             player->PlayAnimation("Down", false, true, 0.1f);
         }
 #endif // 0

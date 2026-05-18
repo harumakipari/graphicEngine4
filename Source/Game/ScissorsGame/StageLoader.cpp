@@ -127,7 +127,7 @@ StageData StageLoader::Load(STAGE_NAME stageId)
         data.waves = {
           {
               {
-                  { {12,0,15}, YarnEnemyType::Static ,0.0f,true},
+                  //{ {12,0,15}, YarnEnemyType::Static ,0.0f,true},
                   { {9,0,12}, YarnEnemyType::Static ,0.0f,true},
                   { {15,0,12}, YarnEnemyType::Static ,0.0f,true},
 

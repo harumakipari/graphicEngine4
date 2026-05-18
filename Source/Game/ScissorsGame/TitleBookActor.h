@@ -31,7 +31,14 @@ private:
     NumberDisplay bobbinStageHighScoreDisplay;   
     NumberDisplay redirectStageHighScoreDisplay;   
     NumberDisplay difficultStageHighScoreDisplay;   
-    NumberDisplay bossStageHighScoreDisplay;   
+    NumberDisplay bossStageHighScoreDisplay;
+
+
+    std::shared_ptr<SceneComponent> scoreRedirectRoot;      // 反射ステージのハイスコア
+    std::shared_ptr<SceneComponent> scoreDifficultRoot;      // 難しいステージのハイスコア
+    std::shared_ptr<SceneComponent> scoreBossRoot;      // ボスステージのハイスコア
+
+    DirectX::XMFLOAT3 redirectScorePosition;
 
     std::shared_ptr<UIImageComponent> controlAButton;   // Aボタンを表示する
 };

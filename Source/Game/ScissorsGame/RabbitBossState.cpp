@@ -590,6 +590,7 @@ void RabbitBossDeathState::Execute(float deltaTime)
             phase = DeathPhase::Tear;
             elapsedTime = 0.0f;
             //enemy->SpawnTearEffect();
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/boss_tear.wav", 1.0f);
         }
         break;
 
@@ -686,12 +687,12 @@ void RabbitBossDeathState::Execute(float deltaTime)
             }
         }
 #endif // 0
-        float t = std::clamp(elapsedTime / 1.5f, 0.0f, 1.0f);
+        float t = std::clamp(elapsedTime / tearInterval, 0.0f, 1.0f);
         enemy->tearStart = true;
         t = t * t * (3.0f - 2.0f * t);
         enemy->morphX = 1.0f - t;
 
-        if (elapsedTime > 1.5f)
+        if (elapsedTime > tearInterval)
         {
             phase = DeathPhase::Finish;
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("fromScene","GameScene") });

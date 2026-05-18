@@ -73,6 +73,9 @@ void BossSpawner::Update(float deltaTime)
     }
 
 
+    bool playPreviewSE = false; // 出現エフェクトの音声再生フラグ
+    bool playSpawnSE = false;   // 出現の音声再生フラグ
+
     // --- 予約されたspawn処理 ---
     for (auto& s : pendingSpawns)
     {
@@ -83,6 +86,7 @@ void BossSpawner::Update(float deltaTime)
         {
             SpawnPreviewEffect(s.point.position);
             s.previewed = true;
+            playPreviewSE = true;
         }
 
         // 実際の出現
@@ -98,8 +102,21 @@ void BossSpawner::Update(float deltaTime)
             );
 
             s.spawned = true;
+            playSpawnSE = true;
         }
     }
+
+    if (playPreviewSE)
+    {
+        // 敵の出現エフェクトの音
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_spawn.wav", 0.5f);
+    }
+    if (playSpawnSE)
+    {
+        // 敵が出てくる音
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_spawn1.wav", 0.5f);
+    }
+
 
     pendingSpawns.erase(
         std::remove_if(pendingSpawns.begin(), pendingSpawns.end(),

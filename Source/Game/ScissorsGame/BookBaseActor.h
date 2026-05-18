@@ -190,6 +190,8 @@ protected:
 
     bool showSecondPageButtonArrow = true; //矢印UIを表示するかどうか
 
+    float bookOneAlpha = 0.0f; // １ページ目
+    float bookTwoAlpha = 0.0f; // ２ページ目
 
 private:
 
@@ -214,8 +216,6 @@ private:
     float openSpinPosY = 0.0f;
     float closeSpinPosY = -0.2f;
 
-    float bookOneAlpha = 0.0f; // １ページ目
-    float bookTwoAlpha = 0.0f; // ２ページ目
 
     float openBookAngle = 0.0f;
     float closeBookAngle = 180.0f;
