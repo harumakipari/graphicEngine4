@@ -711,7 +711,6 @@ void RabbitBossWinState::Enter()
 
 void RabbitBossWinState::Execute(float deltaTime)
 {
-
     switch (phase)
     {
     case BossWinPhase::WaitCircleShrink:

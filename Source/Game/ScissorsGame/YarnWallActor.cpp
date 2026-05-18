@@ -144,3 +144,11 @@ void YarnWallActor::SetUp()
     }
 }
 
+
+// 壁の見た目を非表示にする
+void YarnWallActor::HideBobbinVisual()
+{
+    // 描画用コンポーネントを非表示にする
+    skeletalMeshComponent->SetIsVisible(false);
+    skeletalMeshComponent->SetIsCastShadow(false);
+}

@@ -323,6 +323,18 @@ void ResultBookActor::Initialize(const Transform& transform)
 
     // 二枚目の矢印UIは最初は表示しない
     showSecondPageButtonArrow = false;
+
+    ResultData stats = ScoreSystem::GetResultStats();
+    if (stats.remainHp > 0)
+    {// HPが0以上だったら
+        // ステージクリア
+        isCleared = true;
+    }
+    else
+    {
+        isCleared = false;
+    }
+
 }
 
 void ResultBookActor::Update(float deltaTime)
@@ -360,8 +372,8 @@ void ResultBookActor::Update(float deltaTime)
     remainClearImage->SetSize(timerBonusUiSize);
 
     float remain = ScoreSystem::GetRemainTimeToClear();
-    if (resultPhase >= ResultPhase::AddTimeBonus && !ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage)
-    {
+    if (resultPhase >= ResultPhase::AddTimeBonus && !ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage && isCleared)
+    {// 時間ボーナス加算のフェーズで、目標タイムをクリアできていないとき、かつ二枚目のページが開いているとき、かつステージをクリアしているとき
         remainClearImage->SetVisible(true);
 
 #ifdef _DEBUG
@@ -394,15 +406,19 @@ void ResultBookActor::Update(float deltaTime)
         }
     }
 
-    if (resultPhase >= ResultPhase::AddTimeBonus && ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage)
-    {
-        timeClearImage->SetVisible(true);
+
+    if (isCleared)
+    {// クリアしていたら
+        if (resultPhase >= ResultPhase::AddTimeBonus && ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage)
+        {
+            timeClearImage->SetVisible(true);
+        }
+        else
+        {
+            timeClearImage->SetVisible(false);
+        }
     }
-    else
-    {
-        timeClearImage->SetVisible(false);
-    }
-    
+
 
 #if 0
     totalScoreDisplay.SetValue(97777);
@@ -608,8 +624,12 @@ void ResultBookActor::Update(float deltaTime)
             Logger::Log(U8("タイムボーナス：") + std::to_string(timerBonus));
 
             //timerBonus = 1000;
-            addTargetScore = currentTotalScore + timerBonus;
-            currentTotalScore = addTargetScore;
+
+            if (isCleared)
+            {//　ステージをクリアしていたら
+                addTargetScore = currentTotalScore + timerBonus;
+                currentTotalScore = addTargetScore;
+            }
 
             if (ScoreSystem::IsTimeClear())
             {// 目標タイムをクリアした
@@ -638,7 +658,7 @@ void ResultBookActor::Update(float deltaTime)
         break;
     case ResultPhase::AddTotalScore:
     {
-        const float duration = 2.0f;
+        const float duration = 1.5f;
 
         float rate = std::clamp(phaseTimer / duration, 0.0f, 1.0f);
 
@@ -731,7 +751,7 @@ void ResultBookActor::Update(float deltaTime)
             resultPhase = ResultPhase::HighScore;
 
             // 新記録かどうか
-            isNewRecord = ScoreHistoryManager::IsNewRecord(stats.stageName,currentTotalScore);
+            isNewRecord = ScoreHistoryManager::IsNewRecord(stats.stageName, currentTotalScore);
 
         }
         break;
@@ -972,7 +992,7 @@ void ResultBookActor::UpdateTimerDigits(int totalSeconds)
 // 矢印ボタンUIを表示する
 void ResultBookActor::ShowButtonArrow()
 {
-    
+
 }
 
 // 演出開始

@@ -43,6 +43,8 @@ void EnemyBase::Initialize(const Transform& transform)
     SetBehavior(std::make_unique<StaticBehavior>());
 
     killByReflected = false; // 反射攻撃で倒されたかどうか
+
+    isPlayerDeath = false;// プレイヤーが死亡したらモデルを非表示にするためのフラグ
 }
 
 void EnemyBase::Update(float deltaTime)
@@ -313,10 +315,13 @@ void EnemyBase::UpdateTiedVisual()
         else if (tieCount >= 2) showCount = 2;
     }
 
-    for (int i = 0; i < tiedMeshes.size(); i++)
+    if (!isPlayerDeath)
     {
-        tiedMeshes[i]->SetIsVisible(i < showCount);
-        tiedMeshes[i]->SetRelativeEulerRotationDirect({ 0.0f,180.0f,0.0f });
+        for (int i = 0; i < tiedMeshes.size(); i++)
+        {
+            tiedMeshes[i]->SetIsVisible(i < showCount);
+            tiedMeshes[i]->SetRelativeEulerRotationDirect({ 0.0f,180.0f,0.0f });
+        }
     }
 }
 
@@ -671,11 +676,11 @@ void EnemyBase::CallDeath(bool hitByReflected)
     //
     if (powerUpArrowMarkMeshComponent)
     {
-    powerUpArrowMarkMeshComponent->SetIsVisible(false);
+        powerUpArrowMarkMeshComponent->SetIsVisible(false);
     }
     if (powerUpMarkMeshComponent)
     {
-    powerUpMarkMeshComponent->SetIsVisible(false);
+        powerUpMarkMeshComponent->SetIsVisible(false);
     }
 
     // エフェクトを発生させる
@@ -756,6 +761,9 @@ void EnemyBase::HideEnemyVisual()
         tiedMesh->SetIsVisible(false);
         tiedMesh->SetIsCastShadow(false);
     }
+    // 玉止めモデル描画を消す溜めのフラグをオンにする
+    isPlayerDeath = true;
+
     // 強化のモデルの描画を消す
     powerUpMarkMeshComponent->SetIsVisible(false);
     powerUpMarkMeshComponent->SetIsCastShadow(false);

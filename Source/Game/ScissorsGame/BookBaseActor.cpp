@@ -708,6 +708,11 @@ void BookBaseActor::UpdateClosedBook()
     if (!InputSystem::GetMousePositionUI(cursor))
         return;
 
+    if (InputSystem::IsGamepadConnected())
+    {// ゲームパッドが繋がれていたら
+        return;
+    }
+
     HitResultWithActor result;
 
     bool hit = CollisionFunction::RaycastFromMouse(cursor, result, CollisionHelper::ToBit(CollisionLayer::WorldStatic));

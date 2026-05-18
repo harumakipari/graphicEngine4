@@ -333,4 +333,6 @@ private:
 
     bool killByReflected = false; // 反射攻撃で倒されたかどうか
 
+    bool isPlayerDeath = false;     // プレイヤーが死亡したらモデルを非表示にするためのフラグ
+
 };

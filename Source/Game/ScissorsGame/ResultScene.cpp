@@ -580,6 +580,7 @@ void ResultScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     // UIの描画
     Draw(immediateContext);
 
+
     // マウスカーソルの描画
     if (!InputSystem::IsGamepadConnected())
     {// コントローラーが接続されていないときだけマウスカーソル描画
@@ -589,7 +590,7 @@ void ResultScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
             mouseCursorPause->Draw(immediateContext);
         if (mouseCursorGrab->IsVisible())
             mouseCursorGrab->Draw(immediateContext);
-#if _DEBUG
+#ifndef _DEBUG
         InputSystem::SetCursolVisible(false);
 #endif
     }
@@ -597,7 +598,6 @@ void ResultScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     {
         InputSystem::SetCursolVisible(true);
     }
-
 #ifdef USE_IMGUI
     imGuiGizmoBuffer->Deactivate(immediateContext);
 #endif

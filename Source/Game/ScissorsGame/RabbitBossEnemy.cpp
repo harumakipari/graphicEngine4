@@ -346,7 +346,7 @@ bool RabbitBossEnemyActor::IsStunned()
 // ダメージ処理計算
 float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext)
 {
-    float damage = damageContext.baseDamage;
+    float damage = 12;  // 基本ダメージ
 
     if (damageContext.isBossStunned) // 20ダメージ
         damage *= 1.5f;

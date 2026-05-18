@@ -12,6 +12,7 @@
 #include "TrailModelActor.h"
 #include "TutorialActor.h"
 #include "YarnEnemyActor.h"
+#include "YarnWallActor.h"
 #include "Engine/Utility/Time.h"
 #include "Physics/CollisionFunction.h"
 
@@ -875,6 +876,7 @@ void ScissorsPlayerDeathState::Enter()
 {
     player->PlayAnimation("PreDown", false, true, 0.1f);
     player->characterMovementComponent->SetSpeed(0.0f);
+    player->rotationComponent->SetDirection({ 0,0,-1 });
     // ‰æ–Ê‚ð•¢‚¤‚Ì‚ðˆÃ‚­‚·‚é
     player->SetDeathRadius(2.0f);
     // ŽüˆÍ‚Ì“G‚ð”ñ•\Ž¦‚É‚·‚é

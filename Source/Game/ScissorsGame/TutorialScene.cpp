@@ -603,14 +603,22 @@ void TutorialScene::Render(ID3D11DeviceContext* immediateContext, float deltaTim
     Draw(immediateContext);
 
     // マウスカーソルの描画
-    if (mouseCursorPar->IsVisible())
-        mouseCursorPar->Draw(immediateContext);
-    if (mouseCursorPause->IsVisible())
-        mouseCursorPause->Draw(immediateContext);
-    if (mouseCursorGrab->IsVisible())
-        mouseCursorGrab->Draw(immediateContext);
-
-
+    if (!InputSystem::IsGamepadConnected())
+    {// コントローラーが接続されていないときだけマウスカーソル描画
+        if (mouseCursorPar->IsVisible())
+            mouseCursorPar->Draw(immediateContext);
+        if (mouseCursorPause->IsVisible())
+            mouseCursorPause->Draw(immediateContext);
+        if (mouseCursorGrab->IsVisible())
+            mouseCursorGrab->Draw(immediateContext);
+#ifndef _DEBUG
+        InputSystem::SetCursolVisible(false);
+#endif
+    }
+    else
+    {
+        InputSystem::SetCursolVisible(true);
+    }
 #ifdef USE_IMGUI
     imGuiGizmoBuffer->Deactivate(immediateContext);
 #endif

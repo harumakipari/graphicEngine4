@@ -44,6 +44,9 @@ public:
         triggerWave = wave;
     }
 
+    // 壁の見た目を非表示にする
+    void HideBobbinVisual();
+
 private:
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent; // 描画コンポーネント
     std::shared_ptr<BoxComponent> redirectCollisionComponent;// 反射コンポーネント

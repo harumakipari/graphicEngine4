@@ -136,5 +136,7 @@ private:
     float medalValue = 0.0f;
     float interval = 0.5f; // ƒƒ_ƒ‹‚ªˆÚ“®‚·‚éŠÔ
 
+
+    bool isCleared = false;// ƒNƒŠƒA‚µ‚½‚©‚Ç‚¤‚©
 };
 

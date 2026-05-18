@@ -4,6 +4,7 @@
 
 #include <algorithm>
 
+#include "BobbinActor.h"
 #include "BonusUiActor.h"
 #include "ButtonCoinActor.h"
 #include "EnemyBase.h"
@@ -17,6 +18,7 @@
 #include "ScissorsGameState.h"
 #include "ScorePopupActor.h"
 #include "TutorialActor.h"
+#include "YarnWallActor.h"
 #include "Engine/Scene/SceneBase.h"
 #include "Engine/Utility/Time.h"
 #include "Physics/CollisionFunction.h"
@@ -1240,6 +1242,48 @@ void ScissorsPlayer1::HideNearByRadius(float radius)
         }
     }
 #endif // 0
+
+    // =========================
+  // É{ÉrÉì
+  // =========================
+    auto bobbins = actorManager->GetActorsOfType<BobbinActor>();
+
+    for (auto& bobbin : bobbins)
+    {
+        if (!bobbin)
+        {
+            continue;
+        }
+
+        float distanceSq =
+            MathHelper::DistanceSq(bobbin->GetPosition(), playerPos);
+
+        if (distanceSq < radius * radius)
+        {
+            bobbin->HideBobbinVisual();
+        }
+    }
+
+    // =========================
+    // ñ—éÖï«
+    // =========================
+    auto yarnWalls = actorManager->GetActorsOfType<YarnWallActor>();
+
+    for (auto& wall : yarnWalls)
+    {
+        if (!wall)
+        {
+            continue;
+        }
+
+        float distanceSq =
+            MathHelper::DistanceSq(wall->GetPosition(), playerPos);
+
+        if (distanceSq < radius * radius)
+        {
+            wall->HideBobbinVisual();
+        }
+    }
 }
 
 // êØÇê∂ê¨Ç∑ÇÈ
