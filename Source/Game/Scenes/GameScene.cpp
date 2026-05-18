@@ -33,7 +33,6 @@
 #include "Game/ScissorsGame/ScissorsStage.h"
 #include "Game/ScissorsGame/ScissorsUiEndActor.h"
 #include "Game/ScissorsGame/ScissorsUIStartActor.h"
-#include "Game/ScissorsGame/ScissorsUiTimerActor.h"
 #include "Game/ScissorsGame/ScoreUiActor.h"
 #include "Game/ScissorsGame/WaveManagaer.h"
 #include "Game/ScissorsGame/YarnEnemyActor.h"
@@ -74,7 +73,7 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         }
 
         //スカイマップ
-        skyMap = std::make_unique<decltype(skyMap)::element_type>(device, L"./Data/Environment/Sky/Night2/skybox.dds");
+        skyMap = std::make_unique<decltype(skyMap)::element_type>(device, L"./Data/Environment/Sky/sky/skybox.dds");
         fullscreenQuad = std::make_unique<FullScreenQuad>(device);
 
         frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
@@ -95,13 +94,13 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
 
         D3D11_TEXTURE2D_DESC texture2dDesc;
         //テクスチャをロード
-        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/lut_charlie.dds", environmentTextures[0].ReleaseAndGetAddressOf(), &texture2dDesc);
+        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/sky/lut_charlie.dds", environmentTextures[0].ReleaseAndGetAddressOf(), &texture2dDesc);
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/diffuse_iem.dds", environmentTextures[1].ReleaseAndGetAddressOf(), &texture2dDesc);
+        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/sky/diffuse_iem.dds", environmentTextures[1].ReleaseAndGetAddressOf(), &texture2dDesc);
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/specular_pmrem.dds", environmentTextures[2].ReleaseAndGetAddressOf(), &texture2dDesc);
+        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/sky/specular_pmrem.dds", environmentTextures[2].ReleaseAndGetAddressOf(), &texture2dDesc);
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/lut_sheen_e.dds", environmentTextures[3].ReleaseAndGetAddressOf(), &texture2dDesc);
+        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/sky/lut_sheen_e.dds", environmentTextures[3].ReleaseAndGetAddressOf(), &texture2dDesc);
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
         // UIマネージャーを初期化
@@ -162,8 +161,8 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         //	デカールテクスチャ読み込み
         D3D11_TEXTURE2D_DESC texture2d_desc;
         decal_textures.resize(1);
-        hr = LoadTextureFromFile(device, L"./Data/Textures/Decal/gun_holes.png", decal_textures[0].color_shader_resource_view.GetAddressOf(), &texture2d_desc);
-        _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+        //hr = LoadTextureFromFile(device, L"./Data/Textures/Decal/gun_holes.png", decal_textures[0].color_shader_resource_view.GetAddressOf(), &texture2d_desc);
+        //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
         //	事前に置いておく
         decal_datas.resize(1);
 
@@ -315,7 +314,7 @@ void GameScene::Start()
     {
          { 0.59f, -0.63f, 0.66f, 0.85f },
          { 1.0f, 1.0f, 1.0f, 4.17f/*w colorPower*/ },
-         3.412f,
+         0.278f,
          1,
          1,
          40,

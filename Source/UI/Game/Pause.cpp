@@ -13,7 +13,7 @@ void Pause::Initialize(const Transform& transform)
 
     auto uiManager = scene->GetUIManager();
 
-    pausePanel = std::make_shared<UIImageComponent>("./Data/Textures/UI/pause_panel.png", "pause_panel");
+    pausePanel = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/pause_panel.png", "pause_panel");
     pausePanel->SetWorldPosition({ 967, 490 });
     pausePanel->SetPivot({ 0.5f,0.5f });
     pausePanel->SetScale({ 1.2f,1.2f });
@@ -24,7 +24,7 @@ void Pause::Initialize(const Transform& transform)
 
     // メニューボタン
     {
-        menuButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/menu.png", "menu");
+        menuButton = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/menu.png", "menu");
         menuButton->SetWorldPosition({ 100, 85 });
         menuButton->SetPivot({ 0.5f,0.5f });
         menuButton->SetSize({ 140, 140 });
@@ -37,7 +37,7 @@ void Pause::Initialize(const Transform& transform)
     }
 
     // ゲームへ戻る
-    closeButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/back_to_game.png", "back_to_game");
+    closeButton = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/back_to_game.png", "back_to_game");
     closeButton->SetWorldPosition({ 1281, 492 });
     closeButton->SetPivot({ 0.5f,0.5f });
     closeButton->SetSize({ 472, 183 });
@@ -51,7 +51,7 @@ void Pause::Initialize(const Transform& transform)
         };
     uiManager->Add(closeButton);
 
-    returnTitleButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/back_to_title.png", "back_to_title");
+    returnTitleButton = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/back_to_title.png", "back_to_title");
     returnTitleButton->SetWorldPosition({ 977, 638 });
     returnTitleButton->SetPivot({ 0.5f,0.5f });
     returnTitleButton->SetSize({ 472, 183 });
@@ -66,7 +66,7 @@ void Pause::Initialize(const Transform& transform)
             }
 
 
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
             Time::timeScale = 1.0f;
 
             const char* types[] = { "0", "1" };
@@ -77,7 +77,7 @@ void Pause::Initialize(const Transform& transform)
 
     GetOwnerScene()->GetUIManager()->Add(returnTitleButton);
 
-    retryButton = std::make_shared<UIButtonComponent>("./Data/Textures/UI/retry.png", "retry");
+    retryButton = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/retry.png", "retry");
     retryButton->SetWorldPosition({ 977, 838 });
     retryButton->SetPivot({ 0.5f,0.5f });
     retryButton->SetSize({ 472, 183 });
@@ -91,7 +91,7 @@ void Pause::Initialize(const Transform& transform)
                 return;
             }
 
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
             Time::timeScale = 1.0f;
 
             const char* types[] = { "0", "1" };
@@ -107,7 +107,7 @@ void Pause::Initialize(const Transform& transform)
     for (int i = 0; i < 3; i++)
     {
         const int num = 3 - i; // 3,2,1
-        std::string filename = "./Data/Textures/UI/CountDown_" + std::to_string(num) + ".png";
+        std::string filename = "./Data/Textures/ScissorsUI/CountDown_" + std::to_string(num) + ".png";
 
         countDownImages[i] = std::make_shared<UIImageComponent>(filename, "countDown_" + std::to_string(num));
 
@@ -177,7 +177,7 @@ void Pause::Update(float deltaTime)
 
         if (current != lastCountdownNumber)
         {
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/pause_countDown_se.wav", 3.0f);
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/pause_countDown_se.wav", 3.0f);
             lastCountdownNumber = current;
         }
     }
@@ -208,7 +208,7 @@ void Pause::Update(float deltaTime)
 // ポーズ画面を開くときの処理
 void Pause::OpenPause()
 {
-    CoreAudio::PlayOneShot(L"./Data/Sound/SE/escape_se.wav");
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/escape_se.wav");
     pausePanel->SetVisible(true);
     pausePanel->SetEnable(true);
 

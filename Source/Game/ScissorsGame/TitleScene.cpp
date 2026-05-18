@@ -55,7 +55,7 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
         HRESULT hr = { S_OK };
 
         //スカイマップ
-        skyMap = std::make_unique<decltype(skyMap)::element_type>(device, L"./Data/Environment/Sky/Night2/skybox.dds");
+        skyMap = std::make_unique<decltype(skyMap)::element_type>(device, L"./Data/Environment/Sky/sky/skybox.dds");
         fullscreenQuad = std::make_unique<FullScreenQuad>(device);
 
         frameBuffer = std::make_unique<FrameBuffer>(device, static_cast<uint32_t>(width), height, false);
@@ -75,13 +75,13 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
 
         D3D11_TEXTURE2D_DESC texture2dDesc;
         //テクスチャをロード
-        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/lut_charlie.dds", environmentTextures[0].ReleaseAndGetAddressOf(), &texture2dDesc);
+        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/sky/lut_charlie.dds", environmentTextures[0].ReleaseAndGetAddressOf(), &texture2dDesc);
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/diffuse_iem.dds", environmentTextures[1].ReleaseAndGetAddressOf(), &texture2dDesc);
+        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/sky/diffuse_iem.dds", environmentTextures[1].ReleaseAndGetAddressOf(), &texture2dDesc);
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/specular_pmrem.dds", environmentTextures[2].ReleaseAndGetAddressOf(), &texture2dDesc);
+        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/sky/specular_pmrem.dds", environmentTextures[2].ReleaseAndGetAddressOf(), &texture2dDesc);
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/captured_stage/lut_sheen_e.dds", environmentTextures[3].ReleaseAndGetAddressOf(), &texture2dDesc);
+        hr = LoadTextureFromFile(device, L"./Data/Environment/Sky/sky/lut_sheen_e.dds", environmentTextures[3].ReleaseAndGetAddressOf(), &texture2dDesc);
         _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
         // UIマネージャーを初期化
@@ -300,8 +300,8 @@ void TitleScene::Start()
     lightData.sceneConstants =
     {
          { -0.65f, -0.38f, -0.0211f, 0.85f/* w:attenuation Rate */},
-         { 1.0f, 1.0f, 1.0f, 4.17f/*w colorPower*/ },
-         3.412f,
+         { 1.0f, 1.0f, 1.0f, 2.17f/*w colorPower*/ },
+         0.278f,
          1,
          1,
          40,

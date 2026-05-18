@@ -369,7 +369,7 @@ void TutorialStep_CancelDash::Execute(float deltaTime)
     if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
     {
         owner->GetTutorialManager()->ChangeState("TutorialStep_SpawnStaticEnemy");
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/click_se.wav", 2.0f);
     }
 }
 
@@ -574,7 +574,7 @@ void TutorialStep_NiceAttackEnemy::Execute(float deltaTime)
     if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
     {
         owner->GetTutorialManager()->ChangeState("TutorialStep_SpawnMoveEnemy");
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/click_se.wav", 2.0f);
     }
 }
 
@@ -768,7 +768,7 @@ void TutorialStep_DecreaseHeart::Execute(float deltaTime)
     if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
     {
         owner->GetTutorialManager()->ChangeState("TutorialStep_DashClothSide");
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/click_se.wav", 2.0f);
     }
 }
 
@@ -900,7 +900,7 @@ void TutorialStep_DashRedirect::Execute(float deltaTime)
     if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
     {
         owner->GetTutorialManager()->ChangeState("TutorialStep_AttackEnemyRedirect");
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/click_se.wav", 2.0f);
     }
 }
 
@@ -1076,7 +1076,7 @@ void TutorialStep_RedirectHighScore::Execute(float deltaTime)
     if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
     {
         owner->GetTutorialManager()->ChangeState("TutorialStep_RedirectLongDash");
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/click_se.wav", 2.0f);
     }
 }
 
@@ -1141,7 +1141,7 @@ void TutorialStep_RedirectLongDash::Execute(float deltaTime)
     if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
     {
         owner->GetTutorialManager()->ChangeState("TutorialStep_AttackAllEnemy");
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/click_se.wav", 2.0f);
     }
 }
 
@@ -1403,7 +1403,7 @@ void TutorialStep_AttackAllBonus::Execute(float deltaTime)
     if (InputSystem::GetInputState("TutorialOk", InputStateMask::Release))
     {
         owner->GetTutorialManager()->ChangeState("TutorialStep_StageClear");
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/click_se.wav", 2.0f);
     }
 }
 
@@ -1483,7 +1483,7 @@ void TutorialStep_StageClear::Execute(float deltaTime)
             param
         );
 #endif // 0
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE/click_se.wav", 2.0f);
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/click_se.wav", 2.0f);
     }
 }
 

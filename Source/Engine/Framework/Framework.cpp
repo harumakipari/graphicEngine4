@@ -90,7 +90,7 @@ bool Framework::Initialize()
     ProfileThreadName(0, "Main Thread");
 
     //back = std::make_shared<Sprite>(device, L"./Data/Textures/UI/backGround.png");
-    back = std::make_shared<Sprite>(device, L"./Data/Textures/UI/Oden_seane_change.png");
+    back = std::make_shared<Sprite>(device, L"./Data/Textures/ScissorsUI/scene_change.png");
     black = std::make_shared<Sprite>(device, L"./Data/Textures/ScissorsUI/black.png");
 
     return true;

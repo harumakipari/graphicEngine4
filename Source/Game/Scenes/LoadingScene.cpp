@@ -43,7 +43,6 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
     preload_scene = props.at("preload");
     _async_preload_scene(device, width, height, preload_scene);
 
-    //loadingSprite = std::make_shared<Sprite>(device, L"./Data/Textures/UI/Oden_seane_change.png");
 
 
     // チップスデータを設定する
@@ -90,14 +89,14 @@ void LoadingScene::Start()
     float width = 1920.0f;
     float height = 1080.0f;
 
-    sprite = std::make_shared<UISceneChangeComponent>("./Data/Textures/UI/Oden_seane_change.png", "sceneChange");
+    sprite = std::make_shared<UISceneChangeComponent>("./Data/Textures/ScissorsUI/scene_change.png", "sceneChange");
     sprite->SetWorldPosition({ width * 0.5f, height * 0.5f });
     sprite->SetPivot({ 0.5f,0.5f });
     sprite->SetSize({ width, height });
     sprite->zOrder = 1000;
 
 
-    backImage = std::make_shared<UIImageComponent>("./Data/Textures/UI/Oden_seane_change.png", "backGround");
+    backImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/scene_change.png", "backGround");
     backImage->SetSize({ 1920, 1080 });
 
 

@@ -646,8 +646,7 @@ void BookBaseActor::UpdatePage(const BookPage& page)
         {
             Logger::Log(u8"ステージ選択");
             // ステージ決定音
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
-            //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
 
             if (stage->stage == STAGE_NAME::TUTORIAL)
             {// チュートリアルを選択した時のみ

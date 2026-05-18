@@ -9,7 +9,7 @@ void ScissorsUiEndActor::Initialize(const Transform& transform)
     auto uiManager = GetOwnerScene()->GetUIManager();
 
     // クリアのスプライト描画コンポーネントを追加
-    finishImageComponent = std::make_shared<UIImageComponent>("./Data/Textures/UI/finish.png", "finish_ui");
+    finishImageComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/finish.png", "finish_ui");
     finishImageComponent->SetWorldPosition({ 1920.0f * 0.5f, 1080.0f * 0.5f });
     finishImageComponent->SetVisible(true);
     finishImageComponent->SetScale({ 1.0f, 1.0f });
@@ -149,7 +149,7 @@ void ScissorsUiEndActor::Play()
     }
 
     // 音を再生
-    CoreAudio::PlayOneShot(L"./Data/Sound/SE/se_end.wav");
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/se_end.wav");
 
 }
 

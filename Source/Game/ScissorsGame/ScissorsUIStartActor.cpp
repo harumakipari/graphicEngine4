@@ -160,7 +160,7 @@ void ScissorsUIStartActor::PlayReady(const std::function<void()>& onFinished)
 
 
     // ‰¹‚ğÄ¶
-    CoreAudio::PlayOneShot(L"./Data/Sound/SE/ready_se.wav");    // ready 
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/se_ready.wav");    // ready 
 
     // ƒQ[ƒ€‚Ì“ü—Íˆ—‚ğ~‚ß‚é
 #if 0
@@ -178,7 +178,7 @@ void ScissorsUIStartActor::PlayReady(const std::function<void()>& onFinished)
 
 void ScissorsUIStartActor::PlayGo()
 {
-    CoreAudio::PlayOneShot(L"./Data/Sound/SE/se_start.wav");    // go
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/se_start.wav");    // go
 
     // position ‚Ì easing
     {

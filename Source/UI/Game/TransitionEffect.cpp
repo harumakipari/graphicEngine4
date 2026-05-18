@@ -34,7 +34,7 @@ void ScaleTransitionEffect::Initialize()
 #endif // 0
     const auto scene = Scene::GetCurrentScene();
 
-    sprite = std::make_shared<UISceneChangeComponent>("./Data/Textures/UI/Oden_seane_change.png", "sceneChange");
+    sprite = std::make_shared<UISceneChangeComponent>("./Data/Textures/ScissorsUI/scene_change.png", "sceneChange");
     sprite->SetWorldPosition({ width * 0.5f, height * 0.5f });
     sprite->SetPivot({ 0.5f,0.5f });
     sprite->SetScale({ startScale,startScale });
