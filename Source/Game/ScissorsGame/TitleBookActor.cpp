@@ -108,6 +108,10 @@ void TitleBookActor::Initialize(const Transform& transform)
     controlAButton->SetPivot({ 0.5f,0.5f });
     controlAButton->SetVisible(false);
     uiManager->Add(controlAButton);
+
+    // タイトルシーンの本は最初は閉じている状態なので、ステージ選択のインデックスは0にしておく
+    selectedStageIndex = 0;
+
 }
 
 void TitleBookActor::Update(float deltaTime)

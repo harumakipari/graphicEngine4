@@ -793,6 +793,9 @@ void TutorialScene::SetupBGM(STAGE_NAME stageId)
         break;
     }
 
+    audioComp->SetIsBgm(true);
+    audioComp->SetLoop(true);
+    audioComp->SetVolume(0.5f);
 
 }
 

@@ -80,6 +80,7 @@ private:
     std::shared_ptr<UISceneChangeComponent> sprite = nullptr;
     std::shared_ptr<UIImageComponent> backImage;
     std::shared_ptr<UIImageComponent> chipsImage;
+    std::shared_ptr<UIImageComponent> chipsFrameImage;
 
     std::vector<TipsData> tipsDatabase;// チップスデータ
 

@@ -103,10 +103,19 @@ void LoadingScene::Start()
 
     std::shared_ptr<Sprite> chipSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png");
 
+    DirectX::XMFLOAT2 tipsSize = { 750.0f,168.0f };
+    DirectX::XMFLOAT2 tipsPos = { 20.0f,880.0f };
+
+
     chipsImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tips/player_lore.png", "chipsImage");
-    chipsImage->SetSize({ 440, 132 });
-    chipsImage->SetWorldPosition({ 20, 880 });
+    chipsImage->SetSize(tipsSize);
+    chipsImage->SetWorldPosition(tipsPos);
     chipsImage->SetTexture(chipSprite);
+
+    chipsFrameImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tips/tips_frame.png", "tips_frame");
+    chipsFrameImage->SetSize(tipsSize);
+    chipsFrameImage->SetWorldPosition(tipsPos);
+
 
     ApplyTipsTextures();
 
@@ -153,6 +162,7 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime
     }
     //SceneBase::Render(immediateContext, deltaTime);
     backImage->Draw(immediateContext);
+    chipsFrameImage->Draw(immediateContext);
     chipsImage->Draw(immediateContext);
     if (loadingSprite)
     {
@@ -364,9 +374,9 @@ void LoadingScene::SetTipsData()
             TipsCategory::ReturnTitle,
                 "TUTORIAL",
             {
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
+                 //L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
+                 //L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
+                 //L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
                  L"./Data/Textures/ScissorsUI/Tips/game_hint_1.png",
                  L"./Data/Textures/ScissorsUI/Tips/game_hint_2.png",
                  L"./Data/Textures/ScissorsUI/Tips/needle_hint_1.png",
@@ -503,6 +513,7 @@ void LoadingScene::ApplyTipsTextures()
 
     auto stats = ScoreSystem::GetResultStats();
     std::string stage;
+    stage = std::string(magic_enum::enum_name(stats.stageName));
     if (param.contains("stage"))
     {// 何のステージを遊ぶかor遊んだか
         stage = param.at("stage");
@@ -510,7 +521,6 @@ void LoadingScene::ApplyTipsTextures()
         Logger::Log("stage" + stage);
     }
 
-    stage = std::string(magic_enum::enum_name(stats.stageName));
 
 
     // 次にどこのシーンに行くか

@@ -278,6 +278,11 @@ void InputSystem::Initialize()
     inputKeys["UIUp"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_DPAD_UP));
     inputKeys["UIDown"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_DPAD_DOWN));
 
+    // コントローラーとキーボード対応させる
+    inputKeys["UILeft"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_DPAD_LEFT));
+    inputKeys["UIRight"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_DPAD_RIGHT));
+
+
     inputKeys["UIUp"].emplace_back(std::make_unique<Keyboard>(VK_UP));
     inputKeys["UIDown"].emplace_back(std::make_unique<Keyboard>(VK_DOWN));
 

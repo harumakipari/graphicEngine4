@@ -4,12 +4,12 @@
 enum class STAGE_NAME :int
 {
     TUTORIAL = 0,
-    FIRST,
-    BOBBIN_FIRST,
-    REFLECT_WALL,
-    BOBBIN_SECOND,
-    DIFFICULT,
-    BOSS,
+    FIRST=1,
+    BOBBIN_FIRST=2,
+    REFLECT_WALL=3,
+    DIFFICULT=4,
+    BOSS=5,
+    BOBBIN_SECOND=7,
 };
 
 struct StageTimeData

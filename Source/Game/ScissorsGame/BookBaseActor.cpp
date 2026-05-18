@@ -490,7 +490,16 @@ void BookBaseActor::CreateBookModel(const std::string& backCoverModelName, const
 
 #endif // 0
 
-    selectedStageIndex = 0;
+    int clearIndex = static_cast<int>(ScoreSystem::GetResultStats().stageName);
+
+    if (clearIndex > 0)
+    {
+        selectedStageIndex = clearIndex;
+    }
+    else
+    {
+        selectedStageIndex = 0;
+    }
 
     // AボタンのUIを生成する
     auto uiManager = GetOwnerScene()->GetUIManager();
@@ -645,6 +654,17 @@ void BookBaseActor::UpdatePage(const BookPage& page)
                 // 遊ぶステージ名を記録する
                 ScoreSystem::RecordStageName(stage->stage);
 
+                SceneTransitionManager::SceneTransitionParam param;
+
+                param["preload"] = "TutorialScene";
+                param["stage"] = std::string(magic_enum::enum_name(stage->stage));
+                param["fromScene"] = "StageSelect";
+
+                SceneTransitionManager::Instance().RequestTransition(
+                    "LoadingScene",
+                    param
+                );
+#if 0
                 SceneTransitionManager::Instance().RequestTransition(
                     "LoadingScene",
                     {
@@ -656,6 +676,8 @@ void BookBaseActor::UpdatePage(const BookPage& page)
                         },
                         {"fromScene","StageSelect"},
                     });
+
+#endif // 0
             }
             else
             {
@@ -758,12 +780,26 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
         stickDelay = 0.2f;
         moved = true;
     }
+    else if (InputSystem::GetInputState("UILeft", InputStateMask::Trigger))
+    {
+        MoveSelection(-3);
+        stickDelay = 0.2f;
+        moved = true;
+    }
+    else if (InputSystem::GetInputState("UIRight", InputStateMask::Trigger))
+    {
+        MoveSelection(3);
+        stickDelay = 0.2f;
+        moved = true;
+    }
+
 
     // =========================
     // スティック入力（D-Pad優先）
     // =========================
     if (!moved && stickDelay <= 0.0f)
     {
+#if 0
         auto stick = InputSystem::GetLeftStick();
 
         if (stick.y > 0.6f)
@@ -776,6 +812,50 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
             MoveSelection(1);
             stickDelay = 0.2f;
         }
+#else
+        auto leftStick = InputSystem::GetLeftStick();
+        auto rightStick = InputSystem::GetRightStick();
+
+        auto handleStick = [&](const auto& stick)
+            {
+                // 縦移動（±1）
+                if (stick.y > 0.6f)
+                {
+                    MoveSelection(-1);
+                    stickDelay = 0.2f;
+                    return true;
+                }
+                else if (stick.y < -0.6f)
+                {
+                    MoveSelection(1);
+                    stickDelay = 0.2f;
+                    return true;
+                }
+
+                // 横移動（±3）
+                if (stick.x > 0.6f)
+                {
+                    MoveSelection(3);
+                    stickDelay = 0.2f;
+                    return true;
+                }
+                else if (stick.x < -0.6f)
+                {
+                    MoveSelection(-3);
+                    stickDelay = 0.2f;
+                    return true;
+                }
+
+                return false;
+            };
+
+        // 左スティック優先 → 右スティック
+        if (!handleStick(leftStick))
+        {
+            handleStick(rightStick);
+        }
+
+#endif // 0
     }
 
     for (auto& stage : leftPage.stages)
@@ -879,6 +959,20 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
 
             if (stage->stage == STAGE_NAME::TUTORIAL)
             {
+                SceneTransitionManager::SceneTransitionParam param;
+
+                param["preload"] = "TutorialScene";
+                param["stage"] = std::string(magic_enum::enum_name(stage->stage));
+                param["fromScene"] = "StageSelect";
+
+                SceneTransitionManager::Instance().RequestTransition(
+                    "LoadingScene",
+                    param
+                );
+
+
+#if 0
+
                 SceneTransitionManager::Instance().RequestTransition(
                     "LoadingScene",
                     {
@@ -889,23 +983,39 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
                                 magic_enum::enum_name(stage->stage))
                         }
                     });
+
+#endif // 0
             }
             else
             {
+
+                SceneTransitionManager::SceneTransitionParam param;
+
+                param["preload"] = "GameScene";
+                param["stage"] = std::string(magic_enum::enum_name(stage->stage));
+                param["fromScene"] = "StageSelect";
+
                 SceneTransitionManager::Instance().RequestTransition(
                     "LoadingScene",
-                    {
-                        {"preload", "GameScene"},
-                        {
-                            "stage",
-                            std::string(
-                                magic_enum::enum_name(stage->stage))
-                        },
-                        {
-                            "fromScene",
-                            "SelectScene"
-                        }
-                    });
+                    param
+                );
+
+
+
+                //SceneTransitionManager::Instance().RequestTransition(
+                //    "LoadingScene",
+                //    {
+                //        {"preload", "GameScene"},
+                //        {
+                //            "stage",
+                //            std::string(
+                //                magic_enum::enum_name(stage->stage))
+                //        },
+                //        {
+                //            "fromScene",
+                //            "SelectScene"
+                //        }
+                //    });
             }
 
         }
@@ -928,7 +1038,8 @@ void BookBaseActor::MoveSelection(int dir)
 
     if (selectedStageIndex >= count)
     {
-        selectedStageIndex = 0;
+        //selectedStageIndex = 0;
+        selectedStageIndex = count - 1;
     }
     if (selectedStageIndex < 0)
     {

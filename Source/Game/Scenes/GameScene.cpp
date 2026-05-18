@@ -242,7 +242,7 @@ void GameScene::Start()
         currentStageName = StringToStageName(stageName);
     }
 
-    currentStageName = STAGE_NAME::BOSS;
+    //currentStageName = STAGE_NAME::BOSS;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(currentStageName);
