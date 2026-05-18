@@ -44,7 +44,7 @@ void RabbitBossAttackSelectState::Enter()
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     BossAttackType type = PopAttack();
-    //type = BossAttackType::Buff;
+    type = BossAttackType::Buff;
 #if 1
     switch (type)
     {
@@ -534,6 +534,8 @@ void RabbitBossDeathState::Enter()
     spawnedFinalCoins = false;
     //enemy->ChangeEnemyState(EnemyBase::YarnState::Dead);
     //enemy->CallDeath(false);
+    enemy->tearStart = false;
+
 
 }
 
@@ -577,7 +579,7 @@ void RabbitBossDeathState::Execute(float deltaTime)
             // スタンのアニメーション
             enemy->SetAnimationRate(1.5f);
             enemy->PlayAnimation("Stan", false, true, 0.1f);
-
+            elapsedTime = 0.0f;
         }
         break;
     }
@@ -586,6 +588,7 @@ void RabbitBossDeathState::Execute(float deltaTime)
         if (!enemy->GetAnimationController()->IsPlayAnimation())
         {
             phase = DeathPhase::Tear;
+            elapsedTime = 0.0f;
             //enemy->SpawnTearEffect();
         }
         break;
@@ -683,6 +686,10 @@ void RabbitBossDeathState::Execute(float deltaTime)
             }
         }
 #endif // 0
+        float t = std::clamp(elapsedTime / 1.5f, 0.0f, 1.0f);
+        enemy->tearStart = true;
+        t = t * t * (3.0f - 2.0f * t);
+        enemy->morphX = 1.0f - t;
 
         if (elapsedTime > 1.5f)
         {

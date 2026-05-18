@@ -16,6 +16,7 @@
 #include "Game/Actors/Player/Player.h"
 #include "Game/Actors/Stage/Cloth.h"
 #include "Game/ScissorsGame/BobbinActor.h"
+#include "Game/ScissorsGame/BossSpawner.h"
 #include "Game/ScissorsGame/ButtonBombActor.h"
 #include "Game/ScissorsGame/ButtonCoinActor.h"
 #include "Game/ScissorsGame/ComboUiActor.h"
@@ -25,6 +26,7 @@
 #include "Game/ScissorsGame/ItemHeartActor.h"
 #include "Game/ScissorsGame/NeedleEnemyActor.h"
 #include "Game/ScissorsGame/RabbitBossEnemy.h"
+#include "Game/ScissorsGame/RabbitBossState.h"
 #include "Game/ScissorsGame/ScissorsGameManager.h"
 
 
@@ -364,6 +366,11 @@ void GameScene::Update(float deltaTime)
 
     // スコアシステムの更新処理
     ScoreSystem::Update(deltaTime, playerIsDashing);
+
+    if (auto boss = GetActorManager()->GetActorOfType<RabbitBossEnemyActor>())
+    {
+        gameSceneCBuffer->data.morphWeights.x = boss->morphX;
+    }
 
     // 死亡演出
     if (currentStageName == STAGE_NAME::BOSS)
@@ -805,12 +812,12 @@ void GameScene::SetUpActors()
     mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(30), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 20.f, 500.0f);
 
-    Transform cameraTargetTr(DirectX::XMFLOAT3{ 11.792f,10.5f,-9.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
-    mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
     //Transform cameraTargetTr(DirectX::XMFLOAT3{ 11.792f,10.5f,-9.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    //auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<GameCameraTargetActor>("cameraTargetActor", cameraTargetTr);
+    //auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
     //mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ 11.792f,10.5f,-9.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<GameCameraTargetActor>("cameraTargetActor", cameraTargetTr);
+    mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
 
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-31.0f));
@@ -891,6 +898,21 @@ void GameScene::SetUpActors()
     //auto scissorsUiTimeActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ScissorsUiTimerActor>("timeActor", timerActorTransform);
 
     //SpawnEnemy({ 10.5f,0,5 }, YarnEnemyType::Static,true);
+
+
+    morphModel = std::make_unique<MorphModel>(Graphics::GetDevice(), "./Data/TeamModels/Enemy/MorphTearModel.gltf");
+
+    RegisterRenderHook(RenderPass::ForwardBlend, [&](ID3D11DeviceContext* immediateContext)
+        {
+            if (const auto boss = GetActorManager()->GetActorOfType<RabbitBossEnemyActor>())
+            {
+                if (boss->tearStart)
+                {// 涙開始していたら。
+                    DirectX::XMFLOAT4X4 world = boss->bossTearSceneComponent->GetComponentWorldTransform().ToWorldTransform();
+                    morphModel->Render(immediateContext, world, {}, MorphModel::RenderPass::All);
+                }
+            }
+        });
 
 }
 
@@ -1407,6 +1429,7 @@ void GameScene::DrawGui()
 
 
     ImGui::Begin(U8("調整"));
+    ImGui::SliderFloat4("morphWeight", &gameSceneCBuffer->data.morphWeights.x, 0.0f, 1.0f);
     if (ImGui::TreeNode(U8("ゲームオーバー演出")))
     {
         ImGui::DragFloat(U8("半径"), &gameOverRadius, 0.1f, -0.1f, 2.0f);

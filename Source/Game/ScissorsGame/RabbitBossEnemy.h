@@ -141,6 +141,13 @@ public:
     std::shared_ptr<CoreAudioSourceComponent> bossStunAudioComponent;// ボスの混乱音コンポーネント
     std::shared_ptr<CoreAudioSourceComponent> bossPreBuffAudioComponent;// ボスの敵強化音コンポーネント
 
+    std::shared_ptr<SkeletalMeshComponent> bossTearModel; //　ボスの涙のモデル
+    std::shared_ptr<SceneComponent> bossTearSceneComponent; //　ボスの涙のモデルの場所
+
+
+    float morphX = 1.0f;    // モーフターゲットの値
+    bool tearStart = false; // 涙開始
+
     DirectX::XMFLOAT3 stunModelInitAngle={0.0f,0.0f,0.0f};  // 初期のスタンモデルの角度
 
     // 再スタン防止タイマー

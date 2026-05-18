@@ -12,6 +12,7 @@
 #include "ScissorsPlayerStateDerived.h"
 #include "WaveManagaer.h"
 #include "Engine/Scene/Scene.h"
+#include "Game/Actors/WaterSphere/WaterSphere.h"
 #include "Physics/CollisionFunction.h"
 
 static CoreColor LerpColor(const CoreColor& a, const CoreColor& b, float t)
@@ -63,6 +64,19 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     stateMachine_->RegisterState(std::make_unique<RabbitBossStunState>(this));
     stateMachine_->RegisterState(std::make_unique<RabbitBossDeathState>(this));
     stateMachine_->RegisterState(std::make_unique<RabbitBossWinState>(this));
+
+     //ボス涙モデル
+    //bossTearModel = AddComponent<SkeletalMeshComponent>("bossTearModel", parentName);
+    //bossTearModel->SetModel("./Data/TeamModels/Enemy/TearModel.gltf", false, true);
+    //bossTearModel->SetRelativeLocationDirect({ -0.7f,3.6f,1.7f });
+    bossTearSceneComponent = AddComponent<SceneComponent>("bossTearModel", parentName);
+    bossTearSceneComponent->SetRelativeLocationDirect({ -0.7f,3.7f,1.7f });
+
+
+    //morphModel = AddComponent<MorphMeshComponent>("morphMesh",parentName);
+    //morphModel->SetModel("./Data/TeamModels/Enemy/MorphTearModel.gltf", false);
+    //morphModel->SetRelativeLocationDirect({ -0.7f,3.6f,1.7f });
+    //morphModel->SetIsCastShadow(false);
 
     // ステートマシンを character に追加
     this->SetStateMachine(stateMachine_);

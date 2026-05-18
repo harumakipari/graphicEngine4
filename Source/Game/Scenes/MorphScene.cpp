@@ -66,44 +66,44 @@ bool MorphScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
 
 void MorphScene::Start()
 {
-    auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
-    auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
-    audioComp->SetSource(L"./Data/Sound/BGM/title.wav");
-    audioComp->SetLoop(true);
-    audioComp->Play();
-    audioComp->SetVolume(0.2f);
+    //auto audioActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("Audio");
+    //auto audioComp = audioActor->AddComponent<CoreAudioSourceComponent>("audioSource");
+    //audioComp->SetSource(L"./Data/Sound/BGM/title.wav");
+    //audioComp->SetLoop(true);
+    //audioComp->Play();
+    //audioComp->SetVolume(0.2f);
 
     //std::shared_ptr<Sprite> uiSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/UI/icon_chara.png");
 
-    std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("./Data/Textures/UI/icon_chara.png", "image");
-    image->SetWorldPosition({ 50, 50 });
-    image->SetSize({ 200, 200 });
+    //std::shared_ptr<UIImageComponent> image = std::make_shared<UIImageComponent>("./Data/Textures/UI/icon_chara.png", "image");
+    //image->SetWorldPosition({ 50, 50 });
+    //image->SetSize({ 200, 200 });
 
-    uiManager->Add(image);
+    //uiManager->Add(image);
 
 
-    std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/icon_chara.png", "button");
-    button->SetWorldPosition({ 300, 50 });
-    button->SetSize({ 200, 80 });
+    //std::shared_ptr<UIButtonComponent> button = std::make_shared<UIButtonComponent>("./Data/Textures/UI/icon_chara.png", "button");
+    //button->SetWorldPosition({ 300, 50 });
+    //button->SetSize({ 200, 80 });
 
-    uiManager->Add(button);
+    //uiManager->Add(button);
 
-    std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/boss_hp_frame.png", "./Data/Textures/UI/boss_hp.png", "gauge");
-    gauge->SetWorldPosition({ 50, 300 });
-    gauge->SetSize({ 300, 40 });
+    //std::shared_ptr<UIGaugeComponent> gauge = std::make_shared<UIGaugeComponent>("./Data/Textures/UI/boss_hp_frame.png", "./Data/Textures/UI/boss_hp.png", "gauge");
+    //gauge->SetWorldPosition({ 50, 300 });
+    //gauge->SetSize({ 300, 40 });
 
-    uiManager->Add(gauge);
+    //uiManager->Add(gauge);
 
-    // ボタンでゲージ減らす
-    button->onClick = [gauge]()
-        {
-            static float value = 1.0f;
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
-            value -= 0.1f;
-            if (value < 0.0f)
-                value = 0.0f;
-            gauge->SetValue(value, 1.0f);
-        };
+    //// ボタンでゲージ減らす
+    //button->onClick = [gauge]()
+    //    {
+    //        static float value = 1.0f;
+    //        CoreAudio::PlayOneShot(L"./Data/Sound/SE/task_clear.wav");
+    //        value -= 0.1f;
+    //        if (value < 0.0f)
+    //            value = 0.0f;
+    //        gauge->SetValue(value, 1.0f);
+    //    };
 
     // シーンが切り替わった時に
    // SceneTransitionManager::Instance().NotifySceneChanged();
@@ -135,7 +135,7 @@ void MorphScene::SetUpActors()
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
 
     Transform enemyTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,180.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<SkeletonWarriorActor>("enemy", enemyTr);
+    auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("enemy", enemyTr);
 
     mainCameraActor->SetTarget(enemy->GetRootComponent());
     SetActiveCamera(mainCameraActor);
@@ -148,10 +148,10 @@ void MorphScene::SetUpActors()
     debugCameraActor->SetPosition({ 0.0f,10.0f,-20.0f });
 
     Transform buildTr(DirectX::XMFLOAT3{ -5.0f,1.0f,3.0 }, DirectX::XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    //auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaterSphere>("morphModel", buildTr);
-    auto sphere = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("sphere", buildTr);
-    auto model = sphere->AddComponent<SkeletalMeshComponent>("skeletalMesh");
-    model->SetModel("./Data/Models/Primitives/sphere.glb");
+    auto building = this->GetActorManager()->CreateAndRegisterActorWithTransform<WaterSphere>("morphModel", buildTr);
+    //auto sphere = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("sphere", buildTr);
+    //auto model = sphere->AddComponent<SkeletalMeshComponent>("skeletalMesh");
+    //model->SetModel("./Data/Models/Primitives/sphere.glb");
 
 
 

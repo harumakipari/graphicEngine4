@@ -13,7 +13,9 @@ public:
         std::shared_ptr<MorphMeshComponent> skeletalMesh = AddComponent<MorphMeshComponent>("morphMesh");
         //skeletalMesh->SetModel("./Data/Models/Morph/morphSphere.gltf", false);
         skeletalMesh->SetModel("./Data/Models/Morph/morphSphere_shape2.gltf", false);
+        skeletalMesh->SetIsCastShadow(false);
     }
+
 
     void Update(float elapsedTime)override {}
 };

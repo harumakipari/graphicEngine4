@@ -1,5 +1,20 @@
 #include "GltfModel.hlsli"
 
+cbuffer GAME_SCENE_CONSTANT_BUFFER : register(b12)
+{
+    float2 playerScreenPosition; //プレイヤーの場所　死亡演出に必要な定数バッファ
+    float2 screenSize;
+
+    float radius = 0.0f;
+    float3 gameOverColor;
+
+
+    float4 gameMorphWeights;
+};
+
+
+
+
 VS_OUT main(MORPH_VS_IN vin)
 {
     float sigma = vin.tangent.w;
@@ -9,8 +24,12 @@ VS_OUT main(MORPH_VS_IN vin)
 
     float m_weights[4]=
     {
-        morphWeights.x,morphWeights.y,morphWeights.z,morphWeights.w
+        gameMorphWeights.x, gameMorphWeights.y, gameMorphWeights.z, gameMorphWeights.w
     };
+    //float m_weights[4]=
+    //{
+    //    morphWeights.x,morphWeights.y,morphWeights.z,morphWeights.w
+    //};
 
     for (int i = 0; i < 4; i++)
     {

@@ -18,6 +18,7 @@ cbuffer GAME_SCENE_CONSTANT_BUFFER : register(b12)
     float2 playerScreenPosition ; //プレイヤーの場所　死亡演出に必要な定数バッファ
     float2 screenSize; 
     float radius = 0.0f;
+
 };
 
 

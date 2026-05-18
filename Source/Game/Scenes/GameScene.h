@@ -165,8 +165,12 @@ private:
     {
         DirectX::XMFLOAT2 playerScreenPosition = { 0.0f,0.0f };  //プレイヤーの場所　死亡演出に必要な定数バッファ
         DirectX::XMFLOAT2 screenSize = { 1280.0f,720.0f };  //スクリーンサイズ
+
         float radius = 0.0f;
         DirectX::XMFLOAT3 gameOverColor = { 0.965f,0.588f,0.475f };
+        
+
+        DirectX::XMFLOAT4 morphWeights = { 1.0f,1.0f,1.0f,1.0f };
     };
     std::shared_ptr<ConstantBuffer<GameSceneConstants>> gameSceneCBuffer;
 #endif // 0
@@ -188,4 +192,6 @@ private:
     STAGE_NAME currentStageName = STAGE_NAME::FIRST;    // 今遊んでいるステージ名
     float gameOverRadius = 0.0f;// ゲームオーバー時の半径の調整
     float gameOverTargetPosY = 2.5f;    // ゲームオーバー時のボスの高さの調整
+
+    std::unique_ptr<MorphModel> morphModel;
 };
