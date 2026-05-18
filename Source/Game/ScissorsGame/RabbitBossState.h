@@ -205,7 +205,10 @@ public:
 
 private:
     float stunTimer = 0.0f;
-    float stunTimerInterval = 6.5f; // 何秒間スタンさせるか
+    float stunTimerInterval = 5.0f; // 何秒間スタンさせるか
+    float stunRotateAngle = 0.0f;
+    float elapsedTime = 0.0f; // 経過時間
+
 };
 
 // 死亡オブジェクト

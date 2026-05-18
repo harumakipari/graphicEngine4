@@ -769,6 +769,18 @@ void EnemyBase::HideEnemyVisual()
     powerUpMarkMeshComponent->SetIsCastShadow(false);
     powerUpArrowMarkMeshComponent->SetIsVisible(false);
     powerUpArrowMarkMeshComponent->SetIsCastShadow(false);
+
+    if (scissorsFirstMeshComponent)
+    {
+        scissorsFirstMeshComponent->SetIsVisible(false);
+    }
+    if (scissorsSecondMeshComponent)
+    {
+        scissorsSecondMeshComponent->SetIsVisible(false);
+    }
+
+
+
 }
 
 // ƒRƒCƒ“‚ğ¶¬‚·‚é

@@ -241,7 +241,7 @@ void GameScene::Start()
         currentStageName = StringToStageName(stageName);
     }
 
-    //currentStageName = STAGE_NAME::BOSS;
+    currentStageName = STAGE_NAME::REFLECT_WALL;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(currentStageName);
@@ -806,8 +806,11 @@ void GameScene::SetUpActors()
     mainCameraComponent->SetPerspective(DirectX::XMConvertToRadians(30), Graphics::GetScreenWidth() / Graphics::GetScreenHeight(), 20.f, 500.0f);
 
     Transform cameraTargetTr(DirectX::XMFLOAT3{ 11.792f,10.5f,-9.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<GameCameraTargetActor>("cameraTargetActor", cameraTargetTr);
+    auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
     mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
+    //Transform cameraTargetTr(DirectX::XMFLOAT3{ 11.792f,10.5f,-9.8f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    //auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<GameCameraTargetActor>("cameraTargetActor", cameraTargetTr);
+    //mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
 
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-31.0f));

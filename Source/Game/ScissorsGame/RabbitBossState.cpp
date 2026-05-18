@@ -44,7 +44,7 @@ void RabbitBossAttackSelectState::Enter()
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     BossAttackType type = PopAttack();
-    //type = BossAttackType::Buff;
+    type = BossAttackType::Buff;
 #if 1
     switch (type)
     {
@@ -103,7 +103,6 @@ void RabbitBossAttackWarpPreviewState::Enter()
 {
     enemy->PlayAnimation("WarpStart", false, true, 0.1f);
     elapsedTime = 0.0f;
-
 }
 
 void RabbitBossAttackWarpPreviewState::Execute(float deltaTime)
@@ -118,6 +117,7 @@ void RabbitBossAttackWarpPreviewState::Execute(float deltaTime)
 void RabbitBossAttackWarpPreviewState::Exit()
 {
     // 沈みのSEを再生する
+    Logger::Log(U8("ワープ開始音再生"));
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/boss_warp_start.wav", 1.5f);
 }
 
@@ -396,11 +396,13 @@ void RabbitBossAttackBuffState::Exit()
 void RabbitBossStunState::Enter()
 {
     stunTimer = stunTimerInterval;
+    //enemy->stunModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
 
-    // スタンのモデルの見た目をオンにする
-    enemy->stunModel->SetIsVisible(true);
     // 当たり判定を有効にする
     enemy->collisionBoxComponent->EnableCollision();
+
+    // 初期の回転をリセット
+    stunRotateAngle = 0.0f;
 
     // 全ての敵の玉止めする
     enemy->ApplyTiedAllEnemy();
@@ -418,14 +420,46 @@ void RabbitBossStunState::Enter()
         bossSpawner->Deactivate();
     }
 
+    elapsedTime = 0.0f; // 経過時間
 }
 
 void RabbitBossStunState::Execute(float deltaTime)
 {
+    elapsedTime += deltaTime;
     stunTimer -= deltaTime;
+
+    if (elapsedTime > 0.5f && stunTimer > 0.0f)
+    {
+        // スタンのモデルの見た目をオンにする
+        enemy->stunModel->SetIsVisible(true);
+    }
+
+
     if (stunTimer < 0.0f)
     { // 待機を挟まず即ワープ
         enemy->GetStateMachine()->ChangeState("WarpPreview");
+        enemy->stunModel->SetIsVisible(false);
+    }
+
+    if (enemy->stunModel)
+    {// スタンモデルの見た目を回転させる
+        float rotateSpeed = 60.0f;
+
+        stunRotateAngle += rotateSpeed * deltaTime;
+
+        // WorldY回転
+        DirectX::XMVECTOR worldRot = DirectX::XMQuaternionRotationRollPitchYaw(0.0f, XMConvertToRadians(stunRotateAngle), 0.0f);
+
+        // 初期傾き
+        DirectX::XMVECTOR  tiltRot = DirectX::XMQuaternionRotationRollPitchYaw(XMConvertToRadians(16.05f), XMConvertToRadians(0.0f), XMConvertToRadians(-20.0f));
+
+        // Y回転 → 傾き
+        DirectX::XMVECTOR  finalRot = DirectX::XMQuaternionMultiply(worldRot, tiltRot);
+
+        DirectX::XMFLOAT4 rotation;
+        DirectX::XMStoreFloat4(&rotation, finalRot);
+
+        enemy->stunModel->SetRelativeRotationDirect(rotation);
     }
 }
 
@@ -447,7 +481,6 @@ void RabbitBossStunState::Exit()
     {
         bossSpawner->Activate();
     }
-
 
 }
 
@@ -657,7 +690,7 @@ void RabbitBossDeathState::Execute(float deltaTime)
             SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("fromScene","GameScene") });
         }
     }
-        break;
+    break;
 
     case DeathPhase::Finish:
         break;

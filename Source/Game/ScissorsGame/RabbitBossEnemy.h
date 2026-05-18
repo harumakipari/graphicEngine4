@@ -90,6 +90,9 @@ public:
     // 死亡演出が終了した時に呼ぶ処理
     void EndDeathPerform(bool playerDeath);
 
+    // 周囲の敵を非表示
+    void HideNearByRadius(float radius);
+
     //　勝利時に呼ぶ更新処理
     void UpdateWin(float deltaTime) {}
 
@@ -138,6 +141,8 @@ public:
     std::shared_ptr<CoreAudioSourceComponent> bossStunAudioComponent;// ボスの混乱音コンポーネント
     std::shared_ptr<CoreAudioSourceComponent> bossPreBuffAudioComponent;// ボスの敵強化音コンポーネント
 
+    DirectX::XMFLOAT3 stunModelInitAngle={0.0f,0.0f,0.0f};  // 初期のスタンモデルの角度
+
     // 再スタン防止タイマー
     float stunCooldownTimer = 0.0f;
     // 再スタン防止時間
@@ -161,7 +166,8 @@ private:
     std::shared_ptr<UIGaugeComponent> gaugeUi; // ボスHPのゲージUI
     DirectX::XMFLOAT2 gaugeUiOffset = { 0.0f,0.0f }; // ゲージのUIオフセット値
     DirectX::XMFLOAT2 gaugeFrameOffset = { 6.0f,0.0f }; // ゲージフレームのオフセット値
-    DirectX::XMFLOAT2 gaugeUiPos = { 506.0f,34.0f };   // ゲージのposition
+    DirectX::XMFLOAT2 gaugeUiPos = { 540.0f,6.0f };   // ゲージのposition
+    //DirectX::XMFLOAT2 gaugeUiPos = { 506.0f,34.0f };   // ゲージのposition
 
     float diveOffsetY = 0.0f;
     bool isDiving = false;

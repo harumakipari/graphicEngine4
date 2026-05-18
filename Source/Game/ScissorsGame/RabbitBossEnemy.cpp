@@ -158,11 +158,12 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     }
 
     // スタンモデルを生成
-    stunModel = AddComponent<SkeletalMeshComponent>(parentName);
+    stunModel = AddComponent<SkeletalMeshComponent>("StunModel", parentName);
     stunModel->SetModel("./Data/TeamModels/Item/StunVisualModel.glb", false, true);
     stunModel->SetIsCastShadow(false);
     stunModel->SetIsVisible(false);
-
+    stunModel->SetRelativeLocationDirect({ 1.1f,5.5f,2.0f });
+    stunModel->SetRelativeEulerRotationDirect({ 16.05f,0.0f,-20.0f });
 
     // 出現ポイント
     spawnPoints =
@@ -200,7 +201,6 @@ void RabbitBossEnemyActor::Update(float deltaTime)
             stunCooldownTimer -= deltaTime;
         }
     }
-
 
     // HPバーの処理
     {
@@ -588,6 +588,12 @@ void RabbitBossEnemyActor::EndDeathPerform(bool playerDeath)
         endPerform = true;
         gameManager->EndGame(playerDeath);
     }
+}
+
+// 周囲の敵を非表示
+void RabbitBossEnemyActor::HideNearByRadius(float radius)
+{
+    
 }
 
 // 出現している全ての敵を玉止めする関数

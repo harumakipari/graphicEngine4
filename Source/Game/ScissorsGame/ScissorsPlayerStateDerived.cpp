@@ -656,6 +656,8 @@ void ScissorsPlayerDashState::Execute(float deltaTime)
             {
                 // 無視する
                 Logger::Warning(U8("ボスとボビンでレイキャストがおかしくなっています！"));
+                player->GetStateMachine()->ChangeState("Idle");
+
                 return;
             }
 
