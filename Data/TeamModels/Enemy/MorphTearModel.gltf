@@ -15,28 +15,31 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Sphere",
+			"name":"BossTearModel",
+			"rotation":[
+				-0.08003538101911545,
+				-0.010316004045307636,
+				0.1274186074733734,
+				0.9885609149932861
+			],
 			"scale":[
-				0.24045874178409576,
-				0.37335216999053955,
-				0.2093159705400467
+				1.1785438060760498,
+				1.178544044494629,
+				0.6977641582489014
 			]
 		}
 	],
 	"materials":[
 		{
-"alphaMode": "BLEND",
-			"doubleSided":true,
-			"name":"Material.001",
+			"name":"lambert2",
 			"pbrMetallicRoughness":{
 				"baseColorFactor":[
-					0.0025085783563554287,
-					0.5837586522102356,
-					0.8002997636795044,
+					0.4000000059604645,
+					0.4000000059604645,
+					0.4000000059604645,
 					1
 				],
-				"metallicFactor":0,
-				"roughnessFactor":0.5
+				"metallicFactor":0
 			}
 		}
 	],
@@ -44,10 +47,10 @@
 		{
 			"extras":{
 				"targetNames":[
-					"Key 1"
+					"Tear"
 				]
 			},
-			"name":"Sphere",
+			"name":"Mesh_0",
 			"primitives":[
 				{
 					"attributes":{
@@ -66,7 +69,7 @@
 				}
 			],
 			"weights":[
-				1
+				0
 			]
 		}
 	],
@@ -74,101 +77,101 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":1984,
+			"count":276,
 			"max":[
-				0.9999992251396179,
-				0.2343009114265442,
-				0.9999992251396179
+				0.13694363832473755,
+				0.011549770832061768,
+				0.13677148520946503
 			],
 			"min":[
-				-0.9999995231628418,
-				-1.7656989097595215,
-				-1
+				-0.13694362342357635,
+				-0.5709584355354309,
+				-0.13677145540714264
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":1984,
+			"count":276,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":1984,
+			"count":276,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":2880,
+			"count":1440,
 			"type":"SCALAR"
 		},
 		{
 			"bufferView":4,
 			"componentType":5126,
-			"count":1984,
+			"count":276,
 			"max":[
-				0.592151403427124,
-				1.5487405061721802,
-				0.6270588040351868
+				0.1345842182636261,
+				0.5067169666290283,
+				0.1394977867603302
 			],
 			"min":[
-				-0.5921515822410583,
-				-0.2079993486404419,
-				-0.6270583868026733
+				-0.00106277025770396,
+				-0.004001371096819639,
+				-0.0011015849886462092
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":5,
 			"componentType":5126,
-			"count":1984,
+			"count":276,
 			"type":"VEC3"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":23808,
+			"byteLength":3312,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":23808,
-			"byteOffset":23808,
+			"byteLength":3312,
+			"byteOffset":3312,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":15872,
-			"byteOffset":47616,
+			"byteLength":2208,
+			"byteOffset":6624,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":5760,
-			"byteOffset":63488,
+			"byteLength":2880,
+			"byteOffset":8832,
 			"target":34963
 		},
 		{
 			"buffer":0,
-			"byteLength":23808,
-			"byteOffset":69248,
+			"byteLength":3312,
+			"byteOffset":11712,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":23808,
-			"byteOffset":93056,
+			"byteLength":3312,
+			"byteOffset":15024,
 			"target":34962
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":116864,
+			"byteLength":18336,
 			"uri":"MorphTearModel.bin"
 		}
 	]

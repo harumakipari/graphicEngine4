@@ -227,7 +227,7 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
                         dir.x /= len;
                         dir.z /= len;
                     }
-                    XMFLOAT3 impulse = { dir.x * 15.0f, 0.0f, dir.z * 15.0f }; // ノックバックの強さ
+                    XMFLOAT3 impulse = { dir.x * 25.0f, 0.0f, dir.z * 25.0f }; // ノックバックの強さ
                     if (characterMovementComponent)
                     {
                         characterMovementComponent->AddImpulse(impulse);

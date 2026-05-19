@@ -342,6 +342,14 @@ public:
             AddPipeLineState("ScissorsGamePlayerPS", desc);
         }
 
+        // SkeletalMesh deferred GameNumberPS 用　チーム制作で足した(T_T)
+        {
+            hr = CreatePsFromCSO(device, "./Shader/GameNumberPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+            AddPipeLineState("GameNumberPS", desc);
+        }
+
         // SkeletalMesh deferred GameModelColorFilterPS 用　チーム制作で足した(T_T)
         {
             hr = CreatePsFromCSO(device, "./Shader/GameModelColorFilterPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());

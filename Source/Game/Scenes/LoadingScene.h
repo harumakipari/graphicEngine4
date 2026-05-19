@@ -42,12 +42,9 @@ class LoadingScene : public SceneBase
         bool keyboardOnly = false;
     };
 
-
     std::string preload_scene;// Ÿ‚ÌƒV[ƒ“‚Ì–¼‘O
 
-
     void SetUpActors() override;
-
 
 public:
     size_t type = 1;

@@ -67,15 +67,22 @@ private:
     // 演出開始
     void MedalPlay();
 
+    // タイマーのワッペンの演出開始
+    void TimerPatchPlay();
+
     // 矢印ボタンUIを表示する
     void ShowButtonArrow();
 
+
 private:
     std::unique_ptr<EasingRunner> easingRunner;  // メダル用のeasingComponent
+    std::unique_ptr<EasingRunner> easingTimeRunner;  // タイマークリア用のeasingComponent
 
     std::shared_ptr<CoreAudioSourceComponent> scoreCountUpAudioComponent;   // スコアカウントアップ音のオーディオコンポーネント
 
     std::shared_ptr<SkeletalMeshComponent> medalSkeletalMeshComponent;  // メダル表示用
+
+    std::shared_ptr<SkeletalMeshComponent> timerPatchSkeletalMeshComponent;  // タイマーワッペン表示用
 
     std::shared_ptr<UIImageComponent> timeClearImage; // 目標タイムクリア時の画像
     std::shared_ptr<UIImageComponent> remainClearImage; // 目標タイムを達成できなかったときの画像
@@ -130,11 +137,16 @@ private:
     // メダル演出用
     float startScale = 3.0f;
     float endScale = 1.0f;
-
     float currentScale = 1.0f;
 
     float medalValue = 0.0f;
     float interval = 0.5f; // メダルが移動する時間
+
+    // タイマーワッペン用
+    float timerValue = 0.0f; 
+    float startTimerScale = 3.0f;
+    float endTimerScale = 1.0f;
+    float currentTimerScale = 1.0f;
 
     bool isCleared = false;// クリアしたかどうか
 };

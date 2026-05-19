@@ -68,6 +68,17 @@ void ResultBookActor::Initialize(const Transform& transform)
         medalSkeletalMeshComponent->SetIsVisible(false);
     }
 
+    // タイマーワッペン
+    {
+        timerPatchSkeletalMeshComponent = AddComponent<SkeletalMeshComponent>("TimeClearModel", rightName);
+        timerPatchSkeletalMeshComponent->SetModel("./Data/TeamModels/Title/TimeClearModel.gltf", false, true);
+        timerPatchSkeletalMeshComponent->SetIsCastShadow(false);
+        timerPatchSkeletalMeshComponent->SetRelativeLocationDirect({ -3.9,-0.2f,1.9f });
+        timerPatchSkeletalMeshComponent->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+        timerPatchSkeletalMeshComponent->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
+        timerPatchSkeletalMeshComponent->SetIsVisible(false);
+    }
+
     // スコアの数字モデル　
     {
         std::string scoreParentName = "score_number_parent";
@@ -92,7 +103,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         std::string comboParentName = "combo_number_parent";
         auto comboRoot = AddComponent<SceneComponent>(comboParentName, rightName);
         comboRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        comboRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,-0.45f });
+        comboRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,-0.75f });
         comboRoot->SetRelativeScaleDirect({ subNumberSize,subNumberSize,subNumberSize });
 
         comboDisplay.Initialize(
@@ -109,7 +120,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         std::string heartParentName = "heart_number_parent";
         auto heartRoot = AddComponent<SceneComponent>(heartParentName, rightName);
         heartRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        heartRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,0.1f });
+        heartRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,-0.15f });
         heartRoot->SetRelativeScaleDirect({ subNumberSize,subNumberSize,subNumberSize });
         heartDisplay.Initialize(
             this,
@@ -125,7 +136,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         std::string scoreParentName = "redirect_number_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, rightName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,0.7f });
+        scoreRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,0.45f });
         scoreRoot->SetRelativeScaleDirect({ subNumberSize,subNumberSize,subNumberSize });
         redirectDisplay.Initialize(
             this,
@@ -142,7 +153,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         std::string scoreParentName = "gather_number_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, rightName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,1.3f });
+        scoreRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,1.05f });
         scoreRoot->SetRelativeScaleDirect({ subNumberSize,subNumberSize,subNumberSize });
         gatherDisplay.Initialize(
             this,
@@ -153,13 +164,12 @@ void ResultBookActor::Initialize(const Transform& transform)
             0.7f, false);
     }
 
-
     // クリアタイム　分
     {
         std::string scoreParentName = "minute_number_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, rightName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -1.0f,-0.1f,1.88f });
+        scoreRoot->SetRelativeLocationDirect({ -1.1f,-0.1f,1.6f });
         scoreRoot->SetRelativeScaleDirect({ subNumberSize,subNumberSize,subNumberSize });
         minuteDisplay.Initialize(
             this,
@@ -174,7 +184,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         std::string scoreParentName = "second_number_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, rightName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,1.88f });
+        scoreRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,1.6f });
         scoreRoot->SetRelativeScaleDirect({ subNumberSize,subNumberSize,subNumberSize });
         secondDisplay.Initialize(
             this,
@@ -184,8 +194,6 @@ void ResultBookActor::Initialize(const Transform& transform)
             2,
             0.7f, false);
     }
-
-
 
     // 裏表紙のページ
     // ランキング 1
@@ -271,7 +279,6 @@ void ResultBookActor::Initialize(const Transform& transform)
             0.7f, true);
     }
 
-
     //totalScoreDisplay.SetVisible(false);    // トータルスコア
     comboDisplay.SetVisible(false); // コンボ数
     heartDisplay.SetVisible(false);    // HPボーナス
@@ -318,6 +325,10 @@ void ResultBookActor::Initialize(const Transform& transform)
     easingRunner = std::make_unique<EasingRunner>();
     medalValue = 0.0f;
 
+    // タイマーワッペン用
+    easingTimeRunner = std::make_unique<EasingRunner>();
+    timerValue = 0.0f;
+
     // 新記録かどうか
     isNewRecord = false;
 
@@ -362,6 +373,10 @@ void ResultBookActor::Update(float deltaTime)
     currentScale = std::lerp(startScale, endScale, medalValue);
     medalSkeletalMeshComponent->SetRelativeScaleDirect({ currentScale,currentScale,currentScale });
 
+    // タイマーワッペンのスケールを更新
+    easingTimeRunner->Tick(deltaTime);
+    currentTimerScale = std::lerp(startScale, endTimerScale, timerValue);
+    timerPatchSkeletalMeshComponent->SetRelativeScaleDirect({ currentTimerScale,currentTimerScale,currentTimerScale });
 
     // タイムをクリアしたか
     timeClearImage->SetWorldPosition(timerBonusUiPos);
@@ -560,7 +575,6 @@ void ResultBookActor::Update(float deltaTime)
 #ifdef _DEBUG
             //redirectScore = 2500;
 #endif // _DEBUG
-
 
             redirectDisplay.SetValue(redirectScore);
             redirectDisplay.SetVisible(true);
@@ -1033,4 +1047,44 @@ void ResultBookActor::MedalPlay()
         };
 
     easingRunner->StartHandler(handler, accessor);
+}
+
+// タイマーのワッペンの演出開始
+void ResultBookActor::TimerPatchPlay()
+{
+    timerPatchSkeletalMeshComponent->SetIsVisible(true);
+    //  メダルのSEを再生
+    //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_high_score_budge.wav", 1.5f);
+
+    TestEasingHandler handler;
+
+    handler.AddWait(0.0f);
+
+    handler.AddEasing(
+        TestEaseType::OutExp,
+        0.0f,
+        1.0f,
+        interval
+    );
+
+    handler.SetCompletedFunction([this]()
+        {
+            timerValue = 1.0f;
+        });
+
+    PropertyAccessor<float> accessor;
+
+    accessor.getter =
+        [this]()
+        {
+            return timerValue;
+        };
+
+    accessor.setter =
+        [this](float t)
+        {
+            timerValue = t;
+        };
+
+    easingTimeRunner->StartHandler(handler, accessor);
 }

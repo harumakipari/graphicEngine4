@@ -72,7 +72,6 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     bossTearSceneComponent = AddComponent<SceneComponent>("bossTearModel", parentName);
     bossTearSceneComponent->SetRelativeLocationDirect({ -0.7f,3.7f,1.7f });
 
-
     //morphModel = AddComponent<MorphMeshComponent>("morphMesh",parentName);
     //morphModel->SetModel("./Data/TeamModels/Enemy/MorphTearModel.gltf", false);
     //morphModel->SetRelativeLocationDirect({ -0.7f,3.6f,1.7f });
@@ -183,10 +182,10 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
 
     // スタンモデルを生成
     stunModel = AddComponent<SkeletalMeshComponent>("StunModel", parentName);
-    stunModel->SetModel("./Data/TeamModels/Item/StunVisualModel.glb", false, true);
+    stunModel->SetModel("./Data/TeamModels/Item/StunVisualModel.gltf", false, true);
     stunModel->SetIsCastShadow(false);
     stunModel->SetIsVisible(false);
-    stunModel->SetRelativeLocationDirect({ 1.1f,5.5f,2.0f });
+    stunModel->SetRelativeLocationDirect({ 0.8f,4.7f,0.6f });
     stunModel->SetRelativeEulerRotationDirect({ 16.05f,0.0f,-20.0f });
 
     // 出現ポイント

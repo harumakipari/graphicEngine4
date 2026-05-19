@@ -18,7 +18,7 @@ void DigitSlot::SetParent(const std::string& parentName, Actor* owner, const std
         std::string name = baseName + "_" + std::to_string(i);
 
         numbers[i] = owner->AddComponent<SkeletalMeshComponent>(name, parentName);
-
+        numbers[i]->overrideDeferredPipelineName = "GameNumberPS";
         numbers[i]->SetModel("./Data/TeamModels/Number/NumberModel_" + std::to_string(i) + ".gltf", false, false);
         numbers[i]->SetRelativeLocationDirect(offset);
         if (isBackCover)
@@ -33,6 +33,21 @@ void DigitSlot::SetParent(const std::string& parentName, Actor* owner, const std
         numbers[i]->SetIsVisible(false);
     }
 }
+
+// 数字の色を変える
+void DigitSlot::SetColor(const DirectX::XMFLOAT4& newColor)
+{
+    color = newColor;
+
+    for (auto& number : numbers)
+    {
+        if (number)
+        {
+            number->plusAlphaCBuffer->data.cpuColor = color;
+        }
+    }
+}
+
 
 // コンポーネントの親の名前、コンポーネント名、
 void NumberDisplay::Initialize(Actor* owner, const std::string& parentName, const std::string& baseName, const DirectX::XMFLOAT3& startPos, int maxDigits, float spacing, bool isBackCover)
@@ -129,4 +144,12 @@ void NumberDisplay::SetVisible(bool visible)
     isVisible = visible;
 
     SetValue(currentValue, currentMinDigits);
+}
+
+void NumberDisplay::SetColor(const DirectX::XMFLOAT4& color)
+{
+    for (auto& digit : digits)
+    {
+        digit.SetColor(color);
+    }
 }

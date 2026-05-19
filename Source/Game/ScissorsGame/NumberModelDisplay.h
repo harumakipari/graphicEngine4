@@ -10,6 +10,12 @@ struct DigitSlot
 
     // 　つける親の名前　　
     void SetParent(const std::string& parentName, Actor* owner, const std::string& baseName, const DirectX::XMFLOAT3& offset, bool isBackCover);
+
+    // 数字の色を変える
+    void SetColor(const DirectX::XMFLOAT4& newColor);
+
+    // 現在の色
+    DirectX::XMFLOAT4 color = { 1,1,1,1 };
 };
 
 // 数値のクラス
@@ -27,9 +33,9 @@ struct NumberDisplay
     // 数値を表示する 最低何桁表示するか
     void SetValue(int value, int minDigits = 1, bool popTrigger = true);
 
-
     void SetVisible(bool visible);
 
+    void SetColor(const DirectX::XMFLOAT4& color);
 private:
     bool isVisible = true;
     int currentValue = 0;
