@@ -229,8 +229,8 @@ public:
     {
         { STAGE_NAME::TUTORIAL,      { 999.0f, 0 } },   // チュートリアルはボーナス無しでもOK
         { STAGE_NAME::FIRST,         { 50.0f,  0 } },
-        { STAGE_NAME::BOBBIN_FIRST,  { 60.0f,  0 } },
-        { STAGE_NAME::REFLECT_WALL,  { 55.0f,  0 } },
+        { STAGE_NAME::BOBBIN_FIRST,  { 55.0f,  0 } },
+        { STAGE_NAME::REFLECT_WALL,  { 60.0f,  0 } },
         { STAGE_NAME::BOBBIN_SECOND, { 990.0f,  0 } },
         { STAGE_NAME::DIFFICULT,     { 80.0f,  0 } },
         { STAGE_NAME::BOSS,          { 105.0f, 0 } },

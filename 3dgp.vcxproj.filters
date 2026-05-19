@@ -684,6 +684,12 @@
     <ClCompile Include="Source\Game\ScissorsGame\GameCameraTargetActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\TitlePlayerActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\ScissorsGame\BossBobbinActor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Components\Base\Component.h">
@@ -1068,6 +1074,8 @@
     <ClInclude Include="Source\Game\ScissorsGame\SaveDataManager.h" />
     <ClInclude Include="Source\Game\ScissorsGame\HighScoreMedalActor.h" />
     <ClInclude Include="Source\Game\ScissorsGame\GameCameraTargetActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\TitlePlayerActor.h" />
+    <ClInclude Include="Source\Game\ScissorsGame\BossBobbinActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

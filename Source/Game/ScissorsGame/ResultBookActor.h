@@ -123,7 +123,7 @@ private:
     bool phaseInitialized = false; //Phase開始時1回だけ処理
 
     DirectX::XMFLOAT2 timerBonusUiPos = { 160.0f,700.0f };  // タイムボーナスのUIの位置
-    DirectX::XMFLOAT2 timerBonusUiSize = { 300.0f,250.0f }; // タイムボーナスのUIのサイズ
+    DirectX::XMFLOAT2 timerBonusUiSize = { 446.0f,106.0f }; // タイムボーナスのUIのサイズ
 
     // 配置
     float spacing = 33.0f;
@@ -133,10 +133,9 @@ private:
 
     bool isNewRecord = false; //新記録かどうか
 
-
     // メダル演出用
     float startScale = 3.0f;
-    float endScale = 1.0f;
+    float endScale = 1.1f;
     float currentScale = 1.0f;
 
     float medalValue = 0.0f;
@@ -149,5 +148,8 @@ private:
     float currentTimerScale = 1.0f;
 
     bool isCleared = false;// クリアしたかどうか
+
+    DirectX::XMFLOAT4 numberColor = { 0.605f,0.408f,0.129f ,1.0f};
+    DirectX::XMFLOAT4 playerColor = { 1.0f,0.216f,0.088f ,1.0f};
 };
 

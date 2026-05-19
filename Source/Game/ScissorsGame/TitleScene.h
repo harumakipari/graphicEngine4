@@ -52,7 +52,6 @@ public:
     // セレクトシーンから開始する
     void StartSelectScene();
 
-private:
 
 private:
     TPSCameraComponent* mainCameraComponent = nullptr;

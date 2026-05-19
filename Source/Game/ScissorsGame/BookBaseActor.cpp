@@ -529,7 +529,7 @@ void BookBaseActor::CreateStagePatch(BookPage& page, STAGE_NAME stage, const cha
     model->SetRelativeLocationDirect(pos);
     model->SetIsCastShadow(false);
     model->overrideDeferredPipelineName = "GameModelColorFilterPS";
-
+    model->SetRelativeScaleDirect({ 1.1f,1.1f,1.1f });
 
     auto box =
         AddComponent<BoxComponent>(
@@ -623,18 +623,18 @@ void BookBaseActor::UpdatePage(const BookPage& page)
 
             stage->model->SetRelativeScaleDirect(
                 {
-                    1.1f,
-                    1.1f,
-                    1.1f
+                    1.2f,
+                    1.2f,
+                    1.2f
                 });
         }
         else
         {
             stage->model->SetRelativeScaleDirect(
                 {
-                    1.0f,
-                    1.0f,
-                    1.0f
+                    1.1f,
+                    1.1f,
+                    1.1f
                 });
         }
 
@@ -872,18 +872,18 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
         {
             stage->model->SetRelativeScaleDirect(
                 {
-                    1.1f,
-                    1.1f,
-                    1.1f
+                    1.2f,
+                    1.2f,
+                    1.2f
                 });
         }
         else
         {
             stage->model->SetRelativeScaleDirect(
                 {
-                    1.0f,
-                    1.0f,
-                    1.0f
+                    1.1f,
+                    1.1f,
+                    1.1f
                 });
         }
 
@@ -898,18 +898,18 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
         {
             stage->model->SetRelativeScaleDirect(
                 {
-                    1.1f,
-                    1.1f,
-                    1.1f
+                    1.2f,
+                    1.2f,
+                    1.2f
                 });
         }
         else
         {
             stage->model->SetRelativeScaleDirect(
                 {
-                    1.0f,
-                    1.0f,
-                    1.0f
+                    1.1f,
+                    1.1f,
+                    1.1f
                 });
         }
     }

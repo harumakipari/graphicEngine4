@@ -142,6 +142,31 @@ bool ScoreHistoryManager::IsNewRecord(STAGE_NAME stage, int score)
     return score >= it->second.front().score;
 }
 
+// ランキング
+int ScoreHistoryManager::GetRanking(STAGE_NAME stage, int score)
+{
+
+    auto it = rankings.find(stage);
+
+    if (it == rankings.end())
+    {
+        return -1;
+    }
+
+    const auto& list = it->second;
+
+    for (int i = 0; i < list.size(); i++)
+    {
+        if (list[i].score == score)
+        {
+            return i; // 0-based
+        }
+    }
+
+    return -1;
+
+}
+
 // データをjsonに保存する
 void ScoreHistoryManager::Save()
 {

@@ -20,7 +20,15 @@ RabbitBossStateBase::RabbitBossStateBase(RabbitBossEnemyActor* enemy) :State(ene
 
 void RabbitBossIdleState::Enter()
 {
-    attackTimer = attackTimerInterval;
+    // ‰‰ñ‚¾‚¯’Z‚­‚·‚é
+    if (enemy->firstAttack)
+    {
+        attackTimer = 3.0f;
+    }
+    else
+    {
+        attackTimer = attackTimerInterval;
+    }
 }
 
 void RabbitBossIdleState::Execute(float deltaTime)
@@ -45,8 +53,20 @@ void RabbitBossAttackSelectState::Enter()
 
 void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
-    BossAttackType type = PopAttack();
-    type = BossAttackType::Buff;
+    BossAttackType type;
+
+    // Å‰‚Ìˆê‰ñ‚¾‚¯ Warp ŒÅ’è
+    if (enemy->firstAttack)
+    {
+        type = BossAttackType::Warp;
+        enemy->firstAttack = false;
+    }
+    else
+    {
+        type = PopAttack();
+    }
+
+    //type = BossAttackType::Buff;
 #if 1
     switch (type)
     {

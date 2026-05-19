@@ -65,10 +65,10 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     stateMachine_->RegisterState(std::make_unique<RabbitBossDeathState>(this));
     stateMachine_->RegisterState(std::make_unique<RabbitBossWinState>(this));
 
-     //ボス涙モデル
-    //bossTearModel = AddComponent<SkeletalMeshComponent>("bossTearModel", parentName);
-    //bossTearModel->SetModel("./Data/TeamModels/Enemy/TearModel.gltf", false, true);
-    //bossTearModel->SetRelativeLocationDirect({ -0.7f,3.6f,1.7f });
+    //ボス涙モデル
+   //bossTearModel = AddComponent<SkeletalMeshComponent>("bossTearModel", parentName);
+   //bossTearModel->SetModel("./Data/TeamModels/Enemy/TearModel.gltf", false, true);
+   //bossTearModel->SetRelativeLocationDirect({ -0.7f,3.6f,1.7f });
     bossTearSceneComponent = AddComponent<SceneComponent>("bossTearModel", parentName);
     bossTearSceneComponent->SetRelativeLocationDirect({ -0.7f,3.7f,1.7f });
 
@@ -76,6 +76,10 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     //morphModel->SetModel("./Data/TeamModels/Enemy/MorphTearModel.gltf", false);
     //morphModel->SetRelativeLocationDirect({ -0.7f,3.6f,1.7f });
     //morphModel->SetIsCastShadow(false);
+
+    // 最初の攻撃フラグを立てる
+    firstAttack = true;
+
 
     // ステートマシンを character に追加
     this->SetStateMachine(stateMachine_);
@@ -199,6 +203,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
     };
 
     endPerform = false;
+
 
     // ボスの混乱音コンポーネント
     bossStunAudioComponent = AddComponent<CoreAudioSourceComponent>("bossStunAudioComponent", parentName);
@@ -376,7 +381,7 @@ float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext
     float damage = 12;  // 基本ダメージ
 
     if (damageContext.isBossStunned) // 20ダメージ
-        damage *= 1.5f;
+        damage = 30;
 
     if (damageContext.killedEnemyBeforeHitCount)    // 
     {
@@ -389,7 +394,7 @@ float RabbitBossEnemyActor::ComputeDamage(const BossDamageContext& damageContext
         Logger::Log(U8("ボビンに当たってからのボスへの攻撃"));
     }
 
-    if (!damageContext.isBossStunned && !damageContext.suppressBombSpawn)
+    //if (!damageContext.isBossStunned && !damageContext.suppressBombSpawn)
     {// ボスがスタン状態じゃなかったら かつ　攻撃前にボビンに当たっていなかったら、
         SpawnButtonBombs(); // 爆弾を生成する
     }
@@ -768,7 +773,8 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
         { 1,0, 1},   // 右前
         {-1,0, 1},   // 左前
         { 1,0,-1},   // 右後
-        {-1,0,-1}    // 左後
+        {-1,0,-1} ,   // 左後
+        {0,0,1}    // 左後
     };
 
     std::shuffle(dirs.begin(), dirs.end(), rng);
@@ -779,7 +785,7 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
     {
         auto& d = dirs[i];
         // 距離をランダムにする
-        float offset = MathHelper::RandomRange(1.5f, 4.5f);
+        float offset = MathHelper::RandomRange(3.5f, 5.5f);
 
         // 爆破位置
         DirectX::XMFLOAT3 bombPos = pos;
@@ -844,7 +850,7 @@ void RabbitBossEnemyActor::RefillDropBag()
     dropBag.clear();
 
     // ９個爆弾
-    for (int i = 0; i < 9; i++)
+    for (int i = 0; i < 19; i++)
     {
         dropBag.push_back(DropType::Bomb);
     }

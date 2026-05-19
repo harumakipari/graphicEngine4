@@ -158,6 +158,8 @@ public:
     // Win時に地面の下にいるかを確認する
     bool isUnderGround = false; // 地面に潜る攻撃を開始しているかどうか
 
+
+    bool firstAttack = false;   // 最初の攻撃時
 private:
     std::vector<DirectX::XMFLOAT3> spawnPoints; // 出現位置
 

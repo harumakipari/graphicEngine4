@@ -7,7 +7,7 @@
 
 class EnemyBase;
 
-class BobbinActor :public Actor
+class BossBobbinActor :public Actor
 {
 public:
     enum class BobbinSize :uint8_t
@@ -20,7 +20,7 @@ public:
 
 
 private:
-    enum class BobbinState:uint8_t
+    enum class BobbinState :uint8_t
     {
         CoolDown, // クールダウン
         Charging, //溜め中
@@ -32,7 +32,7 @@ private:
 
 
 public:
-    explicit BobbinActor(const std::string& actorName) :Actor(actorName) {}
+    explicit BossBobbinActor(const std::string& actorName) :Actor(actorName) {}
 
     void Initialize(const Transform& transform)override;
 
@@ -87,8 +87,8 @@ private:
     float applyRangeMaxScale = 1.0f;// 床の広がるスケール
 
     float elapsedTime = 0.0f;   // 経過時間
-    float tutorialElapsedTime = 0.0f; 
-    float tutorialChargeElapsedTime = 0.0f; 
+    float tutorialElapsedTime = 0.0f;
+    float tutorialChargeElapsedTime = 0.0f;
     XMFLOAT2 arrowOffsetPos = { 0.0f,50.0f };
     int useCount = 0; // 何回糸巻を使用したか
 

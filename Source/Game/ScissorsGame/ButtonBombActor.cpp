@@ -18,7 +18,8 @@ void ButtonBombActor::Initialize(const Transform& transform)
     {
         std::shared_ptr<SphereComponent> sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);
         DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
-        float radius = size.x * 0.8f;
+        float radius = explodeRange;
+        //float radius = size.x * 0.8f;
         float height = size.y;
         float mass = 60.0f;
         sphereComponent->SetRadius(radius);
@@ -58,7 +59,7 @@ void ButtonBombActor::Initialize(const Transform& transform)
                         if (!hasDamagedPlayer)
                         {
                             hasDamagedPlayer = true;
-                            player->TakeDamage(1);
+                            player->TakeDamage(2);
                         }
 
                         return;
@@ -70,7 +71,7 @@ void ButtonBombActor::Initialize(const Transform& transform)
                         if (!hasDamagedPlayer)
                         {
                             hasDamagedPlayer = true;
-                            player->TakeDamage(1);
+                            player->TakeDamage(2);
                         }
                     }
                 }
@@ -171,7 +172,7 @@ void ButtonBombActor::Explode()
     {// îöî≠ÇµÇΩÇ±Ç∆Ç™Ç†Ç¡ÇΩÇÁÅA
         return;
     }
-    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/bomb_explosion.wav", 0.8f);
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/bomb_explosion.wav", 0.2f);
 
 
     hasExploded = true;

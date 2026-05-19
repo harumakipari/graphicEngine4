@@ -321,14 +321,16 @@ void BossSpawner::RefillSpawnBag()
             });
     }
 
-    // 1体 ハリネズミ
-    spawnBag.push_back({
-        YarnEnemyType::LongRangeAttack,
-        2.0f,
-        false,
-        false
-        });
-
+    for (int i = 0; i < 3; i++)
+    {
+        // 1体 ハリネズミ
+        spawnBag.push_back({
+            YarnEnemyType::LongRangeAttack,
+            2.0f,
+            false,
+            false
+            });
+    }
     std::shuffle(spawnBag.begin(), spawnBag.end(), rng);
 }
 

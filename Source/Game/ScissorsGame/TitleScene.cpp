@@ -10,6 +10,7 @@
 #include "ScoreHistoryManager.h"
 #include "TitleBookActor.h"
 #include "TitleCameraTargetActor.h"
+#include "TitlePlayerActor.h"
 #include "TitleStageActor.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Engine/Input/InputSystem.h"
@@ -703,6 +704,9 @@ void TitleScene::SetUpActors()
 
     Transform stageTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto stageActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleStageActor>("titleStageActor", stageTr);
+
+    Transform playerTr(DirectX::XMFLOAT3{ -7.3f,1.3f,0.2f }, DirectX::XMFLOAT3{ 0.0f,71.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto playerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitlePlayerActor>("TitlePlayerActor", playerTr);
 
     Transform bookTr(DirectX::XMFLOAT3{ 0.0f,0.5f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     bookActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleBookActor>("BookActor", bookTr);

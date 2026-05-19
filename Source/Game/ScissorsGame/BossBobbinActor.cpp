@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "BobbinActor.h"
+#include "BossBobbinActor.h"
 
 #include "BossSpawner.h"
 #include "ButtonCoinActor.h"
@@ -13,7 +13,7 @@
 #include "Engine/Scene/Scene.h"
 #include "Physics/CollisionFunction.h"
 
-void BobbinActor::Initialize(const Transform& transform)
+void BossBobbinActor::Initialize(const Transform& transform)
 {
     std::string parentName = "BobbinActor";
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
@@ -82,7 +82,7 @@ void BobbinActor::Initialize(const Transform& transform)
 
 }
 
-void BobbinActor::Update(float deltaTime)
+void BossBobbinActor::Update(float deltaTime)
 {
     if (auto gameManagerActor = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>())
     {
@@ -157,7 +157,7 @@ void BobbinActor::Update(float deltaTime)
 }
 
 
-void BobbinActor::DrawImGuiDetails()
+void BossBobbinActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
     if (ImGui::Button(U8("ボビンを使用する")))
@@ -175,7 +175,7 @@ void BobbinActor::DrawImGuiDetails()
 }
 
 // ボビンのサイズを設定する
-void BobbinActor::SetBobbinSize(BobbinSize bobbinSize)
+void BossBobbinActor::SetBobbinSize(BobbinSize bobbinSize)
 {
     switch (bobbinSize)
     {
@@ -209,7 +209,7 @@ void BobbinActor::SetBobbinSize(BobbinSize bobbinSize)
 }
 
 // 初期状態でボビンをチャージする
-void BobbinActor::SetBobbinStateCharge()
+void BossBobbinActor::SetBobbinStateCharge()
 {
     bobbinState = BobbinState::ChargeEnd;
 
@@ -257,7 +257,7 @@ void BobbinActor::SetBobbinStateCharge()
 }
 
 // ボビンの見た目を非表示にする
-void BobbinActor::HideBobbinVisual()
+void BossBobbinActor::HideBobbinVisual()
 {
     // 描画用コンポーネントを非表示にする
     skeletalMeshComponent->SetIsVisible(false);
@@ -273,7 +273,7 @@ void BobbinActor::HideBobbinVisual()
 }
 
 // ボビンを使用する
-void BobbinActor::UseBobbin()
+void BossBobbinActor::UseBobbin()
 {
     if (bobbinState == BobbinState::Fired)
     {// 
@@ -288,7 +288,7 @@ void BobbinActor::UseBobbin()
 }
 
 // ボビンをリセットする
-void BobbinActor::Reset()
+void BossBobbinActor::Reset()
 {
     currentRadius = 0.0f;
     chargeTimer = 0.0f;
@@ -300,7 +300,7 @@ void BobbinActor::Reset()
 }
 
 // 敵を玉止めする
-void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
+void BossBobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
 {
     std::vector<std::shared_ptr<ITieable>> candidates;
 
@@ -370,7 +370,7 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
                     bossDamageContext.isBossStunned = boss->IsStunned();
                     float damage = boss->ComputeDamage(bossDamageContext);
 #else
-                    float damage = 25.0f;
+                    float damage = 30.0f;
 #endif // 0
                     Logger::Log(U8("ボビンによる攻撃でボスに大ダメージ：") + std::to_string(damage));
                     boss->TakeDamage(static_cast<int>(damage));
@@ -411,7 +411,7 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
 
 }
 
-void BobbinActor::SpawnBonusCoinBurst()
+void BossBobbinActor::SpawnBonusCoinBurst()
 {
     auto pos = GetPosition();
     auto scene = GetOwnerScene();
@@ -439,7 +439,7 @@ void BobbinActor::SpawnBonusCoinBurst()
 }
 
 // ボビンに矢印を出す
-void BobbinActor::UpdateShowArrow(float deltaTime)
+void BossBobbinActor::UpdateShowArrow(float deltaTime)
 {
     if (arrowComponent)
     {

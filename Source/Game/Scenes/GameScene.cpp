@@ -242,7 +242,7 @@ void GameScene::Start()
         currentStageName = StringToStageName(stageName);
     }
 
-    currentStageName = STAGE_NAME::BOSS;
+    //currentStageName = STAGE_NAME::BOSS;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(currentStageName);
@@ -1116,7 +1116,7 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
     case STAGE_NAME::REFLECT_WALL:
     {
         {
-            Transform yarnWallTr(DirectX::XMFLOAT3{ 10.5f,0.0f,3.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            Transform yarnWallTr(DirectX::XMFLOAT3{ 10.5f,0.0f,2.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
             auto yarnWall = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr);
             yarnWall->SetBehavior(WallBehavior::HideOnce);
             yarnWall->SetTriggerWave(3);
@@ -1127,13 +1127,13 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
             //yarnWall->SetTriggerWave(3);
             //yarnWall->SetUp();
 
-            Transform yarnWallTr1(DirectX::XMFLOAT3{ 13.5f,0.0f,3.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            Transform yarnWallTr1(DirectX::XMFLOAT3{ 13.5f,0.0f,2.7f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
             auto yarnWall1 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr1);
             yarnWall1->SetBehavior(WallBehavior::HideOnce);
             yarnWall1->SetTriggerWave(3);
             yarnWall1->SetUp();
 
-            Transform yarnWallTr2(DirectX::XMFLOAT3{ 10.5f,0.0f,21.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            Transform yarnWallTr2(DirectX::XMFLOAT3{ 10.5f,0.0f,21.5f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
             auto yarnWall2 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr2);
             yarnWall2->SetBehavior(WallBehavior::HideOnce);
             yarnWall2->SetTriggerWave(3);
@@ -1143,7 +1143,7 @@ void GameScene::SpawnStageGimmicks(STAGE_NAME stageId)
             //yarnWall2->SetBehavior(WallBehavior::HideOnce);
             //yarnWall2->SetTriggerWave(3);
 
-            Transform yarnWallTr3(DirectX::XMFLOAT3{ 13.5f,0.0f,21.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
+            Transform yarnWallTr3(DirectX::XMFLOAT3{ 13.5f,0.0f,21.5f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.775f,1.775f,1.775f });
             auto yarnWall3 = this->GetActorManager()->CreateAndRegisterActorWithTransform<YarnWallActor>("YarnWallActor", yarnWallTr3);
             yarnWall3->SetBehavior(WallBehavior::HideOnce);
             yarnWall3->SetTriggerWave(3);
@@ -1355,7 +1355,7 @@ void GameScene::SetupPlayerPos(STAGE_NAME stageId)
     case STAGE_NAME::BOBBIN_FIRST:
         break;
     case STAGE_NAME::REFLECT_WALL:
-        player->SetPosition({ 12.0f,0.0,12.0f });
+        player->SetPosition({ 7.0f,0.0,9.0f });
         break;
     case STAGE_NAME::BOBBIN_SECOND:
     case STAGE_NAME::DIFFICULT:

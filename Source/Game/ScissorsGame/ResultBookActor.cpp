@@ -62,8 +62,8 @@ void ResultBookActor::Initialize(const Transform& transform)
         medalSkeletalMeshComponent = AddComponent<SkeletalMeshComponent>("medalMeshComponent", rightName);
         medalSkeletalMeshComponent->SetModel("./Data/TeamModels/Title/HighScoreMedalModel.gltf", false, true);
         medalSkeletalMeshComponent->SetIsCastShadow(false);
-        medalSkeletalMeshComponent->SetRelativeLocationDirect({ -0.4f,-0.2f,-2.2f });
-        medalSkeletalMeshComponent->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+        medalSkeletalMeshComponent->SetRelativeLocationDirect({ -0.4f,-0.2f,-1.9f });
+        medalSkeletalMeshComponent->SetRelativeEulerRotationDirect({ 0.0f,20.0f,-180.0f });
         medalSkeletalMeshComponent->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
         medalSkeletalMeshComponent->SetIsVisible(false);
     }
@@ -368,6 +368,44 @@ void ResultBookActor::Update(float deltaTime)
     ranking4Display.Update(deltaTime);
     ranking5Display.Update(deltaTime);
 
+
+    int ranking = ScoreHistoryManager::GetRanking(stats.stageName, currentTotalScore);
+    std::array<NumberDisplay*, 5> rankingDisplays =
+    {
+        &ranking1Display,
+        &ranking2Display,
+        &ranking3Display,
+        &ranking4Display,
+        &ranking5Display
+    };
+
+    for (auto* display : rankingDisplays)
+    {
+        display->SetColor(numberColor);
+    }
+
+    if (ranking >= 0 && ranking < rankingDisplays.size())
+    {
+        rankingDisplays[ranking]->SetColor(playerColor);
+    }
+
+
+    totalScoreDisplay.SetColor(numberColor);
+    comboDisplay.SetColor(numberColor);
+    heartDisplay.SetColor(numberColor);
+    gatherDisplay.SetColor(numberColor);
+    redirectDisplay.SetColor(numberColor);
+
+    //ranking1Display.SetColor(numberColor);
+    //ranking2Display.SetColor(numberColor);
+    //ranking3Display.SetColor(numberColor);
+    //ranking4Display.SetColor(numberColor);
+    //ranking5Display.SetColor(numberColor);
+
+    minuteDisplay.SetColor(numberColor);
+    secondDisplay.SetColor(numberColor);
+
+
     // メダルのスケールを更新
     easingRunner->Tick(deltaTime);
     currentScale = std::lerp(startScale, endScale, medalValue);
@@ -387,7 +425,7 @@ void ResultBookActor::Update(float deltaTime)
     remainClearImage->SetSize(timerBonusUiSize);
 
     float remain = ScoreSystem::GetRemainTimeToClear();
-    if (resultPhase >= ResultPhase::AddTimeBonus && !ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage && isCleared)
+    //if (resultPhase >= ResultPhase::AddTimeBonus && !ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage && isCleared)
     {// 時間ボーナス加算のフェーズで、目標タイムをクリアできていないとき、かつ二枚目のページが開いているとき、かつステージをクリアしているとき
         remainClearImage->SetVisible(true);
 
@@ -412,14 +450,14 @@ void ResultBookActor::Update(float deltaTime)
             //timerDigits[i]->SetColor(DirectX::XMFLOAT4{ 0.471f,0.455f,0.498f,1.0f });
         }
     }
-    else
-    {
-        remainClearImage->SetVisible(false);
-        for (int i = 0; i < 4; i++)
-        {
-            timerDigits[i]->SetVisible(false);
-        }
-    }
+    //else
+    //{
+    //    remainClearImage->SetVisible(false);
+    //    for (int i = 0; i < 4; i++)
+    //    {
+    //        timerDigits[i]->SetVisible(false);
+    //    }
+    //}
 
 
     if (isCleared)
@@ -835,6 +873,7 @@ void ResultBookActor::HandlePadInput()
 void ResultBookActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
+
     BookBaseActor::DrawImGuiDetails();
     if (ImGui::Button(U8("ステートを最初に戻す")))
     {
@@ -864,8 +903,8 @@ void ResultBookActor::DrawImGuiDetails()
     ImGui::DragFloat2(U8("数字の幅"), &numberSize.x);
     ImGui::DragFloat2(U8("分の間"), &minuteSpacing.x);
     ImGui::DragFloat2(U8("秒の間"), &secondSpacing.x);
-
-
+    ImGui::ColorEdit4("numberColor", &numberColor.x);
+    ImGui::ColorEdit4("playerColor", &playerColor.x);
 #endif
 }
 

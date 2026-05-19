@@ -24,6 +24,9 @@ public:
 
     // 新記録かどうか
     static bool IsNewRecord(STAGE_NAME stage, int score);
+
+    // ランキング
+    static int GetRanking(STAGE_NAME stage, int score);
 private:
     // データをjsonに保存する
     static void Save();
