@@ -137,6 +137,9 @@ void ButtonBombActor::Update(float deltaTime)
         {
             MarkPendingKill();
         }
+    case BombState::Hide:
+        skeletalMeshComponent->SetIsVisible(false);
+        skeletalMeshComponent->SetIsCastShadow(false);
         break;
     }
 

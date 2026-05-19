@@ -38,7 +38,10 @@ private:
     std::shared_ptr<SceneComponent> scoreDifficultRoot;      // 難しいステージのハイスコア
     std::shared_ptr<SceneComponent> scoreBossRoot;      // ボスステージのハイスコア
 
+
     DirectX::XMFLOAT3 redirectScorePosition;
+    DirectX::XMFLOAT3 difficultScorePosition;
+    DirectX::XMFLOAT3 bossScorePosition;
 
     std::shared_ptr<UIImageComponent> controlAButton;   // Aボタンを表示する
 };

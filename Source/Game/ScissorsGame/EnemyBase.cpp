@@ -28,7 +28,7 @@ void EnemyBase::Initialize(const Transform& transform)
     powerUpMarkMeshComponent->overrideDeferredPipelineName = "OpaqueMarkPS";
     powerUpMarkMeshComponent->SetIsCastShadow(false);
     powerUpMarkMeshComponent->SetIsVisible(false);
-
+    powerUpMarkMeshComponent->SetRelativeLocationDirect({ 0.0f,0.1f,0.0f });
     // “G‚ª‹­‰»‚³‚ê‚é‚ÉoŒ»‚·‚éƒ‚ƒfƒ‹‚ğ¶¬‚·‚é
     powerUpArrowMarkMeshComponent = AddComponent<SkeletalMeshComponent>("powerUpArrowMeshComponent", parentName);
     powerUpArrowMarkMeshComponent->SetModel("./Data/TeamModels/Marks/EnemyToBigArrowMark.gltf", false, true);

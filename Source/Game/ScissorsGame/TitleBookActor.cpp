@@ -52,9 +52,10 @@ void TitleBookActor::Initialize(const Transform& transform)
     // ステージ3　親を生成する
     {
         std::string scoreParentName = "high_redirect_parent";
+        redirectScorePosition = { -4.0f,0.0f,-1.5f };
         scoreRedirectRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
         scoreRedirectRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRedirectRoot->SetRelativeLocationDirect({ -4.0f,0.0f,-1.5f });
+        scoreRedirectRoot->SetRelativeLocationDirect(redirectScorePosition);
 
         redirectStageHighScoreDisplay.Initialize(
             this,
@@ -68,9 +69,10 @@ void TitleBookActor::Initialize(const Transform& transform)
     // ステージ4　親を生成する
     {
         std::string scoreParentName = "high_difficult_parent";
+        difficultScorePosition = { -3.2f,0.0f,0.1f };
         scoreDifficultRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
         scoreDifficultRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreDifficultRoot->SetRelativeLocationDirect({ -3.2f,0.0f,0.1f });
+        scoreDifficultRoot->SetRelativeLocationDirect(difficultScorePosition);
 
         difficultStageHighScoreDisplay.Initialize(
             this,
@@ -84,9 +86,10 @@ void TitleBookActor::Initialize(const Transform& transform)
     // ボスステージハイスコア
     {
         std::string scoreParentName = "high_boss_parent";
+        bossScorePosition = { -4.0f,0.0f,1.7f };
         scoreBossRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
         scoreBossRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreBossRoot->SetRelativeLocationDirect({ -4.0f,0.0f,1.7f });
+        scoreBossRoot->SetRelativeLocationDirect(bossScorePosition);
 
         bossStageHighScoreDisplay.Initialize(
             this,
@@ -156,13 +159,12 @@ void TitleBookActor::Update(float deltaTime)
     int bossHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::BOSS);
     bossStageHighScoreDisplay.SetValue(bossHighScore);
 
-    //　一ページ目の処理
-    for (auto& stage : leftPage.stages)
-    {// 左ページのワッペン
-        // ワッペンの位置を下げる
-        float patchOffsetY = std::lerp(0.0f, -0.1f, bookTwoAlpha);
-        stage->model->SetRelativeLocationDirect({ stage->offsetPos.x,patchOffsetY, stage->offsetPos.z });
-    }
+#if 1
+    float scoreOffsetY = std::lerp(-0.1f, 0.0f, bookTwoAlpha);
+    scoreRedirectRoot->SetRelativeLocationDirect({ redirectScorePosition.x,scoreOffsetY, redirectScorePosition.z });
+    scoreDifficultRoot->SetRelativeLocationDirect({ difficultScorePosition.x,scoreOffsetY, difficultScorePosition.z });
+    scoreBossRoot->SetRelativeLocationDirect({ bossScorePosition.x,scoreOffsetY, bossScorePosition.z });
+#endif // 0
 
 
 }

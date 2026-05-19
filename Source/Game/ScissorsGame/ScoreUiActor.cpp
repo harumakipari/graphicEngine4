@@ -42,6 +42,7 @@ void ScoreUiActor::Initialize(const Transform& transform)
 void ScoreUiActor::Update(float elapsedTime)
 {
     easingRunner->Tick(elapsedTime);
+#if 0
 
     // UIの位置
     DirectX::XMFLOAT3 position = GetPosition();
@@ -49,6 +50,8 @@ void ScoreUiActor::Update(float elapsedTime)
     // ワールド座標からUI座標系に変換する
     XMFLOAT2 uiPos = WorldToUI(bubbleWorldPos);
 
+
+#endif // 0
     auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>();
     if (!player)
     {
@@ -66,7 +69,7 @@ void ScoreUiActor::Update(float elapsedTime)
 
     for (int i = 0; i < scoreDigits.size(); i++)
     {
-        DirectX::XMFLOAT2 pos = uiPos;
+        DirectX::XMFLOAT2 pos = scorePos;
 
         // i=0が1の位 → 右端
         // iが増えるほど左へ
@@ -81,6 +84,7 @@ void ScoreUiActor::DrawImGuiDetails()
 #ifdef USE_IMGUI
     ImGui::DragFloat2("scoreBackOffset", &scoreBackOffset.x);
     ImGui::DragFloat2("scoreOffset", &scoreOffset.x);
+    ImGui::DragFloat2("scorePos", &scorePos.x);
 #endif
 }
 

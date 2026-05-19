@@ -909,6 +909,7 @@ void ScissorsPlayerDeathState::Enter()
 void ScissorsPlayerDeathState::Execute(float deltaTime)
 {
     float deathRadius = player->GetDeathRadius();
+    player->rotationComponent->SetDirection({ 0,0,-1 });
 
     switch (phase)
     {
@@ -932,8 +933,7 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
 
         t = std::clamp(t, 0.0f, 1.0f);
 
-        deathRadius =
-            std::lerp(startRadius, targetRadius, t);
+        deathRadius = std::lerp(startRadius, targetRadius, t);
 
         player->SetDeathRadius(deathRadius);
 
@@ -943,7 +943,7 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
 
             waitTimer = 0.0f;
 
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/player_death.wav");
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/player_death_1.wav", 1.5f);
             player->PlayAnimation("Down", false, true, 0.1f);
         }
 #endif // 0
@@ -956,7 +956,7 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
         waitTimer += deltaTime;
 
         // ‚¿‚å‚Á‚ÆŽ~‚ß‚é
-        if (waitTimer >= 0.5f)
+        if (waitTimer >= 1.0f)
         {
             phase = DeathPhase::CloseFinish;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/Actor.h"
 #include "UI/Widgets/Widget.h"
+#include "StageData.h"
 
 // 　
 // 　タイマーのUI表示
@@ -16,6 +17,9 @@ public:
 
     void DrawImGuiDetails() override;
 
+    // 目標クリアタイムのUIを表示する
+    void SetTargetTime(STAGE_NAME stage);
+
 private:
     void UpdateTimerDigits(int totalSeconds);
 
@@ -23,9 +27,15 @@ private:
     std::vector<std::shared_ptr<UIImageComponent>> timerDigits;
 
     std::shared_ptr<UIImageComponent> timerFrameImage;
+    std::shared_ptr<UIImageComponent> timerTargetImage;
+
     // 配置
     float spacing = 33.0f;
     DirectX::XMFLOAT2 numberSize = { 35.0f,49.0f };
     DirectX::XMFLOAT2 minuteSpacing = { -24.0f,0.0f };
     DirectX::XMFLOAT2 secondSpacing = { -27.0f,19.0f };
+
+    DirectX::XMFLOAT2 targetTimeOffset = { 0.0f, 113.0f }; // 目標タイムのUIの位置オフセット
+    DirectX::XMFLOAT2 targetTimeSize = { 234.0f, 112.0f }; // 目標タイムのUIの位置オフセット
+    DirectX::XMFLOAT2 timerFrameUiPos={1738.0f,327.0f};
 };

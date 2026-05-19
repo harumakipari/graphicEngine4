@@ -3,7 +3,9 @@
 
 #include "BobbinActor.h"
 #include "BossSpawner.h"
+#include "ButtonBombActor.h"
 #include "GameCameraTargetActor.h"
+#include "ItemHeartActor.h"
 #include "RabbitBossEnemy.h"
 #include "ScissorsGameManager.h"
 #include "ScissorsGameState.h"
@@ -531,6 +533,19 @@ void RabbitBossDeathState::Enter()
         bobbin->HideBobbinVisual();
     }
 
+    // アイテムの見た目を非表示にする
+    if (auto item = enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<ItemHeartActor>())
+    {
+        item->HideItemVisual();
+    }
+
+    // アイテムの見た目を非表示にする
+    if (auto bomb = enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<ButtonBombActor>())
+    {
+        bomb->HideVisual();
+    }
+
+
     spawnedFinalCoins = false;
     //enemy->ChangeEnemyState(EnemyBase::YarnState::Dead);
     //enemy->CallDeath(false);
@@ -590,7 +605,7 @@ void RabbitBossDeathState::Execute(float deltaTime)
             phase = DeathPhase::Tear;
             elapsedTime = 0.0f;
             //enemy->SpawnTearEffect();
-            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/boss_tear.wav", 1.0f);
+            CoreAudio::PlayOneShot(L"./Data/Sound/SE1/boss_tear.wav", 2.5f);
         }
         break;
 
@@ -748,6 +763,12 @@ void RabbitBossWinState::Enter()
     {
         bobbin->HideBobbinVisual();
     }
+
+    // アイテムの見た目を非表示にする
+    if (auto item = enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<ItemHeartActor>())
+    {
+        item->HideItemVisual();
+    }
 }
 
 void RabbitBossWinState::Execute(float deltaTime)
@@ -842,7 +863,7 @@ void RabbitBossWinState::Execute(float deltaTime)
         enemy->UpdateWin(deltaTime);
 
         elapsedTime += deltaTime;
-        const float winTime = 1.5f; // 何秒待つか
+        const float winTime = 2.0f; // 何秒待つか
 
         if (elapsedTime >= winTime)
         {
@@ -852,7 +873,7 @@ void RabbitBossWinState::Execute(float deltaTime)
             // シーン遷移のための半径を設定する
             startRadius = enemy->GetDeathRadius();
             targetRadius = -0.1f;
-            duration = 0.4f;
+            duration = 1.0f;
         }
 
         break;

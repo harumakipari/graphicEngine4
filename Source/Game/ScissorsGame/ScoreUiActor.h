@@ -34,4 +34,6 @@ private:
     float popupScale = 1.9f;
     XMFLOAT2 scoreBackOffset = { 15.0f,13.0f };
     XMFLOAT2 scoreOffset = { 11.0f,-5.0f };
+
+    DirectX::XMFLOAT2 scorePos = { 1800.0f,95.0f };
 };

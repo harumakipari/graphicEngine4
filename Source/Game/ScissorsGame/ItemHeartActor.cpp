@@ -97,6 +97,9 @@ void ItemHeartActor::Update(float deltaTime)
             MarkPendingKill();
         }
     }
+    case ItemState::Hide:
+        skeletalMeshComponent->SetIsVisible(false);
+        skeletalMeshComponent->SetIsCastShadow(false);
     break;
     }
 }
@@ -155,4 +158,9 @@ void ItemHeartActor::LaunchTo(const DirectX::XMFLOAT3& targetPos)
     velocity.y = (diff.y + 0.5f * gravity * t * t) / t;
 
     itemState = ItemState::Falling;
+}
+
+void ItemHeartActor::HideItemVisual()
+{
+    itemState = ItemState::Hide;
 }

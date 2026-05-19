@@ -10,7 +10,8 @@ class ItemHeartActor :public Actor
         Preparing,  // 準備中
         Falling,    // 落下中
         Waiting,    // 地面で待機
-        Used    // 使用済み
+        Used,    // 使用済み
+        Hide
     };
 
 public:
@@ -24,6 +25,9 @@ public:
 
     // ボス位置から目的位置まで発射する処理
     void LaunchTo(const DirectX::XMFLOAT3& targetPos);
+
+    // アイテムの見た目を非表示にする
+    void HideItemVisual();
 
 protected:
     // アイテムを使用する

@@ -4,6 +4,7 @@
 #include "BossSpawner.h"
 #include "ButtonCoinActor.h"
 #include "EnemyBase.h"
+#include "GameTimerUIActor.h"
 #include "RabbitBossEnemy.h"
 #include "ScissorsGameManager.h"
 #include "ScissorsPlayer1.h"
@@ -87,7 +88,7 @@ void BobbinActor::Update(float deltaTime)
     {
         if (!gameManagerActor->IsGameInputEnabled())
         {
-            return; 
+            return;
         }
     }
 
@@ -223,7 +224,7 @@ void BobbinActor::SetBobbinStateCharge()
             "./Data/Textures/ScissorsUI/Tutorial/enemy_arrow.png",
             "enemy_arrow");
     arrowComponent->SetSize(imageSize);
-    arrowComponent->SetVisible(true);
+    arrowComponent->SetVisible(false);
 
     uiManager->Add(arrowComponent);
 
@@ -369,7 +370,7 @@ void BobbinActor::ApplyToEnemies(const DirectX::XMFLOAT3 center)
                     bossDamageContext.isBossStunned = boss->IsStunned();
                     float damage = boss->ComputeDamage(bossDamageContext);
 #else
-                    float damage =30.0f;
+                    float damage = 30.0f;
 #endif // 0
                     Logger::Log(U8("ボビンによる攻撃でボスに大ダメージ：") + std::to_string(damage));
                     boss->TakeDamage(static_cast<int>(damage));
@@ -520,15 +521,25 @@ void BobbinActor::UpdateShowArrow(float deltaTime)
             if (!gameStart)
             {
                 gameStart = true;
-                auto gameManager = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>();
-                if (gameManager)
-                {
-                    gameManager->StartTimer();
-                }
+
                 auto uiStartActor = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsUIStartActor>();
                 if (uiStartActor)
                 {
-                    uiStartActor->PlayReady();
+                    uiStartActor->PlayReady([this]()
+                        {
+                            auto gameManager = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>();
+                            if (gameManager)
+                            {
+                                gameManager->StartTimer();
+                            }
+                            if (auto gameTimerUi = GetOwnerScene()->GetActorManager()->GetActorOfType<GameTimerUiActor>())
+                            {
+                                auto stats = ScoreSystem::GetResultStats();
+                                gameTimerUi->SetTargetTime(stats.stageName);
+                            }
+                        }
+
+                    );
                 }
             }
         }

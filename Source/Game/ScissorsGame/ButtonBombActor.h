@@ -12,7 +12,8 @@ class ButtonBombActor :public Actor
         Falling,    // 落下中
         Waiting,    // 地面で待機
         Blinking,   // 点滅
-        Exploded    // 演出のみ爆発済み
+        Exploded,    // 演出のみ爆発済み
+        Hide    
     };
 
 public:
@@ -29,6 +30,11 @@ public:
 
     // ボス位置から爆弾位置まで発射する処理
     void LaunchTo(const DirectX::XMFLOAT3& targetPos);
+
+    void HideVisual()
+    {
+        bombState = BombState::Hide;
+    }
 private:
     // 爆発エフェクトを再生する
     void PlayBombEffect(DirectX::XMFLOAT3 pos);
