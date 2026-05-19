@@ -84,8 +84,11 @@ private:
 
     std::shared_ptr<SkeletalMeshComponent> timerPatchSkeletalMeshComponent;  // タイマーワッペン表示用
 
-    std::shared_ptr<UIImageComponent> timeClearImage; // 目標タイムクリア時の画像
-    std::shared_ptr<UIImageComponent> remainClearImage; // 目標タイムを達成できなかったときの画像
+    std::shared_ptr<UIImageComponent> remainClearImage; // 目標タイムクリア時の画像
+
+    std::shared_ptr<UIImageComponent> resultImage; // リザルト画像
+    std::shared_ptr<UIImageComponent> selectImage; // セレクト画像
+
 
     DirectX::XMFLOAT3 scoreRelativePosition = { 0.0f,0.0f,0.f };
 
@@ -122,14 +125,15 @@ private:
     float preShowScoreInterval = 0.3f;   // スコアを出す前の待ち時間
     bool phaseInitialized = false; //Phase開始時1回だけ処理
 
-    DirectX::XMFLOAT2 timerBonusUiPos = { 160.0f,700.0f };  // タイムボーナスのUIの位置
-    DirectX::XMFLOAT2 timerBonusUiSize = { 446.0f,106.0f }; // タイムボーナスのUIのサイズ
+    DirectX::XMFLOAT2 timerBonusUiPos = { 550.0f,830.0f };  // タイムボーナスのUIの位置
+    DirectX::XMFLOAT2 timerBonusUiSize = { 521.0f,151.0f }; // タイムボーナスのUIのサイズ
 
     // 配置
-    float spacing = 33.0f;
-    DirectX::XMFLOAT2 numberSize = { 35.0f,49.0f };
-    DirectX::XMFLOAT2 minuteSpacing = { -24.0f,0.0f };
-    DirectX::XMFLOAT2 secondSpacing = { -27.0f,19.0f };
+    float spacing = 24.0f;
+    DirectX::XMFLOAT2 numberSize = { 30.0f,44.0f };
+    DirectX::XMFLOAT2 minuteSpacing = { -72.0f,-14.0f };
+    DirectX::XMFLOAT2 secondSpacing = { -54.0f,-16.0f };
+
 
     bool isNewRecord = false; //新記録かどうか
 

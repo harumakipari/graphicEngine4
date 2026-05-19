@@ -12,6 +12,7 @@
 #include "ScissorsPlayer1.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Utility/Time.h"
+#include "Game/Actors/Camera/Camera.h"
 
 
 RabbitBossStateBase::RabbitBossStateBase(RabbitBossEnemyActor* enemy) :State(enemy), enemy(enemy)
@@ -335,6 +336,12 @@ void RabbitBossAttackWarpState::Execute(float deltaTime)
 
         if (enemy->IsFinishedEmerge())
         {
+            if (auto camera = enemy->GetOwnerScene()->GetActorManager()->GetActorOfType<FixedCamera>())
+            {
+                camera->Shake(0.05f,0.3f);
+            }
+            InputSystem::SetVibration(0.8f, 0.15f); // 振動させる
+
             // 出現ダメージ
             enemy->ApplyLandingDamage();
             // 当たり判定を有効にする

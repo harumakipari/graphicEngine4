@@ -193,6 +193,12 @@ protected:
     float bookOneAlpha = 0.0f; // １ページ目
     float bookTwoAlpha = 0.0f; // ２ページ目
 
+
+    DirectX::XMFLOAT2 patchSize = { 584.0f,194.0f };
+    DirectX::XMFLOAT2 patchPos = { 256.0f,110.0f };
+    float patchAngle = -17.0f;
+
+
 private:
 
     std::shared_ptr<SkeletalMeshComponent> bookLeftModel;

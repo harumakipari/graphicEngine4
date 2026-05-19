@@ -105,6 +105,31 @@ void FixedCamera::Update(float deltaTime)
 
     // Controller更新
     tpsController.Update(deltaTime);
+
+    // =========================
+ // カメラシェイク
+ // =========================
+    if (shakeTimer > 0.0f)
+    {
+        shakeTimer -= deltaTime;
+
+        float rate = shakeTimer / shakeDuration;
+
+        float currentPower = shakePower * rate;
+
+        tpsController.shakeOffset.x =
+            MathHelper::RandomRange(-currentPower, currentPower);
+
+        tpsController.shakeOffset.y =
+            MathHelper::RandomRange(-currentPower, currentPower);
+
+        tpsController.shakeOffset.z =
+            MathHelper::RandomRange(-currentPower, currentPower);
+    }
+    else
+    {
+        tpsController.shakeOffset = {};
+    }
 }
 
 void TitleCamera::Update(float deltaTime)

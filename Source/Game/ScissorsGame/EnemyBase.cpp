@@ -438,7 +438,7 @@ std::string EnemyBase::GetModelPath()
     switch (enemyType)
     {
     case YarnEnemyType::LongRangeAttack:
-        return "./Data/TeamModels/Enemy/NeedleEnemy.glb";
+        return "./Data/TeamModels/Enemy/NeedleEnemy.gltf";
 
     case YarnEnemyType::ChasePlayer:
         return (yarnSize == Big)

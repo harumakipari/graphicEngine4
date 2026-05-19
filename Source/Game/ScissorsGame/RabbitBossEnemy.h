@@ -113,7 +113,6 @@ public:
 
     // 死亡演出のポストエフェクトの半径を取得する
     float GetDeathRadius() { return deathRadius; }
-
 private:
     // ダメージが入る場所を生成する
     void CreteDamageZone();
@@ -157,7 +156,6 @@ public:
 
     // Win時に地面の下にいるかを確認する
     bool isUnderGround = false; // 地面に潜る攻撃を開始しているかどうか
-
 
     bool firstAttack = false;   // 最初の攻撃時
 private:
@@ -205,5 +203,15 @@ private:
     CoreColor red = { 1.0f,0.1f,0.1f,1.0f };
 
     float deathRadius = 10.0f; // 死亡時のポストエフェクトに使う半径
+
+    // 点滅処理
+    float damageCooldownInterval = 0.2f; // 
+    float damageCooldownTimer = 0.0f; //
+
+    // 被ダメージ時の点滅用
+    float blinkTimer = 0.0f;
+    float blinkInterval = 0.1f; // 点滅速度
+    bool isBlinkOn = false;
+
 };
 

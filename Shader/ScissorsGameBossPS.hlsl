@@ -245,6 +245,8 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
 
     float cpuColorA = cpuColor.a;
 
+    Lo *= cpuColor.rgb;
+
     cpuColorA *= modelAlpha;
 
     ////ƒtƒ‰ƒbƒVƒ…

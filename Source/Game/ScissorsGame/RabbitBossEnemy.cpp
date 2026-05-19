@@ -230,6 +230,31 @@ void RabbitBossEnemyActor::Update(float deltaTime)
         }
     }
 
+
+    if (damageCooldownTimer > 0.0f)
+    {// ダメージクールダウン中は無敵
+        damageCooldownTimer -= deltaTime;
+        blinkTimer += deltaTime;
+
+        float t = sinf(blinkTimer * 20.0f) * 0.5f + 0.5f;
+
+        // 赤フラッシュ
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor =
+        {
+            1.0f,
+            t,
+            t,
+            1.0f
+        };
+    }
+    else
+    {
+        // 無敵終了 → 色戻す
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1, 1, 1, 1 };
+    }
+
+
+
     // HPバーの処理
     {
         float hpGauge = static_cast<float>(hp);
@@ -411,6 +436,7 @@ void RabbitBossEnemyActor::SetRenderOpacity(float opacity)
 // 被ダメージ処理
 void RabbitBossEnemyActor::TakeDamage(const int damage)
 {
+    damageCooldownTimer = damageCooldownInterval; // 無敵時間を設定
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemyHit_strong.wav", 1.0f);
     if (stateMachine_->GetStateName() == "Idle")
     {// スタン状態じゃなかったら
@@ -774,7 +800,9 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
         {-1,0, 1},   // 左前
         { 1,0,-1},   // 右後
         {-1,0,-1} ,   // 左後
-        {0,0,1}    // 左後
+        {1,0,0},    // 左後
+        {-1,0,0},    // 左後
+        {0,0,1},    // 左後
     };
 
     std::shuffle(dirs.begin(), dirs.end(), rng);

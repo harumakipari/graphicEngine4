@@ -29,17 +29,17 @@ void GameTimerUiActor::Initialize(const Transform& transform)
         timerDigits.push_back(digit);
     }
 
-    // タイマーフレーム
-    timerFrameImage = std::make_shared<UIImageComponent>(
-        "./Data/Textures/ScissorsUI/time_bubble.png",
-        "time_bubble"
-    );
+    //// タイマーフレーム
+    //timerFrameImage = std::make_shared<UIImageComponent>(
+    //    "./Data/Textures/ScissorsUI/time_bubble.png",
+    //    "time_bubble"
+    //);
 
-    timerFrameImage->SetSize({ 298, 192 });
-    timerFrameImage->SetPivot({ 0.5f, 0.5f });
-    timerFrameImage->zOrder = 0;
+    //timerFrameImage->SetSize({ 298, 192 });
+    //timerFrameImage->SetPivot({ 0.5f, 0.5f });
+    //timerFrameImage->zOrder = 0;
 
-    uiManager->Add(timerFrameImage);
+    //uiManager->Add(timerFrameImage);
 
 
 }
@@ -76,7 +76,7 @@ void GameTimerUiActor::SetTargetTime(STAGE_NAME stage)
     }
 
     timerTargetImage = std::make_shared<UIImageComponent>(fileName, "timerTargetImage");
-    timerTargetImage->SetSize({ 298, 192 });
+    timerTargetImage->SetSize({ 404, 352 });
     timerTargetImage->SetPivot({ 0.5f, 0.5f });
     timerTargetImage->zOrder = 0;
     timerTargetImage->SetVisible(true);
@@ -109,7 +109,18 @@ void GameTimerUiActor::Update(float elapsedTime)
     // 秒に変換
     int totalSeconds = static_cast<int>(timer);
 
-    UpdateTimerDigits(totalSeconds);
+
+    if (timerTargetImage)
+    {
+        UpdateTimerDigits(totalSeconds);
+    }
+    else
+    {
+        timerDigits[0]->SetVisible(false);
+        timerDigits[1]->SetVisible(false);
+        timerDigits[2]->SetVisible(false);
+        timerDigits[3]->SetVisible(false);
+    }
 
     // MM:SS
     // [0][1] : [2][3]
@@ -118,7 +129,7 @@ void GameTimerUiActor::Update(float elapsedTime)
     timerDigits[1]->SetWorldPosition({ timerFrameUiPos.x - spacing * 1.0f + secondSpacing.x, timerFrameUiPos.y + minuteSpacing.y });
 
 
-    timerFrameImage->SetWorldPosition({ timerFrameUiPos.x, timerFrameUiPos.y });
+    //timerFrameImage->SetWorldPosition({ timerFrameUiPos.x, timerFrameUiPos.y });
 
     timerDigits[2]->SetWorldPosition({ timerFrameUiPos.x + spacing * 1.0f + minuteSpacing.x, timerFrameUiPos.y + secondSpacing.y });
     timerDigits[3]->SetWorldPosition({ timerFrameUiPos.x + spacing * 2.0f + minuteSpacing.x, timerFrameUiPos.y + secondSpacing.y });

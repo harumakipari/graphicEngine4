@@ -50,6 +50,10 @@ public:
         XMFLOAT3 pos;
         XMStoreFloat3(&pos, currentEye);
 
+        pos.x += shakeOffset.x;
+        pos.y += shakeOffset.y;
+        pos.z += shakeOffset.z;
+
 
         camera->GetOwner()->SetPosition(pos);
         XMFLOAT3 pivot3;
@@ -58,5 +62,7 @@ public:
         camera->lookTarget = pivot3;
         camera->useLookTarget = true;
     }
+
+    DirectX::XMFLOAT3 shakeOffset = {};
 };
 

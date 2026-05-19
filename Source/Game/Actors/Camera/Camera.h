@@ -167,12 +167,20 @@ public:
 
     void Shake(float power = 0.02f, float time = 0.2f)
     {
-        //mainCameraComponent->Shake(power, time);
+        shakePower = power;
+        shakeDuration = time;
+        shakeTimer = time;
     }
     void DrawImGuiDetails()override
     {
 #ifdef USE_IMGUI
+        ImGui::DragFloat("shakePower", &shakePower, 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat("shakeDuration", &shakeDuration, 0.1f, 0.0f, 3.0f);
 
+        if (ImGui::Button("cameraShake"))
+        {
+            Shake(shakePower, shakeDuration);
+        }
 #endif
     }
 
@@ -203,6 +211,11 @@ private:
     TPSCameraController tpsController;
 
     bool didShake = false;
+    float shakeTimer = 0.04f;
+    float shakeDuration = 0.6f;
+    float shakePower = 0.04f;
+
+    DirectX::XMFLOAT3 shakeOffset = {};
 };
 
 class TitleCamera :public Camera

@@ -36,18 +36,15 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
     OutputDebugStringA((std::string("Scene::Initialize this=") + std::to_string(reinterpret_cast<uintptr_t>(this)) + "\n").c_str());
     OutputDebugStringA((std::string("_current_scene.get()=") + std::to_string(reinterpret_cast<uintptr_t>(this)) + "\n").c_str());
     OutputDebugStringA((std::string("actorManager_ ptr=") + std::to_string(reinterpret_cast<uintptr_t>(this->GetActorManager())) + "\n").c_str());
-    HRESULT hr;
+    //HRESULT hr;
 
-    D3D11_BUFFER_DESC bufferDesc{};
+    //D3D11_BUFFER_DESC bufferDesc{};
 
     preload_scene = props.at("preload");
     _async_preload_scene(device, width, height, preload_scene);
 
-
-
     // チップスデータを設定する
     SetTipsData();
-
 
     loadingTime = 4.5f;   // ロードにかかる時間
 
@@ -62,8 +59,6 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
             loadingTime = 0.0f;
         }
     }
-
-
 
     return true;
 }

@@ -20,20 +20,13 @@ void ResultBookActor::Initialize(const Transform& transform)
     {
         auto uiManager = GetOwnerScene()->GetUIManager();
         // タイムをクリアしたか
-        timeClearImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/time_bonus_clear.png", "time_bonus_clear");
-        timeClearImage->SetWorldPosition(timerBonusUiPos);
-        timeClearImage->SetSize(timerBonusUiSize);
-        timeClearImage->SetVisible(false);
-        timeClearImage->SetPivot({ 0.5f,0.5f });
-        uiManager->Add(timeClearImage);
-
-        // タイムをクリアしたか
         remainClearImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/time_remain_clear.png", "time_remain_clear");
         remainClearImage->SetWorldPosition(timerBonusUiPos);
         remainClearImage->SetSize(timerBonusUiSize);
         remainClearImage->SetVisible(false);
         remainClearImage->SetPivot({ 0.5f,0.5f });
         uiManager->Add(remainClearImage);
+
 
         // MM:SS の4桁
         for (int i = 0; i < 4; i++)
@@ -45,13 +38,26 @@ void ResultBookActor::Initialize(const Transform& transform)
 
             digit->SetSize({ 45, 60 });
             digit->SetPivot({ 0.5f, 0.5f });
-            digit->SetColor(XMFLOAT4{ 1.0f,1.0f,1.0f,1.0f });
+            digit->SetColor(XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f });
             digit->zOrder = 2;
 
             uiManager->Add(digit);
 
             timerDigits.push_back(digit);
         }
+
+
+        resultImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/title_patch_result.png", "title_patch_result");
+        resultImage->SetWorldPosition(patchSize);
+        resultImage->SetVisible(true);
+        resultImage->SetPivot({ 0.5f,0.5f });
+        uiManager->Add(resultImage);
+
+        selectImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/title_patch_select.png", "title_patch_result");
+        selectImage->SetWorldPosition(patchSize);
+        selectImage->SetVisible(true);
+        selectImage->SetPivot({ 0.5f,0.5f });
+        uiManager->Add(selectImage);
 
     }
     // スコアの数字を乗せるページの親
@@ -405,6 +411,37 @@ void ResultBookActor::Update(float deltaTime)
     minuteDisplay.SetColor(numberColor);
     secondDisplay.SetColor(numberColor);
 
+    // リザルトイメージ
+    resultImage->SetWorldPosition(patchPos);
+    resultImage->SetSize(patchSize);
+    resultImage->SetWorldAngleDegree(patchAngle);
+
+    // セレクトイメージ
+    selectImage->SetWorldPosition(patchPos);
+    selectImage->SetSize(patchSize);
+    selectImage->SetWorldAngleDegree(patchAngle);
+
+    // リザルトイメージ
+    if (bookState==BookPageState::SecondPage)
+    {
+        resultImage->SetVisible(true);
+    }
+    else
+    {
+        resultImage->SetVisible(false);
+    }
+
+    // セレクトイメージ
+    if (bookState == BookPageState::FirstPage)
+    {
+        selectImage->SetVisible(true);
+    }
+    else
+    {
+        selectImage->SetVisible(false);
+    }
+
+
 
     // メダルのスケールを更新
     easingRunner->Tick(deltaTime);
@@ -417,12 +454,9 @@ void ResultBookActor::Update(float deltaTime)
     timerPatchSkeletalMeshComponent->SetRelativeScaleDirect({ currentTimerScale,currentTimerScale,currentTimerScale });
 
     // タイムをクリアしたか
-    timeClearImage->SetWorldPosition(timerBonusUiPos);
-    timeClearImage->SetSize(timerBonusUiSize);
-
-    // タイムをクリアしたか
     remainClearImage->SetWorldPosition(timerBonusUiPos);
     remainClearImage->SetSize(timerBonusUiSize);
+
 
     float remain = ScoreSystem::GetRemainTimeToClear();
     //if (resultPhase >= ResultPhase::AddTimeBonus && !ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage && isCleared)
@@ -430,7 +464,7 @@ void ResultBookActor::Update(float deltaTime)
         remainClearImage->SetVisible(true);
 
 #ifdef _DEBUG
-        //remain = 90.0f;
+        remain = 9.0f;
 #endif // _DEBUG
         // 秒に変換
         int totalSeconds = static_cast<int>(remain);
@@ -460,6 +494,7 @@ void ResultBookActor::Update(float deltaTime)
     //}
 
 
+#if 0
     if (isCleared)
     {// クリアしていたら
         if (resultPhase >= ResultPhase::AddTimeBonus && ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage)
@@ -471,6 +506,7 @@ void ResultBookActor::Update(float deltaTime)
             timeClearImage->SetVisible(false);
         }
     }
+#endif // 0
 
 
 #if 0
@@ -687,6 +723,7 @@ void ResultBookActor::Update(float deltaTime)
             {// 目標タイムをクリアした
                 Logger::Log(U8("目標タイムをクリアした"));
                 //timeClearImage->SetVisible(true);   // 「CLEAR!」
+                TimerPatchPlay();
             }
             else
             {
@@ -895,6 +932,11 @@ void ResultBookActor::DrawImGuiDetails()
         ranking5Display.SetVisible(false);
 
     }
+    ImGui::DragFloat2(U8("patchSize"), &patchSize.x);
+    ImGui::DragFloat2(U8("patchPos"), &patchPos.x);
+    ImGui::DragFloat(U8("patchAngle"), &patchAngle);
+
+
     ImGui::DragFloat(U8("本を開く前の時間"), &preShowScoreInterval, 0.1f, 0.0f, 5.0f);
     ImGui::DragInt(U8("加算スピード"), &addStep, 10, 0, 1000);
     ImGui::DragFloat2(U8("タイマーボーナスUIの位置"), &timerBonusUiPos.x, 10.0f);
@@ -1093,7 +1135,7 @@ void ResultBookActor::TimerPatchPlay()
 {
     timerPatchSkeletalMeshComponent->SetIsVisible(true);
     //  メダルのSEを再生
-    //CoreAudio::PlayOneShot(L"./Data/Sound/SE1/result_high_score_budge.wav", 1.5f);
+    CoreAudio::PlayOneShot(L"./Data/Sound/SE1/timer_patch.wav", 1.5f);
 
     TestEasingHandler handler;
 

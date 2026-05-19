@@ -15,6 +15,7 @@ void TitlePlayerActor::Initialize(const Transform& transform)
 
     // アニメーションコントローラーを character に追加
     this->SetAnimationController(controller);
+    this->GetAnimationController()->SetAnimationRate(0.5f);
     PlayAnimation("Idle");
 }
 

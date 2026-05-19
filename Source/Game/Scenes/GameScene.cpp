@@ -161,7 +161,7 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
         //	描画用プリミティブ生成
         decal_cube = std::make_unique<GeometricCube>();
         //	デカールテクスチャ読み込み
-        D3D11_TEXTURE2D_DESC texture2d_desc;
+        //D3D11_TEXTURE2D_DESC texture2d_desc;
         decal_textures.resize(1);
         //hr = LoadTextureFromFile(device, L"./Data/Textures/Decal/gun_holes.png", decal_textures[0].color_shader_resource_view.GetAddressOf(), &texture2d_desc);
         //_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
@@ -242,7 +242,7 @@ void GameScene::Start()
         currentStageName = StringToStageName(stageName);
     }
 
-    //currentStageName = STAGE_NAME::BOSS;
+    currentStageName = STAGE_NAME::BOSS;
 
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(currentStageName);

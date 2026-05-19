@@ -7,7 +7,7 @@ void NeedleActor::Initialize(const Transform& transform)
 {
     std::string parentName = "needleActor";
     mesh = AddComponent<SkeletalMeshComponent>(parentName);
-    mesh->SetModel("./Data/TeamModels/Enemy/NeedlePin.glb", false, true);
+    mesh->SetModel("./Data/TeamModels/Enemy/NeedlePin.gltf", false, true);
 
     hasHit = false; // ヒットしたかどうかのフラグをリセットする
 
