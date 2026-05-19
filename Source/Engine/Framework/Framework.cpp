@@ -37,8 +37,6 @@ Framework::Framework(HWND hwnd, BOOL fullscreen) : hwnd(hwnd), fullscreenMode(fu
     Logger::Initialize();
 #endif
 
-
-
 #ifdef USE_IMGUI
     enableImGui = true;
 #endif

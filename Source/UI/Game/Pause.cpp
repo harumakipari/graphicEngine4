@@ -120,8 +120,8 @@ void Pause::Initialize(const Transform& transform)
 
         countDownImages[i]->SetWorldPosition({ 967, 490 });
         countDownImages[i]->SetPivot({ 0.5f,0.5f });
-        countDownImages[i]->SetScale({ 4.5f,4.5f });
-        countDownImages[i]->SetSize({ 150, 200 });
+        countDownImages[i]->SetScale({ 4.f,4.f });
+        countDownImages[i]->SetSize({ 200, 200 });
         countDownImages[i]->SetVisible(false);
         countDownImages[i]->zOrder = 110; // Žè‘O‚É•`‰æ‚·‚é
 
@@ -176,7 +176,7 @@ void Pause::Update(float deltaTime)
         countDownImages[index]->SetEnable(true);
 
         float t = countdownTime - floor(countdownTime);
-        float scale = std::lerp(6.0f, 4.5f, t);
+        float scale = std::lerp(4.5f, 3.f, t);
         countDownImages[index]->SetScale({ scale, scale });
 
         float alpha = std::lerp(0.0f, 1.0f, t);

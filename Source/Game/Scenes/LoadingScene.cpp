@@ -105,7 +105,6 @@ void LoadingScene::Start()
     DirectX::XMFLOAT2 tipsSize = { 750.0f,168.0f };
     DirectX::XMFLOAT2 tipsPos = { 20.0f,880.0f };
 
-
     chipsImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tips/player_lore.png", "chipsImage");
     chipsImage->SetSize(tipsSize);
     chipsImage->SetWorldPosition(tipsPos);
@@ -114,7 +113,6 @@ void LoadingScene::Start()
     chipsFrameImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tips/tips_frame.png", "tips_frame");
     chipsFrameImage->SetSize(tipsSize);
     chipsFrameImage->SetWorldPosition(tipsPos);
-
 
     ApplyTipsTextures();
 

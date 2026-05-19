@@ -33,11 +33,9 @@ private:
     NumberDisplay difficultStageHighScoreDisplay;   
     NumberDisplay bossStageHighScoreDisplay;
 
-
     std::shared_ptr<SceneComponent> scoreRedirectRoot;      // 反射ステージのハイスコア
     std::shared_ptr<SceneComponent> scoreDifficultRoot;      // 難しいステージのハイスコア
     std::shared_ptr<SceneComponent> scoreBossRoot;      // ボスステージのハイスコア
-
 
     DirectX::XMFLOAT3 redirectScorePosition;
     DirectX::XMFLOAT3 difficultScorePosition;

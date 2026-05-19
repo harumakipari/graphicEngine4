@@ -21,7 +21,8 @@ void TitleBookActor::Initialize(const Transform& transform)
         std::string scoreParentName = "high_first_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, middleName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -0.5f,-0.1f,-2.0f });
+        scoreRoot->SetRelativeLocationDirect({ -0.5f,-0.1f,-0.8f });
+        scoreRoot->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
 
         firstStageHighScoreDisplay.Initialize(
             this,
@@ -37,7 +38,8 @@ void TitleBookActor::Initialize(const Transform& transform)
         std::string scoreParentName = "high_bobbin_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, middleName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -0.5f,-0.1f,1.1f });
+        scoreRoot->SetRelativeLocationDirect({ -0.5f,-0.1f,1.0f });
+        scoreRoot->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
 
         bobbinStageHighScoreDisplay.Initialize(
             this,
@@ -52,10 +54,11 @@ void TitleBookActor::Initialize(const Transform& transform)
     // ステージ3　親を生成する
     {
         std::string scoreParentName = "high_redirect_parent";
-        redirectScorePosition = { -4.0f,0.0f,-1.5f };
+        redirectScorePosition = { -3.9f,0.0f,-1.3f };
         scoreRedirectRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
         scoreRedirectRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
         scoreRedirectRoot->SetRelativeLocationDirect(redirectScorePosition);
+        scoreRedirectRoot->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
 
         redirectStageHighScoreDisplay.Initialize(
             this,
@@ -69,10 +72,11 @@ void TitleBookActor::Initialize(const Transform& transform)
     // ステージ4　親を生成する
     {
         std::string scoreParentName = "high_difficult_parent";
-        difficultScorePosition = { -3.2f,0.0f,0.1f };
+        difficultScorePosition = { -3.9f,0.0f,0.1f };
         scoreDifficultRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
         scoreDifficultRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
         scoreDifficultRoot->SetRelativeLocationDirect(difficultScorePosition);
+        scoreDifficultRoot->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
 
         difficultStageHighScoreDisplay.Initialize(
             this,
@@ -86,10 +90,11 @@ void TitleBookActor::Initialize(const Transform& transform)
     // ボスステージハイスコア
     {
         std::string scoreParentName = "high_boss_parent";
-        bossScorePosition = { -4.0f,0.0f,1.7f };
+        bossScorePosition = { -3.9f,0.0f,1.6f };
         scoreBossRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
         scoreBossRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
         scoreBossRoot->SetRelativeLocationDirect(bossScorePosition);
+        scoreBossRoot->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
 
         bossStageHighScoreDisplay.Initialize(
             this,
@@ -114,7 +119,6 @@ void TitleBookActor::Initialize(const Transform& transform)
 
     // タイトルシーンの本は最初は閉じている状態なので、ステージ選択のインデックスは0にしておく
     selectedStageIndex = 0;
-
 }
 
 void TitleBookActor::Update(float deltaTime)
@@ -159,7 +163,7 @@ void TitleBookActor::Update(float deltaTime)
     int bossHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::BOSS);
     bossStageHighScoreDisplay.SetValue(bossHighScore);
 
-#if 1
+#if 0
     float scoreOffsetY = std::lerp(-0.1f, 0.0f, bookTwoAlpha);
     scoreRedirectRoot->SetRelativeLocationDirect({ redirectScorePosition.x,scoreOffsetY, redirectScorePosition.z });
     scoreDifficultRoot->SetRelativeLocationDirect({ difficultScorePosition.x,scoreOffsetY, difficultScorePosition.z });

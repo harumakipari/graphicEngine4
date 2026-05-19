@@ -221,7 +221,6 @@ bool GameScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, cons
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
 
-
     return true;
 }
 
