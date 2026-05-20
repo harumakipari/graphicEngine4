@@ -1043,6 +1043,11 @@ void ResultBookActor::CreateButtonArrow()
     // キーボードの画像を設定する
     secondButtons.keyboardLeft = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/stage_select_arrow.png");
 
+    // ゲームパッドの画像を設定する
+    secondButtons.gamePadRight = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/title_arrow_right_control.png");
+    // キーボードの画像を設定する
+    secondButtons.keyboardRight = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/title_arrow_right.png");
+
 
     // 二ページ目右
     secondButtons.right = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/title_arrow_right.png", "title_arrow_right");

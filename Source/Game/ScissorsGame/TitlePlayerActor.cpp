@@ -7,6 +7,8 @@ void TitlePlayerActor::Initialize(const Transform& transform)
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Player/TitlePlayer.gltf", false, true);
+    skeletalMeshComponent->overrideForwardPipelineName = "GameReturnColorPS";
+    skeletalMeshComponent->overrideDeferredPipelineName = "GameReturnColorPS";
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
@@ -32,6 +34,7 @@ void LoadingPlayerActor::Initialize(const Transform& transform)
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Player/LoadingPlayer.gltf", false, true);
     skeletalMeshComponent->overrideForwardPipelineName = "GameReturnColorPS";
+    skeletalMeshComponent->overrideDeferredPipelineName = "GameReturnColorPS";
     HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/GameReturnColorPS.cso", skeletalMeshComponent->pipeLineState_.pixelShader.ReleaseAndGetAddressOf());
     _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 

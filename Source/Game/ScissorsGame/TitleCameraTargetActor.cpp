@@ -4,6 +4,7 @@
 void TitleCameraTargetActor::Initialize(const Transform& transform)
 {
     easingRunner = std::make_unique<EasingRunner>();
+    SetPosition(titlePosition);
 }
 
 void TitleCameraTargetActor::Update(float deltaTime)

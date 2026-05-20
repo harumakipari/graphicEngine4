@@ -136,12 +136,13 @@ void TitleCamera::Update(float deltaTime)
 {
     easingYawRunner->Tick(deltaTime);
     easingPitchRunner->Tick(deltaTime);
+    easingFovRunner->Tick(deltaTime);
     // ControllerXV
     tpsController.Update(deltaTime);
 
     mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(currentPitch));
     mainCameraComponent->SetYaw(DirectX::XMConvertToRadians(currentYaw));
-
+    mainCameraComponent->SetFov(DirectX::XMConvertToRadians(currentFov));
 }
 
 void TitleCamera::Play(float interval)
@@ -201,6 +202,34 @@ void TitleCamera::Play(float interval)
             };
 
         easingYawRunner->StartHandler(handler, accessor);
+    }
+
+    // fov ‚Ì easing
+    {
+        TestEasingHandler handler;
+
+        handler.AddWait(0.0f);
+
+        handler.AddEasing(
+            TestEaseType::OutExp,
+            startFov,
+            endFov,
+            interval
+        );
+
+        handler.SetCompletedFunction([this]()
+            {
+                currentFov = endFov;
+            });
+        PropertyAccessor<float> accessor;
+
+        accessor.getter = [this]() { return currentFov; };
+        accessor.setter = [this](float t)
+            {
+                currentFov = t;
+            };
+
+        easingFovRunner->StartHandler(handler, accessor);
     }
 }
 

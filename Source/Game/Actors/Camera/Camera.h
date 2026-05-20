@@ -235,6 +235,7 @@ public:
 
         easingPitchRunner = std::make_unique<EasingRunner>();
         easingYawRunner = std::make_unique<EasingRunner>();
+        easingFovRunner = std::make_unique<EasingRunner>();
 
         startYaw = 231.5f;
         endYaw = 180.0f;
@@ -312,14 +313,18 @@ private:
     float endYaw = 180.0f;
     float currentYaw = 0.0f;
 
-    float startPitch = -11.0f;
+    float startPitch = -7.5f;
     float endPitch = -60.0f;
     float currentPitch = 0.0f;
 
+    float startFov = 24.0f;
+    float endFov = 24.0f;
+    float currentFov = 24.0f;
 
-    
+
     std::unique_ptr<EasingRunner> easingPitchRunner;
     std::unique_ptr<EasingRunner> easingYawRunner;
+    std::unique_ptr<EasingRunner> easingFovRunner;
 };
 
 

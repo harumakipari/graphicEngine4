@@ -131,7 +131,7 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
     // チップスデータを設定する
     SetTipsData();
 
-    loadingTime = 4.5f;   // ロードにかかる時間
+    loadingTime = 4.0f;   // ロードにかかる時間
 
     auto& param = SceneTransitionManager::Instance().GetParams();
     if (param.contains("fade"))
@@ -168,7 +168,7 @@ void LoadingScene::Start()
 
             RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
             RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
-            loadingPlayerActor->skeletalMeshComponent->RenderOpaque(immediateContext, loadingPlayerActor->GetWorldTransform());
+            //loadingPlayerActor->skeletalMeshComponent->RenderOpaque(immediateContext, loadingPlayerActor->GetWorldTransform());
             if (loadingSprite)
             {
                 loadingSprite->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);

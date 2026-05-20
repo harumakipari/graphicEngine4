@@ -236,6 +236,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     float3 lo = totalDiffuse + totalSpecular + (emissive) + rim /*+ ambient*/;
 
+
 #if 0
     int debugLightComplexity = 0;
     if (debugLightComplexity != 0)

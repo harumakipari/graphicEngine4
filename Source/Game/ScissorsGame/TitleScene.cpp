@@ -685,7 +685,7 @@ void TitleScene::SetUpActors()
     auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
     mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-11.0f));
     mainCameraComponent->SetYaw(DirectX::XMConvertToRadians(231.5f));
-    mainCameraComponent->SetFov(DirectX::XMConvertToRadians(24.0f));
+    mainCameraComponent->SetFov(DirectX::XMConvertToRadians(26.0f));
     mainCameraComponent->distance = 8.945f;
     SetActiveCamera(mainCameraActor);
     Logger::Log(U8("タイトルシーンのカメラ設定される。"));
@@ -708,13 +708,12 @@ void TitleScene::SetUpActors()
     Transform playerTr(DirectX::XMFLOAT3{ -7.2f,0.8f,0.1f }, DirectX::XMFLOAT3{ 0.0f,71.0f,0.0f }, DirectX::XMFLOAT3{ 1.2f,1.2f,1.2f });
     auto playerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitlePlayerActor>("TitlePlayerActor", playerTr);
 
-    Transform bookTr(DirectX::XMFLOAT3{ 0.0f,0.5f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform bookTr(DirectX::XMFLOAT3{ 0.0f,0.024f,-0.129f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     bookActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleBookActor>("BookActor", bookTr);
     bookActor->onRequestOpenBook = [this]()
         {
             StartToSelect();
         };
-
 }
 
 

@@ -291,7 +291,7 @@ void ResultScene::Start()
     };
     this->SetSceneSettings(settings);
 
-    Transform bookTr(DirectX::XMFLOAT3{ 0.0f,0.5f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform bookTr(DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto bookActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<ResultBookActor>("BookActor", bookTr);
 
 
