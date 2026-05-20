@@ -1,224 +1,364 @@
 {
-	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.2.57",
-		"version":"2.0"
-	},
-	"scene":0,
-	"scenes":[
-		{
-			"name":"Scene",
-			"nodes":[
-				2
-			]
-		}
-	],
-	"nodes":[
-		{
-			"mesh":0,
-			"name":"BookRight.001"
-		},
-		{
-			"mesh":1,
-			"name":"paper"
-		},
-		{
-			"children":[
-				0,
-				1
-			],
-			"name":"BookRight"
-		}
-	],
-	"materials":[
-		{
-			"name":"m_BookRight",
-			"pbrMetallicRoughness":{
-				"baseColorFactor":[
-					0.800000011920929,
-					0.800000011920929,
-					0.800000011920929,
-					1
-				],
-				"baseColorTexture":{
-					"index":0
-				},
-				"metallicFactor":0
-			}
-		}
-	],
-	"meshes":[
-		{
-			"name":"Mesh_0",
-			"primitives":[
-				{
-					"attributes":{
-						"POSITION":0,
-						"NORMAL":1,
-						"TEXCOORD_0":2
-					},
-					"indices":3,
-					"material":0
-				}
-			]
-		},
-		{
-			"name":"Mesh_1",
-			"primitives":[
-				{
-					"attributes":{
-						"POSITION":4,
-						"NORMAL":5,
-						"TEXCOORD_0":6
-					},
-					"indices":7,
-					"material":0
-				}
-			]
-		}
-	],
-	"textures":[
-		{
-			"sampler":0,
-			"source":0
-		}
-	],
-	"images":[
-		{
-			"mimeType":"image/png",
-			"name":"BookRight",
-			"uri":"BookRight.png"
-		}
-	],
-	"accessors":[
-		{
-			"bufferView":0,
-			"componentType":5126,
-			"count":51,
-			"max":[
-				4.554257392883301,
-				0,
-				2.8078768253326416
-			],
-			"min":[
-				-0.00012549757957458496,
-				-0.5239354372024536,
-				-2.8078768253326416
-			],
-			"type":"VEC3"
-		},
-		{
-			"bufferView":1,
-			"componentType":5126,
-			"count":51,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":2,
-			"componentType":5126,
-			"count":51,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":3,
-			"componentType":5123,
-			"count":84,
-			"type":"SCALAR"
-		},
-		{
-			"bufferView":4,
-			"componentType":5126,
-			"count":20,
-			"max":[
-				4.480894088745117,
-				1.0745081947328117e-17,
-				2.756730318069458
-			],
-			"min":[
-				0.12149703502655029,
-				-0.5,
-				-2.756730318069458
-			],
-			"type":"VEC3"
-		},
-		{
-			"bufferView":5,
-			"componentType":5126,
-			"count":20,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":6,
-			"componentType":5126,
-			"count":20,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":7,
-			"componentType":5123,
-			"count":36,
-			"type":"SCALAR"
-		}
-	],
-	"bufferViews":[
-		{
-			"buffer":0,
-			"byteLength":612,
-			"byteOffset":0,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":612,
-			"byteOffset":612,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":408,
-			"byteOffset":1224,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":168,
-			"byteOffset":1632,
-			"target":34963
-		},
-		{
-			"buffer":0,
-			"byteLength":240,
-			"byteOffset":1800,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":240,
-			"byteOffset":2040,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":160,
-			"byteOffset":2280,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":72,
-			"byteOffset":2440,
-			"target":34963
-		}
-	],
-	"samplers":[
-		{
-			"magFilter":9729,
-			"minFilter":9987
-		}
-	],
-	"buffers":[
-		{
-			"byteLength":2512,
-			"uri":"BookRight.bin"
-		}
-	]
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 49,
+      "max": [
+        4.554257392883301,
+        0.0,
+        2.8078768253326416
+      ],
+      "min": [
+        -0.00012549757957458496,
+        -0.5239354372024536,
+        -2.8078768253326416
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 49,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 49,
+      "max": [
+        1.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "min": [
+        -0.00011140104470541701,
+        -1.0,
+        -0.00018462481966707855,
+        1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 49,
+      "max": [
+        0.9859679341316223,
+        0.9621713161468506
+      ],
+      "min": [
+        0.32277756929397583,
+        0.14939773082733154
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5125,
+      "count": 84,
+      "max": [
+        48
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 5,
+      "componentType": 5126,
+      "count": 20,
+      "max": [
+        4.480894088745117,
+        1.0745081947328117e-17,
+        2.756730318069458
+      ],
+      "min": [
+        0.12149703502655029,
+        -0.5,
+        -2.756730318069458
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 6,
+      "componentType": 5126,
+      "count": 20,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 7,
+      "componentType": 5126,
+      "count": 20,
+      "max": [
+        1.0,
+        0.00013450573896989226,
+        0.00013461320486385375,
+        1.0
+      ],
+      "min": [
+        0.0,
+        -1.0,
+        0.0,
+        1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 8,
+      "componentType": 5126,
+      "count": 20,
+      "max": [
+        0.9761422276496887,
+        0.990573525428772
+      ],
+      "min": [
+        0.6545167565345764,
+        0.5595051050186157
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 9,
+      "componentType": 5125,
+      "count": 36,
+      "max": [
+        19
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 588,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 588,
+      "byteOffset": 588,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 784,
+      "byteOffset": 1176,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 392,
+      "byteOffset": 1960,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 336,
+      "byteOffset": 2352,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 240,
+      "byteOffset": 2688,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 240,
+      "byteOffset": 2928,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 320,
+      "byteOffset": 3168,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 160,
+      "byteOffset": 3488,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 144,
+      "byteOffset": 3648,
+      "target": 34963
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 3792,
+      "uri": "data:application/octet-stream;base64,bNP4PV9bw75BtDNAAJgDuV9bw75BtDNAAJgDuaIgBr9BtDNAbNP4PaIgBr9BtDNAbNP4PQAAAABBtDNAbNP4PQAAAABBtDPAAJgDuQAAAABBtDNAAJgDuQAAAABBtDPAbNP4PaIgBr9BtDPAAJgDuaIgBr9BtDPAAJgDuV9bw75BtDPAbNP4PV9bw75BtDPAAJgDuaIgBr9BtDNAAJgDuaIgBr9BtDPAbNP4PaIgBr9BtDNAbNP4PaIgBr9BtDPAeryRQF9bw75BtDPAeryRQF9bw75BtDNAeryRQKIgBr9BtDNAeryRQKIgBr9BtDPAAJgDuV9bw75BtDNAAJgDuaIgBr9BtDPAAJgDuaIgBr9BtDNAAJgDuV9bw75BtDPAbNP4PaIgBr9BtDNAeryRQKIgBr9BtDNAbNP4PV9bw75BtDNAeryRQF9bw75BtDNAeryRQF9bw75BtDNAbNP4PV9bw75BtDPAbNP4PV9bw75BtDNAeryRQF9bw75BtDPAbNP4PV9bw75BtDPAeryRQF9bw75BtDPAbNP4PaIgBr9BtDPAeryRQKIgBr9BtDPAeryRQKIgBr9BtDNAeryRQKIgBr9BtDPAAJgDuQAAAABBtDNAbNP4PQAAAABBtDNAbNP4PQAAAABBtDPAbNP4PQAAAABBtDNAbNP4PV9bw75BtDNAbNP4PV9bw75BtDPAAJgDuQAAAABBtDPAbNP4PQAAAABBtDPAAJgDuQAAAABBtDNAAJgDuV9bw75BtDNAAJgDuQAAAABBtDPAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/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"
+    }
+  ],
+  "images": [
+    {
+      "uri": "BookRight.png"
+    }
+  ],
+  "materials": [
+    {
+      "name": "m_BookRight",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1.0,
+          0.9999899864196777,
+          0.9999899864196777,
+          1.0
+        ],
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 6,
+            "POSITION": 5,
+            "TANGENT": 7,
+            "TEXCOORD_0": 8
+          },
+          "indices": 9,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "BookRight.001",
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "mesh": 1,
+      "name": "paper",
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "children": [
+        0,
+        1
+      ],
+      "name": "BookRight",
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "samplers": [
+    {
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scenes": [
+    {
+      "nodes": [
+        2
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    }
+  ]
 }

@@ -9,6 +9,8 @@ void TitleStageActor::Initialize(const Transform& transform)
 
     titleLogoComponent = AddComponent<SkeletalMeshComponent>("titleLogo",parentName);
     titleLogoComponent->SetModel("./Data/TeamModels/Title/title_rogo.gltf", false, true);
+
+
 }
 
 void TitleStageActor::Update(float deltaTime)

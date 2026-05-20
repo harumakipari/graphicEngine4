@@ -60,8 +60,20 @@ void ResultBookActor::Initialize(const Transform& transform)
         uiManager->Add(selectImage);
 
     }
+
+    // 裏表紙
+    // リザルト王冠
+    {
+        auto resultCrownModel= AddComponent<SkeletalMeshComponent>("crownMeshComponent", backCoverName);
+        resultCrownModel->SetModel("./Data/TeamModels/Title/PatchCrownModel.gltf", false, true);
+        resultCrownModel->SetIsCastShadow(false);
+        resultCrownModel->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
+    }
+
+
     // スコアの数字を乗せるページの親
     std::string rightName = rightPage.parentName;
+
 
     // ハイスコアメダル
     {

@@ -1,200 +1,246 @@
 {
-  "accessors": [
-    {
-      "bufferView": 0,
-      "componentType": 5126,
-      "count": 42,
-      "max": [
-        0.05515694618225098,
-        0.4787212908267975,
-        2.807123899459839
-      ],
-      "min": [
-        -0.04410190507769585,
-        -0.4787212908267975,
-        -2.807123899459839
-      ],
-      "type": "VEC3"
-    },
-    {
-      "bufferView": 1,
-      "componentType": 5126,
-      "count": 42,
-      "max": [
-        1.0,
-        0.8689066171646118,
-        1.0
-      ],
-      "min": [
-        -1.0,
-        -0.8689066171646118,
-        -1.0
-      ],
-      "type": "VEC3"
-    },
-    {
-      "bufferView": 2,
-      "componentType": 5126,
-      "count": 42,
-      "max": [
-        0.8639235496520996,
-        0.9999938011169434,
-        0.32406970858573914,
-        1.0
-      ],
-      "min": [
-        -0.8637290596961975,
-        -1.0,
-        -0.32657909393310547,
-        1.0
-      ],
-      "type": "VEC4"
-    },
-    {
-      "bufferView": 3,
-      "componentType": 5126,
-      "count": 42,
-      "max": [
-        0.662855863571167,
-        0.5402770638465881
-      ],
-      "min": [
-        0.5023900866508484,
-        0.16407155990600586
-      ],
-      "type": "VEC2"
-    },
-    {
-      "bufferView": 4,
-      "componentType": 5125,
-      "count": 96,
-      "max": [
-        41
-      ],
-      "min": [
-        0
-      ],
-      "type": "SCALAR"
-    }
-  ],
-  "asset": {
-    "version": "2.0"
-  },
-  "bufferViews": [
-    {
-      "buffer": 0,
-      "byteLength": 504,
-      "target": 34962
-    },
-    {
-      "buffer": 0,
-      "byteLength": 504,
-      "byteOffset": 504,
-      "target": 34962
-    },
-    {
-      "buffer": 0,
-      "byteLength": 672,
-      "byteOffset": 1008,
-      "target": 34962
-    },
-    {
-      "buffer": 0,
-      "byteLength": 336,
-      "byteOffset": 1680,
-      "target": 34962
-    },
-    {
-      "buffer": 0,
-      "byteLength": 384,
-      "byteOffset": 2016,
-      "target": 34963
-    }
-  ],
-  "buffers": [
-    {
-      "byteLength": 2400,
-      "uri": "data:application/octet-stream;base64,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"
-    }
-  ],
-  "images": [
-    {
-      "uri": "./Textures/BookLeft.png"
-    }
-  ],
-  "materials": [
-    {
-      "name": "m_BookLeft",
-      "pbrMetallicRoughness": {
-        "baseColorFactor": [
-          0.800000011920929,
-          0.800000011920929,
-          0.800000011920929,
-          1.0
-        ],
-        "baseColorTexture": {
-          "index": 0
-        },
-        "metallicFactor": 0.0
-      }
-    }
-  ],
-  "meshes": [
-    {
-      "primitives": [
-        {
-          "attributes": {
-            "NORMAL": 1,
-            "POSITION": 0,
-            "TANGENT": 2,
-            "TEXCOORD_0": 3
-          },
-          "indices": 4,
-          "material": 0,
-          "mode": 4
-        }
-      ]
-    }
-  ],
-  "nodes": [
-    {
-      "mesh": 0,
-      "name": "BookSpineModel",
-      "rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "scale": [
-        1.0,
-        1.0,
-        0.9770546555519104
-      ],
-      "translation": [
-        -0.05515694618225098,
-        0.0,
-        0.0
-      ]
-    }
-  ],
-  "samplers": [
-    {
-      "wrapS": 10497,
-      "wrapT": 10497
-    }
-  ],
-  "scenes": [
-    {
-      "nodes": [
-        0
-      ]
-    }
-  ],
-  "textures": [
-    {
-      "sampler": 0,
-      "source": 0
-    }
-  ]
+	"asset":{
+		"generator":"Khronos glTF Blender I/O v4.2.57",
+		"version":"2.0"
+	},
+	"scene":0,
+	"scenes":[
+		{
+			"name":"Scene",
+			"nodes":[
+				0,
+				1
+			]
+		}
+	],
+	"nodes":[
+		{
+			"mesh":0,
+			"name":"BookSpineModel",
+			"scale":[
+				1,
+				1,
+				0.9770546555519104
+			]
+		},
+		{
+			"mesh":1,
+			"name":"gamestart",
+			"rotation":[
+				0,
+				-0.7071068286895752,
+				0,
+				0.7071067094802856
+			],
+			"scale":[
+				0.5389161705970764,
+				0.5389161109924316,
+				0.5389161705970764
+			]
+		}
+	],
+	"materials":[
+		{
+			"name":"m_BookLeft",
+			"pbrMetallicRoughness":{
+				"baseColorFactor":[
+					1,
+					0.9999899864196777,
+					0.9999899864196777,
+					1
+				],
+				"baseColorTexture":{
+					"index":0
+				},
+				"metallicFactor":0
+			}
+		},
+		{
+			"name":"m_gamestart",
+			"pbrMetallicRoughness":{
+				"baseColorFactor":[
+					0.800000011920929,
+					0.6839324235916138,
+					0.6456000208854675,
+					1
+				],
+				"metallicFactor":0
+			}
+		}
+	],
+	"meshes":[
+		{
+			"name":"Mesh_0",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":0,
+						"NORMAL":1,
+						"TEXCOORD_0":2
+					},
+					"indices":3,
+					"material":0
+				}
+			]
+		},
+		{
+			"name":"Mesh_1",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":4,
+						"NORMAL":5,
+						"TEXCOORD_0":6
+					},
+					"indices":7,
+					"material":1
+				}
+			]
+		}
+	],
+	"textures":[
+		{
+			"sampler":0,
+			"source":0
+		}
+	],
+	"images":[
+		{
+			"mimeType":"image/png",
+			"name":"BookLeft",
+			"uri":"BookLeft.png"
+		}
+	],
+	"accessors":[
+		{
+			"bufferView":0,
+			"componentType":5126,
+			"count":42,
+			"max":[
+				0,
+				0.4787212908267975,
+				2.807123899459839
+			],
+			"min":[
+				-0.09925885498523712,
+				-0.4787212908267975,
+				-2.807123899459839
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":1,
+			"componentType":5126,
+			"count":42,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":2,
+			"componentType":5126,
+			"count":42,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":3,
+			"componentType":5123,
+			"count":96,
+			"type":"SCALAR"
+		},
+		{
+			"bufferView":4,
+			"componentType":5126,
+			"count":4846,
+			"max":[
+				2.3396706581115723,
+				0.5761590003967285,
+				0.24923041462898254
+			],
+			"min":[
+				-4.650728225708008,
+				-0.6026053428649902,
+				0.15645134449005127
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":5,
+			"componentType":5126,
+			"count":4846,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":6,
+			"componentType":5126,
+			"count":4846,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":7,
+			"componentType":5123,
+			"count":14094,
+			"type":"SCALAR"
+		}
+	],
+	"bufferViews":[
+		{
+			"buffer":0,
+			"byteLength":504,
+			"byteOffset":0,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":504,
+			"byteOffset":504,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":336,
+			"byteOffset":1008,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":192,
+			"byteOffset":1344,
+			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":58152,
+			"byteOffset":1536,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":58152,
+			"byteOffset":59688,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":38768,
+			"byteOffset":117840,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":28188,
+			"byteOffset":156608,
+			"target":34963
+		}
+	],
+	"samplers":[
+		{
+			"magFilter":9729,
+			"minFilter":9987
+		}
+	],
+	"buffers":[
+		{
+			"byteLength":184796,
+			"uri":"BookSpineModel.bin"
+		}
+	]
 }

@@ -13,6 +13,9 @@ void ScissorsStage::Initialize(const Transform& transform)
     staticMeshComponent->SetModel("./Data/TeamModels/Stage/ScissorsStage.gltf", false, false);
     //staticMeshComponent->SetModel("./Data/TeamModels/Stage/TestStage.glb", false, false);
 
+    auto stageMeshComponent = AddComponent<StaticMeshComponent>("stageModel",parentName);
+    stageMeshComponent->SetModel("./Data/TeamModels/Stage/WallFloorModel.gltf", false, false);
+
     // ”wŒiƒ‚ƒfƒ‹
     auto backMeshComponent = AddComponent<StaticMeshComponent>("backGroundModel",parentName);
     backMeshComponent->SetModel("./Data/TeamModels/Stage/BackGroundModels.gltf", false, false);

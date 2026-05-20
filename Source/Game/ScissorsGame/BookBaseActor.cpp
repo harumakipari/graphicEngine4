@@ -473,7 +473,7 @@ void BookBaseActor::CreateBookModel(const std::string& backCoverModelName, const
     // 真ん中モデルを追加
     bookMiddleModel = AddComponent<SkeletalMeshComponent>("bookMiddleModel", parentName);
     bookMiddleModel->SetModel(middleModelName, false, false);
-    bookMiddleModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+    bookMiddleModel->SetRelativeLocationDirect({ 0.0f,0.025f,0.025f });
     bookMiddleModel->SetIsCastShadow(false);
 
     // 背表紙モデル
@@ -482,6 +482,11 @@ void BookBaseActor::CreateBookModel(const std::string& backCoverModelName, const
     bookSpineModel->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
     bookSpineModel->SetRelativeLocationDirect({ 0.1f,0.0f,0.0f });
     bookSpineModel->SetIsCastShadow(false);
+
+    auto bookSpinWordModel = AddComponent<SkeletalMeshComponent>("BookSpineWordModel", "bookSpineModel");
+    bookSpinWordModel->SetModel("./Data/TeamModels/Title/BookSpineWordModel.gltf", false, false);
+    bookSpinWordModel->SetRelativeEulerRotationDirect({ 0.0f,180.0f,0.0f });
+    bookSpinWordModel->SetIsCastShadow(false);
 
     bookSpineCollisionComponent = AddComponent<BoxComponent>("bookSpineCollider", "bookSpineModel");
     DirectX::XMFLOAT3 size = bookSpineModel->GetModelSize();
@@ -523,20 +528,19 @@ void BookBaseActor::CreateBookModel(const std::string& backCoverModelName, const
         rightPage,
         STAGE_NAME::REFLECT_WALL,
         "./Data/TeamModels/Title/patchModelReflectWall.gltf",
-        { -3.2f,0.1f,-1.6f });
+        { -3.2f,0.2f,-1.6f });
 
     CreateStagePatch(
         rightPage,
         STAGE_NAME::DIFFICULT,
         "./Data/TeamModels/Title/patchModelDifficult.gltf",
-        { -1.3f,0.1f,-0.1f });
-
+        { -1.3f,0.2f,-0.1f });
 
     CreateStagePatch(
         rightPage,
         STAGE_NAME::BOSS,
         "./Data/TeamModels/Title/patchModelBoss.gltf",
-        { -2.8f,0.1f,1.5f });
+        { -2.8f,0.2f,1.5f });
 
 #endif // 0
 
