@@ -53,32 +53,32 @@ void BookBaseActor::Update(float deltaTime)
         break;
     case BookPageState::OpeningBook:
         bookSpineModel->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
-        //if (isOpeningBook && bookOneAlpha > 0.8f)
-        //{
-        //    bookState = BookPageState::FirstPage;
-        //    isOpeningBook = false;
-        //}
+        if (isOpeningBook && bookOneAlpha > 0.8f)
+        {
+            bookState = BookPageState::FirstPage;
+            isOpeningBook = false;
+        }
 
         break;
     case BookPageState::OpeningSecondPage:
-        //if (bookTwoAlpha > 0.8f)
-        //{
-        //    bookState = BookPageState::SecondPage;
-        //}
+        if (bookTwoAlpha > 0.8f)
+        {
+            bookState = BookPageState::SecondPage;
+        }
         break;
     case BookPageState::ClosingBook:
-        //if (isClosingBook && bookOneAlpha < 0.2f)
-        //{
-        //    bookState = BookPageState::Closed;
-        //    isClosingBook = false;
-        //}
+        if (isClosingBook && bookOneAlpha < 0.2f)
+        {
+            bookState = BookPageState::Closed;
+            isClosingBook = false;
+        }
 
         break;
     case BookPageState::ReturningFirstPage:
-        //if (bookTwoAlpha < 0.2f)
-        //{
-        //    bookState = BookPageState::FirstPage;
-        //}
+        if (bookTwoAlpha < 0.2f)
+        {
+            bookState = BookPageState::FirstPage;
+        }
         break;
     }
 
@@ -202,7 +202,6 @@ void BookBaseActor::OpenBook(float interval, bool playSe, std::function<void()> 
     handler.SetCompletedFunction([this, completed]()
         {
             bookOneAlpha = 1.0f;
-            bookState = BookPageState::FirstPage;
             if (completed)
             {
                 completed();
@@ -237,6 +236,7 @@ void BookBaseActor::CloseBook(float interval)
     isClosingBook = true;
 
     bookState = BookPageState::ClosingBook;
+#if 0
     if (bookTwoAlpha > 0.001f)
     {// –{‚ª“ñ–‡–Ú‚ÌŽž‚É
 
@@ -275,6 +275,8 @@ void BookBaseActor::CloseBook(float interval)
 
         return;
     }
+#endif // 0
+
 
     TestEasingHandler handler;
 
@@ -290,7 +292,7 @@ void BookBaseActor::CloseBook(float interval)
     handler.SetCompletedFunction([this]()
         {
             bookOneAlpha = 0.0f;
-            bookState = BookPageState::Closed;
+            //bookState = BookPageState::Closed;
         });
 
     PropertyAccessor<float> accessor;
@@ -1113,3 +1115,4 @@ void BookBaseActor::UpdateStageVisual(const std::shared_ptr<StageSelectData>& st
         stage->model->plusAlphaCBuffer->data.saturation = 0.0f;
     }
 }
+

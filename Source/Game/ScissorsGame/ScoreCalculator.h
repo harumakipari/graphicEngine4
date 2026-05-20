@@ -197,6 +197,12 @@ public:
     // ボス撃破時間ボーナス
     static int CalculateBossTimeBonus(float clearTime)
     {
+        // 30秒以内
+        if (clearTime <= 30.0f)
+        {
+            return 14000;
+        }
+
         // 1分以内
         if (clearTime <= 60.0f)
         {

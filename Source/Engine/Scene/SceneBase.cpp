@@ -133,10 +133,6 @@ bool SceneBase::Initialize(ID3D11Device* device, const UINT64 width, UINT height
     );
     Logger::Log(U8("UI Render viewport ") + std::to_string(imageMin.x) + std::to_string(imageMin.y) + std::to_string(imageSize.x) + std::to_string(imageSize.y));
 
-
-
-
-
     return true;
 }
 
