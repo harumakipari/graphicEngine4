@@ -68,7 +68,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         medalSkeletalMeshComponent = AddComponent<SkeletalMeshComponent>("medalMeshComponent", rightName);
         medalSkeletalMeshComponent->SetModel("./Data/TeamModels/Title/HighScoreMedalModel.gltf", false, true);
         medalSkeletalMeshComponent->SetIsCastShadow(false);
-        medalSkeletalMeshComponent->SetRelativeLocationDirect({ -0.4f,-0.2f,-1.9f });
+        medalSkeletalMeshComponent->SetRelativeLocationDirect({ -0.2f,-0.2f,-2.0f });
         medalSkeletalMeshComponent->SetRelativeEulerRotationDirect({ 0.0f,20.0f,-180.0f });
         medalSkeletalMeshComponent->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
         medalSkeletalMeshComponent->SetIsVisible(false);
@@ -461,12 +461,12 @@ void ResultBookActor::Update(float deltaTime)
 
 
     float remain = ScoreSystem::GetRemainTimeToClear();
-    //if (resultPhase >= ResultPhase::AddTimeBonus && !ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage && isCleared)
+    if (resultPhase >= ResultPhase::AddTimeBonus && !ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage && isCleared)
     {// 時間ボーナス加算のフェーズで、目標タイムをクリアできていないとき、かつ二枚目のページが開いているとき、かつステージをクリアしているとき
         remainClearImage->SetVisible(true);
 
 #ifdef _DEBUG
-        remain = 9.0f;
+        //remain = 59.0f;
 #endif // _DEBUG
         // 秒に変換
         int totalSeconds = static_cast<int>(remain);
@@ -486,20 +486,20 @@ void ResultBookActor::Update(float deltaTime)
             //timerDigits[i]->SetColor(DirectX::XMFLOAT4{ 0.471f,0.455f,0.498f,1.0f });
         }
     }
-    //else
-    //{
-    //    remainClearImage->SetVisible(false);
-    //    for (int i = 0; i < 4; i++)
-    //    {
-    //        timerDigits[i]->SetVisible(false);
-    //    }
-    //}
+    else
+    {
+        remainClearImage->SetVisible(false);
+        for (int i = 0; i < 4; i++)
+        {
+            timerDigits[i]->SetVisible(false);
+        }
+    }
 
 
 #if 1
     if (isCleared && !isPlayTimerPatch)
     {// クリアしていたら
-        if (resultPhase >= ResultPhase::AddTimeBonus && ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage)
+    if (resultPhase >= ResultPhase::AddTimeBonus && ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage)
         {
             isPlayTimerPatch = true;
             TimerPatchPlay();

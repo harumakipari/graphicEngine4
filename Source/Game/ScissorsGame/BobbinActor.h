@@ -96,8 +96,8 @@ private:
     float maxRadius = 6.0f; // 最大半径
     float cooldownInterval = 0.1f;// クールタイム
     float chargeTime = 3.5f; // 何秒でMaxになるか
-    XMFLOAT2 tutorialPos = { 390.0f,140.0f };    // チュートリアル用の説明文の位置
-    XMFLOAT2 tutorialSize = { 480.0f,200.0f }; // チュートリアル用の説明文のサイズ
+    XMFLOAT2 tutorialPos = { 270.0f,130.0f };    // チュートリアル用の説明文の位置
+    XMFLOAT2 tutorialSize = { 600.0f,250.0f }; // チュートリアル用の説明文のサイズ
 
     bool gameStart = false;
 };

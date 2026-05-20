@@ -96,6 +96,9 @@ private:
     SceneRenderer sceneRender;
     float loadingTime = 1.5f;   // ロードにかかる時間
 
+    DirectX::XMFLOAT2 tipsPos= { 0.0f,875.0f };
+    DirectX::XMFLOAT2 tipsWordOffset={298.0f,18.0f};
+
 
     std::shared_ptr<LoadingPlayerActor> loadingPlayerActor; // ロードシーン用のプレイヤーアクター
 };

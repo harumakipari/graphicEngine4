@@ -1,4 +1,9 @@
 {
+    "BOBBIN_FIRST": [
+        {
+            "score": 10560
+        }
+    ],
     "BOSS": [
         {
             "score": 14635
@@ -14,6 +19,11 @@
         },
         {
             "score": 12720
+        }
+    ],
+    "FIRST": [
+        {
+            "score": 10280
         }
     ],
     "TUTORIAL": [

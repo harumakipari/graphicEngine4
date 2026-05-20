@@ -381,7 +381,7 @@ void BookBaseActor::CloseSecondPage(float interval)
     handler.SetCompletedFunction([this]()
         {
             bookTwoAlpha = 0.0f;
-            bookState = BookPageState::FirstPage;
+            //bookState = BookPageState::FirstPage;
         });
 
     PropertyAccessor<float> accessor;
@@ -397,7 +397,6 @@ void BookBaseActor::CloseSecondPage(float interval)
         {
             bookTwoAlpha = t;
         };
-
     easingTwoRunner->StartHandler(handler, accessor);
 }
 

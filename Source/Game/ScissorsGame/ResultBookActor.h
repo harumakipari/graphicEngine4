@@ -129,11 +129,10 @@ private:
     DirectX::XMFLOAT2 timerBonusUiSize = { 521.0f,151.0f }; // タイムボーナスのUIのサイズ
 
     // 配置
-    float spacing = 24.0f;
-    DirectX::XMFLOAT2 numberSize = { 30.0f,44.0f };
+    float spacing = 30.0f;
+    DirectX::XMFLOAT2 numberSize = { 30.0f,45.0f };
     DirectX::XMFLOAT2 minuteSpacing = { -72.0f,-14.0f };
-    DirectX::XMFLOAT2 secondSpacing = { -54.0f,-16.0f };
-
+    DirectX::XMFLOAT2 secondSpacing = { -44.0f,-16.0f };
 
     bool isNewRecord = false; //新記録かどうか
 

@@ -158,7 +158,7 @@ void LoadingScene::Start()
             //{
             //loadingSkewer->poleModel->RenderOpaque(immediateContext, loadingSkewer->GetWorldTransform());
 
-          
+
             //enemy->skeltalMeshComponent->RenderOpaque(immediateContext, e->GetWorldTransform());
             //RenderState::BindBlendState(immediateContext, BLEND_STATE::ALPHA);
             //RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_OFF_ZW_OFF);
@@ -168,14 +168,14 @@ void LoadingScene::Start()
 
             RenderState::BindDepthStencilState(immediateContext, DEPTH_STATE::ZT_ON_ZW_ON);
             RenderState::BindRasterizerState(immediateContext, RASTERIZE_STATE::SOLID_CULL_BACK);
-        loadingPlayerActor->skeletalMeshComponent->RenderOpaque(immediateContext, loadingPlayerActor->GetWorldTransform());
-        if (loadingSprite)
-        {
-            loadingSprite->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-            //gameOverSprite->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        }
+            loadingPlayerActor->skeletalMeshComponent->RenderOpaque(immediateContext, loadingPlayerActor->GetWorldTransform());
+            if (loadingSprite)
+            {
+                loadingSprite->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+                //gameOverSprite->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+            }
 
-        //}
+            //}
         });
 
     float width = 1920.0f;
@@ -195,7 +195,6 @@ void LoadingScene::Start()
     std::shared_ptr<Sprite> chipSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png");
 
     DirectX::XMFLOAT2 tipsSize = { 750.0f,168.0f };
-    DirectX::XMFLOAT2 tipsPos = { 20.0f,880.0f };
 
     chipsImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tips/player_lore.png", "chipsImage");
     chipsImage->SetSize(tipsSize);
@@ -203,7 +202,7 @@ void LoadingScene::Start()
     chipsImage->SetTexture(chipSprite);
 
     chipsFrameImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tips/tips_frame.png", "tips_frame");
-    chipsFrameImage->SetSize(tipsSize);
+    chipsFrameImage->SetSize({ 1000.0f,200.0f });
     chipsFrameImage->SetWorldPosition(tipsPos);
 
     ApplyTipsTextures();
@@ -216,7 +215,7 @@ void LoadingScene::Start()
             backImage->Draw(immediateContext);
         });
 
-    
+
 #endif // 0
 
     // シーンのライト設定などを設定する
@@ -301,7 +300,7 @@ void LoadingScene::SetUpActors()
     //Transform cameraTargetTr(DirectX::XMFLOAT3{ 2.2f,1.984f,2.753f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
 
-    Transform playerTr(DirectX::XMFLOAT3{ 3.0f,2.4f,13.0f }, DirectX::XMFLOAT3{ 0.0f,108.0f,0.0f }, DirectX::XMFLOAT3{ 1.2f,1.2f,1.2f });
+    Transform playerTr(DirectX::XMFLOAT3{ 3.0f,2.6f,13.6f }, DirectX::XMFLOAT3{ 0.0f,108.0f,0.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
     loadingPlayerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<LoadingPlayerActor>("loadingPlayerActor", playerTr);
 
     mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());
@@ -317,6 +316,12 @@ void LoadingScene::SetUpActors()
 void LoadingScene::Update(float deltaTime)
 {
     SceneBase::Update(deltaTime);
+
+    DirectX::XMFLOAT2 tipsWordPos = { tipsPos.x + tipsWordOffset.x,tipsPos.y + tipsWordOffset.y };
+    chipsImage->SetWorldPosition(tipsWordPos);
+
+    chipsFrameImage->SetWorldPosition(tipsPos);
+
 
     loadingTime -= deltaTime;
 
@@ -588,7 +593,14 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime
 
 void LoadingScene::DrawGui()
 {
+#ifdef USE_IMGUI
+    ImGui::Begin(U8("調整"));
+    ImGui::DragFloat2("tipsPos", &tipsPos.x);
+    ImGui::DragFloat2("tipsWordOffset", &tipsWordOffset.x);
+    ImGui::End();
     SceneBase::DrawGui();
+#endif
+
 }
 
 // チップスのカテゴリーを決定する
@@ -788,120 +800,120 @@ void LoadingScene::SetTipsData()
             TipsCategory::ReturnTitle,
                 "TUTORIAL",
             {
-                 //L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
-                 //L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
-                 //L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_hint_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_hint_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/needle_hint_1.png",
-            }
-        },
+            //L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
+            //L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
+            //L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_hint_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_hint_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/needle_hint_1.png",
+       }
+   },
 
-        {
-            TipsCategory::ReturnTitle,
-                "FIRST",
-            {
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_hint_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_hint_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/needle_hint_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
-            }
-        },
-        {
-            TipsCategory::ReturnTitle,
-                "BOBBIN_FIRST",
-            {
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_hint_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_hint_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/needle_hint_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
-                 L"./Data/Textures/ScissorsUI/Tips/bobbin_hint.png",
-                 L"./Data/Textures/ScissorsUI/Tips/bobbin_retry.png",
-                 L"./Data/Textures/ScissorsUI/Tips/bobbin_lore_1.png",
-            }
-        },
-        {
-            TipsCategory::ReturnTitle,
-                "REFLECT_WALL",
-            {
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_hint_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_hint_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/needle_hint_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
-                 L"./Data/Textures/ScissorsUI/Tips/bobbin_hint.png",
-                 L"./Data/Textures/ScissorsUI/Tips/bobbin_retry.png",
-                 L"./Data/Textures/ScissorsUI/Tips/bobbin_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/redirect_retry.png",
-            }
-        },
-        {
-            TipsCategory::ReturnTitle,
-                "DIFFICULT",
-            {
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_hint_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_hint_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/needle_hint_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
-                 L"./Data/Textures/ScissorsUI/Tips/bobbin_hint.png",
-                 L"./Data/Textures/ScissorsUI/Tips/bobbin_retry.png",
-                 L"./Data/Textures/ScissorsUI/Tips/bobbin_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/redirect_retry.png",
-                 L"./Data/Textures/ScissorsUI/Tips/needle_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/needle_lore_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/needle_lore_3.png",
-            }
-        },
-        {
-            TipsCategory::ReturnTitle,
-                "BOSS",
-            {
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_hint_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/game_hint_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/needle_hint_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
-                 L"./Data/Textures/ScissorsUI/Tips/bobbin_hint.png",
-                 L"./Data/Textures/ScissorsUI/Tips/bobbin_retry.png",
-                 L"./Data/Textures/ScissorsUI/Tips/bobbin_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/redirect_retry.png",
-                 L"./Data/Textures/ScissorsUI/Tips/needle_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/needle_lore_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/needle_lore_3.png",
-                 L"./Data/Textures/ScissorsUI/Tips/boss_lore_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/boss_lore_2.png",
-                 L"./Data/Textures/ScissorsUI/Tips/boss_retry_1.png",
-                 L"./Data/Textures/ScissorsUI/Tips/boss_hint_1.png",
-            }
-                }
+   {
+       TipsCategory::ReturnTitle,
+           "FIRST",
+       {
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_hint_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_hint_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/needle_hint_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
+       }
+   },
+   {
+       TipsCategory::ReturnTitle,
+           "BOBBIN_FIRST",
+       {
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_hint_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_hint_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/needle_hint_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
+            L"./Data/Textures/ScissorsUI/Tips/bobbin_hint.png",
+            L"./Data/Textures/ScissorsUI/Tips/bobbin_retry.png",
+            L"./Data/Textures/ScissorsUI/Tips/bobbin_lore_1.png",
+       }
+   },
+   {
+       TipsCategory::ReturnTitle,
+           "REFLECT_WALL",
+       {
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_hint_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_hint_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/needle_hint_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
+            L"./Data/Textures/ScissorsUI/Tips/bobbin_hint.png",
+            L"./Data/Textures/ScissorsUI/Tips/bobbin_retry.png",
+            L"./Data/Textures/ScissorsUI/Tips/bobbin_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/redirect_retry.png",
+       }
+   },
+   {
+       TipsCategory::ReturnTitle,
+           "DIFFICULT",
+       {
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_hint_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_hint_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/needle_hint_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
+            L"./Data/Textures/ScissorsUI/Tips/bobbin_hint.png",
+            L"./Data/Textures/ScissorsUI/Tips/bobbin_retry.png",
+            L"./Data/Textures/ScissorsUI/Tips/bobbin_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/redirect_retry.png",
+            L"./Data/Textures/ScissorsUI/Tips/needle_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/needle_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/needle_lore_3.png",
+       }
+   },
+   {
+       TipsCategory::ReturnTitle,
+           "BOSS",
+       {
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_lore_3.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_hint_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/game_hint_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/needle_hint_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
+            L"./Data/Textures/ScissorsUI/Tips/bobbin_hint.png",
+            L"./Data/Textures/ScissorsUI/Tips/bobbin_retry.png",
+            L"./Data/Textures/ScissorsUI/Tips/bobbin_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/redirect_retry.png",
+            L"./Data/Textures/ScissorsUI/Tips/needle_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/needle_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/needle_lore_3.png",
+            L"./Data/Textures/ScissorsUI/Tips/boss_lore_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/boss_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/boss_retry_1.png",
+            L"./Data/Textures/ScissorsUI/Tips/boss_hint_1.png",
+       }
+           }
 
 
     };

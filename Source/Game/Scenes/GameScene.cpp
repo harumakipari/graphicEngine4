@@ -243,7 +243,6 @@ void GameScene::Start()
     }
 
     currentStageName = STAGE_NAME::BOSS;
-
     // 遊ぶステージ名を記録する
     ScoreSystem::RecordStageName(currentStageName);
     // ステージデータをロードする
