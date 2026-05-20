@@ -27,9 +27,7 @@ const char* ToString(SceneTransitionManager::State s)
     return "Unknown";
 }
 
-void SceneTransitionManager::RequestTransition(
-    const std::string& nextScene,
-    const SceneTransitionParam& param, TransitionStyle style)
+void SceneTransitionManager::RequestTransition(const std::string& nextScene, const SceneTransitionParam& param, TransitionStyle style)
 {
     if (state_ != State::Idle)
     {
@@ -52,6 +50,18 @@ void SceneTransitionManager::RequestTransition(
     if (style == TransitionStyle::Scale)
     {
         scaleTransitionEffect->OnSceneChanged();
+        if (param.contains("stage"))
+        {
+            const auto& stage = param.at("stage");
+            if (stage == "BOSS")
+            {
+                scaleTransitionEffect->SetTransitionTexture("BOSS");
+            }
+            else
+            {
+                scaleTransitionEffect->SetTransitionTexture("FIRST");
+            }
+        }
         scaleTransitionEffect->Start(TransitionDirection::Close);
     }
     else

@@ -89,13 +89,13 @@ void ScaleTransitionEffect::Start(TransitionDirection dir)
     if (dir == TransitionDirection::Close)
     {
         spriteScale = startScale;
-        handler.AddEasing(TestEaseType::OutSine, startScale, 1.0f, 2.5f);
+        handler.AddEasing(TestEaseType::OutSine, startScale, 1.0f, 2.f);
     }
     else // Open
     {
         startScale = 1.0f;
         handler.AddWait(0.1f);
-        handler.AddEasing(TestEaseType::InSine, 1.0f, 170.0f, 1.0f);
+        handler.AddEasing(TestEaseType::InSine, 1.0f, 220.0f, 0.8f);
     }
 
     handler.SetCompletedFunction([this]()
@@ -114,7 +114,6 @@ void ScaleTransitionEffect::Update(float deltaTime)
 {
     easingRunner->Tick(deltaTime);
     sprite->SetScale({ spriteScale,spriteScale });
-
 }
 
 void ScaleTransitionEffect::SetTransitionTexture(const std::string& stage)

@@ -75,7 +75,6 @@ private:
     // チップステクスチャを適応する
     void ApplyTipsTextures();
 private:
-    std::shared_ptr<UISceneChangeComponent> sprite = nullptr;
     std::shared_ptr<UIImageComponent> backImage;
     std::shared_ptr<UIImageComponent> chipsImage;
     std::shared_ptr<UIImageComponent> chipsFrameImage;
@@ -97,8 +96,7 @@ private:
     float loadingTime = 1.5f;   // ロードにかかる時間
 
     DirectX::XMFLOAT2 tipsPos= { 0.0f,875.0f };
-    DirectX::XMFLOAT2 tipsWordOffset={298.0f,18.0f};
-
+    DirectX::XMFLOAT2 tipsWordOffset={226.0f,18.0f};
 
     std::shared_ptr<LoadingPlayerActor> loadingPlayerActor; // ロードシーン用のプレイヤーアクター
 };

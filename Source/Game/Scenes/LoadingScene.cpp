@@ -181,16 +181,19 @@ void LoadingScene::Start()
     float width = 1920.0f;
     float height = 1080.0f;
 
-    sprite = std::make_shared<UISceneChangeComponent>("./Data/Textures/ScissorsUI/scene_change.png", "sceneChange");
-    sprite->SetWorldPosition({ width * 0.5f, height * 0.5f });
-    sprite->SetPivot({ 0.5f,0.5f });
-    sprite->SetSize({ width, height });
-    sprite->zOrder = 1000;
-
+    auto sprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/scene_change_boss.png");
 
     backImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/scene_change.png", "backGround");
     backImage->SetSize({ 1920, 1080 });
-
+    auto& param = SceneTransitionManager::Instance().GetParams();
+    if (param.contains("stage"))
+    {
+        std::string name = param.at("stage");
+        if (name == "BOSS")
+        {
+            backImage->SetTexture(sprite);
+        }
+    }
 
     std::shared_ptr<Sprite> chipSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png");
 

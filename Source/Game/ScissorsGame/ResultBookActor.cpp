@@ -80,7 +80,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         timerPatchSkeletalMeshComponent->SetModel("./Data/TeamModels/Title/TimeClearModel.gltf", false, true);
         timerPatchSkeletalMeshComponent->SetIsCastShadow(false);
         timerPatchSkeletalMeshComponent->SetRelativeLocationDirect({ -3.9,-0.2f,1.9f });
-        timerPatchSkeletalMeshComponent->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
+        timerPatchSkeletalMeshComponent->SetRelativeEulerRotationDirect({ -1.16f,30.0f,180.0f });
         timerPatchSkeletalMeshComponent->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
         timerPatchSkeletalMeshComponent->SetIsVisible(false);
     }
@@ -499,7 +499,7 @@ void ResultBookActor::Update(float deltaTime)
 #if 1
     if (isCleared && !isPlayTimerPatch)
     {// クリアしていたら
-    if (resultPhase >= ResultPhase::AddTimeBonus && ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage)
+        if (resultPhase >= ResultPhase::AddTimeBonus && ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage)
         {
             isPlayTimerPatch = true;
             TimerPatchPlay();
@@ -880,7 +880,12 @@ void ResultBookActor::HandlePadInput()
         {
             CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
             // タイトルへシーン遷移する
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") });
+            const ResultData& stats = ScoreSystem::GetResultStats();
+
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") ,std::make_pair(
+                "stage",
+                    std::string(
+                        magic_enum::enum_name(stats.stageName))) });
         }
         if (pushR)
         {
@@ -899,8 +904,13 @@ void ResultBookActor::HandlePadInput()
             if (pushR)
             {
                 CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
+
+                const ResultData& stats = ScoreSystem::GetResultStats();
                 // タイトルへシーン遷移する
-                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") });
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") ,std::make_pair(
+                    "stage",
+                        std::string(
+                            magic_enum::enum_name(stats.stageName))) });
             }
         }
         break;
@@ -932,6 +942,12 @@ void ResultBookActor::DrawImGuiDetails()
         ranking5Display.SetVisible(false);
 
     }
+    if (ImGui::Button(U8("タイマーパッチ")))
+    {
+        TimerPatchPlay();
+    }
+
+
     ImGui::DragFloat2(U8("patchSize"), &patchSize.x);
     ImGui::DragFloat2(U8("patchPos"), &patchPos.x);
     ImGui::DragFloat(U8("patchAngle"), &patchAngle);
@@ -974,8 +990,17 @@ void ResultBookActor::CreateButtonArrow()
     firstButtons.left->onClick = [this]()
         {
             CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
+
+            const ResultData& stats = ScoreSystem::GetResultStats();
             // タイトルへシーン遷移する
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") });
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") ,std::make_pair(
+                "stage",
+                    std::string(
+                        magic_enum::enum_name(stats.stageName))) });
+
+
+            //// タイトルへシーン遷移する
+            //SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") });
         };
 
     // ゲームパッドの画像を設定する
@@ -1029,7 +1054,14 @@ void ResultBookActor::CreateButtonArrow()
         {
             CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
             // タイトルへシーン遷移する
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") });
+            const ResultData& stats = ScoreSystem::GetResultStats();
+            // タイトルへシーン遷移する
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") ,std::make_pair(
+                "stage",
+                    std::string(
+                        magic_enum::enum_name(stats.stageName))) });
+
+            //SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("fromScene","ResultScene") });
         };
 
 

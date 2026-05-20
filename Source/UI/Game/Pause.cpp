@@ -68,9 +68,15 @@ void Pause::Initialize(const Transform& transform)
 
             CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
             Time::timeScale = 1.0f;
+            auto stats = ScoreSystem::GetResultStats();
+            auto stage = stats.stageName;
 
             const char* types[] = { "0", "1" };
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]), std::make_pair("fromScene","GameScene") });
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]), std::make_pair("fromScene","GameScene") ,{
+                            "stage",
+                            std::string(
+                                magic_enum::enum_name(stage))
+                        }, });
             //Scene::_transition("LoadingScene", { std::make_pair("preload","TitleScene"), std::make_pair("type", types[rand() % 2]) });
 
         };

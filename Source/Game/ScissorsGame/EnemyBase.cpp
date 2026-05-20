@@ -448,7 +448,7 @@ std::string EnemyBase::GetModelPath()
     default:
         return (yarnSize == Big)
             ? "./Data/TeamModels/Enemy/YarnBigEnemy.glb"
-            : "./Data/TeamModels/Enemy/YarnEnemy.glb";
+            : "./Data/TeamModels/Enemy/YarnEnemy.gltf";
     }
 }
 

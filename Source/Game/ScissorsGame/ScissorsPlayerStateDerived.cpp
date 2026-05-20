@@ -1010,7 +1010,6 @@ void ScissorsPlayerDeathState::Execute(float deltaTime)
                     },
                     TransitionStyle::Fade
                 );
-
                 phase = DeathPhase::SceneTransition;
             }
         }

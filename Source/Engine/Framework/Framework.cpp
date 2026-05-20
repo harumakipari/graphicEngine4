@@ -60,8 +60,8 @@ bool Framework::Initialize()
 
     // SCENE_TRANSITION
     //Scene::_boot(device, "MainScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-    Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
-    //Scene::_boot(device, "ResultScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    //Scene::_boot(device, "TitleScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
+    Scene::_boot(device, "ResultScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "MorphScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "TutorialScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
     //Scene::_boot(device, "GameScene", SCREEN_WIDTH, SCREEN_HEIGHT, {});
@@ -90,6 +90,7 @@ bool Framework::Initialize()
     //back = std::make_shared<Sprite>(device, L"./Data/Textures/UI/backGround.png");
     back = std::make_shared<Sprite>(device, L"./Data/Textures/ScissorsUI/scene_change.png");
     black = std::make_shared<Sprite>(device, L"./Data/Textures/ScissorsUI/black.png");
+    backBoss = std::make_shared<Sprite>(device, L"./Data/Textures/ScissorsUI/scene_change_boss.png");
 
     return true;
 }
@@ -199,13 +200,22 @@ void Framework::Render(float elapsed_time/*Elapsed seconds from last frame*/, bo
         }
         else
         {
-            back->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-            Logger::Log(U8("back‚ð’Ê‚Á‚½"));
+            if (param.contains("stage"))
+            {
+                std::string stageName = param.at("stage");
+                if (stageName == "BOSS")
+                {
+                    backBoss->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+                }
+                else
+                {
+                    back->Render(immediateContext, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+                }
+            }
         }
+        Logger::Log(U8("back‚ð’Ê‚Á‚½"));
 
     }
-
-
     if (enableImGui)
     {
 #ifdef USE_IMGUI

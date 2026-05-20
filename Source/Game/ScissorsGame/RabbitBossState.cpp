@@ -737,7 +737,10 @@ void RabbitBossDeathState::Execute(float deltaTime)
         if (elapsedTime > tearInterval)
         {
             phase = DeathPhase::Finish;
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("fromScene","GameScene") });
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("fromScene","GameScene") ,{
+                            "stage",
+                            "BOSS"
+                        }, });
         }
     }
     break;

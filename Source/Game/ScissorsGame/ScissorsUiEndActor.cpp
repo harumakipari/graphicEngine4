@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ScissorsUiEndActor.h"
 
+#include "ScoreCalculator.h"
 #include "Engine/Audio/CoreAudio.h"
 #include "Engine/Scene/Scene.h"
 
@@ -129,13 +130,19 @@ void ScissorsUiEndActor::Play()
             {
                 // èIÇÌÇ¡ÇΩÇÁÉVÅ[ÉìëJà⁄
 #if 1
+                const ResultData& stats = ScoreSystem::GetResultStats();
                 const char* types[] = { "0", "1" };
-                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("type", types[rand() % 2])  ,std::make_pair("fromScene", "GameScene") });
+                SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "ResultScene"), std::make_pair("type", types[rand() % 2])  ,std::make_pair("fromScene", "GameScene")  ,std::make_pair(
+                    "stage",
+                        std::string(
+                            magic_enum::enum_name(stats.stageName))
+                    )
 #else
                 const char* types[] = { "0", "1" };
                 Scene::_transition("LoadingScene", { std::make_pair("preload", "ResultScene"),{"difficulty", "0"} });
 
 #endif // 0
+                    });
             });
         PropertyAccessor<float> accessor;
 
