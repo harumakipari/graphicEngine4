@@ -60,7 +60,11 @@ public:
     void Update(float deltaTime)override;
 
     // 敵出現を開始する
-    void Activate() { isActive = true; }
+    void Activate()
+    {
+        isActive = true;
+        timer = interval; // すぐに出現するようにする
+    }
 
     // 敵出現を終了する
     void Deactivate() { isActive = false; }

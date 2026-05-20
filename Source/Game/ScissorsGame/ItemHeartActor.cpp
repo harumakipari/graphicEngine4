@@ -9,9 +9,12 @@ void ItemHeartActor::Initialize(const Transform& transform)
     std::string parentName = "ItemHeartActor";
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Item/ItemHeartModel.gltf", false, true);
+    skeletalMeshComponent->SetIsCastShadow(false);
 
     auto boxComponent = this->AddComponent<class BoxComponent>("boxComponent", parentName);
     DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
+    size.x *= 1.3f;
+    size.z *= 1.3f;
     float  mass = 0.0f;
     boxComponent->SetBoxExtent(size);
     boxComponent->SetRelativeLocationDirect({ 0.0f,size.y * 0.5f ,0.0f });

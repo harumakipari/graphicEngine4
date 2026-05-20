@@ -303,7 +303,7 @@ void RabbitBossEnemyActor::Update(float deltaTime)
             gaugeUi->SetGaugeOffset(gaugeFrameOffset);
             // ゲージの中身の色を設定する
             gaugeUi->SetGaugeFillColor(gaugeColor);
-            gaugeFrameBackComponent->SetWorldPosition({ gaugeUiPos.x + gaugeFrameOffset.x, gaugeUiPos.y + gaugeFrameOffset.y });
+            gaugeFrameBackComponent->SetWorldPosition({ gaugeUiPos.x /*+ gaugeFrameOffset.x*/, gaugeUiPos.y /*+ gaugeFrameOffset.y */});
             bossIconComponent->SetWorldPosition({ gaugeUiPos.x + bossIconOffset.x, gaugeUiPos.y + bossIconOffset.y });
             bossIconComponent->SetSize({ bossIconSize });
         }
@@ -388,7 +388,7 @@ void RabbitBossEnemyActor::DrawImGuiDetails()
     ImGui::DragFloat2(U8("ゲージのUIのposition"), &gaugeUiPos.x, 2.0f);
     ImGui::DragFloat2(U8("ボスのアイコンのサイズ"), &bossIconSize.x, 2.0f);
     ImGui::DragFloat2(U8("ボスのアイコンのオフセット"), &bossIconOffset.x, 2.0f);
-
+    ImGui::DragInt("hp", &hp,1,1,500);
 #endif
 }
 
@@ -800,7 +800,7 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
         {-1,0,-1} ,   // 左後
         {1,0,0},    // 左後
         {-1,0,0},    // 左後
-        {0,0,1},    // 左後
+        {0,0,-1},    // 左後
     };
 
     std::shuffle(dirs.begin(), dirs.end(), rng);

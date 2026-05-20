@@ -273,6 +273,11 @@ void GameScene::Start()
                     {
                         gameTimerUi->SetTargetTime(currentStageName);
                     }
+                    if (auto spawner = GetActorManager()->GetActorOfType<BossSpawner>())
+                    {// ƒ{ƒXü‚¾‚Á‚½‚çB
+                        spawner->Activate();
+                    }
+
                 });
         });
 #if 1

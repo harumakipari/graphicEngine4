@@ -173,9 +173,9 @@ private:
     std::shared_ptr<UIGaugeComponent> gaugeUi; // ボスHPのゲージUI
     std::shared_ptr<UIImageComponent> bossIconComponent;  // ボスのアイコンスプライト描画
     DirectX::XMFLOAT2 gaugeUiOffset = { 0.0f,0.0f }; // ゲージのUIオフセット値
-    DirectX::XMFLOAT2 gaugeFrameOffset = { 6.0f,0.0f }; // ゲージフレームのオフセット値
+    DirectX::XMFLOAT2 gaugeFrameOffset = { 10.0f,0.0f }; // ゲージフレームのオフセット値
     DirectX::XMFLOAT2 gaugeUiPos = { 540.0f,6.0f };   // ゲージのposition
-    DirectX::XMFLOAT2 bossIconOffset={22.0f,48.0f}; // ゲージ横のボスアイコンオフセット値
+    DirectX::XMFLOAT2 bossIconOffset={18.0f,48.0f}; // ゲージ横のボスアイコンオフセット値
     DirectX::XMFLOAT2 bossIconSize = { 110.0f,110.0f };// ゲージ横のボスアイコンのサイズ
     //DirectX::XMFLOAT2 gaugeUiPos = { 506.0f,34.0f };   // ゲージのposition
 

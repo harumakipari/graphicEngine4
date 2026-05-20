@@ -394,7 +394,6 @@ void WaveManager::SpawnBossIfNeeded(const StageData& stageData) const
 
     auto spawner = GetOwnerScene()->GetActorManager()
         ->CreateAndRegisterActorWithTransform<BossSpawner>("bossSpawner", tr);
-    spawner->Activate();
 
     auto boss = GetOwnerScene()->GetActorManager()
         ->CreateAndRegisterActorWithTransform<RabbitBossEnemyActor>("boss", tr);
