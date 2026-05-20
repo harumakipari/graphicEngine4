@@ -21,6 +21,7 @@
 #include "Engine/Scene/SceneBase.h"
 
 #include "Game/Actors/Camera/LoadingCamera.h"
+#include "Game/ScissorsGame/TitlePlayerActor.h"
 
 class LoadingScene : public SceneBase
 {
@@ -96,4 +97,5 @@ private:
     float loadingTime = 1.5f;   // ロードにかかる時間
 
 
+    std::shared_ptr<LoadingPlayerActor> loadingPlayerActor; // ロードシーン用のプレイヤーアクター
 };

@@ -18,3 +18,17 @@ private:
     std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
 };
 
+class LoadingPlayerActor :public Character
+{
+public:
+    explicit LoadingPlayerActor(const std::string& actorName) :Character(actorName) {}
+
+    void Initialize(const Transform& transform)override;
+
+    void Update(float deltaTime)override;
+
+    void DrawImGuiDetails() override {}
+
+    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;// 描画用コンポーネントを追加
+};
+

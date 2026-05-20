@@ -239,18 +239,16 @@ void RabbitBossEnemyActor::Update(float deltaTime)
         float t = sinf(blinkTimer * 20.0f) * 0.5f + 0.5f;
 
         // 赤フラッシュ
-        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor =
-        {
-            1.0f,
-            t,
-            t,
-            1.0f
-        };
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor.x = 1.0f;
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor.y = t;
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor.z = t;
     }
     else
     {
         // 無敵終了 → 色戻す
-        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1, 1, 1, 1 };
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor.x = 1.0f;
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor.y = 1.0f;
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor.z = 1.0f;
     }
 
 
@@ -808,12 +806,14 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
     std::shuffle(dirs.begin(), dirs.end(), rng);
 
 
+    int bombCount = MathHelper::RandomRange(3, 4);
+
     // 先頭3つだけ使う
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < bombCount; i++)
     {
         auto& d = dirs[i];
         // 距離をランダムにする
-        float offset = MathHelper::RandomRange(3.5f, 5.5f);
+        float offset = MathHelper::RandomRange(3.0f, 4.5f);
 
         // 爆破位置
         DirectX::XMFLOAT3 bombPos = pos;

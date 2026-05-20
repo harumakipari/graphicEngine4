@@ -256,7 +256,7 @@ float4 main(VS_OUT pin, bool isFrontFace : SV_IsFrontFace) : SV_TARGET0
     //Lo.rgb += flashValue * emissionPower;
 
 
-    return float4(Lo, cpuColorA);
+    return float4(Lo, cpuColor.a);
 
 
 

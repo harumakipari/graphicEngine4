@@ -53,34 +53,74 @@ void BookBaseActor::Update(float deltaTime)
         break;
     case BookPageState::OpeningBook:
         bookSpineModel->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
+        //if (isOpeningBook && bookOneAlpha > 0.8f)
+        //{
+        //    bookState = BookPageState::FirstPage;
+        //    isOpeningBook = false;
+        //}
+
         break;
     case BookPageState::OpeningSecondPage:
+        //if (bookTwoAlpha > 0.8f)
+        //{
+        //    bookState = BookPageState::SecondPage;
+        //}
         break;
     case BookPageState::ClosingBook:
+        //if (isClosingBook && bookOneAlpha < 0.2f)
+        //{
+        //    bookState = BookPageState::Closed;
+        //    isClosingBook = false;
+        //}
+
+        break;
+    case BookPageState::ReturningFirstPage:
+        //if (bookTwoAlpha < 0.2f)
+        //{
+        //    bookState = BookPageState::FirstPage;
+        //}
         break;
     }
 
-    if (bookState != BookPageState::FirstPage)
+    Logger::Log(std::string(magic_enum::enum_name(bookState)));
+
+    bool isClosing = (bookState == BookPageState::ClosingBook || bookState == BookPageState::Closed);
+
+    if (!isClosing)
     {
+        if (bookState != BookPageState::FirstPage)
+        {
+            if (startAButton)
+            {
+                startAButton->SetVisible(false);
+            }
+        }
+
+        // 矢印UIの表示非表示
+        firstButtons.SetEnable(bookState == BookPageState::FirstPage);
+        if (showSecondPageButtonArrow)
+        {
+            secondButtons.SetEnable(bookState == BookPageState::SecondPage);
+        }
+        else
+        {
+            secondButtons.SetEnable(false);
+        }
+        // 矢印UIのコントローラー接続によるテクスチャの切り替え
+        firstButtons.UpdateInputTexture();
+        secondButtons.UpdateInputTexture();
+    }
+    else
+    {
+        // ← ClosingBook中は強制非表示
+        firstButtons.SetEnable(false);
+        secondButtons.SetEnable(false);
+
         if (startAButton)
         {
             startAButton->SetVisible(false);
         }
     }
-
-    // 矢印UIの表示非表示
-    firstButtons.SetEnable(bookState == BookPageState::FirstPage);
-    if (showSecondPageButtonArrow)
-    {
-        secondButtons.SetEnable(bookState == BookPageState::SecondPage);
-    }
-    else
-    {
-        secondButtons.SetEnable(false);
-    }
-    // 矢印UIのコントローラー接続によるテクスチャの切り替え
-    firstButtons.UpdateInputTexture();
-    secondButtons.UpdateInputTexture();
 
     // 一ページ目の処理
     {
@@ -129,6 +169,9 @@ void BookBaseActor::DrawImGuiDetails()
         CloseBook(2.0f);
     }
     ImGui::DragFloat3(U8("ワッペンのオフセット"), &patchAButtonOffset.x);
+    ImGui::DragFloat(U8("ワッペンのスケール"), &patchBaseScale, 0.05f, 1.0f, 1.5f);
+    ImGui::DragFloat(U8("ワッペンのホバースケール"), &patchHoverScale, 0.05f, 1.0f, 1.5f);
+
 #endif
 }
 
@@ -140,6 +183,9 @@ void BookBaseActor::OpenBook(float interval, bool playSe, std::function<void()> 
     {
         CoreAudio::PlayOneShot(L"./Data/Sound/SE1/open_book.wav", 1.5f);
     }
+
+    isOpeningBook = true;
+    isClosingBook = false;
 
     bookState = BookPageState::OpeningBook;
     TestEasingHandler handler;
@@ -187,6 +233,9 @@ void BookBaseActor::CloseBook(float interval)
     // 本を閉じる音
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/close_book.wav", 1.5f);
 
+    isOpeningBook = false;
+    isClosingBook = true;
+
     bookState = BookPageState::ClosingBook;
     if (bookTwoAlpha > 0.001f)
     {// 本が二枚目の時に
@@ -204,8 +253,8 @@ void BookBaseActor::CloseBook(float interval)
 
         waitHandler.SetCompletedFunction([this]()
             {
-                bookOneAlpha = 0.0f;
                 bookState = BookPageState::Closed;
+                bookOneAlpha = 0.0f;
             });
 
         PropertyAccessor<float> accessor;
@@ -623,18 +672,18 @@ void BookBaseActor::UpdatePage(const BookPage& page)
 
             stage->model->SetRelativeScaleDirect(
                 {
-                    1.2f,
-                    1.2f,
-                    1.2f
+                    patchHoverScale,
+                    patchHoverScale,
+                    patchHoverScale
                 });
         }
         else
         {
             stage->model->SetRelativeScaleDirect(
                 {
-                    1.1f,
-                    1.1f,
-                    1.1f
+                    patchBaseScale,
+                    patchBaseScale,
+                    patchBaseScale
                 });
         }
 
@@ -872,18 +921,18 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
         {
             stage->model->SetRelativeScaleDirect(
                 {
-                    1.2f,
-                    1.2f,
-                    1.2f
+                    patchHoverScale,
+                    patchHoverScale,
+                    patchHoverScale
                 });
         }
         else
         {
             stage->model->SetRelativeScaleDirect(
                 {
-                    1.1f,
-                    1.1f,
-                    1.1f
+                    patchBaseScale,
+                    patchBaseScale,
+                    patchBaseScale
                 });
         }
 
@@ -898,18 +947,18 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
         {
             stage->model->SetRelativeScaleDirect(
                 {
-                    1.2f,
-                    1.2f,
-                    1.2f
+                    patchHoverScale,
+                    patchHoverScale,
+                    patchHoverScale
                 });
         }
         else
         {
             stage->model->SetRelativeScaleDirect(
                 {
-                    1.1f,
-                    1.1f,
-                    1.1f
+                    patchBaseScale,
+                    patchBaseScale,
+                    patchBaseScale
                 });
         }
     }

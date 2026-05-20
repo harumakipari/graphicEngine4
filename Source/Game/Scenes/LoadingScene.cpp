@@ -73,11 +73,10 @@ void LoadingScene::Start()
             //{
             //loadingSkewer->poleModel->RenderOpaque(immediateContext, loadingSkewer->GetWorldTransform());
 
-            //for (const auto ingredient : loadingSkewer->ingredients)
-            //{
-            //    ingredient->LoadRenderIngredient(immediateContext);
-            //}
+          
             //enemy->skeltalMeshComponent->RenderOpaque(immediateContext, e->GetWorldTransform());
+
+        loadingPlayerActor->skeletalMeshComponent->RenderOpaque(immediateContext, loadingPlayerActor->GetWorldTransform());
         //}
         });
 
@@ -117,12 +116,38 @@ void LoadingScene::Start()
     RegisterRenderHook(RenderPass::Sky, [&](ID3D11DeviceContext* immediateContext)
         {
             backImage->Draw(immediateContext);
+
+
+
         });
 #endif // 0
 }
 
 void LoadingScene::SetUpActors()
 {
+    Transform mainCameraTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    //auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<FixedCamera>("fixedCameraActor", mainCameraTr);
+    auto mainCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleCamera>("fixedCameraActor", mainCameraTr);
+    auto mainCameraComponent = mainCameraActor->GetComponent<TPSCameraComponent>();
+
+    Transform cameraTargetTr(DirectX::XMFLOAT3{ -0.297f,3.197f,2.936f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    //Transform cameraTargetTr(DirectX::XMFLOAT3{ 2.2f,1.984f,2.753f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
+
+    Transform playerTr(DirectX::XMFLOAT3{ -7.3f,1.3f,0.2f }, DirectX::XMFLOAT3{ 0.0f,71.0f,0.0f }, DirectX::XMFLOAT3{ 1.2f,1.2f,1.2f });
+    loadingPlayerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<LoadingPlayerActor>("loadingPlayerActor", playerTr);
+
+
+    mainCameraActor->SetTarget(loadingPlayerActor->GetRootComponent());
+
+    mainCameraComponent->SetPitch(DirectX::XMConvertToRadians(-11.0f));
+    mainCameraComponent->SetYaw(DirectX::XMConvertToRadians(231.5f));
+    mainCameraComponent->SetFov(DirectX::XMConvertToRadians(24.0f));
+    mainCameraComponent->distance = 8.945f;
+    SetActiveCamera(mainCameraActor);
+    Logger::Log(U8("ロードシーンのカメラ設定される。"));
+
+
 }
 
 void LoadingScene::Update(float deltaTime)
@@ -152,7 +177,7 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime
     {
         //shaderToyCBuffer->Activate(immediateContext, 7);
     }
-    //SceneBase::Render(immediateContext, deltaTime);
+    SceneBase::Render(immediateContext, deltaTime);
     backImage->Draw(immediateContext);
     chipsFrameImage->Draw(immediateContext);
     chipsImage->Draw(immediateContext);
