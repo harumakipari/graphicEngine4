@@ -31,7 +31,7 @@ void LoadingPlayerActor::Initialize(const Transform& transform)
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
     skeletalMeshComponent->SetModel("./Data/TeamModels/Player/LoadingPlayer.gltf", false, true);
-
+    
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
 
@@ -39,8 +39,9 @@ void LoadingPlayerActor::Initialize(const Transform& transform)
 
     // アニメーションコントローラーを character に追加
     this->SetAnimationController(controller);
-    this->GetAnimationController()->SetAnimationRate(0.5f);
+    this->GetAnimationController()->SetAnimationRate(1.0f);
     PlayAnimation("Idle");
+
 }
 
 void LoadingPlayerActor::Update(float deltaTime)

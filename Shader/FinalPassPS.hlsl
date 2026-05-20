@@ -129,6 +129,11 @@ float4 main(VS_OUT pin) : SV_TARGET
     // シーンから深度値を取得
     float depthNdc = depthTexture.Sample(samplerStates[POINT], pin.texcoord).x;
 
+    bool isSky = (depthNdc == 0.0 || depthNdc >= 1.0);
+    if (isSky)
+    {
+        return float4(color.rgb, 1.0);
+    }
 
     float4 positionNdc;
     // uv -> ndc 
