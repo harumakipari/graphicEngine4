@@ -2,6 +2,9 @@
     "BOBBIN_FIRST": [
         {
             "score": 10560
+        },
+        {
+            "score": 8490
         }
     ],
     "BOSS": [
@@ -12,18 +15,21 @@
             "score": 13690
         },
         {
+            "score": 13310
+        },
+        {
             "score": 13295
         },
         {
             "score": 13190
-        },
-        {
-            "score": 12720
         }
     ],
     "DIFFICULT": [
         {
             "score": 10835
+        },
+        {
+            "score": 9570
         }
     ],
     "FIRST": [
@@ -32,9 +38,15 @@
         },
         {
             "score": 8540
+        },
+        {
+            "score": 7770
         }
     ],
     "REFLECT_WALL": [
+        {
+            "score": 12500
+        },
         {
             "score": 12280
         }
