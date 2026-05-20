@@ -352,6 +352,8 @@ void ResultBookActor::Initialize(const Transform& transform)
         isCleared = false;
     }
 
+
+    isPlayTimerPatch = false;
 }
 
 void ResultBookActor::Update(float deltaTime)
@@ -422,7 +424,7 @@ void ResultBookActor::Update(float deltaTime)
     selectImage->SetWorldAngleDegree(patchAngle);
 
     // リザルトイメージ
-    if (bookState==BookPageState::SecondPage)
+    if (bookState == BookPageState::SecondPage)
     {
         resultImage->SetVisible(true);
     }
@@ -494,17 +496,15 @@ void ResultBookActor::Update(float deltaTime)
     //}
 
 
-#if 0
-    if (isCleared)
+#if 1
+    if (isCleared && !isPlayTimerPatch)
     {// クリアしていたら
         if (resultPhase >= ResultPhase::AddTimeBonus && ScoreSystem::IsTimeClear() && bookState == BookPageState::SecondPage)
         {
-            timeClearImage->SetVisible(true);
+            isPlayTimerPatch = true;
+            TimerPatchPlay();
         }
-        else
-        {
-            timeClearImage->SetVisible(false);
-        }
+
     }
 #endif // 0
 
@@ -723,7 +723,7 @@ void ResultBookActor::Update(float deltaTime)
             {// 目標タイムをクリアした
                 Logger::Log(U8("目標タイムをクリアした"));
                 //timeClearImage->SetVisible(true);   // 「CLEAR!」
-                TimerPatchPlay();
+                //TimerPatchPlay();
             }
             else
             {

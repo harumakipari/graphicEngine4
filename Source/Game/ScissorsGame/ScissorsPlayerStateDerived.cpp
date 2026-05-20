@@ -220,7 +220,7 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
     }
 
     // ƒ_ƒbƒVƒ…‚Ì‹——£
-    for (int i = 0; i < 5; i++) // Å‘å5‰ñ”½ŽË
+    for (int i = 0; i < 4; i++) // Å‘å5‰ñ”½ŽË
     {
         XMFLOAT3 nextTarget =
         {
@@ -392,7 +392,6 @@ void ScissorsPlayerChargeDashState::Execute(float deltaTime)
 
                 dashDir.x = dashDir.x - 2 * dot * normal.x;
                 dashDir.z = dashDir.z - 2 * dot * normal.z;
-
 
                 // ³‹K‰»
                 float len = sqrt(dashDir.x * dashDir.x + dashDir.z * dashDir.z);

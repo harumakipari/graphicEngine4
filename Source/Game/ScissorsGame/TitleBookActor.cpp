@@ -117,6 +117,18 @@ void TitleBookActor::Initialize(const Transform& transform)
     controlAButton->SetVisible(false);
     uiManager->Add(controlAButton);
 
+    rankImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/title_patch_title.png", "title_patch_title");
+    rankImage->SetWorldPosition(patchSize);
+    rankImage->SetVisible(true);
+    rankImage->SetPivot({ 0.5f,0.5f });
+    uiManager->Add(rankImage);
+
+    selectImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/title_patch_select.png", "title_patch_result");
+    selectImage->SetWorldPosition(patchSize);
+    selectImage->SetVisible(true);
+    selectImage->SetPivot({ 0.5f,0.5f });
+    uiManager->Add(selectImage);
+
     // タイトルシーンの本は最初は閉じている状態なので、ステージ選択のインデックスは0にしておく
     selectedStageIndex = 0;
 }
@@ -141,6 +153,39 @@ void TitleBookActor::Update(float deltaTime)
         controlAButton->SetVisible(false);
     }
 
+    // リザルトイメージ
+    rankImage->SetWorldPosition(patchPos);
+    rankImage->SetSize(patchSize);
+    rankImage->SetWorldAngleDegree(patchAngle);
+
+    // セレクトイメージ
+    selectImage->SetWorldPosition(patchPos);
+    selectImage->SetSize(patchSize);
+    selectImage->SetWorldAngleDegree(patchAngle);
+
+
+    // ハイスコアイメージ
+    if (bookState == BookPageState::SecondPage)
+    {
+        rankImage->SetVisible(true);
+    }
+    else
+    {
+        rankImage->SetVisible(false);
+    }
+
+    // セレクトイメージ
+    if (bookState == BookPageState::FirstPage)
+    {
+        selectImage->SetVisible(true);
+    }
+    else
+    {
+        selectImage->SetVisible(false);
+    }
+
+
+
     // ハイスコアを取得する
     // ステージ１
     int firstHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::FIRST);
@@ -162,7 +207,7 @@ void TitleBookActor::Update(float deltaTime)
     // ボス戦
     int bossHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::BOSS);
     bossStageHighScoreDisplay.SetValue(bossHighScore);
-
+    bossStageHighScoreDisplay.SetColor(rankBossColor);
 #if 0
     float scoreOffsetY = std::lerp(-0.1f, 0.0f, bookTwoAlpha);
     scoreRedirectRoot->SetRelativeLocationDirect({ redirectScorePosition.x,scoreOffsetY, redirectScorePosition.z });
@@ -175,7 +220,15 @@ void TitleBookActor::Update(float deltaTime)
 
 void TitleBookActor::DrawImGuiDetails()
 {
+#ifdef USE_IMGUI
     BookBaseActor::DrawImGuiDetails();
+    ImGui::ColorEdit4("rankBossColor", &rankBossColor.x);
+    ImGui::ColorEdit4("rankFirstColor", &rankFirstColor.x);
+    ImGui::ColorEdit4("rankBobbinColor", &rankBobbinColor.x);
+    ImGui::ColorEdit4("rankRedirectColor", &rankRedirectColor.x);
+    ImGui::ColorEdit4("rankDifficultColor", &rankDifficultColor.x);
+#endif
+
 }
 
 // コントローラー対応の本が開く処理

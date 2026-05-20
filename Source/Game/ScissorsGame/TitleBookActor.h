@@ -27,10 +27,10 @@ private:
     void CreateButtonArrow();
 
 private:
-    NumberDisplay firstStageHighScoreDisplay;   
-    NumberDisplay bobbinStageHighScoreDisplay;   
-    NumberDisplay redirectStageHighScoreDisplay;   
-    NumberDisplay difficultStageHighScoreDisplay;   
+    NumberDisplay firstStageHighScoreDisplay;
+    NumberDisplay bobbinStageHighScoreDisplay;
+    NumberDisplay redirectStageHighScoreDisplay;
+    NumberDisplay difficultStageHighScoreDisplay;
     NumberDisplay bossStageHighScoreDisplay;
 
     std::shared_ptr<SceneComponent> scoreRedirectRoot;      // 反射ステージのハイスコア
@@ -42,5 +42,14 @@ private:
     DirectX::XMFLOAT3 bossScorePosition;
 
     std::shared_ptr<UIImageComponent> controlAButton;   // Aボタンを表示する
+
+    std::shared_ptr<UIImageComponent> rankImage; // ランク画像
+    std::shared_ptr<UIImageComponent> selectImage; // セレクト画像
+
+    DirectX::XMFLOAT4 rankFirstColor = {};
+    DirectX::XMFLOAT4 rankBobbinColor = {};
+    DirectX::XMFLOAT4 rankRedirectColor = {};
+    DirectX::XMFLOAT4 rankDifficultColor = {};
+    DirectX::XMFLOAT4 rankBossColor = { 0.7f,0.107f,1.0f,1.0f };
 };
 

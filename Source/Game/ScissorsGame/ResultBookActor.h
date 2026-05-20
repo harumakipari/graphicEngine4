@@ -155,5 +155,7 @@ private:
 
     DirectX::XMFLOAT4 numberColor = { 0.605f,0.408f,0.129f ,1.0f};
     DirectX::XMFLOAT4 playerColor = { 1.0f,0.216f,0.088f ,1.0f};
+
+    bool isPlayTimerPatch = false;
 };
 
