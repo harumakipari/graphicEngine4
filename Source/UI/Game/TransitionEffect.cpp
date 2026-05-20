@@ -15,6 +15,36 @@ void ScaleTransitionEffect::Initialize()
 
     float startScale = 220.0f;
 
+    transitionTextures["TUTORIAL"] =
+        std::make_shared<Sprite>(
+            Graphics::GetDevice(),
+            L"./Data/Textures/ScissorsUI/scene_change.png");
+
+    transitionTextures["FIRST"] =
+        std::make_shared<Sprite>(
+            Graphics::GetDevice(),
+            L"./Data/Textures/ScissorsUI/scene_change.png");
+
+    transitionTextures["BOBBIN_FIRST"] =
+        std::make_shared<Sprite>(
+            Graphics::GetDevice(),
+            L"./Data/Textures/ScissorsUI/scene_change.png");
+
+    transitionTextures["REFLECT_WALL"] =
+        std::make_shared<Sprite>(
+            Graphics::GetDevice(),
+            L"./Data/Textures/ScissorsUI/scene_change.png");
+
+    transitionTextures["DIFFICULT"] =
+        std::make_shared<Sprite>(
+            Graphics::GetDevice(),
+            L"./Data/Textures/ScissorsUI/scene_change.png");
+
+    transitionTextures["BOSS"] =
+        std::make_shared<Sprite>(
+            Graphics::GetDevice(),
+            L"./Data/Textures/ScissorsUI/scene_change_boss.png");
+
 #if 0
     TestEasingHandler floatHandler;
     floatHandler.AddWait(0.5f);
@@ -87,6 +117,15 @@ void ScaleTransitionEffect::Update(float deltaTime)
 
 }
 
+void ScaleTransitionEffect::SetTransitionTexture(const std::string& stage)
+{
+    auto it = transitionTextures.find(stage);
+
+    if (it != transitionTextures.end())
+    {
+        sprite->SetTexture(it->second);
+    }
+}
 
 void FadeTransitionEffect::Initialize()
 {
