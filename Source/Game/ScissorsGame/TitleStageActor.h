@@ -13,6 +13,7 @@ public:
 
 private:
     std::shared_ptr<SkeletalMeshComponent> stageModelComponent;
+    std::shared_ptr<SkeletalMeshComponent> titleLogoComponent;
 
 };
 

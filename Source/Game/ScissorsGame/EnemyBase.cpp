@@ -439,15 +439,13 @@ std::string EnemyBase::GetModelPath()
     {
     case YarnEnemyType::LongRangeAttack:
         return "./Data/TeamModels/Enemy/NeedleEnemy.gltf";
-
     case YarnEnemyType::ChasePlayer:
         return (yarnSize == Big)
-            ? "./Data/TeamModels/Enemy/YarnBigEnemyChase.glb"
-            : "./Data/TeamModels/Enemy/YarnEnemyChase.glb";
-
+            ? "./Data/TeamModels/Enemy/YarnBigEnemyChase.gltf"
+            : "./Data/TeamModels/Enemy/YarnEnemyChase.gltf";
     default:
         return (yarnSize == Big)
-            ? "./Data/TeamModels/Enemy/YarnBigEnemy.glb"
+            ? "./Data/TeamModels/Enemy/YarnBigEnemy.gltf"
             : "./Data/TeamModels/Enemy/YarnEnemy.gltf";
     }
 }
@@ -847,12 +845,12 @@ void EnemyBase::CreateScissorsVisual()
     scissorsFirstMeshComponent = AddComponent<SkeletalMeshComponent>("ScissorsFirstModel", parentName);
     scissorsFirstMeshComponent->SetRelativeLocationDirect({ 0, 1.0f, 0 });
     scissorsFirstMeshComponent->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
-    scissorsFirstMeshComponent->SetModel("./Data/TeamModels/Item/ScissorsFirstModel.glb");
+    scissorsFirstMeshComponent->SetModel("./Data/TeamModels/Item/ScissorsFirstModel.gltf");
 
     scissorsSecondMeshComponent = AddComponent<SkeletalMeshComponent>("ScissorsSecondModel", parentName);
     scissorsSecondMeshComponent->SetRelativeLocationDirect({ 0, 1.0f, 0 });
     scissorsSecondMeshComponent->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
-    scissorsSecondMeshComponent->SetModel("./Data/TeamModels/Item/ScissorsSecondModel.glb");
+    scissorsSecondMeshComponent->SetModel("./Data/TeamModels/Item/ScissorsSecondModel.gltf");
 
     selfBigRescueTimeInterval = 5.0f;// ‘å‚«‚¢“G‚ª©—Í’Eo‚Ü‚Å‚©‚©‚éŠÔ
     selfSmallRescueTimeInterval = 8.0f;// ¬‚³‚¢“G‚ª©—Í’Eo‚Ü‚Å‚©‚©‚éŠÔ

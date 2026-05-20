@@ -505,19 +505,19 @@ void BookBaseActor::CreateBookModel(const std::string& backCoverModelName, const
         leftPage,
         STAGE_NAME::TUTORIAL,
         "./Data/TeamModels/Title/patchModelTutorial.gltf",
-        { 3.3f,0.0f,-1.5f });
+        { 1.2f,0.0f,-1.4f });
 
     CreateStagePatch(
         leftPage,
         STAGE_NAME::FIRST,
         "./Data/TeamModels/Title/patchModelFirst.gltf",
-        { 1.3f,0.0f,-0.1f });
+        { 3.0f,0.0f,0.0f });
 
     CreateStagePatch(
         leftPage,
         STAGE_NAME::BOBBIN_FIRST,
         "./Data/TeamModels/Title/patchModelBobbinFirst.gltf",
-        { 2.9f,0.0f,1.7f });
+        { 1.2f,0.0f,1.7f });
 
     CreateStagePatch(
         rightPage,
@@ -536,7 +536,7 @@ void BookBaseActor::CreateBookModel(const std::string& backCoverModelName, const
         rightPage,
         STAGE_NAME::BOSS,
         "./Data/TeamModels/Title/patchModelBoss.gltf",
-        { -3.4f,0.1f,1.7f });
+        { -2.8f,0.1f,1.5f });
 
 #endif // 0
 

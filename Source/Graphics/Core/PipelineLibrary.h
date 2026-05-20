@@ -376,6 +376,15 @@ public:
             AddPipeLineState("OpaqueMarkPS", desc);
         }
 
+        // ScissorsGame GameReturnColorPS 用 チーム制作で足した(T_T)
+        {
+            hr = CreatePsFromCSO(device, "./Shader/GameReturnColorPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
+            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
+            AddPipeLineState("GameReturnColorPS", desc);
+        }
+
+
         // SkeletalMesh deferred Mask 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelDeferredPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());

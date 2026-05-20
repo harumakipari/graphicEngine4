@@ -31,6 +31,7 @@ private:
 
 
 private:
+    std::shared_ptr<UIImageComponent> pauseBackImage; //ƒ|[ƒY’†‚Ì”wŒi
     std::shared_ptr<UIImageComponent> pausePanel;
     std::shared_ptr<UIButtonComponent> menuButton;
     std::shared_ptr<UIButtonComponent> returnTitleButton;

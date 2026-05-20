@@ -237,7 +237,7 @@ void TutorialScene::Start()
     settings.sceneLightSaveData.sceneConstants =
     {
          { 0.59f, -0.63f, 0.66f, 0.85f },
-         { 1.0f, 1.0f, 1.0f, 4.17f/*w colorPower*/ },
+         { 1.0f, 1.0f, 1.0f, 3.175f/*w colorPower*/ },
          0.278f,
          1,
          1,

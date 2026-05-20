@@ -15,7 +15,6 @@ Texture2D emissiveMap : register(t4);
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
-
     float4 sampled = normalMap.Sample(samplerStates[LINEAR_BORDER_BLACK], pin.texcoord);
     float3 normal = sampled.xyz; // world space 
     int objectType = sampled.w;
@@ -147,7 +146,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 Li = float3(colorLight.x, colorLight.y, colorLight.z) * colorLight.w; // Œõ‚Ì‹P‚« 
 
     //const float NoL = max(0, dot(N, L));
-    float NoL = saturate(dot(N, L) * 0.5 + 0.5);
+    float NoL = saturate(dot(N, L) * 0.8 + 0.8);
     const float NoV = max(0.0, dot(N, V));
 
     if (directionalLightEnable != 0)

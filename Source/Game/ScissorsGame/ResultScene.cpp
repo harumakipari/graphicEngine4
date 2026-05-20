@@ -264,8 +264,8 @@ void ResultScene::Start()
     settings.sceneLightSaveData.sceneConstants =
     {
          { -0.65f, -0.38f, -0.0211f, 0.85f/* w:attenuation Rate */},
-         { 1.0f, 1.0f, 1.0f, 4.17f/*w colorPower*/ },
-         0.278f,
+         { 1.0f, 1.0f, 1.0f, 2.36f/*w colorPower*/ },
+         0.368f,
          1,
          1,
          40,

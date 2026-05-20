@@ -13,11 +13,21 @@ void Pause::Initialize(const Transform& transform)
 
     auto uiManager = scene->GetUIManager();
 
+    pauseBackImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/back.png", "back");
+    pauseBackImage->SetWorldPosition({ 1920 * 0.5f, 1080 * 0.5f });
+    pauseBackImage->SetPivot({ 0.5f,0.5f });
+    pauseBackImage->SetScale({ 1.0f,1.0f });
+    pauseBackImage->SetSize({ 1920, 1080 });
+    pauseBackImage->SetColor(DirectX::XMFLOAT4{ 0.24f,0.08f,0.127f,0.5f });
+    pauseBackImage->SetVisible(false);
+    pauseBackImage->zOrder = 95; // âú
+    uiManager->Add(pauseBackImage);
+
     pausePanel = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/pause_panel.png", "pause_panel");
-    pausePanel->SetWorldPosition({ 967, 490 });
+    pausePanel->SetWorldPosition({ 1920 * 0.5f, 1080 * 0.5f });
     pausePanel->SetPivot({ 0.5f,0.5f });
-    pausePanel->SetScale({ 1.2f,1.2f });
-    pausePanel->SetSize({ 741, 483 });
+    pausePanel->SetScale({ 1.0f,1.0f });
+    pausePanel->SetSize({ 1033, 860 });
     pausePanel->SetVisible(false);
     pausePanel->zOrder = 100; // éËëOÇ…ï`âÊÇ∑ÇÈ
     uiManager->Add(pausePanel);
@@ -38,9 +48,9 @@ void Pause::Initialize(const Transform& transform)
 
     // ÉQÅ[ÉÄÇ÷ñﬂÇÈ
     closeButton = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/back_to_game.png", "back_to_game");
-    closeButton->SetWorldPosition({ 1281, 492 });
+    closeButton->SetWorldPosition({ 979, 463 });
     closeButton->SetPivot({ 0.5f,0.5f });
-    closeButton->SetSize({ 472, 183 });
+    closeButton->SetSize({ 391, 123 });
     closeButton->SetVisible(false);
     closeButton->SetEnable(false);
     closeButton->zOrder = 105; // éËëOÇ…ï`âÊÇ∑ÇÈ
@@ -52,9 +62,9 @@ void Pause::Initialize(const Transform& transform)
     uiManager->Add(closeButton);
 
     returnTitleButton = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/back_to_title.png", "back_to_title");
-    returnTitleButton->SetWorldPosition({ 977, 638 });
+    returnTitleButton->SetWorldPosition({ 980, 607 });
     returnTitleButton->SetPivot({ 0.5f,0.5f });
-    returnTitleButton->SetSize({ 472, 183 });
+    returnTitleButton->SetSize({ 391, 123 });
     returnTitleButton->SetVisible(false);
     returnTitleButton->SetEnable(false);
     returnTitleButton->zOrder = 105; // éËëOÇ…ï`âÊÇ∑ÇÈ
@@ -84,9 +94,9 @@ void Pause::Initialize(const Transform& transform)
     GetOwnerScene()->GetUIManager()->Add(returnTitleButton);
 
     retryButton = std::make_shared<UIButtonComponent>("./Data/Textures/ScissorsUI/retry.png", "retry");
-    retryButton->SetWorldPosition({ 977, 838 });
+    retryButton->SetWorldPosition({ 978, 751 });
     retryButton->SetPivot({ 0.5f,0.5f });
-    retryButton->SetSize({ 472, 183 });
+    retryButton->SetSize({ 391, 123 });
     retryButton->SetVisible(false);
     retryButton->SetEnable(false);
     retryButton->zOrder = 105; // éËëOÇ…ï`âÊÇ∑ÇÈ
@@ -222,6 +232,9 @@ void Pause::Update(float deltaTime)
 void Pause::OpenPause()
 {
     CoreAudio::PlayOneShot(L"./Data/Sound/SE1/escape_se.wav");
+
+    pauseBackImage->SetVisible(true);
+
     pausePanel->SetVisible(true);
     pausePanel->SetEnable(true);
 
@@ -268,6 +281,7 @@ void Pause::ClosePause()
 
 
     //CoreAudio::PlayOneShot(L"./Data/Sound/SE/push_button.wav");
+    pauseBackImage->SetVisible(false);
     pausePanel->SetVisible(false);
     pausePanel->SetEnable(false);
     closeButton->SetEnable(false);

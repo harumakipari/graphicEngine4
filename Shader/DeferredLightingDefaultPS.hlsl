@@ -118,6 +118,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 L = normalize(-lightDirection.xyz);
     float3 Li = float3(colorLight.x, colorLight.y, colorLight.z) * colorLight.w; // Œõ‚Ì‹P‚« 
 
+
     //const float NoL = max(0, dot(N, L));
     float NoL = saturate(dot(N, L) * 0.5 + 0.5);
     const float NoV = max(0.0, dot(N, V));

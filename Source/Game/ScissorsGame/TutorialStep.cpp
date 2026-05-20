@@ -1468,6 +1468,8 @@ void TutorialStep_StageClear::Execute(float deltaTime)
     {
         // チュートリアルをクリアしたことを保存する
         SaveDataManager::Instance().SetStageClear(STAGE_NAME::TUTORIAL, true);
+        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/click_se.wav", 2.0f);
+
 #if 0
         const char* types[] = { "0", "1" };
         SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]) ,std::make_pair("fromScene", "TutorialScene") });
@@ -1483,7 +1485,6 @@ void TutorialStep_StageClear::Execute(float deltaTime)
             param
         );
 #endif // 0
-        CoreAudio::PlayOneShot(L"./Data/Sound/SE1/click_se.wav", 2.0f);
     }
 }
 

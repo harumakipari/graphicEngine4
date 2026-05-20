@@ -21,9 +21,22 @@
             "score": 12720
         }
     ],
+    "DIFFICULT": [
+        {
+            "score": 10835
+        }
+    ],
     "FIRST": [
         {
             "score": 10280
+        },
+        {
+            "score": 8540
+        }
+    ],
+    "REFLECT_WALL": [
+        {
+            "score": 12280
         }
     ],
     "TUTORIAL": [

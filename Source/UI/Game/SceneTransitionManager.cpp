@@ -57,6 +57,22 @@ void SceneTransitionManager::RequestTransition(const std::string& nextScene, con
             {
                 scaleTransitionEffect->SetTransitionTexture("BOSS");
             }
+            //else if (stage=="FIRST")
+            //{
+            //    scaleTransitionEffect->SetTransitionTexture("FIRST");
+            //}
+            //else if (stage=="BOBBIN_FIRST")
+            //{
+            //    scaleTransitionEffect->SetTransitionTexture("BOBBIN_FIRST");
+            //}
+            //else if (stage=="REFLECT_WALL")
+            //{
+            //    scaleTransitionEffect->SetTransitionTexture("REFLECT_WALL");
+            //}
+            //else if (stage=="DIFFICULT")
+            //{
+            //    scaleTransitionEffect->SetTransitionTexture("DIFFICULT");
+            //}
             else
             {
                 scaleTransitionEffect->SetTransitionTexture("FIRST");

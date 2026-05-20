@@ -181,7 +181,9 @@ void LoadingScene::Start()
     float width = 1920.0f;
     float height = 1080.0f;
 
-    auto sprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/scene_change_boss.png");
+    auto bossSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/scene_change_boss.png");
+    //auto difficultSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/scene_change_difficult.png");
+    //auto firstSprite = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/scene_change_first.png");
 
     backImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/scene_change.png", "backGround");
     backImage->SetSize({ 1920, 1080 });
@@ -191,7 +193,7 @@ void LoadingScene::Start()
         std::string name = param.at("stage");
         if (name == "BOSS")
         {
-            backImage->SetTexture(sprite);
+            backImage->SetTexture(bossSprite);
         }
     }
 
