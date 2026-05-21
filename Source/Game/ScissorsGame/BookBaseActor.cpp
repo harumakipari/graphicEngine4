@@ -667,6 +667,8 @@ void BookBaseActor::UpdatePage(const BookPage& page)
             // ロック中はホバー音なし
             stage->wasLockedHovered = hitThis;
 
+
+
             // クリックしたときだけ鳴らす
             if (hitThis &&
                 InputSystem::GetInputState("MouseLeft", InputStateMask::Trigger))
@@ -1175,7 +1177,7 @@ void BookBaseActor::UpdateStageVisual(const std::shared_ptr<StageSelectData>& st
     if (!stage->isUnlocked)
     {
         stage->model->plusAlphaCBuffer->data.saturation = -0.87f;
-        stage->model->SetRelativeScaleDirect({ 1.1f,1.1f,1.1f });
+        stage->model->SetRelativeScaleDirect({ 1.15f,1.15f,1.15f });
     }
     else
     {

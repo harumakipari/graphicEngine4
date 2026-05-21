@@ -201,9 +201,15 @@ public:
     static int CalculateBossTimeBonus(float clearTime)
     {
         // 30•bˆÈ“à
+        if (clearTime <= 15.0f)
+        {
+            return 15000;
+        }
+
+        // 30•bˆÈ“à
         if (clearTime <= 30.0f)
         {
-            return 14000;
+            return 13000;
         }
 
         // 1•ªˆÈ“à
