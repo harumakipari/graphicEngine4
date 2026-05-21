@@ -67,7 +67,7 @@ void RabbitBossAttackSelectState::Execute(float deltaTime)
         type = PopAttack();
     }
 
-    type = BossAttackType::Buff;
+    //type = BossAttackType::Buff;
 #if 1
     switch (type)
     {

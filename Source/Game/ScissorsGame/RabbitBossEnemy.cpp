@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "RabbitBossEnemy.h"
 
+#include "BobbinActor.h"
 #include "BossSpawner.h"
 #include "ButtonBombActor.h"
 #include "EnemyBase.h"
@@ -808,10 +809,22 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
 
     int bombCount = MathHelper::RandomRange(3, 4);
 
-    // 先頭3つだけ使う
-    for (int i = 0; i < bombCount; i++)
+    // ボビンとの最低距離
+    const float bobbinAvoidDistance = 2.5f;
+    // ボビン取得
+    auto bobbin = GetOwnerScene()->GetActorManager()->GetActorOfType<BobbinActor>();
+
+    int spawnedCount = 0;
+    int tryCount = 0;
+
+    // 最大20回まで再抽選
+    while (spawnedCount<bombCount&&tryCount<20)
     {
-        auto& d = dirs[i];
+        tryCount++;
+
+        // ランダム方向
+        auto& d = dirs[MathHelper::RandomRange(0, static_cast<int>(dirs.size()) - 1)];
+
         // 距離をランダムにする
         float offset = MathHelper::RandomRange(3.0f, 4.5f);
 
@@ -827,6 +840,20 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
             bombPos.z > ScissorsGameState::stageMaxZ)
         {
             continue; // 生成しない
+        }
+
+        // ボビンとの距離チェック
+        if (bobbin)
+        {
+            DirectX::XMFLOAT3 bobbinPos = bobbin->GetPosition();
+
+            float dx = bombPos.x - bobbinPos.x;
+            float dz = bombPos.z - bobbinPos.z;
+            float distanceSq = dx * dx + dz * dz;
+            if (distanceSq < bobbinAvoidDistance * bobbinAvoidDistance)
+            {
+                continue; // 生成しない
+            }
         }
 
         DropType type = PopDrop();
@@ -858,7 +885,7 @@ void RabbitBossEnemyActor::SpawnButtonBombs()
             bomb->LaunchTo(bombPos);
         }
 
-
+        spawnedCount++;
     }
 
 
@@ -878,7 +905,7 @@ void RabbitBossEnemyActor::RefillDropBag()
     dropBag.clear();
 
     // ９個爆弾
-    for (int i = 0; i < 19; i++)
+    for (int i = 0; i < 16; i++)
     {
         dropBag.push_back(DropType::Bomb);
     }

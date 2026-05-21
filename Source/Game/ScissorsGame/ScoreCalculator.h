@@ -154,7 +154,10 @@ public:
 
         const StageTimeData& config = it->second;
 
-        return resultData.gameTimer < config.targetTime;
+        int gameTimer = static_cast<int>(resultData.gameTimer);
+        int targetTime = static_cast<int>(config.targetTime);
+
+        return gameTimer <= targetTime;
     }
 
     // ƒNƒŠƒA‚Ü‚Å‚ÌŽc‚èŽžŠÔ‚ðŽæ“¾‚·‚éŠÖ”
