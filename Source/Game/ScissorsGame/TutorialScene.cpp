@@ -203,7 +203,7 @@ void TutorialScene::Start()
         58.624f,
         0.0f,
         true,
-        1.0f
+        7.271f
     };
     settings.sceneShaderConstants =
     {

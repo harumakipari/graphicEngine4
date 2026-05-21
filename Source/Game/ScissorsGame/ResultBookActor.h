@@ -125,7 +125,7 @@ private:
     float preShowScoreInterval = 0.3f;   // スコアを出す前の待ち時間
     bool phaseInitialized = false; //Phase開始時1回だけ処理
 
-    DirectX::XMFLOAT2 timerBonusUiPos = { 550.0f,830.0f };  // タイムボーナスのUIの位置
+    DirectX::XMFLOAT2 timerBonusUiPos = { 590.0f,880.0f };  // タイムボーナスのUIの位置
     DirectX::XMFLOAT2 timerBonusUiSize = { 521.0f,151.0f }; // タイムボーナスのUIのサイズ
 
     // 配置

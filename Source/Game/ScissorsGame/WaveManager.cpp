@@ -8,6 +8,7 @@
 #include "WaveManagaer.h"
 #include "Components/Audio/CoreAudioSourceComponent.h"
 #include "Engine/Scene/Scene.h"
+#include "Engine/Utility/Time.h"
 
 void WaveManager::Initialize(const Transform& transform)
 {
@@ -24,6 +25,8 @@ void WaveManager::Initialize(const Transform& transform)
     hasBossStage = false;  // ボスステージかどうか
     hasEndedGame = false;  // ゲームを終了終了条件を満たしているかどうか
     waveStarted = false;
+    isClearSlowPlaying = false;
+    clearSlowTimer = 0.0f;
 
     // 登場エフェクト用のコンポーネントを追加
     spawnEffectComponent = this->AddComponent<class ParticleComponent>(parentName);
@@ -58,6 +61,25 @@ void WaveManager::SetWaves(STAGE_NAME stageId)
 
 void WaveManager::Update(float deltaTime)
 {
+
+    if (isClearSlowPlaying)
+    {
+        clearSlowTimer += Time::UnscaledDeltaTime();
+        if (clearSlowTimer >= 1.5f)
+        {
+            // スロー解除
+            Time::timeScale = 1.0f;
+            isClearSlowPlaying = false;
+            // ゲームクリア
+            if (auto gameManagerActor = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>())
+            {
+                gameManagerActor->StartFinishPerform(); // 終了演出開始
+            }
+            //RequestGameClear();
+        }
+        return;
+    }
+
     if (auto gameManagerActor = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsGameManager>())
     {
         if (!gameManagerActor->IsGameInputEnabled())
@@ -65,8 +87,6 @@ void WaveManager::Update(float deltaTime)
             return;// 敵を生成しない
         }
     }
-
-
 
     switch (waveState)
     {
@@ -86,7 +106,20 @@ void WaveManager::Update(float deltaTime)
         // 通常ステージ
         if (!hasBossStage && enemyCount == 0)
         {
+#if 1
+            if (!isClearSlowPlaying)
+            {
+                isClearSlowPlaying = true;
+                clearSlowTimer = 0.0f;
+
+                // スロー開始
+                Time::timeScale = 0.3f;
+                RequestGameClear(); // ここで経過時間を止めるためにゲームクリアを呼ぶ
+            }
+#else
             RequestGameClear();
+#endif // 0
+
         }
         break;
     }
@@ -184,7 +217,7 @@ void WaveManager::UpdateSpawning(float deltaTime)
         // 敵が出てくる音
         CoreAudio::PlayOneShot(L"./Data/Sound/SE1/enemy_spawn1.wav", 0.5f);
     }
-    
+
 
     waveStarted = true;
 

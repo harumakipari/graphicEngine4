@@ -122,4 +122,8 @@ private:
     bool hasBossStage = false;  // ボスステージかどうか
     bool hasEndedGame = false;  // ゲームを終了終了条件を満たしているかどうか
     bool waveStarted = false;
+
+
+    bool isClearSlowPlaying = false;
+    float clearSlowTimer = 0.0f;
 };

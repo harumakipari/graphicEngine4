@@ -1122,7 +1122,7 @@ void ScissorsPlayer1::ResolveReflectedKills()
     if (reflectionBonus > 0)
     {// ”½ŽËUŒ‚‚ÅŽ€‚ñ‚Å‚¢‚½‚ç
         ScoreSystem::AddReflectionBonus(reflectionBonus);
-        InputSystem::SetVibration(1.0f, 0.2f);
+        InputSystem::SetVibration(1.3f, 0.15f);
         Logger::Log("ReflectionBonus: " + std::to_string(reflectionBonus));
 
         if (auto tutorialActor = GetOwnerScene()->GetActorManager()->GetActorOfType<TutorialActor>())

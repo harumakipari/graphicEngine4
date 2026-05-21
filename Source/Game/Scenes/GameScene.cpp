@@ -287,7 +287,7 @@ void GameScene::Start()
         58.624f,
         0.0f,
         true,
-        1.0f
+        6.376f
     };
     settings.sceneShaderConstants =
     {

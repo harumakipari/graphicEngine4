@@ -61,16 +61,6 @@ void ResultBookActor::Initialize(const Transform& transform)
 
     }
 
-    // 裏表紙
-    // リザルト王冠
-    {
-        auto resultCrownModel= AddComponent<SkeletalMeshComponent>("crownMeshComponent", backCoverName);
-        resultCrownModel->SetModel("./Data/TeamModels/Title/PatchCrownModel.gltf", false, true);
-        resultCrownModel->SetIsCastShadow(false);
-        resultCrownModel->SetRelativeScaleDirect({ 0.56f,0.56f,0.56f });
-        resultCrownModel->SetRelativeEulerRotationDirect({ 0.0f,-23.0f,0.0f });
-        resultCrownModel->SetRelativeLocationDirect({ -1.4f,0.0f,-2.0f });
-    }
 
 
     // スコアの数字を乗せるページの親
@@ -93,7 +83,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         timerPatchSkeletalMeshComponent = AddComponent<SkeletalMeshComponent>("TimeClearModel", rightName);
         timerPatchSkeletalMeshComponent->SetModel("./Data/TeamModels/Title/TimeClearModel.gltf", false, true);
         timerPatchSkeletalMeshComponent->SetIsCastShadow(false);
-        timerPatchSkeletalMeshComponent->SetRelativeLocationDirect({ -3.9,-0.2f,1.9f });
+        timerPatchSkeletalMeshComponent->SetRelativeLocationDirect({ -3.9f,-0.2f,1.9f });
         timerPatchSkeletalMeshComponent->SetRelativeEulerRotationDirect({ -1.16f,30.0f,180.0f });
         timerPatchSkeletalMeshComponent->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
         timerPatchSkeletalMeshComponent->SetIsVisible(false);
@@ -222,7 +212,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
         scoreRoot->SetRelativeLocationDirect({ -4.0f,0.0f,-1.5f });
-        scoreRoot->SetRelativeScaleDirect({ 0.9f,0.9f,0.9f });
+        scoreRoot->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
 
         ranking1Display.Initialize(
             this,
@@ -298,6 +288,18 @@ void ResultBookActor::Initialize(const Transform& transform)
             5,
             0.7f, true);
     }
+
+    // 裏表紙
+    // リザルト王冠
+    {
+        auto resultCrownModel = AddComponent<SkeletalMeshComponent>("crownMeshComponent", backCoverName);
+        resultCrownModel->SetModel("./Data/TeamModels/Title/PatchCrownModel.gltf", false, true);
+        resultCrownModel->SetIsCastShadow(false);
+        resultCrownModel->SetRelativeScaleDirect({ 0.56f,0.56f,0.56f });
+        resultCrownModel->SetRelativeEulerRotationDirect({ 0.0f,-23.0f,0.0f });
+        resultCrownModel->SetRelativeLocationDirect({ -1.4f,0.0f,-2.0f });
+    }
+
 
     //totalScoreDisplay.SetVisible(false);    // トータルスコア
     comboDisplay.SetVisible(false); // コンボ数

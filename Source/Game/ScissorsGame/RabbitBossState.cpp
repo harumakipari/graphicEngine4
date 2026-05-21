@@ -594,7 +594,7 @@ void RabbitBossDeathState::Execute(float deltaTime)
         if (elapsedTime > 1.5f)
         {
             phase = DeathPhase::KnockBack;
-            // スロー開始
+            // スロー終了
             Time::timeScale = 1.0f;
 
         }

@@ -29,6 +29,8 @@ public:
     // ゲーム測定開始処理
     void StartTimer();
 
+    // 終了演出を開始する
+    void StartFinishPerform();
 
     // ゲームの入力処理状態を設定する
     void SetGameInputEnabled(bool enabled) { gameInputEnabled = enabled; }

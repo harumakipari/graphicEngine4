@@ -305,7 +305,7 @@ void LoadingScene::SetUpActors()
     //Transform cameraTargetTr(DirectX::XMFLOAT3{ 2.2f,1.984f,2.753f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto cameraTargetActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cameraTargetActor", cameraTargetTr);
 
-    Transform playerTr(DirectX::XMFLOAT3{ 3.0f,2.6f,13.6f }, DirectX::XMFLOAT3{ 0.0f,108.0f,0.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
+    Transform playerTr(DirectX::XMFLOAT3{ 3.0f,2.0f,13.6f }, DirectX::XMFLOAT3{ 0.0f,108.0f,0.0f }, DirectX::XMFLOAT3{ 0.8f,0.8f,0.8f });
     loadingPlayerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<LoadingPlayerActor>("loadingPlayerActor", playerTr);
 
     mainCameraActor->SetTarget(cameraTargetActor->GetRootComponent());

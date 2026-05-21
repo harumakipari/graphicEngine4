@@ -41,7 +41,11 @@ void ScissorsGameManager::EndGame(bool playerDead)
     ScoreSystem::RecordGameTime(gameTimer);
 
 
-    if (!playerDead)
+}
+
+// 終了演出を開始する
+void ScissorsGameManager::StartFinishPerform()
+{
     {// playerが死亡していなかったら、
         // finish の演出を入れる
         if (auto actor = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsUiEndActor>())
@@ -60,8 +64,6 @@ void ScissorsGameManager::EndGame(bool playerDead)
 #endif // 0
         }
     }
-
-
 }
 
 // ゲーム開始処理

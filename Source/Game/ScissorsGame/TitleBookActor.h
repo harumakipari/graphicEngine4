@@ -21,7 +21,7 @@ protected:
     // コントローラー対応の本が開く処理
     void HandlePadInput() override;
 
-
+     
 private:
     // UIの矢印ボタンを生成する
     void CreateButtonArrow();
