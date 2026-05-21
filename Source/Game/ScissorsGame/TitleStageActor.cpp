@@ -10,6 +10,7 @@ void TitleStageActor::Initialize(const Transform& transform)
     titleLogoComponent = AddComponent<SkeletalMeshComponent>("titleLogo",parentName);
     titleLogoComponent->SetModel("./Data/TeamModels/Title/title_rogo.gltf", false, true);
     titleLogoComponent->SetIsCastShadow(false);
+    titleLogoComponent->SetRelativeLocationDirect({ 0.0f,-0.45f,0.0f });
 
 }
 

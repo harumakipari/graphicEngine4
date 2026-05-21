@@ -154,6 +154,7 @@ bool TitleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, con
     mouseCursorPause->SetPivot({ 0.1f, 0.1f });
     mouseCursorPause->SetVisible(false);
 
+    showMouseCursor = false;
 
     return true;
 }
@@ -329,6 +330,10 @@ void TitleScene::Start()
     this->SetSceneSettings(settings);
 #endif // 0
 
+    SceneTransitionManager::Instance().SetOnOpeningFinished([this]()
+        {
+            showMouseCursor = true;
+        });
     // シーンが切り替わった時に
     SceneTransitionManager::Instance().NotifySceneChanged();
 }
@@ -336,11 +341,6 @@ void TitleScene::Start()
 void TitleScene::Update(float deltaTime)
 {
     using namespace DirectX;
-    SceneBase::Update(deltaTime);
-
-    Physics::Instance().Update(Time::UnscaledDeltaTime());
-    CollisionSystem::DetectAndResolveCollisions();
-    CollisionSystem::ApplyPushAll();
 
     // マウスカーソルの更新処理
     {
@@ -374,6 +374,13 @@ void TitleScene::Update(float deltaTime)
             }
         }
     }
+    SceneBase::Update(deltaTime);
+
+    Physics::Instance().Update(Time::UnscaledDeltaTime());
+    CollisionSystem::DetectAndResolveCollisions();
+    CollisionSystem::ApplyPushAll();
+
+
 }
 
 // 定数バッファの更新処理をシーンごとにカスタマイズできるようにするための仮想関数
@@ -611,16 +618,18 @@ void TitleScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     // マウスカーソルの描画
     if (!InputSystem::IsGamepadConnected())
     {// コントローラーが接続されていないときだけマウスカーソル描画
-        if (mouseCursorPar->IsVisible())
-            mouseCursorPar->Draw(immediateContext);
-        if (mouseCursorPause->IsVisible())
-            mouseCursorPause->Draw(immediateContext);
-        if (mouseCursorGrab->IsVisible())
-            mouseCursorGrab->Draw(immediateContext);
+        if (showMouseCursor)
+        {
+            if (mouseCursorPar->IsVisible())
+                mouseCursorPar->Draw(immediateContext);
+            if (mouseCursorPause->IsVisible())
+                mouseCursorPause->Draw(immediateContext);
+            if (mouseCursorGrab->IsVisible())
+                mouseCursorGrab->Draw(immediateContext);
 #ifndef _DEBUG
-        InputSystem::SetCursolVisible(false);
+            InputSystem::SetCursolVisible(false);
 #endif
-
+        }
     }
     else
     {
@@ -747,7 +756,7 @@ void TitleScene::DrawGui()
     {
         SaveDataManager::Instance().Reset();
         bookActor->RefreshStageUnlock();
-        
+
     }
     if (ImGui::Button(U8("ステージ開放を全開放")))
     {

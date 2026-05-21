@@ -250,8 +250,8 @@ private:
     DirectX::XMFLOAT3 patchAButtonOffset = { -0.8f,0.0f,0.6f };    // ワッペンからAボタンのオフセット
     float startAButtonSize = 100.0f;   // Aボタンの大きさ
 
-    float patchBaseScale = 1.1f;
-    float patchHoverScale = 1.2f;
+    float patchBaseScale = 1.15f;
+    float patchHoverScale = 1.25f;
 
     bool isOpeningBook = false;
     bool isClosingBook = false;

@@ -154,7 +154,7 @@ public:
 
         const StageTimeData& config = it->second;
 
-        return resultData.gameTimer <= config.targetTime;
+        return resultData.gameTimer < config.targetTime;
     }
 
     // ƒNƒŠƒA‚Ü‚Å‚ÌŽc‚èŽžŠÔ‚ðŽæ“¾‚·‚éŠÖ”

@@ -52,6 +52,9 @@ public:
     // セレクトシーンから開始する
     void StartSelectScene();
 
+    // マウスカーソルの表示を切り替える
+    void SetMouseCursor(bool isShow) { showMouseCursor = isShow; }
+
 
 private:
     TPSCameraComponent* mainCameraComponent = nullptr;
@@ -66,4 +69,5 @@ private:
     std::shared_ptr<UIImageComponent> mouseCursorGrab;  // マウス掴み
     std::shared_ptr<UIImageComponent> mouseCursorPause; // マウス　ポーズ
 
+    bool showMouseCursor = false; // マウスカーソルを表示するかどうか
 };

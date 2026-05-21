@@ -37,6 +37,9 @@ public:
 
     void SetUpActors()override;
 
+    // マウスカーソルの表示を切り替える
+    void SetMouseCursor(bool isShow) { showMouseCursor = isShow; }
+
     //シーンの自動登録
     static inline Scene::Autoenrollment<ResultScene> _autoenrollment;
 
@@ -49,4 +52,6 @@ private:
     std::shared_ptr<UIImageComponent> mouseCursorPar;   // マウスパー
     std::shared_ptr<UIImageComponent> mouseCursorGrab;  // マウス掴み
     std::shared_ptr<UIImageComponent> mouseCursorPause; // マウス　ポーズ
+
+    bool showMouseCursor = false; // マウスカーソルを表示するかどうか
 };

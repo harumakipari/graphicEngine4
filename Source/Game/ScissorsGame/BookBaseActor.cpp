@@ -3,6 +3,7 @@
 
 #include <magic_enum.hpp>
 
+#include "ResultScene.h"
 #include "SaveDataManager.h"
 #include "ScoreCalculator.h"
 #include "TitleScene.h"
@@ -511,7 +512,7 @@ void BookBaseActor::CreateBookModel(const std::string& backCoverModelName, const
         leftPage,
         STAGE_NAME::TUTORIAL,
         "./Data/TeamModels/Title/patchModelTutorial.gltf",
-        { 1.2f,0.0f,-1.4f });
+        { 1.3f,0.0f,-1.4f });
 
     CreateStagePatch(
         leftPage,
@@ -523,13 +524,13 @@ void BookBaseActor::CreateBookModel(const std::string& backCoverModelName, const
         leftPage,
         STAGE_NAME::BOBBIN_FIRST,
         "./Data/TeamModels/Title/patchModelBobbinFirst.gltf",
-        { 1.2f,0.0f,1.7f });
+        { 1.4f,0.0f,1.5f });
 
     CreateStagePatch(
         rightPage,
         STAGE_NAME::REFLECT_WALL,
         "./Data/TeamModels/Title/patchModelReflectWall.gltf",
-        { -3.2f,0.2f,-1.6f });
+        { -3.0f,0.2f,-1.4f });
 
     CreateStagePatch(
         rightPage,
@@ -702,6 +703,16 @@ void BookBaseActor::UpdatePage(const BookPage& page)
             Logger::Log(u8"ステージ選択");
             // ステージ決定音
             CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
+            auto scene = GetOwnerScene();
+            if (auto titleScene = dynamic_cast<TitleScene*>(scene))
+            {
+                titleScene->SetMouseCursor(false);
+            }
+            if (auto resultScene = dynamic_cast<ResultScene*>(scene))
+            {
+                resultScene->SetMouseCursor(false);
+            }
+
 
             if (stage->stage == STAGE_NAME::TUTORIAL)
             {// チュートリアルを選択した時のみ
@@ -737,6 +748,15 @@ void BookBaseActor::UpdatePage(const BookPage& page)
             {
                 // 遊ぶステージ名を記録する
                 ScoreSystem::RecordStageName(stage->stage);
+                auto scene = GetOwnerScene();
+                if (auto titleScene = dynamic_cast<TitleScene*>(scene))
+                {
+                    titleScene->SetMouseCursor(false);
+                }
+                if (auto resultScene = dynamic_cast<ResultScene*>(scene))
+                {
+                    resultScene->SetMouseCursor(false);
+                }
 
                 SceneTransitionManager::Instance().RequestTransition(
                     "LoadingScene",
@@ -1113,7 +1133,7 @@ void BookBaseActor::UpdateStageVisual(const std::shared_ptr<StageSelectData>& st
     if (!stage->isUnlocked)
     {
         stage->model->plusAlphaCBuffer->data.saturation = -0.87f;
-        stage->model->SetRelativeScaleDirect({ 1,1,1 });
+        stage->model->SetRelativeScaleDirect({ 1.1f,1.1f,1.1f });
     }
     else
     {

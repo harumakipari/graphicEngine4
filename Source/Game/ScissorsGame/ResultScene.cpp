@@ -152,6 +152,8 @@ bool ResultScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     mouseCursorPause->SetPivot({ 0.1f, 0.1f });
     mouseCursorPause->SetVisible(false);
 
+    showMouseCursor = false;
+
     return true;
 }
 
@@ -298,6 +300,7 @@ void ResultScene::Start()
     SceneTransitionManager::Instance().SetOnOpeningFinished([this, bookActor]()
         {
             bookActor->StartShowEnemyScore();
+            showMouseCursor = true;
         });
 
     // シーンが切り替わった時に
@@ -308,11 +311,6 @@ void ResultScene::Start()
 void ResultScene::Update(float deltaTime)
 {
     using namespace DirectX;
-    SceneBase::Update(deltaTime);
-
-    Physics::Instance().Update(Time::UnscaledDeltaTime());
-    CollisionSystem::DetectAndResolveCollisions();
-    CollisionSystem::ApplyPushAll();
 
     // マウスカーソルの更新処理
     {
@@ -346,6 +344,14 @@ void ResultScene::Update(float deltaTime)
             }
         }
     }
+
+    SceneBase::Update(deltaTime);
+
+    Physics::Instance().Update(Time::UnscaledDeltaTime());
+    CollisionSystem::DetectAndResolveCollisions();
+    CollisionSystem::ApplyPushAll();
+
+
 }
 
 // 定数バッファの更新処理をシーンごとにカスタマイズできるようにするための仮想関数
@@ -584,15 +590,19 @@ void ResultScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     // マウスカーソルの描画
     if (!InputSystem::IsGamepadConnected())
     {// コントローラーが接続されていないときだけマウスカーソル描画
-        if (mouseCursorPar->IsVisible())
-            mouseCursorPar->Draw(immediateContext);
-        if (mouseCursorPause->IsVisible())
-            mouseCursorPause->Draw(immediateContext);
-        if (mouseCursorGrab->IsVisible())
-            mouseCursorGrab->Draw(immediateContext);
+        if (showMouseCursor)
+        {
+            if (mouseCursorPar->IsVisible())
+                mouseCursorPar->Draw(immediateContext);
+            if (mouseCursorPause->IsVisible())
+                mouseCursorPause->Draw(immediateContext);
+            if (mouseCursorGrab->IsVisible())
+                mouseCursorGrab->Draw(immediateContext);
 #ifndef _DEBUG
-        InputSystem::SetCursolVisible(false);
+            InputSystem::SetCursolVisible(false);
 #endif
+        }
+
     }
     else
     {

@@ -75,9 +75,16 @@ private:
     // チップステクスチャを適応する
     void ApplyTipsTextures();
 private:
+    std::shared_ptr<UIImageComponent> backWhiteImage;
     std::shared_ptr<UIImageComponent> backImage;
     std::shared_ptr<UIImageComponent> chipsImage;
     std::shared_ptr<UIImageComponent> chipsFrameImage;
+
+
+    std::shared_ptr<UIImageComponent> mouseCursorPar;   // マウスパー
+    std::shared_ptr<UIImageComponent> mouseCursorGrab;  // マウス掴み
+    std::shared_ptr<UIImageComponent> mouseCursorPause; // マウス　ポーズ
+
 
     std::vector<TipsData> tipsDatabase;// チップスデータ
 
