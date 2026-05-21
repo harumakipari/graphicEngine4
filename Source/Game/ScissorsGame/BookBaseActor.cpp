@@ -168,7 +168,8 @@ void BookBaseActor::DrawImGuiDetails()
     {
         CloseBook(2.0f);
     }
-    ImGui::DragFloat3(U8("ワッペンのオフセット"), &patchAButtonOffset.x);
+    ImGui::DragFloat3(U8("Aボタンのオフセット"), &patchAButtonOffset.x, 0.05f);
+    ImGui::DragFloat(U8("Aボタンのサイズ"), &startAButtonSize, 2.0f);
     ImGui::DragFloat(U8("ワッペンのスケール"), &patchBaseScale, 0.05f, 1.0f, 1.5f);
     ImGui::DragFloat(U8("ワッペンのホバースケール"), &patchHoverScale, 0.05f, 1.0f, 1.5f);
 
@@ -788,7 +789,7 @@ void BookBaseActor::UpdateClosedBook()
     if (hitBook)
     {
         bookSpineModel->SetRelativeScaleDirect(
-            { 1.05f,1.05f,1.05f });
+            { 1.15f,1.15f,1.15f });
     }
     else
     {
@@ -994,6 +995,7 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
         DirectX::XMFLOAT2 screenPos = WorldToUI(pos);
 
         startAButton->SetWorldPosition({ screenPos.x,screenPos.y });
+        startAButton->SetSize({ startAButtonSize ,startAButtonSize });
     }
     else
     {

@@ -240,7 +240,7 @@ public:
         startYaw = 231.5f;
         endYaw = 180.0f;
 
-        startPitch = -11.0f;
+        startPitch = -7.5f;
         endPitch = -60.0f;
 
         currentPitch = startPitch;

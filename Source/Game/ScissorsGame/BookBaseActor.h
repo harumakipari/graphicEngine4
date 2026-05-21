@@ -235,6 +235,7 @@ private:
 
     std::shared_ptr<UIImageComponent> startAButton;   // ワッペンの近くにAボタンを表示する
 
+
     // 裏表紙のモデル名
     std::string backCoverModelName = "./Data/TeamModels/Title/BookRight.gltf";
     // 真ん中のモデル名
@@ -246,7 +247,8 @@ private:
     // 調整
     float firstRate = 0.2f; // 本を閉じる時の最初のページの割合
     float secondRate = 0.8f;   // 本を閉じる時の二枚目のページの割合
-    DirectX::XMFLOAT3 patchAButtonOffset = { -0.5f,0.0f,0.5f, };
+    DirectX::XMFLOAT3 patchAButtonOffset = { -0.8f,0.0f,0.6f };    // ワッペンからAボタンのオフセット
+    float startAButtonSize = 100.0f;   // Aボタンの大きさ
 
     float patchBaseScale = 1.1f;
     float patchHoverScale = 1.2f;

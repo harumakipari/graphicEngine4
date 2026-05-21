@@ -21,8 +21,8 @@ void TitleBookActor::Initialize(const Transform& transform)
         std::string scoreParentName = "high_first_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, middleName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -0.5f,-0.1f,-0.8f });
-        scoreRoot->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
+        scoreRoot->SetRelativeLocationDirect({ -0.6f,-0.1f,-0.7f });
+        scoreRoot->SetRelativeScaleDirect({ 0.77f,0.8f,0.8f });
 
         firstStageHighScoreDisplay.Initialize(
             this,
@@ -38,8 +38,8 @@ void TitleBookActor::Initialize(const Transform& transform)
         std::string scoreParentName = "high_bobbin_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, middleName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -0.5f,-0.1f,1.0f });
-        scoreRoot->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
+        scoreRoot->SetRelativeLocationDirect({ -0.6f,-0.1f,1.0f });
+        scoreRoot->SetRelativeScaleDirect({ 0.77f,0.8f,0.8f });
 
         bobbinStageHighScoreDisplay.Initialize(
             this,
@@ -58,7 +58,7 @@ void TitleBookActor::Initialize(const Transform& transform)
         scoreRedirectRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
         scoreRedirectRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
         scoreRedirectRoot->SetRelativeLocationDirect(redirectScorePosition);
-        scoreRedirectRoot->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
+        scoreRedirectRoot->SetRelativeScaleDirect({ 0.77f,0.8f,0.8f });
 
         redirectStageHighScoreDisplay.Initialize(
             this,
@@ -76,7 +76,7 @@ void TitleBookActor::Initialize(const Transform& transform)
         scoreDifficultRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
         scoreDifficultRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
         scoreDifficultRoot->SetRelativeLocationDirect(difficultScorePosition);
-        scoreDifficultRoot->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
+        scoreDifficultRoot->SetRelativeScaleDirect({ 0.77f,0.8f,0.8f });
 
         difficultStageHighScoreDisplay.Initialize(
             this,
@@ -94,7 +94,7 @@ void TitleBookActor::Initialize(const Transform& transform)
         scoreBossRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
         scoreBossRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
         scoreBossRoot->SetRelativeLocationDirect(bossScorePosition);
-        scoreBossRoot->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
+        scoreBossRoot->SetRelativeScaleDirect({ 0.77f,0.8f,0.8f });
 
         bossStageHighScoreDisplay.Initialize(
             this,
@@ -108,26 +108,52 @@ void TitleBookActor::Initialize(const Transform& transform)
     // 矢印ボタンのUIを作成する
     CreateButtonArrow();
 
-    // AボタンのUIを生成する
-    auto uiManager = GetOwnerScene()->GetUIManager();
-    controlAButton = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/A.png", "A");
-    controlAButton->SetWorldPosition({ 880, 920 });
-    controlAButton->SetSize({ 80, 80 });
-    controlAButton->SetPivot({ 0.5f,0.5f });
-    controlAButton->SetVisible(false);
-    uiManager->Add(controlAButton);
+    {
+        // コントローラー対応用
+        controlButtonOnImage = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/A.png");
+        controlButtonOffImage = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/A_off.png");
+        // キーボード対応用
+        keyBoardButtonOnImage = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/mouseClick.png");
+        keyBoardButtonOffImage = std::make_shared<Sprite>(Graphics::GetDevice(), L"./Data/Textures/ScissorsUI/Tutorial/mouseClick_off.png");
 
-    rankImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/title_patch_title.png", "title_patch_title");
-    rankImage->SetWorldPosition(patchSize);
-    rankImage->SetVisible(true);
-    rankImage->SetPivot({ 0.5f,0.5f });
-    uiManager->Add(rankImage);
+        auto uiManager = GetOwnerScene()->GetUIManager();
 
-    selectImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/title_patch_select.png", "title_patch_result");
-    selectImage->SetWorldPosition(patchSize);
-    selectImage->SetVisible(true);
-    selectImage->SetPivot({ 0.5f,0.5f });
-    uiManager->Add(selectImage);
+        // Aボタン/マウスのUIを生成する
+        controlAOnButton = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tutorial/mouseClick.png", "Tutorial_Mouse_Click");     // マウスのクリック
+        controlAOnButton->SetWorldPosition(mousePos);
+        controlAOnButton->SetSize(mouseSize);
+        controlAOnButton->zOrder = 5;
+        controlAOnButton->SetVisible(false);
+        uiManager->Add(controlAOnButton);
+
+        // Aボタン/マウスのUIを生成する
+        controlAOffButton = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tutorial/mouseClick_off.png", "Tutorial_Mouse_Click_Off");     // マウスのクリックオフ
+        controlAOffButton->SetWorldPosition(mousePos);
+        controlAOffButton->SetSize(mouseSize);
+        controlAOffButton->SetVisible(false);
+        controlAOffButton->zOrder = 5;
+        uiManager->Add(controlAOffButton);
+
+        // 矢印のUIを生成する
+        mouseArrowImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/Tutorial/arrow_left.png", "arrow_left");
+        mouseArrowImage->SetWorldPosition({ 880, 920 });
+        mouseArrowImage->SetSize({ 90, 75 });
+        mouseArrowImage->SetPivot({ 0.5f,0.5f });
+        mouseArrowImage->SetVisible(true);
+        uiManager->Add(mouseArrowImage);
+
+        rankImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/title_patch_title.png", "title_patch_title");
+        rankImage->SetWorldPosition(patchSize);
+        rankImage->SetVisible(true);
+        rankImage->SetPivot({ 0.5f,0.5f });
+        uiManager->Add(rankImage);
+
+        selectImage = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/title_patch_select.png", "title_patch_result");
+        selectImage->SetWorldPosition(patchSize);
+        selectImage->SetVisible(true);
+        selectImage->SetPivot({ 0.5f,0.5f });
+        uiManager->Add(selectImage);
+    }
 
     // タイトルシーンの本は最初は閉じている状態なので、ステージ選択のインデックスは0にしておく
     selectedStageIndex = 0;
@@ -136,21 +162,68 @@ void TitleBookActor::Initialize(const Transform& transform)
 void TitleBookActor::Update(float deltaTime)
 {
     BookBaseActor::Update(deltaTime);
-
+    elapsedTime += deltaTime;
+#if 0
     if (bookState == BookPageState::Closed)
     {// 本が閉じている時に
+        controlAOnButton->SetVisible(true);
+
         if (InputSystem::IsGamepadConnected())
         {// ゲームパッドが繋がれていたら
-            controlAButton->SetVisible(true);
+            controlAOnButton->SetTexture(controlButtonOnImage);
         }
         else
         {
-            controlAButton->SetVisible(false);
+            controlAOnButton->SetTexture(keyBoardButtonOnImage);
         }
     }
     else
     {
-        controlAButton->SetVisible(false);
+        controlAOnButton->SetVisible(false);
+        controlAOffButton->SetVisible(false);
+    }
+#else
+    if (bookState == BookPageState::Closed)
+    {// 本が閉じている時に
+        // マウスクリック点滅
+        UpdateMouseClickBlink(deltaTime);
+        // マウスクリックの表示を切り替える
+        ShowMouseClick(true);
+
+        if (InputSystem::IsGamepadConnected())
+        {// ゲームパッドが繋がれていたら
+            mouseArrowImage->SetVisible(false);
+        }
+        else
+        {
+            mouseArrowImage->SetVisible(true);
+        }
+
+    }
+    else
+    {
+        // マウスクリックの表示を切り替える
+        ShowMouseClick(false);
+        // マウスクリックの点滅をリセットする
+        ResetMouseClickBlink();
+
+        mouseArrowImage->SetVisible(false);
+
+    }
+
+#endif // 0
+    if (controlAOnButton)
+    {
+        controlAOnButton->SetWorldPosition(mousePos);
+        controlAOnButton->SetSize(mouseSize);
+    }
+
+    if (mouseArrowImage)
+    {
+        arrowPos.y = arrowBasePos.y + 10.0f * std::sinf(elapsedTime * 3.0f);
+        mouseArrowImage->SetWorldPosition(arrowPos);
+        mouseArrowImage->SetSize(arrowSize);
+        mouseArrowImage->SetWorldAngleDegree(arrowAngle);
     }
 
     // リザルトイメージ
@@ -190,19 +263,23 @@ void TitleBookActor::Update(float deltaTime)
     // ステージ１
     int firstHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::FIRST);
     firstStageHighScoreDisplay.SetValue(firstHighScore);
+    firstStageHighScoreDisplay.SetColor(rankFirstColor);
 
     // ステージ2
     int bobbinHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::BOBBIN_FIRST);
     bobbinStageHighScoreDisplay.SetValue(bobbinHighScore);
+    bobbinStageHighScoreDisplay.SetColor(rankBobbinColor);
 
     // 裏表紙
     // ステージ3
     int redirectHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::REFLECT_WALL);
     redirectStageHighScoreDisplay.SetValue(redirectHighScore);
+    redirectStageHighScoreDisplay.SetColor(rankRedirectColor);
 
     // ステージ4
     int difficultHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::DIFFICULT);
     difficultStageHighScoreDisplay.SetValue(difficultHighScore);
+    difficultStageHighScoreDisplay.SetColor(rankDifficultColor);
 
     // ボス戦
     int bossHighScore = ScoreHistoryManager::GetHighScore(STAGE_NAME::BOSS);
@@ -222,11 +299,21 @@ void TitleBookActor::DrawImGuiDetails()
 {
 #ifdef USE_IMGUI
     BookBaseActor::DrawImGuiDetails();
+    ImGui::DragFloat2("arrowSize", &arrowSize.x);
+    ImGui::DragFloat2("arrowPos", &arrowPos.x);
+    ImGui::DragFloat("arrowAngle", &arrowAngle);
+
+    ImGui::DragFloat2("mouseSize", &mouseSize.x);
+    ImGui::DragFloat2("mousePos", &mousePos.x);
+
     ImGui::ColorEdit4("rankBossColor", &rankBossColor.x);
     ImGui::ColorEdit4("rankFirstColor", &rankFirstColor.x);
     ImGui::ColorEdit4("rankBobbinColor", &rankBobbinColor.x);
     ImGui::ColorEdit4("rankRedirectColor", &rankRedirectColor.x);
     ImGui::ColorEdit4("rankDifficultColor", &rankDifficultColor.x);
+
+
+
 #endif
 
 }
@@ -374,4 +461,48 @@ void TitleBookActor::CreateButtonArrow()
         };
 
 #endif // 0
+}
+
+
+void TitleBookActor::UpdateMouseClickBlink(float deltaTime)
+{
+    if (InputSystem::IsGamepadConnected())
+    {//　コントローラー対応
+        controlAOnButton->SetTexture(controlButtonOnImage);
+        controlAOffButton->SetTexture(controlButtonOffImage);
+    }
+    else
+    {
+        controlAOnButton->SetTexture(keyBoardButtonOnImage);
+        controlAOffButton->SetTexture(keyBoardButtonOffImage);
+    }
+
+    if (isUpdateMouse)
+    {
+        mouseBlinkTimer += deltaTime;
+
+        if (mouseBlinkTimer >= mouseBlinkInterval)
+        {
+            mouseBlinkTimer = 0.0f;
+            isMouseClickOn = !isMouseClickOn;
+
+            controlAOnButton->SetVisible(isMouseClickOn);
+            controlAOffButton->SetVisible(!isMouseClickOn);
+        }
+    }
+}
+
+void TitleBookActor::ShowMouseClick(bool visible)
+{
+    controlAOnButton->SetVisible(visible && isMouseClickOn);
+    controlAOffButton->SetVisible(visible && !isMouseClickOn);
+    isUpdateMouse = true;
+}
+
+void TitleBookActor::ResetMouseClickBlink()
+{
+    mouseBlinkTimer = 0.0f;
+    isMouseClickOn = false;
+    controlAOnButton->SetVisible(false);
+    controlAOffButton->SetVisible(false);
 }

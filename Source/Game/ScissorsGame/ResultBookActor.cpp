@@ -67,7 +67,9 @@ void ResultBookActor::Initialize(const Transform& transform)
         auto resultCrownModel= AddComponent<SkeletalMeshComponent>("crownMeshComponent", backCoverName);
         resultCrownModel->SetModel("./Data/TeamModels/Title/PatchCrownModel.gltf", false, true);
         resultCrownModel->SetIsCastShadow(false);
-        resultCrownModel->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
+        resultCrownModel->SetRelativeScaleDirect({ 0.56f,0.56f,0.56f });
+        resultCrownModel->SetRelativeEulerRotationDirect({ 0.0f,-23.0f,0.0f });
+        resultCrownModel->SetRelativeLocationDirect({ -1.4f,0.0f,-2.0f });
     }
 
 
@@ -187,7 +189,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         std::string scoreParentName = "minute_number_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, rightName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -1.1f,-0.1f,1.6f });
+        scoreRoot->SetRelativeLocationDirect({ -1.0f,-0.1f,1.6f });
         scoreRoot->SetRelativeScaleDirect({ subNumberSize,subNumberSize,subNumberSize });
         minuteDisplay.Initialize(
             this,
@@ -202,7 +204,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         std::string scoreParentName = "second_number_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, rightName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,1.6f });
+        scoreRoot->SetRelativeLocationDirect({ -0.35f,-0.1f,1.6f });
         scoreRoot->SetRelativeScaleDirect({ subNumberSize,subNumberSize,subNumberSize });
         secondDisplay.Initialize(
             this,

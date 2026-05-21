@@ -27,7 +27,7 @@ private:
     std::unique_ptr<EasingRunner> easingRunner;
 
     //DirectX::XMFLOAT3 titlePosition= { 2.2f,1.984f,2.753f };
-    DirectX::XMFLOAT3 titlePosition= { 2.2f,1.384f,2.753f };
+    DirectX::XMFLOAT3 titlePosition= { 2.04f,1.248f,2.753f };
     DirectX::XMFLOAT3 selectPosition= { 0.0f,3.1f,2.836f };
 
     DirectX::XMFLOAT3 startPosition = { 2.2f,1.984f,2.753f };
