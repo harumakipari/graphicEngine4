@@ -4,6 +4,7 @@
 #include "ScissorsUiEndActor.h"
 #include "ScoreCalculator.h"
 #include "Engine/Scene/Scene.h"
+#include "UI/Game/Pause.h"
 
 void ScissorsGameManager::Initialize(const Transform& transform)
 {
@@ -32,6 +33,11 @@ void ScissorsGameManager::Reset()
 void ScissorsGameManager::EndGame(bool playerDead)
 {
     isGameEnded = true;
+
+    if (auto pause=GetOwnerScene()->GetActorManager()->GetActorOfType<Pause>())
+    {
+        pause->HidePauseMenu();
+    }
 
     // “ü—Í‚ð–³Œø‰»‚·‚é
     gameInputEnabled = false;

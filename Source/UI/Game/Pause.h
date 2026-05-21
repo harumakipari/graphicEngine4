@@ -22,6 +22,9 @@ public:
     // リトライするシーンの名前を設定する
     void SetRetrySceneName(const std::string& sceneName) { retrySceneName = sceneName; }
 
+    // ポーズ画面を隠す
+    void HidePauseMenu();
+
 private:
     // ポーズ画面を開くときの処理
     void OpenPause();
@@ -38,10 +41,13 @@ private:
     std::shared_ptr<UIButtonComponent> retryButton;
     std::shared_ptr<UIButtonComponent> closeButton;
 
+
+
     std::array<std::shared_ptr<UIImageComponent>, 3> countDownImages;
     PauseState state = PauseState::Playing;
     float countdownTime = 3.0f;
     int lastCountdownNumber = -1;
+    bool stopUpdate = true;
 
     std::string retrySceneName = "MainScene";
 };

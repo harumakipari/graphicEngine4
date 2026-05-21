@@ -55,9 +55,61 @@ void FixedCamera::Update(float deltaTime)
 {
     XMFLOAT3 pos = GetPosition();
     auto boss = GetOwnerScene()->GetActorManager()->GetActorOfType<RabbitBossEnemyActor>();
+    auto bobbin = GetOwnerScene()->GetActorManager()->GetActorOfType<BobbinActor>();
 
+    // 一旦全員戻す
+    if (boss)
+    {
+        boss->SetRenderOpacity(1.0f);
+    }
+
+    if (bobbin)
+    {
+        bobbin->SetRenderOpacity(1.0f);
+    }
+
+    uint32_t mask =
+        CollisionHelper::ToBit(CollisionLayer::Boss) |
+        CollisionHelper::ToBit(CollisionLayer::Bobbin);
+
+    auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>();
+
+    if (player)
+    {
+        HitResultWithActor hit;
+
+        if (CollisionFunction::SphereRayCast(
+            pos,
+            player->GetPosition(),
+            hit,
+            0.2f,
+            mask))
+        {
+            auto hitActor = hit.actor;
+
+            // ボスに当たった
+            if (auto hitBoss = dynamic_cast<RabbitBossEnemyActor*>(hitActor))
+            {
+                auto stateName = hitBoss->GetStateMachine()->GetStateName();
+
+                if (stateName != "Win" &&
+                    stateName != "Death")
+                {
+                    hitBoss->SetRenderOpacity(0.5f);
+                }
+            }
+
+            // ボビンに当たった
+            if (auto hitBobbin = dynamic_cast<BobbinActor*>(hitActor))
+            {
+                hitBobbin->SetRenderOpacity(0.5f);
+            }
+        }
+
+    }
+
+#if 0
     bool shouldFade = false;
-
     uint32_t mask = CollisionHelper::ToBit(CollisionLayer::Boss);
 
     // Player判定
@@ -102,6 +154,8 @@ void FixedCamera::Update(float deltaTime)
 
         boss->SetRenderOpacity(shouldFade ? 0.5f : 1.0f);
     }
+#endif // 0
+
 
     // Controller更新
     tpsController.Update(deltaTime);

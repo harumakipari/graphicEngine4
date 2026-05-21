@@ -48,6 +48,14 @@ public:
 
     // ボビンの見た目を非表示にする
     void HideBobbinVisual();
+
+    // 半透明の処理
+    void SetRenderOpacity(float opacity)
+    {
+        skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor.w = opacity;
+        bobbinStringMeshComponent->plusAlphaCBuffer->data.cpuColor.w = opacity;
+    }
+
 private:
     // ボビンを使用する
     void UseBobbin();

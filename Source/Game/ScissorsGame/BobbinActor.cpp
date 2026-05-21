@@ -17,7 +17,9 @@ void BobbinActor::Initialize(const Transform& transform)
 {
     std::string parentName = "BobbinActor";
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    skeletalMeshComponent->SetModel("./Data/TeamModels/Item/BobbinModel.glb", false, true);
+    skeletalMeshComponent->SetModel("./Data/TeamModels/Item/BobbinModel.gltf", false, true);
+    skeletalMeshComponent->overrideDeferredPipelineName = "ScissorsGameBossPS";
+    skeletalMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1.0f,1.0f,1.0f,1.0f };
 
     bobbinApplyRangeMeshComponent = AddComponent<SkeletalMeshComponent>("applyRangeModel", parentName);
     bobbinApplyRangeMeshComponent->SetModel("./Data/TeamModels/Marks/BobbinApplyRange.gltf", false, true);
@@ -31,6 +33,8 @@ void BobbinActor::Initialize(const Transform& transform)
     bobbinStringMeshComponent->SetIsCastShadow(false);
     bobbinStringMeshComponent->SetRelativeScaleDirect({ 0.0f,0.0f,0.0f });
     bobbinStringMeshComponent->SetRelativeLocationDirect({ 0.0f,1.45f,0.0f });
+    bobbinStringMeshComponent->overrideDeferredPipelineName = "ScissorsGameBossPS";
+    bobbinStringMeshComponent->plusAlphaCBuffer->data.cpuColor = { 1.0f,1.0f,1.0f,1.0f };
 
     DirectX::XMFLOAT3 size = { 1.9f,2.9f,1.9f };
 

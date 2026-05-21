@@ -126,7 +126,6 @@ void Pause::Initialize(const Transform& transform)
 
     GetOwnerScene()->GetUIManager()->Add(retryButton);
 
-
     for (int i = 0; i < 3; i++)
     {
         const int num = 3 - i; // 3,2,1
@@ -148,6 +147,8 @@ void Pause::Initialize(const Transform& transform)
     uiManager->AddButton(returnTitleButton);
     uiManager->AddButton(retryButton);
 
+    stopUpdate = false;
+
 
     //pausePanel = std::make_shared<UIImageComponent>("./Data/Textures/UI/CountDown_1.png", "pause_panel");
     //pausePanel->SetVisible(false);
@@ -157,6 +158,9 @@ void Pause::Initialize(const Transform& transform)
 
 void Pause::Update(float deltaTime)
 {
+    if (stopUpdate)
+        return;
+
     // ポーズ切り替え
     if (InputSystem::GetInputState("Pause", InputStateMask::Trigger))
     {
@@ -226,6 +230,14 @@ void Pause::Update(float deltaTime)
         menuButton->SetVisible(true);
 
     }
+}
+
+// ポーズ画面を隠す
+void Pause::HidePauseMenu()
+{
+    stopUpdate = true;
+    menuButton->SetEnable(false);
+    menuButton->SetVisible(false);
 }
 
 // ポーズ画面を開くときの処理
