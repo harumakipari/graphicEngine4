@@ -312,8 +312,6 @@ void TitleBookActor::DrawImGuiDetails()
     ImGui::ColorEdit4("rankRedirectColor", &rankRedirectColor.x);
     ImGui::ColorEdit4("rankDifficultColor", &rankDifficultColor.x);
 
-
-
 #endif
 
 }

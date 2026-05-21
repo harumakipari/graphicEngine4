@@ -40,16 +40,35 @@ void BookBaseActor::Update(float deltaTime)
         startAButton->SetVisible(false);
     }
 
+    Logger::Log("bookOneAlpha" + std::to_string(bookOneAlpha));
+    Logger::Log("bookTwoAlpha" + std::to_string(bookTwoAlpha));
+
     switch (bookState)
     {
     case BookPageState::Closed:
         UpdateClosedBook();
         break;
     case BookPageState::FirstPage:
+    {
         UpdatePage(leftPage);
         UpdatePage(rightPage);
-        HandlePadStageSelection(deltaTime);
-        break;
+
+        bool isTransitioning = easingOneRunner->IsFinished() || easingTwoRunner->IsFinished();
+        if (isTransitioning)
+        {
+            HandlePadStageSelection(deltaTime);
+        }
+
+        if (bookOneAlpha < 0.8f)
+        {
+            if (auto title = dynamic_cast<TitleScene*>(GetOwnerScene()))
+            {
+                title->StartSelectScene();// 選択シーンから開始する
+            }
+        }
+
+    }
+    break;
     case BookPageState::SecondPage:
         break;
     case BookPageState::OpeningBook:
@@ -840,6 +859,7 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
     }
 
     static float stickDelay = 0.0f;
+    static bool stickNeutral = true;
     stickDelay -= deltaTime;
 
     bool moved = false;
@@ -895,8 +915,30 @@ void BookBaseActor::HandlePadStageSelection(float deltaTime)
         auto leftStick = InputSystem::GetLeftStick();
         auto rightStick = InputSystem::GetRightStick();
 
+        constexpr float deadZone = 0.3f;
+
+        // ニュートラル判定
+        bool leftNeutral =
+            fabs(leftStick.x) < deadZone &&
+            fabs(leftStick.y) < deadZone;
+
+        bool rightNeutral =
+            fabs(rightStick.x) < deadZone &&
+            fabs(rightStick.y) < deadZone;
+
+        // 両方中央なら入力可能に戻す
+        if (leftNeutral && rightNeutral)
+        {
+            stickNeutral = true;
+        }
+
         auto handleStick = [&](const auto& stick)
             {
+                if (!stickNeutral)
+                {
+                    return false;
+                }
+
                 // 縦移動（±1）
                 if (stick.y > 0.6f)
                 {

@@ -255,4 +255,6 @@ private:
 
     bool isOpeningBook = false;
     bool isClosingBook = false;
+
+    bool isNeutral = true;  // コントローラーの入力がニュートラルな状態かどうか
 };
