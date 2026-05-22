@@ -21,8 +21,13 @@ RabbitBossStateBase::RabbitBossStateBase(RabbitBossEnemyActor* enemy) :State(ene
 
 void RabbitBossIdleState::Enter()
 {
+    // スタン後は短く待機
+    if (enemy->forceWarpAfterStun)
+    {
+        attackTimer = 1.5f;
+    }
     // 初回だけ短くする
-    if (enemy->firstAttack)
+    else if (enemy->firstAttack)
     {
         attackTimer = 3.0f;
     }
@@ -56,8 +61,14 @@ void RabbitBossAttackSelectState::Execute(float deltaTime)
 {
     BossAttackType type;
 
+    // スタン後はWarp固定
+    if (enemy->forceWarpAfterStun)
+    {
+        type = BossAttackType::Warp;
+        enemy->forceWarpAfterStun = false;
+    }
     // 最初の一回だけ Warp 固定
-    if (enemy->firstAttack)
+    else if (enemy->firstAttack)
     {
         type = BossAttackType::Warp;
         enemy->firstAttack = false;
@@ -466,8 +477,15 @@ void RabbitBossStunState::Execute(float deltaTime)
 
     if (stunTimer < 0.0f)
     { // 待機を挟まず即ワープ
-        enemy->GetStateMachine()->ChangeState("WarpPreview");
+        // スタン後は1秒待機してからWarpしたい
+        enemy->forceWarpAfterStun = true;
+
         enemy->stunModel->SetIsVisible(false);
+
+        // Idleへ戻る
+        enemy->PlayAnimation("Idle");
+
+        enemy->GetStateMachine()->ChangeState("Idle");
     }
 
     if (enemy->stunModel)
@@ -585,7 +603,6 @@ void RabbitBossDeathState::Execute(float deltaTime)
 {
     elapsedTime += Time::UnscaledDeltaTime();
     //// 死亡の演出を何か入れる
-
 
     switch (phase)
     {

@@ -1,6 +1,9 @@
 {
     "BOBBIN_FIRST": [
         {
+            "score": 12310
+        },
+        {
             "score": 11980
         },
         {
@@ -11,9 +14,6 @@
         },
         {
             "score": 10560
-        },
-        {
-            "score": 8490
         }
     ],
     "BOSS": [
@@ -21,19 +21,22 @@
             "score": 17870
         },
         {
+            "score": 17780
+        },
+        {
             "score": 16715
         },
         {
-            "score": 14635
+            "score": 16520
         },
         {
-            "score": 14550
-        },
-        {
-            "score": 14440
+            "score": 15640
         }
     ],
     "DIFFICULT": [
+        {
+            "score": 11450
+        },
         {
             "score": 10835
         },
@@ -41,10 +44,10 @@
             "score": 9570
         },
         {
-            "score": 330
+            "score": 6150
         },
         {
-            "score": 0
+            "score": 330
         }
     ],
     "FIRST": [
@@ -55,13 +58,13 @@
             "score": 10280
         },
         {
+            "score": 10200
+        },
+        {
             "score": 9650
         },
         {
             "score": 8880
-        },
-        {
-            "score": 8540
         }
     ],
     "REFLECT_WALL": [

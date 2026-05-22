@@ -203,8 +203,8 @@ private:
 
     std::vector<DashHitInfo> dashHits;  // ダッシュ時のヒット情報
 
-    // プレイヤーのHPを表示するUI　
     std::vector<std::shared_ptr<UIImageComponent>> heartFillsHpUiComponents; // 中身
+    // プレイヤーのHPを表示するUI　
     std::vector<std::shared_ptr<UIImageComponent>> heartFramesHpUiComponents;   // 枠
 
     //　デバック用

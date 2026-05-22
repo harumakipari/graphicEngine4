@@ -714,7 +714,7 @@ void TitleScene::SetUpActors()
     Transform stageTr(DirectX::XMFLOAT3{ -0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto stageActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitleStageActor>("titleStageActor", stageTr);
 
-    Transform playerTr(DirectX::XMFLOAT3{ -7.2f,0.8f,0.1f }, DirectX::XMFLOAT3{ 0.0f,71.0f,0.0f }, DirectX::XMFLOAT3{ 1.2f,1.2f,1.2f });
+    Transform playerTr(DirectX::XMFLOAT3{ -6.8f,0.8f,0.1f }, DirectX::XMFLOAT3{ 0.0f,71.0f,0.0f }, DirectX::XMFLOAT3{ 1.2f,1.2f,1.2f });
     auto playerActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<TitlePlayerActor>("TitlePlayerActor", playerTr);
 
     Transform bookTr(DirectX::XMFLOAT3{ 0.0f,0.024f,-0.129f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });

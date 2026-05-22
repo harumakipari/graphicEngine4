@@ -332,7 +332,6 @@ public:
         } while ((visible && count < 0) || (!visible && count >= 0));
     }
 
-
 private:
 
 

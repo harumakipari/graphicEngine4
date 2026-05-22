@@ -228,6 +228,7 @@ void InputSystem::Initialize()
     //inputKeys["ok"].emplace_back(std::make_unique<Mouse>(VK_LBUTTON)); // マウス左ボタン
     inputKeys["ok"].emplace_back(std::make_unique<Keyboard>(VK_RETURN));    // Enterキー
     inputKeys["ok"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_A));
+    inputKeys["ok"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_B));
 
 
     inputKeys["LockOn"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_RIGHT_THUMB));    // 右スティック押し込み
@@ -249,9 +250,8 @@ void InputSystem::Initialize()
     inputKeys["BookLeft"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_LEFT_SHOULDER));     // 左
     inputKeys["BookLeft"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::LeftTrigger));
 
-
-
     inputKeys["GamePadA"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_A));     // 左
+    inputKeys["GamePadA"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_B));     // 左
 
     // 今回のゲームで使用する入力キーをここでまとめて登録しておく
     inputKeys["ScissorsAttack"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::RightTrigger));
@@ -266,6 +266,7 @@ void InputSystem::Initialize()
 
     inputKeys["TutorialOk"].emplace_back(std::make_unique<Mouse>(VK_LBUTTON));  // 左ボタン
     inputKeys["TutorialOk"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_A));     // A
+    inputKeys["TutorialOk"].emplace_back(std::make_unique<Gamepad>(XINPUT_GAMEPAD_B));     // A
 
     inputKeys["DashCancel"].emplace_back(std::make_unique<Mouse>(VK_RBUTTON));  // 右クリック
     inputKeys["DashCancel"].emplace_back(std::make_unique<Gamepad>(0, GamePadKeyType::RightTrigger));

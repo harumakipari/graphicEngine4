@@ -274,6 +274,11 @@ void BobbinActor::HideBobbinVisual()
 
     bobbinStringMeshComponent->SetIsVisible(false);
     bobbinStringMeshComponent->SetIsCastShadow(false);
+
+    if (arrowComponent)
+    {
+        arrowComponent->SetVisible(false);
+    }
 }
 
 // ボビンを使用する

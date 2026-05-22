@@ -72,7 +72,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         medalSkeletalMeshComponent = AddComponent<SkeletalMeshComponent>("medalMeshComponent", rightName);
         medalSkeletalMeshComponent->SetModel("./Data/TeamModels/Title/HighScoreMedalModel.gltf", false, true);
         medalSkeletalMeshComponent->SetIsCastShadow(false);
-        medalSkeletalMeshComponent->SetRelativeLocationDirect({ -0.2f,-0.2f,-2.0f });
+        medalSkeletalMeshComponent->SetRelativeLocationDirect({ -3.6f,-0.2f,-1.45f });
         medalSkeletalMeshComponent->SetRelativeEulerRotationDirect({ 0.0f,20.0f,-180.0f });
         medalSkeletalMeshComponent->SetRelativeScaleDirect({ 1.0f,1.0f,1.0f });
         medalSkeletalMeshComponent->SetIsVisible(false);
@@ -94,7 +94,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         std::string scoreParentName = "score_number_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, rightName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -0.8f,-0.1f,-1.7f });
+        scoreRoot->SetRelativeLocationDirect({ -0.5f,-0.1f,-1.7f });
         scoreRoot->SetRelativeScaleDirect({ 0.8f,0.8f,0.8f });
 
         totalScoreDisplay.Initialize(
@@ -189,12 +189,13 @@ void ResultBookActor::Initialize(const Transform& transform)
             2,
             0.7f, false);
     }
+
     // 秒
     {
         std::string scoreParentName = "second_number_parent";
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, rightName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
-        scoreRoot->SetRelativeLocationDirect({ -0.35f,-0.1f,1.6f });
+        scoreRoot->SetRelativeLocationDirect({ -0.4f,-0.1f,1.6f });
         scoreRoot->SetRelativeScaleDirect({ subNumberSize,subNumberSize,subNumberSize });
         secondDisplay.Initialize(
             this,
@@ -228,7 +229,7 @@ void ResultBookActor::Initialize(const Transform& transform)
         auto scoreRoot = AddComponent<SceneComponent>(scoreParentName, backCoverName);
         scoreRoot->SetRelativeEulerRotationDirect({ 0.0f,0.0f,0.0f });
         scoreRoot->SetRelativeLocationDirect({ -4.0f,0.0f,-0.38f });
-        scoreRoot->SetRelativeScaleDirect({ 0.75f,0.75f,0.75f });
+        scoreRoot->SetRelativeScaleDirect({ 0.7f,0.7f,0.7f });
 
         ranking2Display.Initialize(
             this,
@@ -292,14 +293,14 @@ void ResultBookActor::Initialize(const Transform& transform)
     // 裏表紙
     // リザルト王冠
     {
-        auto resultCrownModel = AddComponent<SkeletalMeshComponent>("crownMeshComponent", backCoverName);
+        resultCrownModel = AddComponent<SkeletalMeshComponent>("crownMeshComponent", backCoverName);
         resultCrownModel->SetModel("./Data/TeamModels/Title/PatchCrownModel.gltf", false, true);
         resultCrownModel->SetIsCastShadow(false);
-        resultCrownModel->SetRelativeScaleDirect({ 0.56f,0.56f,0.56f });
+        resultCrownModel->SetIsVisible(false);
+        resultCrownModel->SetRelativeScaleDirect({ 0.5f,0.5f,0.5f });
         resultCrownModel->SetRelativeEulerRotationDirect({ 0.0f,-23.0f,0.0f });
         resultCrownModel->SetRelativeLocationDirect({ -1.4f,0.0f,-2.0f });
     }
-
 
     //totalScoreDisplay.SetVisible(false);    // トータルスコア
     comboDisplay.SetVisible(false); // コンボ数
@@ -391,6 +392,7 @@ void ResultBookActor::Update(float deltaTime)
     ranking3Display.Update(deltaTime);
     ranking4Display.Update(deltaTime);
     ranking5Display.Update(deltaTime);
+
 
 
     int ranking = ScoreHistoryManager::GetRanking(stats.stageName, currentTotalScore);
@@ -825,6 +827,8 @@ void ResultBookActor::Update(float deltaTime)
             {
                 scores[i] = ranking[i].score;
             }
+
+            resultCrownModel->SetIsVisible(true);
 
             ranking1Display.SetValue(scores[0]);
             ranking1Display.SetVisible(true);

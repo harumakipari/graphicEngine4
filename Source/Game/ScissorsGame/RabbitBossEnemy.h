@@ -152,12 +152,13 @@ public:
     // 再スタン防止タイマー
     float stunCooldownTimer = 0.0f;
     // 再スタン防止時間
-    float stunCooldownDuration = 3.0f;
+    float stunCooldownDuration = 0.5f;
 
     // Win時に地面の下にいるかを確認する
     bool isUnderGround = false; // 地面に潜る攻撃を開始しているかどうか
 
     bool firstAttack = false;   // 最初の攻撃時
+    bool forceWarpAfterStun = false;    // スタン後に強制的にワープさせるかどうか
 private:
     std::vector<DirectX::XMFLOAT3> spawnPoints; // 出現位置
 
@@ -198,7 +199,7 @@ private:
 
     float spawnScaleMax = 1.65f; // 出現マークの大きさ
 
-    CoreColor green = { 0.886f,1.0f,0.098f,1.0f };
+    CoreColor green = { 0.659f,0.996f,0.016f,1.0f };
     CoreColor orange = { 1.0f,0.5f,0.0f,1.0f };
     CoreColor red = { 1.0f,0.1f,0.1f,1.0f };
 

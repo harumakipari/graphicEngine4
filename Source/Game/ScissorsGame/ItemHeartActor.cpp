@@ -16,7 +16,7 @@ void ItemHeartActor::Initialize(const Transform& transform)
     size.x *= 1.3f;
     size.z *= 1.3f;
     float  mass = 0.0f;
-    boxComponent->SetBoxExtent(size);
+    boxComponent->SetBoxExtent({1.5f,1.5f,1.5f});
     boxComponent->SetRelativeLocationDirect({ 0.0f,size.y * 0.5f ,0.0f });
     boxComponent->SetMass(mass);
     boxComponent->SetLayer(CollisionLayer::Item);

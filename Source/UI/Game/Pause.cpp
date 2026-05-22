@@ -159,7 +159,9 @@ void Pause::Initialize(const Transform& transform)
 void Pause::Update(float deltaTime)
 {
     if (stopUpdate)
+    {
         return;
+    }
 
     // ポーズ切り替え
     if (InputSystem::GetInputState("Pause", InputStateMask::Trigger))
@@ -235,6 +237,7 @@ void Pause::Update(float deltaTime)
 // ポーズ画面を隠す
 void Pause::HidePauseMenu()
 {
+    Logger::Log("stop update false");
     stopUpdate = true;
     menuButton->SetEnable(false);
     menuButton->SetVisible(false);

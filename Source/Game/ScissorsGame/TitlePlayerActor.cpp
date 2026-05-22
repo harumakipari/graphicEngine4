@@ -9,6 +9,7 @@ void TitlePlayerActor::Initialize(const Transform& transform)
     skeletalMeshComponent->SetModel("./Data/TeamModels/Player/TitlePlayer.gltf", false, true);
     skeletalMeshComponent->overrideForwardPipelineName = "GameReturnColorPS";
     skeletalMeshComponent->overrideDeferredPipelineName = "GameReturnColorPS";
+    skeletalMeshComponent->SetIsCastShadow(false);
 
     // アニメーションコントローラーを作成
     auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());

@@ -68,6 +68,15 @@ void ScissorsPlayer1::Initialize(const Transform& transform)
     // 初期ステートを設定
     stateMachine_->ChangeState("Idle");
 
+
+    auto hpSphereComponent = this->AddComponent<SphereComponent>("hpSphereComponent", parentName);
+    hpSphereComponent->SetRadius(0.7f);
+    hpSphereComponent->SetRelativeLocationDirect({ 0.0f,0.5f,0.0f });
+    hpSphereComponent->SetMass(mass);
+    hpSphereComponent->SetLayer(CollisionLayer::Player);
+    hpSphereComponent->Initialize();
+
+
     // 当たり判定
     {
         sphereComponent = this->AddComponent<class SphereComponent>("sphereComponent", parentName);

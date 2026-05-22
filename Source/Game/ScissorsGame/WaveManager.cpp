@@ -113,7 +113,7 @@ void WaveManager::Update(float deltaTime)
                 clearSlowTimer = 0.0f;
 
                 // スロー開始
-                Time::timeScale = 0.3f;
+                Time::timeScale = 0.5f;
                 RequestGameClear(); // ここで経過時間を止めるためにゲームクリアを呼ぶ
             }
 #else

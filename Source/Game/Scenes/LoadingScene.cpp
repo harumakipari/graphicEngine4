@@ -534,7 +534,7 @@ void LoadingScene::Render(ID3D11DeviceContext* immediateContext, float deltaTime
     sceneRender.RenderBlend(immediateContext, queues.deferredBlend); // Ç±Ç±Ç≈åxçêèoÇÈ
     ExecuteHooks(RenderPass::ForwardBlend, immediateContext);
 
-#if 1
+#if 0
     // PARTICLES
     {
 
@@ -737,6 +737,7 @@ void LoadingScene::SetTipsData()
             {
                  L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
                  L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
+                 L"./Data/Textures/ScissorsUI/Tips/scissors_lore_3.png",
             }
         },
         {
@@ -845,6 +846,7 @@ void LoadingScene::SetTipsData()
             L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_3.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
        }
    },
@@ -861,6 +863,7 @@ void LoadingScene::SetTipsData()
             L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_3.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
             L"./Data/Textures/ScissorsUI/Tips/bobbin_hint.png",
             L"./Data/Textures/ScissorsUI/Tips/bobbin_retry.png",
@@ -880,6 +883,7 @@ void LoadingScene::SetTipsData()
             L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_3.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
             L"./Data/Textures/ScissorsUI/Tips/bobbin_hint.png",
             L"./Data/Textures/ScissorsUI/Tips/bobbin_retry.png",
@@ -900,6 +904,7 @@ void LoadingScene::SetTipsData()
             L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_3.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
             L"./Data/Textures/ScissorsUI/Tips/bobbin_hint.png",
             L"./Data/Textures/ScissorsUI/Tips/bobbin_retry.png",
@@ -923,6 +928,7 @@ void LoadingScene::SetTipsData()
             L"./Data/Textures/ScissorsUI/Tips/scissors_hint.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_lore_1.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_lore_2.png",
+            L"./Data/Textures/ScissorsUI/Tips/scissors_lore_3.png",
             L"./Data/Textures/ScissorsUI/Tips/scissors_retry.png",
             L"./Data/Textures/ScissorsUI/Tips/bobbin_hint.png",
             L"./Data/Textures/ScissorsUI/Tips/bobbin_retry.png",

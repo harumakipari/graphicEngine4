@@ -46,7 +46,8 @@ bool Framework::Initialize()
 {
     ////デバイス・デバイスコンテクスト・スワップチェーンの作成
     ID3D11Device* device = Graphics::GetDevice();
-    if (!device) {
+    if (!device) 
+    {
         assert("ModelComponent Error: device is null\n");
     }
 

@@ -231,7 +231,7 @@ private:
     float closeFirstPageAngle = -180.0f;
     // 真ん中のページを開くときのワッペンの位置
     float openPatchPosY = 0.0f;
-    float closePatchPosY = -0.2f;
+    float closePatchPosY = -0.15f;
 
     std::shared_ptr<UIImageComponent> startAButton;   // ワッペンの近くにAボタンを表示する
 

@@ -771,10 +771,13 @@ void EnemyBase::HideEnemyVisual()
     if (scissorsFirstMeshComponent)
     {
         scissorsFirstMeshComponent->SetIsVisible(false);
+        scissorsFirstMeshComponent->SetIsCastShadow(false);
+
     }
     if (scissorsSecondMeshComponent)
     {
         scissorsSecondMeshComponent->SetIsVisible(false);
+        scissorsFirstMeshComponent->SetIsCastShadow(false);
     }
 
 

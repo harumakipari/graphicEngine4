@@ -40,8 +40,8 @@ void BookBaseActor::Update(float deltaTime)
         startAButton->SetVisible(false);
     }
 
-    Logger::Log("bookOneAlpha" + std::to_string(bookOneAlpha));
-    Logger::Log("bookTwoAlpha" + std::to_string(bookTwoAlpha));
+    //Logger::Log("bookOneAlpha" + std::to_string(bookOneAlpha));
+    //Logger::Log("bookTwoAlpha" + std::to_string(bookTwoAlpha));
 
     switch (bookState)
     {

@@ -159,7 +159,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
         gaugeFrameBackComponent = std::make_shared<UIImageComponent>("./Data/Textures/ScissorsUI/bar_back.png", "bar_back_ui");
         gaugeFrameBackComponent->SetWorldPosition({ 67, 965 });
         gaugeFrameBackComponent->SetScale({ 1.0f, 1.0f });
-        gaugeFrameBackComponent->SetSize(gaugeSize);
+        gaugeFrameBackComponent->SetSize({875, 84});
         gaugeFrameBackComponent->zOrder = 10;
         //gaugeFrameBackComponent->SetPivot({ 0.0f,0.5f });
         gaugeFrameBackComponent->SetColor(CoreColor::White);
@@ -169,7 +169,7 @@ void RabbitBossEnemyActor::Initialize(const Transform& transform)
         gaugeUi->SetWorldPosition({ 50, 300 });
         gaugeUi->zOrder = 15;
         gaugeUi->SetColor(CoreColor::White);
-        gaugeUi->SetSize({ 861,84 });
+        gaugeUi->SetSize({ 875,84 });
         gaugeUi->SetGaugeFillSize(gaugeSize);
         uiManager->Add(gaugeUi);
 

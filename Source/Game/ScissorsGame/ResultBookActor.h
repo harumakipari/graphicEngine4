@@ -84,6 +84,8 @@ private:
 
     std::shared_ptr<SkeletalMeshComponent> timerPatchSkeletalMeshComponent;  // タイマーワッペン表示用
 
+    std::shared_ptr<SkeletalMeshComponent> resultCrownModel;
+
     std::shared_ptr<UIImageComponent> remainClearImage; // 目標タイムクリア時の画像
 
     std::shared_ptr<UIImageComponent> resultImage; // リザルト画像
@@ -107,7 +109,6 @@ private:
     NumberDisplay ranking5Display;  // ランキング
 
     std::vector<std::shared_ptr<UIImageComponent>> timerDigits; // 残り時間を表示
-
     std::shared_ptr<SkeletalMeshComponent> numberModel;
 
     // スコアカウントアップ用
@@ -138,7 +139,7 @@ private:
 
     // メダル演出用
     float startScale = 3.0f;
-    float endScale = 1.1f;
+    float endScale = 1.15f;
     float currentScale = 1.0f;
 
     float medalValue = 0.0f;
