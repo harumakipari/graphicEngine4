@@ -1,0 +1,382 @@
+{
+	"asset":
+	{
+		"version": "2.0",
+		"generator": "Unreal Engine 5.3.2"
+	},
+	"scene": 0,
+	"accessors": [
+		{
+			"bufferView": 0,
+			"count": 5520,
+			"type": "SCALAR",
+			"componentType": 5123
+		},
+		{
+			"bufferView": 1,
+			"count": 2272,
+			"type": "VEC3",
+			"componentType": 5126,
+			"min": [ -0.360796392, -0.000231732236, -0.360796303 ],
+			"max": [ 0.360796362, 1.14575589, 0.360796392 ]
+		},
+		{
+			"bufferView": 2,
+			"count": 2272,
+			"type": "VEC3",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 3,
+			"count": 2272,
+			"type": "VEC4",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 4,
+			"count": 2272,
+			"type": "VEC2",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 5,
+			"count": 2272,
+			"type": "VEC2",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 6,
+			"count": 1080,
+			"type": "SCALAR",
+			"componentType": 5123
+		},
+		{
+			"bufferView": 7,
+			"count": 522,
+			"type": "VEC3",
+			"componentType": 5126,
+			"min": [ -0.246196315, -0.011617233, -0.207037747 ],
+			"max": [ 0.250065506, 0.288493812, 0.263596416 ]
+		},
+		{
+			"bufferView": 8,
+			"count": 522,
+			"type": "VEC3",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 9,
+			"count": 522,
+			"type": "VEC4",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 10,
+			"count": 522,
+			"type": "VEC2",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 11,
+			"count": 522,
+			"type": "VEC2",
+			"componentType": 5126
+		}
+	],
+	"buffers": [
+		{
+			"uri": "Brazier.bin",
+			"byteLength": 169664
+		}
+	],
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 11040,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 27264,
+			"byteOffset": 11040,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 27264,
+			"byteOffset": 38304,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 36352,
+			"byteOffset": 65568,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 18176,
+			"byteOffset": 101920,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 18176,
+			"byteOffset": 120096,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 2160,
+			"byteOffset": 138272,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 6264,
+			"byteOffset": 140432,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 6264,
+			"byteOffset": 146696,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 8352,
+			"byteOffset": 152960,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 4176,
+			"byteOffset": 161312,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 4176,
+			"byteOffset": 165488,
+			"target": 34962
+		}
+	],
+	"images": [
+		{
+			"uri": "M_Brazier_01_MetallicRoughness.png"
+		},
+		{
+			"uri": "M_Wood_Fire_01_MetallicRoughness.png"
+		},
+		{
+			"uri": "T_Brazier_01_D.png"
+		},
+		{
+			"uri": "T_Brazier_01_N.png"
+		},
+		{
+			"uri": "T_Wood_Fire_01_D.png"
+		},
+		{
+			"uri": "T_Wood_Fire_01_N.png"
+		}
+	],
+	"materials": [
+		{
+			"name": "M_Brazier_01",
+			"pbrMetallicRoughness":
+			{
+				"baseColorTexture":
+				{
+					"index": 0
+				},
+				"metallicRoughnessTexture":
+				{
+					"index": 1
+				}
+			},
+			"normalTexture":
+			{
+				"index": 2
+			}
+		},
+		{
+			"name": "M_Wood_Fire_01",
+			"pbrMetallicRoughness":
+			{
+				"baseColorTexture":
+				{
+					"index": 3
+				},
+				"metallicRoughnessTexture":
+				{
+					"index": 4
+				}
+			},
+			"normalTexture":
+			{
+				"index": 5
+			}
+		}
+	],
+	"meshes": [
+		{
+			"name": "SM_Brazier_01",
+			"primitives": [
+				{
+					"attributes":
+					{
+						"POSITION": 1,
+						"NORMAL": 2,
+						"TANGENT": 3,
+						"TEXCOORD_0": 4,
+						"TEXCOORD_1": 5
+					},
+					"indices": 0,
+					"material": 0
+				}
+			]
+		},
+		{
+			"name": "SM_WoodFire_01",
+			"primitives": [
+				{
+					"attributes":
+					{
+						"POSITION": 7,
+						"NORMAL": 8,
+						"TANGENT": 9,
+						"TEXCOORD_0": 10,
+						"TEXCOORD_1": 11
+					},
+					"indices": 6,
+					"material": 1
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"name": "BP_Brazier_6",
+			"children": [ 1, 7 ]
+		},
+		{
+			"name": "Brazier_01",
+			"mesh": 0,
+			"children": [ 2, 3, 5 ]
+		},
+		{
+			"name": "Fire",
+			"translation": [ 0, 0.359999985, 0 ],
+			"mesh": 1
+		},
+		{
+			"name": "PointLight",
+			"translation": [ -4.9999997e-08, 0.666009605, 0 ],
+			"children": [ 4 ]
+		},
+		{
+			"name": "PointLight",
+			"rotation": [ -0, -0.707106829, 0, 0.707106769 ],
+			"extensions":
+			{
+				"KHR_lights_punctual":
+				{
+					"light": 0
+				}
+			}
+		},
+		{
+			"name": "PointLight1",
+			"translation": [ -4.9999997e-08, 0.666009605, 0 ],
+			"children": [ 6 ]
+		},
+		{
+			"name": "PointLight1",
+			"rotation": [ -0, -0.707106829, 0, 0.707106769 ],
+			"extensions":
+			{
+				"KHR_lights_punctual":
+				{
+					"light": 1
+				}
+			}
+		},
+		{
+			"name": "P_Fire",
+			"translation": [ 0, 0.699999988, 9.99999994e-09 ],
+			"rotation": [ -0.5, -0.5, 0.5, 0.5 ],
+			"scale": [ 0.400000006, 0.400000006, 0.400000006 ]
+		}
+	],
+	"samplers": [
+		{
+			"minFilter": 9987,
+			"magFilter": 9729
+		}
+	],
+	"scenes": [
+		{
+			"name": "ThirdPersonMap",
+			"nodes": [ 0 ]
+		}
+	],
+	"textures": [
+		{
+			"name": "T_Brazier_01_D",
+			"sampler": 0,
+			"source": 2
+		},
+		{
+			"name": "M_Brazier_01_MetallicRoughness",
+			"sampler": 0,
+			"source": 0
+		},
+		{
+			"name": "T_Brazier_01_N",
+			"sampler": 0,
+			"source": 3
+		},
+		{
+			"name": "T_Wood_Fire_01_D",
+			"sampler": 0,
+			"source": 4
+		},
+		{
+			"name": "M_Wood_Fire_01_MetallicRoughness",
+			"sampler": 0,
+			"source": 1
+		},
+		{
+			"name": "T_Wood_Fire_01_N",
+			"sampler": 0,
+			"source": 5
+		}
+	],
+	"extensions":
+	{
+		"KHR_lights_punctual":
+		{
+			"lights": [
+				{
+					"name": "BrazierCenterBig",
+					"type": "point",
+					"color": [ 1, 0.533276379, 0.258182853 ],
+					"intensity": 1.43999994,
+					"range": 10
+				},
+				{
+					"name": "BrazierCenterSmall",
+					"type": "point",
+					"color": [ 1, 0.533276379, 0.258182883 ],
+					"intensity": 1.5999999,
+					"range": 8
+				}
+			]
+		}
+	},
+	"extensionsUsed": [
+		"KHR_lights_punctual"
+	]
+}

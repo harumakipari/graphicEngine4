@@ -1,0 +1,341 @@
+{
+	"asset":
+	{
+		"version": "2.0",
+		"generator": "Unreal Engine 5.3.2"
+	},
+	"scene": 0,
+	"accessors": [
+		{
+			"bufferView": 0,
+			"count": 4356,
+			"type": "SCALAR",
+			"componentType": 5123
+		},
+		{
+			"bufferView": 1,
+			"count": 1166,
+			"type": "VEC3",
+			"componentType": 5126,
+			"min": [ -0.104476877, -0.311044455, -0.00673036277 ],
+			"max": [ 0.104476877, 0.309570074, 0.27205193 ]
+		},
+		{
+			"bufferView": 2,
+			"count": 1166,
+			"type": "VEC3",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 3,
+			"count": 1166,
+			"type": "VEC4",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 4,
+			"count": 1166,
+			"type": "VEC2",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 5,
+			"count": 1166,
+			"type": "VEC2",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 6,
+			"count": 10512,
+			"type": "SCALAR",
+			"componentType": 5123
+		},
+		{
+			"bufferView": 7,
+			"count": 4053,
+			"type": "VEC3",
+			"componentType": 5126,
+			"min": [ -0.109872691, -0.284722239, 0.0820854753 ],
+			"max": [ 0.109872699, 0.553502142, 0.436833709 ]
+		},
+		{
+			"bufferView": 8,
+			"count": 4053,
+			"type": "VEC3",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 9,
+			"count": 4053,
+			"type": "VEC4",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 10,
+			"count": 4053,
+			"type": "VEC2",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 11,
+			"count": 4053,
+			"type": "VEC2",
+			"componentType": 5126
+		}
+	],
+	"buffers": [
+		{
+			"uri": "TorchSconce.bin",
+			"byteLength": 322000
+		}
+	],
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 8712,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 13992,
+			"byteOffset": 8712,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 13992,
+			"byteOffset": 22704,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 18656,
+			"byteOffset": 36696,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 9328,
+			"byteOffset": 55352,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 9328,
+			"byteOffset": 64680,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 21024,
+			"byteOffset": 74008,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 48636,
+			"byteOffset": 95032,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 48636,
+			"byteOffset": 143668,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 64848,
+			"byteOffset": 192304,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 32424,
+			"byteOffset": 257152,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 32424,
+			"byteOffset": 289576,
+			"target": 34962
+		}
+	],
+	"images": [
+		{
+			"uri": "M_TorchSconce_01_MetallicRoughness.png"
+		},
+		{
+			"uri": "M_Torch_01_MetallicRoughness.png"
+		},
+		{
+			"uri": "T_TorchSconce_01_D.png"
+		},
+		{
+			"uri": "T_TorchSconce_01_N.png"
+		},
+		{
+			"uri": "T_Torch_01_D.png"
+		},
+		{
+			"uri": "T_Torch_01_N.png"
+		}
+	],
+	"materials": [
+		{
+			"name": "M_TorchSconce_01",
+			"pbrMetallicRoughness":
+			{
+				"baseColorTexture":
+				{
+					"index": 0
+				},
+				"metallicRoughnessTexture":
+				{
+					"index": 1
+				}
+			},
+			"normalTexture":
+			{
+				"index": 2
+			}
+		},
+		{
+			"name": "M_Torch_01",
+			"pbrMetallicRoughness":
+			{
+				"baseColorTexture":
+				{
+					"index": 3
+				},
+				"metallicRoughnessTexture":
+				{
+					"index": 4
+				}
+			},
+			"normalTexture":
+			{
+				"index": 5
+			}
+		}
+	],
+	"meshes": [
+		{
+			"name": "SM_Torch_Sconce_01",
+			"primitives": [
+				{
+					"attributes":
+					{
+						"POSITION": 1,
+						"NORMAL": 2,
+						"TANGENT": 3,
+						"TEXCOORD_0": 4,
+						"TEXCOORD_1": 5
+					},
+					"indices": 0,
+					"material": 0
+				},
+				{
+					"attributes":
+					{
+						"POSITION": 7,
+						"NORMAL": 8,
+						"TANGENT": 9,
+						"TEXCOORD_0": 10,
+						"TEXCOORD_1": 11
+					},
+					"indices": 6,
+					"material": 1
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"name": "SM_Torch_Sconce_6",
+			"rotation": [ -0, -0.707106829, 0, 0.707106829 ],
+			"mesh": 0,
+			"children": [ 1 ]
+		},
+		{
+			"name": "TorchLight2",
+			"translation": [ 0.0118275452, 0.590981901, 0.617165983 ],
+			"rotation": [ -0, -0.707106829, -0, 0.707106829 ],
+			"children": [ 2 ]
+		},
+		{
+			"name": "TorchSconce",
+			"rotation": [ -0, -0.707106829, 0, 0.707106769 ],
+			"extensions":
+			{
+				"KHR_lights_punctual":
+				{
+					"light": 0
+				}
+			}
+		}
+	],
+	"samplers": [
+		{
+			"minFilter": 9987,
+			"magFilter": 9729
+		}
+	],
+	"scenes": [
+		{
+			"name": "ThirdPersonMap",
+			"nodes": [ 0 ]
+		}
+	],
+	"textures": [
+		{
+			"name": "T_TorchSconce_01_D",
+			"sampler": 0,
+			"source": 2
+		},
+		{
+			"name": "M_TorchSconce_01_MetallicRoughness",
+			"sampler": 0,
+			"source": 0
+		},
+		{
+			"name": "T_TorchSconce_01_N",
+			"sampler": 0,
+			"source": 3
+		},
+		{
+			"name": "T_Torch_01_D",
+			"sampler": 0,
+			"source": 4
+		},
+		{
+			"name": "M_Torch_01_MetallicRoughness",
+			"sampler": 0,
+			"source": 1
+		},
+		{
+			"name": "T_Torch_01_N",
+			"sampler": 0,
+			"source": 5
+		}
+	],
+	"extensions":
+	{
+		"KHR_lights_punctual":
+		{
+			"lights": [
+				{
+					"name": "TorchSconce",
+					"type": "point",
+					"color": [ 1, 0.644479692, 0.291770637 ],
+					"intensity": 3,
+					"range": 20
+				}
+			]
+		}
+	},
+	"extensionsUsed": [
+		"KHR_lights_punctual"
+	]
+}

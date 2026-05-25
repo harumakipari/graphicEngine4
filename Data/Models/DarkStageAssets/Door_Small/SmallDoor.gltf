@@ -1,0 +1,174 @@
+{
+	"asset":
+	{
+		"version": "2.0",
+		"generator": "Unreal Engine 5.3.2"
+	},
+	"scene": 0,
+	"accessors": [
+		{
+			"bufferView": 0,
+			"count": 9828,
+			"type": "SCALAR",
+			"componentType": 5123
+		},
+		{
+			"bufferView": 1,
+			"count": 2818,
+			"type": "VEC3",
+			"componentType": 5126,
+			"min": [ -0.106004901, -9.2507446e-17, -1.51076126 ],
+			"max": [ 0.106004901, 2.89162278, 1.01327896e-06 ]
+		},
+		{
+			"bufferView": 2,
+			"count": 2818,
+			"type": "VEC3",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 3,
+			"count": 2818,
+			"type": "VEC4",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 4,
+			"count": 2818,
+			"type": "VEC2",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 5,
+			"count": 2818,
+			"type": "VEC2",
+			"componentType": 5126
+		}
+	],
+	"buffers": [
+		{
+			"uri": "SmallDoor.bin",
+			"byteLength": 177464
+		}
+	],
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 19656,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 33816,
+			"byteOffset": 19656,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 33816,
+			"byteOffset": 53472,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 45088,
+			"byteOffset": 87288,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 22544,
+			"byteOffset": 132376,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 22544,
+			"byteOffset": 154920,
+			"target": 34962
+		}
+	],
+	"images": [
+		{
+			"uri": "M_Door_03_MetallicRoughness.png"
+		},
+		{
+			"uri": "T_Door_03_D.png"
+		},
+		{
+			"uri": "T_Door_03_N.png"
+		}
+	],
+	"materials": [
+		{
+			"name": "M_Door_03",
+			"pbrMetallicRoughness":
+			{
+				"baseColorTexture":
+				{
+					"index": 0
+				},
+				"metallicRoughnessTexture":
+				{
+					"index": 1
+				}
+			},
+			"normalTexture":
+			{
+				"index": 2
+			}
+		}
+	],
+	"meshes": [
+		{
+			"name": "SM_Door_03",
+			"primitives": [
+				{
+					"attributes":
+					{
+						"POSITION": 1,
+						"NORMAL": 2,
+						"TANGENT": 3,
+						"TEXCOORD_0": 4,
+						"TEXCOORD_1": 5
+					},
+					"indices": 0,
+					"material": 0
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"mesh": 0
+		}
+	],
+	"samplers": [
+		{
+			"minFilter": 9987,
+			"magFilter": 9729
+		}
+	],
+	"scenes": [
+		{
+			"nodes": [ 0 ]
+		}
+	],
+	"textures": [
+		{
+			"name": "T_Door_03_D",
+			"sampler": 0,
+			"source": 1
+		},
+		{
+			"name": "M_Door_03_MetallicRoughness",
+			"sampler": 0,
+			"source": 0
+		},
+		{
+			"name": "T_Door_03_N",
+			"sampler": 0,
+			"source": 2
+		}
+	]
+}

@@ -1,90 +1,107 @@
 {
     "BOBBIN_FIRST": [
         {
-            "score": 12310
+            "score": 11230
         },
         {
-            "score": 11980
+            "score": 10670
         },
         {
-            "score": 10990
+            "score": 10060
         },
         {
-            "score": 10940
+            "score": 4040
         },
         {
-            "score": 10560
+            "score": 2090
+        }
+    ],
+    "BOBBIN_SECOND": [
+        {
+            "score": 4390
         }
     ],
     "BOSS": [
         {
-            "score": 17870
+            "score": 13240
         },
         {
-            "score": 17780
+            "score": 12870
         },
         {
-            "score": 16715
-        },
-        {
-            "score": 16520
-        },
-        {
-            "score": 15640
-        }
-    ],
-    "DIFFICULT": [
-        {
-            "score": 11450
-        },
-        {
-            "score": 10835
-        },
-        {
-            "score": 9570
-        },
-        {
-            "score": 6150
-        },
-        {
-            "score": 330
-        }
-    ],
-    "FIRST": [
-        {
-            "score": 11770
-        },
-        {
-            "score": 10280
-        },
-        {
-            "score": 10200
-        },
-        {
-            "score": 9650
-        },
-        {
-            "score": 8880
-        }
-    ],
-    "REFLECT_WALL": [
-        {
-            "score": 16670
+            "score": 12720
         },
         {
             "score": 12500
         },
         {
-            "score": 12280
+            "score": 4670
+        }
+    ],
+    "DIFFICULT": [
+        {
+            "score": 4040
         },
         {
-            "score": 12240
+            "score": 2090
         },
         {
-            "score": 11970
+            "score": 550
+        },
+        {
+            "score": 500
+        },
+        {
+            "score": 400
+        }
+    ],
+    "FIRST": [
+        {
+            "score": 10060
+        },
+        {
+            "score": 4040
+        },
+        {
+            "score": 2090
+        },
+        {
+            "score": 550
+        },
+        {
+            "score": 500
+        }
+    ],
+    "REFLECT_WALL": [
+        {
+            "score": 4040
+        },
+        {
+            "score": 2090
+        },
+        {
+            "score": 550
+        },
+        {
+            "score": 500
+        },
+        {
+            "score": 400
         }
     ],
     "TUTORIAL": [
+        {
+            "score": 1000
+        },
+        {
+            "score": 0
+        },
+        {
+            "score": 0
+        },
+        {
+            "score": 0
+        },
         {
             "score": 0
         }

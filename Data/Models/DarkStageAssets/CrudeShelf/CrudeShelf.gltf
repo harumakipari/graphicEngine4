@@ -1,0 +1,174 @@
+{
+	"asset":
+	{
+		"version": "2.0",
+		"generator": "Unreal Engine 5.3.2"
+	},
+	"scene": 0,
+	"accessors": [
+		{
+			"bufferView": 0,
+			"count": 58116,
+			"type": "SCALAR",
+			"componentType": 5123
+		},
+		{
+			"bufferView": 1,
+			"count": 12700,
+			"type": "VEC3",
+			"componentType": 5126,
+			"min": [ -0.866494477, 0.0001336852, -0.269029826 ],
+			"max": [ 0.868762434, 2.10704207, 0.563012779 ]
+		},
+		{
+			"bufferView": 2,
+			"count": 12700,
+			"type": "VEC3",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 3,
+			"count": 12700,
+			"type": "VEC4",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 4,
+			"count": 12700,
+			"type": "VEC2",
+			"componentType": 5126
+		},
+		{
+			"bufferView": 5,
+			"count": 12700,
+			"type": "VEC2",
+			"componentType": 5126
+		}
+	],
+	"buffers": [
+		{
+			"uri": "CrudeShelf.bin",
+			"byteLength": 827432
+		}
+	],
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 116232,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 152400,
+			"byteOffset": 116232,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 152400,
+			"byteOffset": 268632,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 203200,
+			"byteOffset": 421032,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 101600,
+			"byteOffset": 624232,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 101600,
+			"byteOffset": 725832,
+			"target": 34962
+		}
+	],
+	"images": [
+		{
+			"uri": "M_CrudeShelf_01_MetallicRoughness.png"
+		},
+		{
+			"uri": "T_CrudeShelf_01_D.png"
+		},
+		{
+			"uri": "T_CrudeShelf_01_N.png"
+		}
+	],
+	"materials": [
+		{
+			"name": "M_CrudeShelf_01",
+			"pbrMetallicRoughness":
+			{
+				"baseColorTexture":
+				{
+					"index": 0
+				},
+				"metallicRoughnessTexture":
+				{
+					"index": 1
+				}
+			},
+			"normalTexture":
+			{
+				"index": 2
+			}
+		}
+	],
+	"meshes": [
+		{
+			"name": "SM_CrudeShelf_01",
+			"primitives": [
+				{
+					"attributes":
+					{
+						"POSITION": 1,
+						"NORMAL": 2,
+						"TANGENT": 3,
+						"TEXCOORD_0": 4,
+						"TEXCOORD_1": 5
+					},
+					"indices": 0,
+					"material": 0
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"mesh": 0
+		}
+	],
+	"samplers": [
+		{
+			"minFilter": 9987,
+			"magFilter": 9729
+		}
+	],
+	"scenes": [
+		{
+			"nodes": [ 0 ]
+		}
+	],
+	"textures": [
+		{
+			"name": "T_CrudeShelf_01_D",
+			"sampler": 0,
+			"source": 1
+		},
+		{
+			"name": "M_CrudeShelf_01_MetallicRoughness",
+			"sampler": 0,
+			"source": 0
+		},
+		{
+			"name": "T_CrudeShelf_01_N",
+			"sampler": 0,
+			"source": 2
+		}
+	]
+}
