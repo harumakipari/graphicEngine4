@@ -21,7 +21,6 @@
 #include "Engine/Scene/SceneBase.h"
 
 #include "Game/Actors/Camera/LoadingCamera.h"
-#include "Game/ScissorsGame/TitlePlayerActor.h"
 
 class LoadingScene : public SceneBase
 {
@@ -65,15 +64,7 @@ public:
     //シーンの自動登録
     static inline Scene::Autoenrollment<LoadingScene> _autoenrollment;
 
-private:
-    // チップスのカテゴリーを決定する
-    TipsCategory DecideTipsCategory(const std::string& fromScene, const std::string& toScene);
 
-    // チップスデータ登録
-    void SetTipsData();
-
-    // チップステクスチャを適応する
-    void ApplyTipsTextures();
 private:
     std::shared_ptr<UIImageComponent> backWhiteImage;
     std::shared_ptr<UIImageComponent> backImage;
@@ -105,5 +96,4 @@ private:
     DirectX::XMFLOAT2 tipsPos= { 0.0f,883.0f };
     DirectX::XMFLOAT2 tipsWordOffset={226.0f,18.0f};
 
-    std::shared_ptr<LoadingPlayerActor> loadingPlayerActor; // ロードシーン用のプレイヤーアクター
 };

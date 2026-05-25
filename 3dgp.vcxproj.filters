@@ -528,9 +528,6 @@
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorEnemy.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\Scenes\GameScene.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkEnemy\GruxEnemy.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -541,150 +538,6 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\PostProcess\MotionBlurEffect.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ScissorsStage.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\YarnEnemyActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ButtonBombActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ScissorsPlayer1.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ScissorsPlayerStateDerived.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\TitleScene.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\WaveManager.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\NeedleEnemyActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ScissorsGameEnemyBaseActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\RibbonWallActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\RabbitBossEnemy.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ButtonCoinActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\EnemyBase.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\EnemyBehavior.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ScoreUiActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ComboUiActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\EnemyAttack.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\NeedleActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\StageLoader.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ScissorsGameElasticMeshComponent.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\BobbinActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\YarnWallActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ScorePopupActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ScissorsUIStartActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ScissorsGameManager.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\RabbitBossState.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\BossSpawner.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ItemHeartActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ScissorsUiEndActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ResultScene.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\TrailModelActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\BonusUiActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\TitleStageActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\TutorialScene.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\TutorialActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\TutorialMananger.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\TutorialStep.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\GameTimerUiActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\BookBaseActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\TitleCameraTargetActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\TitleBookActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ResultBookActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\ScoreHistoryManager.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\NumberModelDisplay.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\SaveDataManager.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\HighScoreMedalActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\GameCameraTargetActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\ScissorsGame\TitlePlayerActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1011,67 +864,10 @@
     <ClInclude Include="Source\Engine\Scene\SceneJson.h" />
     <ClInclude Include="Source\Engine\Scene\SceneSetting.h" />
     <ClInclude Include="Source\Engine\Scene\SceneState.h" />
-    <ClInclude Include="Source\Game\Scenes\GameScene.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkEnemy\GruxEnemy.h" />
     <ClInclude Include="External\imgui\ImCurveEdit.h" />
     <ClInclude Include="External\imgui\ImSequencer.h" />
     <ClInclude Include="Source\Graphics\PostProcess\MotionBlurEffect.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScissorsStage.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\YarnEnemyActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ButtonBombActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayer1.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScissorsPlayerStateDerived.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\TitleScene.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\EnemyScoreData.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ComboSystem.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScoreCalculator.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\WaveManagaer.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameEnemyBaseActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\NeedleEnemyActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\RibbonWallActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\Trail.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\RabbitBossEnemy.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ButtonCoinActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\EnemyBehavior.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\EnemyBase.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameState.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScoreUiActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ComboUiActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\EnemyAttack.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\NeedleActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\StageData.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\StageLoader.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameElasticComponent.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\BobbinActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\YarnWallActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScorePopupActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScissorsUIStartActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScissorsGameManager.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\RabbitBossState.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\BossSpawner.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ItemHeartActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScissorsUiEndActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ResultScene.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\DecalData.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\TrailModelActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\BonusUiActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ResultData.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\TitleBookActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\TitleStageActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\TutorialScene.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\TutorialActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\TutorialStep.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\TutorialManager.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\GameTimerUIActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\TitleCameraTargetActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\BookBaseActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ResultBookActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\ScoreHistoryManager.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\NumberModelDisplay.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\SaveDataManager.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\HighScoreMedalActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\GameCameraTargetActor.h" />
-    <ClInclude Include="Source\Game\ScissorsGame\TitlePlayerActor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">

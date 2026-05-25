@@ -30,7 +30,6 @@ Transform SkeletalMeshComponent::GetSocketTransform(int socketNode) const
         XMVECTOR rot;
         XMVECTOR trans;
 
-
         XMMatrixDecompose(&scale, &rot, &trans, socket_transform);
 
         new_transform.scale_ = XMVectorSet(1, 1, 1, 0);

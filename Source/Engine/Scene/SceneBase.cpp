@@ -176,14 +176,6 @@ bool SceneBase::OnSizeChanged(ID3D11Device* device, const UINT64 width, UINT hei
 
     gBufferRenderTarget = std::make_unique<decltype(gBufferRenderTarget)::element_type>(device, static_cast<uint32_t>(width), height);
 
-    //if (!postEffectManager.get())
-    {
-        //Logger::Log(U8("ポストエフェクトを作成しました！"));
-        //postEffectManager = std::make_unique<PostEffectManager>();
-        //postEffectManager->AddEffect(std::make_unique<BloomEffect>());
-        //postEffectManager->Initialize(device, static_cast<uint32_t>(width), height);
-    }
-
     // シーンエフェクト
     {
         //if (!sceneEffectManager.get())
@@ -292,8 +284,8 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     }
 
 #ifdef USE_IMGUI
-    //imGuiGizmoBuffer->Clear(immediateContext);
-    //imGuiGizmoBuffer->Activate(immediateContext);
+    imGuiGizmoBuffer->Clear(immediateContext);
+    imGuiGizmoBuffer->Activate(immediateContext);
 #endif
     if (!useDeferredRendering)
     {// フォワードレンダリング
@@ -305,7 +297,7 @@ void SceneBase::Render(ID3D11DeviceContext* immediateContext, float deltaTime)
     }
     Draw(immediateContext);
 #ifdef USE_IMGUI
-    //imGuiGizmoBuffer->Deactivate(immediateContext);
+    imGuiGizmoBuffer->Deactivate(immediateContext);
 #endif
 }
 

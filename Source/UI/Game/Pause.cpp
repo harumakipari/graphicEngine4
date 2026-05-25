@@ -5,7 +5,6 @@
 #include "Engine/Audio/CoreAudio.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Utility/Time.h"
-#include "Game/ScissorsGame/ScissorsPlayer1.h"
 
 void Pause::Initialize(const Transform& transform)
 {
@@ -78,16 +77,9 @@ void Pause::Initialize(const Transform& transform)
 
             CoreAudio::PlayOneShot(L"./Data/Sound/SE1/push_button.wav");
             Time::timeScale = 1.0f;
-            auto stats = ScoreSystem::GetResultStats();
-            auto stage = stats.stageName;
 
             const char* types[] = { "0", "1" };
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]), std::make_pair("fromScene","GameScene") ,{
-                            "stage",
-                            std::string(
-                                magic_enum::enum_name(stage))
-                        }, });
-            //Scene::_transition("LoadingScene", { std::make_pair("preload","TitleScene"), std::make_pair("type", types[rand() % 2]) });
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", "TitleScene"), std::make_pair("type", types[rand() % 2]), std::make_pair("fromScene","GameScene")  });
 
         };
 
@@ -111,14 +103,8 @@ void Pause::Initialize(const Transform& transform)
             Time::timeScale = 1.0f;
 
             const char* types[] = { "0", "1" };
-            auto stats = ScoreSystem::GetResultStats();
-            auto stage = stats.stageName;
 
-            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", retrySceneName), std::make_pair("type", types[rand() % 2]),  std::make_pair("fromScene","GameScene") ,{
-                            "stage",
-                            std::string(
-                                magic_enum::enum_name(stage))
-                        }, });
+            SceneTransitionManager::Instance().RequestTransition("LoadingScene", { std::make_pair("preload", retrySceneName), std::make_pair("type", types[rand() % 2]),  std::make_pair("fromScene","GameScene")  });
 
             // Scene::_transition("LoadingScene", { std::make_pair("preload",retrySceneName), std::make_pair("type", types[rand() % 2]) });
 
@@ -271,13 +257,6 @@ void Pause::OpenPause()
 
     // ‰¹‚ÌÄ¶‚ð–³Œø‚É‚·‚é
     CoreAudio::SetSystemPaused(true);
-
-
-    // player ‚Ì•às‰¹‚Ì‚½‚ß‚ÉŒÄ‚ÔŠÖ”  (T_T)
-    if (auto player = GetOwnerScene()->GetActorManager()->GetActorOfType<ScissorsPlayer1>())
-    {
-        player->OnPause();
-    }
 
     GetOwnerScene()->SetPaused(true);
 
