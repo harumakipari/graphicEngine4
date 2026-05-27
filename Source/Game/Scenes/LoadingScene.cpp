@@ -140,8 +140,6 @@ bool LoadingScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, c
             loadingTime = 0.0f;
         }
     }
-
-
     return true;
 }
 

@@ -40,6 +40,23 @@ private:
     bool damageDone = false;
 };
 
+
+class KnightActor: public Character
+{
+public:
+    explicit KnightActor(const std::string & actorName) :Character(actorName) {}
+
+    void Initialize(const Transform & transform)override;
+
+    void Update(float elapsedTime)override;
+
+private:
+    // 描画用コンポーネントを追加
+    std::shared_ptr<SkeletalMeshComponent> skeletalMeshComponent;
+    std::shared_ptr<RotationComponent> rotationComponent;
+
+};
+
 class SavarogEnemy :public Character
 {
 public:

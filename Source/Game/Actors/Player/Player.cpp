@@ -22,7 +22,6 @@
 #include "Game/Actors/Stage/Stage.h"
 #include "Game/DarkGame/Interactable.h"
 #include "Game/DarkGame/DarkActors/DarkEnemy/GruxEnemy.h"
-#include "Game/ScissorsGame/ScoreCalculator.h"
 #include "Physics/CollisionFunction.h"
 
 void Player::Initialize(const Transform& transform)
@@ -187,7 +186,7 @@ void Player::Initialize(const Transform& transform)
     // 剣に当たり判定のコンポーネントを追加
     swordCollisionComp = AddComponent<CapsuleComponent>("SwordCollision", parentName);
     DirectX::XMFLOAT3 size = { 0.1f,1.2f,1.0f };
-    swordCollisionComp->AttachToComponent(skeletalMeshComponent, 180); // "VB root_weapon"
+    swordCollisionComp->AttachToComponent(skeletalMeshComponent, 181); // "VB root_weapon"
     swordCollisionComp->SetRadiusAndHeight(size.x, size.y);
     swordCollisionComp->SetMass(mass);
     swordCollisionComp->SetCapsuleAxis(ShapeComponent::CapsuleAxis::z);
@@ -199,6 +198,16 @@ void Player::Initialize(const Transform& transform)
     swordCollisionComp->SetIsVisibleDebugBox(false);
     swordCollisionComp->SetRelativeLocationDirect({ -0.f, -0.f, 0.8f });
     swordCollisionComp->Initialize();
+
+    auto swordMeshComponent = this->AddComponent<SkeletalMeshComponent>("Sword", parentName);
+    swordMeshComponent->SetModel("./Data/Models/Weapons/PlayerSword/Sword.gltf", false, true);
+    swordMeshComponent->AttachToComponent(skeletalMeshComponent, 181); // "VB root_weapon"
+
+    auto bowMeshComponent = this->AddComponent<SkeletalMeshComponent>("Bow", parentName);
+    bowMeshComponent->SetModel("./Data/Models/Weapons/PlayerBow/AnimationBow.gltf", false, true);
+
+
+    //bowMeshComponent->AttachToComponent(skeletalMeshComponent, 23); // "weapon"
 
     swordPointComp = AddComponent<CapsuleComponent>("SwordPointComponent", "SwordCollision");
     swordPointComp->SetRelativeLocationDirect({ 0.0f,0.0f,0.6f });
@@ -689,7 +698,7 @@ void Player::DoAttackHit()
         float distSq = dx * dx + dz * dz;
         float attackRange = 2.5f;
 
-        if (distSq > attackRange * attackRange) 
+        if (distSq > attackRange * attackRange)
             return;
 
         // 正規化

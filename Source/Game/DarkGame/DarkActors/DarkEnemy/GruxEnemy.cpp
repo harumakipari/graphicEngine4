@@ -14,7 +14,8 @@ void GruxEnemy::Initialize(const Transform& transform)
     std::string parentName = "SkeletonWarriorMeshComponent";
     Character::Initialize(transform);
     skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
-    skeletalMeshComponent->SetModel("./Data/Models/Characters/Grux/animations.gltf", false, true);
+    skeletalMeshComponent->SetModel("./Data/Models/Characters/GruxQilin/animations.gltf", false, true);
+    //skeletalMeshComponent->SetModel("./Data/Models/Characters/Grux/animations.gltf", false, true);
     //skeletalMeshComponent->SetModel("./Data/Models/Characters/StoneGolem/StoneGolem.gltf", false, true);
     skeletalMeshComponent->plusAlphaCBuffer->data.objectType = ObjectType::Enemy;   // オブジェクトの種類を Enemy に設定
     skeletalMeshComponent->plusAlphaCBuffer->data.emissionPower = 6.6f;   // 目玉の自己発光の強さを設定
@@ -72,6 +73,8 @@ void GruxEnemy::Initialize(const Transform& transform)
 void GruxEnemy::Update(float deltaTime)
 {
     Character::Update(deltaTime);
+
+    return;
     stateTimer += deltaTime;
 
     auto player = GetOwnerScene()->GetActorManager()->GetActorByName("player");
@@ -187,6 +190,65 @@ float GruxEnemy::GetDistanceToPlayer()
 
     return sqrtf(dx * dx + dz * dz);
 }
+
+void KnightActor::Initialize(const Transform& transform)
+{
+    std::string parentName = "SkeletonWarriorMeshComponent";
+    Character::Initialize(transform);
+    skeletalMeshComponent = AddComponent<SkeletalMeshComponent>(parentName);
+    skeletalMeshComponent->SetModel("./Data/Models/Characters/Greystone/Idle.gltf", false, true);
+
+    // アニメーションコントローラーを作成
+    auto controller = std::make_shared<AnimationController>(skeletalMeshComponent.get());
+    controller->AddAnimation("Idle", 0);
+
+    // アニメーションコントローラーを character に追加
+    this->SetAnimationController(controller);
+    PlayAnimation("Idle");
+
+    // 当たり判定
+    {
+        std::shared_ptr<CapsuleComponent> capsuleComponent = this->AddComponent<class CapsuleComponent>("capsuleComponent", parentName);
+        DirectX::XMFLOAT3 size = skeletalMeshComponent->GetModelSize();
+        height = size.y;
+        radius = size.x * 0.5f;
+        mass = 60.0f;
+        capsuleComponent->SetRadiusAndHeight(radius, height);
+        capsuleComponent->SetMass(mass);
+        capsuleComponent->SetCapsuleAxis(ShapeComponent::CapsuleAxis::y);
+        capsuleComponent->SetLayer(CollisionLayer::Enemy);
+        capsuleComponent->SetResponseToLayer(CollisionLayer::Player, CollisionComponent::CollisionResponse::Block);
+        capsuleComponent->SetResponseToLayer(CollisionLayer::WorldStatic, CollisionComponent::CollisionResponse::Block);
+        capsuleComponent->SetResponseToLayer(CollisionLayer::WorldProps, CollisionComponent::CollisionResponse::Block);
+        capsuleComponent->SetResponseToLayer(CollisionLayer::Convex, CollisionComponent::CollisionResponse::Block);
+        capsuleComponent->SetCollisionOffsetY(height * 0.5f);
+        capsuleComponent->SetIsVisibleDebugBox(false);
+        capsuleComponent->Initialize();
+    }
+
+    // 回転用コンポーネントを追加
+    rotationComponent = this->AddComponent<class RotationComponent>("rotationComponent", parentName);
+
+    // ポイントライトコンポーネントを追加
+    auto pointLightComponent = this->AddComponent<PointLightComponent>("pointLightComponent", parentName);
+    pointLightComponent->SetRelativeLocationDirect({ 0.0f, 1.5f, 1.0f });
+    // ライトの名前からライトマネージャーの共有ライトを取得して設定
+    pointLightComponent->SetSharedLightName("PlayerPointLight");
+
+    // ポイントライトコンポーネントを追加
+    auto backPointLightComponent = this->AddComponent<PointLightComponent>("PlayerBackPointLight", parentName);
+    backPointLightComponent->SetRelativeLocationDirect({ 0.0f, 1.5f,-1.0f });
+    // ライトの名前からライトマネージャーの共有ライトを取得して設定
+    backPointLightComponent->SetSharedLightName("PlayerBackPointLight");
+
+}
+
+void KnightActor::Update(float elapsedTime)
+{
+    Character::Update(elapsedTime);
+
+}
+
 
 void SavarogEnemy::Initialize(const Transform& transform)
 {

@@ -1,5 +1,7 @@
 #pragma once
 #include <memory>
+#include <ranges>
+
 #include "Core/Actor.h"
 #include "Graphics/Resource/GeometricPrimitive.h"
 
@@ -21,6 +23,11 @@ public:
 
     virtual void Update(float deltaTime)override
     {
+        for (auto& controller : animationControllers | std::views::values)
+        {
+            controller->OnUpdate(deltaTime);
+        }
+
         if (animationController_)
         {
             animationController_->OnUpdate(deltaTime);
@@ -83,6 +90,26 @@ public:
             animationController_->SetAnimationRate(animationRate);
         }
     }
+
+    // アニメーションコントローラーを追加する
+    void AddAnimationController(const std::string& name, const std::shared_ptr<AnimationController>& controller)
+    {
+        animationControllers[name] = controller;
+    }
+
+    // アニメーションコントローラーを取得する
+    std::shared_ptr<AnimationController> GetAnimationController(const std::string& name)
+    {
+        auto it = animationControllers.find(name);
+
+        if (it == animationControllers.end())
+        {
+            return nullptr;
+        }
+        return  it->second;
+    }
+
+
 
     int GetHp() const { return hp; }
 
@@ -160,14 +187,17 @@ protected:
     //レイを飛ばしたときにステージと当たる座標
     DirectX::XMFLOAT3  intersectStagePosition{ 0.0f,0.0f,0.0f };
 
-    // アニメーションコントローラー
-    std::shared_ptr<AnimationController> animationController_;
 
     // ステートマシン
     std::shared_ptr<StateMachine> stateMachine_;
 
+    // アニメーションコントローラー
+    std::shared_ptr<AnimationController> animationController_;
 
     bool canMove = true;
+
 private:
+    std::unordered_map<std::string, std::shared_ptr<AnimationController>> animationControllers;
+
 
 };

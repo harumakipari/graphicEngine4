@@ -239,8 +239,16 @@ void SampleScene::SetUpActors()
     Transform enemyTr(DirectX::XMFLOAT3{ -15.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     auto enemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<SkeletonWarriorActor>("enemy", enemyTr);
 
-    Transform gruxEnemyTr(DirectX::XMFLOAT3{ -15.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
-    auto gruxEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<GruxEnemy>("GruxEnemy", gruxEnemyTr);
+    Transform KnightActorTR(DirectX::XMFLOAT3{ -15.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto KnightsActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<KnightActor>("KnightActor", KnightActorTR);
+
+#if 1
+    Transform GruxEnemyTr(DirectX::XMFLOAT3{ -18.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto GruxEnemyActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<GruxEnemy>("GruxEnemy", GruxEnemyTr);
+
+#endif // 0
+
+
 
     //Transform savarogEnemyTr(DirectX::XMFLOAT3{ -10.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
     //auto savarogEnemy = this->GetActorManager()->CreateAndRegisterActorWithTransform<SavarogEnemy>("SavarogEnemy", savarogEnemyTr);
