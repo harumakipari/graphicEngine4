@@ -9,7 +9,7 @@ PlayerStateBase::PlayerStateBase(Player* actor) :State(actor), player(actor)
 
 void PlayerIdleState::Enter()
 {
-    owner->PlayAnimation("Idle");
+    owner->PlayBodyAnimation("Idle");
 }
 
 void PlayerIdleState::Execute(float deltaTime)
@@ -45,7 +45,7 @@ void PlayerIdleState::Exit()
 
 void PlayerRunningState::Enter()
 {
-    owner->PlayAnimation("Jog_Fwd", true, true, 0.2f);
+    owner->PlayBodyAnimation("Jog_Fwd", true, true, 0.2f);
 }
 
 void PlayerRunningState::Execute(float deltaTime)
@@ -81,7 +81,7 @@ void PlayerAttackingState::Enter()
     player->characterMovementComponent->SetSpeed(0.0f);
 
     // 攻撃アニメーションを再生
-    player->PlayAnimation("Primary_Attack_Fast_D", false, true, 0.1f);
+    player->PlayBodyAnimation("Primary_Attack_Fast_D", false, true, 0.1f);
 
     // 攻撃タイマーをリセット
     attackTimer = 0.0f;
@@ -99,7 +99,7 @@ void PlayerAttackingState::Execute(float deltaTime)
         hitDone = true;
     }
 
-    if (!owner->GetAnimationController()->IsPlayAnimation())
+    if (!owner->GetBodyAnimationController()->IsPlayAnimation())
     {
         auto dir = player->inputComponent->GetMoveInput();
         if (MathHelper::Length(dir) > 0.01f)
@@ -127,7 +127,7 @@ void PlayerAttackingState::Exit()
 
 void PlayerDodgeState::Enter()
 {
-    owner->PlayAnimation("HitReact_Front");
+    owner->PlayBodyAnimation("HitReact_Front");
     dodgeTimer = 0.0f;
     player->invincible = true; // ←無敵ON
     

@@ -46,7 +46,7 @@ void BossEnemy::Initialize(const Transform& transform)
 
 #endif // 0
     // アニメーションコントローラーを作成
-    animationController_ = std::make_shared<AnimationController>(skeletalMeshComponent.get());
+    auto animationController_ = std::make_shared<AnimationController>(skeletalMeshComponent.get());
     animationController_->AddAnimation("Idle", 0);
     animationController_->AddAnimation("HitReact_Back", 1);
     animationController_->AddAnimation("HitReact_Front", 2);
@@ -76,6 +76,8 @@ void BossEnemy::Initialize(const Transform& transform)
     animationController_->AddAnimation("Victory_Emote", 26);
     animationController_->AddAnimation("Emote_Pull_MC_T1", 27);
     animationController_->AddAnimation("Death_front", 28);
+    AddBodyAnimationController(animationController_);
+
 
     // ステートマシンを作成
     stateMachine_ = std::make_shared<StateMachine>();
@@ -117,7 +119,7 @@ void BossEnemy::Initialize(const Transform& transform)
     // 回転コンポーネント追加
     rotationComponent = AddComponent<RotationComponent>("rotationComponent", "skeletalComponent");
 
-    PlayAnimation("Jog_Fwd", true, true, 0.1f);
+    PlayBodyAnimation("Jog_Fwd", true, true, 0.1f);
     SetPosition(transform.GetLocation());
     SetQuaternionRotation(transform.GetRotation());
     SetScale(transform.GetScale());

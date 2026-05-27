@@ -41,8 +41,8 @@ void GruxEnemy::Initialize(const Transform& transform)
     controller->AddAnimation("Death", 8);
 
     // アニメーションコントローラーを character に追加
-    this->SetAnimationController(controller);
-    PlayAnimation("Idle");
+    this->AddBodyAnimationController(controller);
+    PlayBodyAnimation("Idle");
 
     // 当たり判定
     {
@@ -97,7 +97,7 @@ void GruxEnemy::Update(float deltaTime)
     {
         if (!attackPlayed)
         {
-            PlayAnimation("PrimaryAttack_RA", false, true, 0.1f);
+            PlayBodyAnimation("PrimaryAttack_RA", false, true, 0.1f);
             attackPlayed = true;
             damageDone = false;
             stateTimer = 0.0f;
@@ -203,8 +203,8 @@ void KnightActor::Initialize(const Transform& transform)
     controller->AddAnimation("Idle", 0);
 
     // アニメーションコントローラーを character に追加
-    this->SetAnimationController(controller);
-    PlayAnimation("Idle");
+    this->AddBodyAnimationController(controller);
+    PlayBodyAnimation("Idle");
 
     // 当たり判定
     {
@@ -287,8 +287,8 @@ void SavarogEnemy::Initialize(const Transform& transform)
     controller->AddAnimation("Emote_Pointing", 11);
 
     // アニメーションコントローラーを character に追加
-    this->SetAnimationController(controller);
-    PlayAnimation("Idle");
+    this->AddBodyAnimationController(controller);
+    PlayBodyAnimation("Idle");
 
     // 当たり判定
     {
@@ -354,11 +354,11 @@ void SavarogEnemy::Update(float elapsedTime)
 
     if (InputSystem::GetInputState("K", InputStateMask::Trigger))
     {
-        PlayAnimation("Victory_Emote", false, true, 0.1f);
+        PlayBodyAnimation("Victory_Emote", false, true, 0.1f);
     }
-    if (!GetAnimationController()->IsPlayAnimation())
+    if (!GetBodyAnimationController()->IsPlayAnimation())
     {
-        PlayAnimation("Idle");
+        PlayBodyAnimation("Idle");
     }
 }
 
@@ -402,8 +402,8 @@ void GracialEnemy::Initialize(const Transform& transform)
     controller->AddAnimation("Idle_Noise_B", 17);
     controller->AddAnimation("Recall", 18);
     // アニメーションコントローラーを character に追加
-    this->SetAnimationController(controller);
-    PlayAnimation("Idle");
+    this->AddBodyAnimationController(controller);
+    PlayBodyAnimation("Idle");
 
     // 当たり判定
     {
@@ -438,11 +438,11 @@ void GracialEnemy::Update(float elapsedTime)
 
     if (InputSystem::GetInputState("K", InputStateMask::Trigger))
     {
-        PlayAnimation("Primary_Attack_Fast_D", false, true, 0.1f);
+        PlayBodyAnimation("Primary_Attack_Fast_D", false, true, 0.1f);
     }
-    if (!GetAnimationController()->IsPlayAnimation())
+    if (!GetBodyAnimationController()->IsPlayAnimation())
     {
-        PlayAnimation("Idle");
+        PlayBodyAnimation("Idle");
     }
 
 

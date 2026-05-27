@@ -24,9 +24,9 @@ void SkeletonWarriorActor::Initialize(const Transform& transform)
     //controller->AddAnimation("Run", 5);
     //controller->AddAnimation("Walk", 6);
     // アニメーションコントローラーを character に追加
-    this->SetAnimationController(controller);
+    this->AddBodyAnimationController(controller);
 
-    PlayAnimation("Walk");
+    PlayBodyAnimation("Walk");
 
     waypoints =
     {

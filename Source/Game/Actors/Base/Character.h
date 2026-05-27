@@ -18,6 +18,7 @@ public:
 
     Character(const std::string& modelName) :Actor(modelName)
     {
+        animationBodyControllerName = "Body";
     }
 
 
@@ -28,21 +29,12 @@ public:
             controller->OnUpdate(deltaTime);
         }
 
-        if (animationController_)
-        {
-            animationController_->OnUpdate(deltaTime);
-        }
         if (stateMachine_)
         {
             stateMachine_->Update(deltaTime);
         }
     };
 
-    // アニメーションコントローラーをセットする
-    void SetAnimationController(const std::shared_ptr<AnimationController>& controller)
-    {
-        animationController_ = controller;
-    }
 
     // ステートマシンをセットする
     void SetStateMachine(const std::shared_ptr<StateMachine>& stateMachine)
@@ -50,10 +42,6 @@ public:
         stateMachine_ = stateMachine;
     }
 
-    std::shared_ptr<AnimationController> GetAnimationController()
-    {
-        return animationController_;
-    }
 
     // ステートマシンを取得する
     std::shared_ptr<StateMachine> GetStateMachine()
@@ -62,19 +50,19 @@ public:
     }
 
     // 使用
-    void PlayAnimation(const std::string& name, bool loop = true, bool blend = true, float blendTime = 0.3f) const
+    void PlayBodyAnimation(const std::string& name, bool loop = true, bool blend = true, float blendTime = 0.3f) const
     {
-        if (animationController_)
+        if (auto controller = GetAnimationController(animationBodyControllerName))
         {
-            animationController_->SetAnimationClip(name, loop, blend, blendTime);
+            controller->SetAnimationClip(name, loop, blend, blendTime);
         }
     }
 
-    void StopAnimation() const
+    void PlayAnimation(const std::string& controllerName, const std::string& name, bool loop = true, bool blend = true, float blendTime = 0.3f) const
     {
-        if (animationController_)
+        if (auto controller = GetAnimationController(controllerName))
         {
-            animationController_->Stop();
+            controller->SetAnimationClip(name, loop, blend, blendTime);
         }
     }
 
@@ -83,12 +71,17 @@ public:
     virtual void Move(float elapsedTime) {}
 
     // アニメーションの再生倍率を変更する関数
-    void SetAnimationRate(float animationRate) const
+    void SetAnimationRate(const std::string& name, const float  animationRate) const
     {
-        if (animationController_)
+        if (auto controller = GetAnimationController(name))
         {
-            animationController_->SetAnimationRate(animationRate);
+            controller->SetAnimationRate(animationRate);
         }
+    }
+
+    void AddBodyAnimationController(const std::shared_ptr<AnimationController>& controller)
+    {
+        animationControllers[animationBodyControllerName] = controller;
     }
 
     // アニメーションコントローラーを追加する
@@ -98,7 +91,7 @@ public:
     }
 
     // アニメーションコントローラーを取得する
-    std::shared_ptr<AnimationController> GetAnimationController(const std::string& name)
+    std::shared_ptr<AnimationController> GetAnimationController(const std::string& name) const
     {
         auto it = animationControllers.find(name);
 
@@ -109,6 +102,18 @@ public:
         return  it->second;
     }
 
+
+    // アニメーションコントローラーを取得する
+    std::shared_ptr<AnimationController> GetBodyAnimationController() const
+    {
+        auto it = animationControllers.find(animationBodyControllerName);
+
+        if (it == animationControllers.end())
+        {
+            return nullptr;
+        }
+        return  it->second;
+    }
 
 
     int GetHp() const { return hp; }
@@ -144,9 +149,9 @@ public:
     void DrawImGuiDetails()override
     {
 #ifdef USE_IMGUI
-        if (animationController_)
+        for (auto& controller : animationControllers | std::views::values)
         {
-            animationController_->DrawImGui();
+            controller->DrawImGui();
         }
 #endif
     }
@@ -191,13 +196,11 @@ protected:
     // ステートマシン
     std::shared_ptr<StateMachine> stateMachine_;
 
-    // アニメーションコントローラー
-    std::shared_ptr<AnimationController> animationController_;
-
     bool canMove = true;
 
 private:
     std::unordered_map<std::string, std::shared_ptr<AnimationController>> animationControllers;
 
+    std::string animationBodyControllerName = "Body";
 
 };

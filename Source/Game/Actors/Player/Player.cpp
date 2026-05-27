@@ -80,7 +80,7 @@ void Player::Initialize(const Transform& transform)
         controller->AddAnimation("Recall", 18);
         //controller->AddAnimation("Death", 17);
         // アニメーションコントローラーを character に追加
-        this->SetAnimationController(controller);
+        this->AddBodyAnimationController(controller);
     }
 
     {
@@ -206,6 +206,11 @@ void Player::Initialize(const Transform& transform)
     auto bowMeshComponent = this->AddComponent<SkeletalMeshComponent>("Bow", parentName);
     bowMeshComponent->SetModel("./Data/Models/Weapons/PlayerBow/AnimationBow.gltf", false, true);
 
+    // 武器アニメーションコントローラーを作成
+    auto weaponController = std::make_shared<AnimationController>(bowMeshComponent.get());
+    weaponController->AddAnimation("Bow", 0);
+    AddAnimationController("Weapon", weaponController);
+    PlayAnimation("Weapon", "Bow");
 
     //bowMeshComponent->AttachToComponent(skeletalMeshComponent, 23); // "weapon"
 
@@ -239,7 +244,7 @@ void Player::Update(float elapsedTime)
 
 
     // アニメーション時間から攻撃有効フラグ更新
-    auto anim = GetAnimationController();
+    auto anim = GetBodyAnimationController();
     float time = anim->GetCurrentAnimationTime(); // ← 秒
     if (stateMachine_->GetStateName() == "Attack" && time >= 0.1f && time <= 0.4f)
     {
