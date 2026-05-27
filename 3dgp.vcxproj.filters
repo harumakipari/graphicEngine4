@@ -127,14 +127,8 @@
     <Filter Include="Sources\Engine\Camera">
       <UniqueIdentifier>{50cd0c12-71cf-4e9a-8070-f5507645d31b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\Game\Actors\Item">
-      <UniqueIdentifier>{3c1e71c8-5bae-48bb-8900-d799acdd7ca2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Sources\Game\Actors\Camera">
       <UniqueIdentifier>{81685697-255a-4ef6-9ef3-2730b6528ab6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\Game\Actors\Beam">
-      <UniqueIdentifier>{f7c4fff1-4101-4287-b88a-42999306fa1a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Sources\Components\Effect">
       <UniqueIdentifier>{905cc853-fa16-4938-8a2a-d1b3b116b4ea}</UniqueIdentifier>
@@ -498,21 +492,6 @@
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStagePointLightActor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageChandelierActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageCandelabraActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageBarrelActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageBrazierActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageGroundBrazierActor.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStage.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -539,6 +518,21 @@
     </ClCompile>
     <ClCompile Include="Source\Graphics\PostProcess\MotionBlurEffect.cpp">
       <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageBarrelActor.cpp">
+      <Filter>Sources\Game\Actors\Stage\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageBrazierActor.cpp">
+      <Filter>Sources\Game\Actors\Stage\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageCandelabraActor.cpp">
+      <Filter>Sources\Game\Actors\Stage\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageChandelierActor.cpp">
+      <Filter>Sources\Game\Actors\Stage\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\DarkGame\DarkActors\DarkStageGroundBrazierActor.cpp">
+      <Filter>Sources\Game\Actors\Stage\Props</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -846,17 +840,11 @@
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DoorActor.h" />
     <ClInclude Include="Source\Graphics\Shadow\ShadowMap.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStagePointLightActor.h" />
-    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageChandelierActor.h" />
-    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageCandelabraActor.h" />
-    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageBarrelActor.h" />
-    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageBrazierActor.h" />
-    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageGroundBrazierActor.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStage.h" />
     <ClInclude Include="Source\Graphics\PostProcess\DepthOfFieldEffect.h" />
     <ClInclude Include="Source\Engine\Debug\ScopedTimer.h" />
     <ClInclude Include="Source\Graphics\Resource\AssetManager.h" />
     <ClInclude Include="Source\Graphics\Resource\ModelType.h" />
-    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageAsset.h" />
     <ClInclude Include="Source\Engine\Debug\DebugRender.h" />
     <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkEnemy\SkeletonWarriorEnemy.h" />
     <ClInclude Include="Source\Engine\Camera\TPSCameraController.h" />
@@ -868,6 +856,27 @@
     <ClInclude Include="External\imgui\ImCurveEdit.h" />
     <ClInclude Include="External\imgui\ImSequencer.h" />
     <ClInclude Include="Source\Graphics\PostProcess\MotionBlurEffect.h" />
+    <ClInclude Include="Source\Game\Actors\Stage\Props\ClothActor.h">
+      <Filter>Sources\Game\Actors\Stage\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageAsset.h">
+      <Filter>Sources\Game\Actors\Stage\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageBarrelActor.h">
+      <Filter>Sources\Game\Actors\Stage\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageBrazierActor.h">
+      <Filter>Sources\Game\Actors\Stage\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageCandelabraActor.h">
+      <Filter>Sources\Game\Actors\Stage\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageChandelierActor.h">
+      <Filter>Sources\Game\Actors\Stage\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\DarkGame\DarkActors\DarkStageGroundBrazierActor.h">
+      <Filter>Sources\Game\Actors\Stage\Props</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ComputeParticleBeginFrameCS.hlsl">
@@ -1125,37 +1134,10 @@
     <FxCompile Include="Shader\TrailVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\ScissorsGameEnemyPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\ScissorsGameBossPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\ScissorsPlayerPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\ScissorsGameCoinPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\ScissorsGameBlinkPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\GBufferDecalPrimitivePS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\OpaqueMarkPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FullScreenGameOverPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\GameModelColorFilterPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\GameNumberPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\GameReturnColorPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

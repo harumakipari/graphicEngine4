@@ -235,8 +235,8 @@ void LoadingScene::Start()
     {
         17.021f,
         0.136f,
+        21.643f,
         true,
-        21.643f
     };
     settings.sceneShaderConstants =
     {

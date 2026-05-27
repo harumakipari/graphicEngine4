@@ -95,5 +95,6 @@ private:
     std::shared_ptr<Player> player;
     TPSCameraComponent* mainCameraComponent = nullptr;
 
+    std::unique_ptr<ClothSimulate> clothSimulate;
 
 };

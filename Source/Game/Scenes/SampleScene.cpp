@@ -86,6 +86,9 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
     }
 
 
+    clothSimulate = std::make_unique<ClothSimulate>(device, "./Data/Models/Flag/Oden_Cloth_Noren_1.gltf");
+
+
     skyShaderConstantsBuffer = std::make_unique<ConstantBuffer<SkyShaderConstants>>(device);
     //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/DarkStageSkyPS.cso", darkStageSkyPS.GetAddressOf());
     //HRESULT hr = CreatePsFromCSO(Graphics::GetDevice(), "./Shader/ShaderToySky2.cso", darkStageSkyPS.GetAddressOf());
@@ -100,6 +103,20 @@ bool SampleScene::Initialize(ID3D11Device* device, UINT64 width, UINT height, co
             };
             fullscreenQuad->Blit(immediateContext, shaderResourceViews, 0, 1, darkStageSkyPS.Get());
         });
+
+    // ‚±‚±‚Å•z‚ð•`‰æ‚·‚é
+    RegisterRenderHook(RenderPass::Mask, [&](ID3D11DeviceContext* immediateContext)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                if (const auto cloth = GetActorManager()->GetActorByName("cloth"))
+                {
+                    clothSimulate->Render(immediateContext, cloth->GetWorldTransform());
+                }
+            }
+        });
+
+
 
     return true;
 }
@@ -135,6 +152,9 @@ void SampleScene::Start()
 
 #endif // 0
 
+
+
+
     // ƒV[ƒ“‚ªØ‚è‘Ö‚í‚Á‚½Žž‚É
     SceneTransitionManager::Instance().NotifySceneChanged();
 
@@ -148,6 +168,9 @@ void SampleScene::Update(float deltaTime)
     Physics::Instance().Update(Time::UnscaledDeltaTime());
     CollisionSystem::DetectAndResolveCollisions();
     CollisionSystem::ApplyPushAll();
+
+    clothSimulate->Update(deltaTime);
+
 
 #if 0
     if (player && mainCameraComponent)
@@ -214,6 +237,11 @@ void SampleScene::SetUpActors()
     auto movieCameraActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<MovieCamera>("movieCam", movieCameraTr);
     cameraManager->SetMovieCamera(movieCameraActor);
 
+
+    Transform clothTr(DirectX::XMFLOAT3{ 0.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,0.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    auto cloth = this->GetActorManager()->CreateAndRegisterActorWithTransform<Actor>("cloth", clothTr);
+
+
     //Transform paintingTr(DirectX::XMFLOAT3{ -29.9f,2.8f,2.5f }, DirectX::XMFLOAT3{ 0.0f,90.0f,0.0f }, DirectX::XMFLOAT3{ 0.38f,0.38f,0.38f });
     //auto paintingActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<DarkStagePaintingActor>("painting", paintingTr);
 
@@ -243,7 +271,7 @@ void SampleScene::SetUpActors()
     auto KnightsActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<KnightActor>("KnightActor", KnightActorTR);
 
 #if 1
-    Transform GruxEnemyTr(DirectX::XMFLOAT3{ -18.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 1.0f,1.0f,1.0f });
+    Transform GruxEnemyTr(DirectX::XMFLOAT3{ -18.0f,0.0f,12.0f }, DirectX::XMFLOAT3{ 0.0f,0.0f,10.0f }, DirectX::XMFLOAT3{ 2.78f,2.78f,2.78f });
     auto GruxEnemyActor = this->GetActorManager()->CreateAndRegisterActorWithTransform<GruxEnemy>("GruxEnemy", GruxEnemyTr);
 
 #endif // 0

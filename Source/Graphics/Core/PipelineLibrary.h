@@ -205,7 +205,6 @@ public:
             AddPipeLineState("deferredBlendStaticMesh", desc);
         }
 
-
         // StaticMesh forward Mask 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelForwardTransparencyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
@@ -310,55 +309,6 @@ public:
             AddPipeLineState("deferredFightStage", desc);
         }
 
-        // SkeletalMesh deferred ScissorsGameEnemyPS 用　チーム制作で足した(T_T)
-        {
-            hr = CreatePsFromCSO(device, "./Shader/ScissorsGameEnemyPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-            AddPipeLineState("ScissorsGameEnemyPS", desc);
-        }
-
-        // SkeletalMesh deferred ScissorsGameBlinkPS 用　チーム制作で足した(T_T)
-        {
-            hr = CreatePsFromCSO(device, "./Shader/ScissorsGameBlinkPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-            AddPipeLineState("ScissorsGameBlinkPS", desc);
-        }
-
-        // SkeletalMesh deferred ScissorsGameCoinPS 用　チーム制作で足した(T_T)
-        {
-            hr = CreatePsFromCSO(device, "./Shader/ScissorsGameCoinPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-            AddPipeLineState("ScissorsGameCoinPS", desc);
-        }
-
-        // SkeletalMesh deferred ScissorsGamePlayerPS 用　チーム制作で足した(T_T)
-        {
-            hr = CreatePsFromCSO(device, "./Shader/ScissorsPlayerPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-            AddPipeLineState("ScissorsGamePlayerPS", desc);
-        }
-
-        // SkeletalMesh deferred GameNumberPS 用　チーム制作で足した(T_T)
-        {
-            hr = CreatePsFromCSO(device, "./Shader/GameNumberPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-            AddPipeLineState("GameNumberPS", desc);
-        }
-
-        // SkeletalMesh deferred GameModelColorFilterPS 用　チーム制作で足した(T_T)
-        {
-            hr = CreatePsFromCSO(device, "./Shader/GameModelColorFilterPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-
-            AddPipeLineState("GameModelColorFilterPS", desc);
-        }
-
-
         // SkeletalMesh forward Mask 用
         {
             hr = CreatePsFromCSO(device, "./Shader/GltfModelPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
@@ -367,23 +317,6 @@ public:
             desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_NONE;
             AddPipeLineState("forwardMaskSkeletalMesh", desc);
         }
-
-        // ScissorsGame OpaqueMarkPS 用 チーム制作で足した(T_T)
-        {
-            hr = CreatePsFromCSO(device, "./Shader/OpaqueMarkPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
-            AddPipeLineState("OpaqueMarkPS", desc);
-        }
-
-        // ScissorsGame GameReturnColorPS 用 チーム制作で足した(T_T)
-        {
-            hr = CreatePsFromCSO(device, "./Shader/GameReturnColorPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
-            AddPipeLineState("GameReturnColorPS", desc);
-        }
-
 
         // SkeletalMesh deferred Mask 用
         {
@@ -403,16 +336,6 @@ public:
             AddPipeLineState("forwardBlendSkeletalMesh", desc);
         }
 
-#if 1
-        // SkeletalMesh deferred ScissorsGameBossPS 用　チーム制作で足した(T_T)
-        {
-            hr = CreatePsFromCSO(device, "./Shader/ScissorsGameBossPS.cso", desc.pixelShader.ReleaseAndGetAddressOf());
-            _ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-            desc.blendState = BLEND_STATE::MULTIPLY_RENDER_TARGET_ALPHA;
-            AddPipeLineState("ScissorsGameBossPS", desc);
-        }
-
-#endif // 0
 
         // SkeletalMesh deferred Blend 用
         {

@@ -84,7 +84,10 @@ void AnimationController::OnUpdate(const float deltaTime)
         DirectX::XMFLOAT4X4 worldTransform = owner->GetWorldTransform();
 
         DirectX::XMFLOAT3 position = { node.globalTransform._41, node.globalTransform._42, node.globalTransform._43 }; // グローバル空間
+        Logger::Log(U8("RootMotionのposition x:") + std::to_string(position.x) + U8("y:") + std::to_string(position.y) + U8("z:") + std::to_string(position.z));
+
         DirectX::XMFLOAT3 displacement = { position.x - previousPosition.x, position.y - previousPosition.y,  position.z - previousPosition.z }; // グローバル空間
+        Logger::Log(U8("RootMotionのdisplacement x:") + std::to_string(displacement.x) + U8("y:") + std::to_string(displacement.y) + U8("z:") + std::to_string(displacement.z));
         DirectX::XMStoreFloat3(&displacement, DirectX::XMVector3TransformNormal(DirectX::XMLoadFloat3(&displacement), DirectX::XMLoadFloat4x4(&worldTransform))); // ワールド空間
 
         DirectX::XMFLOAT3 translation = owner->GetPosition();

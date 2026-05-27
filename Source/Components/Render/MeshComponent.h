@@ -54,9 +54,7 @@ public:
     // ƒ‚ƒfƒ‹‚Ìƒm[ƒhî•ñ
     std::vector<InterleavedGltfModel::Node> modelNodes = {};
 
-    virtual void Tick(float deltaTime)override
-    {
-    }
+    void Tick(float deltaTime)override {}
 
 
     DirectX::XMFLOAT3 GetModelSize() const
@@ -726,7 +724,11 @@ public:
         DrawCapsule(GetThighCapsule("thigh_l", "calf_l"));
         DrawCapsule(GetThighCapsule("thigh_r", "calf_r"));
 #endif
+    }
 
+    int FindIndexByName(const std::string& name) const
+    {
+        return model->FindNodeIndexByName(name);
     }
 
     void SetMaterialPS(const std::string& psFilename, const std::string& materialName) const

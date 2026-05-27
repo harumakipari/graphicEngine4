@@ -9,18 +9,14 @@ struct SharedLightParam
 
 struct SceneLightConstants
 {
-    DirectX::XMFLOAT4 lightDirection = { 0.722f, -0.38f, -0.0211f, 0.85f };// w:attenuation Rate
+    DirectX::XMFLOAT4 lightDirection = { 0.722f, -0.38f, -0.0211f, 0.957f };// w:attenuation Rate
     DirectX::XMFLOAT4 lightColor = { 1.0f, 0.8f, 1.0f, 2.3f }; //w colorPower
-#if 0//(T_T) こっち自作
     float iblIntensity = 0.4f;
-#else // こっちチーム制作
-    float iblIntensity = 3.412f;
-#endif // 0
     int directionalLightEnable = 1;// 平行光源の on / off
     int pointLightEnable = 1;
     int pointLightCount = 40;
 
-    DirectX::XMFLOAT3 rimColor = { 1.0f,1.0f,1.0f };
+    DirectX::XMFLOAT3 rimColor = { 0.1f,0.1f,0.1f };
     float rimIntensity = 1.466f;
 
     DirectX::XMFLOAT3 playerRimColor = { 0.977f,0.71f,0.168f };
@@ -48,15 +44,10 @@ struct SceneLightSaveData
 
 struct SceneShaderConstants
 {
-#if 0//(T_T) こっち自作
     float shadowColor = 0.75f;
     float shadowDepthBias = -0.00207f;
     float slopeBias = 0.005f;
-#else // こっちチーム制作
-    float shadowColor = 0.75f;
-    float shadowDepthBias = 0.00011f;
-    float slopeBias = 0.005f;
-#endif // 0//(T_T) ここを変更
+   
     float splitU = 0.0f;
 
     float	hueShift = -0.028f;	// 色相調整 -1 から 1 （-1 は負方向の 180 度、0 は変更なし、1 は正方向の 180 度）
@@ -71,7 +62,7 @@ struct SceneShaderConstants
 
     float objectIblIntensity = 23.0f; // オブジェクトのIblIntensity (今は骸骨を明るくするために)
     int renderStep = 0; // デバック表示用のレンダーステップ
-    int enableToneMapping = 0; // トーンマッピング有効化フラグ   (T_T) チーム制作で変更
+    int enableToneMapping = 1; // トーンマッピング有効化フラグ
     int enableSsao = 1;
 
     int enableCascadedShadowMaps = 1;
@@ -92,18 +83,10 @@ struct SceneShaderConstants
 
 struct CascadedShadowMapConstants
 {
-#if 0//(T_T) こっち自作
     float criticalDepthValue = 247.0f;
     float splitSchemeWeight = 0.83f;
     float zDepthScale = 40.4f;
     bool fitToCascade = true;// true: カスケード毎にnearを変える
-#else // こっちチーム制作
-    float criticalDepthValue = 58.624f;
-    float splitSchemeWeight = 0.0f;// 1.0 に近いほど対数分割寄り
-    bool fitToCascade = true;// true: カスケード毎にnearを変える
-    float zDepthScale = 1.0f;// Z拡張倍率（シャドウ欠け防止）
-
-#endif // 0  //(T_T) ここを変更
 };
 
 struct FogConstants

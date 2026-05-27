@@ -13,7 +13,7 @@
 class AnimationController
 {
 public:
-    AnimationController(SkeletalMeshComponent* target) :target_(target)
+    AnimationController(SkeletalMeshComponent* target, int rootNodeIndex = 0) :target_(target), rootNodeIndex(rootNodeIndex)
     {
         // アニメーションブレンドに使用するノード
         animationNodes[0] = target_->model->GetNodes();
@@ -34,6 +34,8 @@ public:
     {
         return !(this->isAnimationFinished);
     }
+
+
 
     // 使用例
     // modelComponent->SetAnimationClip(
